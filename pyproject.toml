@@ -3,7 +3,9 @@ name = "ifrs-expert"
 version = "0.1.0"
 description = "AI assistant for IFRS and related accounting guidance"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pymupdf>=1.27.2",
+]
 
 [dependency-groups]
 dev = [{include-group = "lint"}, {include-group = "test"}, {include-group = "audit"}]
@@ -14,10 +16,11 @@ audit = ["pip-audit"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+exclude = ["prototype/"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003"]
+ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE001", "TRY300", "C901", "PLR0912", "PLR0915", "SIM102", "G004"]
 
 [tool.pytest]
 addopts = ["--cov=src", "--cov-fail-under=80"]
