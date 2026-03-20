@@ -10,18 +10,26 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from src.db import ChunkStore, init_db
-from src.db.chunks import Chunk as DbChunk
-from src.pdf import extract_chunks
-from src.vector import VectorStore
-
-if TYPE_CHECKING:
-    from src.models.chunk import Chunk
-
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s: %(message)s",
 )
+
+# Reduce noise from HuggingFace/sentence-transformers
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+
+from src.db import ChunkStore, init_db
+from src.db.chunks import Chunk as DbChunk
+from src.pdf import extract_chunks
+from src.vector import VectorStore
+from src.vector.store import get_index_path
+
+if TYPE_CHECKING:
+    from src.models.chunk import Chunk
+
 logger = logging.getLogger(__name__)
 
 
@@ -156,6 +164,77 @@ def list_command(args: argparse.Namespace) -> int:
         return 1
 
 
+def query_command(args: argparse.Namespace) -> int:
+    """Search for similar chunks using text query.
+
+    Args:
+        args: Parsed command-line arguments containing the query text.
+
+    Returns:
+        Exit code (0 for success, 1 for error).
+    """
+    query_text = args.query
+    k = args.k
+
+    try:
+        # Check if index exists
+        index_path = get_index_path()
+        if not index_path.exists():
+            logger.error("No index found. Please run 'store' command first.")
+            return 1
+
+        # Search for similar chunks
+        with VectorStore() as vector_store:
+            results = vector_store.search(query_text, k=k)
+
+        if not results:
+            logger.warning("No matching chunks found")
+            sys.stdout.buffer.write(b"[]\n")
+            return 0
+
+        # Get the chunk details from database
+        init_db()
+
+        # Group results by doc_uid to minimize DB calls
+        doc_uids = list({result["doc_uid"] for result in results})
+
+        with ChunkStore() as store:
+            # Fetch all chunks for all relevant docs at once
+            doc_chunks: dict[str, list[DbChunk]] = {}
+            for doc_uid in doc_uids:
+                doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
+
+            # Build output
+            chunks_output: list[dict] = []
+            for result in results:
+                doc_uid = result["doc_uid"]
+                chunk_id = result["chunk_id"]
+                distance = result["distance"]
+
+                # Find matching chunk
+                for chunk in doc_chunks.get(doc_uid, []):
+                    if chunk.chunk_id == chunk_id:
+                        chunks_output.append(
+                            {
+                                "id": chunk.chunk_id,
+                                "doc_uid": chunk.doc_uid,
+                                "section_path": chunk.section_path,
+                                "page_start": chunk.page_start,
+                                "page_end": chunk.page_end,
+                                "text": chunk.text,
+                                "distance": distance,
+                            }
+                        )
+                        break
+
+        output = json.dumps(chunks_output, indent=2, ensure_ascii=False)
+        sys.stdout.buffer.write(output.encode("utf-8") + b"\n")
+        return 0
+    except Exception:
+        logger.exception("Error searching chunks")
+        return 1
+
+
 def main() -> int:
     """Main entry point for the CLI."""
     parser = argparse.ArgumentParser(
@@ -198,6 +277,23 @@ def main() -> int:
         help="Show chunks for a specific document",
     )
 
+    # Query command
+    query_parser = subparsers.add_parser(
+        "query",
+        help="Search for similar chunks using text query",
+    )
+    query_parser.add_argument(
+        "query",
+        help="Text query to search for",
+    )
+    query_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=5,
+        help="Number of results to return (default: 5)",
+    )
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -210,6 +306,8 @@ def main() -> int:
         return store_command(args)
     if args.command == "list":
         return list_command(args)
+    if args.command == "query":
+        return query_command(args)
 
     return 0
 

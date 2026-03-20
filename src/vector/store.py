@@ -2,12 +2,18 @@
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Self
 
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
+
+# Suppress sentence-transformers logging
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+logging.getLogger("transformers").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -105,8 +111,8 @@ class VectorStore:
         model = self._get_model()
         logger.info(f"Computing embeddings for {len(texts)} chunks")
 
-        # Compute embeddings in batches
-        embeddings = model.encode(texts)
+        # Compute embeddings (locally, no progress bar)
+        embeddings = model.encode(texts, show_progress_bar=False)
 
         # Convert to float32 (FAISS requirement)
         embeddings = embeddings.astype("float32")

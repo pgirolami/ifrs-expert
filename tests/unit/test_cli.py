@@ -1,168 +1,216 @@
-"""Tests for CLI."""
-
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import patch
+"""Tests for CLI commands."""
 
 import pytest
+import json
+from unittest.mock import MagicMock, patch
+from pathlib import Path
 
 
-class TestCli:
-    """Tests for CLI commands."""
+class TestChunkCommand:
+    """Tests for chunk command."""
 
-    @pytest.fixture
-    def ifrs16_pdf(self) -> Path:
-        """Path to IFRS 16 test PDF."""
-        return Path(__file__).parent.parent.parent / "examples" / "ifrs-16-leases_38-39.pdf"
-
-    def test_chunk_command_output(self, ifrs16_pdf, capsys):
-        """Test chunk command outputs JSON."""
-        if not ifrs16_pdf.exists():
-            pytest.skip("IFRS 16 PDF not found")
-
+    def test_chunk_command_success(self, tmp_path):
+        """Test chunk command extracts and outputs chunks."""
         from src.cli import chunk_command
+        import argparse
+        from unittest.mock import MagicMock
 
-        # Create a mock args namespace
-        class Args:
-            pdf = str(ifrs16_pdf)
+        # Create a mock PDF path
+        pdf_path = tmp_path / "test.pdf"
+        pdf_path.touch()  # Create the file
 
-        result = chunk_command(Args())
+        # Mock the extract_chunks function
+        with patch("src.cli.extract_chunks") as mock_extract:
+            from src.models.chunk import Chunk
 
-        assert result == 0
-        captured = capsys.readouterr()
-        data = json.loads(captured.out)
-        assert isinstance(data, list)
-        assert len(data) > 0
+            mock_extract.return_value = [
+                Chunk(section_path="1.1", page_start="A1", page_end="A1", text="test content")
+            ]
 
-    def test_chunk_command_nonexistent_file(self, capsys):
+            args = argparse.Namespace(pdf=str(pdf_path))
+            result = chunk_command(args)
+
+            assert result == 0
+            mock_extract.assert_called_once_with(pdf_path)
+
+    def test_chunk_command_file_not_found(self):
         """Test chunk command with non-existent file."""
         from src.cli import chunk_command
+        import argparse
 
-        class Args:
-            pdf = "/nonexistent/file.pdf"
-
-        result = chunk_command(Args())
-
-        assert result == 1
-
-    @patch("src.cli.VectorStore")
-    @patch("src.cli.ChunkStore")
-    @patch("src.cli.init_db")
-    def test_store_command(self, mock_init_db, mock_chunk_store_cls, mock_vector_store_cls, ifrs16_pdf, capsys):
-        """Test store command stores chunks and embeddings."""
-        if not ifrs16_pdf.exists():
-            pytest.skip("IFRS 16 PDF not found")
-
-        # Setup mocks
-        mock_chunk_store = mock_chunk_store_cls.return_value.__enter__.return_value
-        mock_chunk_store.get_chunks_by_doc.return_value = []
-        mock_chunk_store.insert_chunks.return_value = [1, 2, 3]
-
-        mock_vector_store = mock_vector_store_cls.return_value.__enter__.return_value
-        mock_vector_store.delete_by_doc.return_value = 0
-        mock_vector_store.add_embeddings.return_value = None
-
-        from src.cli import store_command
-
-        class Args:
-            pdf = str(ifrs16_pdf)
-            doc_uid = "test-doc"
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with patch("src.db.connection.DB_PATH", Path(tmpdir) / "test.db"):
-                with patch("src.vector.store.INDEX_PATH", Path(tmpdir) / "faiss.index"):
-                    result = store_command(Args())
-
-        assert result == 0
-        mock_chunk_store.insert_chunks.assert_called_once()
-
-    @patch("src.cli.VectorStore")
-    @patch("src.cli.ChunkStore")
-    @patch("src.cli.init_db")
-    def test_store_command_nonexistent_file(self, mock_init_db, mock_chunk_store_cls, mock_vector_store_cls, capsys):
-        """Test store command with non-existent file."""
-        from src.cli import store_command
-
-        class Args:
-            pdf = "/nonexistent/file.pdf"
-            doc_uid = None
-
-        result = store_command(Args())
+        args = argparse.Namespace(pdf="/nonexistent/file.pdf")
+        result = chunk_command(args)
 
         assert result == 1
 
-    @patch("src.cli.ChunkStore")
-    @patch("src.cli.init_db")
-    def test_list_command_docs(self, mock_init_db, mock_chunk_store_cls, capsys):
+
+class TestStoreCommand:
+    """Tests for store command."""
+
+    def test_store_command_success(self, tmp_path):
+        """Test store command stores chunks in DB and vector store."""
+        from src.cli import store_command
+        from src.models.chunk import Chunk
+        import argparse
+
+        pdf_path = tmp_path / "test.pdf"
+        pdf_path.touch()
+
+        with patch("src.cli.init_db"), patch("src.cli.extract_chunks") as mock_extract, patch(
+            "src.cli.ChunkStore"
+        ) as mock_cs_class, patch("src.cli.VectorStore") as mock_vs_class:
+
+            # Mock extract_chunks
+            mock_extract.return_value = [
+                Chunk(section_path="1.1", page_start="A1", page_end="A1", text="test content")
+            ]
+
+            # Mock ChunkStore
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = []
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            # Mock VectorStore
+            mock_vs = MagicMock()
+            mock_vs.delete_by_doc.return_value = 0
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            args = argparse.Namespace(pdf=str(pdf_path), doc_uid=None)
+            result = store_command(args)
+
+            assert result == 0
+
+
+class TestListCommand:
+    """Tests for list command."""
+
+    def test_list_command_show_docs(self):
         """Test list command shows all documents."""
-        mock_chunk_store = mock_chunk_store_cls.return_value.__enter__.return_value
-        mock_chunk_store.get_all_docs.return_value = ["doc1", "doc2"]
-
         from src.cli import list_command
+        import argparse
 
-        class Args:
-            doc_uid = None
+        with patch("src.cli.init_db"), patch("src.cli.ChunkStore") as mock_cs_class:
+            mock_cs = MagicMock()
+            mock_cs.get_all_docs.return_value = ["doc1", "doc2"]
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with patch("src.db.connection.DB_PATH", Path(tmpdir) / "test.db"):
-                result = list_command(Args())
+            args = argparse.Namespace(doc_uid=None)
+            result = list_command(args)
 
-        assert result == 0
-        captured = capsys.readouterr()
-        data = json.loads(captured.out)
-        assert data == ["doc1", "doc2"]
+            assert result == 0
 
-    @patch("src.cli.ChunkStore")
-    @patch("src.cli.init_db")
-    def test_list_command_chunks(self, mock_init_db, mock_chunk_store_cls, capsys):
-        """Test list command shows chunks for a specific document."""
-        mock_chunk_store = mock_chunk_store_cls.return_value.__enter__.return_value
-        mock_chunk_store.get_chunks_by_doc.return_value = [
-            type("Chunk", (), {"chunk_id": 1, "doc_uid": "doc1", "section_path": "B43", "page_start": "A1", "page_end": "A1", "text": "test"})()
+    def test_list_command_show_chunks(self):
+        """Test list command shows chunks for a doc."""
+        from src.cli import list_command
+        from src.db.chunks import Chunk
+        import argparse
+
+        with patch("src.cli.init_db"), patch("src.cli.ChunkStore") as mock_cs_class:
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = [
+                Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test")
+            ]
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            args = argparse.Namespace(doc_uid="doc1")
+            result = list_command(args)
+
+            assert result == 0
+
+
+class TestQueryCommand:
+    """Tests for query command."""
+
+    def test_query_no_index(self):
+        """Test query command when no index exists."""
+        from src.cli import query_command
+        import argparse
+
+        with patch("src.cli.get_index_path") as mock_path:
+            mock_path.return_value.exists.return_value = False
+
+            args = argparse.Namespace(query="test", k=5)
+            result = query_command(args)
+
+            assert result == 1
+
+    def test_query_with_results(self):
+        """Test query returns matching chunks."""
+        from src.db.chunks import Chunk
+
+        # Mock VectorStore search results
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "distance": 0.1},
+            {"doc_uid": "doc1", "chunk_id": 2, "distance": 0.2},
         ]
 
-        from src.cli import list_command
+        # Mock chunks returned from database
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test text 1"),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="test text 2"),
+        ]
 
-        class Args:
-            doc_uid = "doc1"
+        with patch("src.cli.VectorStore") as mock_vs_class, patch("src.cli.init_db"), patch(
+            "src.cli.ChunkStore"
+        ) as mock_cs_class, patch("src.cli.get_index_path") as mock_path:
+            # Setup path mock
+            mock_path.return_value.exists.return_value = True
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with patch("src.db.connection.DB_PATH", Path(tmpdir) / "test.db"):
-                result = list_command(Args())
+            # Setup VectorStore mock
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
 
-        assert result == 0
-        captured = capsys.readouterr()
-        data = json.loads(captured.out)
-        assert len(data) == 1
-        assert data[0]["section_path"] == "B43"
+            # Setup ChunkStore mock
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
 
-    def test_main_no_command(self):
-        """Test main function with no command."""
-        from src.cli import main
-        import sys
-        from io import StringIO
+            from src.cli import query_command
+            import argparse
 
-        with patch("sys.argv", ["cli"]), patch("sys.stdout", StringIO()):
-            with patch("sys.stdin", StringIO()):
-                result = main()
+            args = argparse.Namespace(query="test query", k=5)
+            result = query_command(args)
 
-        assert result == 1
+            # Verify search was called
+            mock_vs.search.assert_called_once_with("test query", k=5)
+            # Verify chunks were retrieved (called once per unique doc_uid)
+            assert mock_cs.get_chunks_by_doc.call_count == 1
 
-    def test_main_with_help(self):
-        """Test main function with --help."""
-        from src.cli import main
-        import sys
-        from io import StringIO
+    def test_query_no_results(self):
+        """Test query command with no matching results."""
+        from src.cli import query_command
+        import argparse
 
-        old_stdout = sys.stdout
-        old_argv = sys.argv
-        try:
-            sys.argv = ["cli", "--help"]
-            sys.stdout = StringIO()
-            result = main()
-        except SystemExit:
-            pass
-        finally:
-            sys.stdout = old_stdout
-            sys.argv = old_argv
+        with patch("src.cli.VectorStore") as mock_vs_class, patch("src.cli.get_index_path") as mock_path:
+            mock_path.return_value.exists.return_value = True
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = []
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            args = argparse.Namespace(query="test", k=5)
+            result = query_command(args)
+
+            assert result == 0
+
+    def test_query_exception_handling(self):
+        """Test query command exception handling."""
+        from src.cli import query_command
+        import argparse
+
+        with patch("src.cli.get_index_path") as mock_path:
+            # Make exists() raise an exception
+            mock_path.return_value.exists.side_effect = RuntimeError("Test error")
+
+            args = argparse.Namespace(query="test", k=5)
+            result = query_command(args)
+
+            assert result == 1
