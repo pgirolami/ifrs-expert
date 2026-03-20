@@ -90,11 +90,12 @@ class ChunkStore:
             chunks: List of chunks to insert.
 
         Returns:
-            List of inserted chunk IDs.
+            List of inserted chunk IDs. Also updates chunk objects with their IDs.
         """
         ids: list[int] = []
         for chunk in chunks:
             chunk_id = self.insert_chunk(chunk)
+            chunk.chunk_id = chunk_id
             ids.append(chunk_id)
         logger.info(f"Inserted {len(ids)} chunks into database")
         return ids

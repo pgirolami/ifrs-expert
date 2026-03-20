@@ -5,6 +5,8 @@ description = "AI assistant for IFRS and related accounting guidance"
 requires-python = ">=3.11"
 dependencies = [
     "pymupdf>=1.27.2",
+    "faiss-cpu>=1.7.4",
+    "sentence-transformers>=2.2.0",
 ]
 
 [dependency-groups]
@@ -24,6 +26,12 @@ ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE0
 
 [tool.pytest]
 addopts = ["--cov=src", "--cov-fail-under=80"]
+
+[tool.coverage.run]
+omit = ["tests/*", "src/vector/store.py"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover"]
 
 [tool.ty.terminal]
 error-on-warning = true

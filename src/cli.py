@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from src.db import ChunkStore, init_db
 from src.db.chunks import Chunk as DbChunk
 from src.pdf import extract_chunks
+from src.vector import VectorStore
 
 if TYPE_CHECKING:
     from src.models.chunk import Chunk
@@ -51,7 +52,7 @@ def chunk_command(args: argparse.Namespace) -> int:
 
 
 def store_command(args: argparse.Namespace) -> int:
-    """Extract chunks from a PDF and store in the database.
+    """Extract chunks from a PDF and store in the database and vector index.
 
     Args:
         args: Parsed command-line arguments containing the PDF path and doc_uid.
@@ -87,6 +88,25 @@ def store_command(args: argparse.Namespace) -> int:
             db_chunks = [DbChunk.from_pdf_chunk(c, doc_uid) for c in chunks]
             ids = store.insert_chunks(db_chunks)
             logger.info(f"Stored {len(ids)} chunks with doc_uid={doc_uid}")
+
+        # Store embeddings in vector index
+        with VectorStore() as vector_store:
+            # Delete existing embeddings for this document
+            deleted = vector_store.delete_by_doc(doc_uid)
+            if deleted > 0:
+                logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
+
+            # Add embeddings (only for chunks with valid IDs)
+            valid_chunks = [
+                (db_chunks[i], chunks[i])
+                for i in range(len(db_chunks))
+                if db_chunks[i].chunk_id is not None
+            ]
+            if valid_chunks:
+                chunk_ids: list[int] = [c[0].chunk_id for c in valid_chunks]  # type: ignore[assignment]
+                texts = [c[1].text for c in valid_chunks]
+                vector_store.add_embeddings(doc_uid, chunk_ids, texts)
+                logger.info(f"Stored {len(texts)} embeddings for doc_uid={doc_uid}")
 
         return 0
     except Exception:
