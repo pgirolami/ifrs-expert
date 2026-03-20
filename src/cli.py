@@ -176,6 +176,7 @@ def query_command(args: argparse.Namespace) -> int:
     query_text = args.query
     k = args.k
     min_score = args.min_score
+    json_output = getattr(args, "json", False)  # Default is verbose, JSON only with --json flag
 
     try:
         # Check if index exists
@@ -191,7 +192,8 @@ def query_command(args: argparse.Namespace) -> int:
 
         if not results:
             logger.warning("No matching chunks found")
-            sys.stdout.buffer.write(b"[]\n")
+            if json_output:
+                sys.stdout.buffer.write(b"[]\n")
             return 0
 
         # Filter by minimum score if specified
@@ -199,7 +201,8 @@ def query_command(args: argparse.Namespace) -> int:
             results = [r for r in results if r["score"] >= min_score]
             if not results:
                 logger.warning(f"No chunks found with score >= {min_score}")
-                sys.stdout.buffer.write(b"[]\n")
+                if json_output:
+                    sys.stdout.buffer.write(b"[]\n")
                 return 0
 
         # Get the chunk details from database
@@ -215,30 +218,55 @@ def query_command(args: argparse.Namespace) -> int:
                 doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
 
             # Build output
-            chunks_output: list[dict] = []
-            for result in results:
-                doc_uid = result["doc_uid"]
-                chunk_id = result["chunk_id"]
-                score = result["score"]
+            if not json_output:
+                # Verbose output: print each result nicely formatted
+                for result in results:
+                    doc_uid = result["doc_uid"]
+                    chunk_id = result["chunk_id"]
+                    score = result["score"]
 
-                # Find matching chunk
-                for chunk in doc_chunks.get(doc_uid, []):
-                    if chunk.chunk_id == chunk_id:
-                        chunks_output.append(
-                            {
-                                "id": chunk.chunk_id,
-                                "doc_uid": chunk.doc_uid,
-                                "section_path": chunk.section_path,
-                                "page_start": chunk.page_start,
-                                "page_end": chunk.page_end,
-                                "text": chunk.text,
-                                "score": round(score, 4),
-                            }
-                        )
-                        break
+                    # Find matching chunk
+                    for chunk in doc_chunks.get(doc_uid, []):
+                        if chunk.chunk_id == chunk_id:
+                            relevance = "High" if score >= 0.3 else "Low"
+                            # Print header
+                            print(f"\n--- Score: {score:.4f} ({relevance}) ---")
+                            print(f"Document: {chunk.doc_uid}")
+                            print(f"Section: {chunk.section_path}")
+                            print(f"Page: {chunk.page_start}-{chunk.page_end}")
 
-        output = json.dumps(chunks_output, indent=2, ensure_ascii=False)
-        sys.stdout.buffer.write(output.encode("utf-8") + b"\n")
+                            # Print snippet (first 200 chars)
+                            snippet = chunk.text[:200].replace("\n", " ")
+                            print(f"Snippet: {snippet}...")
+                            break
+            else:
+                # JSON output
+                chunks_output: list[dict] = []
+                for result in results:
+                    doc_uid = result["doc_uid"]
+                    chunk_id = result["chunk_id"]
+                    score = result["score"]
+
+                    # Find matching chunk
+                    for chunk in doc_chunks.get(doc_uid, []):
+                        if chunk.chunk_id == chunk_id:
+                            relevance = "High" if score >= 0.3 else "Low"
+                            chunks_output.append(
+                                {
+                                    "id": chunk.chunk_id,
+                                    "doc_uid": chunk.doc_uid,
+                                    "section_path": chunk.section_path,
+                                    "page_start": chunk.page_start,
+                                    "page_end": chunk.page_end,
+                                    "text": chunk.text,
+                                    "score": round(score, 4),
+                                    "relevance": relevance,
+                                }
+                            )
+                            break
+
+                output = json.dumps(chunks_output, indent=2, ensure_ascii=False)
+                sys.stdout.buffer.write(output.encode("utf-8") + b"\n")
         return 0
     except Exception:
         logger.exception("Error searching chunks")
@@ -302,6 +330,11 @@ def main() -> int:
         type=int,
         default=5,
         help="Number of results to return (default: 5)",
+    )
+    query_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output results as JSON (default is verbose text)",
     )
     query_parser.add_argument(
         "--min-score",

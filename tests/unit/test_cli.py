@@ -133,7 +133,7 @@ class TestQueryCommand:
         with patch("src.cli.get_index_path") as mock_path:
             mock_path.return_value.exists.return_value = False
 
-            args = argparse.Namespace(query="test", k=5, min_score=None)
+            args = argparse.Namespace(query="test", k=5, min_score=None, json=True)
             result = query_command(args)
 
             assert result == 1
@@ -175,7 +175,7 @@ class TestQueryCommand:
             from src.cli import query_command
             import argparse
 
-            args = argparse.Namespace(query="test query", k=5, min_score=None)
+            args = argparse.Namespace(query="test query", k=5, min_score=None, json=True)
             result = query_command(args)
 
             # Verify search was called
@@ -196,7 +196,7 @@ class TestQueryCommand:
             mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
             mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
 
-            args = argparse.Namespace(query="test", k=5, min_score=None)
+            args = argparse.Namespace(query="test", k=5, min_score=None, json=True)
             result = query_command(args)
 
             assert result == 0
@@ -210,7 +210,51 @@ class TestQueryCommand:
             # Make exists() raise an exception
             mock_path.return_value.exists.side_effect = RuntimeError("Test error")
 
-            args = argparse.Namespace(query="test", k=5, min_score=None)
+            args = argparse.Namespace(query="test", k=5, min_score=None, json=True)
             result = query_command(args)
 
             assert result == 1
+
+    def test_query_verbose_output(self, capsys):
+        """Test query verbose output includes relevance."""
+        from src.db.chunks import Chunk
+
+        # Mock search results with different scores
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},  # High
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.2},  # Low
+        ]
+
+        # Mock chunks returned from database
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test text 1"),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="test text 2"),
+        ]
+
+        with patch("src.cli.VectorStore") as mock_vs_class, patch("src.cli.init_db"), patch(
+            "src.cli.ChunkStore"
+        ) as mock_cs_class, patch("src.cli.get_index_path") as mock_path:
+
+            mock_path.return_value.exists.return_value = True
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            from src.cli import query_command
+            import argparse
+
+            args = argparse.Namespace(query="test", k=5, min_score=None, json=False)
+            result = query_command(args)
+
+            assert result == 0
+            captured = capsys.readouterr()
+            # Check that High and Low relevance are shown
+            assert "(High)" in captured.out
+            assert "(Low)" in captured.out
