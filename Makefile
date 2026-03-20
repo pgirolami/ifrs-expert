@@ -1,4 +1,4 @@
-.PHONY: dev lint format test build
+.PHONY: dev lint format test test-retrieval build
 
 dev:
 	uv sync --all-groups
@@ -11,6 +11,9 @@ format:
 
 test:
 	uv run pytest
+
+test-retrieval:
+	uv run pytest tests/retrieval/ --no-cov
 
 build:
 	uv build
