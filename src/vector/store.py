@@ -18,20 +18,46 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL = "BAAI/bge-m3"
-INDEX_PATH = Path(__file__).parent.parent.parent / "data" / "index" / "faiss.index"
-ID_MAP_PATH = Path(__file__).parent.parent.parent / "data" / "index" / "id_map.json"
+
+# Default paths (can be overridden for testing)
+_index_path: Path | None = None
+_id_map_path: Path | None = None
+
+
+def set_index_path(path: Path | None) -> None:
+    """Set a custom index path (useful for testing)."""
+    global _index_path, _id_map_path
+    _index_path = path
+    if path:
+        _id_map_path = path.parent / "id_map.json"
+    else:
+        _id_map_path = None
+
+
+def _default_index_path() -> Path:
+    """Get the default index path."""
+    return Path(__file__).parent.parent.parent / "data" / "index" / "faiss.index"
 
 
 def get_index_path() -> Path:
     """Get the FAISS index path, creating directory if needed."""
-    INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
-    return INDEX_PATH
+    global _index_path
+    if _index_path is None:
+        _index_path = _default_index_path()
+    _index_path.parent.mkdir(parents=True, exist_ok=True)
+    return _index_path
 
 
 def get_id_map_path() -> Path:
     """Get the ID mapping file path."""
-    ID_MAP_PATH.parent.mkdir(parents=True, exist_ok=True)
-    return ID_MAP_PATH
+    global _id_map_path, _index_path
+    if _id_map_path is None:
+        if _index_path is None:
+            _index_path = _default_index_path()
+        _id_map_path = _index_path.parent / "id_map.json"
+    _id_map_path.parent.mkdir(parents=True, exist_ok=True)
+    return _id_map_path
+    return _ID_MAP_PATH
 
 
 class VectorStore:
@@ -167,6 +193,7 @@ class VectorStore:
                     }
                 )
 
+        # FAISS IndexFlatIP returns results in descending order by default
         return results
 
     def delete_by_doc(self, doc_uid: str) -> int:

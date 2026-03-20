@@ -19,6 +19,10 @@ class QueryCommand:
 
     def execute(self) -> str:
         try:
+            # Validate query is not empty
+            if not self.query or not self.query.strip():
+                return "[]" if not self.verbose else "No matching chunks found"
+
             # Check if index exists
             index_path = get_index_path()
             if not index_path.exists():
