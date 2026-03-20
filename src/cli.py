@@ -95,6 +95,22 @@ def extract_page_number(blocks: list[BlockDict]) -> str | None:
     return None
 
 
+def is_section_number(text: str) -> bool:
+    """Check if text is a valid section number.
+
+    Handles patterns like:
+    - B43, B44 (alphanumeric)
+    - 1.1, 2.1 (dotted numeric)
+    - 1, 2 (numeric)
+    """
+    if not text or len(text) > 8:
+        return False
+
+    # Remove dots and check if alphanumeric
+    cleaned = text.replace(".", "")
+    return cleaned.isalnum() and not cleaned.isalpha()
+
+
 def extract_chunks(pdf_path: Path) -> list[Chunk]:
     """Extract chunks from a PDF file.
 
@@ -150,18 +166,17 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         # Skip footer area
         if span["y"] > 700:
             continue
-        # Section numbers: left margin, alphanumeric, length <= 5, has digit
-        if span["x0"] < 150 and len(text) <= 5:
-            if text.isalnum() and not text.isalpha():
-                sections.append(
-                    {
-                        "number": text,
-                        "y": span["y"],
-                        "x1": span["x1"],
-                        "page": span["page"],
-                        "page_index": span["page_index"],
-                    }
-                )
+        # Section numbers: left margin, valid section number pattern
+        if span["x0"] < 150 and is_section_number(text):
+            sections.append(
+                {
+                    "number": text,
+                    "y": span["y"],
+                    "x1": span["x1"],
+                    "page": span["page"],
+                    "page_index": span["page_index"],
+                }
+            )
 
     # Sort sections by page, then y
     sections.sort(key=lambda s: (s["page_index"], s["y"]))
@@ -238,7 +253,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             text: str = span["text"]
             if text.strip() == section_num:
                 continue
-            if text.strip().isdigit() and len(text.strip()) <= 3 and span["x0"] < 150:
+            if is_section_number(text.strip()) and span["x0"] < 150:
                 continue
 
             # Skip spans in left margin (where section numbers are)
