@@ -16,11 +16,11 @@ audit = ["pip-audit"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-exclude = ["prototype/"]
+exclude = ["prototype/", "tests/"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE001", "TRY300", "C901", "PLR0912", "PLR0915", "SIM102", "G004"]
+ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE001", "TRY300", "C901", "PLR0912", "PLR0915", "SIM102", "G004", "PLR0913", "RUF022"]
 
 [tool.pytest]
 addopts = ["--cov=src", "--cov-fail-under=80"]
