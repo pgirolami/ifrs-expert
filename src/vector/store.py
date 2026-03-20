@@ -17,7 +17,7 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
+EMBEDDING_MODEL = "BAAI/bge-m3"
 INDEX_PATH = Path(__file__).parent.parent.parent / "data" / "index" / "faiss.index"
 ID_MAP_PATH = Path(__file__).parent.parent.parent / "data" / "index" / "id_map.json"
 
