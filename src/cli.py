@@ -10,6 +10,15 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from src.db import ChunkStore, init_db
+from src.db.chunks import Chunk as DbChunk
+from src.pdf import extract_chunks
+from src.vector import VectorStore
+from src.vector.store import get_index_path
+
+if TYPE_CHECKING:
+    from src.models.chunk import Chunk
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -20,15 +29,6 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
 logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
-
-from src.db import ChunkStore, init_db
-from src.db.chunks import Chunk as DbChunk
-from src.pdf import extract_chunks
-from src.vector import VectorStore
-from src.vector.store import get_index_path
-
-if TYPE_CHECKING:
-    from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 
@@ -175,6 +175,7 @@ def query_command(args: argparse.Namespace) -> int:
     """
     query_text = args.query
     k = args.k
+    min_score = args.min_score
 
     try:
         # Check if index exists
@@ -183,14 +184,23 @@ def query_command(args: argparse.Namespace) -> int:
             logger.error("No index found. Please run 'store' command first.")
             return 1
 
-        # Search for similar chunks
+        # Search for similar chunks (get more results to filter by min_score)
+        search_k = k * 3 if min_score else k
         with VectorStore() as vector_store:
-            results = vector_store.search(query_text, k=k)
+            results = vector_store.search(query_text, k=search_k)
 
         if not results:
             logger.warning("No matching chunks found")
             sys.stdout.buffer.write(b"[]\n")
             return 0
+
+        # Filter by minimum score if specified
+        if min_score is not None:
+            results = [r for r in results if r["score"] >= min_score]
+            if not results:
+                logger.warning(f"No chunks found with score >= {min_score}")
+                sys.stdout.buffer.write(b"[]\n")
+                return 0
 
         # Get the chunk details from database
         init_db()
@@ -209,7 +219,7 @@ def query_command(args: argparse.Namespace) -> int:
             for result in results:
                 doc_uid = result["doc_uid"]
                 chunk_id = result["chunk_id"]
-                distance = result["distance"]
+                score = result["score"]
 
                 # Find matching chunk
                 for chunk in doc_chunks.get(doc_uid, []):
@@ -222,7 +232,7 @@ def query_command(args: argparse.Namespace) -> int:
                                 "page_start": chunk.page_start,
                                 "page_end": chunk.page_end,
                                 "text": chunk.text,
-                                "distance": distance,
+                                "score": round(score, 4),
                             }
                         )
                         break
@@ -292,6 +302,12 @@ def main() -> int:
         type=int,
         default=5,
         help="Number of results to return (default: 5)",
+    )
+    query_parser.add_argument(
+        "--min-score",
+        type=float,
+        default=None,
+        help="Minimum relevance score (0-1). Results below this are excluded.",
     )
 
     args = parser.parse_args()

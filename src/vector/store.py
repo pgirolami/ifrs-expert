@@ -79,7 +79,8 @@ class VectorStore:
             model = self._get_model()
             dummy = model.encode("test")
             dimension = len(dummy)
-            self._index = faiss.IndexFlatL2(dimension)
+            # Use Inner Product index for cosine similarity with normalized vectors
+            self._index = faiss.IndexFlatIP(dimension)
             self._id_map = {}
 
     def _save_index(self) -> None:
@@ -117,6 +118,9 @@ class VectorStore:
         # Convert to float32 (FAISS requirement)
         embeddings = embeddings.astype("float32")
 
+        # Normalize for cosine similarity
+        embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+
         # Add to index
         start_id = self._index.ntotal  # type: ignore[union-attr]
         self._index.add(embeddings)  # type: ignore[union-attr]
@@ -135,7 +139,8 @@ class VectorStore:
             k: Number of results to return.
 
         Returns:
-            List of results with doc_uid, chunk_id, text, and distance.
+            List of results with doc_uid, chunk_id, text, and relevance score.
+            Score is cosine similarity (0-1, higher is better).
         """
         if self._index is None or self._index.ntotal == 0:
             logger.warning("Index is empty, no results to return")
@@ -144,17 +149,21 @@ class VectorStore:
         model = self._get_model()
         query_embedding = model.encode([query]).astype("float32")
 
-        distances, indices = self._index.search(query_embedding, k)  # type: ignore[union-attr]
+        # Normalize query embedding for cosine similarity
+        query_embedding = query_embedding / np.linalg.norm(query_embedding, axis=1, keepdims=True)
+
+        # Search using inner product (which becomes cosine similarity with normalized vectors)
+        scores, indices = self._index.search(query_embedding, k)  # type: ignore[union-attr]
 
         results: list[dict] = []
-        for dist, idx in zip(distances[0], indices[0], strict=True):
+        for score, idx in zip(scores[0], indices[0], strict=True):
             if idx >= 0 and idx in self._id_map:
                 doc_uid, chunk_id = self._id_map[idx]
                 results.append(
                     {
                         "doc_uid": doc_uid,
                         "chunk_id": chunk_id,
-                        "distance": float(dist),
+                        "score": float(score),
                     }
                 )
 

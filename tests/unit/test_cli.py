@@ -133,7 +133,7 @@ class TestQueryCommand:
         with patch("src.cli.get_index_path") as mock_path:
             mock_path.return_value.exists.return_value = False
 
-            args = argparse.Namespace(query="test", k=5)
+            args = argparse.Namespace(query="test", k=5, min_score=None)
             result = query_command(args)
 
             assert result == 1
@@ -142,10 +142,10 @@ class TestQueryCommand:
         """Test query returns matching chunks."""
         from src.db.chunks import Chunk
 
-        # Mock VectorStore search results
+        # Mock VectorStore search results (using score instead of distance)
         search_results = [
-            {"doc_uid": "doc1", "chunk_id": 1, "distance": 0.1},
-            {"doc_uid": "doc1", "chunk_id": 2, "distance": 0.2},
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.8},
         ]
 
         # Mock chunks returned from database
@@ -175,7 +175,7 @@ class TestQueryCommand:
             from src.cli import query_command
             import argparse
 
-            args = argparse.Namespace(query="test query", k=5)
+            args = argparse.Namespace(query="test query", k=5, min_score=None)
             result = query_command(args)
 
             # Verify search was called
@@ -196,7 +196,7 @@ class TestQueryCommand:
             mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
             mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
 
-            args = argparse.Namespace(query="test", k=5)
+            args = argparse.Namespace(query="test", k=5, min_score=None)
             result = query_command(args)
 
             assert result == 0
@@ -210,7 +210,7 @@ class TestQueryCommand:
             # Make exists() raise an exception
             mock_path.return_value.exists.side_effect = RuntimeError("Test error")
 
-            args = argparse.Namespace(query="test", k=5)
+            args = argparse.Namespace(query="test", k=5, min_score=None)
             result = query_command(args)
 
             assert result == 1
