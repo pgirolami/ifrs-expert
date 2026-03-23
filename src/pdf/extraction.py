@@ -44,6 +44,7 @@ class SpanContent(TypedDict):
     x0: float
     y: float
     x1: float
+    flags: int
 
 
 class Section(TypedDict):
@@ -54,6 +55,7 @@ class Section(TypedDict):
     x1: float
     page: str
     page_index: int
+    is_bold_title: bool
 
 
 def is_section_number(text: str) -> bool:
@@ -70,6 +72,67 @@ def is_section_number(text: str) -> bool:
     # Remove dots and check if alphanumeric
     cleaned = text.replace(".", "")
     return cleaned.isalnum() and not cleaned.isalpha()
+
+
+def is_section_title(text: str) -> bool:
+    """Check if text looks like a section title (not a section number).
+
+    Section titles are typically:
+    - Title case or all caps
+    - Not matching section number patterns
+    - Not just numbers/letters combinations
+
+    Examples that ARE titles:
+    - "Appendix A"
+    - "Defined terms"
+    - "Lessee involvement with the underlying asset before the commencement date"
+    - "Legal title to the underlying asset"
+
+    Examples that are NOT titles:
+    - "7.3.2" (section number)
+    - "B44" (section number)
+    """
+    if not text:
+        return False
+
+    # If it matches section number pattern, it's not a title
+    if is_section_number(text):
+        return False
+
+    # If it's just a few characters, probably not a title
+    if len(text) < 3:
+        return False
+
+    # Check for common title patterns
+    # Titles often start with "Appendix", "Defined terms", etc.
+    title_starters = [
+        "appendix",
+        "defined",
+        "scope",
+        "objective",
+        "recognition",
+        "measurement",
+        "derecognition",
+        "presentation",
+        "disclosure",
+        "initial",
+        "subsequent",
+        "impairment",
+        "hedge",
+        "embedded",
+        "effective",
+        "contract",
+        "financial",
+        "lease",
+        "revenue",
+    ]
+
+    lower_text = text.lower()
+    for starter in title_starters:
+        if lower_text.startswith(starter):
+            return True
+
+    return False
 
 
 def extract_page_number(blocks: list[BlockDict]) -> str | None:
@@ -124,6 +187,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                         span_text: str = span.get("text", "")
                         span_bbox: list[float] = span.get("bbox", [0, 0, 0, 0])
                         x0, y0, x1 = span_bbox[0], span_bbox[1], span_bbox[2]
+                        span_flags: int = span.get("flags", 0)
                         all_content.append(
                             {
                                 "page": page_number,
@@ -132,6 +196,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                                 "x0": x0,
                                 "y": y0,
                                 "x1": x1,
+                                "flags": span_flags,
                             }
                         )
 
@@ -140,7 +205,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
     # Sort by page_index, then y, then x
     all_content.sort(key=lambda s: (s["page_index"], s["y"], s["x0"]))
 
-    # Find section numbers
+    # Find section numbers and detect bold titles
     sections: list[Section] = []
     for span in all_content:
         text: str = span["text"].strip()
@@ -149,6 +214,8 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             continue
         # Section numbers: left margin, valid section number pattern
         if span["x0"] < 150 and is_section_number(text):
+            # Check if this is a bold title (flags=20 means bold in PDF)
+            is_bold = span.get("flags", 0) == 20
             sections.append(
                 {
                     "number": text,
@@ -156,6 +223,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                     "x1": span["x1"],
                     "page": span["page"],
                     "page_index": span["page_index"],
+                    "is_bold_title": is_bold,
                 }
             )
 
@@ -182,15 +250,44 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         section_page_index: int = section["page_index"]
 
         # Find next section's page and y
+        # Also check if the next section is a bold title that should act as a boundary
         next_page_index: float
         next_y: float
+        is_next_bold_title: bool = False
+
         if i + 1 < len(sections):
             next_section: Section = sections[i + 1]
             next_page_index = next_section["page_index"]
             next_y = next_section["y"]
+            is_next_bold_title = next_section.get("is_bold_title", False)
         else:
             next_page_index = float("inf")
             next_y = float("inf")
+
+        # Look for the next bold title after the current section (on any page).
+        # This handles cases like page A427 where 7.3.2 is followed by Appendix A on the next page.
+        # Bold titles (flags=20) indicate new sections that should act as boundaries.
+        bold_title_page_index: int = -1
+        bold_title_y: float = float("inf")
+        
+        for span in all_content:
+            if span["page_index"] < section_page_index:
+                continue
+            if span["page_index"] > next_page_index:
+                continue
+            # Skip if we're on the same page and before the section
+            if span["page_index"] == section_page_index and span["y"] <= section_y:
+                continue
+            # Skip the next section itself if it's not bold
+            if span["page_index"] == next_page_index and span["y"] >= next_y:
+                continue
+            
+            # Check if this is a bold title (flags=20)
+            if span.get("flags", 0) == 20:
+                # Found a bold title - set it as the boundary
+                bold_title_page_index = span["page_index"]
+                bold_title_y = span["y"]
+                break
 
         section_text_parts: list[str] = []
 
@@ -220,6 +317,10 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
             # If between current section and next section pages
             elif span["page_index"] > section_page_index and span["page_index"] < next_page_index:
+                # Check if we've passed the bold title boundary
+                if bold_title_page_index > 0 and span["page_index"] >= bold_title_page_index:
+                    # Skip all content on/beyond the bold title page
+                    continue
                 # Include all content on intermediate pages
                 pass
             else:
@@ -305,11 +406,8 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 continue
             if span["page_index"] == section_page_index and span["y"] < section_y:
                 continue
-            if (
-                next_page_index != float("inf")
-                and span["page_index"] == next_page_index
-                and span["y"] >= next_y
-            ):
+            # Skip spans on/beyond the bold title boundary page
+            if bold_title_page_index > 0 and span["page_index"] >= bold_title_page_index:
                 continue
             if span["text"].strip():
                 content_pages.add(span["page"])
