@@ -138,8 +138,8 @@ class VectorStore:
         model = self._get_model()
         logger.info(f"Computing embeddings for {len(texts)} chunks")
 
-        # Compute embeddings (locally, no progress bar)
-        embeddings = model.encode(texts, show_progress_bar=False)
+        # Compute embeddings in batches
+        embeddings = model.encode(texts, batch_size=32, show_progress_bar=True)
 
         # Convert to float32 (FAISS requirement)
         embeddings = embeddings.astype("float32")

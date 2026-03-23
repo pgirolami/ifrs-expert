@@ -11,6 +11,8 @@ from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 
+MAX_CHUNK_CHARS = 2000
+
 
 class StoreCommand:
     """Extract chunks from a PDF and store in the database and vector index."""
@@ -31,6 +33,17 @@ class StoreCommand:
             logger.info(f"Extracting chunks from {self.pdf_path}")
             chunks: list[Chunk] = extract_chunks(self.pdf_path)
             logger.info(f"Extracted {len(chunks)} chunks")
+
+            # Validate chunk sizes
+            oversized = [c for c in chunks if len(c.text) > MAX_CHUNK_CHARS]
+            if oversized:
+                oversized_info = ", ".join(
+                    f"{c.section_path} ({len(c.text)} chars)" for c in oversized[:5]
+                )
+                extra = "..." if len(oversized) > 5 else ""
+                raise ValueError(
+                    f"Found {len(oversized)} chunk(s) exceeding {MAX_CHUNK_CHARS} chars: {oversized_info}{extra}"
+                )
 
             # Store in database
             with ChunkStore() as store:
