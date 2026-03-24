@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from math import inf
 from pathlib import Path
 
 # Configure logging
@@ -23,9 +24,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> int:
     """Main entry point for the CLI."""
-    parser = argparse.ArgumentParser(
-        description="IFRS Expert CLI - Document ingestion and management"
-    )
+    parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management")
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 

@@ -7,6 +7,8 @@ from src.db.chunks import Chunk as DbChunk
 from src.vector import VectorStore
 from src.vector.store import get_index_path
 
+RELEVANCE_SCORE_THRESHOLD = 0.3
+
 
 class QueryCommand:
     """Search for similar chunks using text query."""
@@ -31,7 +33,7 @@ class QueryCommand:
         try:
             # Validate query is not empty
             if not self.query or not self.query.strip():
-                return "[]" if not self.verbose else "No matching chunks found"
+                return "Error: Query cannot be empty"
 
             if self.expand < 0:
                 return "Error: expand must be >= 0"
@@ -44,23 +46,23 @@ class QueryCommand:
             if not index_path.exists():
                 return "Error: No index found. Please run 'store' command first."
 
-            # Search for similar chunks (get more results to filter by min_score)
-            search_k = self.k * 3 if self.min_score else self.k
             with VectorStore() as vector_store:
-                results = vector_store.search(self.query, k=search_k)
+                ranked_results = vector_store.search_all(self.query)
 
+            if not ranked_results:
+                return "Error: No chunks retrieved"
+
+            effective_min_score = max(
+                RELEVANCE_SCORE_THRESHOLD,
+                self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD,
+            )
+            results = self._select_top_k_per_document(
+                ranked_results,
+                k=self.k,
+                min_score=effective_min_score,
+            )
             if not results:
-                return "[]" if not self.verbose else "No matching chunks found"
-
-            # Filter by minimum score if specified
-            if self.min_score is not None:
-                results = [r for r in results if r["score"] >= self.min_score]
-                if not results:
-                    return (
-                        "[]"
-                        if not self.verbose
-                        else f"No chunks found with score >= {self.min_score}"
-                    )
+                return f"Error: No chunks found with score >= {effective_min_score}"
 
             # Get the chunk details from database
             init_db()
@@ -83,6 +85,10 @@ class QueryCommand:
                         self.full_doc_threshold,
                     )
 
+                # Fail if no chunks remain after expansion
+                if not results:
+                    return "Error: No chunks retrieved"
+
                 # Build output
                 if not self.verbose:
                     chunks_output = self._build_json_output(results, doc_chunks)
@@ -92,6 +98,30 @@ class QueryCommand:
 
         except Exception as e:
             return f"Error: {e}"
+
+    def _select_top_k_per_document(
+        self,
+        ranked_results: list[dict],
+        k: int,
+        min_score: float,
+    ) -> list[dict]:
+        """Select up to k chunks per document above the score threshold."""
+        selected_results: list[dict] = []
+        counts_by_doc: dict[str, int] = {}
+
+        for result in ranked_results:
+            if result["score"] < min_score:
+                continue
+
+            doc_uid = result["doc_uid"]
+            doc_count = counts_by_doc.get(doc_uid, 0)
+            if doc_count >= k:
+                continue
+
+            selected_results.append(result)
+            counts_by_doc[doc_uid] = doc_count + 1
+
+        return selected_results
 
     def _build_json_output(
         self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]

@@ -8,6 +8,8 @@ from src.db.chunks import Chunk as DbChunk
 from src.vector import VectorStore
 from src.vector.store import get_index_path
 
+RELEVANCE_SCORE_THRESHOLD = 0.3
+
 logger = logging.getLogger(__name__)
 
 # Path to the prompt template file
@@ -78,21 +80,23 @@ class AnswerCommand:
             if not index_path.exists():
                 return "Error: No index found. Please run 'store' command first."
 
-            # Search for similar chunks (get more results to filter by min_score)
-            search_k = self.k * 3 if self.min_score else self.k
             with VectorStore() as vector_store:
-                results = vector_store.search(self.query, k=search_k)
+                ranked_results = vector_store.search_all(self.query)
 
+            if not ranked_results:
+                return "Error: No chunks retrieved"
+
+            effective_min_score = max(
+                RELEVANCE_SCORE_THRESHOLD,
+                self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD,
+            )
+            results = self._select_top_k_per_document(
+                ranked_results,
+                k=self.k,
+                min_score=effective_min_score,
+            )
             if not results:
-                # Return prompt with empty chunks placeholder
-                return self._build_prompt([], self._empty_chunk_summary())
-
-            # Filter by minimum score if specified
-            if self.min_score is not None:
-                results = [r for r in results if r["score"] >= self.min_score]
-                if not results:
-                    # Return prompt with empty chunks
-                    return self._build_prompt([], self._empty_chunk_summary())
+                return f"Error: No chunks found with score >= {effective_min_score}"
 
             # Get the chunk details from database
             init_db()
@@ -115,6 +119,10 @@ class AnswerCommand:
                         self.full_doc_threshold,
                     )
 
+                # Fail if no chunks remain after expansion
+                if not results:
+                    return "Error: No chunks retrieved"
+
                 chunk_summary = self._build_chunk_summary(results, doc_chunks)
 
                 # Build the formatted chunks
@@ -126,6 +134,30 @@ class AnswerCommand:
         except Exception as e:
             logger.exception("Error executing answer command")
             return f"Error: {e}"
+
+    def _select_top_k_per_document(
+        self,
+        ranked_results: list[dict],
+        k: int,
+        min_score: float,
+    ) -> list[dict]:
+        """Select up to k chunks per document above the score threshold."""
+        selected_results: list[dict] = []
+        counts_by_doc: dict[str, int] = {}
+
+        for result in ranked_results:
+            if result["score"] < min_score:
+                continue
+
+            doc_uid = result["doc_uid"]
+            doc_count = counts_by_doc.get(doc_uid, 0)
+            if doc_count >= k:
+                continue
+
+            selected_results.append(result)
+            counts_by_doc[doc_uid] = doc_count + 1
+
+        return selected_results
 
     def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure.
@@ -139,14 +171,17 @@ class AnswerCommand:
         """
         doc_order: list[str] = []
         chunk_ids_by_doc: dict[str, set[int]] = {}
+        score_by_chunk: dict[tuple[str, int], float] = {}
 
         for result in results:
             doc_uid = result["doc_uid"]
             chunk_id = result["chunk_id"]
+            score = result["score"]
             if doc_uid not in chunk_ids_by_doc:
                 chunk_ids_by_doc[doc_uid] = set()
                 doc_order.append(doc_uid)
             chunk_ids_by_doc[doc_uid].add(chunk_id)
+            score_by_chunk[(doc_uid, chunk_id)] = score
 
         formatted_documents: list[str] = []
         for doc_uid in doc_order:
@@ -158,9 +193,11 @@ class AnswerCommand:
                 if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
                     continue
 
+                score = score_by_chunk.get((doc_uid, chunk_id), 0.0)
                 chunk_xml = (
                     f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" '
                     f'section_path="{self._escape_xml(chunk.section_path)}" '
+                    f'score="{score:.4f}"'
                     f">\n"
                     f"{chunk.text}\n"
                     f"</chunk>"
@@ -168,11 +205,7 @@ class AnswerCommand:
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
-            document_xml = (
-                f'<Document name="{self._escape_xml(doc_uid)}">\n'
-                f"{joined_chunks}\n"
-                f"</Document>"
-            )
+            document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
             formatted_documents.append(document_xml)
 
         return formatted_documents

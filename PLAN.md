@@ -33,6 +33,8 @@ answer
 simple checks
 working Streamlit app
 
-## TODO
+## TODO & EXPERIMENT
 - Fix PDF extraction
 - Compare PDF extraction vs website ingestion on one standard
+- Use each document’s scope/introduction as a document-level routing signal before chunk retrieval.
+- expand until heading boundary

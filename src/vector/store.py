@@ -165,13 +165,26 @@ class VectorStore:
             k: Number of results to return.
 
         Returns:
-            List of results with doc_uid, chunk_id, text, and relevance score.
+            List of results with doc_uid, chunk_id, and relevance score.
             Score is cosine similarity (0-1, higher is better).
         """
         if self._index is None or self._index.ntotal == 0:
             logger.warning("Index is empty, no results to return")
             return []
 
+        bounded_k = min(k, self._index.ntotal)
+        return self._search_with_k(query, bounded_k)
+
+    def search_all(self, query: str) -> list[dict]:
+        """Search across the full index and return all ranked results."""
+        if self._index is None or self._index.ntotal == 0:
+            logger.warning("Index is empty, no results to return")
+            return []
+
+        return self._search_with_k(query, self._index.ntotal)
+
+    def _search_with_k(self, query: str, k: int) -> list[dict]:
+        """Run a FAISS search with the specified k."""
         model = self._get_model()
         query_embedding = model.encode([query]).astype("float32")
 
@@ -222,7 +235,7 @@ class VectorStore:
         if self._index.ntotal == count:
             # Deleting everything
             dimension = self._index.d
-            self._index = faiss.IndexFlatL2(dimension)
+            self._index = faiss.IndexFlatIP(dimension)
             self._id_map = {}
         else:
             # Get all vectors and filter
@@ -237,9 +250,9 @@ class VectorStore:
                     new_id_map[new_idx] = self._id_map[old_idx]
                     new_idx += 1
 
-            # Create new index
+            # Create new IndexFlatIP (cosine similarity via inner product)
             dimension = self._index.d
-            self._index = faiss.IndexFlatL2(dimension)
+            self._index = faiss.IndexFlatIP(dimension)
             self._index.add(np.array(new_vectors).astype("float32"))  # type: ignore[union-attr]
             self._id_map = new_id_map
 
