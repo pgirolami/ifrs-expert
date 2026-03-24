@@ -1,0 +1,786 @@
+You are an IFRS expert helping answer technical accounting questions.
+
+<context>
+<chunk id="581" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="1.1" >
+The objective of this Standard is to establish principles for the financial
+financial assets
+financial liabilities
+reporting of
+and
+that will present relevant and
+useful information to users of financial statements for their assessment of the
+amounts, timing and uncertainty of an entity’s future cash flows.
+Chapter 2 Scope
+</chunk>
+
+<chunk id="582" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.1" >
+This Standard shall be applied by all entities to all types of financial
+instruments except:
+those interests in subsidiaries, associates and joint ventures that are
+(a)
+Consolidated Financial
+accounted for in accordance with IFRS 10
+Statements
+Separate Financial Statements
+Investments
+or IAS 28
+in Associates and Joint Ventures
+. However, in some cases, IFRS 10,
+IAS 27 or IAS 28 require or permit an entity to account for an
+interest in a subsidiary, associate or joint venture in accordance
+with some or all of the requirements of this Standard. Entities shall
+also apply this Standard to derivatives on an interest in a subsidiary,
+associate or joint venture unless the derivative meets the definition
+Financial Instruments:
+of an equity instrument of the entity in IAS 32
+Presentation
+.
+Leases
+(b)
+rights and obligations under leases to which IFRS 16
+applies.
+However:
+(i)
+finance lease receivables (ie net investments in finance leases)
+and operating lease receivables recognised by a lessor are
+subject to the derecognition and impairment requirements
+of this Standard;
+(ii)
+lease liabilities recognised by a lessee are subject to the
+derecognition requirements in paragraph 3.3.1 of this
+Standard; and
+(iii)
+derivatives that are embedded in leases are subject to the
+embedded derivatives requirements of this Standard.
+(c)
+employers’ rights and obligations under employee benefit plans, to
+Employee Benefits
+which IAS 19
+applies.
+(d)
+financial instruments issued by the entity that meet the definition
+of an equity instrument in IAS 32 (including options and warrants)
+or that are required to be classified as an equity instrument in
+accordance with paragraphs 16A and 16B or paragraphs 16C
+and 16D of IAS 32. However, the holder of such equity instruments
+shall apply this Standard to those instruments, unless they meet the
+exception in (a).
+(g)
+loan commitments other than those loan commitments described
+in paragraph 2.3. However, an issuer of loan commitments shall
+apply the impairment
+</chunk>
+
+<chunk id="583" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.2" >
+The impairment requirements of this Standard shall be applied to those
+rights that IFRS 15 specifies are accounted for in accordance with this
+Standard for the purposes of recognising impairment gains or losses.
+</chunk>
+
+<chunk id="584" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.3" >
+The following loan commitments are within the scope of this Standard:
+(a)
+loan commitments that the entity designates as financial liabilities
+at fair value through profit or loss (see paragraph 4.2.2). An entity
+that has a past practice of selling the assets resulting from its loan
+commitments shortly after origination shall apply this Standard to
+all its loan commitments in the same class.
+(b)
+loan commitments that can be settled net in cash or by delivering or
+issuing another financial instrument. These loan commitments
+are derivatives. A loan commitment is not regarded as settled net
+merely because the loan is paid out in instalments (for example, a
+mortgage construction loan that is paid out in instalments in line
+with the progress of construction).
+(c)
+commitments to provide a loan at a below-market interest rate
+(see paragraph 4.2.1(d)).
+[These paragraphs refer to amendments that are not yet effective, and are therefore not
+included in this edition.]
+</chunk>
+
+<chunk id="585" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.4" >
+This Standard shall be applied to those contracts to buy or sell a
+non-financial item that can be settled net in cash or another financial
+instrument, or by exchanging financial instruments, as if the contracts
+were financial instruments, with the exception of contracts that were
+entered into and continue to be held for the purpose of the receipt or
+delivery of a non-financial item in accordance with the entity’s expected
+purchase, sale or usage requirements. However, this Standard shall be
+applied to those contracts that an entity designates as measured at fair
+value through profit or loss in accordance with paragraph 2.5.
+</chunk>
+
+<chunk id="586" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.5" >
+A contract to buy or sell a non-financial item that can be settled net in cash
+or another financial instrument, or by exchanging financial instruments, as
+if the contract was a financial instrument, may be irrevocably designated as
+measured at fair value through profit or loss even if it was entered into for
+the purpose of the receipt or delivery of a non-financial item in accordance
+with the entity’s expected purchase, sale or usage requirements. This
+designation is available only at inception of the contract and only if it
+eliminates or significantly reduces a recognition inconsistency (sometimes
+referred to as an ‘accounting mismatch’) that would otherwise arise from
+not recognising that contract because it is excluded from the scope of this
+</chunk>
+
+<chunk id="587" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="2.6" >
+There are various ways in which a contract to buy or sell a non-financial item
+can be settled net in cash or another financial instrument or by exchanging
+financial instruments. These include:
+(a)
+when the terms of the contract permit either party to settle it net in
+cash or another financial instrument or by exchanging financial
+instruments;
+(b)
+when the ability to settle net in cash or another financial instrument,
+or by exchanging financial instruments, is not explicit in the terms of
+the contract, but the entity has a practice of settling similar contracts
+net in cash or another financial instrument or by exchanging financial
+instruments (whether with the counterparty, by entering into
+offsetting contracts or by selling the contract before its exercise or
+lapse);
+(c)
+when, for similar contracts, the entity has a practice of taking delivery
+of the underlying and selling it within a short period after delivery for
+the purpose of generating a profit from short-term fluctuations in
+price or dealer’s margin; and
+(d)
+when the non-financial item that is the subject of the contract is
+readily convertible to cash.
+A contract to which (b) or (c) applies is not entered into for the purpose of the
+receipt or delivery of the non-financial item in accordance with the entity’s
+expected purchase, sale or usage requirements and, accordingly, is within the
+scope of this Standard. Other contracts to which paragraph 2.4 applies are
+evaluated to determine whether they were entered into and continue to be
+held for the purpose of the receipt or delivery of the non-financial item in
+accordance with the entity’s expected purchase, sale or usage requirements
+and, accordingly, whether they are within the scope of this Standard.
+</chunk>
+
+<chunk id="704" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.2.6" >
+However, a derivative instrument that combines a written option and a
+purchased option (for example, an interest rate collar) does not qualify as a
+hedging instrument if it is, in effect, a net written option at the date of
+designation (unless it qualifies in accordance with paragraph B6.2.4).
+Similarly, two or more instruments (or proportions of them) may be jointly
+designated as the hedging instrument only if, in combination, they are not, in
+effect, a net written option at the date of designation (unless it qualifies in
+accordance with paragraph B6.2.4).
+6.3 Hedged items
+Qualifying items
+</chunk>
+
+<chunk id="705" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.1" >
+firm
+A hedged item can be a recognised asset or liability, an unrecognised
+commitment
+forecast transaction
+, a
+or a net investment in a foreign operation.
+The hedged item can be:
+(a)
+a single item; or
+(b)
+a
+group
+of
+items
+(subject
+to
+paragraphs
+6.6.1–6.6.6
+and
+A hedged item can also be a component of such an item or group of items
+(see paragraphs 6.3.7 and B6.3.7–B6.3.25).
+</chunk>
+
+<chunk id="706" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.2" >
+The hedged item must be reliably measurable.
+</chunk>
+
+<chunk id="707" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.3" >
+If a hedged item is a forecast transaction (or a component thereof), that
+transaction must be highly probable.
+</chunk>
+
+<chunk id="708" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.4" >
+An aggregated exposure that is a combination of an exposure that could
+qualify as a hedged item in accordance with paragraph 6.3.1 and a
+derivative may be designated as a hedged item (see paragraphs
+B6.3.3–B6.3.4). This includes a forecast transaction of an aggregated
+exposure (ie uncommitted but anticipated future transactions that would
+give rise to an exposure and a derivative) if that aggregated exposure is
+highly probable and, once it has occurred and is therefore no longer
+forecast, is eligible as a hedged item.
+</chunk>
+
+<chunk id="709" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.5" >
+For hedge accounting purposes, only assets, liabilities, firm commitments
+or highly probable forecast transactions with a party external to the
+reporting entity can be designated as hedged items. Hedge accounting can
+be applied to transactions between entities in the same group only in the
+individual or separate financial statements of those entities and not in the
+consolidated financial statements of the group, except for the consolidated
+financial statements of an investment entity, as defined in IFRS 10, where
+transactions between an investment entity and its subsidiaries measured at
+fair value through profit or loss will not be eliminated in the consolidated
+financial statements.
+</chunk>
+
+<chunk id="710" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.6" >
+However, as an exception to paragraph 6.3.5, the foreign currency risk of an
+intragroup monetary item (for example, a payable/receivable between two
+subsidiaries) may qualify as a hedged item in the consolidated financial
+statements if it results in an exposure to foreign exchange rate gains or losses
+The
+that are not fully eliminated on consolidation in accordance with IAS 21
+Effects of Changes in Foreign Exchange Rates
+. In accordance with IAS 21, foreign
+exchange rate gains and losses on intragroup monetary items are not fully
+eliminated on consolidation when the intragroup monetary item is transacted
+between two group entities that have different functional currencies. In
+addition, the foreign currency risk of a highly probable forecast intragroup
+transaction may qualify as a hedged item in consolidated financial statements
+provided that the transaction is denominated in a currency other than the
+functional currency of the entity entering into that transaction and the
+foreign currency risk will affect consolidated profit or loss.
+Designation of hedged items
+</chunk>
+
+<chunk id="711" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.3.7" >
+An entity may designate an item in its entirety or a component of an item as
+the hedged item in a hedging relationship. An entire item comprises all
+changes in the cash flows or fair value of an item. A component comprises less
+than the entire fair value change or cash flow variability of an item. In that
+case, an entity may designate only the following types of components
+(including combinations) as hedged items:
+(a)
+only changes in the cash flows or fair value of an item attributable to a
+specific risk or risks (risk component), provided that, based on an
+assessment within the context of the particular market structure, the
+risk component is separately identifiable and reliably measurable
+(see
+paragraphs
+Risk
+components
+include
+a
+designation of only changes in the cash flows or the fair value of a
+hedged item above or below a specified price or other variable (a one-
+sided risk).
+(b)
+one or more selected contractual cash flows.
+(c)
+components of a nominal amount, ie a specified part of the amount of
+an item (see paragraphs B6.3.16–B6.3.20).
+6.4 Qualifying criteria for hedge accounting
+</chunk>
+
+<chunk id="712" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.4.1" >
+A hedging relationship qualifies for hedge accounting only if all of the
+following criteria are met:
+(a)
+the hedging relationship consists only of eligible hedging
+instruments and eligible hedged items.
+(b)
+at the inception of the hedging relationship there is formal
+designation and documentation of the hedging relationship and the
+entity’s risk management objective and strategy for undertaking the
+hedge. That documentation shall include identification of the
+hedging instrument, the hedged item, the nature of the risk being
+hedged and how the entity will assess whether the hedging
+relationship meets the hedge effectiveness requirements (including
+its analysis of the sources of hedge ineffectiveness and how it
+hedge ratio
+determines the
+).
+(c)
+the hedging relationship meets all of the following hedge
+effectiveness requirements:
+there is an economic relationship between the hedged item
+(i)
+and the hedging instrument (see paragraphs B6.4.4–B6.4.6);
+the effect of credit risk does not dominate the value changes
+(ii)
+that result from that economic relationship (see paragraphs
+B6.4.7–B6.4.8); and
+the hedge ratio of the hedging relationship is the same as
+(iii)
+that resulting from the quantity of the hedged item that the
+entity actually hedges and the quantity of the hedging
+instrument that the entity actually uses to hedge that
+quantity of hedged item. However, that designation shall not
+reflect an imbalance between the weightings of the hedged
+item and the hedging instrument that would create hedge
+ineffectiveness (irrespective of whether recognised or not)
+that could result in an accounting outcome that would be
+inconsistent
+with
+the
+purpose
+of
+hedge
+accounting
+(see paragraphs B6.4.9–B6.4.11).
+6.5 Accounting for qualifying hedging relationships
+</chunk>
+
+<chunk id="713" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.1" >
+An entity applies hedge accounting to hedging relationships that meet the
+qualifying criteria in paragraph 6.4.1 (which include the entity’s decision to
+designate the hedging relationship).
+</chunk>
+
+<chunk id="714" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.2" >
+There are three types of hedging relationships:
+(a)
+fair value hedge: a hedge of the exposure to changes in fair value of
+a recognised asset or liability or an unrecognised firm commitment,
+or a component of any such item, that is attributable to a particular
+risk and could affect profit or loss.
+(b)
+cash flow hedge: a hedge of the exposure to variability in cash flows
+that is attributable to a particular risk associated with all, or a
+component of, a recognised asset or liability (such as all or some
+future interest payments on variable-rate debt) or a highly probable
+forecast transaction, and could affect profit or loss.
+(c)
+hedge of a net investment in a foreign operation as defined in
+</chunk>
+
+<chunk id="715" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.3" >
+If the hedged item is an equity instrument for which an entity has elected to
+present changes in fair value in other comprehensive income in accordance
+with paragraph 5.7.5, the hedged exposure referred to in paragraph 6.5.2(a)
+must be one that could affect other comprehensive income. In that case, and
+only in that case, the recognised hedge ineffectiveness is presented in other
+comprehensive income.
+</chunk>
+
+<chunk id="834" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.1" >
+Some contracts require a payment based on climatic, geological or other
+physical variables. (Those based on climatic variables are sometimes referred
+to as ‘weather derivatives’.) If those contracts are not within the scope of
+Insurance Contracts
+, they are within the scope of this Standard.
+</chunk>
+
+<chunk id="835" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.2" >
+This Standard does not change the requirements relating to employee benefit
+Accounting and Reporting by Retirement Benefit Plans
+plans that comply with IAS 26
+and royalty agreements based on the volume of sales or service revenues that
+Revenue from Contracts with Customers
+are accounted for under IFRS 15
+.
+</chunk>
+
+<chunk id="836" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.3" >
+Sometimes, an entity makes what it views as a ‘strategic investment’ in equity
+instruments issued by another entity, with the intention of establishing or
+maintaining a long-term operating relationship with the entity in which the
+investment is made. The investor or joint venturer entity uses IAS 28
+Investments in Associates and Joint Ventures
+to determine whether the equity
+method of accounting shall be applied to such an investment.
+</chunk>
+
+<chunk id="837" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.4" >
+This Standard applies to the financial assets and financial liabilities of
+insurers, other than rights and obligations that paragraph 2.1(e) excludes
+because they arise under contracts within the scope of IFRS 17.
+</chunk>
+
+<chunk id="838" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.5" >
+Financial guarantee contracts may have various legal forms, such as a
+guarantee, some types of letter of credit, a credit default contract or an
+insurance contract. Their accounting treatment does not depend on their legal
+form.
+The
+following
+are
+examples
+of
+the
+appropriate
+treatment
+(see paragraph 2.1(e)):
+(a)
+Although a financial guarantee contract meets the definition of an
+insurance contract in IFRS 17 (see paragraph 7(e) of IFRS 17) if the risk
+transferred
+is
+significant,
+the
+issuer
+applies
+this
+Standard.
+Nevertheless, if the issuer has previously asserted explicitly that it
+regards such contracts as insurance contracts and has used accounting
+that is applicable to insurance contracts, the issuer may elect to apply
+either this Standard or IFRS 17 to such financial guarantee contracts. If
+this Standard applies, paragraph 5.1.1 requires the issuer to recognise a
+financial guarantee contract initially at fair value. If the financial
+guarantee contract was issued to an unrelated party in a stand-alone
+arm’s length transaction, its fair value at inception is likely to equal
+the premium received, unless there is evidence to the contrary.
+Subsequently, unless the financial guarantee contract was designated
+at
+inception
+as
+at
+fair
+value
+through
+profit
+or
+loss
+or
+unless paragraphs 3.2.15–3.2.23 and B3.2.12–B3.2.17 apply (when a
+transfer of a financial asset does not qualify for derecognition or the
+continuing involvement approach applies), the issuer measures it at
+the higher of:
+(i)
+the amount determined in accordance with Section 5.5; and
+(ii)
+the amount initially recognised less, when appropriate, the
+cumulative amount of income recognised in accordance with
+the principles of IFRS 15 (see paragraph 4.2.1(c)).
+(b)
+Some credit-related guarantees do not, as a precondition for payment,
+require that the holder is exposed to, and has incurred a loss on, the
+failure of the debtor to make payments on the guaranteed asset when
+due. An example of such a guarantee is one that r
+</chunk>
+
+<chunk id="839" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.6" >
+Assertions that an issuer regards contracts as insurance contracts are typically
+found throughout the issuer’s communications with customers and
+regulators, contracts, business documentation and financial statements.
+Furthermore,
+insurance
+contracts
+are
+often
+subject
+to
+accounting
+requirements that are distinct from the requirements for other types of
+transaction, such as contracts issued by banks or commercial companies. In
+such cases, an issuer’s financial statements typically include a statement that
+the issuer has used those accounting requirements.
+[These paragraphs refer to amendments that are not yet effective, and are therefore not
+included in this edition.]
+</chunk>
+
+<chunk id="840" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B3.1.1" >
+As a consequence of the principle in paragraph 3.1.1, an entity recognises all
+of its contractual rights and obligations under derivatives in its statement of
+financial position as assets and liabilities, respectively, except for derivatives
+that prevent a transfer of financial assets from being accounted for as a sale
+(see paragraph B3.2.14). If a transfer of a financial asset does not qualify for
+derecognition, the transferee does not recognise the transferred asset as its
+asset (see paragraph B3.2.15).
+</chunk>
+
+<chunk id="841" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B3.1.2" >
+The following are examples of applying the principle in paragraph 3.1.1:
+(a)
+Unconditional receivables and payables are recognised as assets or
+liabilities when the entity becomes a party to the contract and, as a
+consequence, has a legal right to receive or a legal obligation to pay
+cash.
+Assets to be acquired and liabilities to be incurred as a result of a firm
+commitment to purchase or sell goods or services are generally not
+recognised until at least one of the parties has performed under the
+agreement. For example, an entity that receives a firm order does not
+generally recognise an asset (and the entity that places the order does
+not recognise a liability) at the time of the commitment but, instead,
+delays recognition until the ordered goods or services have been
+shipped, delivered or rendered. If a firm commitment to buy or sell
+non-financial items is within the scope of this Standard in accordance
+with paragraphs 2.4–2.7, its net fair value is recognised as an asset or a
+liability on the commitment date (see paragraph B4.1.30(c)). In
+addition, if a previously unrecognised firm commitment is designated
+as a hedged item in a fair value hedge, any change in the net fair value
+attributable to the hedged risk is recognised as an asset or a liability
+after the inception of the hedge (see paragraphs 6.5.8(b) and 6.5.9).
+A forward contract that is within the scope of this Standard (see
+paragraph 2.1) is recognised as an asset or a liability on the
+commitment date, instead of on the date on which settlement takes
+place. When an entity becomes a party to a forward contract, the fair
+values of the right and obligation are often equal, so that the net fair
+value of the forward is zero. If the net fair value of the right and
+obligation is not zero, the contract is recognised as an asset or liability.
+Option contracts that are within the scope of this Standard (see
+paragraph 2.1) are recognised as assets or liabilities when the holder or
+writer becomes a party to the cont
+</chunk>
+
+<chunk id="842" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B3.1.2A" >
+[This paragraph refers to amendments that are not yet effective, and is therefore not
+included in this edition.]
+Regular way purchase or sale of financial assets
+</chunk>
+
+<chunk id="843" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B3.1.3" >
+A regular way purchase or sale of financial assets is recognised using either
+trade date accounting or settlement date accounting as described in
+paragraphs B3.1.5 and B3.1.6. An entity shall apply the same method
+consistently for all purchases and sales of financial assets that are classified in
+the same way in accordance with this Standard. For this purpose assets that
+are mandatorily measured at fair value through profit or loss form a separate
+classification from assets designated as measured at fair value through profit
+or loss. In addition, investments in equity instruments accounted for using the
+option provided in paragraph 5.7.5 form a separate classification.
+</chunk>
+
+<chunk id="844" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B3.1.4" >
+A contract that requires or permits net settlement of the change in the value
+of the contract is not a regular way contract. Instead, such a contract is
+accounted for as a derivative in the period between the trade date and the
+settlement date.
+</chunk>
+
+<chunk id="1048" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.2.6" >
+A single hedging instrument may be designated as a hedging instrument of
+more than one type of risk, provided that there is a specific designation of the
+hedging instrument and of the different risk positions as hedged items. Those
+hedged items can be in different hedging relationships.
+Hedged items (Section 6.3)
+Qualifying items
+</chunk>
+
+<chunk id="1049" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.1" >
+A firm commitment to acquire a business in a business combination cannot be
+a hedged item, except for foreign currency risk, because the other risks being
+hedged cannot be specifically identified and measured. Those other risks are
+general business risks.
+</chunk>
+
+<chunk id="1050" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.2" >
+An equity method investment cannot be a hedged item in a fair value hedge.
+This is because the equity method recognises in profit or loss the investor’s
+share of the investee’s profit or loss, instead of changes in the investment’s
+fair value. For a similar reason, an investment in a consolidated subsidiary
+cannot be a hedged item in a fair value hedge. This is because consolidation
+recognises in profit or loss the subsidiary’s profit or loss, instead of changes in
+the investment’s fair value. A hedge of a net investment in a foreign operation
+is different because it is a hedge of the foreign currency exposure, not a fair
+value hedge of the change in the value of the investment.
+</chunk>
+
+<chunk id="1051" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.3" >
+Paragraph 6.3.4 permits an entity to designate as hedged items aggregated
+exposures that are a combination of an exposure and a derivative. When
+designating such a hedged item, an entity assesses whether the aggregated
+exposure combines an exposure with a derivative so that it creates a different
+aggregated exposure that is managed as one exposure for a particular risk (or
+risks). In that case, the entity may designate the hedged item on the basis of
+the aggregated exposure. For example:
+(a)
+an entity may hedge a given quantity of highly probable coffee
+purchases in 15 months’ time against price risk (based on US dollars)
+using a 15-month futures contract for coffee. The highly probable
+coffee purchases and the futures contract for coffee in combination
+can be viewed as a 15-month fixed-amount US dollar foreign currency
+risk exposure for risk management purposes (ie like any fixed-amount
+US dollar cash outflow in 15 months’ time).
+(b)
+an entity may hedge the foreign currency risk for the entire term of a
+10-year fixed-rate debt denominated in a foreign currency. However,
+the entity requires fixed-rate exposure in its functional currency only
+for a short to medium term (say two years) and floating rate exposure
+in its functional currency for the remaining term to maturity. At the
+end of each of the two-year intervals (ie on a two-year rolling basis) the
+entity fixes the next two years’ interest rate exposure (if the interest
+level is such that the entity wants to fix interest rates). In such a
+situation an entity may enter into a 10-year fixed-to-floating cross-
+currency interest rate swap that swaps the fixed-rate foreign currency
+debt into a variable-rate functional currency exposure. This is overlaid
+with a two-year interest rate swap that—on the basis of the functional
+currency—swaps variable-rate debt into fixed-rate debt. In effect, the
+fixed-rate foreign currency debt and the 10-year fixed-to-floating cross-
+currency interest rate swap in combination are viewe
+</chunk>
+
+<chunk id="1052" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.4" >
+When designating the hedged item on the basis of the aggregated exposure,
+an entity considers the combined effect of the items that constitute the
+aggregated exposure for the purpose of assessing hedge effectiveness and
+measuring hedge ineffectiveness. However, the items that constitute the
+aggregated exposure remain accounted for separately. This means that, for
+example:
+(a)
+derivatives that are part of an aggregated exposure are recognised as
+separate assets or liabilities measured at fair value; and
+(b)
+if a hedging relationship is designated between the items that
+constitute the aggregated exposure, the way in which a derivative is
+included as part of an aggregated exposure must be consistent with the
+designation of that derivative as the hedging instrument at the level of
+the aggregated exposure. For example, if an entity excludes the
+forward element of a derivative from its designation as the hedging
+instrument for the hedging relationship between the items that
+constitute the aggregated exposure, it must also exclude the forward
+element when including that derivative as a hedged item as part of the
+aggregated exposure. Otherwise, the aggregated exposure shall include
+a derivative, either in its entirety or a proportion of it.
+</chunk>
+
+<chunk id="1053" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.5" >
+Paragraph 6.3.6 states that in consolidated financial statements the foreign
+currency risk of a highly probable forecast intragroup transaction may qualify
+as a hedged item in a cash flow hedge, provided that the transaction is
+denominated in a currency other than the functional currency of the entity
+entering into that transaction and that the foreign currency risk will affect
+consolidated profit or loss. For this purpose an entity can be a parent,
+subsidiary, associate, joint arrangement or branch. If the foreign currency risk
+of a forecast intragroup transaction does not affect consolidated profit or loss,
+the intragroup transaction cannot qualify as a hedged item. This is usually the
+case for royalty payments, interest payments or management charges between
+members of the same group, unless there is a related external transaction.
+However, when the foreign currency risk of a forecast intragroup transaction
+will affect consolidated profit or loss, the intragroup transaction can qualify as
+a hedged item. An example is forecast sales or purchases of inventories
+between members of the same group if there is an onward sale of the
+inventory to a party external to the group. Similarly, a forecast intragroup sale
+of plant and equipment from the group entity that manufactured it to a group
+entity that will use the plant and equipment in its operations may affect
+consolidated profit or loss. This could occur, for example, because the plant
+and equipment will be depreciated by the purchasing entity and the amount
+initially recognised for the plant and equipment may change if the forecast
+intragroup transaction is denominated in a currency other than the functional
+currency of the purchasing entity.
+</chunk>
+
+<chunk id="1054" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.6" >
+If a hedge of a forecast intragroup transaction qualifies for hedge accounting,
+any gain or loss is recognised in, and taken out of, other comprehensive
+income in accordance with paragraph 6.5.11. The relevant period or periods
+during which the foreign currency risk of the hedged transaction affects profit
+or loss is when it affects consolidated profit or loss.
+Designation of hedged items
+</chunk>
+
+<chunk id="1055" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.7" >
+A component is a hedged item that is less than the entire item. Consequently,
+a component reflects only some of the risks of the item of which it is a part or
+reflects the risks only to some extent (for example, when designating a
+proportion of an item).
+Risk components
+</chunk>
+
+<chunk id="1056" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.8" >
+To be eligible for designation as a hedged item, a risk component must be a
+separately identifiable component of the financial or the non-financial item,
+and the changes in the cash flows or the fair value of the item attributable to
+changes in that risk component must be reliably measurable.
+</chunk>
+
+<chunk id="1057" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.9" >
+When identifying what risk components qualify for designation as a hedged
+item, an entity assesses such risk components within the context of the
+particular market structure to which the risk or risks relate and in which the
+hedging activity takes place. Such a determination requires an evaluation of
+the relevant facts and circumstances, which differ by risk and market.
+</chunk>
+
+<chunk id="1058" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.3.10" >
+When designating risk components as hedged items, an entity considers
+whether the risk components are explicitly specified in a contract
+(contractually specified risk components) or whether they are implicit in the
+fair value or the cash flows of an item of which they are a part (non-
+contractually specified risk components). Non-contractually specified risk
+components can relate to items that are not a contract (for example, forecast
+transactions) or contracts that do not explicitly specify the component (for
+example, a firm commitment that includes only one single price instead of a
+pricing formula that references different underlyings). For example:
+Entity A has a long-term supply contract for natural gas that is priced
+using a contractually specified formula that references commodities
+and other factors (for example, gas oil, fuel oil and other components
+such as transport charges). Entity A hedges the gas oil component in
+that supply contract using a gas oil forward contract. Because the gas
+oil component is specified by the terms and conditions of the supply
+contract it is a contractually specified risk component. Hence, because
+of the pricing formula, Entity A concludes that the gas oil price
+exposure is separately identifiable. At the same time, there is a market
+for gas oil forward contracts. Hence, Entity A concludes that the gas oil
+price exposure is reliably measurable. Consequently, the gas oil price
+exposure in the supply contract is a risk component that is eligible for
+designation as a hedged item.
+Entity B hedges its future coffee purchases based on its production
+forecast. Hedging starts up to 15 months before delivery for part of the
+forecast purchase volume. Entity B increases the hedged volume over
+time (as the delivery date approaches). Entity B uses two different types
+of contracts to manage its coffee price risk:
+(i)
+exchange-traded coffee futures contracts; and
+(ii)
+coffee supply contracts for Arabica coffee from Colombia
+delivered to a spec
+</chunk>
+</context>
+
+Question: Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
+
+
+<instructions>
+- Use only information in this message's context and the question: do not do any web searches 
+- Answer in French
+
+- Section 1 "Hypothèses"
+  → State only the necessary assumptions based on standard IFRS practice
+  → Do NOT include any recommendation or conclusion
+  → If critical information is missing, ask clarifying questions instead of answering
+  → Do NOT ask obvious questions if the answer can reasonably be inferred
+
+
+- Section 2 "Recommandation"
+  → Provide a clear and direct answer: "Oui", "Non" or "Oui sous conditions"
+  → Give a short justification (2–3 lines maximum)
+
+- Section 3 "Approches"
+  → List 3–4 relevant approaches maximum
+
+  → For each approach:
+      - Start with: "Non", "Oui" or "Oui sous conditions"
+      - Explain the reasoning (2–4 lines):
+          → what the approach consists of
+          → why it applies or does not apply in this case
+          → Interleave verbatim IFRS excerpts to support reasoning
+
+  → The explanation must be detailed enough for an expert to follow the reasoning, but remain concise
+
+  → End with a simple summary table with columns:
+      Approche | Applicable | Condition clé
+
+- Section 4 "Points opérationnels"
+  → List the key practical implications of the recommended approach
+  → Include when relevant:
+      - timing (quand cela s’applique)
+      - effort or complexity
+      - key constraints or risks
+  → Keep the list short
+
+- Do not write beyond section 4
+
+- Tone
+  → Use simple, direct and literal language
+  → Avoid metaphors, abstract phrasing or stylistic expressions
+  → Prefer short sentences. Prefer the passive voice
+  → Write as in a professional email to a non-technical stakeholder
+  → Prefer clarity over elegance
+  → Take a clear position when possible (avoid "en pratique", "potentiellement" unless strictly necessary)
+
+- Style constraints
+  → In Section 3, prioritize clarity of reasoning over brevity
+  → Write verbatims in quote blocks. Every verbatim must be accompanied by its section number
+  → Do not restate the question
+  → Do not introduce sections with generic sentences
+  → Avoid repetition across sections
+  → Each sentence must add new information
+</instructions>
+

@@ -93,6 +93,13 @@ def main() -> int:
         default=0,
         help="Number of chunks before/after to expand with (default: 0)",
     )
+    query_parser.add_argument(
+        "-f",
+        "--full-doc-threshold",
+        type=int,
+        default=0,
+        help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
+    )
 
     # Answer command
     answer_parser = subparsers.add_parser(
@@ -105,6 +112,13 @@ def main() -> int:
         type=int,
         default=0,
         help="Number of chunks before/after to expand with (default: 0)",
+    )
+    answer_parser.add_argument(
+        "-f",
+        "--full-doc-threshold",
+        type=int,
+        default=0,
+        help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
     )
     answer_parser.add_argument(
         "-k",
@@ -159,6 +173,7 @@ def _execute_command(args: argparse.Namespace) -> str:
             min_score=args.min_score,
             verbose=verbose,
             expand=args.expand,
+            full_doc_threshold=args.full_doc_threshold,
         )
     elif args.command == "answer":
         # Read query from stdin
@@ -168,6 +183,7 @@ def _execute_command(args: argparse.Namespace) -> str:
             k=args.k,
             min_score=args.min_score,
             expand=args.expand,
+            full_doc_threshold=args.full_doc_threshold,
         )
     else:
         return f"Error: Unknown command: {args.command}"

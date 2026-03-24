@@ -43,11 +43,19 @@ def _prompt_file_exists(path: Path) -> bool:
 class AnswerCommand:
     """Retrieve chunks and embed them into a prompt template."""
 
-    def __init__(self, query: str, k: int = 5, min_score: float | None = None, expand: int = 0) -> None:
+    def __init__(
+        self,
+        query: str,
+        k: int = 5,
+        min_score: float | None = None,
+        expand: int = 0,
+        full_doc_threshold: int = 0,
+    ) -> None:
         self.query = query
         self.k = k
         self.min_score = min_score
         self.expand = expand
+        self.full_doc_threshold = full_doc_threshold
 
     def execute(self) -> str:
         try:
@@ -57,6 +65,9 @@ class AnswerCommand:
 
             if self.expand < 0:
                 return "Error: expand must be >= 0"
+
+            if self.full_doc_threshold < 0:
+                return "Error: full_doc_threshold must be >= 0"
 
             # Check if prompt template exists
             if not _prompt_file_exists(PROMPT_TEMPLATE_PATH):
@@ -96,8 +107,13 @@ class AnswerCommand:
                     doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
 
                 # Expand chunks if requested
-                if self.expand > 0:
-                    results = self._expand_chunks(results, doc_chunks, self.expand)
+                if self.expand > 0 or self.full_doc_threshold > 0:
+                    results = self._expand_chunks(
+                        results,
+                        doc_chunks,
+                        self.expand,
+                        self.full_doc_threshold,
+                    )
 
                 chunk_summary = self._build_chunk_summary(results, doc_chunks)
 
@@ -218,19 +234,14 @@ class AnswerCommand:
         results: list[dict],
         doc_chunks: dict[str, list[DbChunk]],
         expand: int,
+        full_doc_threshold: int,
     ) -> list[dict]:
         """Expand results by including surrounding chunks from each document.
 
         For each retrieved chunk, find the expand chunks before and after it
-        in the same document, deduplicate them, and return them in document order.
-
-        Args:
-            results: Original search results
-            doc_chunks: Dictionary mapping doc_uid to list of chunks
-            expand: Number of chunks before/after to include
-
-        Returns:
-            Expanded results with additional chunks
+        in the same document. If the total text size of a retrieved document is
+        below the full_doc_threshold, include the whole document instead.
+        Deduplicate results and return them in document order.
         """
         result_score_by_chunk: dict[tuple[str, int], float] = {}
         doc_order: list[str] = []
@@ -249,6 +260,13 @@ class AnswerCommand:
 
             chunks = doc_chunks.get(doc_uid, [])
             if not chunks:
+                continue
+
+            doc_text_size = sum(len(chunk.text) for chunk in chunks)
+            if full_doc_threshold > 0 and doc_text_size < full_doc_threshold:
+                for document_chunk in chunks:
+                    if document_chunk.chunk_id is not None:
+                        selected_ids_by_doc[doc_uid].add(document_chunk.chunk_id)
                 continue
 
             for idx, chunk in enumerate(chunks):
