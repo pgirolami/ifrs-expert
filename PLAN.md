@@ -34,4 +34,5 @@ simple checks
 working Streamlit app
 
 ## TODO
-- Fix extraction
+- Fix PDF extraction
+- Compare PDF extraction vs website ingestion on one standard

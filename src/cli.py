@@ -86,11 +86,25 @@ def main() -> int:
         default=None,
         help="Minimum relevance score (0-1). Results below this are excluded.",
     )
+    query_parser.add_argument(
+        "-e",
+        "--expand",
+        type=int,
+        default=0,
+        help="Number of chunks before/after to expand with (default: 0)",
+    )
 
     # Answer command
     answer_parser = subparsers.add_parser(
         "answer",
         help="Search for chunks and embed them into a prompt template (reads query from stdin)",
+    )
+    answer_parser.add_argument(
+        "-e",
+        "--expand",
+        type=int,
+        default=0,
+        help="Number of chunks before/after to expand with (default: 0)",
     )
     answer_parser.add_argument(
         "-k",
@@ -144,6 +158,7 @@ def _execute_command(args: argparse.Namespace) -> str:
             k=args.k,
             min_score=args.min_score,
             verbose=verbose,
+            expand=args.expand,
         )
     elif args.command == "answer":
         # Read query from stdin
@@ -152,6 +167,7 @@ def _execute_command(args: argparse.Namespace) -> str:
             query=query,
             k=args.k,
             min_score=args.min_score,
+            expand=args.expand,
         )
     else:
         return f"Error: Unknown command: {args.command}"

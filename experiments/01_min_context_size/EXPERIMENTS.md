@@ -82,6 +82,80 @@ TODO
    - doesn't mention highly-probable transactions to eliminate it but does mention "couverture de flux" and reject it
 
 
-### top-k chunks + expand to p nearby chunks
+### top-k chunks + expand to e nearby chunks
 #### k=5
-##### p=5
+##### e=5
+
+**Retrieved chunks**
+**ifrs-9**
+- 1.1
+- 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
+- 6.2.6, 6.3.1, 6.3.2, 6.3.3, 6.3.4, 6.3.5, 6.3.6, 6.3.7, 6.4.1, 6.5.1, 6.5.2, 6.5.3
+- B2.1, B2.2, B2.3, B2.4, B2.5, B2.6, B3.1.1, B3.1.2, B3.1.2A, B3.1.3, B3.1.4, B6.2.6, B6.3.1, B6.3.2, B6.3.3, B6.3.4, B6.3.5, B6.3.6, B6.3.7, B6.3.8, B6.3.9, B6.3.10
+
+**Sections mentioned in answer**
+   - 6.3.6
+   - 6.3.5
+   - 6.3.1
+   - 6.5.2(a)
+   - 6.3.7 & 6.3.7(a)
+   - B6.3.6
+
+
+**Summary table**
+| Approche                                                            | Applicable          | Condition clé                                                                      |
+| ------------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------- |
+| Couverture en consolidation de la créance intragroupe comptabilisée | Oui sous conditions | Élément monétaire intragroupe + écarts de change non entièrement éliminés          |
+| Couverture du dividende intragroupe comme transaction intragroupe   | Non                 | En consolidation, les transactions intragroupe sont exclues sauf exception précise |
+| Documentation comme couverture de juste valeur de l’actif reconnu   | Oui sous conditions | Créance reconnue + risque de change désigné + impact en résultat                   |
+| Documentation sans critères formels IFRS 9                          | Non                 | Documentation initiale et tests de qualification obligatoires                      |
+
+**Review**
+   - Ok to cover forex risk ✅
+   - Not ok to for intragroup ✅
+   - doesn't mention highly-probable transactions to eliminate it but does mention "couverture de flux" and reject it ❌
+   - Doesn't mention NIH which is not surprising since retrieval didn't include any IFRIC 16 sections ❌
+   - 😱 says "Yes if" to fair-value hedge which is incorrect
+
+#### k=5
+##### e=5
+
+**Retrieved chunks**
+**ifrs-9**
+- 1.1
+- 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
+- 4.2.1, 4.2.2, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.3.6, 4.3.7, 4.4.1, 4.4.2
+- 6.2.6, 6.3.1, 6.3.2, 6.3.3, 6.3.4, 6.3.5, 6.3.6, 6.3.7, 6.4.1, 6.5.1, 6.5.2, 6.5.3
+- B2.1, B2.2, B2.3, B2.4, B2.5, B2.6
+- B3.1.1, B3.1.2, B3.1.2A, B3.1.3, B3.1.4
+- B4.1.35, B4.1.36, B4.3.1, B4.3.2, B4.3.3, B4.3.4, B4.3.5, B4.3.6, B4.3.7, B4.3.8, B4.3.9
+- B5.7.4, B5.7.5, B5.7.6, B5.7.7, B5.7.8, B5.7.9, B5.7.10, B5.7.11, B5.7.12, B5.7.13, B5.7.14
+- B6.2.6, B6.3.1, B6.3.2, B6.3.3, B6.3.4, B6.3.5, B6.3.6, B6.3.7, B6.3.8, B6.3.9, B6.3.10, B6.3.11
+**ifric-16**
+- 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+
+**Sections mentioned in answer**
+   - 6.3.5
+   - 6.3.6
+   - 6.3.2
+   - 6.3.1
+   - 6.3.3
+   - 6.4.1
+   - 6.4.1(b)
+   - 6.4.1(c)(i)
+
+
+**Summary table**
+| Approche                                                            | Applicable          | Condition clé                                                                            |
+| ------------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------- |
+| Couverture du risque de change sur la créance de dividende reconnue | Oui sous conditions | Créance monétaire intragroupe et écart de change non totalement éliminé en consolidation |
+| Refus automatique car flux intragroupe                              | Non                 | L’exception IFRS 9.6.3.6 doit être examinée                                              |
+| Traitement comme transaction future intragroupe                     | Non                 | Une créance est déjà reconnue ; ce n’est plus une forecast transaction                   |
+| Documentation sans test complet IFRS 9                              | Non                 | Documentation initiale, relation économique et hedge ratio requis                        |
+
+**Review**
+   - Ok to cover forex risk ✅
+   - Not ok to for intragroup ✅
+   - No to highly probable transaction because already accounted for ✅
+   - Doesn't mention NIH which is surprising since there was some IFRIC 16 chunks ❌
+   - 😱 says "Yes if" to fair-value hedge which is incorrect

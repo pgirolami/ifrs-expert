@@ -340,6 +340,47 @@ class TestQueryCommand:
             assert "(High)" in result
             assert "(Low)" in result
 
+    def test_query_expand_includes_neighboring_chunks(self):
+        """Test query expansion includes surrounding chunks in document order."""
+        from src.commands import QueryCommand
+        from src.db.chunks import Chunk
+
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="chunk 1"),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="chunk 2"),
+            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="chunk 3"),
+        ]
+
+        with patch("src.commands.query.VectorStore") as mock_vs_class, patch(
+            "src.commands.query.init_db"
+        ), patch("src.commands.query.ChunkStore") as mock_cs_class, patch(
+            "src.commands.query.get_index_path"
+        ) as mock_path:
+            mock_path.return_value.exists.return_value = True
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            command = QueryCommand(query="test", k=5, min_score=None, verbose=False, expand=1)
+            result = command.execute()
+
+            data = json.loads(result)
+            assert [item["id"] for item in data] == [1, 2, 3]
+            assert data[1]["score"] == 0.9
+            assert data[0]["score"] == 0.0
+            assert data[2]["score"] == 0.0
+
 
 class TestAnswerCommand:
     """Tests for answer command."""
@@ -426,6 +467,8 @@ class TestAnswerCommand:
             # Verify the result contains the prompt template with chunks
             assert "Answer the user's question" in result
             assert "Question: What is the scope?" in result
+            assert "Retrieved chunks:" in result
+            assert "- doc1: 1.1 Introduction, 1.2 Scope" in result
             # Verify chunks are embedded with section_path metadata in XML format
             assert "section_path=" in result
             assert "1.1 Introduction" in result
@@ -461,6 +504,7 @@ class TestAnswerCommand:
             # When chunks list is empty, the template is returned with empty {{CHUNKS}}
             assert "Question: test" in result
             assert "Answer based on context" in result
+            assert "Retrieved chunks:\n- none" in result
 
     def test_answer_min_score_filter(self):
         """Test answer command respects min_score filter."""
@@ -546,3 +590,53 @@ class TestAnswerCommand:
 
             # Verify search was called with the correct k value
             mock_vs.search.assert_called_once_with("test", k=10)
+
+    def test_answer_expand_includes_neighboring_chunks(self):
+        """Test answer expansion includes surrounding chunks in document order."""
+        from src.commands import AnswerCommand
+        from src.db.chunks import Chunk
+
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="chunk 1"),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="chunk 2"),
+            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="chunk 3"),
+        ]
+
+        prompt_template = "Context:\n{{CHUNKS}}\n\nQ: {{QUERY}}\n\nA:"
+
+        with patch("src.commands.answer.VectorStore") as mock_vs_class, patch(
+            "src.commands.answer.init_db"
+        ), patch("src.commands.answer.ChunkStore") as mock_cs_class, patch(
+            "src.commands.answer.get_index_path"
+        ) as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists, patch(
+            "src.commands.answer._read_prompt_template"
+        ) as mock_read:
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = True
+            mock_read.return_value = prompt_template
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            command = AnswerCommand(query="test", k=5, expand=1)
+            result = command.execute()
+
+            assert result.index('id="1"') < result.index('id="2"') < result.index('id="3"')
+            assert "Retrieved chunks:" in result
+            assert "- doc1: 1.1, 1.2, 1.3" in result
+            assert "chunk 1" in result
+            assert "chunk 2" in result
+            assert "chunk 3" in result
