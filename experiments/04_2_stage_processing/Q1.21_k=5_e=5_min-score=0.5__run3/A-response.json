@@ -1,0 +1,101 @@
+{
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The analysis concerns the group's consolidated financial statements.",
+    "The dividend receivable is a recognised intragroup monetary item.",
+    "The foreign exchange exposure arises because the entities involved have different functional currencies.",
+    "No fact given indicates that the dividend receivable is accounted for as part of a net investment in a foreign operation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General intragroup item prohibition",
+      "normalized_label": "general_intragroup_item_prohibition",
+      "applicability": "no",
+      "reasoning": "In consolidated financial statements, hedged items must generally involve parties external to the reporting entity. An ordinary intragroup receivable is therefore not eligible by default.",
+      "conditions": [],
+      "practical_implication": "The starting point is that an intragroup dividend receivable is not a qualifying hedged item in consolidation.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "Paragraph 6.3.5 generally limits hedged items in consolidation to external-party exposures, excluding intragroup items except for stated exceptions."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Foreign currency hedge of intragroup monetary item",
+      "normalized_label": "foreign_currency_hedge_of_intragroup_monetary_item",
+      "applicability": "yes_under_conditions",
+      "reasoning": "IFRS 9 expressly permits the foreign currency risk of an intragroup monetary item to qualify in consolidated financial statements when the related FX gains or losses are not fully eliminated on consolidation.",
+      "conditions": [
+        "The receivable is a monetary item",
+        "The balance is between group entities with different functional currencies",
+        "The FX gains or losses are not fully eliminated on consolidation",
+        "The hedged item is reliably measurable",
+        "Formal designation, documentation and hedge effectiveness requirements are met"
+      ],
+      "practical_implication": "The exposure can be designated only through this foreign-currency exception and only if a real consolidated FX exposure remains.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "exception",
+          "summary": "Paragraph 6.3.6 allows foreign currency risk on an intragroup monetary item as a hedged item if consolidation does not fully eliminate the FX exposure."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraphs 6.3.2 and 6.4.1 require reliable measurement plus formal designation, documentation and effectiveness."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Forecast intragroup transaction hedge",
+      "normalized_label": "forecast_intragroup_transaction_hedge",
+      "applicability": "no",
+      "reasoning": "A separate exception exists for highly probable forecast intragroup transactions whose FX risk affects consolidated profit or loss. That treatment does not fit an already recognised dividend receivable.",
+      "conditions": [],
+      "practical_implication": "This route is relevant only before recognition of a qualifying forecast transaction, not for the current receivable.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "Paragraph 6.3.6 permits certain highly probable forecast intragroup transactions to qualify in consolidated financial statements."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraphs B6.3.5–B6.3.6 require the FX risk to affect consolidated profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "applicability": "yes_under_conditions",
+      "reasoning": "Net investment hedging is a distinct model for foreign currency risk on a foreign operation, including a monetary item only if it is accounted for as part of that net investment.",
+      "conditions": [
+        "The exposure is part of a net investment in a foreign operation",
+        "The hedged amount does not exceed the qualifying net assets",
+        "The hedged risk is between the foreign operation's functional currency and a parent entity's functional currency",
+        "IFRS 9 designation, documentation and effectiveness requirements are met"
+      ],
+      "practical_implication": "Unless the dividend receivable is treated as part of the net investment, this is not the appropriate basis for designation.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "Paragraphs 6.5.13–6.5.14 set the hedge accounting model for hedges of a net investment, including a qualifying monetary item."
+        },
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "operational_constraint",
+          "summary": "Paragraphs 10–15 limit the hedged risk to functional-currency net-investment exposures and explain group-level designation rules."
+        }
+      ]
+    }
+  ]
+}

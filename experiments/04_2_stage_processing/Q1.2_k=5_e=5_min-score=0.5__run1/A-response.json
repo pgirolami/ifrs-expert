@@ -1,0 +1,88 @@
+{
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The intragroup dividend has already been declared and recorded as an unconditional receivable.",
+    "The receivable is denominated in a currency different from the relevant functional currency used for the consolidated foreign-exchange assessment.",
+    "The question is about hedge documentation in the consolidated financial statements, not separate statutory accounts.",
+    "No fact pattern is provided showing that the dividend receivable is itself part of a qualifying net investment in a foreign operation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge of a recognized monetary dividend receivable",
+      "normalized_label": "foreign_currency_hedge_of_recognized_monetary_dividend_receivable",
+      "applicability": "yes_under_conditions",
+      "reasoning": "An unconditional receivable is a recognized financial asset, and foreign-exchange gains or losses on monetary items are recognized in profit or loss. In a qualifying hedging relationship involving monetary items, the foreign-currency component is also presented in profit or loss.",
+      "conditions": [
+        "the dividend is already an unconditional, recognized receivable",
+        "the receivable is a foreign-currency monetary item in the consolidated analysis",
+        "a qualifying hedge relationship is formally designated and documented"
+      ],
+      "practical_implication": "The hedge would be documented to offset the receivable's FX remeasurement in profit or loss rather than through OCI.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "B3.1.2 supports recognition of an unconditional receivable as a financial asset."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "B5.7.2 requires FX gains and losses on foreign-currency monetary financial assets/liabilities to be recognized in profit or loss."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "B5.7.4 indicates that in a hedging relationship between non-derivative monetary items, the foreign-currency component is presented in profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge in a foreign operation",
+      "normalized_label": "net_investment_hedge_in_a_foreign_operation",
+      "applicability": "no",
+      "reasoning": "IFRIC 16 limits this model to foreign-currency risk on a net investment in a foreign operation, where the hedged item is an amount of net assets. A dividend receivable, as stated, is not presented in the context as a net-investment exposure.",
+      "conditions": [],
+      "practical_implication": "The OCI net-investment hedge model should not be used for the dividend receivable on the facts given.",
+      "source_contributions": [
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "general_rule",
+          "summary": "Paras 10-14 restrict net investment hedge accounting to foreign-currency risk on net investments in foreign operations and define the qualifying hedged item as net assets."
+        },
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "operational_constraint",
+          "summary": "Paras 13-17 add that the same risk can qualify only once in consolidation, the hedging instrument may be held anywhere in the group, and effective amounts go to OCI until disposal."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "exception",
+          "summary": "B5.7.2 treats net investment hedges as an exception to the normal profit-or-loss treatment of FX on monetary items."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "No hedge accounting; ordinary foreign exchange treatment",
+      "normalized_label": "no_hedge_accounting_ordinary_foreign_exchange_treatment",
+      "applicability": "yes",
+      "reasoning": "If no qualifying hedge documentation is applied, foreign-exchange gains and losses on a foreign-currency monetary receivable remain recognized in profit or loss under the normal rule.",
+      "conditions": [],
+      "practical_implication": "The FX effect of the dividend receivable is left in profit or loss with no hedge reserve or special hedge presentation.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "B5.7.2 requires FX gains and losses on foreign-currency monetary financial assets/liabilities to be recognized in profit or loss unless a specified hedge exception applies."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "5.7.2 and 5.7.3 distinguish ordinary profit-or-loss treatment from hedge-accounting treatment."
+        }
+      ]
+    }
+  ]
+}

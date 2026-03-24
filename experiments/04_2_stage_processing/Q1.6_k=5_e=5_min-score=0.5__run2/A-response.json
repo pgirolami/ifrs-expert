@@ -1,0 +1,95 @@
+{
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The analysis concerns consolidated financial statements of a normal group, not the special case of an investment entity.",
+    "The intragroup dividend has already been declared such that a receivable/payable has been recognised; therefore the exposure is analysed as a recognised intragroup balance, not merely as a forecast transaction.",
+    "The receivable/payable is denominated in a currency different from at least one relevant entity's functional currency.",
+    "No additional facts indicate that the exposure is being designated as part of a hedge of a net investment in a foreign operation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General exclusion of intragroup items in consolidation",
+      "normalized_label": "general_exclusion_of_intragroup_items_in_consolidation",
+      "applicability": "no",
+      "reasoning": "The default IFRS 9 rule is that only items with external parties can be designated as hedged items in consolidated financial statements. An intragroup dividend receivable is therefore not eligible unless a specific exception applies.",
+      "conditions": [],
+      "practical_implication": "Start from a presumption of ineligibility in consolidated hedge accounting.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "Paragraph 6.3.5 says only exposures with parties external to the reporting entity qualify as hedged items in consolidated financial statements, subject to stated exceptions."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Foreign currency risk of an intragroup monetary item",
+      "normalized_label": "foreign_currency_risk_of_intragroup_monetary_item",
+      "applicability": "yes_under_conditions",
+      "reasoning": "IFRS 9 provides a specific exception for the foreign currency risk of an intragroup monetary item in consolidated financial statements if the related FX gains or losses are not fully eliminated on consolidation. A recognised intragroup dividend receivable/payable may be analysed under this exception.",
+      "conditions": [
+        "The recognised dividend receivable/payable is an intragroup monetary item",
+        "The entities involved have different functional currencies",
+        "The foreign exchange gains or losses are not fully eliminated on consolidation",
+        "IFRS 9 designation, documentation and hedge effectiveness requirements are met"
+      ],
+      "practical_implication": "Eligibility may exist, but only through the intragroup monetary item exception rather than the general rule.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "exception",
+          "summary": "Paragraph 6.3.6 allows the foreign currency risk of an intragroup monetary item to qualify in consolidated financial statements when the FX gains or losses are not fully eliminated on consolidation."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraph 6.4.1 requires formal designation, documentation and satisfaction of hedge effectiveness criteria."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Forecast intragroup transaction exception",
+      "normalized_label": "forecast_intragroup_transaction_exception",
+      "applicability": "no",
+      "reasoning": "IFRS 9 separately permits certain highly probable forecast intragroup transactions to be hedged when their FX risk affects consolidated profit or loss. That route does not fit well once a dividend receivable has already been recognised.",
+      "conditions": [],
+      "practical_implication": "Do not rely on the forecast-transaction exception for a dividend exposure that is already booked as a receivable/payable.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "Paragraphs 6.3.6 and 6.3.7 allow highly probable forecast intragroup transactions to qualify only if denominated in another currency and their FX risk affects consolidated profit or loss."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraphs B6.3.5 and B6.3.6 stress that many intragroup flows do not qualify unless they affect consolidated profit or loss; qualifying cash flow hedge effects are recognised through OCI."
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge model",
+      "normalized_label": "net_investment_hedge_model",
+      "applicability": "no",
+      "reasoning": "IFRIC 16 deals with hedges of a net investment in a foreign operation, where the hedged item is an amount of net assets of the foreign operation. It is a distinct model and does not itself make an intragroup dividend receivable eligible.",
+      "conditions": [],
+      "practical_implication": "If the risk management objective is foreign operation net investment risk, designate the net investment exposure, not the dividend receivable itself.",
+      "source_contributions": [
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "alternative",
+          "summary": "Paragraphs 10-14 identify the hedged risk and hedged item in a net investment hedge as foreign currency risk on an amount of net assets of the foreign operation."
+        },
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "operational_constraint",
+          "summary": "Paragraph 8 says the Interpretation applies only to hedges of net investments in foreign operations and should not be applied by analogy to other hedge accounting questions."
+        }
+      ]
+    }
+  ]
+}

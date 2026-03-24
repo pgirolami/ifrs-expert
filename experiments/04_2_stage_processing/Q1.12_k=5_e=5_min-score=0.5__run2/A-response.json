@@ -1,0 +1,96 @@
+{
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The dividend has already been declared and recognised as an intragroup receivable/payable, so the fact pattern is a recognised balance rather than a forecast transaction.",
+    "The analysis is for consolidated financial statements of a non-investment-entity group.",
+    "A recognised intragroup dividend receivable/payable is assessed as an intragroup monetary item for hedge-eligibility purposes.",
+    "Different functional currencies may exist between the relevant group entities; otherwise the FX hedging question is not substantive.",
+    "No facts indicate that the exposure is being analysed as part of a hedge of a net investment in a foreign operation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General prohibition on intragroup hedged items in consolidation",
+      "normalized_label": "general_prohibition_on_intragroup_hedged_items_in_consolidation",
+      "applicability": "no",
+      "reasoning": "In consolidated financial statements, hedged items generally must be with external parties. Intragroup transactions are normally excluded from hedge accounting at the consolidated level.",
+      "conditions": [],
+      "practical_implication": "A formal consolidated hedge designation is unavailable unless a specific IFRS 9 exception applies.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "general_rule",
+          "summary": "Paragraph 6.3.5 states that, for hedge accounting, only exposures with parties external to the reporting entity qualify in consolidated financial statements, subject to stated exceptions."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Consolidated hedge of an intragroup monetary item",
+      "normalized_label": "consolidated_hedge_of_an_intragroup_monetary_item",
+      "applicability": "yes_under_conditions",
+      "reasoning": "IFRS 9 provides a specific exception for the foreign currency risk of an intragroup monetary item in consolidated financial statements. This can apply if the FX gains or losses are not fully eliminated on consolidation.",
+      "conditions": [
+        "The dividend balance is a recognised intragroup monetary item.",
+        "The item creates FX gains or losses that are not fully eliminated on consolidation.",
+        "The counterparties have different functional currencies.",
+        "The hedging relationship is formally designated, documented and meets hedge-effectiveness requirements."
+      ],
+      "practical_implication": "A formally designated consolidated FX hedge may be possible, but only through this narrow intragroup monetary-item exception.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "exception",
+          "summary": "Paragraph 6.3.6 allows the foreign currency risk of an intragroup monetary item to qualify as a hedged item in consolidated financial statements when the FX effects are not fully eliminated."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraphs 6.3.1, 6.3.2 and 6.4.1 require the hedged item to be a recognised asset or liability that is reliably measurable and formally designated and documented."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge of a forecast intragroup transaction",
+      "normalized_label": "cash_flow_hedge_of_a_forecast_intragroup_transaction",
+      "applicability": "no",
+      "reasoning": "This exception is for highly probable forecast intragroup transactions whose FX risk will affect consolidated profit or loss. It does not match a dividend that has already been recognised as an intragroup receivable.",
+      "conditions": [],
+      "practical_implication": "The forecast-transaction route is not the main basis for a booked intragroup dividend receivable.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "Paragraph 6.3.6 permits certain highly probable forecast intragroup transactions to qualify in consolidation if denominated in another currency and if the FX risk will affect consolidated profit or loss."
+        },
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "operational_constraint",
+          "summary": "Paragraphs B6.3.5 and B6.3.6 explain that only forecast intragroup transactions affecting consolidated profit or loss qualify; the guidance is narrower than routine internal balances."
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge in a foreign operation",
+      "normalized_label": "net_investment_hedge_in_a_foreign_operation",
+      "applicability": "no",
+      "reasoning": "This is a separate consolidated hedge model, but it applies to the foreign currency risk of net assets in a foreign operation, not to an intragroup dividend receivable as such.",
+      "conditions": [],
+      "practical_implication": "Relevant only if the exposure is analysed as part of a net investment rather than as a standalone dividend receivable.",
+      "source_contributions": [
+        {
+          "document": "ifrs-9-financial-instruments 2025 required",
+          "role": "alternative",
+          "summary": "Paragraph 6.5.2 identifies a hedge of a net investment in a foreign operation as a separate hedge accounting relationship."
+        },
+        {
+          "document": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+          "role": "general_rule",
+          "summary": "Paragraphs 10–14 limit this model to foreign currency risk on net investments in foreign operations and define the hedged item as an amount of net assets; the hedging instrument may be held anywhere in the group."
+        }
+      ]
+    }
+  ]
+}

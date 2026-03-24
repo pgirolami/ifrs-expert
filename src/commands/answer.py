@@ -63,11 +63,16 @@ def _send_to_llm(prompt: str) -> str:
         LLM_CMD + ["@" + str(temp_prompt), ""],
         capture_output=True,
         text=True,
-        check=True,
     )
 
     # Clean up temp file
     temp_prompt.unlink(missing_ok=True)
+
+    # Check for errors
+    if result.returncode != 0:
+        error_msg = result.stderr.strip() if result.stderr else f"Exit code {result.returncode}"
+        logger.error(f"LLM command failed: {error_msg}")
+        raise RuntimeError(error_msg)
 
     return result.stdout
 
@@ -258,7 +263,14 @@ class AnswerCommand:
                 if self.save_all and self.output_dir:
                     self._save_file("A-prompt.txt", prompt_a_content)
 
-                response_a = _send_to_llm(prompt_a_content)
+                try:
+                    response_a = _send_to_llm(prompt_a_content)
+                except RuntimeError as e:
+                    logger.error(f"LLM call failed: {e}")
+                    # Save error info and continue to next question
+                    if self.save_all and self.output_dir:
+                        self._save_file("A-error.txt", str(e))
+                    return f"Error: LLM call failed: {e}"
 
                 # Save response A if requested
                 if self.save_all and self.output_dir:
@@ -280,7 +292,14 @@ class AnswerCommand:
                 if self.save_all and self.output_dir:
                     self._save_file("B-prompt.txt", prompt_b)
 
-                response_b = _send_to_llm(prompt_b)
+                try:
+                    response_b = _send_to_llm(prompt_b)
+                except RuntimeError as e:
+                    logger.error(f"LLM call failed: {e}")
+                    if self.save_all and self.output_dir:
+                        self._save_file("B-error.txt", str(e))
+                    return f"Error: LLM call failed: {e}"
+                
                 logger.info("Step 2 complete: Received final answer from LLM")
 
                 # Save response B if requested

@@ -31,6 +31,13 @@ for question_file in "$PROJECT_DIR"/experiments/Q*.txt; do
   
   for run in 1 2 3; do
     run_dir="$OUTPUT_DIR/${question_name}${FILENAME_SUFFIX}__run${run}"
+    
+    # Skip if already processed
+    if [ -d "$run_dir" ] && [ -f "$run_dir/B-response.md" ]; then
+      echo "Skipping $run_dir/ (already processed)"
+      continue
+    fi
+    
     echo "Running $question_file -> $run_dir/"
     
     mkdir -p "$run_dir"

@@ -33,6 +33,41 @@ Next steps:
 What will I change ?
 - Go for quick & dirty first and then refine: I could have done the query test at the beginning of the day if I had gone down the truncation route
 
+## 2026-03-24
+
+what worked
+- expanding +/- 5 chunks really improved the response so I was able to often get NIH in the answer
+- staying focused on getting retrieval/expansion to work on this one question, felt like I was making progress
+- automating the prompt generation + response computation so I can run an experiment on 21 variations of the original question
+- using the LLM to review whether an alternative being addressed depended on the sections retrieved
+- giving more leeway to the LLM to automate & script stuff
+
+What was frustrating:
+- getting the LLM to respond through Pi to the prompts I had precalculated to test the sensitivity of the question: it just takes a HUGE amount of time
+- waiting for the LLM output through Pi
+- the analysis script written by Minimax is not very reliable
+
+Next steps:
+- review stability experiment results
+- test other IFRS 9 / IFRIC-16 questions to see if they're good and stable too
+- implement expansion to section
+
+What will I change ?
+-
+
+## 2026-03-25
+
+what worked
+- 
+
+What was frustrating:
+- Experiment 4 analysis script tuning so it parses everything correctly + the fact it depends on keywords
+
+Next steps:
+-
+
+What will I change ?
+-
 ## 2026-XX-YY
 
 what worked

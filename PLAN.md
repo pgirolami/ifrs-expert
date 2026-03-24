@@ -38,3 +38,5 @@ working Streamlit app
 - Compare PDF extraction vs website ingestion on one standard
 - Use each document’s scope/introduction as a document-level routing signal before chunk retrieval.
 - expand until heading boundary
+- set temperature to 0 to see if wew get more stability on the responses
+- 
