@@ -1,0 +1,74 @@
+## 1. Hypothèses
+
+- Le dividende a été formellement décidé et a donné lieu à une créance chez une entité du groupe et à une dette correspondante chez une autre entité du groupe.
+- Les entités concernées ont des monnaies fonctionnelles différentes, de sorte que cette créance/dette peut générer des écarts de change.
+- La documentation de couverture serait établie au début de la relation de couverture, pour les variations futures, avec un instrument de couverture éligible.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+En consolidation, ce n’est pas le dividende intragroupe en tant que tel qui est couvert, mais la **créance/dette intragroupe reconnue** si elle constitue un **élément monétaire intragroupe** générant des écarts de change **non totalement éliminés** en consolidation. La relation doit être documentée **à l’inception** et la **composante change** doit être clairement désignée.
+
+## 3. Approches
+
+### 1) Oui sous conditions — couvrir la créance de dividende reconnue comme élément monétaire intragroupe
+
+Cette approche consiste à viser la créance/dette née du dividende déclaré, et non le dividende abstraitement. Elle peut s’appliquer en consolidation si cette créance/dette crée un risque de change qui n’est pas entièrement éliminé.
+
+> “However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”  
+> *(IFRS 9.6.3.6)*
+
+Une créance de dividende reconnue entre sociétés du groupe entre dans cette logique si elle est un **payable/receivable** intragroupe exposé au change.
+
+---
+
+### 2) Non — documenter en consolidation le dividende intragroupe comme un élément intragroupe “ordinaire”
+
+Cette approche ne fonctionne pas si l’on reste sur la règle générale des transactions intragroupe en consolidation. En principe, seuls des éléments avec des tiers externes sont éligibles.
+
+> “For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements...”  
+> *(IFRS 9.6.3.5)*
+
+Donc, sans entrer dans l’exception de l’**intragroup monetary item** de IAS 21 / IFRS 9.6.3.6, la documentation en consolidation n’est pas admise.
+
+---
+
+### 3) Oui sous conditions — désigner uniquement la composante change de la créance
+
+Cette approche consiste à ne pas désigner la créance en totalité, mais seulement son risque de change. Elle est compatible avec IFRS 9 si cette composante est séparément identifiable et mesurable de façon fiable.
+
+> “An entity may designate an item in its entirety or a component of an item as the hedged item...”  
+> *(IFRS 9.6.3.7)*
+
+> “To be eligible for designation as a hedged item, a risk component must be a separately identifiable component of the financial or the non-financial item, and the changes in the cash flows or the fair value of the item attributable to changes in that risk component must be reliably measurable.”  
+> *(IFRS 9.B6.3.8)*
+
+Ici, la **composante change** de la créance de dividende peut donc être désignée, si elle est définie précisément dans la documentation.
+
+---
+
+### 4) Oui sous conditions — documenter à la date de mise en place de la couverture, pas rétroactivement
+
+Cette approche suppose une désignation formelle au début de la relation de couverture. Elle permet de documenter la couverture après la reconnaissance de la créance, mais uniquement pour la relation qui commence alors.
+
+> “A hedging relationship qualifies for hedge accounting only if... at the inception of the hedging relationship there is formal designation and documentation of the hedging relationship...”  
+> *(IFRS 9.6.4.1(b))*
+
+La documentation peut donc être mise en place **une fois la créance reconnue**, à condition qu’elle le soit **à l’inception de la relation de couverture** et non pour couvrir rétroactivement des écarts déjà constatés.
+
+---
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance de dividende reconnue comme élément monétaire intragroupe | Oui sous conditions | Écarts de change non totalement éliminés en consolidation |
+| Dividende intragroupe traité comme élément intragroupe ordinaire en consolidation | Non | La règle générale de IFRS 9.6.3.5 l’interdit |
+| Désignation de la seule composante change | Oui sous conditions | Composante séparément identifiable et fiable |
+| Documentation à compter de la reconnaissance de la créance | Oui sous conditions | Documentation formelle à l’inception de la relation |
+
+## 4. Points opérationnels
+
+- La documentation doit être préparée **au démarrage de la couverture**, après reconnaissance de la créance si la couverture commence à cette date.
+- Il doit être démontré que la créance/dette de dividende est bien un **élément monétaire intragroupe** générant des écarts de change **non totalement éliminés** en consolidation.
+- La documentation doit identifier précisément : l’instrument de couverture, la créance ou sa seule composante change, le risque couvert, le ratio de couverture et le test d’efficacité.
+- Si les deux entités ont la même monnaie fonctionnelle, ou si le change est totalement éliminé en consolidation, la couverture en consolidation ne sera pas disponible.

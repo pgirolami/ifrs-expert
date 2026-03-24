@@ -1,0 +1,75 @@
+## 1. Hypothèses
+
+- Le dividende intragroupe a déjà été décidé et comptabilisé en **créance/dette** entre entités du groupe. Il ne s’agit pas d’un dividende seulement envisagé.
+- La créance/dette est un **élément monétaire intragroupe** libellé dans une devise différente de la monnaie fonctionnelle d’au moins une entité concernée.
+- Les écarts de change sur cet élément **ne sont pas totalement éliminés en consolidation** et affectent le résultat consolidé.
+- La couverture visée porte uniquement sur le **risque de change** attaché à cette créance/dette.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+La voie IFRS pertinente existe pour le **risque de change d’un élément monétaire intragroupe** en comptes consolidés. Elle n’est ouverte que si les écarts de change **ne sont pas totalement éliminés en consolidation** et si la relation de couverture est documentée selon IFRS 9.
+
+## 3. Approches
+
+### 1) Couvrir la créance/dette de dividende intragroupe déjà reconnue
+**Oui sous conditions**
+
+Cette approche consiste à traiter le dividende déclaré comme un **élément monétaire intragroupe**. La règle générale exclut les éléments intragroupe en consolidation, mais IFRS 9 prévoit une **exception explicite** pour le seul risque de change lorsque les écarts subsistent en consolidation.
+
+> “only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items.”  
+> **(IFRS 9.6.3.5)**
+
+> “However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item [...] may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation”  
+> **(IFRS 9.6.3.6)**
+
+### 2) Désigner uniquement la composante de risque de change
+**Oui sous conditions**
+
+Cette approche consiste à ne pas couvrir l’intégralité du dividende, mais seulement sa **composante de change**. C’est cohérent avec IFRS 9, qui autorise la désignation d’un **composant de risque** s’il est **séparément identifiable** et **mesurable de façon fiable**.
+
+> “An entity may designate an item in its entirety or a component of an item as the hedged item.”  
+> **(IFRS 9.6.3.7)**
+
+> “only changes in the cash flows or fair value of an item attributable to a specific risk or risks (risk component), provided that [...] the risk component is separately identifiable and reliably measurable”  
+> **(IFRS 9.6.3.7(a))**
+
+> “To be eligible for designation as a hedged item, a risk component must be a separately identifiable component [...] and the changes in the cash flows or the fair value of the item attributable to changes in that risk component must be reliably measurable.”  
+> **(IFRS 9.B6.3.8)**
+
+### 3) Documenter la couverture avant la reconnaissance du dividende, comme transaction intragroupe future
+**Non**
+
+Si le dividende n’est pas encore une créance/dette, la logique n’est plus celle de l’**élément monétaire intragroupe**, mais celle de la **transaction intragroupe future**. Dans ce cas, IFRS 9 n’ouvre la porte que si le risque de change **affecte le résultat consolidé**, ce qui n’est pas, en pratique IFRS normale, le cas d’un dividende intragroupe.
+
+> “the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that [...] the foreign currency risk will affect consolidated profit or loss.”  
+> **(IFRS 9.6.3.6)**
+
+> “If the foreign currency risk of a forecast intragroup transaction does not affect consolidated profit or loss, the intragroup transaction cannot qualify as a hedged item.”  
+> **(IFRS 9.B6.3.5)**
+
+### 4) Utiliser une couverture d’investissement net comme fondement
+**Non**
+
+Cette approche ne vise pas une créance de dividende intragroupe. IFRIC 16 traite la **couverture d’un investissement net dans une activité à l’étranger**, c’est-à-dire un montant de **net assets** de l’activité étrangère, pas une créance intragroupe isolée née d’un dividende déclaré.
+
+> “Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.”  
+> **(IFRIC 16.10)**
+
+> “the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation”  
+> **(IFRIC 16.11)**
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance/dette de dividende intragroupe reconnue | Oui sous conditions | Écarts de change non totalement éliminés en consolidation |
+| Désignation de la seule composante de change | Oui sous conditions | Composante séparément identifiable et mesurable |
+| Dividende intragroupe futur / non encore reconnu | Non | Le risque de change doit affecter le résultat consolidé |
+| Couverture d’investissement net | Non | Réservée aux net assets d’une activité étrangère |
+
+## 4. Points opérationnels
+
+- La documentation doit être en place **à l’origine de la relation de couverture**.  
+- Il faut identifier précisément : **l’instrument de couverture**, **la créance/dette intragroupe couverte**, **le risque de change couvert**, **le hedge ratio** et le test d’efficacité.  
+- Il faut démontrer que les écarts de change sur la créance/dette **subsistent en consolidation**. Sans cela, l’exception IFRS 9.6.3.6 ne peut pas être utilisée.  
+- La qualification repose sur le fait que le dividende déclaré est devenu un **élément monétaire intragroupe**. Si l’on reste au stade d’un dividende futur, la base technique devient beaucoup plus fragile.

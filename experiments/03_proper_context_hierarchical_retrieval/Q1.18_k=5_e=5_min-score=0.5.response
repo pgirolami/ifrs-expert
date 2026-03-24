@@ -1,0 +1,64 @@
+## 1. Hypothèses
+
+- La créance sur dividendes est déjà **comptabilisée**. Elle est analysée comme un **poste monétaire intragroupe**.
+- Les entités concernées ont des **monnaies fonctionnelles différentes**. La créance crée donc une exposition de change.
+- Les écarts de change sur cette créance **ne sont pas entièrement éliminés en consolidation** et peuvent affecter le résultat consolidé.
+- L’analyse porte sur les **comptes consolidés**, et non sur les comptes individuels.
+
+## 2. Recommandation
+
+**Oui sous conditions.**
+
+Au niveau consolidé, le risque de change d’un **poste monétaire intragroupe** peut être désigné comme élément couvert si ce risque crée des gains ou pertes de change **non entièrement éliminés en consolidation**. La relation doit ensuite respecter les critères généraux d’IFRS 9 en matière de désignation, documentation et efficacité.
+
+## 3. Approches
+
+### 1) **Oui sous conditions** — Couverture de la créance comme poste monétaire intragroupe reconnu
+
+Cette approche consiste à traiter la créance sur dividendes comme un **poste monétaire intragroupe** distinct, puis à couvrir son risque de change au niveau consolidé. C’est l’approche pertinente ici si l’exposition de change subsiste en consolidation.
+
+> “the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation” (IFRS 9, 6.3.6)
+
+L’éligibilité du poste ne suffit pas. La relation de couverture doit aussi être formellement mise en place et testée.
+
+> “A hedging relationship qualifies for hedge accounting only if all of the following criteria are met: … at the inception of the hedging relationship there is formal designation and documentation … [and] there is an economic relationship between the hedged item and the hedging instrument” (IFRS 9, 6.4.1)
+
+### 2) **Non** — Application de la règle générale des éléments intragroupe en consolidation
+
+Cette approche consiste à considérer la créance intragroupe selon la règle générale. Elle ne fonctionne pas, car la règle de base exclut les éléments intragroupe dans les comptes consolidés. Il faut donc passer par l’exception spécifique des **postes monétaires intragroupe**.
+
+> “only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements … and not in the consolidated financial statements of the group” (IFRS 9, 6.3.5)
+
+La créance n’est donc pas éligible **par principe général**. Elle ne peut l’être que si les conditions de l’exception de 6.3.6 sont remplies.
+
+### 3) **Non** — Analyse comme couverture d’un investissement net dans une activité à l’étranger
+
+Cette approche consisterait à traiter l’exposition comme une couverture de **net investment**. Elle n’est pas adaptée à une créance sur dividendes identifiée comme exposition distincte. IFRIC 16 vise uniquement les couvertures d’investissement net.
+
+> “This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting.” (IFRIC 16, 8)
+
+> “Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.” (IFRIC 16, 10)
+
+Une créance de dividendes intragroupe doit donc être analysée sous IFRS 9.6.3.6, pas sous IFRIC 16, sauf si le fait couvert est réellement un investissement net, ce qui n’est pas l’hypothèse retenue ici.
+
+### 4) **Oui sous conditions** — Intégration dans une couverture de groupe / position nette
+
+Cette approche consiste à inclure la créance dans un **groupe d’expositions de change** géré ensemble. Elle est possible seulement si la créance est **elle-même éligible** et si la gestion du risque est réellement effectuée sur une base groupée.
+
+> “A group of items … is an eligible hedged item only if: (a) it consists of items … that are, individually, eligible hedged items; [and] (b) the items in the group are managed together on a group basis for risk management purposes” (IFRS 9, 6.6.1)
+
+Cette voie est utile si la trésorerie ou la fonction change couvre plusieurs flux ou soldes ensemble. Elle ne contourne pas la condition de base sur la créance elle-même.
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance comme poste monétaire intragroupe reconnu | Oui sous conditions | Les écarts de change ne sont pas entièrement éliminés en consolidation |
+| Règle générale des éléments intragroupe | Non | Les éléments intragroupe sont exclus en consolidation, hors exception |
+| Couverture d’un investissement net | Non | IFRIC 16 est limité aux net investments |
+| Couverture de groupe / position nette | Oui sous conditions | Chaque élément du groupe doit être individuellement éligible et géré ensemble |
+
+## 4. Points opérationnels
+
+- La couverture ne peut être mise en place qu’**à partir du moment où la créance existe** et tant que l’exposition de change reste ouverte.
+- Il faut documenter dès l’origine : **élément couvert, instrument de couverture, risque couvert, ratio de couverture, test d’efficacité**.
+- Il faut démontrer que la créance est bien un **poste monétaire intragroupe** et que les écarts de change sont **non entièrement éliminés en consolidation**.
+- Si la gestion du change est centralisée, une **couverture de groupe** peut être envisagée, mais elle augmente l’effort de suivi et de traçabilité.

@@ -1,0 +1,90 @@
+## 1. Hypothèses
+
+- Le dividende a été formellement décidé et a déjà créé une créance et une dette intragroupe.
+- La créance est libellée dans une devise différente de la monnaie fonctionnelle de l’entité qui la comptabilise.
+- La question vise les comptes consolidés IFRS et la seule composante change.
+- Un instrument de couverture éligible existe ou peut être désigné au niveau du groupe.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+La voie recevable est la documentation d’une couverture du risque de change sur la **créance de dividende déjà comptabilisée**. En revanche, **ce dividende lui-même** ne doit pas être documenté comme une **couverture de net investment**, et une logique de **cash flow hedge** n’est pas adaptée une fois la créance reconnue.
+
+## 3. Approches
+
+### 1) Couvrir la créance de dividende reconnue comme poste monétaire
+**Oui sous conditions**
+
+Cette approche consiste à désigner le risque de change sur la créance de dividende déjà comptabilisée comme élément couvert, avec un instrument de couverture éligible. Elle est cohérente si l’écart de change de cette créance affecte le résultat consolidé.
+
+> “The objective of hedge accounting is to represent, in the financial statements, the effect of an entity’s risk management activities that use financial instruments to manage exposures arising from particular risks that could affect profit or loss...”  
+> **(IFRS 9.6.1.1)**
+
+> “IAS 21 requires any foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss.”  
+> **(IFRS 9.B5.7.2)**
+
+> “IFRS 9 allows an entity to designate either a derivative or a non-derivative financial instrument ... as hedging instruments for foreign currency risk.”  
+> **(IFRIC 16.5)**
+
+---
+
+### 2) Documenter ce dividende en cash flow hedge après comptabilisation de la créance
+**Non**
+
+Une fois le dividende comptabilisé en créance, le risque ne porte plus sur un flux futur non reconnu, mais sur un **poste déjà reconnu**. La documentation doit donc viser la créance monétaire, pas un flux futur de dividende.
+
+> “Unconditional receivables and payables are recognised as assets or liabilities when the entity becomes a party to the contract and, as a consequence, has a legal right to receive or a legal obligation to pay cash.”  
+> **(IFRS 9.B3.1.2(a))**
+
+> “IAS 21 requires any foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss.”  
+> **(IFRS 9.B5.7.2)**
+
+---
+
+### 3) Assimiler le dividende à une couverture de net investment
+**Non**
+
+Cette approche ne convient pas pour le dividende lui-même. IFRIC 16 ne vise que les **couvertures d’investissements nets dans des activités à l’étranger**. Le dividende comptabilisé en créance n’est pas présenté ici comme un montant de **net assets** de l’activité étrangère.
+
+> “This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting.”  
+> **(IFRIC 16.8)**
+
+> “In a hedge of the foreign currency risks arising from a net investment in a foreign operation, the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation...”  
+> **(IFRIC 16.11)**
+
+> “Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.”  
+> **(IFRIC 16.10)**
+
+---
+
+### 4) Couvrir la participation nette dans la filiale étrangère, et non le dividende
+**Oui sous conditions**
+
+Cette voie est possible si le besoin économique réel est de couvrir la **net investment** dans la filiale étrangère au niveau consolidé. Dans ce cas, la documentation porte sur la participation nette, pas sur la créance de dividende. L’instrument peut être porté par une autre société du groupe, mais la couverture ne peut qualifier **qu’une seule fois** en consolidation.
+
+> “A derivative or a non-derivative instrument ... may be designated as a hedging instrument in a hedge of a net investment in a foreign operation.”  
+> **(IFRIC 16.14)**
+
+> “The hedging instrument(s) may be held by any entity or entities within the group...”  
+> **(IFRIC 16.14)**
+
+> “An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once in the consolidated financial statements.”  
+> **(IFRIC 16.13)**
+
+> “the gain or loss on the hedging instrument that is determined to be an effective hedge of the net investment is recognised in other comprehensive income...”  
+> **(IFRIC 16.3)**
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Couverture de la créance de dividende reconnue | Oui sous conditions | La créance doit être traitée comme un poste monétaire exposé au change en résultat consolidé |
+| Cash flow hedge du dividende après reconnaissance | Non | Le dividende n’est plus un flux futur non reconnu |
+| Net investment hedge du dividende lui-même | Non | IFRIC 16 vise la participation nette, pas la créance de dividende |
+| Net investment hedge de la filiale étrangère | Oui sous conditions | La désignation doit porter sur la net investment, une seule fois en consolidation |
+
+## 4. Points opérationnels
+
+- La documentation doit être mise en place sur la **créance reconnue**, pas sur un dividende futur, si le dividende est déjà comptabilisé.
+- L’instrument de couverture doit être **éligible** et la relation de couverture doit être formellement documentée.
+- Si l’objectif recherché est un traitement en **OCI**, il faut documenter une **net investment hedge** sur la participation nette, pas sur le dividende.
+- En cas de net investment hedge, il faut vérifier qu’il n’existe pas déjà une désignation concurrente sur le même risque au sein du groupe.

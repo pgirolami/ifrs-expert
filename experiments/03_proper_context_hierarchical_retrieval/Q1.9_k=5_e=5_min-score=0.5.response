@@ -1,0 +1,69 @@
+## 1. Hypothèses
+
+- Le dividende a déjà été déclaré et comptabilisé en créance chez une entité du groupe et en dette chez une autre entité du groupe.
+- Cette créance/dette est un élément monétaire intragroupe libellé dans une devise différente de la monnaie fonctionnelle d’au moins une des entités concernées.
+- Les écarts de change sur cet élément monétaire ne sont pas totalement éliminés en consolidation.
+- La relation de couverture est formellement désignée et documentée dès l’origine.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+La créance de dividende est un actif reconnu. En comptes consolidés, le risque de change d’un élément monétaire intragroupe peut être désigné comme élément couvert s’il génère des écarts de change non totalement éliminés en consolidation, et si la composante couverte est identifiable, mesurable et correctement documentée.
+
+## 3. Approches
+
+### 1) Créance de dividende traitée comme élément monétaire intragroupe reconnu
+**Oui sous conditions**
+
+Cette approche consiste à analyser la créance de dividende comme un actif reconnu, puis à vérifier si son risque de change subsiste au niveau consolidé. Elle s’applique si la créance/dette intragroupe crée des gains ou pertes de change qui ne disparaissent pas entièrement en consolidation.
+
+> “A hedged item can be a recognised asset or liability...”  
+> **(IFRS 9, 6.3.1)**
+
+> “the foreign currency risk of an intragroup monetary item (...) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”  
+> **(IFRS 9, 6.3.6)**
+
+### 2) Désignation de la seule composante de risque de change
+**Oui sous conditions**
+
+Cette approche consiste à ne couvrir que la composante de change de la créance, et non l’intégralité de la créance. Elle est cohérente avec la question posée. Elle n’est possible que si cette composante est séparément identifiable et fiable à mesurer.
+
+> “An entity may designate an item in its entirety or a component of an item as the hedged item...”  
+> **(IFRS 9, 6.3.7)**
+
+> “To be eligible for designation as a hedged item, a risk component must be a separately identifiable component (...) and the changes in the cash flows or the fair value (...) must be reliably measurable.”  
+> **(IFRS 9, B6.3.8)**
+
+### 3) Absence d’exposition résiduelle au niveau consolidé
+**Non**
+
+Cette approche conduit à refuser la désignation si, en consolidation, le risque de change ne produit pas de gains ou pertes résiduels. C’est le cas si les écarts de change sont entièrement neutralisés. Dans ce cas, la condition spécifique des éléments monétaires intragroupe n’est pas remplie.
+
+> “the foreign currency risk of an intragroup monetary item (...) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”  
+> **(IFRS 9, 6.3.6)**
+
+### 4) Élément éligible mais relation de couverture non documentée
+**Non**
+
+Même si la créance est éligible en principe, la comptabilité de couverture n’est pas disponible sans désignation formelle, documentation initiale et respect des tests d’efficacité. L’éligibilité de l’élément couvert ne suffit pas à elle seule.
+
+> “A hedging relationship qualifies for hedge accounting only if all of the following criteria are met...”  
+> **(IFRS 9, 6.4.1)**
+
+> “at the inception of the hedging relationship there is formal designation and documentation...”  
+> **(IFRS 9, 6.4.1(b))**
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance de dividende comme élément monétaire intragroupe | Oui sous conditions | Les écarts de change ne sont pas totalement éliminés en consolidation |
+| Désignation de la seule composante de change | Oui sous conditions | La composante est séparément identifiable et mesurable de façon fiable |
+| Absence d’exposition résiduelle en consolidation | Non | Aucun gain ou perte de change résiduel au niveau consolidé |
+| Documentation / efficacité insuffisante | Non | Les critères de l’IFRS 9.6.4.1 ne sont pas remplis |
+
+## 4. Points opérationnels
+
+- La qualification doit être analysée **après comptabilisation** du dividende en créance/dette, car l’analyse repose ici sur un **élément monétaire reconnu**.
+- Il faut démontrer que les entités ont des **monnaies fonctionnelles différentes** et que les écarts de change **subsistent en consolidation**.
+- La documentation doit identifier précisément : la créance couverte, la devise, la composante de change couverte, l’instrument de couverture et le hedge ratio.
+- Le risque principal est un rejet de la désignation si l’exposition de change est en réalité **entièrement éliminée** ou si la composante couverte n’est pas **fiablement mesurable**.

@@ -1,0 +1,75 @@
+## 1. Hypothèses
+
+- Le dividende intragroupe a déjà été décidé et comptabilisé en créance chez une entité du groupe et en dette chez une autre.
+- Cette créance/dette est libellée dans une devise différente de la monnaie fonctionnelle d’au moins une des entités concernées.
+- Les écarts de change sur ce poste monétaire intragroupe ne sont pas intégralement éliminés en consolidation.
+- La relation de couverture envisagée viserait uniquement le risque de change de ce poste, avec désignation et documentation dès l’origine.
+
+## 2. Recommandation
+
+**Oui sous conditions.**
+
+La seule composante de change peut être désignée comme élément couvert si le dividende comptabilisé à recevoir constitue un **poste monétaire intragroupe** dont les écarts de change **ne sont pas totalement éliminés en consolidation**. Les critères généraux de documentation et d’efficacité d’IFRS 9 doivent aussi être respectés.
+
+## 3. Approches
+
+### 1) Couvrir la créance intragroupe comptabilisée pour son seul risque de change  
+**Oui sous conditions**
+
+Cette approche consiste à désigner la créance de dividende déjà reconnue comme élément couvert, mais seulement pour sa composante de change. Elle est recevable si la créance est un actif reconnu, si le risque de change subsiste en consolidation, et si cette composante est identifiable et mesurable.
+
+> **IFRS 9 6.3.1**  
+> “A hedged item can be a recognised asset or liability...”
+
+> **IFRS 9 6.3.6**  
+> “...the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”
+
+### 2) Couvrir un poste intragroupe si l’écart de change est totalement éliminé en consolidation  
+**Non**
+
+Cette approche ne fonctionne pas. En consolidation, les postes intragroupe ne sont en principe pas éligibles. IFRS 9 n’ouvre qu’une exception limitée pour le risque de change des **postes monétaires intragroupe** quand l’exposition n’est **pas** totalement éliminée.
+
+> **IFRS 9 6.3.5**  
+> “...only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items.”
+
+> **IFRS 9 6.3.6**  
+> “However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item ... may qualify... if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”
+
+### 3) Désigner seulement la composante de change, et non l’intégralité du dividende  
+**Oui sous conditions**
+
+Cette approche consiste à ne pas couvrir tout le poste, mais seulement les variations attribuables au change. Elle est admise si cette composante de risque est **séparément identifiable** et **fiablement mesurable**. C’est le point clé pour une couverture ciblée du FX seul.
+
+> **IFRS 9 6.3.7**  
+> “An entity may designate an item in its entirety or a component of an item as the hedged item.”
+
+> **IFRS 9 6.3.7(a)**  
+> “...only changes in the cash flows or fair value of an item attributable to a specific risk or risks (risk component), provided that... the risk component is separately identifiable and reliably measurable...”
+
+> **IFRS 9 B6.3.8**  
+> “To be eligible for designation as a hedged item, a risk component must be a separately identifiable component ... and ... be reliably measurable.”
+
+### 4) Mettre en place la couverture sans documentation initiale et sans démonstration d’efficacité  
+**Non**
+
+Même si le poste est éligible, la comptabilité de couverture n’est pas possible sans désignation formelle à l’origine, documentation, relation économique et hedge ratio cohérent. L’éligibilité du poste ne suffit pas à elle seule.
+
+> **IFRS 9 6.4.1(b)**  
+> “...at the inception of the hedging relationship there is formal designation and documentation of the hedging relationship...”
+
+> **IFRS 9 6.4.1(c)**  
+> “...there is an economic relationship between the hedged item and the hedging instrument... [and] the hedge ratio...”
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance de dividende reconnue couverte pour le FX seul | Oui sous conditions | Poste monétaire intragroupe avec écart de change non totalement éliminé |
+| Poste intragroupe avec écart de change totalement éliminé | Non | L’exception de 6.3.6 ne s’applique pas |
+| Désignation de la seule composante de change | Oui sous conditions | Composante séparément identifiable et fiablement mesurable |
+| Couverture sans documentation ni test d’efficacité | Non | Exigences de 6.4.1 non remplies |
+
+## 4. Points opérationnels
+
+- **Moment d’application** : la documentation doit être établie **à l’origine** de la relation de couverture.  
+- **Point de preuve principal** : il faut démontrer que le dividende à recevoir est un **poste monétaire intragroupe** et que son écart de change **n’est pas totalement éliminé** en consolidation.  
+- **Périmètre de la désignation** : seule la **composante de change** doit être désignée, avec un nominal et un hedge ratio cohérents avec l’exposition réelle.  
+- **Effort de mise en œuvre** : un suivi entre comptabilité locale et consolidation sera nécessaire pour mesurer l’efficacité et tracer les impacts de change.

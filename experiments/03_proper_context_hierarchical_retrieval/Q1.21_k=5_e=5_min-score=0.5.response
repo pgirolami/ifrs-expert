@@ -1,0 +1,83 @@
+## 1. Hypothèses
+
+- Le dividende intragroupe a déjà été déclaré et une créance / dette intragroupe a été comptabilisée.
+- La créance est un poste monétaire libellé dans une devise différente de la monnaie fonctionnelle d’au moins une des entités concernées.
+- Les écarts de change sur ce poste ne sont pas entièrement éliminés en consolidation et affectent le résultat consolidé.
+- La désignation envisagée porte uniquement sur le risque de change de ce poste, avec documentation formelle et mesure fiable.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+Une créance de dividende intragroupe déjà comptabilisée peut être désignée comme élément couvert si elle constitue un **item monétaire intragroupe** dont le risque de change génère des gains ou pertes de change **non entièrement éliminés en consolidation**. Les critères généraux d’IFRS 9 restent requis.
+
+## 3. Approches
+
+### 1) Oui sous conditions — Créance de dividende intragroupe déjà comptabilisée
+
+C’est l’approche la plus directe si le dividende a déjà créé une créance monétaire intragroupe. IFRS 9 prévoit une exception explicite pour le risque de change d’un item monétaire intragroupe dans les comptes consolidés, à condition que les écarts de change ne soient pas entièrement éliminés.
+
+> “the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation”  
+> — **IFRS 9 6.3.6**
+
+La désignation n’est toutefois pas automatique. Le poste doit être mesurable de façon fiable et la relation de couverture doit être formalisée dès l’origine.
+
+> “The hedged item must be reliably measurable.”  
+> — **IFRS 9 6.3.2**
+
+> “at the inception of the hedging relationship there is formal designation and documentation of the hedging relationship”  
+> — **IFRS 9 6.4.1(b)**
+
+---
+
+### 2) Non — Dividende intragroupe seulement prévu, non encore comptabilisé
+
+Si le dividende n’est qu’un flux intragroupe prévu, la règle générale exclut les transactions intragroupe en consolidation. L’exception pour certaines transactions intragroupe prévues existe, mais elle vise les cas où le risque de change affecte le résultat consolidé; ce n’est pas le fondement naturel d’un dividende intragroupe.
+
+> “only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items.”  
+> — **IFRS 9 6.3.5**
+
+> “the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.”  
+> — **IFRS 9 6.3.6**
+
+Autrement dit, la bonne base ici est la **créance déjà comptabilisée** comme item monétaire intragroupe, et non le dividende futur en tant que transaction prévue.
+
+---
+
+### 3) Oui sous conditions — Désignation limitée à la seule composante de risque de change
+
+Le groupe n’a pas besoin de désigner tout le poste. Il peut désigner uniquement la composante “risque de change” de la créance, si cette composante est séparément identifiable et mesurable de façon fiable. C’est souvent la formulation la plus propre pour ce type de poste.
+
+> “an entity may designate only the following types of components ... as hedged items: (a) only changes in the cash flows or fair value of an item attributable to a specific risk or risks (risk component), provided that ... the risk component is separately identifiable and reliably measurable”  
+> — **IFRS 9 6.3.7(a)**
+
+> “To be eligible for designation as a hedged item, a risk component must be a separately identifiable component ... and the changes in the cash flows or the fair value of the item attributable to changes in that risk component must be reliably measurable.”  
+> — **IFRS 9 B6.3.8**
+
+---
+
+### 4) Non — Traitement comme couverture d’un investissement net dans une activité étrangère
+
+Cette voie n’est pas la bonne pour une créance de dividende intragroupe prise isolément. IFRIC 16 vise la couverture du risque de change attaché à un **montant de net assets** d’une activité étrangère, pas un receivable de dividende intragroupe en tant que tel.
+
+> “The item being hedged with respect to the foreign currency risk arising from the net investment in a foreign operation may be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation.”  
+> — **IFRIC 16 2**
+
+> “In a hedge of the foreign currency risks arising from a net investment in a foreign operation, the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation”  
+> — **IFRIC 16 11**
+
+#### Tableau de synthèse
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance intragroupe déjà comptabilisée | Oui sous conditions | Poste monétaire intragroupe avec écarts de change non entièrement éliminés en consolidation |
+| Dividende intragroupe seulement prévu | Non | La transaction intragroupe prévue ne relève pas, en principe, de la règle générale en consolidation |
+| Désignation de la seule composante FX | Oui sous conditions | Risque de change séparément identifiable et mesurable de façon fiable |
+| Couverture d’investissement net | Non | Le modèle vise un montant de net assets, pas une créance de dividende isolée |
+
+## 4. Points opérationnels
+
+- La désignation doit être faite **après comptabilisation** du dividende si l’analyse repose sur l’exception de l’item monétaire intragroupe.
+- Le point de preuve principal est la démonstration que les écarts de change sur la créance **ne sont pas entièrement éliminés en consolidation** et affectent le résultat consolidé.
+- La documentation de couverture doit identifier clairement le **poste couvert**, le **risque de change couvert**, l’**instrument de couverture** et le mode d’évaluation de l’efficacité.
+- La formulation la plus robuste est généralement de couvrir **la seule composante risque de change** de la créance, et non l’intégralité du poste.

@@ -1,0 +1,65 @@
+## 1. Hypothèses
+
+- Le montant à recevoir provient d’un dividende intragroupe déjà déclaré et déjà comptabilisé.
+- L’exposition analysée est donc une **créance monétaire intragroupe** existante, et non une transaction future.
+- L’analyse est faite au niveau des **états financiers consolidés**.
+- La créance est libellée dans une devise qui crée un risque de change entre des entités du groupe ayant des **monnaies fonctionnelles différentes**.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+Une créance intragroupe monétaire peut être désignée comme élément couvert pour son risque de change en consolidation **si** ce risque génère des écarts de change **non totalement éliminés** à la consolidation. La relation de couverture doit en outre être **formellement documentée à l’inception** et satisfaire aux critères d’efficacité d’IFRS 9.
+
+## 3. Approches
+
+### 1) Créance de dividende traitée comme créance monétaire intragroupe existante
+**Oui sous conditions**
+
+Cette approche consiste à documenter la couverture sur la **créance intragroupe comptabilisée**, et non sur le dividende en tant que flux intragroupe. Elle est recevable si cette créance crée en consolidation une exposition résiduelle au risque de change.
+
+> “the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation” (IFRS 9, 6.3.6)
+
+> “foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies.” (IFRS 9, 6.3.6)
+
+### 2) Même créance, mais sans exposition de change résiduelle en consolidation
+**Non**
+
+Cette approche ne fonctionne pas si les écarts de change sont **totalement éliminés** en consolidation, ou s’il n’existe pas de différence de monnaies fonctionnelles pertinente. Dans ce cas, la condition spécifique de l’exception IFRS 9 n’est pas remplie.
+
+> “may qualify as a hedged item in the consolidated financial statements **if** it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation” (IFRS 9, 6.3.6)
+
+> “not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies.” (IFRS 9, 6.3.6)
+
+### 3) Couverture du dividende intragroupe comme transaction intragroupe
+**Non**
+
+Cette approche consiste à viser le **dividende intragroupe lui-même** comme élément couvert en consolidation. Elle se heurte à la règle générale selon laquelle, en consolidation, les éléments couverts doivent en principe être avec une partie **externe** au groupe. L’exception de 6.3.6 vise le **poste monétaire intragroupe**, pas la transaction intragroupe en général.
+
+> “only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items.” (IFRS 9, 6.3.5)
+
+> “Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group” (IFRS 9, 6.3.5)
+
+### 4) Désignation recevable, mais seulement avec documentation et tests IFRS 9
+**Oui sous conditions**
+
+Même si la créance est éligible, la couverture n’est admise que si la relation est désignée et documentée **dès son inception**, avec identification de l’instrument de couverture, de l’élément couvert, du risque couvert et du **hedge ratio**. Les critères d’efficacité doivent aussi être respectés.
+
+> “at the inception of the hedging relationship there is formal designation and documentation of the hedging relationship and the entity’s risk management objective and strategy for undertaking the hedge.” (IFRS 9, 6.4.1(b))
+
+> “the hedging relationship meets all of the following hedge effectiveness requirements: (i) there is an economic relationship ... (ii) the effect of credit risk does not dominate ... and (iii) the hedge ratio ...” (IFRS 9, 6.4.1(c))
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Créance de dividende comme poste monétaire intragroupe | Oui sous conditions | Écarts de change non totalement éliminés en consolidation |
+| Créance sans exposition résiduelle en consolidation | Non | Absence d’écarts de change résiduels qualifiants |
+| Dividende intragroupe comme transaction intragroupe | Non | Règle générale d’externalité en consolidation |
+| Désignation IFRS 9 complète | Oui sous conditions | Documentation à l’inception et critères d’efficacité respectés |
+
+## 4. Points opérationnels
+
+- Il doit être vérifié que la créance et la dette intragroupe sont entre entités ayant des **monnaies fonctionnelles différentes**.
+- Il doit être démontré que les écarts de change sur ce poste monétaire sont **non totalement éliminés** en consolidation.
+- La documentation de couverture doit être établie **à la date de mise en place de la relation de couverture**. Elle ne peut pas être reconstituée rétroactivement.
+- L’élément couvert doit être défini comme la **créance monétaire intragroupe** et le risque couvert comme le **risque de change** correspondant.
+- Un suivi périodique de l’**efficacité**, du **hedge ratio** et des sources d’inefficacité doit être mis en place.

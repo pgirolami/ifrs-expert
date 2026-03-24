@@ -1,0 +1,61 @@
+## 1. Hypothèses
+
+- Le dividende intragroupe a été déclaré et a donné lieu à la comptabilisation d’un receivable/payable intragroupe.
+- Les deux entités concernées ont des monnaies fonctionnelles différentes.
+- La variation de change sur ce receivable/payable n’est pas intégralement éliminée en consolidation et affecte le résultat consolidé.
+- La relation envisagée relève de la comptabilité de couverture d’IFRS 9 sur un risque de change, avec désignation formelle au niveau consolidé.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+Dans les comptes consolidés, un dividende intragroupe n’est pas éligible par principe. En revanche, une fois qu’un **receivable/payable intragroupe** existe, son **risque de change** peut être désigné **par exception** s’il s’agit d’un **intragroup monetary item** dont les écarts de change ne sont **pas totalement éliminés en consolidation**, sous réserve des critères d’IFRS 9.6.4.1.
+
+## 3. Approches
+
+### 1) Non — traiter le dividende intragroupe comme une transaction intragroupe ordinaire
+
+Cette approche consiste à regarder le dividende uniquement comme une opération intragroupe. Dans ce cas, la règle générale exclut la désignation en couverture dans les comptes consolidés, car la contrepartie n’est pas externe au groupe.
+
+> “For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group...”  
+> — **IFRS 9, 6.3.5**
+
+Cette lecture conduit à une réponse négative si le dividende est analysé seulement comme flux intragroupe éliminé en consolidation.
+
+### 2) Oui sous conditions — traiter le receivable de dividende comme un intragroup monetary item
+
+Cette approche consiste à ne pas couvrir le dividende en tant que tel, mais le **receivable/payable intragroupe reconnu** et son **risque de change**. C’est l’exception pertinente dans les comptes consolidés.
+
+> “However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”  
+> — **IFRS 9, 6.3.6**
+
+Le point clé est donc la nature **monétaire** du solde et le fait que les écarts de change **affectent encore le résultat consolidé**. Un receivable de dividende entre entités à monnaies fonctionnelles différentes entre dans cette logique, sous réserve des autres critères de couverture.
+
+> “A hedging relationship qualifies for hedge accounting only if all of the following criteria are met: ... at the inception of the hedging relationship there is formal designation and documentation ... [and] the hedging relationship meets all of the following hedge effectiveness requirements...”  
+> — **IFRS 9, 6.4.1**
+
+### 3) Non sur les faits donnés — traiter l’opération comme une forecast intragroup transaction
+
+Cette approche viserait le dividende **avant** la constatation du receivable. Elle n’est pas la bonne ici, puisque la question porte sur un receivable déjà comptabilisé. En outre, pour une transaction intragroupe future, le risque de change doit affecter le résultat consolidé.
+
+> “... the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.”  
+> — **IFRS 9, 6.3.6**
+
+> “If the foreign currency risk of a forecast intragroup transaction does not affect consolidated profit or loss, the intragroup transaction cannot qualify as a hedged item.”  
+> — **IFRS 9, B6.3.5**
+
+Sur les faits décrits, la bonne qualification n’est donc pas celle d’une transaction future, mais celle d’un **solde monétaire intragroupe déjà reconnu**.
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Dividende intragroupe pris isolément | Non | La contrepartie doit être externe au groupe selon IFRS 9.6.3.5 |
+| Receivable/payable de dividende comme intragroup monetary item | Oui sous conditions | Écarts de change non totalement éliminés en consolidation + critères IFRS 9.6.4.1 |
+| Transaction intragroupe future | Non sur les faits donnés | Le risque doit affecter le résultat consolidé, et il ne doit pas déjà exister un receivable |
+
+## 4. Points opérationnels
+
+- La désignation ne peut viser que le **risque de change** du **receivable/payable intragroupe** déjà reconnu.
+- La condition essentielle doit être démontrée : les écarts de change doivent **ne pas être totalement éliminés en consolidation**.
+- La documentation de couverture doit être en place **à l’inception** de la relation, avec identification du solde couvert, du risque couvert et du test d’efficacité.
+- Si les entités ont la **même monnaie fonctionnelle**, ou si le risque n’affecte pas le **résultat consolidé**, la désignation échoue.
+- L’effort principal porte sur la preuve technique du caractère **monétaire** du solde, du **résidu de change** en consolidation et du respect d’**IFRS 9.6.4.1**.

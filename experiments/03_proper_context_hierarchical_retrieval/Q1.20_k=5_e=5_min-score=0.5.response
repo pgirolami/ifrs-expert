@@ -1,0 +1,66 @@
+## 1. Hypothèses
+
+- La créance résulte d’un dividende intragroupe déjà déclaré et non encore réglé. Elle est donc analysée comme un poste monétaire reconnu.
+- La société créancière et la société débitrice ont des monnaies fonctionnelles différentes.
+- Les écarts de change sur cette créance/dette intragroupe ne sont pas entièrement éliminés en consolidation et affectent le résultat consolidé.
+- La relation de couverture serait formellement désignée et documentée dès l’origine.
+
+## 2. Recommandation
+
+**Oui sous conditions**
+
+La couverture est possible en consolidation si l’exposition correspond au **risque de change d’un poste monétaire intragroupe** et si les écarts de change correspondants **ne sont pas totalement éliminés en consolidation**. Sinon, la règle générale interdit de désigner un élément intragroupe comme élément couvert au consolidé.
+
+## 3. Approches
+
+### 1) Oui sous conditions — couvrir la créance comme poste monétaire intragroupe au consolidé
+
+Cette approche consiste à désigner **le risque de change** de la créance/dividende intragroupe, une fois la créance reconnue. Elle s’applique seulement si ce poste génère des écarts de change qui **restent dans le résultat consolidé**.
+
+> “However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation...”  
+> *(IFRS 9.6.3.6)*
+
+> “A hedging relationship qualifies for hedge accounting only if all of the following criteria are met... at the inception of the hedging relationship there is formal designation and documentation...”  
+> *(IFRS 9.6.4.1)*
+
+### 2) Non — traiter la créance comme un simple élément intragroupe au consolidé
+
+Cette approche consiste à vouloir couvrir l’élément intragroupe au seul motif qu’il est comptabilisé entre sociétés du groupe. Elle ne fonctionne pas au consolidé, car la règle de base exige une contrepartie **externe** au groupe.
+
+> “For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items.”  
+> *(IFRS 9.6.3.5)*
+
+> “Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group...”  
+> *(IFRS 9.6.3.5)*
+
+### 3) Non — documenter le dividende intragroupe comme transaction future intragroupe
+
+Cette approche consiste à viser le **dividende futur** plutôt que la créance déjà née. Elle n’est recevable que si le risque de change de la transaction future **affecte le résultat consolidé**. Ce n’est pas ce qui ressort ici. De plus, la question porte sur une créance déjà existante.
+
+> “...the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.”  
+> *(IFRS 9.6.3.6)*
+
+> “If the foreign currency risk of a forecast intragroup transaction does not affect consolidated profit or loss, the intragroup transaction cannot qualify as a hedged item.”  
+> *(IFRS 9.B6.3.5)*
+
+### 4) Oui — documenter la couverture dans les états financiers individuels ou séparés
+
+Cette approche consiste à porter la relation de couverture au niveau de l’entité qui supporte juridiquement la créance ou la dette. Elle est permise par IFRS 9, mais elle ne répond pas à la question de l’éligibilité **dans les comptes consolidés**.
+
+> “Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities...”  
+> *(IFRS 9.6.3.5)*
+
+| Approche | Applicable | Condition clé |
+|---|---|---|
+| Poste monétaire intragroupe au consolidé | Oui sous conditions | Les écarts de change ne sont pas totalement éliminés en consolidation |
+| Élément intragroupe ordinaire au consolidé | Non | La contrepartie n’est pas externe au groupe |
+| Dividende intragroupe futur | Non | Il faut démontrer un impact sur le résultat consolidé |
+| États financiers individuels ou séparés | Oui | La documentation est portée au niveau de l’entité, pas au consolidé |
+
+## 4. Points opérationnels
+
+- La désignation doit viser **le risque de change de la créance monétaire intragroupe**, et non le dividende intragroupe de façon générale.
+- L’analyse doit être faite **à compter de la naissance de la créance**. Avant cette date, il faut passer par le régime plus restrictif des transactions intragroupe futures.
+- Il faut démontrer que les écarts de change **affectent bien le résultat consolidé** et ne sont pas entièrement éliminés en consolidation.
+- La documentation IFRS 9 doit être prête **dès l’origine** : instrument de couverture, élément couvert, risque couvert, hedge ratio et test d’efficacité.
+- L’effort est surtout concentré sur l’analyse de consolidation et des monnaies fonctionnelles. Le risque principal est une désignation refusée si l’exposition économique ne subsiste pas au niveau consolidé.
