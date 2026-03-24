@@ -1,6 +1,8 @@
 """Answer command - retrieve chunks and embed them into a prompt template."""
 
+import json
 import logging
+import subprocess
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
@@ -12,8 +14,17 @@ RELEVANCE_SCORE_THRESHOLD = 0.3
 
 logger = logging.getLogger(__name__)
 
-# Path to the prompt template file
-PROMPT_TEMPLATE_PATH = Path(__file__).parent.parent.parent / "prompts" / "answer_prompt.txt"
+# Path to the prompt template files
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROMPT_A_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
+PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
+
+# LLM command (same as in existing shell script)
+LLM_CMD = [
+    "pi", "-p", "--provider", "openai-codex", "--model", "gpt-5.4",
+    "--thinking", "high", "--no-skills", "--no-tools", "--no-extensions",
+    "--no-prompt-templates", "--no-themes", "--system-prompt", ""
+]
 
 
 def _read_prompt_template(path: Path) -> str:
@@ -42,6 +53,53 @@ def _prompt_file_exists(path: Path) -> bool:
     return path.exists()
 
 
+def _send_to_llm(prompt: str) -> str:
+    """Send prompt to LLM and return the response."""
+    # Write prompt to temp file
+    temp_prompt = Path("/tmp/prompt_temp.txt")
+    temp_prompt.write_text(prompt, encoding="utf-8")
+
+    result = subprocess.run(
+        LLM_CMD + ["@" + str(temp_prompt), ""],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+
+    # Clean up temp file
+    temp_prompt.unlink(missing_ok=True)
+
+    return result.stdout
+
+
+def _extract_context_from_output(full_output: str) -> str:
+    """Extract just the <context>...</context> section from the full output."""
+    start_tag = "<context>"
+    end_tag = "</context>"
+
+    start_idx = full_output.find(start_tag)
+    end_idx = full_output.find(end_tag)
+
+    if start_idx == -1 or end_idx == -1:
+        return ""
+
+    return full_output[start_idx + len(start_tag):end_idx].strip()
+
+
+def _extract_prompt_content(full_output: str) -> str:
+    """Extract only the prompt content, skipping the chunk summary at the top."""
+    lines = full_output.split("\n")
+
+    # Find the first line that starts the actual prompt
+    start_idx = 0
+    for i, line in enumerate(lines):
+        if line.startswith("You are an IFRS expert"):
+            start_idx = i
+            break
+
+    return "\n".join(lines[start_idx:])
+
+
 class AnswerCommand:
     """Retrieve chunks and embed them into a prompt template."""
 
@@ -52,18 +110,34 @@ class AnswerCommand:
         min_score: float | None = None,
         expand: int = 0,
         full_doc_threshold: int = 0,
+        output_dir: Path | None = None,
+        save_all: bool = False,
     ) -> None:
+        """Initialize the answer command.
+
+        Args:
+            query: The question to answer
+            k: Number of chunks per document to retrieve
+            min_score: Minimum relevance score threshold
+            expand: Number of surrounding chunks to include
+            full_doc_threshold: If doc is smaller than this, include full doc
+            output_dir: Directory to save intermediate files
+            save_all: If True, save prompts and responses to output_dir
+        """
         self.query = query
         self.k = k
         self.min_score = min_score
         self.expand = expand
         self.full_doc_threshold = full_doc_threshold
+        self.output_dir = output_dir
+        self.save_all = save_all
 
     def execute(self) -> str:
         try:
             logger.info(
                 f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, "
-                f"full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score})"
+                f"full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score}, "
+                f"output_dir={self.output_dir}, save_all={self.save_all})"
             )
 
             # Validate query is not empty
@@ -76,10 +150,18 @@ class AnswerCommand:
             if self.full_doc_threshold < 0:
                 return "Error: full_doc_threshold must be >= 0"
 
-            # Check if prompt template exists
-            if not _prompt_file_exists(PROMPT_TEMPLATE_PATH):
-                return "Error: Prompt template not found. Please create the prompt file first."
-            logger.info(f"Prompt template found at {PROMPT_TEMPLATE_PATH}")
+            if self.save_all and not self.output_dir:
+                return "Error: --save-all requires --output-dir to be specified"
+
+            if self.output_dir and not self.output_dir.exists():
+                return f"Error: Output directory does not exist: {self.output_dir}"
+
+            # Check if prompt templates exist
+            if not _prompt_file_exists(PROMPT_A_PATH):
+                return "Error: Prompt A template not found."
+            if not _prompt_file_exists(PROMPT_B_PATH):
+                return "Error: Prompt B template not found."
+            logger.info(f"Prompt templates found: A={PROMPT_A_PATH.name}, B={PROMPT_B_PATH.name}")
 
             # Check if index exists
             index_path = get_index_path()
@@ -163,12 +245,92 @@ class AnswerCommand:
                     f"Prompt assembly: {len(formatted_chunks)} document block(s) included"
                 )
 
-                # Build and return the prompt
-                return self._build_prompt(formatted_chunks, chunk_summary)
+                # Build Prompt A
+                prompt_a = self._build_prompt_from_template(
+                    PROMPT_A_PATH, formatted_chunks, chunk_summary
+                )
+
+                # Step 1: Send Prompt A to LLM to get approaches
+                logger.info("Step 1: Sending Prompt A to LLM...")
+                prompt_a_content = _extract_prompt_content(prompt_a)
+
+                # Save prompt A if requested
+                if self.save_all and self.output_dir:
+                    self._save_file("A-prompt.txt", prompt_a_content)
+
+                response_a = _send_to_llm(prompt_a_content)
+
+                # Save response A if requested
+                if self.save_all and self.output_dir:
+                    self._save_file("A-response.json", response_a)
+
+                # Parse the JSON response
+                try:
+                    approaches_json = json.dumps(json.loads(response_a), indent=2)
+                except json.JSONDecodeError as e:
+                    logger.error(f"Could not parse JSON response from LLM: {e}")
+                    return f"Error: LLM returned invalid JSON: {e}\n\nResponse was:\n{response_a}"
+
+                # Step 2: Build Prompt B and send to LLM
+                logger.info("Step 2: Building and sending Prompt B to LLM...")
+                context = _extract_context_from_output(prompt_a)
+                prompt_b = self._build_prompt_b(context, approaches_json)
+
+                # Save prompt B if requested
+                if self.save_all and self.output_dir:
+                    self._save_file("B-prompt.txt", prompt_b)
+
+                response_b = _send_to_llm(prompt_b)
+                logger.info("Step 2 complete: Received final answer from LLM")
+
+                # Save response B if requested
+                if self.save_all and self.output_dir:
+                    self._save_file("B-response.md", response_b)
+
+                return response_b
 
         except Exception as e:
             logger.exception("Error executing answer command")
             return f"Error: {e}"
+
+    def _save_file(self, filename: str, content: str) -> None:
+        """Save content to a file in the output directory."""
+        if not self.output_dir:
+            return
+        file_path = self.output_dir / filename
+        file_path.write_text(content, encoding="utf-8")
+        logger.info(f"Saved {filename} to {self.output_dir}")
+
+    def _build_prompt_from_template(
+        self,
+        template_path: Path,
+        chunks: list[str],
+        chunk_summary: str,
+    ) -> str:
+        """Build a prompt by substituting chunks into a template.
+
+        Args:
+            template_path: Path to the template file
+            chunks: List of formatted chunk strings
+            chunk_summary: Human-readable summary of retrieved chunks
+
+        Returns:
+            Complete prompt string
+        """
+        template = _read_prompt_template(template_path)
+        chunks_text = "\n\n".join(chunks)
+        prompt = template.replace("{{CHUNKS}}", chunks_text).replace("{{QUERY}}", self.query)
+        return f"{chunk_summary}\n\n{prompt}"
+
+    def _build_prompt_b(self, context: str, approaches_json: str) -> str:
+        """Build Prompt B by substituting placeholders."""
+        template = _read_prompt_template(PROMPT_B_PATH)
+        return (
+            template
+            .replace("{{CHUNKS}}", context)
+            .replace("{{QUERY}}", self.query)
+            .replace("{{APPROACHES_JSON}}", approaches_json)
+        )
 
     def _select_top_k_per_document(
         self,
@@ -262,21 +424,6 @@ class AnswerCommand:
             .replace('"', "&quot;")
             .replace("'", "&apos;")
         )
-
-    def _build_prompt(self, chunks: list[str], chunk_summary: str) -> str:
-        """Build the final prompt by substituting chunks into template.
-
-        Args:
-            chunks: List of formatted chunk strings
-            chunk_summary: Human-readable summary of retrieved chunks
-
-        Returns:
-            Complete prompt string
-        """
-        template = _read_prompt_template(PROMPT_TEMPLATE_PATH)
-        chunks_text = "\n\n".join(chunks)
-        prompt = template.replace("{{CHUNKS}}", chunks_text).replace("{{QUERY}}", self.query)
-        return f"{chunk_summary}\n\n{prompt}"
 
     def _empty_chunk_summary(self) -> str:
         """Build the summary shown when no chunks were retrieved."""

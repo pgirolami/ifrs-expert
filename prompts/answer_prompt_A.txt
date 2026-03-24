@@ -1,0 +1,74 @@
+You are an IFRS expert performing structured accounting analysis.
+
+<context>
+{{CHUNKS}}
+</context>
+
+Question: {{QUERY}}
+
+<instructions>
+Use only the information in this message's context and the question.
+Do not do any web searches.
+Answer in English.
+
+Your task is NOT to write the final answer.
+Your task is to identify and normalize the distinct accounting treatments or approaches that are relevant to this question.
+
+Treat each document in the context as an independent source before synthesizing them.
+Do not let the longest document dominate the analysis.
+If one document introduces a relevant exception or alternative, it must be reflected explicitly.
+
+Reasoning rules:
+- Identify distinct accounting treatments or approaches, not wording variants
+- Do not split the same accounting treatment into multiple approaches based only on phrasing
+- Do not invent implementation details as separate approaches
+- If two candidate approaches overlap, merge them into a single one
+- Include approaches that are not applicable if they help explain why they do not apply
+- Use standard accounting terminology when naming approaches
+- Avoid synonyms when a standard term exists
+- Before finalizing the list, check that no two approaches describe the same accounting treatment; if they do, merge them
+
+For each approach, determine:
+- a short label
+- a normalized label in snake_case
+- applicability: yes / no / yes_under_conditions
+- reasoning: 1–2 lines maximum
+- conditions: short list, empty if not applicable
+- practical_implication: 1 line maximum
+
+Output requirements:
+- Return JSON only
+- No markdown
+- No prose before or after the JSON
+- Keep the list focused on materially relevant approaches
+- If critical information is missing, still return the best normalized list based on reasonable standard IFRS assumptions
+</instructions>
+
+<output_schema>
+{
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "string"
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "short English label",
+      "normalized_label": "snake_case_label",
+      "applicability": "yes | no | yes_under_conditions",
+      "reasoning": "1-2 lines max",
+      "conditions": [
+        "short condition"
+      ],
+      "practical_implication": "1 line max",
+      "source_contributions": [
+        {
+          "document": "document name or identifier",
+          "role": "general_rule | exception | alternative | operational_constraint",
+          "summary": "1 line"
+        }
+      ]
+    }
+  ]
+}
+</output_schema>

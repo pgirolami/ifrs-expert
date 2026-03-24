@@ -125,6 +125,17 @@ def main() -> int:
         default=None,
         help="Minimum relevance score (0-1). Results below this are excluded.",
     )
+    answer_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        help="Directory to save intermediate files (prompt_A, response_A, prompt_B, response_B)",
+    )
+    answer_parser.add_argument(
+        "--save-all",
+        action="store_true",
+        help="Save all intermediate prompts and responses to output-dir",
+    )
 
     args = parser.parse_args()
 
@@ -144,8 +155,9 @@ def main() -> int:
 
     logger.info(f"CLI command completed successfully: {args.command}")
 
-    # Output result to stdout
-    sys.stdout.buffer.write(result.encode("utf-8") + b"\n")
+    # Output result to stdout (skip if --save-all was used, files are already saved)
+    if not (args.command == "answer" and getattr(args, "save_all", False)):
+        sys.stdout.buffer.write(result.encode("utf-8") + b"\n")
     return 0
 
 
@@ -180,6 +192,8 @@ def _execute_command(args: argparse.Namespace) -> str:
             min_score=args.min_score,
             expand=args.expand,
             full_doc_threshold=args.full_doc_threshold,
+            output_dir=args.output_dir,
+            save_all=args.save_all,
         )
     else:
         return f"Error: Unknown command: {args.command}"
