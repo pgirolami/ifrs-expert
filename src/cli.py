@@ -8,16 +8,9 @@ import sys
 from math import inf
 from pathlib import Path
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s: %(message)s",
-)
+from src.logging_config import setup_logging
 
-# Reduce noise from HuggingFace/sentence-transformers
-logging.getLogger("httpx").setLevel(logging.WARNING)
-logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
-logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+setup_logging()
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +132,8 @@ def main() -> int:
         parser.print_help()
         return 1
 
+    logger.info(f"CLI command received: {args.command}")
+
     # Execute command and output result
     result = _execute_command(args)
 
@@ -146,6 +141,8 @@ def main() -> int:
     if result.startswith("Error:"):
         logger.error(result)
         return 1
+
+    logger.info(f"CLI command completed successfully: {args.command}")
 
     # Output result to stdout
     sys.stdout.buffer.write(result.encode("utf-8") + b"\n")

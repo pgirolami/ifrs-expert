@@ -61,6 +61,11 @@ class AnswerCommand:
 
     def execute(self) -> str:
         try:
+            logger.info(
+                f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, "
+                f"full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score})"
+            )
+
             # Validate query is not empty
             if not self.query or not self.query.strip():
                 return "Error: Query cannot be empty"
@@ -74,6 +79,7 @@ class AnswerCommand:
             # Check if prompt template exists
             if not _prompt_file_exists(PROMPT_TEMPLATE_PATH):
                 return "Error: Prompt template not found. Please create the prompt file first."
+            logger.info(f"Prompt template found at {PROMPT_TEMPLATE_PATH}")
 
             # Check if index exists
             index_path = get_index_path()
@@ -83,6 +89,8 @@ class AnswerCommand:
             with VectorStore() as vector_store:
                 ranked_results = vector_store.search_all(self.query)
 
+            logger.info(f"Search returned {len(ranked_results)} raw results")
+
             if not ranked_results:
                 return "Error: No chunks retrieved"
 
@@ -90,19 +98,30 @@ class AnswerCommand:
                 RELEVANCE_SCORE_THRESHOLD,
                 self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD,
             )
-            results = self._select_top_k_per_document(
+            logger.info(f"Effective min_score: {effective_min_score}")
+
+            selected_results = self._select_top_k_per_document(
                 ranked_results,
                 k=self.k,
                 min_score=effective_min_score,
             )
-            if not results:
+            if not selected_results:
                 return f"Error: No chunks found with score >= {effective_min_score}"
+
+            counts_by_doc: dict[str, int] = {}
+            for result in selected_results:
+                counts_by_doc[result["doc_uid"]] = counts_by_doc.get(result["doc_uid"], 0) + 1
+            doc_summary = ", ".join(f"{doc}({count})" for doc, count in counts_by_doc.items())
+            logger.info(
+                f"Per-document selection: {len(selected_results)} chunks from "
+                f"{len(counts_by_doc)} doc(s) - {doc_summary}"
+            )
 
             # Get the chunk details from database
             init_db()
 
             # Group results by doc_uid to minimize DB calls
-            doc_uids = list({result["doc_uid"] for result in results})
+            doc_uids = list({result["doc_uid"] for result in selected_results})
 
             with ChunkStore() as store:
                 # Fetch all chunks for all relevant docs at once
@@ -112,21 +131,37 @@ class AnswerCommand:
 
                 # Expand chunks if requested
                 if self.expand > 0 or self.full_doc_threshold > 0:
-                    results = self._expand_chunks(
-                        results,
+                    selected_results = self._expand_chunks(
+                        selected_results,
                         doc_chunks,
                         self.expand,
                         self.full_doc_threshold,
                     )
 
                 # Fail if no chunks remain after expansion
-                if not results:
+                if not selected_results:
                     return "Error: No chunks retrieved"
 
-                chunk_summary = self._build_chunk_summary(results, doc_chunks)
+                final_counts_by_doc: dict[str, int] = {}
+                for result in selected_results:
+                    final_counts_by_doc[result["doc_uid"]] = (
+                        final_counts_by_doc.get(result["doc_uid"], 0) + 1
+                    )
+                final_doc_summary = ", ".join(
+                    f"{doc}({count})" for doc, count in final_counts_by_doc.items()
+                )
+                logger.info(
+                    f"Final retrieval: {len(selected_results)} chunks from "
+                    f"{len(final_counts_by_doc)} doc(s) - {final_doc_summary}"
+                )
+
+                chunk_summary = self._build_chunk_summary(selected_results, doc_chunks)
 
                 # Build the formatted chunks
-                formatted_chunks = self._format_chunks(results, doc_chunks)
+                formatted_chunks = self._format_chunks(selected_results, doc_chunks)
+                logger.info(
+                    f"Prompt assembly: {len(formatted_chunks)} document block(s) included"
+                )
 
                 # Build and return the prompt
                 return self._build_prompt(formatted_chunks, chunk_summary)
@@ -144,19 +179,27 @@ class AnswerCommand:
         """Select up to k chunks per document above the score threshold."""
         selected_results: list[dict] = []
         counts_by_doc: dict[str, int] = {}
+        skipped_low_score = 0
+        skipped_doc_full = 0
 
         for result in ranked_results:
             if result["score"] < min_score:
+                skipped_low_score += 1
                 continue
 
             doc_uid = result["doc_uid"]
             doc_count = counts_by_doc.get(doc_uid, 0)
             if doc_count >= k:
+                skipped_doc_full += 1
                 continue
 
             selected_results.append(result)
             counts_by_doc[doc_uid] = doc_count + 1
 
+        logger.info(
+            f"Selection filters: {skipped_low_score} below min_score, "
+            f"{skipped_doc_full} skipped because doc already had {k} chunk(s)"
+        )
         return selected_results
 
     def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> list[str]:
@@ -292,6 +335,8 @@ class AnswerCommand:
         result_score_by_chunk: dict[tuple[str, int], float] = {}
         doc_order: list[str] = []
         selected_ids_by_doc: dict[str, set[int]] = {}
+        full_doc_docs: set[str] = set()
+        expanded_via_neighbours: set[tuple[str, int]] = set()
 
         for result in results:
             doc_uid = result["doc_uid"]
@@ -310,6 +355,7 @@ class AnswerCommand:
 
             doc_text_size = sum(len(chunk.text) for chunk in chunks)
             if full_doc_threshold > 0 and doc_text_size < full_doc_threshold:
+                full_doc_docs.add(doc_uid)
                 for document_chunk in chunks:
                     if document_chunk.chunk_id is not None:
                         selected_ids_by_doc[doc_uid].add(document_chunk.chunk_id)
@@ -322,6 +368,8 @@ class AnswerCommand:
                     for surrounding_chunk in chunks[start_idx:end_idx]:
                         if surrounding_chunk.chunk_id is not None:
                             selected_ids_by_doc[doc_uid].add(surrounding_chunk.chunk_id)
+                            if surrounding_chunk.chunk_id != chunk_id:
+                                expanded_via_neighbours.add((doc_uid, surrounding_chunk.chunk_id))
                     break
 
         expanded_results: list[dict] = []
@@ -338,6 +386,22 @@ class AnswerCommand:
                         "chunk_id": chunk_id,
                         "score": result_score_by_chunk.get((doc_uid, chunk_id), 0.0),
                     }
+                )
+
+        if full_doc_threshold > 0:
+            for doc_uid in full_doc_docs:
+                doc_size = sum(len(chunk.text) for chunk in doc_chunks.get(doc_uid, []))
+                logger.info(
+                    f"Full doc inclusion: {doc_uid} "
+                    f"(size={doc_size} < threshold={full_doc_threshold})"
+                )
+        if expand > 0:
+            neighbour_summary: dict[str, set[int]] = {}
+            for doc_uid, chunk_id in expanded_via_neighbours:
+                neighbour_summary.setdefault(doc_uid, set()).add(chunk_id)
+            for doc_uid, chunk_ids in neighbour_summary.items():
+                logger.info(
+                    f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)"
                 )
 
         return expanded_results
