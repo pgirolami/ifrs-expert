@@ -1,0 +1,37 @@
+# Concrete plan for the next 5 days
+## Day 1 — Core loop only
+
+Build only this:
+
+input question
+→ retrieve chunks
+→ show chunks
+
+No memo
+No clarification
+No fancy UX
+
+## Day 2 — Add answer
+question
+→ retrieval
+→ grounded answer
+
+
+
+## Day 3 — Add clarification
+question
+→ detect missing info
+→ ask question
+→ continue
+
+## Day 4 — Add memo
+answer
+→ structured memo
+
+## Day 5 — Basic eval + demo polish
+10 questions
+simple checks
+working Streamlit app
+
+## TODO
+- Fix extraction

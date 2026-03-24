@@ -269,7 +269,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         # Bold titles (flags=20) indicate new sections that should act as boundaries.
         bold_title_page_index: int = -1
         bold_title_y: float = float("inf")
-        
+
         for span in all_content:
             if span["page_index"] < section_page_index:
                 continue
@@ -281,7 +281,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             # Skip the next section itself if it's not bold
             if span["page_index"] == next_page_index and span["y"] >= next_y:
                 continue
-            
+
             # Check if this is a bold title (flags=20)
             if span.get("flags", 0) == 20:
                 # Found a bold title - set it as the boundary

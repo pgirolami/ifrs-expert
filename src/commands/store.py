@@ -1,13 +1,13 @@
 """Store command - extract chunks from a PDF and store in database and vector index."""
 
-from pathlib import Path
 import logging
+from pathlib import Path
 
 from src.db import ChunkStore, init_db
 from src.db.chunks import Chunk as DbChunk
+from src.models.chunk import Chunk
 from src.pdf import extract_chunks
 from src.vector import VectorStore
-from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 
@@ -34,16 +34,18 @@ class StoreCommand:
             chunks: list[Chunk] = extract_chunks(self.pdf_path)
             logger.info(f"Extracted {len(chunks)} chunks")
 
-            # Validate chunk sizes
-            oversized = [c for c in chunks if len(c.text) > MAX_CHUNK_CHARS]
-            if oversized:
-                oversized_info = ", ".join(
-                    f"{c.section_path} ({len(c.text)} chars)" for c in oversized[:5]
-                )
-                extra = "..." if len(oversized) > 5 else ""
-                raise ValueError(
-                    f"Found {len(oversized)} chunk(s) exceeding {MAX_CHUNK_CHARS} chars: {oversized_info}{extra}"
-                )
+            # Truncate oversized chunks
+            truncated_count = 0
+            for chunk in chunks:
+                if len(chunk.text) > MAX_CHUNK_CHARS:
+                    original_len = len(chunk.text)
+                    chunk.text = chunk.text[:MAX_CHUNK_CHARS]
+                    truncated_count += 1
+                    logger.warning(
+                        f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars"
+                    )
+            if truncated_count > 0:
+                logger.info(f"Truncated {truncated_count} oversized chunk(s)")
 
             # Store in database
             with ChunkStore() as store:

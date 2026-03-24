@@ -339,3 +339,210 @@ class TestQueryCommand:
             # Check that High and Low relevance are shown
             assert "(High)" in result
             assert "(Low)" in result
+
+
+class TestAnswerCommand:
+    """Tests for answer command."""
+
+    def test_answer_no_index(self):
+        """Test answer command when no index exists."""
+        from src.commands import AnswerCommand
+
+        with patch("src.commands.answer.get_index_path") as mock_path:
+            mock_path.return_value.exists.return_value = False
+
+            command = AnswerCommand(query="test", k=5)
+            result = command.execute()
+
+            assert result.startswith("Error:")
+            assert "No index found" in result
+
+    def test_answer_no_prompt_file(self):
+        """Test answer command when prompt file doesn't exist."""
+        from src.commands import AnswerCommand
+
+        with patch("src.commands.answer.get_index_path") as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists:
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = False
+
+            command = AnswerCommand(query="test", k=5)
+            result = command.execute()
+
+            assert result.startswith("Error:")
+            assert "Prompt template not found" in result
+
+    def test_answer_with_results(self):
+        """Test answer returns prompt with embedded chunks."""
+        from src.commands import AnswerCommand
+        from src.db.chunks import Chunk
+
+        # Mock VectorStore search results
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.8},
+        ]
+
+        # Mock chunks returned from database
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1 Introduction", page_start="A1", page_end="A1", text="This is the introduction section."),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2 Scope", page_start="A2", page_end="A2", text="This standard applies to all entities."),
+        ]
+
+        # Mock prompt template
+        prompt_template = "Answer the user's question based on the provided context.\n\n<context>\n{{CHUNKS}}\n</context>\n\nQuestion: {{QUERY}}\n\nAnswer:"
+
+        with patch("src.commands.answer.VectorStore") as mock_vs_class, patch(
+            "src.commands.answer.init_db"
+        ), patch("src.commands.answer.ChunkStore") as mock_cs_class, patch(
+            "src.commands.answer.get_index_path"
+        ) as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists, patch(
+            "src.commands.answer._read_prompt_template"
+        ) as mock_read:
+
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = True
+            mock_read.return_value = prompt_template
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            command = AnswerCommand(query="What is the scope?", k=5)
+            result = command.execute()
+
+            # Verify search was called
+            mock_vs.search.assert_called_once_with("What is the scope?", k=5)
+
+            # Verify the result contains the prompt template with chunks
+            assert "Answer the user's question" in result
+            assert "Question: What is the scope?" in result
+            # Verify chunks are embedded with section_path metadata in XML format
+            assert "section_path=" in result
+            assert "1.1 Introduction" in result
+            assert "1.2 Scope" in result
+
+    def test_answer_no_results(self):
+        """Test answer command with no matching results."""
+        from src.commands import AnswerCommand
+
+        prompt_template = "Answer based on context.\n\n<context>\n{{CHUNKS}}\n</context>\n\nQuestion: {{QUERY}}\n\nAnswer:"
+
+        with patch("src.commands.answer.VectorStore") as mock_vs_class, patch(
+            "src.commands.answer.get_index_path"
+        ) as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists, patch(
+            "src.commands.answer._read_prompt_template"
+        ) as mock_read:
+
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = True
+            mock_read.return_value = prompt_template
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = []
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            command = AnswerCommand(query="test", k=5)
+            result = command.execute()
+
+            # Should still return a valid prompt but with empty chunks placeholder
+            # When chunks list is empty, the template is returned with empty {{CHUNKS}}
+            assert "Question: test" in result
+            assert "Answer based on context" in result
+
+    def test_answer_min_score_filter(self):
+        """Test answer command respects min_score filter."""
+        from src.commands import AnswerCommand
+        from src.db.chunks import Chunk
+
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.3},
+        ]
+
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="high relevance content"),
+            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="low relevance content"),
+        ]
+
+        prompt_template = "Context:\n{{CHUNKS}}\n\nQ: {{QUERY}}\n\nA:"
+
+        with patch("src.commands.answer.VectorStore") as mock_vs_class, patch(
+            "src.commands.answer.init_db"
+        ), patch("src.commands.answer.ChunkStore") as mock_cs_class, patch(
+            "src.commands.answer.get_index_path"
+        ) as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists, patch(
+            "src.commands.answer._read_prompt_template"
+        ) as mock_read:
+
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = True
+            mock_read.return_value = prompt_template
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            mock_cs = MagicMock()
+            mock_cs.get_chunks_by_doc.return_value = mock_chunks
+            mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
+            mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            # Query with min_score of 0.5 should filter out chunk 2
+            command = AnswerCommand(query="test", k=5, min_score=0.5)
+            result = command.execute()
+
+            # Verify search was called with k*3 when min_score is set
+            mock_vs.search.assert_called_once_with("test", k=15)
+
+            # Only high score chunk should be in output
+            assert "high relevance content" in result
+            assert "low relevance content" not in result
+
+    def test_answer_k_parameter(self):
+        """Test answer command respects k parameter."""
+        from src.commands import AnswerCommand
+
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        prompt_template = "Context:\n{{CHUNKS}}\n\nQ: {{QUERY}}\n\nA:"
+
+        with patch("src.commands.answer.VectorStore") as mock_vs_class, patch(
+            "src.commands.answer.get_index_path"
+        ) as mock_path, patch(
+            "src.commands.answer._prompt_file_exists"
+        ) as mock_exists, patch(
+            "src.commands.answer._read_prompt_template"
+        ) as mock_read:
+
+            mock_path.return_value.exists.return_value = True
+            mock_exists.return_value = True
+            mock_read.return_value = prompt_template
+
+            mock_vs = MagicMock()
+            mock_vs.search.return_value = search_results
+            mock_vs_class.return_value.__enter__ = MagicMock(return_value=mock_vs)
+            mock_vs_class.return_value.__exit__ = MagicMock(return_value=None)
+
+            command = AnswerCommand(query="test", k=10)
+            result = command.execute()
+
+            # Verify search was called with the correct k value
+            mock_vs.search.assert_called_once_with("test", k=10)

@@ -66,11 +66,7 @@ def main() -> int:
     # Query command
     query_parser = subparsers.add_parser(
         "query",
-        help="Search for similar chunks using text query",
-    )
-    query_parser.add_argument(
-        "query",
-        help="Text query to search for",
+        help="Search for similar chunks using text query (reads query from stdin)",
     )
     query_parser.add_argument(
         "-k",
@@ -85,6 +81,25 @@ def main() -> int:
         help="Output results as JSON (default is verbose text)",
     )
     query_parser.add_argument(
+        "--min-score",
+        type=float,
+        default=None,
+        help="Minimum relevance score (0-1). Results below this are excluded.",
+    )
+
+    # Answer command
+    answer_parser = subparsers.add_parser(
+        "answer",
+        help="Search for chunks and embed them into a prompt template (reads query from stdin)",
+    )
+    answer_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=5,
+        help="Number of chunks to retrieve (default: 5)",
+    )
+    answer_parser.add_argument(
         "--min-score",
         type=float,
         default=None,
@@ -112,7 +127,7 @@ def main() -> int:
 
 def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
-    from src.commands import ChunkCommand, StoreCommand, ListCommand, QueryCommand
+    from src.commands import AnswerCommand, ChunkCommand, ListCommand, QueryCommand, StoreCommand
 
     if args.command == "chunk":
         command = ChunkCommand(pdf_path=Path(args.pdf))
@@ -121,12 +136,22 @@ def _execute_command(args: argparse.Namespace) -> str:
     elif args.command == "list":
         command = ListCommand(doc_uid=args.doc_uid)
     elif args.command == "query":
+        # Read query from stdin
+        query = sys.stdin.read().strip()
         verbose = not getattr(args, "json", False)
         command = QueryCommand(
-            query=args.query,
+            query=query,
             k=args.k,
             min_score=args.min_score,
             verbose=verbose,
+        )
+    elif args.command == "answer":
+        # Read query from stdin
+        query = sys.stdin.read().strip()
+        command = AnswerCommand(
+            query=query,
+            k=args.k,
+            min_score=args.min_score,
         )
     else:
         return f"Error: Unknown command: {args.command}"

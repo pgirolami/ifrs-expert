@@ -18,6 +18,19 @@ class ChunkCommand:
         try:
             chunks = extract_chunks(self.pdf_path)
             import json
-            return json.dumps([{"section_path": c.section_path, "page_start": c.page_start, "page_end": c.page_end, "text": c.text} for c in chunks], indent=2, ensure_ascii=False)
+
+            return json.dumps(
+                [
+                    {
+                        "section_path": c.section_path,
+                        "page_start": c.page_start,
+                        "page_end": c.page_end,
+                        "text": c.text,
+                    }
+                    for c in chunks
+                ],
+                indent=2,
+                ensure_ascii=False,
+            )
         except Exception as e:
             return f"Error: {e}"

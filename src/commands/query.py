@@ -11,7 +11,9 @@ from src.vector.store import get_index_path
 class QueryCommand:
     """Search for similar chunks using text query."""
 
-    def __init__(self, query: str, k: int = 5, min_score: float | None = None, verbose: bool = True):
+    def __init__(
+        self, query: str, k: int = 5, min_score: float | None = None, verbose: bool = True
+    ):
         self.query = query
         self.k = k
         self.min_score = min_score
@@ -40,7 +42,11 @@ class QueryCommand:
             if self.min_score is not None:
                 results = [r for r in results if r["score"] >= self.min_score]
                 if not results:
-                    return "[]" if not self.verbose else f"No chunks found with score >= {self.min_score}"
+                    return (
+                        "[]"
+                        if not self.verbose
+                        else f"No chunks found with score >= {self.min_score}"
+                    )
 
             # Get the chunk details from database
             init_db()
@@ -64,7 +70,9 @@ class QueryCommand:
         except Exception as e:
             return f"Error: {e}"
 
-    def _build_json_output(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> list[dict]:
+    def _build_json_output(
+        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
+    ) -> list[dict]:
         """Build JSON output."""
         chunks_output = []
         for result in results:
@@ -91,7 +99,9 @@ class QueryCommand:
                     break
         return chunks_output
 
-    def _build_verbose_output(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> str:
+    def _build_verbose_output(
+        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
+    ) -> str:
         """Build verbose text output."""
         output_lines = []
         for result in results:
