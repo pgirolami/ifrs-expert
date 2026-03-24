@@ -128,41 +128,54 @@ class AnswerCommand:
             return f"Error: {e}"
 
     def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> list[str]:
-        """Format chunks using XML format for clear agent readability.
-
-        Uses XML with attributes for metadata to make it unambiguous for LLM agents.
-        Each chunk includes: id, doc_uid, section_path, page_start, page_end, score.
+        """Format chunks grouped by document for clearer prompt structure.
 
         Args:
             results: Search results from vector store
             doc_chunks: Dictionary mapping doc_uid to list of chunks
 
         Returns:
-            List of formatted chunk strings
+            List of formatted document strings
         """
-        formatted = []
+        doc_order: list[str] = []
+        chunk_ids_by_doc: dict[str, set[int]] = {}
+
         for result in results:
             doc_uid = result["doc_uid"]
             chunk_id = result["chunk_id"]
-            score = result["score"]
+            if doc_uid not in chunk_ids_by_doc:
+                chunk_ids_by_doc[doc_uid] = set()
+                doc_order.append(doc_uid)
+            chunk_ids_by_doc[doc_uid].add(chunk_id)
 
-            # Find matching chunk
+        formatted_documents: list[str] = []
+        for doc_uid in doc_order:
+            formatted_chunks: list[str] = []
             for chunk in doc_chunks.get(doc_uid, []):
-                if chunk.chunk_id == chunk_id:
-                    # Use XML format with attributes for metadata
-                    # This is unambiguous and easy for LLMs to parse
-                    chunk_xml = (
-                        f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" '
-                        f'section_path="{self._escape_xml(chunk.section_path)}" '
-                        #    f'page_start="{self._escape_xml(chunk.page_start)}" '
-                        #    f'page_end="{self._escape_xml(chunk.page_end)}" score="{score:.4f}"'
-                        f">\n"
-                        f"{chunk.text}\n"
-                        f"</chunk>"
-                    )
-                    formatted.append(chunk_xml)
-                    break
-        return formatted
+                chunk_id = chunk.chunk_id
+                if chunk_id is None:
+                    continue
+                if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
+                    continue
+
+                chunk_xml = (
+                    f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" '
+                    f'section_path="{self._escape_xml(chunk.section_path)}" '
+                    f">\n"
+                    f"{chunk.text}\n"
+                    f"</chunk>"
+                )
+                formatted_chunks.append(chunk_xml)
+
+            joined_chunks = "\n\n".join(formatted_chunks)
+            document_xml = (
+                f'<Document name="{self._escape_xml(doc_uid)}">\n'
+                f"{joined_chunks}\n"
+                f"</Document>"
+            )
+            formatted_documents.append(document_xml)
+
+        return formatted_documents
 
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""

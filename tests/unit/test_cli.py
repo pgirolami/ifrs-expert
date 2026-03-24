@@ -518,9 +518,11 @@ class TestAnswerCommand:
             assert "Retrieved chunks:" in result
             assert "- doc1: 1.1 Introduction, 1.2 Scope" in result
             # Verify chunks are embedded with section_path metadata in XML format
+            assert '<Document name="doc1">' in result
             assert "section_path=" in result
             assert "1.1 Introduction" in result
             assert "1.2 Scope" in result
+            assert "</Document>" in result
 
     def test_answer_no_results(self):
         """Test answer command with no matching results."""
@@ -682,6 +684,7 @@ class TestAnswerCommand:
             command = AnswerCommand(query="test", k=5, expand=1)
             result = command.execute()
 
+            assert '<Document name="doc1">' in result
             assert result.index('id="1"') < result.index('id="2"') < result.index('id="3"')
             assert "Retrieved chunks:" in result
             assert "- doc1: 1.1, 1.2, 1.3" in result
@@ -732,6 +735,7 @@ class TestAnswerCommand:
             command = AnswerCommand(query="test", k=5, full_doc_threshold=10)
             result = command.execute()
 
+            assert '<Document name="doc1">' in result
             assert result.index('id="1"') < result.index('id="2"') < result.index('id="3"')
             assert "- doc1: 1.1, 1.2, 1.3" in result
             assert "aa" in result
