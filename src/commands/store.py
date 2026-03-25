@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
-from src.db.chunks import Chunk as DbChunk
 from src.models.chunk import Chunk
 from src.pdf import extract_chunks
 from src.vector import VectorStore
@@ -17,11 +16,13 @@ MAX_CHUNK_CHARS = 2000
 class StoreCommand:
     """Extract chunks from a PDF and store in the database and vector index."""
 
-    def __init__(self, pdf_path: Path, doc_uid: str | None = None):
+    def __init__(self, pdf_path: Path, doc_uid: str | None = None) -> None:
+        """Initialize the store command."""
         self.pdf_path = pdf_path
         self.doc_uid = doc_uid or pdf_path.stem
 
     def execute(self) -> str:
+        """Execute the store command - extract and store chunks."""
         if not self.pdf_path.exists():
             return f"Error: PDF file not found: {self.pdf_path}"
 
@@ -31,7 +32,7 @@ class StoreCommand:
 
             # Extract chunks from PDF
             logger.info(f"Extracting chunks from {self.pdf_path}")
-            chunks: list[Chunk] = extract_chunks(self.pdf_path)
+            chunks = extract_chunks(self.pdf_path)
             logger.info(f"Extracted {len(chunks)} chunks")
 
             # Truncate oversized chunks
@@ -41,9 +42,7 @@ class StoreCommand:
                     original_len = len(chunk.text)
                     chunk.text = chunk.text[:MAX_CHUNK_CHARS]
                     truncated_count += 1
-                    logger.warning(
-                        f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars"
-                    )
+                    logger.warning(f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars")
             if truncated_count > 0:
                 logger.info(f"Truncated {truncated_count} oversized chunk(s)")
 
@@ -69,11 +68,7 @@ class StoreCommand:
                     logger.info(f"Deleted {deleted} existing embeddings for {self.doc_uid}")
 
                 # Add embeddings (only for chunks with valid IDs)
-                valid_chunks = [
-                    (db_chunks[i], chunks[i])
-                    for i in range(len(db_chunks))
-                    if db_chunks[i].chunk_id is not None
-                ]
+                valid_chunks = [(db_chunks[i], chunks[i]) for i in range(len(db_chunks)) if db_chunks[i].chunk_id is not None]
                 if valid_chunks:
                     chunk_ids = [c[0].chunk_id for c in valid_chunks]  # type: ignore[assignment]
                     texts = [c[1].text for c in valid_chunks]

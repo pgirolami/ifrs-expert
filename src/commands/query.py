@@ -2,15 +2,30 @@
 
 import json
 import logging
+from dataclasses import dataclass
 
 from src.db import ChunkStore, init_db
-from src.db.chunks import Chunk as DbChunk
+from src.models.chunk import Chunk
 from src.vector import VectorStore
 from src.vector.store import get_index_path
 
 logger = logging.getLogger(__name__)
 
 RELEVANCE_SCORE_THRESHOLD = 0.3
+
+# Relevance thresholds
+RELEVANCE_HIGH_THRESHOLD = 0.3
+
+
+@dataclass
+class QueryOptions:
+    """Options for query command."""
+
+    k: int = 5
+    min_score: float | None = None
+    verbose: bool = True
+    expand: int = 0
+    full_doc_threshold: int = 0
 
 
 class QueryCommand:
@@ -19,25 +34,20 @@ class QueryCommand:
     def __init__(
         self,
         query: str,
-        k: int = 5,
-        min_score: float | None = None,
-        verbose: bool = True,
-        expand: int = 0,
-        full_doc_threshold: int = 0,
-    ):
+        options: QueryOptions | None = None,
+    ) -> None:
+        """Initialize the query command."""
         self.query = query
-        self.k = k
-        self.min_score = min_score
-        self.verbose = verbose
-        self.expand = expand
-        self.full_doc_threshold = full_doc_threshold
+        self.k = options.k if options else 5
+        self.min_score = options.min_score if options else None
+        self.verbose = options.verbose if options else True
+        self.expand = options.expand if options else 0
+        self.full_doc_threshold = options.full_doc_threshold if options else 0
 
     def execute(self) -> str:
+        """Execute the query command and return search results."""
         try:
-            logger.info(
-                f"QueryCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, "
-                f"full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score})"
-            )
+            logger.info(f"QueryCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score})")
 
             # Validate query is not empty
             if not self.query or not self.query.strip():
@@ -82,10 +92,7 @@ class QueryCommand:
             for r in selected_results:
                 counts_by_doc[r["doc_uid"]] = counts_by_doc.get(r["doc_uid"], 0) + 1
             doc_summary = ", ".join(f"{doc}({n})" for doc, n in counts_by_doc.items())
-            logger.info(
-                f"Per-document selection: {len(selected_results)} chunks from "
-                f"{len(counts_by_doc)} doc(s) - {doc_summary}"
-            )
+            logger.info(f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}")
 
             # Get the chunk details from database
             init_db()
@@ -95,7 +102,7 @@ class QueryCommand:
 
             with ChunkStore() as store:
                 # Fetch all chunks for all relevant docs at once
-                doc_chunks: dict[str, list[DbChunk]] = {}
+                doc_chunks: dict[str, list[Chunk]] = {}
                 for doc_uid in doc_uids:
                     doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
 
@@ -115,20 +122,14 @@ class QueryCommand:
                 final_counts_by_doc: dict[str, int] = {}
                 for r in selected_results:
                     final_counts_by_doc[r["doc_uid"]] = final_counts_by_doc.get(r["doc_uid"], 0) + 1
-                final_doc_summary = ", ".join(
-                    f"{doc}({n})" for doc, n in final_counts_by_doc.items()
-                )
-                logger.info(
-                    f"Final retrieval: {len(selected_results)} chunks from "
-                    f"{len(final_counts_by_doc)} doc(s) - {final_doc_summary}"
-                )
+                final_doc_summary = ", ".join(f"{doc}({n})" for doc, n in final_counts_by_doc.items())
+                logger.info(f"Final retrieval: {len(selected_results)} chunks from {len(final_counts_by_doc)} doc(s) - {final_doc_summary}")
 
                 # Build output
                 if not self.verbose:
                     chunks_output = self._build_json_output(selected_results, doc_chunks)
                     return json.dumps(chunks_output, indent=2, ensure_ascii=False)
-                else:
-                    return self._build_verbose_output(selected_results, doc_chunks)
+                return self._build_verbose_output(selected_results, doc_chunks)
 
         except Exception as e:
             logger.exception("QueryCommand exception")
@@ -160,15 +161,10 @@ class QueryCommand:
             selected_results.append(result)
             counts_by_doc[doc_uid] = doc_count + 1
 
-        logger.info(
-            f"Selection filters: {skipped_low_score} below min_score, "
-            f"{skipped_doc_full} skipped because doc already had {k} chunk(s)"
-        )
+        logger.info(f"Selection filters: {skipped_low_score} below min_score, {skipped_doc_full} skipped because doc already had {k} chunk(s)")
         return selected_results
 
-    def _build_json_output(
-        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
-    ) -> list[dict]:
+    def _build_json_output(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> list[dict]:
         """Build JSON output."""
         chunks_output = []
         for result in results:
@@ -179,7 +175,7 @@ class QueryCommand:
             # Find matching chunk
             for chunk in doc_chunks.get(doc_uid, []):
                 if chunk.chunk_id == chunk_id:
-                    relevance = "High" if score >= 0.3 else "Low"
+                    relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     chunks_output.append(
                         {
                             "id": chunk.chunk_id,
@@ -190,14 +186,12 @@ class QueryCommand:
                             "text": chunk.text,
                             "score": round(score, 4),
                             "relevance": relevance,
-                        }
+                        },
                     )
                     break
         return chunks_output
 
-    def _build_verbose_output(
-        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
-    ) -> str:
+    def _build_verbose_output(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build verbose text output."""
         output_lines = []
         for result in results:
@@ -208,7 +202,7 @@ class QueryCommand:
             # Find matching chunk
             for chunk in doc_chunks.get(doc_uid, []):
                 if chunk.chunk_id == chunk_id:
-                    relevance = "High" if score >= 0.3 else "Low"
+                    relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
                     output_lines.append(f"Document: {chunk.doc_uid}")
                     output_lines.append(f"Section: {chunk.section_path}")
@@ -222,7 +216,7 @@ class QueryCommand:
     def _expand_chunks(
         self,
         results: list[dict],
-        doc_chunks: dict[str, list[DbChunk]],
+        doc_chunks: dict[str, list[Chunk]],
         expand: int,
         full_doc_threshold: int,
     ) -> list[dict]:
@@ -266,7 +260,7 @@ class QueryCommand:
                 if chunk.chunk_id == chunk_id:
                     start_idx = max(0, idx - expand)
                     end_idx = min(len(chunks), idx + expand + 1)
-                    for i, surrounding_chunk in enumerate(chunks[start_idx:end_idx]):
+                    for _i, surrounding_chunk in enumerate(chunks[start_idx:end_idx]):
                         if surrounding_chunk.chunk_id is not None:
                             selected_ids_by_doc[doc_uid].add(surrounding_chunk.chunk_id)
                             if surrounding_chunk.chunk_id != chunk_id:
@@ -286,23 +280,18 @@ class QueryCommand:
                         "doc_uid": doc_uid,
                         "chunk_id": chunk_id,
                         "score": result_score_by_chunk.get((doc_uid, chunk_id), 0.0),
-                    }
+                    },
                 )
 
         if full_doc_threshold > 0:
             for doc_uid in full_doc_docs:
                 doc_size = sum(len(c.text) for c in doc_chunks.get(doc_uid, []))
-                logger.info(
-                    f"Full doc inclusion: {doc_uid} "
-                    f"(size={doc_size} < threshold={full_doc_threshold})"
-                )
+                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={full_doc_threshold})")
         if expand > 0:
             neighbour_summary: dict[str, set[int]] = {}
             for doc_uid, chunk_id in expanded_via_neighbours:
                 neighbour_summary.setdefault(doc_uid, set()).add(chunk_id)
             for doc_uid, chunk_ids in neighbour_summary.items():
-                logger.info(
-                    f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)"
-                )
+                logger.info(f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)")
 
         return expanded_results

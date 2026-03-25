@@ -1,6 +1,7 @@
 """List command - list all documents or chunks in the database."""
 
 import json
+import sqlite3
 
 from src.db import ChunkStore, init_db
 
@@ -8,10 +9,12 @@ from src.db import ChunkStore, init_db
 class ListCommand:
     """List all documents or chunks in the database."""
 
-    def __init__(self, doc_uid: str | None = None):
+    def __init__(self, doc_uid: str | None = None) -> None:
+        """Initialize the list command."""
         self.doc_uid = doc_uid
 
     def execute(self) -> str:
+        """Execute the list command and return results as JSON."""
         try:
             init_db()
 
@@ -33,8 +36,7 @@ class ListCommand:
                         indent=2,
                         ensure_ascii=False,
                     )
-                else:
-                    docs = store.get_all_docs()
-                    return json.dumps(docs, indent=2)
-        except Exception as e:
+                docs = store.get_all_docs()
+                return json.dumps(docs, indent=2)
+        except (sqlite3.OperationalError, TypeError) as e:
             return f"Error: {e}"

@@ -29,6 +29,8 @@ CANONICAL_LABEL_MAPPING: dict[str, str] = {
 
 @dataclass
 class StabilityDiagnostics:
+    """Diagnostics data for stability analysis."""
+
     run_count: int
     average_approach_count: float
     average_pairwise_jaccard: float
@@ -47,6 +49,8 @@ class StabilityDiagnostics:
 
 @dataclass
 class StabilityResult:
+    """Result of stability scoring analysis."""
+
     stability_score: float
     stability_score_loose: float
     approach_set_stability: float
@@ -135,9 +139,7 @@ def is_structurally_valid(run: dict) -> bool:
     if not isinstance(run, dict):
         return False
     answer = extract_recommendation_answer(run)
-    if answer not in VALID_RECOMMENDATION_ANSWERS:
-        return False
-    return True
+    return answer in VALID_RECOMMENDATION_ANSWERS
 
 
 def jaccard_similarity(set_a: set[str], set_b: set[str]) -> float:
@@ -189,12 +191,7 @@ def applicability_consistency_loose(run_a: dict, run_b: dict) -> float:
         empty_b = not map_b
         return 1.0 if (empty_a and empty_b) else 0.0
 
-    matches = sum(
-        1
-        for label in shared_labels
-        if _normalize_applicability_loose(map_a[label])
-        == _normalize_applicability_loose(map_b[label])
-    )
+    matches = sum(1 for label in shared_labels if _normalize_applicability_loose(map_a[label]) == _normalize_applicability_loose(map_b[label]))
     return matches / len(shared_labels)
 
 
@@ -255,9 +252,8 @@ def count_weird_alternatives(run: dict, expected_labels: set[str] | None) -> int
     weird = 0
     for approach in approaches:
         label = approach.get("normalized_label")
-        if isinstance(label, str) and label.strip():
-            if normalize_label(label) not in expected_labels:
-                weird += 1
+        if isinstance(label, str) and label.strip() and normalize_label(label) not in expected_labels:
+            weird += 1
     return weird
 
 
@@ -296,9 +292,7 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = (
-                    applicability_dist[norm_label].get(applicability, 0) + 1
-                )
+                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
 
         diagnostics = StabilityDiagnostics(
             run_count=1,
@@ -312,11 +306,7 @@ def compute_stability_score(
             structural_validity_flag=is_structurally_valid(run),
             weird_alternatives_count=count_weird_alternatives(run, expected_normalized_labels),
             duplicate_alternatives_count=count_duplicates(run),
-            missing_expected_alternatives_count=count_missing_expected(
-                run, expected_normalized_labels
-            )
-            if expected_normalized_labels
-            else 0,
+            missing_expected_alternatives_count=count_missing_expected(run, expected_normalized_labels) if expected_normalized_labels else 0,
             recommendation_distribution=recommendation_dist,
             applicability_distribution_by_label=applicability_dist,
         )
@@ -348,14 +338,14 @@ def compute_stability_score(
             jaccard_similarity(
                 extract_normalized_labels(run_a),
                 extract_normalized_labels(run_b),
-            )
+            ),
         )
         # Canonical label Jaccard (maps variants to canonical forms)
         pairwise_jaccards_canonical.append(
             jaccard_similarity(
                 extract_canonical_labels(run_a),
                 extract_canonical_labels(run_b),
-            )
+            ),
         )
         pairwise_applicability.append(applicability_consistency(run_a, run_b))
         pairwise_applicability_loose.append(applicability_consistency_loose(run_a, run_b))
@@ -363,17 +353,11 @@ def compute_stability_score(
         pairwise_recommendation_loose.append(recommendation_consistency_loose(run_a, run_b))
 
     avg_jaccard = sum(pairwise_jaccards) / len(pairwise_jaccards)
-    avg_jaccard_canonical = (
-        sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical)
-        if pairwise_jaccards_canonical
-        else 1.0
-    )
+    avg_jaccard_canonical = sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical) if pairwise_jaccards_canonical else 1.0
     avg_applicability = sum(pairwise_applicability) / len(pairwise_applicability)
     avg_applicability_loose = sum(pairwise_applicability_loose) / len(pairwise_applicability_loose)
     avg_recommendation = sum(pairwise_recommendation) / len(pairwise_recommendation)
-    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(
-        pairwise_recommendation_loose
-    )
+    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose)
 
     # Compute stability components
     approach_set_stability = avg_jaccard  # Original normalized
@@ -385,30 +369,15 @@ def compute_stability_score(
     structural_validity_stability = 1.0 if all(is_structurally_valid(r) for r in runs) else 0.0
 
     # Final score (strict)
-    stability_score = (
-        35.0 * approach_set_stability
-        + 30.0 * applicability_stability
-        + 20.0 * recommendation_stability
-        + 15.0 * structural_validity_stability
-    )
+    stability_score = 35.0 * approach_set_stability + 30.0 * applicability_stability + 20.0 * recommendation_stability + 15.0 * structural_validity_stability
     stability_score = max(0.0, min(100.0, stability_score))
 
     # Final score (loose) - treats "oui" and "oui_sous_conditions" as equivalent
-    stability_score_loose = (
-        35.0 * approach_set_stability
-        + 30.0 * applicability_stability_loose
-        + 20.0 * recommendation_stability_loose
-        + 15.0 * structural_validity_stability
-    )
+    stability_score_loose = 35.0 * approach_set_stability + 30.0 * applicability_stability_loose + 20.0 * recommendation_stability_loose + 15.0 * structural_validity_stability
     stability_score_loose = max(0.0, min(100.0, stability_score_loose))
 
     # Canonical approach score (using canonical label mapping)
-    stability_score_canonical = (
-        35.0 * approach_set_stability_canonical
-        + 30.0 * applicability_stability_loose
-        + 20.0 * recommendation_stability_loose
-        + 15.0 * structural_validity_stability
-    )
+    stability_score_canonical = 35.0 * approach_set_stability_canonical + 30.0 * applicability_stability_loose + 20.0 * recommendation_stability_loose + 15.0 * structural_validity_stability
     stability_score_canonical = max(0.0, min(100.0, stability_score_canonical))
 
     # Diagnostics
@@ -442,9 +411,7 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = (
-                    applicability_dist[norm_label].get(applicability, 0) + 1
-                )
+                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
 
     diagnostics = StabilityDiagnostics(
         run_count=run_count,
@@ -492,9 +459,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because revenue recognition criteria met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Impact: Recognize revenue now.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ],
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_2",
@@ -524,9 +489,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because criteria are met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Revenue recognition applies.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ],
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_2",
@@ -556,9 +519,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies with specific conditions.",
                     "conditions_fr": ["Condition X", "Condition Y"],
                     "practical_implication_fr": "Revenue with conditions.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ],
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_3",
@@ -577,27 +538,4 @@ if __name__ == "__main__":
 
     result = compute_stability_score(fake_runs)
 
-    print("=== Stability Score Result ===")
-    print(f"Stability Score: {result.stability_score:.1f}")
-    print(f"  - Approach Set Stability: {result.approach_set_stability:.3f}")
-    print(f"  - Applicability Stability: {result.applicability_stability:.3f}")
-    print(f"  - Recommendation Stability: {result.recommendation_stability:.3f}")
-    print(f"  - Structural Validity Stability: {result.structural_validity_stability:.3f}")
-    print()
-    print("=== Diagnostics ===")
     d = result.diagnostics
-    print(f"Run Count: {d.run_count}")
-    print(f"Average Approach Count: {d.average_approach_count:.1f}")
-    print(f"Average Pairwise Jaccard: {d.average_pairwise_jaccard:.3f}")
-    print(
-        f"Average Pairwise Applicability Consistency: {d.average_pairwise_applicability_consistency:.3f}"
-    )
-    print(
-        f"Average Pairwise Recommendation Consistency: {d.average_pairwise_recommendation_consistency:.3f}"
-    )
-    print(f"Structural Validity Flag: {d.structural_validity_flag}")
-    print(f"Weird Alternatives Count: {d.weird_alternatives_count}")
-    print(f"Duplicate Alternatives Count: {d.duplicate_alternatives_count}")
-    print(f"Missing Expected Alternatives Count: {d.missing_expected_alternatives_count}")
-    print(f"Recommendation Distribution: {d.recommendation_distribution}")
-    print(f"Applicability Distribution by Label: {d.applicability_distribution_by_label}")

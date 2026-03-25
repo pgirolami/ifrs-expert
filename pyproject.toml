@@ -25,7 +25,7 @@ test = ["pytest", "pytest-cov"]
 audit = ["pip-audit"]
 
 [tool.ruff]
-line-length = 100
+line-length = 240
 target-version = "py311"
 exclude = ["prototype/", "tests/"]
 

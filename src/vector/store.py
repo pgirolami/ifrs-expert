@@ -1,4 +1,5 @@
 """Vector store for IFRS Expert using FAISS and SentenceTransformers."""
+# ruff: noqa: PLW0603
 
 import json
 import logging
@@ -28,10 +29,7 @@ def set_index_path(path: Path | None) -> None:
     """Set a custom index path (useful for testing)."""
     global _index_path, _id_map_path
     _index_path = path
-    if path:
-        _id_map_path = path.parent / "id_map.json"
-    else:
-        _id_map_path = None
+    _id_map_path = path.parent / "id_map.json" if path else None
 
 
 def _default_index_path() -> Path:
@@ -57,17 +55,36 @@ def get_id_map_path() -> Path:
         _id_map_path = _index_path.parent / "id_map.json"
     _id_map_path.parent.mkdir(parents=True, exist_ok=True)
     return _id_map_path
-    return _ID_MAP_PATH
 
 
 class VectorStore:
     """Manages vector embeddings using FAISS and SentenceTransformers."""
 
-    def __init__(self) -> None:
-        """Initialize the vector store."""
+    def __init__(self, index_path: Path | None = None, id_map_path: Path | None = None) -> None:
+        """Initialize the vector store.
+
+        Args:
+            index_path: Optional custom path for FAISS index. Defaults to data/index/faiss.index.
+            id_map_path: Optional custom path for ID mapping file.
+
+        """
         self._index: faiss.Index | None = None
         self._model: SentenceTransformer | None = None
         self._id_map: dict[int, tuple[str, int]] = {}  # faiss_id -> (doc_uid, chunk_id)
+        self._index_path = index_path
+        self._id_map_path = id_map_path
+
+    def _resolve_index_path(self) -> Path:
+        """Resolve the index path, using instance or global default."""
+        if self._index_path is None:
+            return get_index_path()
+        return self._index_path
+
+    def _resolve_id_map_path(self) -> Path:
+        """Resolve the ID map path, using instance or global default."""
+        if self._id_map_path is None:
+            return get_id_map_path()
+        return self._id_map_path
 
     def __enter__(self) -> Self:
         """Context manager entry - load or create index."""
@@ -87,8 +104,8 @@ class VectorStore:
 
     def _load_or_create_index(self) -> None:
         """Load existing index or create a new one."""
-        index_path = get_index_path()
-        id_map_path = get_id_map_path()
+        index_path = self._resolve_index_path()
+        id_map_path = self._resolve_id_map_path()
 
         if index_path.exists() and id_map_path.exists():
             logger.info(f"Loading existing FAISS index from {index_path}")
@@ -112,8 +129,8 @@ class VectorStore:
     def _save_index(self) -> None:
         """Save the index to disk."""
         if self._index is not None:
-            index_path = get_index_path()
-            id_map_path = get_id_map_path()
+            index_path = self._resolve_index_path()
+            id_map_path = self._resolve_id_map_path()
 
             logger.info(f"Saving FAISS index to {index_path}")
             faiss.write_index(self._index, str(index_path))
@@ -131,6 +148,7 @@ class VectorStore:
             doc_uid: Document UID.
             chunk_ids: List of chunk database IDs.
             texts: List of text content to embed.
+
         """
         if not texts:
             return
@@ -167,6 +185,7 @@ class VectorStore:
         Returns:
             List of results with doc_uid, chunk_id, and relevance score.
             Score is cosine similarity (0-1, higher is better).
+
         """
         if self._index is None or self._index.ntotal == 0:
             logger.warning("Index is empty, no results to return")
@@ -203,7 +222,7 @@ class VectorStore:
                         "doc_uid": doc_uid,
                         "chunk_id": chunk_id,
                         "score": float(score),
-                    }
+                    },
                 )
 
         # FAISS IndexFlatIP returns results in descending order by default
@@ -220,6 +239,7 @@ class VectorStore:
 
         Returns:
             Number of embeddings deleted.
+
         """
         if self._index is None:
             return 0
@@ -268,6 +288,7 @@ def compute_embeddings(texts: list[str]) -> np.ndarray:
 
     Returns:
         numpy array of embeddings.
+
     """
     model = SentenceTransformer(EMBEDDING_MODEL)
     embeddings = model.encode(texts, show_progress_bar=True)

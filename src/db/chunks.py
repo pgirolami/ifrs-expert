@@ -3,52 +3,12 @@
 import logging
 import sqlite3
 from pathlib import Path
-from typing import Self
 
 from src.db.connection import get_connection
-from src.models.chunk import Chunk as PdfChunk
+from src.models.chunk import Chunk
 from src.pdf import extract_chunks
 
 logger = logging.getLogger(__name__)
-
-
-class Chunk:
-    """Represents a document chunk in the database."""
-
-    chunk_id: int | None
-    doc_uid: str
-    section_path: str
-    page_start: str
-    page_end: str
-    text: str
-
-    def __init__(
-        self,
-        chunk_id: int | None = None,
-        *,
-        doc_uid: str = "",
-        section_path: str = "",
-        page_start: str = "",
-        page_end: str = "",
-        text: str = "",
-    ) -> None:
-        self.chunk_id = chunk_id
-        self.doc_uid = doc_uid
-        self.section_path = section_path
-        self.page_start = page_start
-        self.page_end = page_end
-        self.text = text
-
-    @classmethod
-    def from_pdf_chunk(cls, pdf_chunk: PdfChunk, doc_uid: str) -> Self:
-        """Create a database Chunk from a PDF Chunk."""
-        return cls(
-            doc_uid=doc_uid,
-            section_path=pdf_chunk.section_path,
-            page_start=pdf_chunk.page_start,
-            page_end=pdf_chunk.page_end,
-            text=pdf_chunk.text,
-        )
 
 
 class ChunkStore:
@@ -56,7 +16,7 @@ class ChunkStore:
 
     _conn: sqlite3.Connection
 
-    def __enter__(self) -> Self:
+    def __enter__(self) -> "ChunkStore":
         """Context manager entry."""
         self._conn = get_connection()
         self._conn.row_factory = sqlite3.Row
@@ -74,6 +34,7 @@ class ChunkStore:
 
         Returns:
             ID of the inserted chunk.
+
         """
         cursor = self._conn.execute(
             """INSERT INTO chunks (doc_uid, section_path, page_start, page_end, text)
@@ -91,6 +52,7 @@ class ChunkStore:
 
         Returns:
             List of inserted chunk IDs. Also updates chunk objects with their IDs.
+
         """
         ids: list[int] = []
         for chunk in chunks:
@@ -108,10 +70,10 @@ class ChunkStore:
 
         Returns:
             List of chunks for the document.
+
         """
         rows = self._conn.execute(
-            "SELECT id, doc_uid, section_path, page_start, page_end, text "
-            "FROM chunks WHERE doc_uid = ? ORDER BY id",
+            "SELECT id, doc_uid, section_path, page_start, page_end, text FROM chunks WHERE doc_uid = ? ORDER BY id",
             (doc_uid,),
         ).fetchall()
 
@@ -132,6 +94,7 @@ class ChunkStore:
 
         Returns:
             List of document UIDs.
+
         """
         rows = self._conn.execute("SELECT DISTINCT doc_uid FROM chunks ORDER BY doc_uid").fetchall()
         return [row["doc_uid"] for row in rows]
@@ -144,6 +107,7 @@ class ChunkStore:
 
         Returns:
             Number of deleted chunks.
+
         """
         cursor = self._conn.execute("DELETE FROM chunks WHERE doc_uid = ?", (doc_uid,))
         self._conn.commit()
@@ -161,11 +125,12 @@ def insert_chunks_from_file(pdf_path: Path, doc_uid: str) -> list[int]:
 
     Returns:
         List of inserted chunk IDs.
+
     """
     logger.info(f"Extracting chunks from {pdf_path}")
     raw_chunks = extract_chunks(pdf_path)
 
-    chunks = [Chunk.from_pdf_chunk(c, doc_uid) for c in raw_chunks]
+    chunks = [Chunk(doc_uid=doc_uid, section_path=c.section_path, page_start=c.page_start, page_end=c.page_end, text=c.text) for c in raw_chunks]
 
     with ChunkStore() as store:
         return store.insert_chunks(chunks)

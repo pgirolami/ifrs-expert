@@ -2,13 +2,14 @@
 
 import json
 import sys
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add project root to path for stability_scorer import
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
 
-from stability_scorer import compute_stability_score
+from src.stability_scorer import compute_stability_score
 
 
 @dataclass
@@ -35,12 +36,9 @@ def load_b_response(run_dir: Path) -> dict | None:
 
     content = b_response_path.read_text()
     content = content.strip()
-    if content.startswith("```json"):
-        content = content[7:]
-    if content.startswith("```"):
-        content = content[3:]
-    if content.endswith("```"):
-        content = content[:-3]
+    content = content.removeprefix("```json")
+    content = content.removeprefix("```")
+    content = content.removesuffix("```")
     content = content.strip()
 
     try:
@@ -51,15 +49,11 @@ def load_b_response(run_dir: Path) -> dict | None:
 
 def main():
     exp_dir = Path("experiments")
-    exp_07_dirs = sorted([d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith("07")])
-
-    if not exp_07_dirs:
-        print("No experiment directories found starting with '07'")
-        return
+    exp_08_dirs = sorted([d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith("08")])
 
     all_results: list[QuestionScore] = []
 
-    for exp_dir_item in exp_07_dirs:
+    for exp_dir_item in exp_08_dirs:
         print(f"\n{'=' * 80}")
         print(f"EXPERIMENT: {exp_dir_item.name}")
         print(f"{'=' * 80}\n")
@@ -105,12 +99,8 @@ def main():
                 )
             )
 
-            print(
-                f"  {question_id}: Score={result.stability_score:.1f}, Score(loose)={result.stability_score_loose:.1f}  (runs={len(runs)}, valid={result.diagnostics.structural_validity_flag})"
-            )
-            print(
-                f"    Approach={result.approach_set_stability:.2f} (canonical={result.approach_set_stability_canonical:.2f}), Applicability={result.applicability_stability:.2f}, Rec={result.recommendation_stability:.2f}"
-            )
+            print(f"  {question_id}: Score={result.stability_score:.1f}, Score(loose)={result.stability_score_loose:.1f}  (runs={len(runs)}, valid={result.diagnostics.structural_validity_flag})")
+            print(f"    Approach={result.approach_set_stability:.2f} (canonical={result.approach_set_stability_canonical:.2f}), Applicability={result.applicability_stability:.2f}, Rec={result.recommendation_stability:.2f}")
 
     # Summary table
     print(f"\n{'=' * 80}")
@@ -123,18 +113,14 @@ def main():
     total_score_loose = 0
     count = 0
     for r in sorted(all_results, key=lambda x: x.stability_score, reverse=True):
-        print(
-            f"{r.question_id:<35} {r.runs:>5} {r.stability_score:>7.1f} {r.stability_score_loose:>12.1f} {str(r.structural_valid):>5}"
-        )
+        print(f"{r.question_id:<35} {r.runs:>5} {r.stability_score:>7.1f} {r.stability_score_loose:>12.1f} {r.structural_valid!s:>5}")
         total_score += r.stability_score
         total_score_loose += r.stability_score_loose
         count += 1
 
     if count > 0:
         print(f"{'-' * 35} {'-' * 5} {'-' * 7} {'-' * 12} {'-' * 5}")
-        print(
-            f"{'AVERAGE':<35} {'':>5} {total_score / count:>7.1f} {total_score_loose / count:>12.1f} {'':>5}"
-        )
+        print(f"{'AVERAGE':<35} {'':>5} {total_score / count:>7.1f} {total_score_loose / count:>12.1f} {'':>5}")
 
 
 if __name__ == "__main__":

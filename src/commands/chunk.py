@@ -1,5 +1,6 @@
 """Chunk command - extract chunks from a PDF file."""
 
+import json
 from pathlib import Path
 
 from src.pdf import extract_chunks
@@ -8,16 +9,17 @@ from src.pdf import extract_chunks
 class ChunkCommand:
     """Extract chunks from a PDF file."""
 
-    def __init__(self, pdf_path: Path):
+    def __init__(self, pdf_path: Path) -> None:
+        """Initialize the chunk command."""
         self.pdf_path = pdf_path
 
     def execute(self) -> str:
+        """Extract and return chunks from a PDF as JSON."""
         if not self.pdf_path.exists():
             return f"Error: PDF file not found: {self.pdf_path}"
 
         try:
             chunks = extract_chunks(self.pdf_path)
-            import json
 
             return json.dumps(
                 [
@@ -32,5 +34,5 @@ class ChunkCommand:
                 indent=2,
                 ensure_ascii=False,
             )
-        except Exception as e:
+        except (OSError, ValueError) as e:
             return f"Error: {e}"

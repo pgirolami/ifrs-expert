@@ -5,9 +5,9 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from math import inf
 from pathlib import Path
 
+from src.commands import AnswerCommand, AnswerOptions, ChunkCommand, ListCommand, QueryCommand, QueryOptions, StoreCommand
 from src.logging_config import setup_logging
 
 setup_logging()
@@ -16,10 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> int:
-    """Main entry point for the CLI."""
-    parser = argparse.ArgumentParser(
-        description="IFRS Expert CLI - Document ingestion and management"
-    )
+    """Entry point for the CLI."""
+    parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management")
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
@@ -165,8 +163,6 @@ def main() -> int:
 
 def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
-    from src.commands import AnswerCommand, ChunkCommand, ListCommand, QueryCommand, StoreCommand
-
     if args.command == "chunk":
         command = ChunkCommand(pdf_path=Path(args.pdf))
     elif args.command == "store":
@@ -179,23 +175,27 @@ def _execute_command(args: argparse.Namespace) -> str:
         verbose = not getattr(args, "json", False)
         command = QueryCommand(
             query=query,
-            k=args.k,
-            min_score=args.min_score,
-            verbose=verbose,
-            expand=args.expand,
-            full_doc_threshold=args.full_doc_threshold,
+            options=QueryOptions(
+                k=args.k,
+                min_score=args.min_score,
+                verbose=verbose,
+                expand=args.expand,
+                full_doc_threshold=args.full_doc_threshold,
+            ),
         )
     elif args.command == "answer":
         # Read query from stdin
         query = sys.stdin.read().strip()
         command = AnswerCommand(
             query=query,
-            k=args.k,
-            min_score=args.min_score,
-            expand=args.expand,
-            full_doc_threshold=args.full_doc_threshold,
-            output_dir=args.output_dir,
-            save_all=args.save_all,
+            options=AnswerOptions(
+                k=args.k,
+                min_score=args.min_score,
+                expand=args.expand,
+                full_doc_threshold=args.full_doc_threshold,
+                output_dir=args.output_dir,
+                save_all=args.save_all,
+            ),
         )
     else:
         return f"Error: Unknown command: {args.command}"

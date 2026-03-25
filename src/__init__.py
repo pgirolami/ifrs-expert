@@ -1,1 +1,1 @@
-# IFRS Expert - AI Assistant for IFRS and Accounting Guidance
+"""IFRS Expert - AI Assistant for IFRS and Accounting Guidance."""

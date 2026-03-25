@@ -2,9 +2,9 @@
 
 import json
 import re
-from pathlib import Path
 from collections import defaultdict
 from itertools import combinations
+from pathlib import Path
 
 
 def extract_chunks(prompt_file: Path) -> list[tuple[str, str, str]]:
@@ -21,12 +21,9 @@ def load_b_response(run_dir: Path) -> dict | None:
     if not b_response_path.exists():
         return None
     content = b_response_path.read_text().strip()
-    if content.startswith("```json"):
-        content = content[7:]
-    if content.startswith("```"):
-        content = content[3:]
-    if content.endswith("```"):
-        content = content[:-3]
+    content = content.removeprefix("```json")
+    content = content.removeprefix("```")
+    content = content.removesuffix("```")
     try:
         return json.loads(content.strip())
     except json.JSONDecodeError:
@@ -60,21 +57,13 @@ def jaccard_similarity(set_a: set[str], set_b: set[str]) -> float:
 
 def extract_canonical_labels(run: dict) -> set[str]:
     approaches = run.get("approaches", [])
-    return {
-        canonicalize_label(a.get("normalized_label", ""))
-        for a in approaches
-        if a.get("normalized_label")
-    }
+    return {canonicalize_label(a.get("normalized_label", "")) for a in approaches if a.get("normalized_label")}
 
 
 def extract_original_labels(run: dict) -> set[str]:
     """Extract original normalized labels (strict - no canonical mapping)."""
     approaches = run.get("approaches", [])
-    return {
-        normalize_label(a.get("normalized_label", ""))
-        for a in approaches
-        if a.get("normalized_label")
-    }
+    return {normalize_label(a.get("normalized_label", "")) for a in approaches if a.get("normalized_label")}
 
 
 def extract_applicability_loose(run: dict) -> dict[str, str]:
@@ -86,11 +75,7 @@ def extract_applicability_loose(run: dict) -> dict[str, str]:
         applicability = a.get("applicability", "")
         if label and applicability:
             # Treat oui and oui_sous_conditions as the same
-            normalized = (
-                "positive"
-                if applicability.strip() in ("oui", "oui_sous_conditions")
-                else applicability.strip()
-            )
+            normalized = "positive" if applicability.strip() in ("oui", "oui_sous_conditions") else applicability.strip()
             result[label] = normalized
     return result
 
@@ -196,51 +181,21 @@ def compute_stability(runs: list[dict]) -> dict:
         pairwise_recommendation_strict.append(recommendation_consistency_strict(run_a, run_b))
         pairwise_recommendation_loose.append(recommendation_consistency_loose(run_a, run_b))
 
-    avg_jaccard_orig = (
-        sum(pairwise_jaccards_orig) / len(pairwise_jaccards_orig) if pairwise_jaccards_orig else 1.0
-    )
-    avg_jaccard_canonical = (
-        sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical)
-        if pairwise_jaccards_canonical
-        else 1.0
-    )
-    avg_applicability_strict = (
-        sum(pairwise_applicability_strict) / len(pairwise_applicability_strict)
-        if pairwise_applicability_strict
-        else 1.0
-    )
-    avg_applicability_loose = (
-        sum(pairwise_applicability_loose) / len(pairwise_applicability_loose)
-        if pairwise_applicability_loose
-        else 1.0
-    )
-    avg_recommendation_strict = (
-        sum(pairwise_recommendation_strict) / len(pairwise_recommendation_strict)
-        if pairwise_recommendation_strict
-        else 1.0
-    )
-    avg_recommendation_loose = (
-        sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose)
-        if pairwise_recommendation_loose
-        else 1.0
-    )
+    avg_jaccard_orig = sum(pairwise_jaccards_orig) / len(pairwise_jaccards_orig) if pairwise_jaccards_orig else 1.0
+    avg_jaccard_canonical = sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical) if pairwise_jaccards_canonical else 1.0
+    avg_applicability_strict = sum(pairwise_applicability_strict) / len(pairwise_applicability_strict) if pairwise_applicability_strict else 1.0
+    avg_applicability_loose = sum(pairwise_applicability_loose) / len(pairwise_applicability_loose) if pairwise_applicability_loose else 1.0
+    avg_recommendation_strict = sum(pairwise_recommendation_strict) / len(pairwise_recommendation_strict) if pairwise_recommendation_strict else 1.0
+    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose) if pairwise_recommendation_loose else 1.0
 
     # Strict score (original approach + strict applicability + strict recommendation)
     strict_score = (
-        35.0 * avg_jaccard_orig
-        + 30.0 * avg_applicability_strict
-        + 20.0 * avg_recommendation_strict
-        + 15.0  # structural validity assumed 1.0
+        35.0 * avg_jaccard_orig + 30.0 * avg_applicability_strict + 20.0 * avg_recommendation_strict + 15.0  # structural validity assumed 1.0
     )
     strict_score = max(0, min(100, strict_score))
 
     # Loose score (canonical approach + loose applicability + loose recommendation)
-    loose_score = (
-        35.0 * avg_jaccard_canonical
-        + 30.0 * avg_applicability_loose
-        + 20.0 * avg_recommendation_loose
-        + 15.0
-    )
+    loose_score = 35.0 * avg_jaccard_canonical + 30.0 * avg_applicability_loose + 20.0 * avg_recommendation_loose + 15.0
     loose_score = max(0, min(100, loose_score))
 
     return {
@@ -258,9 +213,7 @@ def compute_stability(runs: list[dict]) -> dict:
 
 def analyze_question(exp_dir: Path, question: str) -> dict:
     """Analyze a single question across all its runs."""
-    run_dirs = sorted(
-        [d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith(f"{question}_k=")]
-    )
+    run_dirs = sorted([d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith(f"{question}_k=")])
 
     if not run_dirs:
         return {"error": "No runs found"}
@@ -303,23 +256,15 @@ def analyze_question(exp_dir: Path, question: str) -> dict:
         if br:
             b_responses.append(br)
 
-    stability = (
-        compute_stability(b_responses)
-        if b_responses
-        else {"score": 0, "approach_canonical": 0, "runs": 0}
-    )
+    stability = compute_stability(b_responses) if b_responses else {"score": 0, "approach_canonical": 0, "runs": 0}
 
     return {
         "question": question,
         "runs": len(run_dirs),
         "top_score": top_score,
         "low_score": low_score,
-        "retrieval_sections": {
-            doc: sorted(sections) for doc, sections in retrieval_sections_with_scores.items()
-        },
-        "expansion_sections": {
-            doc: sorted(sections) for doc, sections in all_expansion_sections.items()
-        },
+        "retrieval_sections": {doc: sorted(sections) for doc, sections in retrieval_sections_with_scores.items()},
+        "expansion_sections": {doc: sorted(sections) for doc, sections in all_expansion_sections.items()},
         "stability_score": stability.get("score", 0),
         "approach_canonical": stability.get("approach_canonical", 0),
     }
@@ -336,9 +281,7 @@ def generate_markdown_table(questions_data: list[dict]) -> str:
     for q in questions_data:
         if "error" in q:
             continue
-        lines.append(
-            f"| {q['question']} | {q['runs']} | {q['top_score']:.4f} | {q['low_score']:.4f} |"
-        )
+        lines.append(f"| {q['question']} | {q['runs']} | {q['top_score']:.4f} | {q['low_score']:.4f} |")
 
     lines.append("\n### IFRS 9 Retrieval Sections (alphabetical, with scores)\n")
     lines.append("| Question | Section | Score |")
@@ -356,9 +299,7 @@ def generate_markdown_table(questions_data: list[dict]) -> str:
     for q in questions_data:
         if "error" in q:
             continue
-        sections = q["retrieval_sections"].get(
-            "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation", []
-        )
+        sections = q["retrieval_sections"].get("ifric-16-hedges-of-a-net-investment-in-a-foreign-operation", [])
         for sec, sc in sorted(sections, key=lambda x: x[0]):
             lines.append(f"| {q['question']} | {sec} | {sc:.4f} |")
 
@@ -393,14 +334,8 @@ def generate_expansion_table(questions_data: list[dict]) -> str:
         if "error" in q:
             continue
 
-        ifrs9_exp = ", ".join(
-            q["expansion_sections"].get("ifrs-9-financial-instruments 2025 required", [])
-        )
-        ifric_exp = ", ".join(
-            q["expansion_sections"].get(
-                "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation", []
-            )
-        )
+        ifrs9_exp = ", ".join(q["expansion_sections"].get("ifrs-9-financial-instruments 2025 required", []))
+        ifric_exp = ", ".join(q["expansion_sections"].get("ifric-16-hedges-of-a-net-investment-in-a-foreign-operation", []))
 
         lines.append(f"| {q['question']} | {ifrs9_exp} | {ifric_exp} |")
 
@@ -418,9 +353,7 @@ def compute_aggregate_metrics(questions_data: list[dict]) -> dict:
         question = q["question"]
         # Get all runs for this question
         exp_dir = Path("experiments/07_betterbetter_2_stage_processing_json_output")
-        run_dirs = sorted(
-            [d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith(f"{question}_k=")]
-        )
+        run_dirs = sorted([d for d in exp_dir.iterdir() if d.is_dir() and d.name.startswith(f"{question}_k=")])
 
         for rd in run_dirs:
             br = load_b_response(rd)
@@ -450,106 +383,48 @@ def compute_aggregate_metrics(questions_data: list[dict]) -> dict:
     for i in range(len(all_runs_data)):
         for j in range(i + 1, len(all_runs_data)):
             # Strict
-            pairwise_approach_orig.append(
-                jaccard_similarity(all_original_labels[i], all_original_labels[j])
-            )
+            pairwise_approach_orig.append(jaccard_similarity(all_original_labels[i], all_original_labels[j]))
             # Loose
-            pairwise_approach_canonical.append(
-                jaccard_similarity(all_canonical_labels[i], all_canonical_labels[j])
-            )
+            pairwise_approach_canonical.append(jaccard_similarity(all_canonical_labels[i], all_canonical_labels[j]))
             # Applicability strict
-            shared = set(all_applicability_strict[i].keys()) & set(
-                all_applicability_strict[j].keys()
-            )
+            shared = set(all_applicability_strict[i].keys()) & set(all_applicability_strict[j].keys())
             if shared:
-                matches = sum(
-                    1
-                    for k in shared
-                    if all_applicability_strict[i][k] == all_applicability_strict[j][k]
-                )
+                matches = sum(1 for k in shared if all_applicability_strict[i][k] == all_applicability_strict[j][k])
                 pairwise_applicability_strict.append(matches / len(shared))
             else:
-                pairwise_applicability_strict.append(
-                    1.0
-                    if (not all_applicability_strict[i] and not all_applicability_strict[j])
-                    else 0.0
-                )
+                pairwise_applicability_strict.append(1.0 if (not all_applicability_strict[i] and not all_applicability_strict[j]) else 0.0)
             # Applicability loose
             shared = set(all_applicability_loose[i].keys()) & set(all_applicability_loose[j].keys())
             if shared:
-                matches = sum(
-                    1
-                    for k in shared
-                    if all_applicability_loose[i][k] == all_applicability_loose[j][k]
-                )
+                matches = sum(1 for k in shared if all_applicability_loose[i][k] == all_applicability_loose[j][k])
                 pairwise_applicability_loose.append(matches / len(shared))
             else:
-                pairwise_applicability_loose.append(
-                    1.0
-                    if (not all_applicability_loose[i] and not all_applicability_loose[j])
-                    else 0.0
-                )
+                pairwise_applicability_loose.append(1.0 if (not all_applicability_loose[i] and not all_applicability_loose[j]) else 0.0)
             # Recommendation strict
             if all_recommendation_strict[i] and all_recommendation_strict[j]:
-                pairwise_recommendation_strict.append(
-                    1.0 if all_recommendation_strict[i] == all_recommendation_strict[j] else 0.0
-                )
+                pairwise_recommendation_strict.append(1.0 if all_recommendation_strict[i] == all_recommendation_strict[j] else 0.0)
             else:
                 pairwise_recommendation_strict.append(0.0)
             # Recommendation loose
             if all_recommendation_loose[i] and all_recommendation_loose[j]:
-                pairwise_recommendation_loose.append(
-                    1.0 if all_recommendation_loose[i] == all_recommendation_loose[j] else 0.0
-                )
+                pairwise_recommendation_loose.append(1.0 if all_recommendation_loose[i] == all_recommendation_loose[j] else 0.0)
             else:
                 pairwise_recommendation_loose.append(0.0)
 
     # Compute averages
-    avg_approach_orig = (
-        sum(pairwise_approach_orig) / len(pairwise_approach_orig) if pairwise_approach_orig else 1.0
-    )
-    avg_approach_canonical = (
-        sum(pairwise_approach_canonical) / len(pairwise_approach_canonical)
-        if pairwise_approach_canonical
-        else 1.0
-    )
-    avg_applicability_strict = (
-        sum(pairwise_applicability_strict) / len(pairwise_applicability_strict)
-        if pairwise_applicability_strict
-        else 1.0
-    )
-    avg_applicability_loose = (
-        sum(pairwise_applicability_loose) / len(pairwise_applicability_loose)
-        if pairwise_applicability_loose
-        else 1.0
-    )
-    avg_recommendation_strict = (
-        sum(pairwise_recommendation_strict) / len(pairwise_recommendation_strict)
-        if pairwise_recommendation_strict
-        else 1.0
-    )
-    avg_recommendation_loose = (
-        sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose)
-        if pairwise_recommendation_loose
-        else 1.0
-    )
+    avg_approach_orig = sum(pairwise_approach_orig) / len(pairwise_approach_orig) if pairwise_approach_orig else 1.0
+    avg_approach_canonical = sum(pairwise_approach_canonical) / len(pairwise_approach_canonical) if pairwise_approach_canonical else 1.0
+    avg_applicability_strict = sum(pairwise_applicability_strict) / len(pairwise_applicability_strict) if pairwise_applicability_strict else 1.0
+    avg_applicability_loose = sum(pairwise_applicability_loose) / len(pairwise_applicability_loose) if pairwise_applicability_loose else 1.0
+    avg_recommendation_strict = sum(pairwise_recommendation_strict) / len(pairwise_recommendation_strict) if pairwise_recommendation_strict else 1.0
+    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose) if pairwise_recommendation_loose else 1.0
 
     # Strict score
-    strict_score = (
-        35.0 * avg_approach_orig
-        + 30.0 * avg_applicability_strict
-        + 20.0 * avg_recommendation_strict
-        + 15.0
-    )
+    strict_score = 35.0 * avg_approach_orig + 30.0 * avg_applicability_strict + 20.0 * avg_recommendation_strict + 15.0
     strict_score = max(0, min(100, strict_score))
 
     # Loose score
-    loose_score = (
-        35.0 * avg_approach_canonical
-        + 30.0 * avg_applicability_loose
-        + 20.0 * avg_recommendation_loose
-        + 15.0
-    )
+    loose_score = 35.0 * avg_approach_canonical + 30.0 * avg_applicability_loose + 20.0 * avg_recommendation_loose + 15.0
     loose_score = max(0, min(100, loose_score))
 
     # Get all retrieval scores
@@ -584,9 +459,7 @@ def main():
     for qid in question_ids:
         result = analyze_question(exp_dir, qid)
         questions_data.append(result)
-        print(
-            f"  {qid}: top={result.get('top_score', 0):.4f}, low={result.get('low_score', 0):.4f}, runs={result.get('runs', 0)}"
-        )
+        print(f"  {qid}: top={result.get('top_score', 0):.4f}, low={result.get('low_score', 0):.4f}, runs={result.get('runs', 0)}")
 
     # Generate markdown output
     print("\n" + "=" * 80)
@@ -599,17 +472,13 @@ def main():
     # Aggregate metrics - computed across ALL runs (each run treated equally)
     agg = compute_aggregate_metrics(questions_data)
     print(f"\n## Aggregate Metrics (across all {agg['total_runs']} runs)")
-    print(f"| Metric | Strict | Loose |")
-    print(f"|--------|--------|------|")
+    print("| Metric | Strict | Loose |")
+    print("|--------|--------|------|")
     print(f"| Score | {agg['score_strict']:.1f} | {agg['score_loose']:.1f} |")
     print(f"| Approach | {agg['approach_original']:.4f} | {agg['approach_canonical']:.4f} |")
-    print(
-        f"| Applicability | {agg['applicability_strict']:.4f} | {agg['applicability_loose']:.4f} |"
-    )
-    print(
-        f"| Recommendation | {agg['recommendation_strict']:.4f} | {agg['recommendation_loose']:.4f} |"
-    )
-    print(f"|")
+    print(f"| Applicability | {agg['applicability_strict']:.4f} | {agg['applicability_loose']:.4f} |")
+    print(f"| Recommendation | {agg['recommendation_strict']:.4f} | {agg['recommendation_loose']:.4f} |")
+    print("|")
     print(f"| Avg Top Score | {agg['avg_top_score']:.4f} |")
     print(f"| Avg Low Score | {agg['avg_low_score']:.4f} |")
 

@@ -33,9 +33,7 @@ def init_db() -> None:
             conn.executescript(migration_file.read_text())
 
         conn.commit()
-        logger.info(
-            f"Database initialized with {len(list(migrations_dir.glob('*.sql')))} migrations"
-        )
+        logger.info(f"Database initialized with {len(list(migrations_dir.glob('*.sql')))} migrations")
 
 
 def get_connection(*, read_only: bool = False) -> sqlite3.Connection:
@@ -46,6 +44,7 @@ def get_connection(*, read_only: bool = False) -> sqlite3.Connection:
 
     Returns:
         SQLite connection with Row factory set.
+
     """
     db_path = get_db_path()
     if read_only:

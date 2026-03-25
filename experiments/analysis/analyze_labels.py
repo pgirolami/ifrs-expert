@@ -1,7 +1,6 @@
 """Analyze approach labels and create canonical mapping table."""
 
 import json
-from collections import defaultdict
 from pathlib import Path
 
 
@@ -13,12 +12,9 @@ def load_b_response(run_dir: Path) -> dict | None:
 
     content = b_response_path.read_text()
     content = content.strip()
-    if content.startswith("```json"):
-        content = content[7:]
-    if content.startswith("```"):
-        content = content[3:]
-    if content.endswith("```"):
-        content = content[:-3]
+    content = content.removeprefix("```json")
+    content = content.removeprefix("```")
+    content = content.removesuffix("```")
     content = content.strip()
 
     try:

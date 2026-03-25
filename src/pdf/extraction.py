@@ -7,6 +7,26 @@ import fitz
 
 from src.models.chunk import Chunk
 
+# Section number validation thresholds
+MAX_SECTION_NUMBER_LENGTH = 8
+MIN_SECTION_TEXT_LENGTH = 3
+MAX_PAGE_NUMBER_LENGTH = 10
+
+# PDF coordinate thresholds
+FOOTER_Y_THRESHOLD = 700
+LEFT_MARGIN_THRESHOLD = 150
+SECTION_X_BUFFER = 15
+MIN_CONTENT_LENGTH = 3
+
+# Header detection thresholds
+HEADER_MAX_LENGTH = 30
+IDENTIFICATION_MAX_LENGTH = 60
+SHORT_TITLE_LENGTH = 40
+TITLE_WORD_COUNT = 8
+
+# PDF flags
+BOLD_TEXT_FLAG = 20
+
 
 class SpanDict(TypedDict):
     """Type for a span in PyMuPDF's dict output."""
@@ -66,7 +86,7 @@ def is_section_number(text: str) -> bool:
     - 1.1, 2.1 (dotted numeric)
     - 1, 2 (numeric)
     """
-    if not text or len(text) > 8:
+    if not text or len(text) > MAX_SECTION_NUMBER_LENGTH:
         return False
 
     # Remove dots and check if alphanumeric
@@ -100,7 +120,7 @@ def is_section_title(text: str) -> bool:
         return False
 
     # If it's just a few characters, probably not a title
-    if len(text) < 3:
+    if len(text) < MIN_SECTION_TEXT_LENGTH:
         return False
 
     # Check for common title patterns
@@ -128,11 +148,7 @@ def is_section_title(text: str) -> bool:
     ]
 
     lower_text = text.lower()
-    for starter in title_starters:
-        if lower_text.startswith(starter):
-            return True
-
-    return False
+    return any(lower_text.startswith(starter) for starter in title_starters)
 
 
 def extract_page_number(blocks: list[BlockDict]) -> str | None:
@@ -140,17 +156,16 @@ def extract_page_number(blocks: list[BlockDict]) -> str | None:
     for block in blocks:
         if block.get("type") == 0:
             bbox = block.get("bbox", [0, 0, 0, 0])
-            # Page numbers are typically in the footer area (y > 700)
-            if bbox[1] > 700:
+            # Page numbers are typically in the footer area (y > FOOTER_Y_THRESHOLD)
+            if bbox[1] > FOOTER_Y_THRESHOLD:
                 for line in block.get("lines", []):
                     for span in line.get("spans", []):
                         span_text = span.get("text", "").strip()
                         # Look for page number pattern (e.g., "A856", "2", etc.)
-                        if span_text and len(span_text) <= 10:
+                        if span_text and len(span_text) <= MAX_PAGE_NUMBER_LENGTH:
                             # Check if it's alphanumeric starting with a letter or just digits
-                            if span_text[0].isalpha() or span_text[0].isdigit():
-                                if span_text.replace(" ", "").isalnum():
-                                    return span_text
+                            if (span_text[0].isalpha() or span_text[0].isdigit()) and span_text.replace(" ", "").isalnum():
+                                return span_text
                             return span_text
     return None
 
@@ -163,6 +178,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
     Returns:
         List of Chunk objects.
+
     """
     doc: fitz.Document = fitz.open(str(pdf_path))
 
@@ -197,7 +213,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                                 "y": y0,
                                 "x1": x1,
                                 "flags": span_flags,
-                            }
+                            },
                         )
 
     doc.close()
@@ -210,12 +226,12 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
     for span in all_content:
         text: str = span["text"].strip()
         # Skip footer area
-        if span["y"] > 700:
+        if span["y"] > FOOTER_Y_THRESHOLD:
             continue
         # Section numbers: left margin, valid section number pattern
-        if span["x0"] < 150 and is_section_number(text):
-            # Check if this is a bold title (flags=20 means bold in PDF)
-            is_bold = span.get("flags", 0) == 20
+        if span["x0"] < LEFT_MARGIN_THRESHOLD and is_section_number(text):
+            # Check if this is a bold title (flags=BOLD_TEXT_FLAG means bold in PDF)
+            is_bold = span.get("flags", 0) == BOLD_TEXT_FLAG
             sections.append(
                 {
                     "number": text,
@@ -224,7 +240,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                     "page": span["page"],
                     "page_index": span["page_index"],
                     "is_bold_title": is_bold,
-                }
+                },
             )
 
     # Sort sections by page, then y
@@ -250,16 +266,13 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         section_page_index: int = section["page_index"]
 
         # Find next section's page and y
-        # Also check if the next section is a bold title that should act as a boundary
         next_page_index: float
         next_y: float
-        is_next_bold_title: bool = False
 
         if i + 1 < len(sections):
             next_section: Section = sections[i + 1]
             next_page_index = next_section["page_index"]
             next_y = next_section["y"]
-            is_next_bold_title = next_section.get("is_bold_title", False)
         else:
             next_page_index = float("inf")
             next_y = float("inf")
@@ -268,7 +281,6 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         # This handles cases like page A427 where 7.3.2 is followed by Appendix A on the next page.
         # Bold titles (flags=20) indicate new sections that should act as boundaries.
         bold_title_page_index: int = -1
-        bold_title_y: float = float("inf")
 
         for span in all_content:
             if span["page_index"] < section_page_index:
@@ -282,11 +294,10 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             if span["page_index"] == next_page_index and span["y"] >= next_y:
                 continue
 
-            # Check if this is a bold title (flags=20)
-            if span.get("flags", 0) == 20:
+            # Check if this is a bold title (flags=BOLD_TEXT_FLAG)
+            if span.get("flags", 0) == BOLD_TEXT_FLAG:
                 # Found a bold title - set it as the boundary
                 bold_title_page_index = span["page_index"]
-                bold_title_y = span["y"]
                 break
 
         section_text_parts: list[str] = []
@@ -297,7 +308,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
         for span in all_content:
             # Skip footer
-            if span["y"] > 700:
+            if span["y"] > FOOTER_Y_THRESHOLD:
                 continue
 
             # Determine the upper y bound for this span's page
@@ -322,7 +333,6 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                     # Skip all content on/beyond the bold title page
                     continue
                 # Include all content on intermediate pages
-                pass
             else:
                 # Outside the range
                 continue
@@ -335,13 +345,13 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             text: str = span["text"]
             if text.strip() == section_num:
                 continue
-            if is_section_number(text.strip()) and span["x0"] < 150:
+            if is_section_number(text.strip()) and span["x0"] < LEFT_MARGIN_THRESHOLD:
                 continue
 
             # Skip spans in left margin (where section numbers are)
-            if span["x0"] < section_x_end + 15:
+            if span["x0"] < section_x_end + SECTION_X_BUFFER:
                 # But keep spans that have meaningful content
-                if text.strip() and len(text.strip()) > 3:
+                if text.strip() and len(text.strip()) > MIN_CONTENT_LENGTH:
                     pass  # Could be content, but check more
                 else:
                     continue
@@ -357,10 +367,10 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         cleaned_lines: list[str] = []
         for line in lines:
             # Skip header text (all caps, short)
-            if line.isupper() and len(line) < 30:
+            if line.isupper() and len(line) < HEADER_MAX_LENGTH:
                 continue
             # Skip section titles
-            if "Identification" in line and len(line) < 60:
+            if "Identification" in line and len(line) < IDENTIFICATION_MAX_LENGTH:
                 continue
             # Clean up whitespace but preserve structure
             cleaned: str = " ".join(line.split())
@@ -372,12 +382,13 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         final_lines: list[str] = []
         for line in cleaned_lines:
             # Skip all caps short lines (likely headers)
-            if line.isupper() and len(line) < 40:
+            if line.isupper() and len(line) < SHORT_TITLE_LENGTH:
                 continue
             # Skip lines that are just a few words AND look like titles
-            if len(line.split()) <= 8 and line[0].isupper():
-                # Check if it looks like a title (contains title-related words)
-                if any(
+            if (
+                len(line.split()) <= TITLE_WORD_COUNT
+                and line[0].isupper()
+                and any(
                     word in line.lower()
                     for word in [
                         "title",
@@ -388,8 +399,9 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                         "lessee",
                         "paragraph",
                     ]
-                ):
-                    continue
+                )
+            ):
+                continue
             final_lines.append(line)
 
         text = "\n".join(final_lines)
@@ -402,7 +414,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 continue
             if span["page_index"] > next_page_index:
                 continue
-            if span["y"] > 700:  # Skip footer
+            if span["y"] > FOOTER_Y_THRESHOLD:  # Skip footer
                 continue
             if span["page_index"] == section_page_index and span["y"] < section_y:
                 continue
@@ -421,7 +433,7 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 page_start=section_page,
                 page_end=page_end,
                 text=text,
-            )
+            ),
         )
 
     return results

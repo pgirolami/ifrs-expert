@@ -3,10 +3,12 @@
 import json
 import logging
 import subprocess
+import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
-from src.db.chunks import Chunk as DbChunk
+from src.models.chunk import Chunk
 from src.vector import VectorStore
 from src.vector.store import get_index_path
 
@@ -18,6 +20,19 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 PROMPT_A_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
 PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
+
+
+@dataclass
+class AnswerOptions:
+    """Options for answer command."""
+
+    k: int = 5
+    min_score: float | None = None
+    expand: int = 0
+    full_doc_threshold: int = 0
+    output_dir: Path | None = None
+    save_all: bool = False
+
 
 # LLM command (same as in existing shell script)
 LLM_CMD = [
@@ -47,6 +62,7 @@ def _read_prompt_template(path: Path) -> str:
 
     Returns:
         Template content as string with # comment lines removed
+
     """
     lines = path.read_text(encoding="utf-8").split("\n")
     lines = [line for line in lines if not line.lstrip().startswith("#")]
@@ -61,24 +77,24 @@ def _prompt_file_exists(path: Path) -> bool:
 
     Returns:
         True if file exists, False otherwise
+
     """
     return path.exists()
 
 
 def _send_to_llm(prompt: str) -> str:
     """Send prompt to LLM and return the response."""
-    # Write prompt to temp file
-    temp_prompt = Path("/tmp/prompt_temp.txt")
-    temp_prompt.write_text(prompt, encoding="utf-8")
+    # Write prompt to temp file - subprocess runs inside context so file stays open
+    with tempfile.NamedTemporaryFile(mode="w", delete=True, encoding="utf-8") as temp_prompt:
+        temp_prompt.write(prompt)
+        temp_prompt_path = temp_prompt.name
 
-    result = subprocess.run(
-        LLM_CMD + ["@" + str(temp_prompt), ""],
-        capture_output=True,
-        text=True,
-    )
-
-    # Clean up temp file
-    temp_prompt.unlink(missing_ok=True)
+        result = subprocess.run(
+            [*LLM_CMD, "@" + temp_prompt_path, ""],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
 
     # Check for errors
     if result.returncode != 0:
@@ -123,39 +139,27 @@ class AnswerCommand:
     def __init__(
         self,
         query: str,
-        k: int = 5,
-        min_score: float | None = None,
-        expand: int = 0,
-        full_doc_threshold: int = 0,
-        output_dir: Path | None = None,
-        save_all: bool = False,
+        options: AnswerOptions | None = None,
     ) -> None:
         """Initialize the answer command.
 
         Args:
             query: The question to answer
-            k: Number of chunks per document to retrieve
-            min_score: Minimum relevance score threshold
-            expand: Number of surrounding chunks to include
-            full_doc_threshold: If doc is smaller than this, include full doc
-            output_dir: Directory to save intermediate files
-            save_all: If True, save prompts and responses to output_dir
+            options: Options for the answer command
+
         """
         self.query = query
-        self.k = k
-        self.min_score = min_score
-        self.expand = expand
-        self.full_doc_threshold = full_doc_threshold
-        self.output_dir = output_dir
-        self.save_all = save_all
+        self.k = options.k if options else 5
+        self.min_score = options.min_score if options else None
+        self.expand = options.expand if options else 0
+        self.full_doc_threshold = options.full_doc_threshold if options else 0
+        self.output_dir = options.output_dir if options else None
+        self.save_all = options.save_all if options else False
 
     def execute(self) -> str:
+        """Execute the answer command and return the LLM response."""
         try:
-            logger.info(
-                f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, "
-                f"full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score}, "
-                f"output_dir={self.output_dir}, save_all={self.save_all})"
-            )
+            logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score}, output_dir={self.output_dir}, save_all={self.save_all})")
 
             # Validate query is not empty
             if not self.query or not self.query.strip():
@@ -211,10 +215,7 @@ class AnswerCommand:
             for result in selected_results:
                 counts_by_doc[result["doc_uid"]] = counts_by_doc.get(result["doc_uid"], 0) + 1
             doc_summary = ", ".join(f"{doc}({count})" for doc, count in counts_by_doc.items())
-            logger.info(
-                f"Per-document selection: {len(selected_results)} chunks from "
-                f"{len(counts_by_doc)} doc(s) - {doc_summary}"
-            )
+            logger.info(f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}")
 
             # Get the chunk details from database
             init_db()
@@ -224,7 +225,7 @@ class AnswerCommand:
 
             with ChunkStore() as store:
                 # Fetch all chunks for all relevant docs at once
-                doc_chunks: dict[str, list[DbChunk]] = {}
+                doc_chunks: dict[str, list[Chunk]] = {}
                 for doc_uid in doc_uids:
                     doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
 
@@ -243,16 +244,9 @@ class AnswerCommand:
 
                 final_counts_by_doc: dict[str, int] = {}
                 for result in selected_results:
-                    final_counts_by_doc[result["doc_uid"]] = (
-                        final_counts_by_doc.get(result["doc_uid"], 0) + 1
-                    )
-                final_doc_summary = ", ".join(
-                    f"{doc}({count})" for doc, count in final_counts_by_doc.items()
-                )
-                logger.info(
-                    f"Final retrieval: {len(selected_results)} chunks from "
-                    f"{len(final_counts_by_doc)} doc(s) - {final_doc_summary}"
-                )
+                    final_counts_by_doc[result["doc_uid"]] = final_counts_by_doc.get(result["doc_uid"], 0) + 1
+                final_doc_summary = ", ".join(f"{doc}({count})" for doc, count in final_counts_by_doc.items())
+                logger.info(f"Final retrieval: {len(selected_results)} chunks from {len(final_counts_by_doc)} doc(s) - {final_doc_summary}")
 
                 chunk_summary = self._build_chunk_summary(selected_results, doc_chunks)
 
@@ -261,9 +255,7 @@ class AnswerCommand:
                 logger.info(f"Prompt assembly: {len(formatted_chunks)} document block(s) included")
 
                 # Build Prompt A
-                prompt_a = self._build_prompt_from_template(
-                    PROMPT_A_PATH, formatted_chunks, chunk_summary
-                )
+                prompt_a = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
 
                 # Step 1: Send Prompt A to LLM to get approaches
                 logger.info("Step 1: Sending Prompt A to LLM...")
@@ -276,7 +268,7 @@ class AnswerCommand:
                 try:
                     response_a = _send_to_llm(prompt_a_content)
                 except RuntimeError as e:
-                    logger.error(f"LLM call failed: {e}")
+                    logger.exception("LLM call failed")
                     # Save error info and continue to next question
                     if self.save_all and self.output_dir:
                         self._save_file("A-error.txt", str(e))
@@ -290,7 +282,7 @@ class AnswerCommand:
                 try:
                     approaches_json = json.dumps(json.loads(response_a), indent=2)
                 except json.JSONDecodeError as e:
-                    logger.error(f"Could not parse JSON response from LLM: {e}")
+                    logger.exception("Could not parse JSON response from LLM")
                     return f"Error: LLM returned invalid JSON: {e}\n\nResponse was:\n{response_a}"
 
                 # Step 2: Build Prompt B and send to LLM
@@ -305,7 +297,7 @@ class AnswerCommand:
                 try:
                     response_b = _send_to_llm(prompt_b)
                 except RuntimeError as e:
-                    logger.error(f"LLM call failed: {e}")
+                    logger.exception("LLM call failed")
                     if self.save_all and self.output_dir:
                         self._save_file("B-error.txt", str(e))
                     return f"Error: LLM call failed: {e}"
@@ -345,6 +337,7 @@ class AnswerCommand:
 
         Returns:
             Complete prompt string
+
         """
         template = _read_prompt_template(template_path)
         chunks_text = "\n\n".join(chunks)
@@ -354,11 +347,7 @@ class AnswerCommand:
     def _build_prompt_b(self, context: str, approaches_json: str) -> str:
         """Build Prompt B by substituting placeholders."""
         template = _read_prompt_template(PROMPT_B_PATH)
-        return (
-            template.replace("{{CHUNKS}}", context)
-            .replace("{{QUERY}}", self.query)
-            .replace("{{APPROACHES_JSON}}", approaches_json)
-        )
+        return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
 
     def _select_top_k_per_document(
         self,
@@ -386,15 +375,10 @@ class AnswerCommand:
             selected_results.append(result)
             counts_by_doc[doc_uid] = doc_count + 1
 
-        logger.info(
-            f"Selection filters: {skipped_low_score} below min_score, "
-            f"{skipped_doc_full} skipped because doc already had {k} chunk(s)"
-        )
+        logger.info(f"Selection filters: {skipped_low_score} below min_score, {skipped_doc_full} skipped because doc already had {k} chunk(s)")
         return selected_results
 
-    def _format_chunks(
-        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
-    ) -> list[str]:
+    def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure.
 
         Args:
@@ -403,6 +387,7 @@ class AnswerCommand:
 
         Returns:
             List of formatted document strings
+
         """
         doc_order: list[str] = []
         chunk_ids_by_doc: dict[str, set[int]] = {}
@@ -429,41 +414,24 @@ class AnswerCommand:
                     continue
 
                 score = score_by_chunk.get((doc_uid, chunk_id), 0.0)
-                chunk_xml = (
-                    f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" '
-                    f'section_path="{self._escape_xml(chunk.section_path)}" '
-                    f'score="{score:.4f}"'
-                    f">\n"
-                    f"{chunk.text}\n"
-                    f"</chunk>"
-                )
+                chunk_xml = f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" section_path="{self._escape_xml(chunk.section_path)}" score="{score:.4f}">\n{chunk.text}\n</chunk>'
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
-            document_xml = (
-                f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
-            )
+            document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
             formatted_documents.append(document_xml)
 
         return formatted_documents
 
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""
-        return (
-            text.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace('"', "&quot;")
-            .replace("'", "&apos;")
-        )
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
 
     def _empty_chunk_summary(self) -> str:
         """Build the summary shown when no chunks were retrieved."""
         return "Retrieved chunks:\n- none"
 
-    def _build_chunk_summary(
-        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
-    ) -> str:
+    def _build_chunk_summary(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""
         if not results:
             return self._empty_chunk_summary()
@@ -488,7 +456,7 @@ class AnswerCommand:
                     continue
                 if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
                     continue
-                section_label = chunk.section_path if chunk.section_path else f"chunk {chunk_id}"
+                section_label = chunk.section_path or f"chunk {chunk_id}"
                 if section_label in seen_sections:
                     continue
                 seen_sections.add(section_label)
@@ -502,7 +470,7 @@ class AnswerCommand:
     def _expand_chunks(
         self,
         results: list[dict],
-        doc_chunks: dict[str, list[DbChunk]],
+        doc_chunks: dict[str, list[Chunk]],
         expand: int,
         full_doc_threshold: int,
     ) -> list[dict]:
@@ -566,23 +534,18 @@ class AnswerCommand:
                         "doc_uid": doc_uid,
                         "chunk_id": chunk_id,
                         "score": result_score_by_chunk.get((doc_uid, chunk_id), 0.0),
-                    }
+                    },
                 )
 
         if full_doc_threshold > 0:
             for doc_uid in full_doc_docs:
                 doc_size = sum(len(chunk.text) for chunk in doc_chunks.get(doc_uid, []))
-                logger.info(
-                    f"Full doc inclusion: {doc_uid} "
-                    f"(size={doc_size} < threshold={full_doc_threshold})"
-                )
+                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={full_doc_threshold})")
         if expand > 0:
             neighbour_summary: dict[str, set[int]] = {}
             for doc_uid, chunk_id in expanded_via_neighbours:
                 neighbour_summary.setdefault(doc_uid, set()).add(chunk_id)
             for doc_uid, chunk_ids in neighbour_summary.items():
-                logger.info(
-                    f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)"
-                )
+                logger.info(f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)")
 
         return expanded_results
