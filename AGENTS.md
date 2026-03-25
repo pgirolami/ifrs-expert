@@ -598,116 +598,109 @@ API_KEY = os.environ.get("IFRS_API_KEY", config["api"]["key"])  # fallback to co
 
 > **Why YAML?** It's human-readable, version-control friendly, and avoids hardcoding defaults in Python code.
 
-### 10.3 CLI Commands
+### 10.3 CLI Commands (Command Pattern)
 
-If the project needs CLI tools (ingestion, indexing, etc.), use `argparse` with sensible defaults. Make them runnable via `uv run`.
+CLI commands are implemented using the **Command Pattern** for better separation of concerns, testability, and extensibility.
 
-**CLI entry point structure:**
+**Structure:**
 ```
 src/
-├── cli/
-│   ├── __init__.py
-│   ├── ingest.py      # ingestion subcommand
-│   ├── index.py       # index subcommand
-│   └── main.py        # parent parser
-└── ...
+├── cli.py                 # Entry point - parses args and dispatches to commands
+└── commands/
+    ├── __init__.py        # Exports all commands
+    ├── store.py           # StoreCommand - ingest PDF and store chunks
+    ├── chunk.py           # ChunkCommand - manage chunks
+    ├── query.py           # QueryCommand - run retrieval queries
+    ├── list.py            # ListCommand - list documents/chunks
+    └── answer.py          # AnswerCommand - answer questions
 ```
 
-**Example CLI** (in `src/cli/main.py`):
-```python
-#!/usr/bin/env python
-"""CLI entry point for IFRS Expert tools."""
-import argparse
-import sys
-from pathlib import Path
+**Base Command Pattern:**
 
+Each command is a class with:
+- Constructor accepts dependencies/parameters
+- `execute()` method returns the result (typically a string)
+
+```python
+class StoreCommand:
+    """Extract chunks from a PDF and store in the database and vector index."""
+
+    def __init__(self, pdf_path: Path, doc_uid: str | None = None):
+        self.pdf_path = pdf_path
+        self.doc_uid = doc_uid or pdf_path.stem
+
+    def execute(self) -> str:
+        """Execute the command and return a result message."""
+        if not self.pdf_path.exists():
+            return f"Error: PDF file not found: {self.pdf_path}"
+
+        try:
+            # ... implementation ...
+            return f"Stored {len(chunks)} chunks for doc_uid={self.doc_uid}"
+        except Exception as e:
+            logger.exception("Error storing chunks")
+            return f"Error: {e}"
+```
+
+**CLI Entry Point** (`src/cli.py`):
+
+The CLI entry point uses subparsers and dispatches to command classes:
+
+```python
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="IFRS Expert CLI",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    
-    # Global options with sensible defaults
-    parser.add_argument(
-        "--config",
-        type=Path,
-        default=Path(__file__).parent.parent / "config.yaml",
-        help="Path to config file (default: config.yaml)",
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose logging",
-    )
-    
-    # Subcommands
+    parser = argparse.ArgumentParser(description="IFRS Expert CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    
-    # Ingest subcommand
-    ingest_parser = subparsers.add_parser("ingest", help="Ingest documents")
-    ingest_parser.add_argument(
-        "--corpus",
-        type=Path,
-        default=Path(__file__).parent.parent.parent / "data" / "corpus",
-        help="Path to corpus directory",
-    )
-    ingest_parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Force re-ingestion of all documents",
-    )
-    ingest_parser.set_defaults(func=run_ingest)
-    
-    # Index subcommand
-    index_parser = subparsers.add_parser("index", help="Build FAISS index")
-    index_parser.add_argument(
-        "--rebuild",
-        action="store_true",
-        help="Rebuild index from scratch",
-    )
-    index_parser.set_defaults(func=run_index)
-    
+
+    # Store subcommand
+    store_parser = subparsers.add_parser("store", help="Store PDF chunks")
+    store_parser.add_argument("pdf_path", type=Path, help="Path to PDF file")
+    store_parser.add_argument("--doc-uid", type=str, help="Document UID")
+    store_parser.set_defaults(func=_run_store)
+
+    # Answer subcommand
+    answer_parser = subparsers.add_parser("answer", help="Answer a question")
+    answer_parser.add_argument("question", help="Question to answer")
+    answer_parser.add_argument("--verbose", action="store_true")
+    answer_parser.set_defaults(func=_run_answer)
+
     args = parser.parse_args()
     args.func(args)
 
-def run_ingest(args: argparse.Namespace) -> None:
-    # Implementation here
-    pass
 
-def run_index(args: argparse.Namespace) -> None:
-    # Implementation here
-    pass
+def _run_store(args: argparse.Namespace) -> None:
+    cmd = StoreCommand(pdf_path=args.pdf_path, doc_uid=args.doc_uid)
+    print(cmd.execute())
 
-if __name__ == "__main__":
-    main()
+
+def _run_answer(args: argparse.Namespace) -> None:
+    cmd = AnswerCommand(question=args.question, verbose=args.verbose)
+    print(cmd.execute())
 ```
 
 **Running via uv:**
 ```bash
-# Run with defaults
-uv run python -m src.cli.main ingest
-uv run python -m src.cli.main index --rebuild
+# Run CLI commands directly with Python module
+uv run python -m src.cli store ./doc.pdf
+uv run python -m src.cli answer "What is revenue recognition?"
+uv run python -m src.cli list --doc-uid ifrs15
 
-# With custom arguments
-uv run python -m src.cli.main ingest --corpus ./my_docs --force
-uv run python -m src.cli.main --config ./custom.yaml index
+# Or read query from stdin
+echo "What is revenue recognition?" | uv run python -m src.cli answer -k 5
 ```
 
-**Making CLI executable** (add to `pyproject.toml`):
-```toml
-[project.scripts]
-ifrs-ingest = "src.cli.main:ingest"
-ifrs-index = "src.cli.main:index"
-
-[project.scripts]
-ifrs = "src.cli.main:main"
-```
-
-Then install and run:
+**Or via Makefile:**
 ```bash
-uv pip install -e .
-ifrs ingest --corpus ./docs
+make dev      # Install all dependencies
+make lint    # Run linters
+make format  # Format code
+make test    # Run tests
 ```
+
+**Why Command Pattern?**
+- ✅ **Testable:** Commands can be unit tested in isolation
+- ✅ **Composable:** Easy to invoke commands from other code (e.g., Streamlit)
+- ✅ **Separated:** CLI parsing logic is separate from business logic
+- ✅ **Extensible:** Add new commands without modifying existing code
 
 ---
 
@@ -721,16 +714,4 @@ All Pull Requests must pass:
 
 ---
 
-## 12. Architectural Alignment
-
-This implementation must follow the principles in `ARCHITECTURE.md`:
-
-- ✅ **Grounding before generation** — always retrieve before answering
-- ✅ **Cite-or-abstain** — every conclusion needs a citation
-- ✅ **Clarification-first** — ask questions when facts are missing
-- ✅ **Traceability** — log every interaction with full context
-- ✅ **Memo in English** — regardless of input language
-
----
-
-*Last updated: 2026-03-20*
+*Last updated: 2026-03-25*

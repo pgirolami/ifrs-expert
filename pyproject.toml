@@ -7,6 +7,15 @@ dependencies = [
     "pymupdf>=1.27.2",
     "faiss-cpu>=1.7.4",
     "sentence-transformers>=2.2.0",
+    "scrapling>=0.4.2",
+    "curl-cffi>=0.14.0",
+    "playwright>=1.58.0",
+    "browserforge>=1.2.4",
+    "msgspec>=0.20.0",
+    "patchright>=1.58.2",
+    "beautifulsoup4>=4.14.3",
+    "lxml>=6.0.2",
+    "playwright-stealth>=2.0.2",
 ]
 
 [dependency-groups]
@@ -22,7 +31,7 @@ exclude = ["prototype/", "tests/"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE001", "TRY300", "C901", "PLR0912", "PLR0915", "SIM102", "G004", "PLR0913", "RUF022"]
+ignore = ["D", "COM812", "ISC001", "PLR2004", "S", "EM", "TRY003", "T201", "BLE001", "TRY300", "C901", "PLR0911", "PLR0912", "PLR0915", "SIM102", "G004", "PLR0913", "RUF022", "PLC0415"]
 
 [tool.pytest]
 addopts = ["--cov=src", "--cov-fail-under=80"]

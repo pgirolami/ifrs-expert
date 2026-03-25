@@ -29,8 +29,6 @@ TODO at Delivery
 
  ``` 
  AGENTSmd  
- LEARNINGS.md 
- PLAN.md 
  Makefile  
 
  docs/
@@ -39,6 +37,8 @@ TODO at Delivery
   EVALUATION.md
   LIMITATIONS.md
   METHODOLOGY.md
+  LEARNINGS.md 
+  PLAN.md 
 
  evals/  
  
@@ -46,13 +46,8 @@ TODO at Delivery
  
  experiments/ 
     01_min_context_size/ 
-    02_proper_context_hierarchical_retrieval/  
-    03_proper_context_hierarchical_retrieval/  
-    04_2_stage_processing/ 
-    05_tighter_2_stage_processing_json_only/ 
-    06_better_2_stage_processing_json_output/  
-    07_betterbetter_2_stage_processing_json_output/  
-  
+    ...
+
  prompts/ 
   
  prototype/ 
