@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has already been declared and recognised as an intragroup receivable/payable, so the fact pattern involves a recognised intragroup monetary item rather than a forecast transaction.",
+    "The receivable/payable is denominated in a currency that creates foreign exchange gains or losses that are not fully eliminated on consolidation because the group entities involved have different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "It is the primary hedge accounting model for a recognised asset or liability exposed to foreign exchange risk that could affect profit or loss at the consolidated level."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "It is the other IFRS 9 hedge accounting model that can apply to a recognised asset or liability when the exposure is framed as variability in settlement cash flows from foreign exchange risk."
+    }
+  ]
+}

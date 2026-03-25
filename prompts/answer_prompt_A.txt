@@ -15,58 +15,78 @@ Your task is NOT to write the final answer.
 
 Your task is:
 1. Determine whether the question is answerable from the provided context
-2. If it is, identify and normalize the distinct accounting treatments or approaches relevant to this question
+2. If it is, identify and normalize the distinct accounting treatments relevant to this question
 
-Treat each document in the context as an independent source before synthesizing.
-Do not let the longest document dominate the analysis.
-If a document introduces a relevant exception or alternative, it must be reflected.
+---
+
+Definition of an approach:
+An approach must correspond to a distinct accounting treatment or accounting model that could be applied to the situation described.
+
+An approach represents a way the situation can be accounted for, not a step in reasoning.
+
+---
+
+What must NOT be included as approaches:
+- decision steps or choices between treatments
+- classification or qualification steps
+- analytical or diagnostic steps
+- data gathering steps
+- components or sub-elements of a treatment
+- implementation details or variations of the same treatment
+- general IFRS rules or principles on their own
+- exceptions or prohibitions on their own
+- statements that no treatment is possible
+
+If a concept is:
+- a condition to assess applicability
+- a refinement of another treatment
+- or part of the reasoning process
+
+Then it must NOT be listed as a separate approach.
+
+---
 
 Goal:
-Produce a stable, de-duplicated list of materially distinct accounting approaches that are genuine candidate solutions to the question asked.
+Produce a stable, minimal, de-duplicated set of materially distinct accounting treatments that are genuine candidate solutions to the question.
 
-Core distinction:
-- An approach is a positive accounting route, hedge designation route, measurement route, presentation route, or other genuine method that could answer the question.
-- A rule, prohibition, exclusion, scope limitation, eligibility test, exception, failure case, default outcome, or absence of accounting treatment is NOT an approach by itself.
-- Such items may help define the analytical boundaries of the solution space, but they must not be output as approaches.
+---
 
 Identification rules:
 - Identify accounting treatments, not phrasings
-- Identify only genuine candidate solutions responsive to the question asked
+- Include only treatments that could realistically apply to the situation described
 - Do not split the same treatment into multiple approaches
-- Do not invent implementation details as separate approaches
-- Do not output a non-solution, prohibition, exclusion, or "no accounting / no hedge accounting" as an approach
-- Do not output a general IFRS rule or an exception as a standalone approach unless it is itself a genuine accounting method
-- If the question asks "how", "in what ways", "de quelles manières", or otherwise asks for available methods, include only actionable methods and not reasons why a method may fail
-- Boundaries of the solution space should be reflected through the selection of real candidate approaches, not by adding negative or non-operative items
+- Do not invent new or overly specific treatments
+
+---
 
 Normalization rules:
-- Use standard IFRS terminology when available, generalize as much as possible
+- Use standard IFRS terminology when available
 - Avoid synonyms when a canonical term exists
-- If multiple labels exist, choose the most standard IFRS term
+- If multiple labels exist, choose the most widely recognized accounting term
 - The normalized_label must:
   - be in snake_case
   - be 2–4 words
-  - represent the accounting treatment (not the scenario, not a prohibition, not a rule)
+  - represent the accounting treatment (not the scenario)
   - be reusable across different questions
   - avoid context-specific qualifiers
 
-Screening rule before inclusion:
-For each candidate, first ask:
-- Is this a genuine accounting method or hedge route that could be pursued?
-- Or is it merely a rule, prohibition, exception, screening condition, or statement that no solution is available?
-Only the first type may be included as an approach.
+---
 
 Self-check before finalizing:
 - Merge any overlapping or duplicate approaches
-- Ensure no two approaches describe the same accounting treatment
-- Remove any item that is merely a prohibition, exclusion, general rule, exception, failure case, or absence of solution
-- Add any clearly relevant missing IFRS approach
-- Ensure each remaining approach is a real candidate solution to the question actually asked
+- Ensure each approach represents a distinct accounting treatment
+- Remove any item that is not an accounting treatment
+- Ensure the final list is minimal and complete
+- Ensure the same question phrased differently would produce the same normalized_label values
+
+---
 
 Assumptions:
 - Include only necessary assumptions based on standard IFRS practice
 - Keep them minimal, generic, and non-speculative
-- Do not use assumptions to change the transaction stage, timing, recognition status, or fact pattern stated in the question
+- Do not modify the fact pattern or timing described in the question
+
+---
 
 Answerability rule:
 If critical information is missing and no reasonable IFRS-standard assumption can resolve it:
@@ -77,6 +97,8 @@ If critical information is missing and no reasonable IFRS-standard assumption ca
 }
 - Do NOT include assumptions
 - Do NOT include approaches
+
+---
 
 If answerable:
 - Return:
@@ -90,7 +112,9 @@ For each approach, output:
 - id
 - label (short English label)
 - normalized_label
-- rationale_for_inclusion (1 short sentence explaining why this is a genuine candidate approach to consider for this question)
+- rationale_for_inclusion (1 short sentence explaining why this treatment is relevant to consider for this question)
+
+---
 
 Output rules:
 - Return valid JSON only
