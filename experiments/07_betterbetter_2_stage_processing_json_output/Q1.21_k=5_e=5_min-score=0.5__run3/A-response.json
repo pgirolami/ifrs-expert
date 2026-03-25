@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The stated foreign exchange exposure in the consolidated financial statements means the dividend receivable is an intragroup monetary item between entities with different functional currencies and the related exchange differences are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of the foreign currency risk on the intragroup receivable",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits a recognised asset or liability, or its foreign currency risk component, to be designated in a fair value hedge, and specifically allows qualifying intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of the foreign currency risk on the intragroup receivable",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also provides a cash flow hedge route for a recognised asset or liability exposed to variability attributable to a particular risk, making this a genuine alternative designation route for a qualifying intragroup monetary item."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has already been declared, so the dividend receivable/payable is a recognised monetary item rather than a forecast intragroup transaction.",
+    "The entities involved have different functional currencies and the related exchange differences are not fully eliminated on consolidation, so the foreign currency risk affects consolidated profit or loss.",
+    "Any hedge designation being assessed would otherwise satisfy the IFRS 9 documentation and hedge effectiveness requirements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of foreign currency risk on an intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 expressly permits the foreign currency risk of an intragroup monetary item to be a hedged item in consolidated financial statements when the exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 provide a separate consolidated-level hedge accounting route for foreign currency risk on the net assets of a foreign operation, making it a relevant alternative FX hedge designation to consider alongside the distinct receivable exposure."
+    }
+  ]
+}

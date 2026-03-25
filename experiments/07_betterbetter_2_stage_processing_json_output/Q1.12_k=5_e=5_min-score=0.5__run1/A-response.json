@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has already created a recognised monetary receivable/payable balance.",
+    "The balance is between group entities with different functional currencies, so the related foreign exchange differences are not fully eliminated on consolidation and can affect consolidated profit or loss.",
+    "Any hedge designation would be documented at inception and would meet the IFRS 9 hedge effectiveness requirements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits a recognised asset or liability to be designated in a fair value hedge, and the intragroup monetary item exception allows that route in consolidated financial statements for residual foreign currency risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also permits a recognised asset or liability to be designated in a cash flow hedge, making this a distinct hedge-accounting route for foreign currency risk on a recognised intragroup monetary receivable."
+    }
+  ]
+}

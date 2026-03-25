@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable is a recognised intragroup monetary item between group entities with different functional currencies.",
+    "The stated foreign exchange exposure exists in the consolidated financial statements because the related exchange differences are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of intragroup monetary item FX risk",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits an intragroup monetary item to qualify as a hedged item in consolidated financial statements, and fair value hedge accounting is a distinct hedge route for a recognised asset exposed to a particular risk affecting profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of intragroup monetary item FX risk",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a separate qualifying hedge model for risk exposures on recognised items, making it a genuine documentation route to assess for the foreign currency exposure."
+    }
+  ]
+}

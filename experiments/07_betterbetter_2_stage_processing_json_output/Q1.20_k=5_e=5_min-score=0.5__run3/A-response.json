@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the intragroup dividend receivable is a recognised monetary item between group entities with different functional currencies.",
+    "Assume the related foreign exchange gains or losses are not fully eliminated on consolidation and therefore affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of the receivable's foreign currency risk",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary receivable that creates FX gains or losses not fully eliminated on consolidation can be designated as a hedged item, and a fair value hedge is a qualifying hedge type for recognised assets or liabilities."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of the receivable's foreign currency settlement risk",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also permits cash flow hedges of variability in cash flows associated with a recognised asset or liability attributable to a particular risk, making settlement-date FX variability a genuine candidate route to consider."
+    }
+  ]
+}

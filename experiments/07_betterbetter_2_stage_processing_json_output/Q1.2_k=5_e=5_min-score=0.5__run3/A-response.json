@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the intragroup dividend receivable is a recognised foreign-currency-denominated monetary item and the question is about hedge documentation options in the consolidated financial statements.",
+    "Assume the request is to identify hedge accounting routes that could be considered in principle, not to conclude that all qualification criteria are met in the specific fact pattern."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency receivable is a genuine candidate hedged item for hedge documentation focused on FX-driven changes affecting profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The FX-related variability of the functional-currency cash flows from settling a foreign-currency dividend receivable is a genuine hedge route to consider."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "In consolidated financial statements, IFRIC 16 explicitly supports hedge documentation for foreign currency risk using derivative or non-derivative instruments in a net investment hedge."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a foreign-currency-denominated monetary item.",
+    "The related foreign exchange gains or losses are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 expressly allows the foreign currency risk of an intragroup monetary item to be designated as a hedged item in consolidated financial statements when that exposure is not fully eliminated on consolidation."
+    }
+  ]
+}

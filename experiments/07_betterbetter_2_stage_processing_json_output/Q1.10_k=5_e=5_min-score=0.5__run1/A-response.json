@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognised monetary receivable/payable denominated in a currency that creates foreign exchange exposure between group entities with different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of the intragroup monetary receivable",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits a fair value hedge of a recognised asset or liability, and its intragroup monetary-item exception makes that hedge route available in consolidation for foreign currency risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of the intragroup monetary receivable",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also permits a cash flow hedge of variability in cash flows associated with a recognised asset or liability, so it is a separate hedge accounting route to assess for the foreign currency exposure."
+    }
+  ]
+}

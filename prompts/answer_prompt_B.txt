@@ -30,14 +30,22 @@ Approach constraints:
 - Preserve the order of approaches
 - Keep the scope of each approach unchanged
 
+Approach validity rule:
+- Treat each identified approach as a candidate solution that must still be tested against the facts.
+- If an identified approach is not actually a genuine method responsive to the question, classify it as "non".
+- A prohibition, exclusion, default rule, failure case, or absence of hedge accounting must not be treated as an applicable approach.
+- If the question asks for ways to apply a treatment, only genuine applicable methods may be classified as "oui" or "oui_sous_conditions".
+
 Critical rule on applicability:
 - Applicability MUST be assessed with respect to:
   - the specific question
   - the stated assumptions
   - the exact fact pattern described
+  - the transaction stage, timing, and accounting status already stated
 - Do NOT assess applicability in general IFRS terms
 - Always answer: "Does this approach apply in THIS situation?"
 - An approach is not applicable if it requires a different fact pattern, timing, stage of recognition, or accounting status than the one stated in the question or assumptions.
+- An approach is also not applicable if it would answer a different question from the one actually asked.
 - If an approach would only have been available in an earlier stage, before recognition, or under a reformulated scenario, applicability MUST be "non".
 - Pay particular attention to timing. If the question states that an item is already recognised or already documented, do not treat approaches that are only available before that point as applicable.
 
@@ -46,6 +54,7 @@ Consistency check:
 - If the reasoning depends on such a contradiction, alteration, rewind, or reframing, applicability MUST be "non".
 - "oui_sous_conditions" may be used only if the remaining conditions are additional qualifying conditions that are fully consistent with the stated facts, assumptions, timing, and accounting status.
 - Do not justify "oui_sous_conditions" by referring to a different transaction stage than the one described.
+- Do not use "oui_sous_conditions" for a prohibition, exclusion, ineligibility conclusion, dead end, or absence of solution.
 
 Reasoning rules:
 - Base reasoning strictly on the provided context
@@ -62,6 +71,7 @@ Reasoning rules:
   - the assumptions
   - the relevant timing / recognition stage where relevant
   - the conditions that remain to be met, if any
+- If the question asks "de quelles manières", reasoning must focus on actual ways to do it; rules of exclusion and general prohibitions may be used only to explain why a candidate approach is rejected
 
 Output rules:
 - Return valid JSON only
@@ -73,14 +83,16 @@ Field rules:
 - applicability must be one of
   - "oui": the approach applies to the exact context, assumptions, timing, and fact pattern described, assuming only normal implementation conditions remain to be met
   - "oui_sous_conditions": the approach applies to the exact context, assumptions, timing, and fact pattern described only if additional qualifying conditions are met, and those conditions do not alter or contradict the stated facts or assumptions
-  - "non": the approach does not apply to the exact context, assumptions, timing, and fact pattern described, including where it would require a different or earlier stage of the transaction or accounting
+  - "non": the approach does not apply to the exact context, assumptions, timing, and fact pattern described, including where it would require a different or earlier stage of the transaction or accounting, where it is not a genuine solution to the question asked, or where it is merely a prohibition, exclusion, or absence of treatment
 - recommendation.answer must use the same enum :
   - "oui" if any approach is "oui"
   - "oui_sous_conditions" if any approach is "oui_sous_conditions" and none is "oui"
   - "non" if all approaches are "non"
 - All text fields must be in French
 - reasoning_fr must be 2–4 lines and explicitly reference the context, assumptions and conditions met
-- conditions_fr must include only conditions that are still open within the stated fact pattern; do not include conditions that require changing the fact pattern or going back to an earlier stage
+- conditions_fr must include only conditions that are still open within the stated fact pattern; do not include conditions that require changing the fact pattern, going back to an earlier stage, or merely restating why nothing is available
+- If applicability is "non" because the identified approach is not a genuine method or is merely a prohibition/exclusion, conditions_fr should be an empty array
+- practical_implication_fr must describe the operational consequence of pursuing the approach in this situation; it must not merely restate that nothing can be done
 
 </instructions>
 

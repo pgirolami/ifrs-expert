@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The recognised intragroup dividend receivable is denominated in a foreign currency and creates foreign exchange exposure in the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Monetary item hedge",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.4 expressly contemplates a hedging relationship between a non-derivative monetary asset and a non-derivative monetary liability for foreign currency risk, which is a direct hedge route for a recognised receivable exposure."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 provides a consolidated-level hedge accounting route for foreign currency risk on a net investment in a foreign operation, with derivative or non-derivative hedging instruments potentially held anywhere in the group."
+    }
+  ]
+}

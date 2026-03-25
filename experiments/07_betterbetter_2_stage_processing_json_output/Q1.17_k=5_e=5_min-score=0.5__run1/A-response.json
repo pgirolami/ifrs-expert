@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is a recognised monetary item denominated in a currency that gives rise to foreign exchange gains or losses that are not fully eliminated on consolidation.",
+    "The foreign currency risk component is separately identifiable and reliably measurable, and the hedge relationship would meet the normal IFRS 9 documentation and effectiveness requirements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of the foreign currency risk component of the intragroup monetary item",
+      "normalized_label": "foreign_currency_component_hedge",
+      "rationale_for_inclusion": "This is a genuine hedge designation route because IFRS 9 permits the foreign currency risk of an intragroup monetary item in consolidated financial statements and also permits designation of only a specific risk component."
+    }
+  ]
+}
