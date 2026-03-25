@@ -31,23 +31,6 @@ class TestDbChunk:
         assert chunk.page_end == "A856"
         assert chunk.text == "Test text"
 
-    def test_from_pdf_chunk(self):
-        """Test creating DB Chunk from PDF Chunk."""
-        pdf_chunk = PdfChunk(
-            section_path="1.1",
-            page_start="A1",
-            page_end="A2",
-            text="Content",
-        )
-        db_chunk = DbChunk.from_pdf_chunk(pdf_chunk, "my-doc")
-
-        assert db_chunk.chunk_id is None
-        assert db_chunk.doc_uid == "my-doc"
-        assert db_chunk.section_path == "1.1"
-        assert db_chunk.page_start == "A1"
-        assert db_chunk.page_end == "A2"
-        assert db_chunk.text == "Content"
-
 
 class TestChunkStore:
     """Tests for ChunkStore with temporary database."""
@@ -134,7 +117,3 @@ class TestChunkStore:
             store.insert_chunks(chunks)
             docs = store.get_all_docs()
             assert set(docs) == {"doc1", "doc2"}
-
-
-# Import here to avoid circular import
-from src.models.chunk import Chunk as PdfChunk

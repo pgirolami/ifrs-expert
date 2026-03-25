@@ -1,15 +1,10 @@
 """Run stability scoring on experiment outputs."""
 
 import json
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-# Add project root to path for stability_scorer import
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root))
-
-from src.stability_scorer import compute_stability_score
+from experiments.analysis.stability_scorer import compute_stability_score
 
 
 @dataclass

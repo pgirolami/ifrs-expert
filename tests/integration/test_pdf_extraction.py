@@ -24,7 +24,7 @@ class TestExtractChunks:
     @pytest.fixture
     def ifrs9_appendix_issue_expected(self) -> list[dict]:
         """Expected chunks for IFRS 9 appendix issue test."""
-        json_path = Path(__file__).parent.parent.parent / "examples" / "ifrs-9-appendx-issue.json"
+        json_path = Path(__file__).parent.parent.parent / "examples" / "ifrs-9-appendix-issue.json"
         with open(json_path) as f:
             return json.load(f)
 

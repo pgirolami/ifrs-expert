@@ -74,9 +74,9 @@ def run_query(query: str, k: int = 5, min_score: float | None = None) -> list[di
     Returns:
         List of result dictionaries
     """
-    from src.commands import QueryCommand
+    from src.commands import QueryCommand, QueryOptions
 
-    command = QueryCommand(query=query, k=k, min_score=min_score, verbose=False)
+    command = QueryCommand(query=query, options=QueryOptions(k=k, min_score=min_score, verbose=False))
     result = command.execute()
 
     # Handle error results
@@ -112,9 +112,10 @@ class TestIFRS16Retrieval:
         )
 
     def test_query_has_low_relevance_when_non_sensical(self, ingested_ifrs16):
-        results = run_query("do cats eat dogs?", k=5)
+        # Use min_score=0 to get all results and verify they're low-scoring
+        results = run_query("do cats eat dogs?", k=5, min_score=0)
 
-        assert len(results) > 0
+        assert len(results) > 0, "Expected at least one result"
 
         top = results[0]
 
@@ -122,11 +123,11 @@ class TestIFRS16Retrieval:
         assert top["score"] < 0.3, f"Expected low score for non-sensical query, got {top['score']}"
 
     def test_empty_query(self, ingested_ifrs16):
-        results = run_query("", k=5)
-
-        assert len(results) == 0
+        """Test query returns error for empty query."""
+        with pytest.raises(RuntimeError, match="Query failed: Error: Query cannot be empty"):
+            run_query("", k=5)
 
     def test_whitespace_query(self, ingested_ifrs16):
-        results = run_query(" \t \n ", k=5)
-
-        assert len(results) == 0
+        """Test query returns error for whitespace-only query."""
+        with pytest.raises(RuntimeError, match="Query failed: Error: Query cannot be empty"):
+            run_query(" \t \n ", k=5)

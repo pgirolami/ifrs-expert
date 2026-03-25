@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
-from src.models.chunk import Chunk
 from src.pdf import extract_chunks
 from src.vector import VectorStore
 
@@ -35,6 +34,10 @@ class StoreCommand:
             chunks = extract_chunks(self.pdf_path)
             logger.info(f"Extracted {len(chunks)} chunks")
 
+            # Set doc_uid on all chunks (PDF extraction may return empty doc_uid)
+            for chunk in chunks:
+                chunk.doc_uid = self.doc_uid
+
             # Truncate oversized chunks
             truncated_count = 0
             for chunk in chunks:
@@ -55,8 +58,7 @@ class StoreCommand:
                     store.delete_chunks_by_doc(self.doc_uid)
 
                 # Insert new chunks
-                db_chunks = [DbChunk.from_pdf_chunk(c, self.doc_uid) for c in chunks]
-                ids = store.insert_chunks(db_chunks)
+                ids = store.insert_chunks(chunks)
                 logger.info(f"Stored {len(ids)} chunks with doc_uid={self.doc_uid}")
 
             # Store embeddings in vector index
@@ -68,10 +70,10 @@ class StoreCommand:
                     logger.info(f"Deleted {deleted} existing embeddings for {self.doc_uid}")
 
                 # Add embeddings (only for chunks with valid IDs)
-                valid_chunks = [(db_chunks[i], chunks[i]) for i in range(len(db_chunks)) if db_chunks[i].chunk_id is not None]
-                if valid_chunks:
-                    chunk_ids = [c[0].chunk_id for c in valid_chunks]  # type: ignore[assignment]
-                    texts = [c[1].text for c in valid_chunks]
+                chunks_with_ids = [c for c in chunks if c.chunk_id is not None]
+                if chunks_with_ids:
+                    chunk_ids = [c.chunk_id for c in chunks_with_ids]
+                    texts = [c.text for c in chunks_with_ids]
                     vector_store.add_embeddings(self.doc_uid, chunk_ids, texts)
                     embeddings_stored = len(texts)
                     logger.info(f"Stored {embeddings_stored} embeddings for doc_uid={self.doc_uid}")

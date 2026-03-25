@@ -3,6 +3,7 @@
 import logging
 import sqlite3
 from pathlib import Path
+from typing import Self
 
 from src.db.connection import get_connection
 from src.models.chunk import Chunk
@@ -16,7 +17,7 @@ class ChunkStore:
 
     _conn: sqlite3.Connection
 
-    def __enter__(self) -> "ChunkStore":
+    def __enter__(self) -> Self:
         """Context manager entry."""
         self._conn = get_connection()
         self._conn.row_factory = sqlite3.Row

@@ -72,10 +72,7 @@ class QueryCommand:
             if not ranked_results:
                 return "Error: No chunks retrieved"
 
-            effective_min_score = max(
-                RELEVANCE_SCORE_THRESHOLD,
-                self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD,
-            )
+            effective_min_score = self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD
             logger.info(f"Effective min_score: {effective_min_score}")
 
             selected_results = self._select_top_k_per_document(
