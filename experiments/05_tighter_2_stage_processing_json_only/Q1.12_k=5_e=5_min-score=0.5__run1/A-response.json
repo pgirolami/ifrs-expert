@@ -1,0 +1,45 @@
+{
+  "status": "pass",
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The recognised intragroup dividend receivable/payable is a monetary item.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of intragroup monetary item",
+      "normalized_label": "fair_value_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "A recognised intragroup receivable/payable can qualify in consolidation as a hedged item when its foreign currency gains or losses are not fully eliminated on consolidation.",
+      "conditions": [
+        "The dividend has been recognised as an intragroup receivable/payable",
+        "The item creates foreign exchange gains or losses not fully eliminated on consolidation, typically because the entities have different functional currencies",
+        "Formal designation, documentation and hedge effectiveness requirements are met at inception"
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of forecast intragroup transaction",
+      "normalized_label": "cash_flow_hedge",
+      "applicability": "no",
+      "rationale": "This approach applies only to a highly probable forecast intragroup transaction whose foreign currency risk will affect consolidated profit or loss, whereas a recognised dividend receivable is no longer a forecast transaction.",
+      "conditions": [
+        "Only relevant before the dividend is recognised as a receivable/payable",
+        "The forecast intragroup transaction must be highly probable",
+        "The foreign currency risk must affect consolidated profit or loss"
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "applicability": "no",
+      "rationale": "A net investment hedge applies to foreign currency risk on net assets of a foreign operation, not to settlement of an intragroup dividend receivable.",
+      "conditions": [
+        "The hedged item must be an amount of net assets of a foreign operation included in the consolidated financial statements",
+        "The hedge must satisfy the IFRS 9 designation, documentation and effectiveness requirements for a net investment hedge"
+      ]
+    }
+  ]
+}

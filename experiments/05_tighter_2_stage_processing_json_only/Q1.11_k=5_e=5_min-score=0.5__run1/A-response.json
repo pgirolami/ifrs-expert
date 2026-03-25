@@ -1,0 +1,44 @@
+{
+  "status": "pass",
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognised intragroup receivable/payable that is a monetary item.",
+    "The balance is denominated in a currency that creates foreign exchange differences relevant in consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge of an intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "IFRS 9 allows the foreign currency risk of an intragroup monetary item to be a hedged item in consolidated financial statements if the related exchange differences are not fully eliminated on consolidation.",
+      "conditions": [
+        "The recorded dividend balance is a recognised intragroup monetary item.",
+        "Its foreign exchange gains or losses are not fully eliminated on consolidation.",
+        "The hedge is formally designated and documented at inception and meets IFRS 9 effectiveness requirements."
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of a forecast intragroup transaction",
+      "normalized_label": "forecast_transaction_hedge",
+      "applicability": "no",
+      "rationale": "This model applies to a highly probable forecast intragroup transaction affecting consolidated profit or loss, not to an intragroup dividend receivable that has already been recognised.",
+      "conditions": [
+        "The transaction must still be forecast and highly probable.",
+        "The foreign currency risk must affect consolidated profit or loss."
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "applicability": "no",
+      "rationale": "IFRIC 16 addresses hedging foreign currency risk on net assets of a foreign operation, which is a different hedged item from a separately recognised intragroup dividend receivable.",
+      "conditions": [
+        "The hedged item must be an amount of net assets of a foreign operation included in the consolidated financial statements.",
+        "IFRS 9 designation, documentation and effectiveness requirements must be met."
+      ]
+    }
+  ]
+}

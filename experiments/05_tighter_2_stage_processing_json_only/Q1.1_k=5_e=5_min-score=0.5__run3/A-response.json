@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "question_type": "accounting_analysis",
+  "assumptions": [
+    "Assume the intragroup dividend receivable is denominated in a currency that creates foreign exchange exposure for at least one group entity.",
+    "Assume the question is limited to hedge accounting possibilities in the consolidated financial statements under the provided IFRS 9 and IFRIC 16 extracts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of an intragroup monetary item",
+      "normalized_label": "fair_value_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "A recognised intragroup dividend receivable can qualify in consolidation only through the IFRS 9 exception for the foreign currency risk of an intragroup monetary item.",
+      "conditions": [
+        "The receivable is a monetary item.",
+        "The relevant group entities have different functional currencies.",
+        "The foreign exchange gains or losses are not fully eliminated on consolidation.",
+        "Formal designation, documentation and hedge effectiveness requirements are met."
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of a forecast intragroup dividend/payment",
+      "normalized_label": "cash_flow_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "IFRS 9 permits hedge accounting in consolidation for the foreign currency risk of a highly probable forecast intragroup transaction if that risk will affect consolidated profit or loss.",
+      "conditions": [
+        "The hedge is documented while the dividend/payment is still a highly probable forecast transaction rather than already only an existing receivable.",
+        "The transaction is denominated in a currency other than the functional currency of the entity entering into it.",
+        "The foreign currency risk will affect consolidated profit or loss.",
+        "Formal designation, documentation and hedge effectiveness requirements are met."
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "applicability": "no",
+      "rationale": "This hedge model applies to foreign currency risk on a net investment in a foreign operation, not to an ordinary intragroup dividend receivable as such.",
+      "conditions": [
+        "It would apply only if the hedged item were a net investment in a foreign operation included in the consolidated financial statements."
+      ]
+    }
+  ]
+}

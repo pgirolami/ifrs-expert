@@ -1,0 +1,44 @@
+{
+  "status": "pass",
+  "question_type": "accounting_analysis",
+  "assumptions": [],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of the intragroup monetary receivable/payable",
+      "normalized_label": "fair_value_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "A recognised intragroup monetary item may qualify as a hedged item in consolidated financial statements for foreign currency risk if the related exchange differences are not fully eliminated on consolidation.",
+      "conditions": [
+        "The dividend receivable/payable is a monetary item",
+        "Its foreign exchange gains or losses are not fully eliminated on consolidation",
+        "Only the foreign currency risk component is designated if that component is separately identifiable and reliably measurable",
+        "Formal designation, documentation and hedge effectiveness requirements are met at inception"
+      ]
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign-currency cash flows",
+      "normalized_label": "cash_flow_hedge",
+      "applicability": "yes_under_conditions",
+      "rationale": "A cash flow hedge may be used for foreign currency risk on a recognised asset or liability, or on a highly probable forecast intragroup transaction, if that risk could affect consolidated profit or loss.",
+      "conditions": [
+        "If applied to a recognised intragroup item, the foreign exchange effects are not fully eliminated on consolidation",
+        "If applied before recognition, the intragroup transaction is highly probable",
+        "A forecast intragroup transaction is denominated in a currency other than the functional currency of the entity entering into it",
+        "The foreign currency risk will affect consolidated profit or loss",
+        "Formal designation, documentation and hedge effectiveness requirements are met at inception"
+      ]
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "applicability": "no",
+      "rationale": "This hedge model applies only to the foreign currency risk of a net investment in a foreign operation and not by analogy to an intragroup dividend receivable.",
+      "conditions": [
+        "It would become relevant only if the hedged item were an amount of net assets of a foreign operation rather than the dividend receivable"
+      ]
+    }
+  ]
+}

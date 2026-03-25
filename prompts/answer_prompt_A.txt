@@ -12,40 +12,81 @@ Do not do any web searches.
 Answer in English.
 
 Your task is NOT to write the final answer.
-Your task is to identify and normalize the distinct accounting treatments or approaches that are relevant to this question.
+Your task is to determine whether the question is answerable from the provided context and, if it is, to identify and normalize the distinct accounting treatments or approaches relevant to this question.
 
 Treat each document in the context as an independent source before synthesizing them.
 Do not let the longest document dominate the analysis.
-If one document introduces a relevant exception or alternative, it must be reflected explicitly.
+If a document introduces a relevant exception or alternative, it must be reflected.
 
-Reasoning rules:
-- Identify distinct accounting treatments or approaches, not wording variants
-- Do not split the same accounting treatment into multiple approaches based only on phrasing
+Goal:
+Produce a stable, de-duplicated list of materially distinct accounting approaches.
+
+Identification rules:
+- Identify accounting treatments, not phrasings
+- Do not split the same treatment into multiple approaches
 - Do not invent implementation details as separate approaches
-- If two candidate approaches overlap, merge them into a single one
-- Include approaches that are not applicable if they help explain why they do not apply
-- Use standard accounting terminology when naming approaches
-- Avoid synonyms when a standard term exists
-- Before finalizing the list, check that no two approaches describe the same accounting treatment; if they do, merge them
+- Include approaches that are not applicable if they help explain the boundaries of the solution space
 
-For each approach, determine:
-- a short label
-- a normalized label in snake_case
-- applicability: yes / no / yes_under_conditions
-- reasoning: 1–2 lines maximum
-- conditions: short list, empty if not applicable
-- practical_implication: 1 line maximum
+Normalization rules:
+- Use standard IFRS terminology when available
+- Avoid synonyms when a canonical term exists
+- If the same accounting treatment appears under multiple possible labels, choose the most standard IFRS term and reuse it consistently
+- The normalized_label must:
+  - be in snake_case
+  - be 2–4 words
+  - represent the accounting treatment (not the scenario)
+  - be reusable across different questions
+  - avoid context-specific qualifiers
+- Prefer the most general and widely recognized term
 
-Output requirements:
-- Return JSON only
+Self-check before finalizing:
+- Merge any overlapping or duplicate approaches
+- Ensure no two approaches describe the same accounting treatment
+- Check whether a standard IFRS approach is missing but clearly relevant given the context; if so, add it
+
+Assumptions:
+- Include only necessary assumptions based on standard IFRS practice
+- Keep them minimal, generic, and non-speculative
+
+Output rules:
+- The top-level field "status" must be exactly one of:
+  - "pass"
+  - "needs_clarification"
+- Return valid JSON only
 - No markdown
 - No prose before or after the JSON
-- Keep the list focused on materially relevant approaches
-- If critical information is missing, still return the best normalized list based on reasonable standard IFRS assumptions
+
+If critical information is missing and no reasonable IFRS-standard assumption can resolve it:
+- Return:
+{
+  "status": "needs_clarification",
+  "questions": ["..."]
+}
+- Do NOT include assumptions
+- Do NOT include approaches
+
+If the question is answerable:
+- Return:
+{
+  "status": "pass",
+  ...
+}
+- Order approaches from most relevant to least relevant for this specific question
+
+For each approach, output:
+- id
+- label: short English label
+- normalized_label
+- applicability: yes | no | yes_under_conditions
+- rationale: 1 short sentence stating the IFRS reason it applies or not
+- conditions: short list (empty if none)
+
+Keep the list focused on materially relevant approaches (typically 2–6).
 </instructions>
 
 <output_schema>
 {
+  "status": "pass",
   "question_type": "accounting_analysis",
   "assumptions": [
     "string"
@@ -56,19 +97,10 @@ Output requirements:
       "label": "short English label",
       "normalized_label": "snake_case_label",
       "applicability": "yes | no | yes_under_conditions",
-      "reasoning": "1-2 lines max",
+      "rationale": "1 short sentence",
       "conditions": [
         "short condition"
-      ],
-      "practical_implication": "1 line max",
-      "source_contributions": [
-        {
-          "document": "document name or identifier",
-          "role": "general_rule | exception | alternative | operational_constraint",
-          "summary": "1 line"
-        }
       ]
     }
   ]
 }
-</output_schema>
