@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the declared dividend has created a recognised intragroup receivable/payable and is denominated in a foreign currency for at least one group entity.",
+    "Assume the analysis is limited to hedge accounting in consolidated financial statements under IFRS 9, with IFRIC 16 considered only for net investment hedges.",
+    "Assume the key eligibility question is whether foreign exchange gains or losses on the intragroup item are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of intragroup monetary item",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable/payable is analysed as an intragroup monetary item, which can qualify in consolidated financial statements only for foreign currency risk that is not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge of forecast intragroup transaction",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately permits certain highly probable forecast intragroup transactions in consolidation when the foreign currency risk affects consolidated profit or loss, which is the main pre-recognition alternative to a receivable-based analysis."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 sets out a distinct consolidated hedge model for foreign currency risk on a net investment in a foreign operation, which defines an important alternative boundary to hedging an intragroup dividend receivable itself."
+    },
+    {
+      "id": "approach_4",
+      "label": "No qualifying hedge accounting",
+      "normalized_label": "non_qualifying_hedge",
+      "rationale_for_inclusion": "The default IFRS 9 position in consolidated financial statements is that intragroup items do not qualify as hedged items unless a specific intragroup foreign currency exception applies."
+    }
+  ]
+}

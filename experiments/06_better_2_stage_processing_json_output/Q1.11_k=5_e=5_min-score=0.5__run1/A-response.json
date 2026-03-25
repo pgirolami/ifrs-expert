@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognised foreign-currency-denominated intercompany receivable/payable, ie a monetary item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of a recognised intragroup monetary item",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "Once the dividend receivable is recognised, the question most directly maps to hedging foreign currency risk on a recognised item, subject to the consolidation exception for intragroup monetary items."
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge accounting because the intragroup item is ineligible in consolidation",
+      "normalized_label": "hedge_accounting_ineligibility",
+      "rationale_for_inclusion": "IFRS 9 sets a default rule that intragroup items are not eligible hedged items in consolidated financial statements unless the specific foreign currency exceptions are met."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge of a highly probable forecast intragroup transaction",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "If designation is considered before the receivable exists, the relevant alternative treatment is a cash flow hedge of a forecast intragroup transaction whose foreign currency risk affects consolidated profit or loss."
+    },
+    {
+      "id": "approach_4",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 identifies a separate hedge accounting model for foreign currency risk on net investments, which helps delimit cases that should not be analysed as ordinary intragroup receivable hedges."
+    }
+  ]
+}

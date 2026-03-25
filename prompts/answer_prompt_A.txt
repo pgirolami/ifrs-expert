@@ -12,9 +12,12 @@ Do not do any web searches.
 Answer in English.
 
 Your task is NOT to write the final answer.
-Your task is to determine whether the question is answerable from the provided context and, if it is, to identify and normalize the distinct accounting treatments or approaches relevant to this question.
 
-Treat each document in the context as an independent source before synthesizing them.
+Your task is:
+1. Determine whether the question is answerable from the provided context
+2. If it is, identify and normalize the distinct accounting treatments or approaches relevant to this question
+
+Treat each document in the context as an independent source before synthesizing.
 Do not let the longest document dominate the analysis.
 If a document introduces a relevant exception or alternative, it must be reflected.
 
@@ -25,37 +28,29 @@ Identification rules:
 - Identify accounting treatments, not phrasings
 - Do not split the same treatment into multiple approaches
 - Do not invent implementation details as separate approaches
-- Include approaches that are not applicable if they help explain the boundaries of the solution space
+- Include approaches that define the boundaries of the solution space
 
 Normalization rules:
-- Use standard IFRS terminology when available
+- Use standard IFRS terminology when available, generalize as much as possible
 - Avoid synonyms when a canonical term exists
-- If the same accounting treatment appears under multiple possible labels, choose the most standard IFRS term and reuse it consistently
+- If multiple labels exist, choose the most standard IFRS term
 - The normalized_label must:
   - be in snake_case
   - be 2–4 words
   - represent the accounting treatment (not the scenario)
   - be reusable across different questions
   - avoid context-specific qualifiers
-- Prefer the most general and widely recognized term
 
 Self-check before finalizing:
 - Merge any overlapping or duplicate approaches
 - Ensure no two approaches describe the same accounting treatment
-- Check whether a standard IFRS approach is missing but clearly relevant given the context; if so, add it
+- Add any clearly relevant missing IFRS approach
 
 Assumptions:
 - Include only necessary assumptions based on standard IFRS practice
 - Keep them minimal, generic, and non-speculative
 
-Output rules:
-- The top-level field "status" must be exactly one of:
-  - "pass"
-  - "needs_clarification"
-- Return valid JSON only
-- No markdown
-- No prose before or after the JSON
-
+Answerability rule:
 If critical information is missing and no reasonable IFRS-standard assumption can resolve it:
 - Return:
 {
@@ -65,29 +60,30 @@ If critical information is missing and no reasonable IFRS-standard assumption ca
 - Do NOT include assumptions
 - Do NOT include approaches
 
-If the question is answerable:
+If answerable:
 - Return:
 {
   "status": "pass",
   ...
 }
-- Order approaches from most relevant to least relevant for this specific question
+- Order approaches from most relevant to least relevant
 
 For each approach, output:
 - id
-- label: short English label
+- label (short English label)
 - normalized_label
-- applicability: yes | no | yes_under_conditions
-- rationale: 1 short sentence stating the IFRS reason it applies or not
-- conditions: short list (empty if none)
+- rationale_for_inclusion (1 short sentence explaining why this approach is relevant to consider)
 
-Keep the list focused on materially relevant approaches (typically 2–6).
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Keep the list focused (typically 2–6 approaches)
 </instructions>
 
 <output_schema>
 {
   "status": "pass",
-  "question_type": "accounting_analysis",
   "assumptions": [
     "string"
   ],
@@ -96,11 +92,7 @@ Keep the list focused on materially relevant approaches (typically 2–6).
       "id": "approach_1",
       "label": "short English label",
       "normalized_label": "snake_case_label",
-      "applicability": "yes | no | yes_under_conditions",
-      "rationale": "1 short sentence",
-      "conditions": [
-        "short condition"
-      ]
+      "rationale_for_inclusion": "1 short sentence"
     }
   ]
 }

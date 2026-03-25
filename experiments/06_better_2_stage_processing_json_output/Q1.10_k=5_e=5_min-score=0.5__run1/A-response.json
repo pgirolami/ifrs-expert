@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "A declared intragroup dividend recognised as receivable is analysed as a recognised intragroup monetary asset for IFRS 9 hedged-item assessment."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable is most directly tested under the fair value hedge model, but only if the intragroup monetary-item exception for foreign currency risk is met in consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Ineligible hedged item",
+      "normalized_label": "ineligible_hedged_item",
+      "rationale_for_inclusion": "IFRS 9 sets the default rule that intragroup items are not eligible hedged items in consolidated financial statements unless a specific exception applies."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "If the exposure is considered before recognition, only a highly probable forecast intragroup transaction whose foreign currency risk affects consolidated profit or loss can qualify under this hedge model."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 provide a separate hedge model for foreign currency risk on net investments in foreign operations, which defines an important boundary from ordinary intragroup receivables."
+    }
+  ]
+}

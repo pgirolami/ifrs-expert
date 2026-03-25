@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is denominated in a currency that creates foreign exchange exposure within the group.",
+    "The question asks for the IFRS-supported hedge-documentation routes relevant to this exposure in consolidated financial statements, including alternatives that may apply at different stages of the transaction."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits the foreign currency risk of an intragroup monetary item to be designated as a hedged item in consolidated financial statements when the FX effects are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge accounting for ordinary intragroup items",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 sets the default boundary that intragroup items are not eligible hedged items in consolidated financial statements unless a specific foreign-currency exception applies."
+    },
+    {
+      "id": "approach_3",
+      "label": "Forecast intragroup transaction hedge",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately allows the foreign currency risk of a highly probable forecast intragroup transaction to be hedged in consolidation if it is in another currency and will affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 provide a distinct consolidated FX hedge model for a net investment in a foreign operation, with the effective portion recognised in OCI and reclassified on disposal."
+    }
+  ]
+}

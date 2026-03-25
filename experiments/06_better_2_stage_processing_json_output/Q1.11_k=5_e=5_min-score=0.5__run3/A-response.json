@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognised intragroup monetary receivable/payable.",
+    "The entities involved have different functional currencies, so the receivable/payable gives rise to foreign exchange gains or losses that are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits foreign currency risk on an intragroup monetary item to be designated as a hedged item in consolidated financial statements when the resulting exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "General intragroup exclusion",
+      "normalized_label": "intragroup_exclusion",
+      "rationale_for_inclusion": "IFRS 9 otherwise restricts hedged items in consolidated financial statements to exposures with external parties, so intragroup items are excluded unless a specific exception applies."
+    },
+    {
+      "id": "approach_3",
+      "label": "Forecast intragroup transaction hedge",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately allows certain highly probable forecast intragroup transactions to qualify in consolidated financial statements, which defines the pre-recognition alternative to a recognised receivable."
+    }
+  ]
+}

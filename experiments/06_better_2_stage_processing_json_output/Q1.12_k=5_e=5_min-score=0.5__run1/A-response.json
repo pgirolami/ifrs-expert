@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared dividend has already been recognised as an intragroup receivable/payable, so the exposure is analysed as a recognised monetary item rather than as a forecast transaction.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9 for group entities exposed to foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits, as an exception in consolidated financial statements, the foreign currency risk of an intragroup monetary item if the related exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "General intragroup exclusion",
+      "normalized_label": "intragroup_item_exclusion",
+      "rationale_for_inclusion": "IFRS 9 states that, in consolidated financial statements, hedged items generally must be with external parties, making this the default treatment unless a specific exception applies."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of forecast intragroup transaction",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a separate exception for highly probable forecast intragroup transactions whose foreign currency risk will affect consolidated profit or loss, which defines the pre-recognition alternative."
+    },
+    {
+      "id": "approach_4",
+      "label": "Hedge of net investment",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 sets out a distinct consolidated hedge accounting model for foreign currency risk on a net investment in a foreign operation, which is a separate boundary case from an intragroup dividend receivable."
+    }
+  ]
+}

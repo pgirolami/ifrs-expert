@@ -15,11 +15,10 @@ Use only the information in this message's context, the question, and the identi
 Do not do any web searches.
 Answer in French.
 
-Your task is NOT to write a formatted email.
-Your task is to produce a structured, stable JSON artifact describing the final answer.
+Your task is to produce a structured JSON artifact describing the final answer.
 
-Assumption:
-- The question is answerable (this has already been validated upstream)
+Assumptions:
+- The question is answerable (validated upstream)
 - Do NOT ask clarifying questions
 - Do NOT refuse to answer
 
@@ -28,32 +27,66 @@ Approach constraints:
 - Do not introduce any new approach
 - Do not omit any identified approach
 - Do not merge or split approaches
-- Keep the scope of each approach unchanged
 - Preserve the order of approaches
+- Keep the scope of each approach unchanged
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific question
+  - the stated assumptions
+  - the exact fact pattern described
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this approach apply in THIS situation?"
+- An approach is not applicable if it requires a different fact pattern, timing, stage of recognition, or accounting status than the one stated in the question or assumptions.
+- If an approach would only have been available in an earlier stage, before recognition, or under a reformulated scenario, applicability MUST be "non".
+- Pay particular attention to timing. If the question states that an item is already recognised or already documented, do not treat approaches that are only available before that point as applicable.
+
+Consistency check:
+- Before assigning applicability, verify that the reasoning does not introduce conditions that contradict, alter, rewind, or reframe the facts or assumptions.
+- If the reasoning depends on such a contradiction, alteration, rewind, or reframing, applicability MUST be "non".
+- "oui_sous_conditions" may be used only if the remaining conditions are additional qualifying conditions that are fully consistent with the stated facts, assumptions, timing, and accounting status.
+- Do not justify "oui_sous_conditions" by referring to a different transaction stage than the one described.
 
 Reasoning rules:
 - Base reasoning strictly on the provided context
-- Treat each document as an independent source before synthesizing
-- If documents play different roles (general rule, exception, alternative), reflect that in reasoning
-- Use IFRS excerpts only when they add clarity
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+- Use IFRS excerpts only when they clarify reasoning
 - Do not replace reasoning with quotes
+- reasoning_fr must explicitly connect the conclusion to:
+  - the facts stated in the question
+  - the assumptions
+  - the relevant timing / recognition stage where relevant
+  - the conditions that remain to be met, if any
 
 Output rules:
 - Return valid JSON only
 - No markdown
 - No prose before or after JSON
 - Use concise, stable wording
-- Keep fields short and information-dense
 
 Field rules:
-- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must be one of
+  - "oui": the approach applies to the exact context, assumptions, timing, and fact pattern described, assuming only normal implementation conditions remain to be met
+  - "oui_sous_conditions": the approach applies to the exact context, assumptions, timing, and fact pattern described only if additional qualifying conditions are met, and those conditions do not alter or contradict the stated facts or assumptions
+  - "non": the approach does not apply to the exact context, assumptions, timing, and fact pattern described, including where it would require a different or earlier stage of the transaction or accounting
+- recommendation.answer must use the same enum :
+  - "oui" if any approach is "oui"
+  - "oui_sous_conditions" if any approach is "oui_sous_conditions" and none is "oui"
+  - "non" if all approaches are "non"
 - All text fields must be in French
-- Keep reasoning concise (2–4 lines per approach)
+- reasoning_fr must be 2–4 lines and explicitly reference the context, assumptions and conditions met
+- conditions_fr must include only conditions that are still open within the stated fact pattern; do not include conditions that require changing the fact pattern or going back to an earlier stage
+
 </instructions>
 
 <output_schema>
 {
-  "assumptions": [
+  "assumptions_fr": [
     "string"
   ],
   "recommendation": {
@@ -66,14 +99,14 @@ Field rules:
       "normalized_label": "snake_case_label",
       "label_fr": "short French label",
       "applicability": "oui | non | oui_sous_conditions",
-      "reasoning_fr": "2-4 lines",
+      "reasoning_fr": "rationale explicitly tied to the situation",
       "conditions_fr": [
         "short condition"
       ],
       "practical_implication_fr": "1 line",
       "references": [
         {
-          "section": "IFRS section number",
+          "section": "chunk section number",
           "excerpt": "short verbatim excerpt"
         }
       ]
@@ -83,4 +116,3 @@ Field rules:
     "short point including timing, constraints or effort when relevant"
   ]
 }
-</output_schema>
