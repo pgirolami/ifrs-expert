@@ -3,7 +3,6 @@
 from dataclasses import dataclass, field
 from itertools import combinations
 
-
 VALID_RECOMMENDATION_ANSWERS = frozenset({"oui", "non", "oui_sous_conditions"})
 VALID_APPLICABILITY_VALUES = frozenset({"oui", "non", "oui_sous_conditions"})
 
@@ -12,19 +11,15 @@ VALID_APPLICABILITY_VALUES = frozenset({"oui", "non", "oui_sous_conditions"})
 CANONICAL_LABEL_MAPPING: dict[str, str] = {
     # Fair value hedge - keep as-is
     "fair_value_hedge": "fair_value_hedge",
-    
     # Cash flow hedge - keep as-is
     "cash_flow_hedge": "cash_flow_hedge",
-    
     # Net investment hedge - keep as-is
     "net_investment_hedge": "net_investment_hedge",
-    
     # All foreign currency/monetary item hedges map to same canonical
-    "foreign_currency_hedge": "intragroup_monetary_hedge",
-    "foreign_currency_component_hedge": "intragroup_monetary_hedge",
-    "intragroup_monetary_hedge": "intragroup_monetary_hedge",
-    "monetary_item_hedge": "intragroup_monetary_hedge",
-    
+    "foreign_currency_hedge": "cash_flow_hedge",
+    "foreign_currency_component_hedge": "cash_flow_hedge",
+    "intragroup_monetary_hedge": "cash_flow_hedge",
+    "monetary_item_hedge": "cash_flow_hedge",
     # Analysis-only approaches (not hedge accounting routes)
     "cartographie_des_entites_et_devises_fonctionnelles": "analysis_only",
     "choix_entre_creance_de_dividende_et_couverture_d_investissement_net": "analysis_only",
@@ -71,7 +66,7 @@ def normalize_label(label: str) -> str:
 
 def canonicalize_label(label: str) -> str:
     """Convert a normalized label to its canonical form.
-    
+
     Maps variant labels (e.g., 'monetary_item_hedge', 'foreign_currency_hedge')
     to their canonical equivalent (e.g., 'intragroup_monetary_hedge').
     """
@@ -100,7 +95,7 @@ def extract_normalized_labels(run: dict) -> set[str]:
 
 def extract_canonical_labels(run: dict) -> set[str]:
     """Extract canonical labels from a run's approaches.
-    
+
     Maps normalized labels to their canonical form for more meaningful comparison.
     """
     approaches = extract_approaches(run)
@@ -180,7 +175,7 @@ def _normalize_applicability_loose(value: str) -> str:
 
 def applicability_consistency_loose(run_a: dict, run_b: dict) -> float:
     """Compute pairwise applicability consistency with loose normalization.
-    
+
     Treats 'oui' and 'oui_sous_conditions' as equivalent (both map to 'oui_or_oui_sous_conditions').
     Only 'non' is considered distinct.
     """
@@ -195,7 +190,8 @@ def applicability_consistency_loose(run_a: dict, run_b: dict) -> float:
         return 1.0 if (empty_a and empty_b) else 0.0
 
     matches = sum(
-        1 for label in shared_labels 
+        1
+        for label in shared_labels
         if _normalize_applicability_loose(map_a[label]) == _normalize_applicability_loose(map_b[label])
     )
     return matches / len(shared_labels)
@@ -214,7 +210,7 @@ def recommendation_consistency(run_a: dict, run_b: dict) -> float:
 
 def recommendation_consistency_loose(run_a: dict, run_b: dict) -> float:
     """Compute pairwise recommendation consistency with loose normalization.
-    
+
     Treats 'oui' and 'oui_sous_conditions' as equivalent (both map to 'oui_or_oui_sous_conditions').
     Only 'non' is considered distinct.
     """
@@ -299,8 +295,7 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = \
-                    applicability_dist[norm_label].get(applicability, 0) + 1
+                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
 
         diagnostics = StabilityDiagnostics(
             run_count=1,
@@ -314,7 +309,9 @@ def compute_stability_score(
             structural_validity_flag=is_structurally_valid(run),
             weird_alternatives_count=count_weird_alternatives(run, expected_normalized_labels),
             duplicate_alternatives_count=count_duplicates(run),
-            missing_expected_alternatives_count=count_missing_expected(run, expected_normalized_labels) if expected_normalized_labels else 0,
+            missing_expected_alternatives_count=count_missing_expected(run, expected_normalized_labels)
+            if expected_normalized_labels
+            else 0,
             recommendation_distribution=recommendation_dist,
             applicability_distribution_by_label=applicability_dist,
         )
@@ -342,22 +339,28 @@ def compute_stability_score(
 
     for run_a, run_b in combinations(runs, 2):
         # Original normalized label Jaccard
-        pairwise_jaccards.append(jaccard_similarity(
-            extract_normalized_labels(run_a),
-            extract_normalized_labels(run_b),
-        ))
+        pairwise_jaccards.append(
+            jaccard_similarity(
+                extract_normalized_labels(run_a),
+                extract_normalized_labels(run_b),
+            )
+        )
         # Canonical label Jaccard (maps variants to canonical forms)
-        pairwise_jaccards_canonical.append(jaccard_similarity(
-            extract_canonical_labels(run_a),
-            extract_canonical_labels(run_b),
-        ))
+        pairwise_jaccards_canonical.append(
+            jaccard_similarity(
+                extract_canonical_labels(run_a),
+                extract_canonical_labels(run_b),
+            )
+        )
         pairwise_applicability.append(applicability_consistency(run_a, run_b))
         pairwise_applicability_loose.append(applicability_consistency_loose(run_a, run_b))
         pairwise_recommendation.append(recommendation_consistency(run_a, run_b))
         pairwise_recommendation_loose.append(recommendation_consistency_loose(run_a, run_b))
 
     avg_jaccard = sum(pairwise_jaccards) / len(pairwise_jaccards)
-    avg_jaccard_canonical = sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical) if pairwise_jaccards_canonical else 1.0
+    avg_jaccard_canonical = (
+        sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical) if pairwise_jaccards_canonical else 1.0
+    )
     avg_applicability = sum(pairwise_applicability) / len(pairwise_applicability)
     avg_applicability_loose = sum(pairwise_applicability_loose) / len(pairwise_applicability_loose)
     avg_recommendation = sum(pairwise_recommendation) / len(pairwise_recommendation)
@@ -430,8 +433,7 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = \
-                    applicability_dist[norm_label].get(applicability, 0) + 1
+                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
 
     diagnostics = StabilityDiagnostics(
         run_count=run_count,
@@ -469,10 +471,7 @@ if __name__ == "__main__":
     fake_runs = [
         {
             "assumptions_fr": ["Assumption 1"],
-            "recommendation": {
-                "answer": "oui",
-                "justification": "Justification for yes."
-            },
+            "recommendation": {"answer": "oui", "justification": "Justification for yes."},
             "approaches": [
                 {
                     "id": "approach_1",
@@ -482,9 +481,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because revenue recognition criteria met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Impact: Recognize revenue now.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ]
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_2",
@@ -494,17 +491,14 @@ if __name__ == "__main__":
                     "reasoning_fr": "Not applicable as no lease involved.",
                     "conditions_fr": [],
                     "practical_implication_fr": "No impact.",
-                    "references": []
-                }
+                    "references": [],
+                },
             ],
-            "operational_points_fr": ["Point 1"]
+            "operational_points_fr": ["Point 1"],
         },
         {
             "assumptions_fr": ["Assumption A"],
-            "recommendation": {
-                "answer": "oui",
-                "justification": "Justification for yes, slightly different."
-            },
+            "recommendation": {"answer": "oui", "justification": "Justification for yes, slightly different."},
             "approaches": [
                 {
                     "id": "approach_1",
@@ -514,9 +508,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because criteria are met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Revenue recognition applies.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ]
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_2",
@@ -526,17 +518,14 @@ if __name__ == "__main__":
                     "reasoning_fr": "No lease present.",
                     "conditions_fr": [],
                     "practical_implication_fr": "No impact.",
-                    "references": []
-                }
+                    "references": [],
+                },
             ],
-            "operational_points_fr": ["Point A"]
+            "operational_points_fr": ["Point A"],
         },
         {
             "assumptions_fr": ["Assumption B"],
-            "recommendation": {
-                "answer": "oui_sous_conditions",
-                "justification": "Yes but with conditions."
-            },
+            "recommendation": {"answer": "oui_sous_conditions", "justification": "Yes but with conditions."},
             "approaches": [
                 {
                     "id": "approach_1",
@@ -546,9 +535,7 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies with specific conditions.",
                     "conditions_fr": ["Condition X", "Condition Y"],
                     "practical_implication_fr": "Revenue with conditions.",
-                    "references": [
-                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
-                    ]
+                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
                 },
                 {
                     "id": "approach_3",
@@ -558,11 +545,11 @@ if __name__ == "__main__":
                     "reasoning_fr": "Not relevant.",
                     "conditions_fr": [],
                     "practical_implication_fr": "No impact.",
-                    "references": []
-                }
+                    "references": [],
+                },
             ],
-            "operational_points_fr": ["Point B"]
-        }
+            "operational_points_fr": ["Point B"],
+        },
     ]
 
     result = compute_stability_score(fake_runs)
