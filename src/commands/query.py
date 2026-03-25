@@ -114,9 +114,7 @@ class QueryCommand:
 
                 final_counts_by_doc: dict[str, int] = {}
                 for r in selected_results:
-                    final_counts_by_doc[r["doc_uid"]] = (
-                        final_counts_by_doc.get(r["doc_uid"], 0) + 1
-                    )
+                    final_counts_by_doc[r["doc_uid"]] = final_counts_by_doc.get(r["doc_uid"], 0) + 1
                 final_doc_summary = ", ".join(
                     f"{doc}({n})" for doc, n in final_counts_by_doc.items()
                 )

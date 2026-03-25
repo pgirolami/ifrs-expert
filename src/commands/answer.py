@@ -21,9 +21,21 @@ PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 
 # LLM command (same as in existing shell script)
 LLM_CMD = [
-    "pi", "-p", "--provider", "openai-codex", "--model", "gpt-5.4",
-    "--thinking", "high", "--no-skills", "--no-tools", "--no-extensions",
-    "--no-prompt-templates", "--no-themes", "--system-prompt", ""
+    "pi",
+    "-p",
+    "--provider",
+    "openai-codex",
+    "--model",
+    "gpt-5.4",
+    "--thinking",
+    "high",
+    "--no-skills",
+    "--no-tools",
+    "--no-extensions",
+    "--no-prompt-templates",
+    "--no-themes",
+    "--system-prompt",
+    "",
 ]
 
 
@@ -88,7 +100,7 @@ def _extract_context_from_output(full_output: str) -> str:
     if start_idx == -1 or end_idx == -1:
         return ""
 
-    return full_output[start_idx + len(start_tag):end_idx].strip()
+    return full_output[start_idx + len(start_tag) : end_idx].strip()
 
 
 def _extract_prompt_content(full_output: str) -> str:
@@ -246,9 +258,7 @@ class AnswerCommand:
 
                 # Build the formatted chunks
                 formatted_chunks = self._format_chunks(selected_results, doc_chunks)
-                logger.info(
-                    f"Prompt assembly: {len(formatted_chunks)} document block(s) included"
-                )
+                logger.info(f"Prompt assembly: {len(formatted_chunks)} document block(s) included")
 
                 # Build Prompt A
                 prompt_a = self._build_prompt_from_template(
@@ -299,7 +309,7 @@ class AnswerCommand:
                     if self.save_all and self.output_dir:
                         self._save_file("B-error.txt", str(e))
                     return f"Error: LLM call failed: {e}"
-                
+
                 logger.info("Step 2 complete: Received final answer from LLM")
 
                 # Save response B if requested
@@ -345,8 +355,7 @@ class AnswerCommand:
         """Build Prompt B by substituting placeholders."""
         template = _read_prompt_template(PROMPT_B_PATH)
         return (
-            template
-            .replace("{{CHUNKS}}", context)
+            template.replace("{{CHUNKS}}", context)
             .replace("{{QUERY}}", self.query)
             .replace("{{APPROACHES_JSON}}", approaches_json)
         )
@@ -383,7 +392,9 @@ class AnswerCommand:
         )
         return selected_results
 
-    def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> list[str]:
+    def _format_chunks(
+        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
+    ) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure.
 
         Args:
@@ -429,7 +440,9 @@ class AnswerCommand:
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
-            document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
+            document_xml = (
+                f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
+            )
             formatted_documents.append(document_xml)
 
         return formatted_documents
@@ -448,7 +461,9 @@ class AnswerCommand:
         """Build the summary shown when no chunks were retrieved."""
         return "Retrieved chunks:\n- none"
 
-    def _build_chunk_summary(self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]) -> str:
+    def _build_chunk_summary(
+        self, results: list[dict], doc_chunks: dict[str, list[DbChunk]]
+    ) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""
         if not results:
             return self._empty_chunk_summary()

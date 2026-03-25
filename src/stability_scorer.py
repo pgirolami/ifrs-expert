@@ -192,7 +192,8 @@ def applicability_consistency_loose(run_a: dict, run_b: dict) -> float:
     matches = sum(
         1
         for label in shared_labels
-        if _normalize_applicability_loose(map_a[label]) == _normalize_applicability_loose(map_b[label])
+        if _normalize_applicability_loose(map_a[label])
+        == _normalize_applicability_loose(map_b[label])
     )
     return matches / len(shared_labels)
 
@@ -295,7 +296,9 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
+                applicability_dist[norm_label][applicability] = (
+                    applicability_dist[norm_label].get(applicability, 0) + 1
+                )
 
         diagnostics = StabilityDiagnostics(
             run_count=1,
@@ -309,7 +312,9 @@ def compute_stability_score(
             structural_validity_flag=is_structurally_valid(run),
             weird_alternatives_count=count_weird_alternatives(run, expected_normalized_labels),
             duplicate_alternatives_count=count_duplicates(run),
-            missing_expected_alternatives_count=count_missing_expected(run, expected_normalized_labels)
+            missing_expected_alternatives_count=count_missing_expected(
+                run, expected_normalized_labels
+            )
             if expected_normalized_labels
             else 0,
             recommendation_distribution=recommendation_dist,
@@ -359,12 +364,16 @@ def compute_stability_score(
 
     avg_jaccard = sum(pairwise_jaccards) / len(pairwise_jaccards)
     avg_jaccard_canonical = (
-        sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical) if pairwise_jaccards_canonical else 1.0
+        sum(pairwise_jaccards_canonical) / len(pairwise_jaccards_canonical)
+        if pairwise_jaccards_canonical
+        else 1.0
     )
     avg_applicability = sum(pairwise_applicability) / len(pairwise_applicability)
     avg_applicability_loose = sum(pairwise_applicability_loose) / len(pairwise_applicability_loose)
     avg_recommendation = sum(pairwise_recommendation) / len(pairwise_recommendation)
-    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(pairwise_recommendation_loose)
+    avg_recommendation_loose = sum(pairwise_recommendation_loose) / len(
+        pairwise_recommendation_loose
+    )
 
     # Compute stability components
     approach_set_stability = avg_jaccard  # Original normalized
@@ -433,7 +442,9 @@ def compute_stability_score(
                 norm_label = normalize_label(label)
                 if norm_label not in applicability_dist:
                     applicability_dist[norm_label] = {}
-                applicability_dist[norm_label][applicability] = applicability_dist[norm_label].get(applicability, 0) + 1
+                applicability_dist[norm_label][applicability] = (
+                    applicability_dist[norm_label].get(applicability, 0) + 1
+                )
 
     diagnostics = StabilityDiagnostics(
         run_count=run_count,
@@ -481,7 +492,9 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because revenue recognition criteria met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Impact: Recognize revenue now.",
-                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
+                    "references": [
+                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
+                    ],
                 },
                 {
                     "id": "approach_2",
@@ -498,7 +511,10 @@ if __name__ == "__main__":
         },
         {
             "assumptions_fr": ["Assumption A"],
-            "recommendation": {"answer": "oui", "justification": "Justification for yes, slightly different."},
+            "recommendation": {
+                "answer": "oui",
+                "justification": "Justification for yes, slightly different.",
+            },
             "approaches": [
                 {
                     "id": "approach_1",
@@ -508,7 +524,9 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies because criteria are met.",
                     "conditions_fr": ["Condition 1"],
                     "practical_implication_fr": "Revenue recognition applies.",
-                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
+                    "references": [
+                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
+                    ],
                 },
                 {
                     "id": "approach_2",
@@ -525,7 +543,10 @@ if __name__ == "__main__":
         },
         {
             "assumptions_fr": ["Assumption B"],
-            "recommendation": {"answer": "oui_sous_conditions", "justification": "Yes but with conditions."},
+            "recommendation": {
+                "answer": "oui_sous_conditions",
+                "justification": "Yes but with conditions.",
+            },
             "approaches": [
                 {
                     "id": "approach_1",
@@ -535,7 +556,9 @@ if __name__ == "__main__":
                     "reasoning_fr": "Applies with specific conditions.",
                     "conditions_fr": ["Condition X", "Condition Y"],
                     "practical_implication_fr": "Revenue with conditions.",
-                    "references": [{"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}],
+                    "references": [
+                        {"section": "IFRS 15.38", "excerpt": "Revenue is recognized when..."}
+                    ],
                 },
                 {
                     "id": "approach_3",
@@ -566,8 +589,12 @@ if __name__ == "__main__":
     print(f"Run Count: {d.run_count}")
     print(f"Average Approach Count: {d.average_approach_count:.1f}")
     print(f"Average Pairwise Jaccard: {d.average_pairwise_jaccard:.3f}")
-    print(f"Average Pairwise Applicability Consistency: {d.average_pairwise_applicability_consistency:.3f}")
-    print(f"Average Pairwise Recommendation Consistency: {d.average_pairwise_recommendation_consistency:.3f}")
+    print(
+        f"Average Pairwise Applicability Consistency: {d.average_pairwise_applicability_consistency:.3f}"
+    )
+    print(
+        f"Average Pairwise Recommendation Consistency: {d.average_pairwise_recommendation_consistency:.3f}"
+    )
     print(f"Structural Validity Flag: {d.structural_validity_flag}")
     print(f"Weird Alternatives Count: {d.weird_alternatives_count}")
     print(f"Duplicate Alternatives Count: {d.duplicate_alternatives_count}")

@@ -16,7 +16,10 @@ def setup_logging() -> None:
     root_logger.setLevel(logging.INFO)
 
     for handler in root_logger.handlers:
-        if isinstance(handler, logging.FileHandler) and Path(handler.baseFilename) == log_path.resolve():
+        if (
+            isinstance(handler, logging.FileHandler)
+            and Path(handler.baseFilename) == log_path.resolve()
+        ):
             return
 
     handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")
