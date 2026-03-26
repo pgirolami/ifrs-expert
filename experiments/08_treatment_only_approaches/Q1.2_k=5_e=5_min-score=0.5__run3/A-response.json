@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is denominated in a currency different from the relevant functional currency, so a foreign exchange exposure exists in the consolidated financial statements.",
+    "The question is asking for candidate hedge accounting models in the consolidated financial statements, not for a conclusion on detailed eligibility or effectiveness."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency receivable is a distinct hedge accounting candidate for documenting offsetting FX effects in profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "In consolidated financial statements, IFRIC 16 identifies a separate hedge accounting model for foreign currency risk documented against a net investment in a foreign operation."
+    }
+  ]
+}

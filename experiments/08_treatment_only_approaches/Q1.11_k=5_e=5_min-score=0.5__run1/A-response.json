@@ -1,22 +1,22 @@
 {
   "status": "pass",
   "assumptions": [
-    "The declared intragroup dividend has created a recognised intragroup monetary receivable/payable.",
-    "The receivable/payable is between group entities with different functional currencies, so the related foreign exchange gains or losses are not fully eliminated on consolidation in accordance with IAS 21.",
-    "Any hedge designation would also satisfy the formal documentation and effectiveness requirements in IFRS 9 paragraph 6.4.1."
+    "The declared intragroup dividend has created a recognised intragroup monetary receivable/payable rather than a forecast transaction.",
+    "The receivable/payable is denominated in a currency that creates foreign exchange gains or losses that are not fully eliminated on consolidation because the group entities have different functional currencies.",
+    "The group would satisfy the formal designation, documentation and hedge effectiveness requirements in IFRS 9 paragraph 6.4.1."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Fair value hedge",
       "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "A recorded intragroup dividend receivable/payable is a recognised asset or liability, so fair value hedge accounting is a distinct hedge model to consider if the intragroup monetary item exception applies in consolidation."
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable/payable is a recognised monetary item whose foreign currency risk can be considered under the fair value hedge model in consolidated financial statements."
     },
     {
       "id": "approach_2",
       "label": "Cash flow hedge",
       "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "IFRS 9 separately provides for cash flow hedge accounting for a recognised asset or liability exposed to a particular risk, making it another distinct hedge accounting model relevant to the foreign currency exposure."
+      "rationale_for_inclusion": "IFRS 9 also includes a cash flow hedge model for foreign currency risk associated with recognised assets or liabilities when the exposure is viewed as variability in cash flows affecting profit or loss."
     }
   ]
 }

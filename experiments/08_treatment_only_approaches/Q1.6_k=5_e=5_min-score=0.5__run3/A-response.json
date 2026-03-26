@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been declared and a foreign-currency intragroup receivable/payable has been recognised, so the item is a recognised intragroup monetary item.",
+    "The creditor and debtor group entities have different functional currencies, so the related foreign exchange gains or losses are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary receivable is relevant to assess under the fair value hedge model because paragraph 6.3.6 allows qualifying intragroup monetary items in consolidated financial statements and paragraph 6.5.2(a) addresses recognised assets exposed to a risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The same recognised intragroup monetary receivable is also relevant to assess under the cash flow hedge model because paragraph 6.5.2(b) addresses variability in cash flows of a recognised asset or liability that could affect profit or loss, subject to the intragroup exception in paragraph 6.3.6."
+    }
+  ]
+}

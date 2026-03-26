@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9.",
+    "The recognised intragroup dividend receivable/payable creates foreign currency gains or losses on a recognised intragroup monetary position.",
+    "Those foreign currency effects are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "This is the hedge accounting model for a recognised asset or liability hedged for a specific risk component, such as foreign currency risk affecting profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "This is the separate hedge accounting model if the designated exposure is the variability in functional-currency settlement cash flows arising from the foreign currency component."
+    }
+  ]
+}

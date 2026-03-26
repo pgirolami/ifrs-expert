@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements of a non-investment entity.",
+    "The intragroup dividend is denominated in a currency that creates foreign exchange exposure between group entities with different functional currencies.",
+    "The dividend declaration has created a recognised intragroup receivable/payable that is a monetary item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable/payable is a recognised monetary asset or liability, so the fair value hedge model is the primary hedge accounting model to consider for its foreign currency risk in consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "If the exposure were analysed at the stage of a highly probable intragroup dividend before recognition of the receivable, the cash flow hedge model is the other hedge accounting model potentially relevant to foreign currency risk."
+    }
+  ]
+}

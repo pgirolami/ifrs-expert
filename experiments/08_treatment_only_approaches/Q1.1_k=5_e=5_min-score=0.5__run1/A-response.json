@@ -1,28 +1,28 @@
 {
   "status": "pass",
   "assumptions": [
-    "The intragroup dividend has already created a recognised monetary receivable/payable exposure.",
-    "The receivable/payable is exposed to foreign currency risk because the entities involved have different functional currencies.",
-    "The resulting foreign exchange gains or losses are not fully eliminated on consolidation, so the intragroup monetary item can qualify as a hedged item in consolidated financial statements."
+    "The intragroup dividend has been declared and recognised as a monetary receivable/payable between group entities with different functional currencies.",
+    "The related foreign exchange gains or losses are not fully eliminated on consolidation, so the intragroup monetary item can qualify as a hedged item in consolidated financial statements under the foreign-currency exception for intragroup items.",
+    "If a net investment hedge is considered, the group includes a foreign operation whose net assets are included in the consolidated financial statements."
   ],
   "approaches": [
     {
       "id": "approach_1",
-      "label": "Fair value hedge of foreign currency risk",
+      "label": "Fair value hedge",
       "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "This is relevant because IFRS 9 treats a recognised asset or liability as eligible for a fair value hedge, and paragraph 6.3.6 specifically permits foreign currency risk on an intragroup monetary item in consolidated financial statements when it affects consolidated profit or loss."
+      "rationale_for_inclusion": "This is relevant because a recognised intragroup dividend receivable/payable is a monetary asset or liability, and its foreign currency risk can be documented in consolidation if the FX effects are not fully eliminated."
     },
     {
       "id": "approach_2",
-      "label": "Cash flow hedge of foreign currency risk",
+      "label": "Cash flow hedge",
       "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "This is relevant because IFRS 9 identifies cash flow hedge accounting as a separate hedge model for variability in cash flows associated with a recognised asset or liability attributable to a particular risk."
+      "rationale_for_inclusion": "This is relevant because IFRS 9 includes cash flow hedges for foreign currency risk associated with recognised assets or liabilities when the FX-driven cash flow variability could affect consolidated profit or loss."
     },
     {
       "id": "approach_3",
       "label": "Net investment hedge",
       "normalized_label": "net_investment_hedge",
-      "rationale_for_inclusion": "This is relevant because, if the group documents the exposure as foreign currency risk on a net investment in a foreign operation rather than on the receivable itself, IFRS 9 and IFRIC 16 provide a distinct hedge accounting model with OCI presentation."
+      "rationale_for_inclusion": "This is relevant if the group documents the foreign currency exposure at the level of a foreign operation's net investment rather than only at the level of the intragroup receivable."
     }
   ]
 }

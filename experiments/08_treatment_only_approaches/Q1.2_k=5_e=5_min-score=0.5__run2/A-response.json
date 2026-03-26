@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a recognised monetary balance that is exposed to foreign exchange movements in the consolidated financial statements.",
+    "The question is limited to hedge accounting models potentially available in consolidated financial statements under IFRS 9 and IFRIC 16.",
+    "The task is to identify candidate accounting treatments, not to conclude which one is permitted on the full facts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency receivable is a natural candidate for a fair value hedge of its exchange-rate exposure."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The foreign-currency settlement of the dividend can be analysed as variability in cash flows, making cash flow hedge accounting a distinct model to consider."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 identifies a separate hedge-accounting model in consolidation when foreign-currency risk is managed as part of a net investment in a foreign operation."
+    }
+  ]
+}

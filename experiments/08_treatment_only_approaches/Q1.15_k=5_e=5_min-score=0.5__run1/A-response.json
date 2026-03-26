@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a foreign-currency-denominated intragroup monetary item.",
+    "The question is being assessed in the consolidated financial statements under IFRS 9 hedge accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge of an intragroup monetary item",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 specifically addresses foreign currency risk on intragroup monetary items in consolidated financial statements as a potential hedged item."
+    }
+  ]
+}

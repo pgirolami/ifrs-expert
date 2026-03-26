@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The analysis is for consolidated financial statements.",
+    "The declared intragroup dividend has created a foreign-currency monetary receivable between group entities with different functional currencies, so the related foreign exchange effects are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup foreign-currency receivable is the directly relevant hedged item model under IFRS 9's exception for intragroup monetary items in consolidated financial statements."
+    }
+  ]
+}

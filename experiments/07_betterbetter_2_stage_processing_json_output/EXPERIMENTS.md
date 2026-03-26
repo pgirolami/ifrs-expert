@@ -164,3 +164,18 @@ The 23-point gap between strict (54.2) and loose (77.4) confirms that most insta
 2. **Check question similarity**: Q1.18 and Q1.19 may have different semantic patterns that don't align well with the core hedge sections (6.3.5, 6.3.6)
 3. **Prompt A refinement**: The prompt may need explicit instructions to prioritize the intragroup monetary item exception (6.3.5) over detailed hedge mechanics
 4. **Try different k values**: Some questions may benefit from fewer chunks (k=3) vs more chunks (k=10)
+
+## Label Frequency by Question
+
+| normalized_label | Q1.1 | Q1.2 | Q1.10 | Q1.11 | Q1.12 | Q1.13 | Q1.14 | Q1.15 | Q1.16 | Q1.17 | Q1.18 | Q1.19 | Q1.20 | Q1.21 | Q1.22 | Total |
+|------------------|------|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------|
+| cartographie_des_entites_et_devises_fonctionnelles | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| cash_flow_hedge | 3 | 1 | 2 | 3 | 3 | 2 | 3 | 2 | 3 | 2 | 1 | 1 | 3 | 2 | 1 | 32 |
+| choix_entre_creance_de_dividende_et_couverture_d_investissement_net | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| fair_value_hedge | 3 | 1 | 2 | 3 | 3 | 2 | 3 | 2 | 3 | 2 | 1 | 2 | 3 | 2 | 1 | 33 |
+| foreign_currency_component_hedge | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
+| foreign_currency_hedge | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+| intragroup_monetary_hedge | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 3 |
+| monetary_item_hedge | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 4 |
+| net_investment_hedge | 1 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 4 |
+| qualification_du_solde_comme_reglement_proche_ou_investissement_net | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |

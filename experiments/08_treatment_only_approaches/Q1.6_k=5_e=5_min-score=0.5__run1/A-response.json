@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has already been declared and has resulted in a recognized receivable/payable, so the item is analysed as a recognized intragroup monetary item rather than a forecast intragroup transaction.",
+    "The receivable/payable is between group entities with different functional currencies, such that the related foreign exchange differences are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognized intragroup dividend receivable/payable can be considered a recognized monetary item whose foreign exchange-driven value changes may be designated in a fair value hedge if the intragroup monetary item exception is met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The same recognized foreign-currency intragroup dividend balance can also be analysed as creating variability in functional-currency settlement cash flows that may be designated in a cash flow hedge if the exception is met."
+    }
+  ]
+}

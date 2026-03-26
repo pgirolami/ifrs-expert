@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The recognised dividend receivable/payable is an intragroup monetary item denominated in a currency different from at least one group entity’s functional currency.",
+    "The related foreign exchange differences are not fully eliminated on consolidation and can affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of the recognised intragroup monetary item",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The question concerns hedge documentation for the foreign currency component of a recognised intragroup receivable/payable, which maps to a fair value hedge of a recognised monetary item in consolidated financial statements."
+    }
+  ]
+}

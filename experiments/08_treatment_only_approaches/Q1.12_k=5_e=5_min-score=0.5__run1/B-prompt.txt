@@ -1234,21 +1234,22 @@ Question: Est-il possible, au niveau consolidé, de qualifier de manière formel
 {
   "status": "pass",
   "assumptions": [
-    "The intragroup dividend has already been declared and recognised as an intragroup receivable/payable, so the fact pattern involves a recognised intragroup monetary item rather than a forecast transaction.",
-    "The receivable/payable is denominated in a currency that creates foreign exchange gains or losses that are not fully eliminated on consolidation because the group entities involved have different functional currencies."
+    "The declared intragroup dividend has already created a recognised receivable/payable and is therefore being analysed as a recognised intragroup monetary item.",
+    "The entities involved have different functional currencies and the dividend gives rise to foreign exchange gains or losses that are not fully eliminated on consolidation and can affect consolidated profit or loss.",
+    "The analysis is limited to hedge accounting models covered by the provided IFRS 9 and IFRIC 16 extracts."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Fair value hedge",
       "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "It is the primary hedge accounting model for a recognised asset or liability exposed to foreign exchange risk that could affect profit or loss at the consolidated level."
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable is a recognised asset, and IFRS 9 includes a fair value hedge model for recognised assets or liabilities exposed to a particular risk affecting profit or loss."
     },
     {
       "id": "approach_2",
       "label": "Cash flow hedge",
       "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "It is the other IFRS 9 hedge accounting model that can apply to a recognised asset or liability when the exposure is framed as variability in settlement cash flows from foreign exchange risk."
+      "rationale_for_inclusion": "IFRS 9 also includes a cash flow hedge model for foreign currency risk associated with a recognised asset or liability, making it a distinct hedge accounting model to consider."
     }
   ]
 }

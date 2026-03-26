@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The recognised intragroup dividend receivable is a monetary item denominated in a foreign currency.",
+    "The related foreign exchange gains or losses are not fully eliminated on consolidation because the relevant group entities have different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup foreign-currency receivable is relevant to analyse under the fair value hedge model because IFRS 9 permits the foreign currency risk of an intragroup monetary item to be a hedged item in consolidated financial statements when the resulting exchange differences affect profit or loss."
+    }
+  ]
+}

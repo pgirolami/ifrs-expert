@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognised intragroup monetary receivable and corresponding payable.",
+    "The receivable is between group entities with different functional currencies, so the related foreign exchange gains or losses are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary receivable can be designated for hedge accounting in consolidated financial statements by hedging its foreign currency risk component, provided the IFRS 9 qualification, documentation and effectiveness conditions are met."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question relates to consolidated financial statements.",
+    "The dividend receivable is a recognised intragroup monetary item between group entities with different functional currencies, and the related foreign exchange gains or losses are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency intragroup receivable that creates profit-or-loss exposure in consolidation is relevant to assess under the fair value hedge model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The foreign-currency settlement amount of a recognised receivable can be relevant to assess under the cash flow hedge model when the variability affects profit or loss."
+    }
+  ]
+}

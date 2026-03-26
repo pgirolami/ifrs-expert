@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has become a recognised intragroup monetary receivable/payable between group entities with different functional currencies.",
+    "The related foreign exchange gains or losses are not fully eliminated on consolidation and affect consolidated profit or loss."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary item can be designated for hedge accounting for its foreign currency risk in consolidated financial statements if the IFRS 9 eligibility and documentation requirements are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately permits cash flow hedge accounting for a particular risk associated with a recognised asset or liability, so it is a distinct hedge model to consider for the foreign currency component."
+    }
+  ]
+}

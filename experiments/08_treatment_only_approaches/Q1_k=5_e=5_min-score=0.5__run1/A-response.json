@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable and corresponding payable are denominated in a currency that creates foreign exchange exposure between group entities with different functional currencies.",
+    "The recognised dividend receivable/payable is a monetary intragroup item and the related foreign exchange gains or losses are not fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable is a recognised asset, so hedging its foreign currency risk in consolidated financial statements is a distinct hedge accounting model to consider."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also provides a separate hedge accounting model for variability in cash flows associated with a recognised asset or liability, making it a distinct treatment to assess for the foreign currency settlement exposure."
+    }
+  ]
+}

@@ -42,10 +42,16 @@ for question_file in "$PROJECT_DIR"/experiments/00_QUESTIONS/Q*.txt; do
     
     mkdir -p "$run_dir"
     
-    uv run python -m src.cli answer \
+    if ! uv run python -m src.cli answer \
       --output-dir "$run_dir" \
       --save-all \
       -k "$K" -e "$E" --min-score "$MIN_SCORE" $CMD_SUFFIX \
-      < "$question_file"
+      < "$question_file"; then
+      echo "ERROR: Command failed for $question_name run $run"
+      echo "Check logs in: $run_dir/"
+      echo "  - A-error.txt (Prompt A errors)"
+      echo "  - B-response.md (should contain output if successful)"
+      exit 1
+    fi
   done
 done

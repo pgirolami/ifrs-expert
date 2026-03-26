@@ -150,12 +150,8 @@ for q in questions:
         all_results[q][run] = parse_file(f)
 
 # Print table
-print(
-    "\n| Q | Run | A1 (General Exclusion) | A2 (Monetary Item) | A3 (CF Future) | A4 (Net Investment) |"
-)
-print(
-    "|---|-----|-------------------------|-------------------|-----------------|---------------------|"
-)
+print("\n| Q | Run | A1 (General Exclusion) | A2 (Monetary Item) | A3 (CF Future) | A4 (Net Investment) |")
+print("|---|-----|-------------------------|-------------------|-----------------|---------------------|")
 
 for q in questions:
     for run in [1, 2, 3]:

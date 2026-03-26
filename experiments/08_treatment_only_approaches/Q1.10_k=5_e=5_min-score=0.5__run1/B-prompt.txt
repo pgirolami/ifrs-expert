@@ -981,22 +981,15 @@ Question: Dans un contexte de consolidation IFRS, une relation de couverture peu
 {
   "status": "pass",
   "assumptions": [
-    "The intragroup dividend has been declared and gives rise to a recognized intragroup receivable/payable denominated in a currency different from at least one entity's functional currency.",
-    "The question concerns hedge accounting in consolidated financial statements, and the foreign currency gains or losses on that intragroup monetary item are not fully eliminated on consolidation.",
-    "Any designated hedge would also need to satisfy the IFRS 9 documentation and hedge effectiveness requirements."
+    "The dividend has already been recognised as an intercompany receivable/payable, so it is analysed as an intragroup monetary item rather than as a forecast transaction.",
+    "The analysis is limited to consolidated financial statements under IFRS 9 hedge accounting."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Fair value hedge",
       "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "A recognized foreign-currency intragroup receivable fits the fair value hedge model because IFRS 9 allows recognized assets as hedged items and gives a consolidation exception for foreign currency risk on intragroup monetary items."
-    },
-    {
-      "id": "approach_2",
-      "label": "Cash flow hedge",
-      "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "IFRS 9 separately defines a cash flow hedge for variability in cash flows associated with a recognized asset or liability, making it another distinct hedge accounting model to consider for the foreign-currency settlement exposure."
+      "rationale_for_inclusion": "A recognised foreign-currency intragroup dividend receivable can only be considered in consolidation through the intragroup monetary item exception in IFRS 9 paragraph 6.3.6, which aligns with a fair value hedge model for FX risk."
     }
   ]
 }

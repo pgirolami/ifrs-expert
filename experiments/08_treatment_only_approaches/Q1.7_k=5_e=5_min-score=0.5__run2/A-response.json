@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend is denominated in a currency that creates foreign exchange exposure within the group because the relevant group entities have different functional currencies.",
+    "The question is about hedge accounting in consolidated financial statements under IFRS 9 for an outstanding dividend-related intragroup monetary balance."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a fair value hedge model for recognised assets or liabilities, and intragroup monetary items can qualify in consolidation when exchange differences are not fully eliminated."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a separate cash flow hedge model for foreign-currency risk on recognised assets/liabilities or highly probable transactions, making it the other distinct hedge-accounting treatment to consider."
+    }
+  ]
+}
