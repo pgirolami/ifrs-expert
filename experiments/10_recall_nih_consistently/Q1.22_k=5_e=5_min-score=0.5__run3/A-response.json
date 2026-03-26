@@ -1,0 +1,45 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The foreign exchange exposure arises from an intragroup dividend receivable or payable that is treated as a monetary item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a hedge accounting model for a recognised asset or liability, or a component of such an item."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a hedge accounting model for exposure to variability in cash flows of recognised items or highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation."
+    },
+    {
+      "id": "approach_4",
+      "label": "Risk component hedge",
+      "normalized_label": "risk_component_hedge",
+      "rationale_for_inclusion": "The context separately recognises designation of a specific risk component of an item as the hedged item."
+    },
+    {
+      "id": "approach_5",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "The context specifically addresses foreign currency risk of an intragroup monetary item as a hedged item in consolidated financial statements."
+    },
+    {
+      "id": "approach_6",
+      "label": "Forecast intragroup transaction hedge",
+      "normalized_label": "forecast_intragroup_hedge",
+      "rationale_for_inclusion": "The context specifically addresses foreign currency risk of a forecast intragroup transaction as a hedged item in consolidated financial statements."
+    }
+  ]
+}

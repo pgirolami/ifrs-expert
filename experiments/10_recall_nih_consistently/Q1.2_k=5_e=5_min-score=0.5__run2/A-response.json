@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is denominated in a currency different from the relevant functional currency, so a foreign exchange exposure exists in the consolidated financial statements.",
+    "The question is limited to accounting approaches for that foreign exchange exposure that are identifiable from the provided IFRS 9 and IFRIC 16 extracts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign exchange remeasurement in profit or loss",
+      "normalized_label": "fx_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 states that foreign exchange gains and losses on monetary financial assets and liabilities are recognised in profit or loss under IAS 21, subject to specific hedge-accounting exceptions."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 5.7.3 identifies hedged items in a hedging relationship and directs their gain-or-loss recognition to the hedge-accounting requirements in Section 6."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 explicitly names cash flow hedge treatment as a distinct hedge-accounting outcome relevant to foreign exchange gains and losses on monetary items."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 specifically addresses hedge accounting for foreign currency risk on a net investment in a foreign operation in consolidated financial statements, with effective hedge amounts recognised in OCI and reclassified on disposal."
+    }
+  ]
+}

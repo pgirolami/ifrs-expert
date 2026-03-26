@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The receivable is an intragroup monetary item denominated in a foreign currency.",
+    "The question concerns hedge accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies a fair value hedge as a hedge of a recognised asset or liability, or a component of it, for changes attributable to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies a cash flow hedge as a hedge of variability in cash flows of a recognised item or a highly probable forecast transaction, and specifically addresses qualifying forecast intragroup foreign currency transactions in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Risk component designation",
+      "normalized_label": "risk_component_designation",
+      "rationale_for_inclusion": "The context states that an entity may designate a component of an item as the hedged item, including changes in fair value or cash flows attributable to a specific risk such as foreign currency risk."
+    }
+  ]
+}

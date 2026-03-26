@@ -1,0 +1,40 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has created a recognized intragroup receivable/payable.",
+    "The potential foreign exchange effect arises because the relevant group entities have different functional currencies and the question is being considered in consolidated financial statements.",
+    "The issue is being assessed under the hedge accounting guidance in IFRS 9 and, if relevant, IFRIC 16."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a hedge accounting model for a recognised asset or liability, or a component of such an item, attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a hedge accounting model for variability in cash flows attributable to a particular risk associated with a recognised asset or liability."
+    },
+    {
+      "id": "approach_3",
+      "label": "Risk component hedge",
+      "normalized_label": "risk_component_hedge",
+      "rationale_for_inclusion": "IFRS 9 allows designation of only the changes in cash flows or fair value attributable to a specific risk as the hedged item, which is directly relevant where only the foreign exchange component is in view."
+    },
+    {
+      "id": "approach_4",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes a specific consolidated-financial-statements approach under which the foreign currency risk of an intragroup monetary item may be designated as a hedged item."
+    },
+    {
+      "id": "approach_5",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct foreign-currency hedge accounting model in consolidated financial statements."
+    }
+  ]
+}

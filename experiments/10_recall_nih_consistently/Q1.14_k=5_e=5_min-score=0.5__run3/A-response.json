@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the recognised intragroup dividend receivable is a foreign-currency-denominated monetary item.",
+    "Assume the question concerns hedge accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "The context expressly identifies foreign currency risk of an intragroup monetary item as a hedged item category in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Forecast intragroup transaction hedge",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "The context expressly identifies foreign currency risk of a forecast intragroup transaction as a hedged item category in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately sets out the hedge accounting model for foreign currency risk on a net investment in a foreign operation, including IFRIC 16 guidance."
+    }
+  ]
+}

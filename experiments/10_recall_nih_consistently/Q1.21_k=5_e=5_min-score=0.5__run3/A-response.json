@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable is a recognised intragroup monetary item denominated in a foreign currency, and the issue is assessed in the group's consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a distinct hedge accounting model for a recognised asset or liability exposed to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a distinct hedge accounting model and specifically discusses intragroup foreign currency transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context identifies hedge of a net investment in a foreign operation as a separate hedge accounting model, including references to monetary items accounted for as part of the net investment."
+    }
+  ]
+}

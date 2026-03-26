@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the intragroup dividend gives rise to a foreign-currency-denominated intercompany receivable or payable in the consolidated financial statements.",
+    "Assume the question concerns hedge accounting under IFRS 9 in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as the hedge accounting model for a recognized asset or liability exposed to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as the hedge accounting model for foreign currency exposure on forecast transactions, including intragroup transactions in consolidated financial statements."
+    }
+  ]
+}

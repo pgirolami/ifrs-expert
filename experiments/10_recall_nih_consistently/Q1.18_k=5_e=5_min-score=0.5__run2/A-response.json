@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting for a foreign currency exposure identified in consolidated financial statements.",
+    "The relevant source framework is limited to IFRS 9 Section 6 and IFRIC 16 as provided in the context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of foreign currency risk on an intragroup monetary item",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately addresses foreign currency risk on intragroup monetary items in consolidated financial statements, making it a distinct hedge accounting approach relevant to the issue."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign currency risk on a forecast intragroup transaction",
+      "normalized_label": "forecast_intragroup_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately addresses cash flow hedges of foreign currency risk on forecast intragroup transactions in consolidated financial statements, which is part of the same intragroup FX hedge framework."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a separate hedge accounting model for foreign currency risk arising from a net investment in a foreign operation at the consolidated level."
+    }
+  ]
+}

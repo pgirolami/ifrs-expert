@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is being considered in consolidated financial statements.",
+    "The foreign exchange exposure relates to an intragroup dividend balance once it is recognised as a monetary receivable or payable."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a hedge of changes in fair value of a recognised asset or liability, or a component of such an item, attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a hedge of variability in cash flows of a recognised item or a highly probable forecast transaction and specifically discusses qualifying forecast intragroup foreign currency exposures in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately identifies a hedge of a net investment in a foreign operation and provides IFRIC 16 guidance on foreign currency hedge accounting within a group."
+    },
+    {
+      "id": "approach_4",
+      "label": "Risk component hedge",
+      "normalized_label": "risk_component_hedge",
+      "rationale_for_inclusion": "The context states that a hedged item may be a component of an item and that specific risk components may be designated as hedged items."
+    }
+  ]
+}

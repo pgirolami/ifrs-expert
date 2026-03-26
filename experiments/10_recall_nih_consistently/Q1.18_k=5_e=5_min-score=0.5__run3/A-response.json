@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns foreign currency risk identified in consolidated financial statements.",
+    "The intragroup dividend receivable is considered as a recognised intragroup monetary balance."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context includes fair value hedge accounting for recognised assets or liabilities and separately discusses foreign currency risk on intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context includes cash flow hedge accounting for foreign currency exposures arising from forecast intragroup transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation at the consolidated level."
+    }
+  ]
+}

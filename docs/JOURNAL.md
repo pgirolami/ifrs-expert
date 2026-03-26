@@ -50,14 +50,19 @@ This journal documents the development progress of the IFRS Expert Assistant - a
 - Refine prompts through many experiments while developping quantitative analysis
     - [Experiment 04](../experiments/04_2_stage_processing/EXPERIMENTS.md) computes 3 runs of the 2-stage pipeline on the 22 questions, first attempt at quantitative analysis
     - [Experiment 05](../experiments/05_tighter_2_stage_processing_json_only/EXPERIMENTS.md)
-    - [Experiment 06](../experiments/06_better_2_stage_processing_json_output/EXPERIMENTS.md)
-    - [Experiment 07](../experiments/07_betterbetter_2_stage_processing_json_output/EXPERIMENTS)
-    - [Experiment 08](../experiments/08_treatment_only_approaches/EXPERIMENTS.md)
+    - Weed out non-approaches
+        - [Experiment 06](../experiments/06_better_2_stage_processing_json_output/EXPERIMENTS.md)
+        - [Experiment 07](../experiments/07_betterbetter_2_stage_processing_json_output/EXPERIMENTS)
+    - Improving "net investment hedge" recall
+        - [Experiment 08](../experiments/08_treatment_only_approaches/EXPERIMENTS.md), -
+        - [Experiment 09](../experiments/09_candidate_approaches_vs_applicability/EXPERIMENTS.md) 
+        - [Experiment 10](../experiments/10_recall_nih_consistently/EXPERIMENTS.md)
 
 ### 2026-03-26 : Preparation for Delivery phase
 
 - Draft proper [README](README.md) and [METHODOLOGY](METHODOLOGY.md)
 - Fix all linting errors, failing test, formatting errors
 - Overhaul mocking strategy that was too brittle
+- Investigate unstructured.io and langchain
 
 ## Delivery

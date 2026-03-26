@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "assumptions": [],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge of an intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "The context identifies foreign currency risk of an intragroup monetary item as a hedged item in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of a forecast intragroup transaction",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge accounting for foreign currency risk on a forecast intragroup transaction in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately identifies hedge accounting for foreign currency risk arising from a net investment in a foreign operation."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The dividend has been declared and has created a recognised intragroup monetary receivable/payable denominated in a foreign currency."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge of an intragroup monetary item",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "The context specifically identifies the foreign currency risk of an intragroup monetary item as a hedge accounting model addressed in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of a forecast intragroup transaction",
+      "normalized_label": "forecast_intragroup_hedge",
+      "rationale_for_inclusion": "The context separately identifies cash flow hedge accounting for the foreign currency risk of a forecast intragroup transaction as a distinct group-related hedge model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes a separate hedge accounting model for foreign currency risk arising from a net investment in a foreign operation."
+    }
+  ]
+}

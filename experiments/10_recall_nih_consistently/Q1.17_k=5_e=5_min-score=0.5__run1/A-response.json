@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The intragroup dividend receivable is denominated in a foreign currency."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a hedge accounting model for a particular risk affecting a recognised asset or liability."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a hedge accounting model for variability in cash flows attributable to a particular risk on a recognised item or forecast transaction."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately identifies hedge of a net investment in a foreign operation as a foreign currency hedge accounting model."
+    },
+    {
+      "id": "approach_4",
+      "label": "Risk component designation",
+      "normalized_label": "risk_component_designation",
+      "rationale_for_inclusion": "The context recognises designation of only the changes attributable to a specific risk as the hedged item component."
+    }
+  ]
+}

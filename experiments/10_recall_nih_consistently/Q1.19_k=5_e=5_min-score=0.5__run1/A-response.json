@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has already created a recognized receivable/payable within the group.",
+    "The question is about foreign currency risk in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a hedge accounting model for a recognized asset or liability exposed to a particular risk and separately addresses foreign currency risk on intragroup monetary items in consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a separate hedge accounting model for foreign currency exposures, including intragroup transactions in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "Risk component hedge",
+      "normalized_label": "risk_component_hedge",
+      "rationale_for_inclusion": "The context allows designation of a specific risk component of an item as the hedged item, which is relevant when the exposure identified is the foreign currency risk rather than the entire item."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the group's consolidated financial statements.",
+    "The dividend receivable is a recognised intragroup monetary item that gives rise to foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge accounting as a hedge model for a recognised asset or liability exposed to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge accounting as a hedge model for foreign currency exposure affecting profit or loss, including certain intragroup exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the dedicated hedge accounting model for foreign currency risk arising from a net investment in a foreign operation."
+    }
+  ]
+}

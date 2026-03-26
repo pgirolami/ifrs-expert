@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is being considered in the consolidated financial statements of a group.",
+    "The intragroup dividend receivable is a monetary item exposed to foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context includes fair value hedge accounting for a recognised asset or liability and states that the foreign currency risk of an intragroup monetary item may qualify as a hedged item in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context includes cash flow hedge accounting and specifically addresses foreign currency risk on highly probable forecast intragroup transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the separate hedge accounting model for foreign currency risk arising from a net investment in a foreign operation, with effectiveness recognised in other comprehensive income in consolidation."
+    }
+  ]
+}

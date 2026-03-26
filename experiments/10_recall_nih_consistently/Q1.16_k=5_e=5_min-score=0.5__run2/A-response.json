@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable is denominated in a currency different from the relevant functional currency.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge of foreign currency risk of an intragroup monetary item",
+      "normalized_label": "monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately addresses the foreign currency risk of an intragroup monetary item in consolidated financial statements as a hedge accounting possibility."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting for exposure to changes in fair value of a recognised asset or liability attributable to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting for exposure to variability in cash flows attributable to a particular risk associated with a recognised asset or liability."
+    },
+    {
+      "id": "approach_4",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 provide a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The dividend is between group entities and the recognised receivable is an intragroup monetary item.",
+    "The foreign currency component refers to exchange risk arising from different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of foreign currency risk",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as the hedge model for a recognised asset or liability, which is relevant once an intragroup dividend receivable has been recognised."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign currency risk",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a cash flow hedge as the hedge model for a forecast transaction, and the context specifically addresses foreign currency risk on forecast intragroup transactions in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The receivable gives rise to foreign currency risk because it is exposed to exchange-rate movements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a hedge accounting model for exposure to changes in fair value of a recognised asset or liability attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a separate hedge accounting model for recognised items or highly probable forecast transactions exposed to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation, including in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "IAS 39 hedge accounting",
+      "normalized_label": "ias_39_hedge",
+      "rationale_for_inclusion": "The context states that an entity may elect to continue applying the IAS 39 hedge accounting requirements instead of IFRS 9 Chapter 6."
+    }
+  ]
+}

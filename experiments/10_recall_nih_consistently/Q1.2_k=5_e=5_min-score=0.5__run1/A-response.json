@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is denominated in a foreign currency and creates foreign exchange exposure in the consolidated financial statements.",
+    "The question is about hedge accounting approaches for that foreign exchange exposure in the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 identifies a cash flow hedge as a recognized hedge accounting model for foreign currency risk on monetary items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 and IFRIC 16 explicitly address hedge accounting for foreign currency risk in a hedge of a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}
