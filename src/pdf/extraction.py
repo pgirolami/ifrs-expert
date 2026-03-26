@@ -18,6 +18,11 @@ LEFT_MARGIN_THRESHOLD = 150
 SECTION_X_BUFFER = 15
 MIN_CONTENT_LENGTH = 3
 
+# Page header detection thresholds (document identifiers like "IFRS 9" at top of pages)
+PAGE_HEADER_MAX_LENGTH = 20
+PAGE_HEADER_Y_THRESHOLD = 150
+PAGE_HEADER_X_THRESHOLD = 200
+
 # Header detection thresholds
 HEADER_MAX_LENGTH = 30
 IDENTIFICATION_MAX_LENGTH = 60
@@ -162,10 +167,7 @@ def extract_page_number(blocks: list[BlockDict]) -> str | None:
                     for span in line.get("spans", []):
                         span_text = span.get("text", "").strip()
                         # Look for page number pattern (e.g., "A856", "2", etc.)
-                        if span_text and len(span_text) <= MAX_PAGE_NUMBER_LENGTH:
-                            # Check if it's alphanumeric starting with a letter or just digits
-                            if (span_text[0].isalpha() or span_text[0].isdigit()) and span_text.replace(" ", "").isalnum():
-                                return span_text
+                        if span_text and len(span_text) <= MAX_PAGE_NUMBER_LENGTH and ((span_text[0].isalpha() or span_text[0].isdigit()) and span_text.replace(" ", "").isalnum()):
                             return span_text
     return None
 
@@ -280,7 +282,10 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         # Look for the next bold title after the current section (on any page).
         # This handles cases like page A427 where 7.3.2 is followed by Appendix A on the next page.
         # Bold titles (flags=20) indicate new sections that should act as boundaries.
+        # Only consider bold titles on a different page than the current section - on the same
+        # page, the section's own bold content is part of the section and should not act as a boundary.
         bold_title_page_index: int = -1
+        bold_title_y: float = float("inf")
 
         for span in all_content:
             if span["page_index"] < section_page_index:
@@ -294,10 +299,13 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             if span["page_index"] == next_page_index and span["y"] >= next_y:
                 continue
 
-            # Check if this is a bold title (flags=BOLD_TEXT_FLAG)
-            if span.get("flags", 0) == BOLD_TEXT_FLAG:
-                # Found a bold title - set it as the boundary
+            # Check if this is a bold title (flags=BOLD_TEXT_FLAG) on a different page
+            # Only consider bold titles on a different page - on the same page as the
+            # current section, the section's own bold content (like "(a)", "(b)", "(c)")
+            # should not act as a boundary. The next page is where we'd find a new section.
+            if span.get("flags", 0) == BOLD_TEXT_FLAG and span["page_index"] != section_page_index:
                 bold_title_page_index = span["page_index"]
+                bold_title_y = span["y"]
                 break
 
         section_text_parts: list[str] = []
@@ -328,9 +336,9 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
             # If between current section and next section pages
             elif span["page_index"] > section_page_index and span["page_index"] < next_page_index:
-                # Check if we've passed the bold title boundary
-                if bold_title_page_index > 0 and span["page_index"] >= bold_title_page_index:
-                    # Skip all content on/beyond the bold title page
+                # Check if we've passed the bold title boundary - on the bold title page,
+                # only skip content at/after the bold title
+                if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index and span["y"] >= bold_title_y:
                     continue
                 # Include all content on intermediate pages
             else:
@@ -341,8 +349,19 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
             if span["page_index"] == next_page_index and span["y"] >= page_upper_y:
                 continue
 
-            # Skip section numbers
+            # Skip page header text (all caps, short, appears at top of content area)
+            # These are document identifiers like "IFRS 9" that appear at the top of pages
             text: str = span["text"]
+            if (
+                text
+                and text.isupper()
+                and len(text) < PAGE_HEADER_MAX_LENGTH
+                and span["y"] < PAGE_HEADER_Y_THRESHOLD  # Only at top of content area
+                and span["x0"] < PAGE_HEADER_X_THRESHOLD  # In left margin area
+            ):
+                continue
+
+            # Skip section numbers
             if text.strip() == section_num:
                 continue
             if is_section_number(text.strip()) and span["x0"] < LEFT_MARGIN_THRESHOLD:
@@ -367,7 +386,8 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         cleaned_lines: list[str] = []
         for line in lines:
             # Skip header text (all caps, short)
-            if line.isupper() and len(line) < HEADER_MAX_LENGTH:
+            # But preserve lines that contain digits (e.g., "IAS 21." is a reference, not a header)
+            if line.isupper() and len(line) < HEADER_MAX_LENGTH and not any(c.isdigit() for c in line):
                 continue
             # Skip section titles
             if "Identification" in line and len(line) < IDENTIFICATION_MAX_LENGTH:
@@ -381,8 +401,9 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         # These are typically short lines, all caps, or contain specific patterns
         final_lines: list[str] = []
         for line in cleaned_lines:
-            # Skip all caps short lines (likely headers)
-            if line.isupper() and len(line) < SHORT_TITLE_LENGTH:
+            # Skip all caps short lines (likely headers) but keep lines with numbers
+            # (e.g., "IAS 21." is a standard reference, not a header)
+            if line.isupper() and len(line) < SHORT_TITLE_LENGTH and not any(c.isdigit() for c in line):
                 continue
             # Skip lines that are just a few words AND look like titles
             if (
@@ -418,8 +439,9 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 continue
             if span["page_index"] == section_page_index and span["y"] < section_y:
                 continue
-            # Skip spans on/beyond the bold title boundary page
-            if bold_title_page_index > 0 and span["page_index"] >= bold_title_page_index:
+            # Skip spans on/beyond the bold title boundary page - on the bold title
+            # page, only skip content at/after the bold title
+            if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index and span["y"] >= bold_title_y:
                 continue
             if span["text"].strip():
                 content_pages.add(span["page"])

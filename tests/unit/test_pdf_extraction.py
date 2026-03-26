@@ -1,5 +1,7 @@
 """Tests for PDF extraction functionality."""
 
+from pathlib import Path
+
 import pytest
 
 
@@ -110,3 +112,38 @@ class TestExtractPageNumber:
 
         result = extract_page_number([{"type": 1}])
         assert result is None
+
+
+class TestExtractChunks:
+    """Tests for extract_chunks function."""
+
+    def test_ifrs9_section_6_5_2_not_truncated(self):
+        """Test that section 6.5.2 is fully extracted with complete ending.
+
+        Regression test: section 6.5.2 was being truncated because the bold
+        content within the section (like "(a)", "(b)", "(c)") was being incorrectly
+        used as a boundary, cutting off the "IAS 21." reference at the end.
+        """
+        from src.pdf.extraction import extract_chunks
+
+        pdf_path = Path("../examples/ifrs/ifrs-9-financial-instruments 2025 required.pdf")
+        chunks = extract_chunks(pdf_path)
+
+        # Find section 6.5.2
+        chunk_6_5_2 = None
+        for chunk in chunks:
+            if chunk.section_path == "6.5.2":
+                chunk_6_5_2 = chunk
+                break
+
+        assert chunk_6_5_2 is not None, "Section 6.5.2 not found in extracted chunks"
+
+        # Verify the section ends with "IAS 21." (the complete reference)
+        assert chunk_6_5_2.text.endswith("IAS 21."), (
+            f"Section 6.5.2 is truncated. Expected to end with 'IAS 21.' but got: "
+            f"...{chunk_6_5_2.text[-100:]}"
+        )
+
+        # Verify the full content includes the complete hedge of net investment text
+        assert "hedge of a net investment in a foreign operation as defined in" in chunk_6_5_2.text
+        assert "IAS 21." in chunk_6_5_2.text
