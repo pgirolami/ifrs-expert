@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intra-group dividend has already been declared and recognized as a monetary receivable/payable.",
+    "The receivable and payable are between group entities with different functional currencies, so foreign exchange gains or losses on the intra-group monetary item are not fully eliminated on consolidation.",
+    "The question is about hedge accounting in the consolidated financial statements under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes a fair value hedge model for a recognized asset or liability, and the context specifically allows the foreign currency risk of an intragroup monetary item to qualify in consolidated financial statements when consolidation does not fully eliminate the FX exposure."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also includes a cash flow hedge model for foreign currency risk associated with a recognized asset or liability when the variability in cash flows could affect profit or loss."
+    }
+  ]
+}

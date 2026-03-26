@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is denominated in a foreign currency relative to at least one entity's functional currency.",
+    "The related foreign exchange differences would affect consolidated profit or loss and would not be fully eliminated on consolidation.",
+    "The question is asking for hedge accounting models that could be assessed for the foreign exchange exposure in the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as the hedge of a recognised asset or liability for a particular risk, making it a credible model to assess for FX risk on a recognised intragroup receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately provides a cash flow hedge model, and the context expressly permits foreign currency risk on highly probable forecast intragroup transactions in consolidated financial statements under specified conditions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 provide a distinct hedge accounting model for foreign currency risk on a net investment in a foreign operation in consolidated financial statements, so it is a credible alternative characterization to assess."
+    }
+  ]
+}

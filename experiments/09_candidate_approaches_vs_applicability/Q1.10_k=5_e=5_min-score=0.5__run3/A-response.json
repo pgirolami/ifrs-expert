@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has already created a recognised intragroup receivable/payable and is denominated in a currency different from at least one relevant functional currency.",
+    "The question is about hedge accounting in the consolidated financial statements for foreign currency risk only."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies a fair value hedge as a hedge of changes in fair value of a recognised asset or liability attributable to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context separately identifies a cash flow hedge as a hedge of variability in cash flows of a recognised asset or liability attributable to a particular risk that could affect profit or loss."
+    }
+  ]
+}

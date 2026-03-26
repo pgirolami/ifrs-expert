@@ -15,14 +15,30 @@ Your task is NOT to write the final answer.
 
 Your task is:
 1. Determine whether the question is answerable from the provided context
-2. If it is, identify and normalize the distinct accounting treatments relevant to this question
+2. If it is, identify and normalize the distinct accounting approaches that are credible candidates for later applicability assessment
 
 ---
 
 Definition of an approach:
-An approach must correspond to a distinct accounting treatment or accounting model that could be applied to the situation described.
+An approach must correspond to a distinct accounting treatment, accounting model, recognition basis, measurement basis, presentation basis, or other established IFRS accounting outcome.
 
-An approach represents a way the situation can be accounted for, not a step in reasoning.
+An approach is a candidate accounting answer that a technically competent accountant could seriously evaluate for this question based on the provided context.
+
+At this stage, an approach does NOT need to be the most likely answer, the best answer, or ultimately applicable.
+Its applicability will be assessed later.
+
+An approach represents a way the situation could be accounted for, not a step in reasoning.
+
+---
+
+Core selection principle:
+Surface the credible IFRS candidate approaches that define the real accounting decision set for this question.
+
+Do NOT narrow the list to only the single approach that appears most immediately applicable.
+
+If the context supports multiple materially distinct IFRS approaches within the same decision space, include each of them unless the context clearly makes one impossible.
+
+When the context expressly names or clearly describes distinct recognized IFRS models relevant to the question, preserve them as separate approaches rather than collapsing to the narrowest apparent fit.
 
 ---
 
@@ -31,31 +47,54 @@ What must NOT be included as approaches:
 - classification or qualification steps
 - analytical or diagnostic steps
 - data gathering steps
+- tests, criteria, indicators, or assessment factors
 - components or sub-elements of a treatment
-- implementation details or variations of the same treatment
+- implementation details or mechanics
+- journal entries on their own
+- disclosures on their own
 - general IFRS rules or principles on their own
-- exceptions or prohibitions on their own
+- exceptions, prohibitions, or scoping restrictions on their own
 - statements that no treatment is possible
+- the absence, rejection, discontinuation, or non-application of a treatment
+- vague process labels such as "analysis", "assessment", "documentation", "judgment", "review", or "IFRS treatment"
+- labels that merely restate the fact pattern without naming an accounting treatment
 
-If a concept is:
+If a concept is only:
 - a condition to assess applicability
-- a refinement of another treatment
-- or part of the reasoning process
+- a prerequisite for another treatment
+- part of the reasoning process
+- evidence for or against a treatment
+- or a negative formulation of a real treatment
 
 Then it must NOT be listed as a separate approach.
 
 ---
 
 Goal:
-Produce a stable, minimal, de-duplicated set of materially distinct accounting treatments that are genuine candidate solutions to the question.
+Produce a stable, minimal, de-duplicated set of materially distinct and credible IFRS candidate approaches supported by the context.
+
+This stage is for preserving the real candidate set for downstream evaluation.
+Prefer under-interpretation of applicability over premature elimination of a credible IFRS approach.
+
+Exclude only:
+- non-accounting outputs
+- duplicate outputs
+- unsupported outputs
+- purely theoretical outputs with no real grounding in the context
+- outputs that are merely narrower mechanics of another included approach
 
 ---
 
 Identification rules:
-- Identify accounting treatments, not phrasings
-- Include only treatments that could realistically apply to the situation described
-- Do not split the same treatment into multiple approaches
-- Do not invent new or overly specific treatments
+- Identify accounting approaches, not phrasings
+- Include only approaches with a credible basis in the question and the provided context
+- Do not require certainty that an approach will ultimately apply
+- Include alternative approaches when they are materially distinct and a competent IFRS analyst could plausibly test them against the fact pattern
+- If the context presents multiple recognized IFRS models that could govern the issue depending on characterization, include each model as a separate approach
+- Do not eliminate an approach merely because another one appears more direct, more common, or more likely
+- Do not invent new, overly specific, or question-shaped treatments
+- Do not include a broad category if the context supports a more specific recognized treatment name, unless both are genuinely separate decision-useful levels
+- Prefer recognized IFRS model names over descriptive paraphrases
 
 ---
 
@@ -63,21 +102,14 @@ Normalization rules:
 - Use standard IFRS terminology when available
 - Avoid synonyms when a canonical term exists
 - If multiple labels exist, choose the most widely recognized accounting term
+- Prefer naming the accounting treatment itself rather than the fact pattern, instrument, or risk
 - The normalized_label must:
   - be in snake_case
   - be 2–4 words
-  - represent the accounting treatment (not the scenario)
+  - represent the accounting approach
   - be reusable across different questions
   - avoid context-specific qualifiers
-
----
-
-Self-check before finalizing:
-- Merge any overlapping or duplicate approaches
-- Ensure each approach represents a distinct accounting treatment
-- Remove any item that is not an accounting treatment
-- Ensure the final list is minimal and complete
-- Ensure the same question phrased differently would produce the same normalized_label values
+  - avoid negative wording
 
 ---
 
@@ -85,6 +117,21 @@ Assumptions:
 - Include only necessary assumptions based on standard IFRS practice
 - Keep them minimal, generic, and non-speculative
 - Do not modify the fact pattern or timing described in the question
+- Use assumptions only to bridge minor factual gaps needed to surface candidate approaches
+- Do NOT use assumptions to silently commit to one characterization if the context supports multiple materially distinct IFRS approaches under different plausible characterizations
+- If more than one credible approach remains after making reasonable assumptions, keep them all
+
+---
+
+Self-check before finalizing:
+- Merge overlapping or duplicate approaches
+- Ensure each approach is a genuine accounting approach
+- Remove any item that is only a condition, test, prohibition, reasoning step, or process label
+- Remove any negative or non-application framing of a real treatment
+- Ensure the final list is minimal but not prematurely narrowed
+- Ensure the same question phrased differently would produce the same normalized_label values
+- Ask: "Would a technically strong reviewer expect to see this approach considered before deciding applicability?"
+- Ask: "Did I exclude any context-supported IFRS model merely because another model looked more immediately applicable?" If yes, add it back
 
 ---
 
@@ -106,13 +153,13 @@ If answerable:
   "status": "pass",
   ...
 }
-- Order approaches from most relevant to least relevant
+- Order approaches from most relevant to least relevant, but relevance must not be used to suppress other credible candidate approaches
 
 For each approach, output:
 - id
 - label (short English label)
 - normalized_label
-- rationale_for_inclusion (1 short sentence explaining why this treatment is relevant to consider for this question)
+- rationale_for_inclusion (1 short sentence explaining why this is a credible candidate approach to assess for this question)
 
 ---
 
@@ -120,7 +167,7 @@ Output rules:
 - Return valid JSON only
 - No markdown
 - No prose before or after JSON
-- Keep the list focused (typically 2–6 approaches)
+- Keep the list focused (typically 2–6 approaches), while preserving all materially distinct and context-supported candidate approaches that should be assessed later
 </instructions>
 
 <output_schema>

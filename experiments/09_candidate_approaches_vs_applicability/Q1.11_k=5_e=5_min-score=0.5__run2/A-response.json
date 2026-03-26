@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared dividend has created an intragroup monetary receivable/payable that remains outstanding during the hedge period.",
+    "The receivable/payable is denominated in a currency that creates foreign exchange differences between group entities with different functional currencies.",
+    "The question concerns the group's consolidated financial statements, not separate or individual financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting for recognised assets or liabilities, and the context specifically allows foreign currency risk on an intragroup monetary item to qualify in consolidation if it is not fully eliminated."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 presents cash flow hedge accounting as a separate hedge model for recognised assets or liabilities, so it is a distinct candidate model to test if the dividend-related foreign currency exposure is characterised as variability in settlement cash flows affecting consolidated profit or loss."
+    }
+  ]
+}

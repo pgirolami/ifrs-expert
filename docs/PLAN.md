@@ -39,4 +39,6 @@ working Streamlit app
 - Use each document’s scope/introduction as a document-level routing signal before chunk retrieval.
 - expand until heading boundary
 - set temperature to 0 to see if wew get more stability on the responses
-- 
+- two-pass Prompt A:
+    - extract all distinct recognized approaches from the retrieved material
+    - keep only those that belong to the accounting issue named by the question

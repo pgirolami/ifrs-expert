@@ -17,10 +17,21 @@ Answer in French.
 
 Your task is to produce a structured JSON artifact describing the final answer.
 
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, references, or operational points
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
 Assumptions:
-- The question is answerable (validated upstream)
-- Do NOT ask clarifying questions
-- Do NOT refuse to answer
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
 
 Approach constraints:
 - Use exactly the approaches provided in <identified_approaches>
@@ -29,13 +40,15 @@ Approach constraints:
 - Do not merge or split approaches
 - Preserve the order of approaches
 - Keep the scope of each approach unchanged
-- Each approach represents a distinct accounting treatment
+- Each approach represents a distinct accounting treatment already surfaced upstream
 
 Do NOT introduce:
 - sub-approaches
 - variants
 - components
-- or intermediate reasoning steps
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
 
 Critical rule on applicability:
 - Applicability MUST be assessed with respect to:
@@ -44,9 +57,11 @@ Critical rule on applicability:
   - the reporting context implied by the question
 - Do NOT assess applicability in general IFRS terms
 - Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
 
 Reasoning rules:
-- Base reasoning strictly on the provided context
+- Base reasoning strictly on the provided context and the identified approaches
 - Use assumptions explicitly when needed
 - Treat documents as independent sources before synthesizing
 - Reflect relationships between:
@@ -56,12 +71,16 @@ Reasoning rules:
 - Use IFRS excerpts only when they clarify reasoning
 - Do not replace reasoning with quotes
 - Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
 
 Recommendation rule:
-- The recommendation must be consistent with the applicability analysis
-- If one approach is clearly applicable, it must drive the recommendation
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
 - If multiple approaches are applicable, reflect that
 - If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
 
 Output rules:
 - Return valid JSON only
@@ -74,6 +93,8 @@ Field rules:
 - applicability must use the same enum
 - All text fields must be in French
 - reasoning_fr must be 2–4 lines and explicitly tied to the situation
+- references.excerpt must be short and verbatim
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
 </instructions>
 
 <output_schema>

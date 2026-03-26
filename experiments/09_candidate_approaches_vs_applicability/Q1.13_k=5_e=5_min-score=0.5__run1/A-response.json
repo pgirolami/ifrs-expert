@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The receivable is an intragroup monetary item denominated in a currency other than the functional currency of at least one group entity involved.",
+    "The question is limited to hedge accounting models addressed in the provided IFRS 9 and IFRIC 16 extracts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting for a recognised asset or liability exposed to a particular risk, and the extracts specifically address foreign currency risk on intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately provides for cash flow hedge accounting for variability in cash flows of a recognised asset or liability or a highly probable forecast transaction, making this a distinct hedge model to assess for the foreign exchange component."
+    }
+  ]
+}
