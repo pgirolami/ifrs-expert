@@ -58,16 +58,23 @@ What will I change ?
 ## 2026-03-25
 
 what worked
-- 
+- discussing analysis with the LLM helped get to an evaluation score across questions & runs
+- taking some time to step back and write a README and my methodology was surprisingly soothing
 
 What was frustrating:
 - Experiment 4 analysis script tuning so it parses everything correctly + the fact it depends on keywords
+- regression on NIH after tightening the prompts on
+- state of the repo is mehh: make is never run, tests aren't written... there's a lot of clean-up to do
 
 Next steps:
--
+- continue moving the repo towards something I can show
+- get 3 questions from Florence
+- get NIH back
+
 
 What will I change ?
 -
+
 ## 2026-XX-YY
 
 what worked
