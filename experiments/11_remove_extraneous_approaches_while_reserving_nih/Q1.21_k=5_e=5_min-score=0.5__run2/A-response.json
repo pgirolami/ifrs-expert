@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the issue is the designation of foreign currency risk in consolidated financial statements under IFRS 9 hedge accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a distinct hedge accounting model for a recognised asset or liability, and it specifically addresses foreign currency risk of intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a separate hedge accounting model for variability in cash flows of recognised items or highly probable forecast transactions, including qualifying foreign-currency intragroup transactions in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately presents net investment hedges as a distinct IFRS hedge accounting model for foreign currency risk in consolidated financial statements, with additional guidance in IFRIC 16."
+    }
+  ]
+}

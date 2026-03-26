@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting under IFRS 9 in consolidated financial statements.",
+    "The intragroup dividend creates foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a top-level hedge accounting model and includes foreign currency risk on qualifying intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a top-level hedge accounting model and specifically discusses qualifying highly probable forecast intragroup foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately identifies net investment hedging as a top-level hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

@@ -136,7 +136,9 @@ class AnswerCommand:
     def execute(self) -> str:
         """Execute the answer command and return the LLM response."""
         try:
-            logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score}, output_dir={self.output_dir}, save_all={self.save_all})")
+            logger.info(
+                f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, full_doc_threshold={self.full_doc_threshold}, min_score={self.min_score}, output_dir={self.output_dir}, save_all={self.save_all})"
+            )
 
             # Validate query is not empty
             if not self.query or not self.query.strip():
@@ -189,7 +191,9 @@ class AnswerCommand:
             for result in selected_results:
                 counts_by_doc[result["doc_uid"]] = counts_by_doc.get(result["doc_uid"], 0) + 1
             doc_summary = ", ".join(f"{doc}({count})" for doc, count in counts_by_doc.items())
-            logger.info(f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}")
+            logger.info(
+                f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}"
+            )
 
             # Get the chunk details from database
             self._init_db_fn()
@@ -220,7 +224,9 @@ class AnswerCommand:
                 for result in selected_results:
                     final_counts_by_doc[result["doc_uid"]] = final_counts_by_doc.get(result["doc_uid"], 0) + 1
                 final_doc_summary = ", ".join(f"{doc}({count})" for doc, count in final_counts_by_doc.items())
-                logger.info(f"Final retrieval: {len(selected_results)} chunks from {len(final_counts_by_doc)} doc(s) - {final_doc_summary}")
+                logger.info(
+                    f"Final retrieval: {len(selected_results)} chunks from {len(final_counts_by_doc)} doc(s) - {final_doc_summary}"
+                )
 
                 chunk_summary = self._build_chunk_summary(selected_results, doc_chunks)
 
@@ -251,6 +257,8 @@ class AnswerCommand:
                 # Save response A if requested
                 if self.save_all and self.output_dir:
                     self._save_file("A-response.json", response_a)
+
+                logger.error("SKIPPING prompt B")
 
                 # Parse the JSON response
                 try:
@@ -321,7 +329,11 @@ class AnswerCommand:
     def _build_prompt_b(self, context: str, approaches_json: str) -> str:
         """Build Prompt B by substituting placeholders."""
         template = _read_prompt_template(PROMPT_B_PATH)
-        return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
+        return (
+            template.replace("{{CHUNKS}}", context)
+            .replace("{{QUERY}}", self.query)
+            .replace("{{APPROACHES_JSON}}", approaches_json)
+        )
 
     def _select_top_k_per_document(
         self,
@@ -349,7 +361,9 @@ class AnswerCommand:
             selected_results.append(result)
             counts_by_doc[doc_uid] = doc_count + 1
 
-        logger.info(f"Selection filters: {skipped_low_score} below min_score, {skipped_doc_full} skipped because doc already had {k} chunk(s)")
+        logger.info(
+            f"Selection filters: {skipped_low_score} below min_score, {skipped_doc_full} skipped because doc already had {k} chunk(s)"
+        )
         return selected_results
 
     def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
@@ -399,7 +413,13 @@ class AnswerCommand:
 
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""
-        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
+        return (
+            text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&apos;")
+        )
 
     def _empty_chunk_summary(self) -> str:
         """Build the summary shown when no chunks were retrieved."""

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting under IFRS 9 in consolidated financial statements.",
+    "The fact pattern identifies a foreign-currency intragroup receivable exposure without determining whether it qualifies as a hedged item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2(a) identifies fair value hedge accounting for a recognised asset or liability exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2(b) identifies cash flow hedge accounting for variability in cash flows associated with a recognised asset or liability or a highly probable forecast transaction, and the context includes intragroup foreign currency guidance in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2(c) and IFRIC 16 set out a distinct hedge accounting model for foreign currency risk in a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}

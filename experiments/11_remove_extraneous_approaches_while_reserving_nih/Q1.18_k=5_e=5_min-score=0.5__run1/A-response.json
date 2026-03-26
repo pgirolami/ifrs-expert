@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The identified exposure is a foreign currency exposure considered in the context of IFRS 9 hedge accounting in consolidated financial statements.",
+    "The issue is whether the exposure could fall within one of the recognized hedge accounting relationship types addressed in the provided context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as one of the three top-level hedge accounting models and includes recognised assets or liabilities and firm commitments as possible hedged items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a top-level hedge accounting model and specifically discusses foreign currency risk on highly probable forecast intragroup transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation, including consolidated-level designation and IFRIC 16 guidance."
+    }
+  ]
+}

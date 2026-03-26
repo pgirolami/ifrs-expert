@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable gives rise to foreign exchange exposure as a foreign-currency monetary item in the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign exchange recognition under IAS 21",
+      "normalized_label": "foreign_exchange_recognition",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 states that foreign exchange gains and losses on foreign-currency monetary assets and liabilities are recognised in profit or loss under IAS 21 unless a hedge-accounting exception applies."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 identifies a monetary item designated in a cash flow hedge as a distinct hedge-accounting route that changes the default foreign exchange recognition outcome."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 B5.7.2 and IFRIC 16 explicitly address hedges of foreign currency risk arising from a net investment in a foreign operation, with effective hedge results recognised in other comprehensive income and reclassified on disposal."
+    }
+  ]
+}

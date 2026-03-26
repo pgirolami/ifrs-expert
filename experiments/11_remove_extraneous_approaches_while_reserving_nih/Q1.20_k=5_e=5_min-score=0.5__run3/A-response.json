@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns foreign currency risk on a recognised intragroup receivable in consolidated financial statements.",
+    "The issue is limited to identifying hedge accounting models mentioned in the provided context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2 identifies fair value hedge as a distinct hedge accounting model for recognised assets or liabilities exposed to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2 identifies cash flow hedge as a separate hedge accounting model, and the context specifically discusses intragroup foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.5.2 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

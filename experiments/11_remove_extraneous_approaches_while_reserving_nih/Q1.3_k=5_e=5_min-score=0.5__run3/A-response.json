@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting for foreign exchange risk in consolidated financial statements.",
+    "The intragroup dividend arrangement could be relevant either as an existing intragroup monetary item or as a forecast intragroup cash flow, because the timing of recognition is not specified."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as a hedge of exposure to changes in fair value of a recognised asset or liability attributable to a particular risk, and the context includes the consolidated-statement exception for certain intragroup monetary items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a cash flow hedge for variability in cash flows of a recognised asset or liability or a highly probable forecast transaction, and the context specifically addresses qualifying forecast intragroup foreign currency transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 present the hedge of a net investment in a foreign operation as a separate top-level hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

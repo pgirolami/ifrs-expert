@@ -54,9 +54,10 @@ This journal documents the development progress of the IFRS Expert Assistant - a
         - [Experiment 06](../experiments/06_better_2_stage_processing_json_output/EXPERIMENTS.md)
         - [Experiment 07](../experiments/07_betterbetter_2_stage_processing_json_output/EXPERIMENTS)
     - Improving "net investment hedge" recall
-        - [Experiment 08](../experiments/08_treatment_only_approaches/EXPERIMENTS.md), -
+        - [Experiment 08](../experiments/08_treatment_only_approaches/EXPERIMENTS.md)
         - [Experiment 09](../experiments/09_candidate_approaches_vs_applicability/EXPERIMENTS.md) 
         - [Experiment 10](../experiments/10_recall_nih_consistently/EXPERIMENTS.md)
+        - [Experiment 11](../experiments/11_remove_extraneous_approaches_while_reserving_nih/EXPERIMENTS.md)
 
 ### 2026-03-26 : Preparation for Delivery phase
 

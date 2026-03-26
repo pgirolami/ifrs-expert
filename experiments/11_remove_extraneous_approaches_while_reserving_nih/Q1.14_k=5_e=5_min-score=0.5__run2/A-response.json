@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is about hedge accounting in consolidated financial statements for foreign exchange risk arising from an intragroup exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 presents fair value hedge accounting as a distinct top-level model for a recognised asset or liability exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 presents cash flow hedge accounting as a distinct top-level model for exposure to variability in cash flows of a recognised asset or liability or a highly probable forecast transaction."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately identifies net investment hedge accounting as the IFRS model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

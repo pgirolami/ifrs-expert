@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the intragroup dividend receivable gives rise to foreign currency exposure in the consolidated financial statements.",
+    "Assume the question is asking which IFRS hedge accounting models are relevant to documenting that foreign currency exposure, without determining which model applies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context refers to hedged items being accounted for under IFRS 9 hedge accounting requirements, which include the fair value hedge model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context explicitly identifies cash flow hedge accounting as a hedge model relevant to foreign exchange gains and losses on monetary items."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context expressly addresses hedge accounting for foreign currency risk in consolidated financial statements through the net investment hedge model in IFRS 9 and IFRIC 16."
+    }
+  ]
+}

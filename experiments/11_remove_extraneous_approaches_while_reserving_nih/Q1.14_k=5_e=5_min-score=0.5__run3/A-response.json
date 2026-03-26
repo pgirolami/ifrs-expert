@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is about the consolidated financial statements.",
+    "The dividend has created a recognised foreign-currency intragroup monetary receivable."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a top-level hedge accounting model for a recognised asset or liability exposed to a particular risk affecting profit or loss, which is relevant to a recognised receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a top-level hedge accounting model for variability in cash flows of a recognised asset or liability attributable to a particular risk, including foreign currency risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct top-level hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}
