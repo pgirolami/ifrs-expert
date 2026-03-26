@@ -2,12 +2,13 @@
 
 import json
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 
 from src.db import ChunkStore, init_db
 from src.models.chunk import Chunk
-from src.vector import VectorStore
-from src.vector.store import get_index_path
+from src.vector.store import VectorStore, get_index_path
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,12 @@ RELEVANCE_SCORE_THRESHOLD = 0.3
 
 # Relevance thresholds
 RELEVANCE_HIGH_THRESHOLD = 0.3
+
+# Type aliases for dependency injection
+QueryVectorStore = VectorStore
+QueryChunkStore = ChunkStore
+QueryInitDb = Callable[[], None]
+QueryIndexPath = Callable[[], Path]
 
 
 @dataclass
@@ -29,20 +36,44 @@ class QueryOptions:
 
 
 class QueryCommand:
-    """Search for similar chunks using text query."""
+    """Search for similar chunks using text query.
+
+    Dependencies are required - use create_query_command() factory for production.
+    """
 
     def __init__(
         self,
         query: str,
+        vector_store: QueryVectorStore,
+        chunk_store: QueryChunkStore,
+        init_db_fn: QueryInitDb,
+        index_path_fn: QueryIndexPath,
         options: QueryOptions | None = None,
     ) -> None:
-        """Initialize the query command."""
+        """Initialize the query command.
+
+        Args:
+            query: The search query.
+            vector_store: Vector store instance (required).
+            chunk_store: Chunk store instance (required).
+            init_db_fn: DB init function (required).
+            index_path_fn: Function returning index path (required).
+            options: Query options.
+
+        Note:
+            For production use, call create_query_command() instead.
+        """
         self.query = query
         self.k = options.k if options else 5
         self.min_score = options.min_score if options else None
         self.verbose = options.verbose if options else True
         self.expand = options.expand if options else 0
         self.full_doc_threshold = options.full_doc_threshold if options else 0
+
+        self._vector_store = vector_store
+        self._chunk_store = chunk_store
+        self._init_db_fn = init_db_fn
+        self._index_path_fn = index_path_fn
 
     def execute(self) -> str:
         """Execute the query command and return search results."""
@@ -60,11 +91,11 @@ class QueryCommand:
                 return "Error: full_doc_threshold must be >= 0"
 
             # Check if index exists
-            index_path = get_index_path()
+            index_path = self._index_path_fn()
             if not index_path.exists():
                 return "Error: No index found. Please run 'store' command first."
 
-            with VectorStore() as vector_store:
+            with self._vector_store as vector_store:
                 ranked_results = vector_store.search_all(self.query)
 
             logger.info(f"Search returned {len(ranked_results)} raw results")
@@ -92,12 +123,12 @@ class QueryCommand:
             logger.info(f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}")
 
             # Get the chunk details from database
-            init_db()
+            self._init_db_fn()
 
             # Group results by doc_uid to minimize DB calls
             doc_uids = list({result["doc_uid"] for result in selected_results})
 
-            with ChunkStore() as store:
+            with self._chunk_store as store:
                 # Fetch all chunks for all relevant docs at once
                 doc_chunks: dict[str, list[Chunk]] = {}
                 for doc_uid in doc_uids:
@@ -292,3 +323,26 @@ class QueryCommand:
                 logger.info(f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)")
 
         return expanded_results
+
+
+def create_query_command(
+    query: str,
+    options: QueryOptions | None = None,
+) -> QueryCommand:
+    """Create QueryCommand with real dependencies.
+
+    Args:
+        query: The search query.
+        options: Query options.
+
+    Returns:
+        QueryCommand configured with production dependencies.
+    """
+    return QueryCommand(
+        query=query,
+        options=options,
+        vector_store=VectorStore(),
+        chunk_store=ChunkStore(),
+        init_db_fn=init_db,
+        index_path_fn=get_index_path,
+    )

@@ -4,13 +4,13 @@ import json
 import logging
 import subprocess
 import tempfile
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
 from src.models.chunk import Chunk
-from src.vector import VectorStore
-from src.vector.store import get_index_path
+from src.vector.store import VectorStore, get_index_path
 
 RELEVANCE_SCORE_THRESHOLD = 0.3
 
@@ -20,6 +20,13 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 PROMPT_A_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
 PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
+
+# Type aliases for dependency injection
+AnswerVectorStore = VectorStore
+AnswerChunkStore = ChunkStore
+AnswerInitDb = Callable[[], None]
+AnswerIndexPath = Callable[[], Path]
+AnswerLlmFn = Callable[[str], str]
 
 
 @dataclass
@@ -82,71 +89,35 @@ def _prompt_file_exists(path: Path) -> bool:
     return path.exists()
 
 
-def _send_to_llm(prompt: str) -> str:
-    """Send prompt to LLM and return the response."""
-    # Write prompt to temp file - subprocess runs inside context so file stays open
-    with tempfile.NamedTemporaryFile(mode="w", delete=True, encoding="utf-8") as temp_prompt:
-        temp_prompt.write(prompt)
-        temp_prompt_path = temp_prompt.name
-
-        result = subprocess.run(
-            [*LLM_CMD, "@" + temp_prompt_path, ""],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-
-    # Check for errors
-    if result.returncode != 0:
-        error_msg = result.stderr.strip() if result.stderr else f"Exit code {result.returncode}"
-        logger.error(f"LLM command failed: {error_msg}")
-        raise RuntimeError(error_msg)
-
-    return result.stdout
-
-
-def _extract_context_from_output(full_output: str) -> str:
-    """Extract just the <context>...</context> section from the full output."""
-    start_tag = "<context>"
-    end_tag = "</context>"
-
-    start_idx = full_output.find(start_tag)
-    end_idx = full_output.find(end_tag)
-
-    if start_idx == -1 or end_idx == -1:
-        return ""
-
-    return full_output[start_idx + len(start_tag) : end_idx].strip()
-
-
-def _extract_prompt_content(full_output: str) -> str:
-    """Extract only the prompt content, skipping the chunk summary at the top."""
-    lines = full_output.split("\n")
-
-    # Find the first line that starts the actual prompt
-    start_idx = 0
-    for i, line in enumerate(lines):
-        if line.startswith("You are an IFRS expert"):
-            start_idx = i
-            break
-
-    return "\n".join(lines[start_idx:])
-
-
 class AnswerCommand:
-    """Retrieve chunks and embed them into a prompt template."""
+    """Retrieve chunks and embed them into a prompt template.
+
+    Dependencies are required - use create_answer_command() factory for production.
+    """
 
     def __init__(
         self,
         query: str,
+        vector_store: AnswerVectorStore,
+        chunk_store: AnswerChunkStore,
+        init_db_fn: AnswerInitDb,
+        index_path_fn: AnswerIndexPath,
+        send_to_llm_fn: AnswerLlmFn,
         options: AnswerOptions | None = None,
     ) -> None:
         """Initialize the answer command.
 
         Args:
-            query: The question to answer
-            options: Options for the answer command
+            query: The question to answer.
+            vector_store: Vector store instance (required).
+            chunk_store: Chunk store instance (required).
+            init_db_fn: DB init function (required).
+            index_path_fn: Function returning index path (required).
+            send_to_llm_fn: Function to send prompt to LLM (required).
+            options: Options for the answer command.
 
+        Note:
+            For production use, call create_answer_command() instead.
         """
         self.query = query
         self.k = options.k if options else 5
@@ -155,6 +126,12 @@ class AnswerCommand:
         self.full_doc_threshold = options.full_doc_threshold if options else 0
         self.output_dir = options.output_dir if options else None
         self.save_all = options.save_all if options else False
+
+        self._vector_store = vector_store
+        self._chunk_store = chunk_store
+        self._init_db_fn = init_db_fn
+        self._index_path_fn = index_path_fn
+        self._send_to_llm_fn = send_to_llm_fn
 
     def execute(self) -> str:
         """Execute the answer command and return the LLM response."""
@@ -185,11 +162,11 @@ class AnswerCommand:
             logger.info(f"Prompt templates found: A={PROMPT_A_PATH.name}, B={PROMPT_B_PATH.name}")
 
             # Check if index exists
-            index_path = get_index_path()
+            index_path = self._index_path_fn()
             if not index_path.exists():
                 return "Error: No index found. Please run 'store' command first."
 
-            with VectorStore() as vector_store:
+            with self._vector_store as vector_store:
                 ranked_results = vector_store.search_all(self.query)
 
             logger.info(f"Search returned {len(ranked_results)} raw results")
@@ -215,12 +192,12 @@ class AnswerCommand:
             logger.info(f"Per-document selection: {len(selected_results)} chunks from {len(counts_by_doc)} doc(s) - {doc_summary}")
 
             # Get the chunk details from database
-            init_db()
+            self._init_db_fn()
 
             # Group results by doc_uid to minimize DB calls
             doc_uids = list({result["doc_uid"] for result in selected_results})
 
-            with ChunkStore() as store:
+            with self._chunk_store as store:
                 # Fetch all chunks for all relevant docs at once
                 doc_chunks: dict[str, list[Chunk]] = {}
                 for doc_uid in doc_uids:
@@ -263,7 +240,7 @@ class AnswerCommand:
                     self._save_file("A-prompt.txt", prompt_a_content)
 
                 try:
-                    response_a = _send_to_llm(prompt_a_content)
+                    response_a = self._send_to_llm_fn(prompt_a_content)
                 except RuntimeError as e:
                     logger.exception("LLM call failed")
                     # Save error info and continue to next question
@@ -292,7 +269,7 @@ class AnswerCommand:
                     self._save_file("B-prompt.txt", prompt_b)
 
                 try:
-                    response_b = _send_to_llm(prompt_b)
+                    response_b = self._send_to_llm_fn(prompt_b)
                 except RuntimeError as e:
                     logger.exception("LLM call failed")
                     if self.save_all and self.output_dir:
@@ -546,3 +523,78 @@ class AnswerCommand:
                 logger.info(f"Neighbour expansion: {doc_uid} - added {len(chunk_ids)} surrounding chunk(s)")
 
         return expanded_results
+
+
+def _extract_context_from_output(full_output: str) -> str:
+    """Extract just the <context>...</context> section from the full output."""
+    start_tag = "<context>"
+    end_tag = "</context>"
+
+    start_idx = full_output.find(start_tag)
+    end_idx = full_output.find(end_tag)
+
+    if start_idx == -1 or end_idx == -1:
+        return ""
+
+    return full_output[start_idx + len(start_tag) : end_idx].strip()
+
+
+def _extract_prompt_content(full_output: str) -> str:
+    """Extract only the prompt content, skipping the chunk summary at the top."""
+    lines = full_output.split("\n")
+
+    # Find the first line that starts the actual prompt
+    start_idx = 0
+    for i, line in enumerate(lines):
+        if line.startswith("You are an IFRS expert"):
+            start_idx = i
+            break
+
+    return "\n".join(lines[start_idx:])
+
+
+def _default_send_to_llm(prompt: str) -> str:
+    """Send prompt to LLM and return the response."""
+    # Write prompt to temp file - subprocess runs inside context so file stays open
+    with tempfile.NamedTemporaryFile(mode="w", delete=True, encoding="utf-8") as temp_prompt:
+        temp_prompt.write(prompt)
+        temp_prompt_path = temp_prompt.name
+
+        result = subprocess.run(
+            [*LLM_CMD, "@" + temp_prompt_path, ""],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    # Check for errors
+    if result.returncode != 0:
+        error_msg = result.stderr.strip() if result.stderr else f"Exit code {result.returncode}"
+        logger.error(f"LLM command failed: {error_msg}")
+        raise RuntimeError(error_msg)
+
+    return result.stdout
+
+
+def create_answer_command(
+    query: str,
+    options: AnswerOptions | None = None,
+) -> AnswerCommand:
+    """Create AnswerCommand with real dependencies.
+
+    Args:
+        query: The question to answer.
+        options: Options for the answer command.
+
+    Returns:
+        AnswerCommand configured with production dependencies.
+    """
+    return AnswerCommand(
+        query=query,
+        options=options,
+        vector_store=VectorStore(),
+        chunk_store=ChunkStore(),
+        init_db_fn=init_db,
+        index_path_fn=get_index_path,
+        send_to_llm_fn=_default_send_to_llm,
+    )

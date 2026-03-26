@@ -19,7 +19,7 @@ If you need information from the parent repo, check if it's symlinked first. If 
 
 ---
 
-## 1. Project Overview
+## Project Overview
 
 **Project name:** IFRS Expert Assistant  
 **Type:** Local AI assistant for IFRS accounting guidance  
@@ -28,7 +28,7 @@ If you need information from the parent repo, check if it's symlinked first. If 
 
 ---
 
-## 2. Technology Stack
+## Technology Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -44,9 +44,9 @@ If you need information from the parent repo, check if it's symlinked first. If 
 
 ---
 
-## 3. Code Quality Standards
+## Code Quality Standards
 
-### 3.1 Type Hints (Strict)
+### Type Hints (Strict)
 
 All code **must** use full type annotations. No `Any`, no implicit `Optional`.
 
@@ -62,7 +62,7 @@ def get_chunk_by_id(chunkId):
 
 Run `pyright --strict` before committing.
 
-### 3.2 No Bare Exceptions
+### No Bare Exceptions
 
 Always catch specific exceptions:
 
@@ -81,16 +81,16 @@ except:
     ...
 ```
 
-### 3.3 Async vs Sync
+### Async vs Sync
 
 - **I/O-bound** (database, file, HTTP): use `async`/`await` with `asyncio`
 - **CPU-bound**: keep synchronous in thread pool or use `run_in_executor`
 
 Streamlit handlers run in the event loop—use `asyncio` carefully or run blocking calls in threads.
 
-### 3.4 F-strings (Required)
+### F-strings (Required)
 
-**Always use f-strings for string formatting.** No %-formatting, no `.format()`.
+**Always use f-strings for string formatting.** No %-formatting, no `.format()`, even in logging.
 
 ```python
 # ✅ Good
@@ -104,7 +104,7 @@ logger.warning("Document not found: doc_uid=%s", doc_uid)
 result_msg = "Processed {} items".format(count)
 ```
 
-### 3.5 Logging
+### Logging
 
 Use the following logging pattern:
 
@@ -145,7 +145,7 @@ logger.info(f"Runtime was {time_ms:.2f}.")
 
 Use logging throughout the code to tell the story of what's happening: I want to be able to read the logs and follow the execution path. You **don't** need a log for every function entry & exit but you should have a log for important things decided or computed within functions
 
-### 3.6 Naming Conventions & Class Preference
+### Naming Conventions & Class Preference
 
 Follow these naming conventions:
 
@@ -210,9 +210,9 @@ def normalize_whitespace(text: str) -> str:
 
 ---
 
-## 5. Database Patterns
+## Database Patterns
 
-### 5.1 Connection Management
+### Connection Management
 
 Use SQLite's built-in context manager directly — no helper function needed:
 
@@ -244,7 +244,7 @@ def fetch_document(doc_uid: str) -> dict | None:
 - Set `row_factory` inside the context manager for each operation
 - For read-only, use `mode="readonly"` parameter
 
-### 5.2 Schema Migration
+### Schema Migration
 
 Use versioned SQL migration files:
 
@@ -264,7 +264,7 @@ def run_migrations(conn: sqlite3.Connection) -> None:
         conn.executescript(migration.read_text())
 ```
 
-### 5.3 Query Functions
+### Query Functions
 
 Return typed dataclasses, not raw rows:
 
@@ -289,15 +289,15 @@ def get_document_by_uid(conn: sqlite3.Connection, doc_uid: str) -> Document | No
     return Document(**dict(row))
 ```
 
-### 5.4 Mutation Functions
+### Mutation Functions
 
 Use the same typed dataclasses as the query functions return. If you have a good reason not to, prompt the user for review.
 
 ---
 
-## 6. Streamlit Patterns
+## Streamlit Patterns
 
-### 6.1 Session State Initialization
+### Session State Initialization
 
 Always initialize session state at the top of `app.py`:
 
@@ -309,7 +309,7 @@ if "current_interaction" not in st.session_state:
     st.session_state.current_interaction = None
 ```
 
-### 6.2 Separation of UI and Logic
+### Separation of UI and Logic
 
 Keep Streamlit code minimal in `app.py`. Delegate to components:
 
@@ -327,7 +327,7 @@ def main():
         render_citations(st.session_state.last_response.citations)
 ```
 
-### 6.3 Caching
+### Caching
 
 Use `@st.cache_data` for expensive, deterministic operations:
 
@@ -355,9 +355,9 @@ def get_faiss_index() -> faiss.Index:
 
 ---
 
-## 7. Testing Standards
+## Testing Standards
 
-### 7.1 Test Organization
+### Test Organization
 
 ```
 tests/
@@ -366,7 +366,18 @@ tests/
 └── fixtures/         # Shared test data
 ```
 
-### 7.2 Fixtures for Database
+### Testing and Mocking
+
+Follow `docs/testing_policy.md`.
+
+Non-negotiable rules:
+- Prefer dependency injection and small fakes over mocks and monkey-patching.
+- Mock only external boundaries.
+- Do not add bare `MagicMock`; use autospecced mocks only when a fake is not practical.
+- Do not add new internal monkey-patching as routine test setup.
+- Treat tests with more than two patches as refactoring candidates.
+
+### Fixtures for Database
 
 Use pytest fixtures for isolated test databases & give the test database a unique name:
 
@@ -388,7 +399,7 @@ def temp_db():
         conn.close()
 ```
 
-### 7.3 Test Naming
+### Test Naming
 
 Follow `test_<module>_<behavior>` (snake_case):
 
@@ -400,7 +411,7 @@ def test_intake_detects_missing_facts():
     ...
 ```
 
-### 7.4 Assertions
+### Assertions
 
 Use descriptive assertions:
 
@@ -411,54 +422,13 @@ assert chunk.doc_uid == expected_doc_uid, f"Expected {expected_doc_uid}, got {ch
 
 ---
 
-## 8. Linting & Formatting
+## Linting & Formatting
 
-### 8.1 Ruff Configuration (`ruff.toml`)
+### Ruff Configuration (`ruff.toml`)
 
-```toml
-line-length = 100
-target-version = "py311"
+Do not ignore rules without user consent: fix the actual code issues.
 
-[lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "N",   # pep8-naming
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    "ASYNC", # flake8-async
-    "F501", # f-string without placeholders
-    "F504", # f-string with unused format specifiers
-]
-ignore = [
-    "E501",   # line too long (handled by formatter)
-    "B008",   # do not perform function calls in argument defaults
-    "F541",   # f-string without any placeholders (too aggressive)
-]
-
-[lint.per-file-ignores]
-"__init__.py" = ["F401"]
-
-[lint.extend-rules]
-# Rule: Use f-strings (disallow % and .format())
-fstring = { enabled = true }
-```
-
-Alternatively, use `pyupgrade` rules to auto-convert:
-
-```toml
-[lint]
-select = [
-    # ... other rules
-    "UP031",  # use format specifiers instead of % formatting
-    "UP032",  # use f-strings instead of .format()
-]
-```
-
-### 8.3 Pre-commit Hook
+### Pre-commit Hook
 
 Install pre-commit to run checks before commits:
 
@@ -484,11 +454,11 @@ repos:
 
 ---
 
-## 9. Dependency Management
+## Dependency Management
 
 All dependency management, virtual environments, and package installation is done via [`uv`](https://github.com/astral-sh/uv).
 
-### 9.1 Workflow with uv
+### Workflow with uv
 
 ```bash
 # Create virtual environment and install dependencies
@@ -514,9 +484,9 @@ streamlit run src/ui/app.py
 
 ---
 
-## 10. Common Patterns
+## Common Patterns
 
-### 10.1 Result Types
+### Result Types
 
 Avoid returning `None` for errors. Use Result types:
 
@@ -537,7 +507,7 @@ class RetrievalError:
 RetrievalOutcome = RetrievalResult | RetrievalError
 ```
 
-### 10.2 Configuration
+### Configuration
 
 Stable configuration lives in a YAML file. Use environment variables only for secrets or machine-specific overrides.
 
@@ -598,7 +568,7 @@ API_KEY = os.environ.get("IFRS_API_KEY", config["api"]["key"])  # fallback to co
 
 > **Why YAML?** It's human-readable, version-control friendly, and avoids hardcoding defaults in Python code.
 
-### 10.3 CLI Commands (Command Pattern)
+### CLI Commands (Command Pattern)
 
 CLI commands are implemented using the **Command Pattern** for better separation of concerns, testability, and extensibility.
 
@@ -704,7 +674,7 @@ make test    # Run tests
 
 ---
 
-## 11. CI/CD Expectations
+## CI/CD Expectations
 
 All Pull Requests must pass:
 
@@ -712,6 +682,8 @@ All Pull Requests must pass:
 2. **Lint:** `make lint`
 4. **Test:** `make test`
 
+Do not add rules to ignore in Ruff without user approval.
+
 ---
 
-*Last updated: 2026-03-25*
+*Last updated: 2026-03-26*

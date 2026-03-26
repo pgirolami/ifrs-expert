@@ -7,7 +7,10 @@ import logging
 import sys
 from pathlib import Path
 
-from src.commands import AnswerCommand, AnswerOptions, ChunkCommand, ListCommand, QueryCommand, QueryOptions, StoreCommand
+from src.commands import AnswerOptions, ChunkCommand, ListCommand, QueryOptions
+from src.commands.answer import create_answer_command
+from src.commands.query import create_query_command
+from src.commands.store import create_store_command
 from src.logging_config import setup_logging
 
 setup_logging()
@@ -166,14 +169,14 @@ def _execute_command(args: argparse.Namespace) -> str:
     if args.command == "chunk":
         command = ChunkCommand(pdf_path=Path(args.pdf))
     elif args.command == "store":
-        command = StoreCommand(pdf_path=Path(args.pdf), doc_uid=args.doc_uid)
+        command = create_store_command(pdf_path=Path(args.pdf), doc_uid=args.doc_uid)
     elif args.command == "list":
         command = ListCommand(doc_uid=args.doc_uid)
     elif args.command == "query":
         # Read query from stdin
         query = sys.stdin.read().strip()
         verbose = not getattr(args, "json", False)
-        command = QueryCommand(
+        command = create_query_command(
             query=query,
             options=QueryOptions(
                 k=args.k,
@@ -186,7 +189,7 @@ def _execute_command(args: argparse.Namespace) -> str:
     elif args.command == "answer":
         # Read query from stdin
         query = sys.stdin.read().strip()
-        command = AnswerCommand(
+        command = create_answer_command(
             query=query,
             options=AnswerOptions(
                 k=args.k,
