@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns classification of a financial asset under IFRS 9.",
+    "The instrument is being assessed under the contractual cash flow characteristics condition relevant to subsequent measurement."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost measurement",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that if contractual cash flows meet the relevant condition in paragraph 4.1.2(b), the financial asset can qualify for measurement at amortised cost subject to the other classification requirements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income measurement",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context links the same contractual cash flow condition to eligibility for measurement at fair value through other comprehensive income under paragraph 4.1.2A(b)."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss measurement",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context states that when contractual cash flows do not meet the relevant condition, the financial asset cannot be measured at amortised cost or fair value through other comprehensive income, leaving fair value through profit or loss as the remaining classification basis described."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the IFRS 9 classification of a financial asset, because the SPPI criterion is discussed in that context.",
+    "Any business model condition is separate from the SPPI issue and is not being determined here."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that a financial asset with contractual terms that can change timing or amount of cash flows may still satisfy SPPI, and if it does, amortised cost remains a relevant measurement category under paragraph 4.1.2(b)."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through OCI",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The same SPPI condition is also linked in the context to eligibility for fair value through other comprehensive income under paragraph 4.1.2A(b)."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context says that if the contractual term causes cash flows that are not solely payments of principal and interest, the asset cannot be measured at amortised cost or FVOCI and therefore falls to fair value through profit or loss."
+    }
+  ]
+}

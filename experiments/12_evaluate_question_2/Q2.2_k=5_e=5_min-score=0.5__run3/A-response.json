@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the IFRS 9 classification and measurement of a financial asset.",
+    "The issue is whether contractual features that can change cash flow timing or amount affect eligibility for SPPI-based measurement categories."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that a financial asset can be measured at amortised cost only if it meets the condition in paragraph 4.1.2(b), which B4.1.10 evaluates for clauses that change cash flow timing or amount."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context links the same SPPI condition to eligibility for measurement at fair value through other comprehensive income under paragraph 4.1.2A(b)."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "The context indicates that when contractual cash flows are not solely payments of principal and interest, or cannot be assessed as required, the financial asset is measured at fair value through profit or loss."
+    }
+  ]
+}

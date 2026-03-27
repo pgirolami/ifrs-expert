@@ -1,0 +1,82 @@
+{
+  "assumptions_fr": [
+    "La question porte sur le classement d’un actif financier selon IFRS 9 et sur sa mesure ultérieure au regard de la condition SPPI."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui. Un terme contractuel pouvant modifier l’échéancier ou le montant des flux n’empêche pas, à lui seul, le respect du critère SPPI.\nIl faut toutefois que les flux susceptibles de naître avant et après le déclencheur restent compatibles avec un prêt basique; sinon, la mesure bascule vers le FVTPL."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la seule présence d’un terme déclencheur n’exclut pas le SPPI.\nLe coût amorti reste envisageable si l’analyse des flux pouvant survenir avant et après le changement montre qu’ils demeurent ceux d’un prêt basique et non d’une exposition à une variable étrangère.",
+      "conditions_fr": [
+        "Le déclencheur ne fait pas dépendre les flux d’un indice actions, d’une commodité ou d’un autre facteur non basique.",
+        "Les flux possibles avant et après le changement ne peuvent pas devenir significativement différents de ceux d’un prêt basique."
+      ],
+      "practical_implication_fr": "Si ces conditions sont remplies, l’actif peut rester éligible au coût amorti.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "the entity must determine whether the contractual cash flows that could arise over the life of the instrument due to that contractual term are solely payments of principal and interest"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "a contractual term that permits the issuer (ie the debtor) to prepay a debt instrument"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_oci",
+      "label_fr": "Juste valeur par autres éléments du résultat global (FVOCI)",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le même constat vaut pour le FVOCI: un terme de prépaiement, de put ou d’extension peut rester compatible avec SPPI.\nCette voie n’est ouverte que si la clause ne fait pas dériver les flux vers autre chose que principal, intérêt et, le cas échéant, une compensation raisonnable.",
+      "conditions_fr": [
+        "La clause est de nature prépaiement, put ou extension avec une compensation raisonnable.",
+        "La modification contractuelle ne crée pas des flux incompatibles avec un prêt basique."
+      ],
+      "practical_implication_fr": "Si ces conditions sont remplies, l’actif peut aussi rester éligible au FVOCI.",
+      "references": [
+        {
+          "section": "B4.1.11",
+          "excerpt": "a contractual term that permits the issuer or the holder to extend the contractual term of a debt instrument"
+        },
+        {
+          "section": "B4.1.12",
+          "excerpt": "is eligible to be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat (FVTPL)",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le FVTPL devient la voie pertinente si la clause peut produire des flux sensiblement différents de ceux d’un prêt basique.\nC’est aussi l’issue lorsque la condition SPPI ne peut pas être évaluée au départ dans les cas visés par le texte.",
+      "conditions_fr": [
+        "La clause peut conduire à des flux significativement différents des flux de référence d’un prêt basique.",
+        "Ou la condition SPPI n’est pas évaluable à l’origine dans les situations couvertes par le texte."
+      ],
+      "practical_implication_fr": "Si la clause fait échouer le test SPPI, l’actif doit être mesuré en FVTPL.",
+      "references": [
+        {
+          "section": "B4.1.9D",
+          "excerpt": "the contractual (undiscounted) cash flows could be significantly different from the (undiscounted) benchmark cash flows"
+        },
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Analyser la clause sur toute la durée de vie de l’instrument, en examinant les flux possibles avant et après l’événement déclencheur.",
+    "Regarder la nature du déclencheur: un lien avec le risque de crédit est plus compatible avec SPPI qu’un lien avec un indice actions ou une autre variable non basique.",
+    "Documenter si les flux pourraient devenir significativement différents d’un instrument de référence de prêt basique; dans ce cas, la conclusion s’oriente vers le FVTPL."
+  ]
+}

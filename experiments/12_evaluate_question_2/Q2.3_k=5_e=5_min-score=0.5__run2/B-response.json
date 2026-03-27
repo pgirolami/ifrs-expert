@@ -1,0 +1,84 @@
+{
+  "assumptions_fr": [
+    "La question porte sur le classement d’un actif financier selon IFRS 9.",
+    "L’analyse est limitée aux traitements comptables liés au fait que les flux contractuels sont, ou non, compatibles avec un prêt basique (SPPI)."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Un terme contractuel qui modifie l’échéancier ou le montant des flux n’exclut pas, à lui seul, le critère SPPI. Il faut apprécier les flux possibles avant et après le déclenchement ; s’ils restent compatibles avec principal et intérêts d’un prêt basique, le SPPI peut être respecté, sinon l’actif relève de la juste valeur par résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la simple présence d’un événement déclencheur ne disqualifie pas automatiquement l’actif. Le coût amorti n’est possible que si l’analyse des flux avant et après le changement montre que le terme reste compatible avec un prêt basique, puis si le modèle économique correspond à une détention pour encaissement.",
+      "conditions_fr": [
+        "Le terme déclencheur ne doit pas introduire une exposition étrangère à un prêt basique, telle qu’un index actions ou des flux pouvant devenir significativement différents d’un benchmark de prêt.",
+        "Le modèle économique doit être la détention pour encaissement des flux contractuels."
+      ],
+      "practical_implication_fr": "Documenter dès l’origine l’analyse du trigger et classer au coût amorti seulement si cette analyse reste compatible avec un prêt basique.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "assess the contractual cash flows that could arise both before, and after, the change"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "prepayment amount substantially represents unpaid amounts of principal and interest"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_oci",
+      "label_fr": "Juste valeur par OCI",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette même situation, un instrument avec terme déclenché peut encore satisfaire le SPPI et donc rester éligible à la FVOCI. Cela suppose que les flux potentiels, y compris après déclenchement, restent ceux d’un prêt basique, et que le modèle économique combine encaissement et vente.",
+      "conditions_fr": [
+        "Le terme déclencheur doit laisser subsister des flux assimilables à principal et intérêts malgré l’événement.",
+        "Le modèle économique doit combiner encaissement des flux contractuels et vente."
+      ],
+      "practical_implication_fr": "Si l’analyse du terme déclenché confirme le SPPI, la FVOCI reste envisageable selon le modèle économique retenu.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "whether the contractual cash flows that could arise over the life of the instrument are solely payments of principal and interest"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "extension option result in contractual cash flows during the extension period that are solely payments"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_pl",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette approche s’applique dans cette situation si le terme déclencheur fait sortir l’instrument d’un prêt basique. C’est le cas lorsque le changement de flux expose l’actif à autre chose que principal et intérêts, ou lorsque les flux possibles peuvent devenir significativement différents d’un benchmark pertinent.",
+      "conditions_fr": [
+        "L’analyse du terme déclencheur montre des flux non compatibles avec un prêt basique ou pouvant devenir significativement différents du benchmark.",
+        "L’effet du terme n’est ni de minimis ni non genuine."
+      ],
+      "practical_implication_fr": "Si le trigger fait échouer le SPPI, l’actif ne peut pas être classé au coût amorti ni en FVOCI et doit être mesuré en juste valeur par résultat.",
+      "references": [
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        },
+        {
+          "section": "B4.1.18",
+          "excerpt": "could have only a de minimis effect"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Analyser à la date de comptabilisation initiale les flux contractuels possibles avant et après l’événement déclencheur.",
+    "Documenter la nature du trigger : un déclencheur lié au défaut ou au risque de crédit est plus compatible avec un prêt basique qu’un déclencheur lié à un indice actions.",
+    "Vérifier si l’effet du terme est de minimis ou non genuine ; dans ce cas, il n’affecte pas le classement.",
+    "Une fois le SPPI conclu, le choix entre coût amorti et FVOCI dépend encore du modèle économique applicable."
+  ]
+}

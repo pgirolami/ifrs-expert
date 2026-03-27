@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the question concerns classification and subsequent measurement of a financial asset under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context links compliance with the SPPI condition in paragraph 4.1.2(b), including for instruments with trigger-based cash flow changes, to eligibility for amortised cost measurement."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context links compliance with the SPPI condition in paragraph 4.1.2A(b), using the same contractual cash flow guidance, to eligibility for fair value through other comprehensive income measurement."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context states that when contractual cash flows are not solely payments of principal and interest, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
+    }
+  ]
+}

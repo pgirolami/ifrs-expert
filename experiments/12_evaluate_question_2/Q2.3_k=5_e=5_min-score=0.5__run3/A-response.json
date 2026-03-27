@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the classification and subsequent measurement of a financial asset under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context links the SPPI condition in paragraphs 4.1.2(b) and B4.1.10-B4.1.12 to eligibility for subsequent measurement at amortised cost."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The same SPPI condition is also linked in the context to eligibility for subsequent measurement at fair value through other comprehensive income under paragraphs 4.1.2A(b), B4.1.10 and B4.1.12."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context indicates that instruments failing the SPPI-linked conditions cannot be measured at amortised cost or FVOCI, and identifies fair value through profit or loss as the alternative measurement basis."
+    }
+  ]
+}

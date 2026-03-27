@@ -1,0 +1,88 @@
+{
+  "assumptions_fr": [
+    "On suppose que la question porte sur le classement d’un actif financier selon IFRS 9.",
+    "On suppose qu’aucun autre fait spécifique n’est fourni sur la nature précise du déclencheur ou des flux après activation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, un instrument comportant une clause modifiant l’échéancier ou le montant des flux peut encore satisfaire au critère SPPI. Il faut toutefois analyser les flux pouvant naître avant et après le déclenchement ; si la clause introduit une exposition non compatible avec un prêt basique, le critère SPPI échoue."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la seule présence d’un terme contractuel modifiant les flux ne fait pas échouer automatiquement le critère SPPI. Pour que le coût amorti reste possible, il faut apprécier les flux susceptibles de survenir avant et après l’activation de la clause, ainsi que la nature du déclencheur. Un déclencheur lié au risque de crédit est plus compatible qu’un déclencheur indexé sur un facteur de type actions.",
+      "conditions_fr": [
+        "Le déclencheur et l’ajustement des flux restent compatibles avec une logique de prêt basique, par exemple liés au risque de crédit et non à un indice actions.",
+        "Les flux après activation ne vont pas au-delà de principal, intérêts et, le cas échéant, compensation raisonnable pour remboursement anticipé ou extension."
+      ],
+      "practical_implication_fr": "Documenter une analyse SPPI des flux contractuels avant et après déclenchement est nécessaire avant de retenir le coût amorti.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "must assess the contractual cash flows that could arise both before, and after, the change"
+        },
+        {
+          "section": "B4.1.10",
+          "excerpt": "it may be an indicator"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "reasonable compensation for the early termination of the contract"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_oci",
+      "label_fr": "Juste valeur par autres éléments du résultat global",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la conclusion est la même sur le plan SPPI : la clause de modification n’exclut pas en soi cette catégorie. La base FVOCI reste ouverte seulement si l’examen des flux avant et après le changement montre qu’ils demeurent compatibles avec un prêt basique. Si ce test échoue, cette approche ne s’applique pas.",
+      "conditions_fr": [
+        "La clause de modification conserve des flux compatibles avec SPPI avant et après son activation.",
+        "Le mécanisme contractuel ne crée pas une variabilité étrangère à une relation de prêt basique."
+      ],
+      "practical_implication_fr": "La même note d’analyse SPPI peut être utilisée pour étayer l’éligibilité à la FVOCI sur le critère des flux contractuels.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "the entity must determine whether the contractual cash flows that could arise over the life of the instrument"
+        },
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_pnl",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, cette approche s’applique si l’analyse de la clause montre que les flux potentiels ne sont pas SPPI. Le contexte cite précisément qu’un déclencheur lié à un indice actions est moins susceptible d’être compatible avec un prêt basique. Dans ce cas, les catégories coût amorti et FVOCI deviennent indisponibles.",
+      "conditions_fr": [
+        "Le déclencheur ou ses effets exposent l’instrument à des flux non compatibles avec un prêt basique, par exemple en lien avec un indice actions.",
+        "L’analyse des flux potentiels avant et après changement conduit à l’échec du test SPPI."
+      ],
+      "practical_implication_fr": "Si la clause fait échouer SPPI, le classement résiduel se fait à la juste valeur par résultat.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "if a specified equity index reaches a particular level"
+        },
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Analyser dès l’initialisation du classement les flux contractuels pouvant survenir avant et après l’événement déclencheur.",
+    "Décrire séparément la nature du déclencheur et l’effet exact sur le taux, l’échéancier ou le montant des paiements.",
+    "Comparer les clauses à des exemples compatibles cités dans le contexte, comme remboursement anticipé ou extension avec compensation raisonnable.",
+    "Si la clause renvoie à un facteur externe de type actions, prévoir un risque élevé d’échec du test SPPI et donc un classement à la juste valeur par résultat."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the IFRS 9 classification of a financial asset.",
+    "The issue is limited to accounting approaches linked to whether contractual cash flows are consistent with a basic lending arrangement (SPPI)."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that a financial asset with contractual cash flows that meet the SPPI condition may be measured at amortised cost, subject to the separate business model condition."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context states that a financial asset with contractual cash flows that meet the SPPI condition may be measured at fair value through other comprehensive income, subject to the separate business model condition."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "The context states that if contractual cash flows do not meet the SPPI condition, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
+    }
+  ]
+}

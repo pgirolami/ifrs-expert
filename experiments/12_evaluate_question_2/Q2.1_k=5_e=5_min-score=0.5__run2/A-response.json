@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns a financial asset within IFRS 9 classification and subsequent measurement."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context links the SPPI condition to eligibility for measurement at amortised cost when contractual terms may change the timing or amount of cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through OCI",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context states that the same SPPI condition is also relevant to whether a financial asset can be measured at fair value through other comprehensive income."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context indicates that if the contractual cash flows do not meet the SPPI condition, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
+    }
+  ]
+}

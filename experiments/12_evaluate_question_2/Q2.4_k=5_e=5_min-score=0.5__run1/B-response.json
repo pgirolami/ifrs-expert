@@ -1,0 +1,91 @@
+{
+  "assumptions_fr": [
+    "La question porte sur le classement d’un actif financier selon IFRS 9.",
+    "L’analyse vise le test des caractéristiques des flux de trésorerie contractuels (SPPI) pour le classement ultérieur."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, une clause qui modifie l’échéancier ou le montant des flux n’exclut pas automatiquement le critère SPPI. Dans cette situation, il faut vérifier si les flux pouvant naître avant et après l’événement déclencheur restent compatibles avec un prêt basique ; sinon l’actif ne satisfait plus SPPI."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la présence d’un événement déclencheur n’empêche pas à elle seule le classement au coût amorti. L’instrument peut encore être SPPI si les flux susceptibles de naître avant et après la modification restent des paiements de principal et d’intérêts, et si le déclencheur ne crée pas une exposition étrangère à un prêt basique.",
+      "conditions_fr": [
+        "L’analyse des flux avant et après le déclenchement conclut qu’ils restent compatibles avec un prêt basique.",
+        "Le déclencheur n’introduit pas une exposition à un indice, à des actifs spécifiques ou à une variabilité non cohérente avec un prêt basique."
+      ],
+      "practical_implication_fr": "Le coût amorti reste possible seulement après une analyse documentée de la clause déclenchante et de ses effets sur tous les flux contractuels pertinents.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "must assess the contractual cash flows that could arise both before, and after, the change"
+        },
+        {
+          "section": "B4.1.10",
+          "excerpt": "it may be an indicator"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "contractual terms that result in contractual cash flows that are solely payments of principal and interest"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_oci",
+      "label_fr": "Juste valeur par OCI",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la JVOCI reste envisageable pour la même raison que le coût amorti : la clause de modification n’est pas disqualifiante par principe. Elle ne fonctionne que si l’évaluation des flux avant et après l’événement montre que l’actif conserve des flux de type principal et intérêts d’un prêt basique.",
+      "conditions_fr": [
+        "La clause contractuelle, même activée, ne fait pas sortir l’instrument du test SPPI.",
+        "Les flux potentiels demeurent cohérents avec une relation de prêt basique sur la durée de vie de l’instrument."
+      ],
+      "practical_implication_fr": "La JVOCI n’est possible que si la clause est analysée de la même façon qu’au coût amorti et ne compromet pas le caractère SPPI des flux.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "determine whether the contractual cash flows that could arise over the life of the instrument are solely payments of principal and interest"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "a variable interest rate that consists of consideration for the time value of money"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, ce traitement s’applique si la clause déclenchée fait varier les flux d’une manière incompatible avec un prêt basique. Le contexte donne comme exemple des flux dépendant d’actifs ou de performances spécifiques ; dans ce cas, l’actif ne satisfait pas SPPI et ne peut pas être au coût amorti ni en JVOCI.",
+      "conditions_fr": [
+        "La clause modifie les flux de sorte qu’ils ne sont plus uniquement des paiements de principal et d’intérêts.",
+        "L’effet de la caractéristique contractuelle n’est pas négligeable et n’est pas purement non authentique."
+      ],
+      "practical_implication_fr": "Si la clause crée une exposition non compatible avec un prêt basique, la juste valeur par résultat devient le traitement pertinent parmi les approches identifiées.",
+      "references": [
+        {
+          "section": "B4.1.16",
+          "excerpt": "those contractual cash flows are inconsistent with a basic lending arrangement"
+        },
+        {
+          "section": "B4.1.16",
+          "excerpt": "would not satisfy the condition"
+        },
+        {
+          "section": "B4.1.18",
+          "excerpt": "could have only a de minimis effect"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Analyser dès l’origine les flux pouvant naître avant et après l’événement déclencheur, et non seulement le scénario de base.",
+    "Documenter la nature du déclencheur : un lien avec le risque de crédit peut être compatible avec SPPI, alors qu’un lien avec un indice ou des actifs spécifiques peut ne pas l’être.",
+    "Si la clause fait échouer le test SPPI, écarter le coût amorti et la JVOCI au profit de la juste valeur par résultat."
+  ]
+}

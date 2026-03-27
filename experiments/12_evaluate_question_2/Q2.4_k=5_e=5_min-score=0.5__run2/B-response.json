@@ -1,0 +1,95 @@
+{
+  "assumptions_fr": [
+    "La question porte sur la classification IFRS 9 d’un actif financier comportant une clause contractuelle pouvant modifier l’échéancier ou le montant des flux de trésorerie.",
+    "Aucune autre caractéristique contractuelle ni information de modèle de gestion n’est fournie ; l’analyse se limite donc à l’effet de cette clause sur le critère SPPI."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui. Une clause déclenchante peut coexister avec le critère SPPI si les flux possibles avant et après le déclencheur restent ceux d’un prêt basique. Si la clause introduit une exposition non basique ou des écarts significatifs par rapport aux flux de référence, le test SPPI échoue et l’actif relève alors de la juste valeur par résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la seule présence d’une clause modifiant le calendrier ou le montant des flux n’exclut pas le coût amorti. L’actif peut encore y être éligible si l’analyse des flux pouvant survenir avant et après le déclencheur montre qu’ils restent compatibles avec un prêt basique, y compris pour des clauses de prépaiement ou d’extension avec compensation raisonnable.",
+      "conditions_fr": [
+        "la clause ne doit pas indexer les flux sur des actions, des matières premières, des actifs spécifiques ou des flux d’actifs spécifiques",
+        "la condition supplémentaire de 4.1.2(a) doit aussi être satisfaite"
+      ],
+      "practical_implication_fr": "Documenter les flux possibles avant et après déclenchement avant de conclure au coût amorti.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "must assess the contractual cash flows that could arise both before, and after, the change"
+        },
+        {
+          "section": "B4.1.11",
+          "excerpt": "prepayment amount substantially represents unpaid amounts of principal and interest"
+        },
+        {
+          "section": "B4.1.18",
+          "excerpt": "could have only a de minimis effect"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fvoci_measurement",
+      "label_fr": "Juste valeur par OCI",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, une clause déclenchante n’exclut pas à elle seule la juste valeur par OCI. Si les flux potentiels avant et après le déclencheur restent compatibles avec un prêt basique, le motif SPPI ne ferme pas cette catégorie ; en revanche, une clause non basique fait sortir l’actif du coût amorti et de la juste valeur par OCI.",
+      "conditions_fr": [
+        "la clause ne doit pas indexer les flux sur des actions, des matières premières, des actifs spécifiques ou des flux d’actifs spécifiques",
+        "la condition supplémentaire de 4.1.2A(a) doit aussi être satisfaite"
+      ],
+      "practical_implication_fr": "Ne retenir la juste valeur par OCI qu’après validation du caractère basique de la clause déclenchante.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "must assess the contractual cash flows that could arise both before, and after, the change"
+        },
+        {
+          "section": "B4.1.12",
+          "excerpt": "subject to meeting the condition in paragraph 4.1.2(a) or the condition in paragraph 4.1.2A(a)"
+        },
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fvtpl_measurement",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la juste valeur par résultat devient le traitement applicable si la clause déclenchante fait dépendre les flux d’un facteur étranger à un prêt basique ou peut produire des flux significativement différents des flux de référence. C’est notamment le cas d’une indexation sur un indice actions ou sur des actifs ou flux spécifiques.",
+      "conditions_fr": [
+        "la clause introduit une exposition à des variables non compatibles avec un prêt basique",
+        "les flux possibles peuvent devenir significativement différents des flux de référence"
+      ],
+      "practical_implication_fr": "Si l’analyse SPPI échoue, classer l’actif en juste valeur par résultat.",
+      "references": [
+        {
+          "section": "B4.1.10",
+          "excerpt": "it may be an indicator"
+        },
+        {
+          "section": "B4.1.16",
+          "excerpt": "those contractual cash flows are inconsistent with a basic lending arrangement"
+        },
+        {
+          "section": "B4.1.9D",
+          "excerpt": "cannot be measured at amortised cost or fair value through other comprehensive income"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Tester explicitement les flux contractuels possibles avant et après l’événement déclencheur ; la nature du trigger est un indicateur, mais pas le seul critère.",
+    "Comparer, si nécessaire, les flux possibles aux flux de référence pour déterminer s’ils peuvent devenir significativement différents sur la durée de vie de l’instrument.",
+    "Documenter séparément les cas où l’effet de la clause est seulement de minimis ou non genuine, car ils n’affectent pas la conclusion de classification."
+  ]
+}

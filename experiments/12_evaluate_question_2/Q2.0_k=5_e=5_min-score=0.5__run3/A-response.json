@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns IFRS 9 classification and subsequent measurement of a financial asset based on the SPPI condition."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that a financial asset with contractual terms that change cash flows may still be measured at amortised cost if the cash flows remain solely payments of principal and interest."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income (FVOCI)",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context states that a financial asset may be eligible for FVOCI when the contractual cash flows satisfy the SPPI condition, including in cases involving prepayment or extension features."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss (FVTPL)",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "The context states that if contractual cash flows could be significantly different from SPPI benchmark cash flows, or the holder cannot assess the condition, the instrument must be measured at fair value through profit or loss."
+    }
+  ]
+}
