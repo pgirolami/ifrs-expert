@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The instrument is a financial liability within the scope of IFRS 9 and the issue is its subsequent accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 paragraph 4.2.1 states that financial liabilities are subsequently measured at amortised cost unless an exception applies, and paragraph 5.7.2 with B5.4.6 addresses profit or loss recognition through amortisation and cash flow re-estimation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 paragraphs 4.2.1 and 4.2.2, together with B4.3.9-B4.3.10, identify fair value through profit or loss as a relevant measurement basis for financial liabilities and whole hybrid contracts."
+    },
+    {
+      "id": "approach_3",
+      "label": "Separated embedded derivative accounting",
+      "normalized_label": "separated_embedded_derivative",
+      "rationale_for_inclusion": "IFRS 9 paragraphs 4.3.3-4.3.4 and related guidance provide a distinct hybrid-instrument model in which an embedded derivative in a non-asset host is separated and accounted for as a derivative while the host is accounted for separately."
+    }
+  ]
+}

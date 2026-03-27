@@ -1,0 +1,93 @@
+{
+  "assumptions_fr": [
+    "On suppose que l'instrument est un passif financier entrant dans le champ d'application d'IFRS 9.",
+    "On suppose que la question porte sur la comptabilisation ultérieure d'un instrument hybride de type dette susceptible de contenir un dérivé incorporé."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Au vu des faits fournis, la dette n'est pas automatiquement comptabilisée à la juste valeur par résultat du seul fait que l'intérêt dépend des profits. Le point de départ est le coût amorti, puis il faut tester si la clause de participation aux profits doit être séparée comme dérivé incorporé; à défaut, la dette reste au coût amorti."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans votre situation, IFRS 9 pose le coût amorti comme règle générale pour les passifs financiers. Le fait que l'intérêt soit variable et payable seulement s'il existe des profits résiduels ne suffit pas, à lui seul, à faire passer l'emprunt entier en juste valeur par résultat. Si la clause participative n'est pas séparée et si aucune désignation initiale à la juste valeur n'a été faite, l'EIR reste la base, avec ajustement des estimations de flux si elles évoluent.",
+      "conditions_fr": [
+        "aucune désignation irrévocable à la juste valeur par résultat n'a été faite à l'origine",
+        "la clause indexée sur les profits n'est pas comptabilisée séparément comme dérivé incorporé"
+      ],
+      "practical_implication_fr": "Appliquer un taux d'intérêt effectif et ajuster le coût amorti si les flux contractuels estimés sont révisés.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "An entity shall classify all financial liabilities as subsequently measured at amortised cost, except for:"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "A gain or loss on a financial liability that is measured at amortised cost ... shall be recognised in profit or loss ... through the amortisation process."
+        },
+        {
+          "section": "B5.4.6",
+          "excerpt": "adjust the ... amortised cost of a financial liability ... to reflect actual and revised estimated contractual cash flows."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "non",
+      "reasoning_fr": "Dans les faits décrits, rien n'indique que la dette a été désignée à la juste valeur par résultat lors de la comptabilisation initiale. IFRS 9 traite cette base comme une exception à la règle du coût amorti, et la simple présence alléguée d'un dérivé incorporé n'impose pas la juste valeur par résultat de l'instrument entier. Il faut d'abord examiner le modèle de séparation des dérivés incorporés.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas réévaluer la dette entière à la juste valeur sur la seule base de la clause de participation aux profits.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "financial liabilities at fair value through profit or loss"
+        },
+        {
+          "section": "4.2.2",
+          "excerpt": "An entity may, at initial recognition, irrevocably designate a financial liability as measured at fair value through profit or loss"
+        },
+        {
+          "section": "B4.3.9",
+          "excerpt": "this Standard permits the entire hybrid contract to be designated as at fair value through profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "embedded_derivative_separation",
+      "label_fr": "Séparation du dérivé incorporé",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Votre description peut faire envisager un instrument hybride: un prêt hôte avec une rémunération additionnelle dépendant des profits résiduels. Toutefois, IFRS 9 ne permet la séparation que si les critères du paragraphe 4.3.3 sont remplis; ce n'est donc pas automatique dans ce cas. Le point décisif est notamment de savoir si la clause de profit participation, prise isolément, répondrait à la définition d'un dérivé et n'est pas étroitement liée au prêt hôte.",
+      "conditions_fr": [
+        "la clause de participation aux profits n'est pas étroitement liée au contrat de dette hôte",
+        "un instrument séparé avec les mêmes termes répondrait à la définition d'un dérivé"
+      ],
+      "practical_implication_fr": "Si la séparation est requise, la clause est comptabilisée comme dérivé et le contrat hôte suit ensuite sa base propre.",
+      "references": [
+        {
+          "section": "4.3.3",
+          "excerpt": "an embedded derivative shall be separated from the host and accounted for as a derivative"
+        },
+        {
+          "section": "4.3.3",
+          "excerpt": "if, and only if:"
+        },
+        {
+          "section": "4.3.1",
+          "excerpt": "other variable, provided in the case of a non-financial variable that the variable is not specific to a party to the contract."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier la documentation initiale: une désignation à la juste valeur par résultat n'est possible qu'à la comptabilisation initiale.",
+    "Tester formellement la clause de participation aux profits à la date d'origine selon le paragraphe 4.3.3 avant de conclure sur la base de mesure.",
+    "Si la dette reste au coût amorti, estimer les flux contractuels attendus puis comptabiliser les révisions d'estimation via l'ajustement du coût amorti et le résultat.",
+    "Le caractère limited recourse et la subordination dans la waterfall influencent surtout l'estimation des flux et le profil de risque; ils ne suffisent pas, dans les extraits fournis, à imposer la juste valeur par résultat."
+  ]
+}

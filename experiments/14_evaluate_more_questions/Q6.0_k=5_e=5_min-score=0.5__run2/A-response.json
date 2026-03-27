@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the instrument is being assessed by the issuer as a financial liability within IFRS 9.",
+    "Assume the question is about subsequent measurement of the liability and any embedded profit-linked feature, rather than hedge accounting, derecognition, or transfer accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 states that financial liabilities are generally subsequently measured at amortised cost, with profit or loss effects arising through amortisation, derecognition, and revisions of estimated contractual cash flows using the effective interest method."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "IFRS 9 includes fair value through profit or loss as a distinct measurement model for financial liabilities, including derivative liabilities and liabilities designated at fair value through profit or loss in specified circumstances."
+    },
+    {
+      "id": "approach_3",
+      "label": "Embedded derivative separation",
+      "normalized_label": "embedded_derivative_separation",
+      "rationale_for_inclusion": "IFRS 9 provides a separate hybrid-contract model under which an embedded derivative in a contract with a non-asset host is bifurcated and accounted for as a derivative, while the host contract is accounted for separately."
+    }
+  ]
+}

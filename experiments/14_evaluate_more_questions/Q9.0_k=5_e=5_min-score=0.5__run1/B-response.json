@@ -1,0 +1,103 @@
+{
+  "assumptions_fr": [
+    "La question porte sur la comptabilisation initiale du prêt d'actionnaire en tant qu'instrument financier.",
+    "La demande est limitée à la comptabilisation et à l'évaluation initiales, y compris l'écart éventuel entre le prix de transaction et la juste valeur."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "IFRS 9 permet de comptabiliser initialement un prêt sans intérêt / hors marché à la juste valeur par actualisation des flux futurs au taux de marché d'un instrument similaire.\nIci, l'absence d'échéance fixe impose de documenter l'hypothèse de remboursement; si la juste valeur diffère du montant reçu et n'est pas étayée uniquement par des données observables, l'écart est différé."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "transaction_price_recognition",
+      "label_fr": "Comptabilisation initiale au prix de transaction",
+      "applicability": "non",
+      "reasoning_fr": "Cette méthode est la règle normale, mais elle n'est pas la mieux adaptée aux faits décrits.\nLe prêt est sans intérêt et consenti par un actionnaire, ce qui suggère que le montant reçu peut ne pas refléter uniquement l'instrument financier; le contexte fourni renvoie alors à une mesure à la juste valeur.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas retenir automatiquement le nominal reçu comme valeur initiale du prêt.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "The fair value of a financial instrument at initial recognition is normally the transaction price"
+        },
+        {
+          "section": "B5.1.1",
+          "excerpt": "if part of the consideration given or received is for something other than the financial instrument"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_recognition",
+      "label_fr": "Comptabilisation initiale à la juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette approche correspond aux faits: IFRS 9 illustre qu'un prêt sans intérêt ou à taux hors marché est comptabilisé initialement à la juste valeur par actualisation des flux futurs.\nToutefois, ici il n'existe pas de période de remboursement fixe; il faut donc disposer d'une hypothèse documentée de calendrier de remboursement pour pouvoir calculer la valeur actuelle.",
+      "conditions_fr": [
+        "déterminer un calendrier de remboursement ou des flux futurs utilisables pour l'actualisation",
+        "utiliser un taux de marché pour un instrument similaire avec un risque de crédit similaire"
+      ],
+      "practical_implication_fr": "Constater initialement le prêt à la juste valeur calculée par actualisation, et non automatiquement au nominal.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "the fair value of a long-term loan or receivable that carries no interest can be measured as the present value of all future cash receipts"
+        },
+        {
+          "section": "B5.1.1",
+          "excerpt": "discounted using the prevailing market rate(s) of interest for a similar instrument"
+        },
+        {
+          "section": "B5.1.2",
+          "excerpt": "the entity recognises the loan at its fair value"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "day_one_gain_loss",
+      "label_fr": "Gain ou perte immédiat(e) au jour 1",
+      "applicability": "non",
+      "reasoning_fr": "Ce traitement n'est permis que si la juste valeur est prouvée par un prix coté de niveau 1 ou par une technique utilisant uniquement des données de marché observables.\nDans cette situation, l'absence d'échéance fixe rend probable l'utilisation d'hypothèses de remboursement; sur les faits fournis, la condition d'observabilité intégrale n'est donc pas établie.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas comptabiliser immédiatement en résultat l'écart entre montant reçu et juste valeur sur la seule base des faits donnés.",
+      "references": [
+        {
+          "section": "B5.1.2A",
+          "excerpt": "uses only data from observable markets"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "recognise the difference between the fair value at initial recognition and the transaction price as a gain or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "day_one_deferral",
+      "label_fr": "Différé de l'écart au jour 1",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si la juste valeur initiale obtenue par actualisation diffère du montant reçu, IFRS 9 impose de différer l'écart lorsque cette juste valeur n'est pas étayée par des données entièrement observables.\nDans ce dossier, cette issue est pertinente dès lors que l'évaluation du prêt sans échéance fixe repose sur des hypothèses de remboursement.",
+      "conditions_fr": [
+        "la juste valeur initiale déterminée diffère du montant reçu",
+        "l'évaluation n'est pas fondée uniquement sur des données de marché observables"
+      ],
+      "practical_implication_fr": "L'écart entre le montant reçu et la juste valeur n'est pas comptabilisé immédiatement en résultat; il est différé.",
+      "references": [
+        {
+          "section": "B5.1.2A",
+          "excerpt": "in all other cases"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "adjusted to defer the difference between the fair value at initial recognition and the transaction price"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "À la comptabilisation initiale, déterminer les flux de remboursement retenus et les actualiser avec un taux de marché pour un instrument similaire.",
+    "Documenter explicitement l'hypothèse de période de remboursement, car le prêt n'a pas d'échéance fixe.",
+    "Comparer ensuite la juste valeur obtenue au montant reçu pour déterminer s'il faut différer un écart au jour 1."
+  ]
+}

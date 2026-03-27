@@ -1,0 +1,81 @@
+{
+  "assumptions_fr": [
+    "La question porte sur la comptabilisation initiale, chez Company A, du prêt reçu de l'actionnaire comme instrument financier selon IFRS 9.",
+    "L'analyse est limitée aux approches d'évaluation initiale identifiées et aux extraits IFRS 9 fournis."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, l'approche pertinente est la juste valeur initiale plutôt que le simple prix de transaction, car le prêt est sans intérêt et à conditions hors marché. L'actualisation n'est praticable que si Company A fixe une hypothèse de remboursement permettant de dater les flux futurs; tout écart avec le montant reçu est ensuite traité selon B5.1.2A."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "transaction_price",
+      "label_fr": "Prix de transaction",
+      "applicability": "non",
+      "reasoning_fr": "Le prix de transaction est la règle de départ, mais les faits ici pointent vers une exception.\nLe prêt est sans intérêt et donc à conditions hors marché; dans ce cas, les extraits IFRS 9 orientent vers une mesure distincte à la juste valeur plutôt que vers le nominal reçu.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas retenir automatiquement le montant reçu comme juste valeur initiale du prêt.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "is normally the transaction price"
+        },
+        {
+          "section": "B5.1.2",
+          "excerpt": "bears an off-market interest rate"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "initial_fair_value",
+      "label_fr": "Juste valeur initiale",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette approche correspond directement au cas d'un prêt sans intérêt ou à taux hors marché.\nIci, la juste valeur initiale peut être estimée par actualisation des flux futurs au taux de marché d'un instrument similaire, mais seulement si Company A définit l'hypothèse de remboursement à utiliser malgré l'absence d'échéance fixe.",
+      "conditions_fr": [
+        "définir l'hypothèse de remboursement permettant de dater les flux futurs malgré l'absence d'échéance fixe",
+        "retenir un taux de marché pour un instrument similaire"
+      ],
+      "practical_implication_fr": "Mesurer initialement le prêt à la valeur actuelle des flux futurs plutôt qu'au nominal reçu.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "present value of all future cash receipts discounted using the prevailing market rate(s) of interest for a similar instrument"
+        },
+        {
+          "section": "B5.1.2",
+          "excerpt": "recognises the loan at its fair value"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "day_one_difference",
+      "label_fr": "Écart au jour 1",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si la juste valeur déterminée par actualisation diffère du montant reçu, cette approche gouverne le traitement de l'écart initial.\nDans ce dossier, l'absence d'échéance fixe peut rendre la valorisation plus dépendante d'hypothèses; l'écart n'est reconnu immédiatement en résultat que si la juste valeur est étayée par un prix coté identique ou par des données uniquement observables, sinon il est différé.",
+      "conditions_fr": [
+        "la juste valeur initiale estimée diffère du montant reçu",
+        "la reconnaissance immédiate en résultat suppose un prix coté identique ou une technique utilisant seulement des données observables"
+      ],
+      "practical_implication_fr": "Qualifier l'écart initial en résultat ou en montant différé selon l'observabilité des données de valorisation.",
+      "references": [
+        {
+          "section": "B5.1.2A",
+          "excerpt": "recognise the difference between the fair value at initial recognition and the transaction price as a gain or loss"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "adjusted to defer the difference"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "À la date initiale, documenter que le prêt est sans intérêt et donc à des conditions hors marché.",
+    "La méthode de valeur actuelle exige d'identifier les flux futurs et surtout leur calendrier, point critique ici puisqu'il n'existe pas d'échéance contractuelle fixe.",
+    "Le taux d'actualisation doit être aligné sur un instrument similaire selon la devise, le terme, le type de taux et des facteurs comparables.",
+    "Si la juste valeur calculée diffère du montant reçu, appliquer immédiatement le cadre B5.1.2A pour décider entre résultat immédiat et différé."
+  ]
+}

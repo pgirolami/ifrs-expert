@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The designated hedged item is a group of forecast floating-rate interest cash flows intended to qualify for IFRS 9 cash flow hedge accounting.",
+    "The issue is limited to hedge accounting for changes in designated hedge quantities over time, rather than the separate accounting for the underlying loans."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The question is expressly about hedging highly probable forecast variable interest cash flows, and the context provides the IFRS 9 accounting model for cash flow hedges, including when the hedged item is a group of items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge rebalancing",
+      "normalized_label": "hedge_rebalancing",
+      "rationale_for_inclusion": "The context separately identifies rebalancing as the IFRS 9 treatment for adjusting designated quantities in an existing hedging relationship to maintain compliance with hedge effectiveness requirements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge discontinuation",
+      "normalized_label": "hedge_discontinuation",
+      "rationale_for_inclusion": "The context also provides a distinct IFRS 9 treatment for prospective discontinuation of hedge accounting and for the subsequent accounting of amounts accumulated in the cash flow hedge reserve."
+    }
+  ]
+}

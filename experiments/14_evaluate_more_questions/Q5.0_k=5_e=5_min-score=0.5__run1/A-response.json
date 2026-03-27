@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The hedged exposure is the variability in future contractual floating-rate interest cash flows of a loan portfolio.",
+    "The portfolio is treated as a group of items with shared risk characteristics within IFRS 9 hedge accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context directly addresses cash flow hedges of highly probable forecast cash flows, including groups of items and the related OCI and reclassification mechanics."
+    }
+  ]
+}

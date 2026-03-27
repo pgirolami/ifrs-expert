@@ -264,8 +264,6 @@ class AnswerCommand:
                 if self.save_all and self.output_dir:
                     self._save_file("A-response.json", response_a)
 
-                logger.error("SKIPPING prompt B")
-
                 # Parse the JSON response
                 try:
                     approaches_json = json.dumps(json.loads(response_a), indent=2)

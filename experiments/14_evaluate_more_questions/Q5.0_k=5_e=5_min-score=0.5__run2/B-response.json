@@ -1,0 +1,80 @@
+{
+  "assumptions_fr": [
+    "L’élément couvert désigné est un groupe de flux d’intérêts variables futurs sur des prêts homogènes à taux variable, gérés ensemble et présentés comme hautement probables.",
+    "En T1, la relation de couverture documentée porte sur un nominal désigné de 80 m au sein d’un encours prévisionnel de 100 m.",
+    "La question porte sur le traitement comptable de l’augmentation du volume désigné en T2, et non sur la comptabilisation séparée des prêts sous-jacents."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La couverture désignée en T1 reste limitée à 80 m tant qu’elle n’est pas modifiée formellement. En pratique, l’augmentation de 50 m doit être désignée séparément comme nouvelle couche de flux, sauf si la banque rééquilibre valablement la relation existante et met à jour sa documentation en T2."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui",
+      "reasoning_fr": "La situation relève directement d’une couverture de flux de trésorerie d’un groupe d’éléments gérés ensemble.\nEn T1, la relation désignée couvre 80 m de flux variables; le passage du forecast total à 150 m en T2 n’élargit pas automatiquement cette désignation.\nLe supplément de 50 m doit donc être identifié comme quantité nouvellement désignée s’il doit être couvert.",
+      "conditions_fr": [],
+      "practical_implication_fr": "En T2, le supplément de 50 m n’entre pas dans la relation T1 tant qu’il n’est pas explicitement désigné.",
+      "references": [
+        {
+          "section": "6.6.1",
+          "excerpt": "the items in the group are managed together on a group basis"
+        },
+        {
+          "section": "B6.6.11",
+          "excerpt": "requires the specific identification of the nominal amount"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_rebalancing",
+      "label_fr": "Rééquilibrage de la couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le rééquilibrage n’est pertinent ici que si la banque ajuste les quantités désignées de la relation existante pour maintenir un hedge ratio conforme après le changement de circonstances en T2.\nEn revanche, utiliser ce mécanisme uniquement pour 'absorber' automatiquement le supplément de 50 m comme nouveau volume couvert ne ressort pas de la définition fournie.\nDonc il peut être utilisé, mais seulement comme modification formelle de la relation existante.",
+      "conditions_fr": [
+        "La banque modifie les quantités désignées de la relation existante pour maintenir un hedge ratio conforme.",
+        "La documentation de couverture est mise à jour en T2 pour refléter cette modification."
+      ],
+      "practical_implication_fr": "Si la banque ajuste la relation existante, elle doit redocumenter en T2 les quantités désignées et l’évaluation de l’efficacité.",
+      "references": [
+        {
+          "section": "B6.5.7",
+          "excerpt": "adjustments made to the designated quantities"
+        },
+        {
+          "section": "B6.4.19",
+          "excerpt": "documentation of the hedging relationship shall be updated"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "hedge_discontinuation",
+      "label_fr": "Arrêt de la comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Le seul fait que l’encours prévu passe de 100 m à 150 m ne montre pas, dans ce cas, que la relation existante cesse de satisfaire aux critères.\nL’arrêt prospectif n’intervient que si les critères ne sont plus remplis après prise en compte d’un éventuel rééquilibrage, ou si les flux couverts ne sont plus attendus.\nCes faits ne sont pas décrits dans l’exemple.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucun arrêt prospectif n’est requis du seul fait de l’augmentation du forecast en T2.",
+      "references": [
+        {
+          "section": "6.5.6",
+          "excerpt": "discontinue hedge accounting prospectively only when"
+        },
+        {
+          "section": "6.5.12",
+          "excerpt": "if the hedged future cash flows are still expected to occur"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le nominal couvert reste celui documenté en T1 tant qu’aucune modification formelle n’est effectuée.",
+    "Le calcul économique d’un 'reste hedgeable' de 70 m n’est pas, à lui seul, une nouvelle quantité désignée au sens d’IFRS 9.",
+    "Si la banque veut couvrir le supplément de 50 m, la voie la plus robuste est une désignation séparée de cette couche additionnelle avec sa propre documentation.",
+    "Si la banque préfère modifier la relation existante, elle doit traiter cela comme un rééquilibrage documenté en T2, et non comme un élargissement automatique de la désignation initiale.",
+    "La discontinuation n’est pertinente que si la relation ne satisfait plus aux critères après prise en compte d’un éventuel rééquilibrage."
+  ]
+}

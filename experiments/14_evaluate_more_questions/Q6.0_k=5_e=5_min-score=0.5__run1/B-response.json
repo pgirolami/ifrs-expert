@@ -1,0 +1,86 @@
+{
+  "assumptions_fr": [
+    "L’instrument est un passif financier entrant dans le champ d’IFRS 9 et la question porte sur sa comptabilisation ultérieure.",
+    "Aucune désignation irrévocable à la juste valeur par résultat lors de la comptabilisation initiale n’est mentionnée dans les faits décrits.",
+    "La rémunération variable est liée aux profits résiduels de l’emprunteur/émetteur tels que décrits dans la question."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans les faits décrits, le traitement recommandé est le coût amorti. IFRS 9 pose le coût amorti comme règle générale pour les passifs financiers, et la clause d’intérêt liée aux profits résiduels ne conduit pas ici, sur la base du texte fourni, à une séparation obligatoire d’un dérivé incorporé; la JVPR ne serait envisageable que par désignation initiale."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui",
+      "reasoning_fr": "Dans cette situation, le prêt est d’abord un passif financier, et IFRS 9 prévoit le coût amorti comme règle générale pour les passifs financiers. Le fait que l’intérêt soit variable et dépende des profits résiduels n’impose pas en soi la JVPR; les flux contractuels estimés peuvent être révisés et l’ajustement du coût amorti est alors comptabilisé en résultat.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Comptabiliser la dette au coût amorti et réviser les flux contractuels estimés via le taux d’intérêt effectif d’origine, avec effet en résultat.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "An entity shall classify all financial liabilities as subsequently measured at amortised cost, except for:"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "shall be recognised in profit or loss when the financial liability is derecognised and through the amortisation process."
+        },
+        {
+          "section": "B5.4.6",
+          "excerpt": "it shall adjust the ... amortised cost of the financial liability ... to reflect actual and revised estimated contractual cash flows."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans les faits fournis, rien n’indique une obligation de mesurer ce passif à la JVPR du seul fait de l’intérêt indexé sur les profits. En revanche, ce traitement pourrait s’appliquer si l’entité avait irrévocablement désigné l’instrument à la JVPR lors de la comptabilisation initiale; à défaut, ce n’est pas le traitement de base ici.",
+      "conditions_fr": [
+        "Désignation irrévocable à la JVPR dès la comptabilisation initiale."
+      ],
+      "practical_implication_fr": "Si cette désignation initiale existe, la dette entière est mesurée à la JVPR plutôt qu’au coût amorti.",
+      "references": [
+        {
+          "section": "4.2.2",
+          "excerpt": "may, at initial recognition, irrevocably designate a financial liability as measured at fair value through profit or loss"
+        },
+        {
+          "section": "B4.3.9",
+          "excerpt": "this Standard permits the entire instrument to be designated as at fair value through profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "separated_embedded_derivative",
+      "label_fr": "Dérivé incorporé séparé",
+      "applicability": "non",
+      "reasoning_fr": "Sur les faits décrits, la clause de rendement dépend des profits résiduels de l’emprunteur/émetteur, donc d’une variable non financière spécifique à une partie au contrat. Or le texte fourni exige qu’un instrument séparé avec les mêmes termes réponde à la définition d’un dérivé; cette condition n’est pas satisfaite ici, donc la séparation d’un dérivé incorporé ne s’impose pas.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas scinder la clause de participation aux profits comme dérivé incorporé sur la base des faits fournis; traiter la dette comme un passif financier unique.",
+      "references": [
+        {
+          "section": "4.3.1",
+          "excerpt": "provided in the case of a non-financial variable that the variable is not specific to a party to the contract."
+        },
+        {
+          "section": "4.3.3",
+          "excerpt": "a separate instrument with the same terms as the embedded derivative would meet the definition of a derivative"
+        },
+        {
+          "section": "4.3.4",
+          "excerpt": "If an embedded derivative is separated, the host contract shall be accounted for in accordance with the appropriate Standards."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Déterminer à l’origine les flux contractuels estimés du prêt, y compris la composante de rémunération variable attendue, pour calculer le taux d’intérêt effectif.",
+    "À chaque clôture, réviser les estimations de paiements d’intérêt liés aux profits résiduels et comptabiliser l’ajustement du coût amorti en résultat selon B5.4.6.",
+    "Ne retenir la JVPR que si une désignation irrévocable à l’origine est démontrée; la variabilité liée aux profits, à elle seule, ne suffit pas ici.",
+    "La conclusion clé du cas présenté est que l’analyse de dérivé incorporé échoue déjà sur la définition du dérivé fournie par IFRS 9."
+  ]
+}

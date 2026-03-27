@@ -1,0 +1,83 @@
+{
+  "assumptions_fr": [
+    "On suppose que l’instrument est analysé du point de vue de l’émetteur comme un passif financier relevant d’IFRS 9.",
+    "On suppose que la question porte sur l’évaluation ultérieure du passif et de la clause de rémunération liée aux profits, et non sur la comptabilité de couverture, la décomptabilisation ou les transferts d’actifs.",
+    "On suppose que la rémunération variable dépend des profits résiduels de l’emprunteur/émetteur selon la cascade contractuelle décrite."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, le traitement le plus étayé est le coût amorti. IFRS 9 mesure par défaut les passifs financiers au coût amorti, et le lien aux profits de l’émetteur ne démontre pas ici un dérivé incorporé séparé ni une mesure obligatoire à la juste valeur par résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui",
+      "reasoning_fr": "Ici, il s’agit d’un prêt-passif chez l’émetteur, et IFRS 9 pose le coût amorti comme règle générale pour les passifs financiers.\nLe fait que l’intérêt soit variable et payable sur profits résiduels n’impose pas, à lui seul, la juste valeur par résultat; les réestimations de flux peuvent être reflétées via le TIE et l’ajustement du coût amorti en résultat.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Comptabiliser le passif au coût amorti et ajuster les estimations de flux contractuels via le TIE, avec impact en résultat.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "An entity shall classify all financial liabilities as subsequently measured at amortised cost, except for:"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "shall be recognised in profit or loss when the financial liability is derecognised and through the amortisation process."
+        },
+        {
+          "section": "B5.4.6",
+          "excerpt": "shall adjust the gross carrying amount of the financial asset or amortised cost of a financial liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_pl",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "non",
+      "reasoning_fr": "Dans les faits donnés, rien n’indique une désignation initiale à la juste valeur par résultat pour éliminer un mismatch comptable ou parce que le passif serait géré sur une base de juste valeur.\nLe seul fait que l’intérêt dépende des profits résiduels ne fait pas automatiquement basculer l’intégralité du prêt en juste valeur par résultat.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas mesurer l’intégralité du prêt à la juste valeur par résultat sur ce seul motif.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "financial liabilities at fair value through profit or loss"
+        },
+        {
+          "section": "4.2.2",
+          "excerpt": "may, at initial recognition, irrevocably designate a financial liability as measured at fair value through profit or loss"
+        },
+        {
+          "section": "B4.3.9",
+          "excerpt": "permits the entire hybrid contract to be designated as at fair value through profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "embedded_derivative_separation",
+      "label_fr": "Séparation du dérivé incorporé",
+      "applicability": "non",
+      "reasoning_fr": "La clause variable décrite est liée aux profits résiduels de l’emprunteur/émetteur, donc à une variable non financière spécifique à une partie au contrat.\nOr IFRS 9 ne traite comme dérivé qu’une variable non financière qui n’est pas spécifique à une partie; sur ces faits, la bifurcation d’un dérivé incorporé n’est donc pas établie.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas séparer, sur les faits donnés, une composante dérivée incorporée du prêt.",
+      "references": [
+        {
+          "section": "4.3.1",
+          "excerpt": "provided in the case of a non-financial variable that the variable is not specific to a party to the contract."
+        },
+        {
+          "section": "4.3.3",
+          "excerpt": "an embedded derivative shall be separated from the host and accounted for as a derivative under this Standard if, and only if:"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter à l’origine que la clause de participation aux profits est indexée sur les profits de l’émetteur, donc sur une variable spécifique à une partie au contrat.",
+    "Déterminer le TIE initial sur la base des flux contractuels estimés, puis réviser les estimations de paiements futurs lorsque les attentes changent, avec ajustement immédiat en résultat.",
+    "Vérifier séparément s’il existe, à la date initiale, un motif formel de désignation à la juste valeur par résultat; à défaut, conserver le coût amorti."
+  ]
+}

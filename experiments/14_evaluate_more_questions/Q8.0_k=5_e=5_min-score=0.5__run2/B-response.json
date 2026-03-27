@@ -1,0 +1,84 @@
+{
+  "assumptions_fr": [
+    "La question vise des actifs financiers de type dette relevant d’IFRS 9, pour lesquels un taux d’intérêt effectif est déterminé et les règles de dépréciation s’appliquent.",
+    "Les références aux Stages 1, 2 et 3 sont utilisées comme raccourci pour le modèle de pertes de crédit attendues d’IFRS 9.",
+    "L’actif concerné n’était pas crédit-déprécié à la comptabilisation initiale et ne relève donc pas, dans les faits décrits, de la catégorie des actifs achetés ou originés avec dépréciation de crédit."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, il faut combiner la méthode du TIE et le modèle ECL: l’intérêt d’un actif devenu crédit-déprécié après l’origine se comprend avec le TIE d’origine, tandis que la provision ECL reste une mesure actualisée distincte. L’« unwinding » de l’ECL est conceptuellement distinct d’une réestimation des recouvrements, et le traitement POCI au taux ajusté du crédit ne s’applique pas."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "effective_interest_method",
+      "label_fr": "Méthode du taux d’intérêt effectif",
+      "applicability": "oui",
+      "reasoning_fr": "Oui. La question porte directement sur la base de calcul de l’intérêt après dégradation du risque de crédit d’un actif déjà comptabilisé. Dans cette situation, la méthode du TIE est la base pertinente pour conserver le TIE d’origine et pour distinguer le calcul de l’intérêt de la réévaluation séparée de la perte de crédit attendue.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Pour un actif devenu crédit-déprécié après l’origine, ne remplacez pas le TIE d’origine par un taux ajusté du crédit; suivez séparément le calcul d’intérêt et la provision.",
+      "references": [
+        {
+          "section": "B5.4.4",
+          "excerpt": "amortises any fees, points paid or received, transaction costs and other premiums or discounts"
+        },
+        {
+          "section": "B5.4.6",
+          "excerpt": "discounted at the financial instrument’s original effective interest rate"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "expected_credit_losses",
+      "label_fr": "Pertes de crédit attendues",
+      "applicability": "oui",
+      "reasoning_fr": "Oui. Votre difficulté sur l’« unwinding of ECL » relève du modèle ECL, car l’allocation est une valeur actuelle de cash shortfalls actualisée à la date de clôture. Dans cette situation, une part de la variation de la provision peut venir du seul passage du temps, distinctement d’une hausse ou baisse liée à des changements d’anticipations de défaut, de recouvrement ou de calendrier; ce mécanisme existe aussi pour les actifs performants, même si la base de calcul de l’intérêt ne devient pas nette en Stages 1–2.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Analysez la variation de la provision de clôture en deux blocs: effet temps sur une ECL actualisée et réestimation des flux/cash shortfalls attendus.",
+      "references": [
+        {
+          "section": "B5.5.28",
+          "excerpt": "the present value of all cash shortfalls"
+        },
+        {
+          "section": "B5.5.33",
+          "excerpt": "difference between the asset’s gross carrying amount and the present value of estimated future cash flows"
+        },
+        {
+          "section": "B5.5.44",
+          "excerpt": "Expected credit losses shall be discounted to the reporting date"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "credit_adjusted_eir",
+      "label_fr": "Taux effectif ajusté du crédit",
+      "applicability": "non",
+      "reasoning_fr": "Non. Les faits décrits portent sur un actif qui devient crédit-déprécié après l’origination, alors que le taux effectif ajusté du crédit vise les actifs achetés ou originés déjà crédit-dépréciés à la comptabilisation initiale. Dans ce cas précis, il ne faut donc pas transposer le régime POCI au simple passage en Stage 3.",
+      "conditions_fr": [],
+      "practical_implication_fr": "N’appliquez le taux ajusté du crédit que si l’actif était POCI dès l’origine; sinon, restez sur le TIE d’origine.",
+      "references": [
+        {
+          "section": "B5.4.7",
+          "excerpt": "for financial assets that are considered to be purchased or originated credit-impaired at initial recognition"
+        },
+        {
+          "section": "B5.4.7",
+          "excerpt": "does not mean that a credit-adjusted effective interest rate should be applied solely because the financial asset has high credit risk at initial recognition"
+        },
+        {
+          "section": "B5.5.45",
+          "excerpt": "discounted using the credit-adjusted effective interest rate determined at initial recognition"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Pour Stages 1–2, l’intérêt reste calculé sur la base brute; l’existence d’une ECL actualisée n’implique pas à elle seule une présentation « nette » de l’intérêt.",
+    "Pour un actif non-POCI devenu crédit-déprécié, le changement de base de calcul de l’intérêt n’est pas qu’un reclassement de présentation: il modifie le montant d’intérêt reconnu par rapport à une base brute.",
+    "L’« unwinding » de l’ECL correspond au seul effet temps sur des cash shortfalls déjà estimés; il doit être distingué analytiquement d’une variation de provision causée par des hypothèses de recouvrement révisées.",
+    "La variation totale de la provision à la date de clôture peut donc combiner simultanément effet temps, changements de probabilités de défaut, changements de montants recouvrables et changements de calendrier des encaissements attendus."
+  ]
+}

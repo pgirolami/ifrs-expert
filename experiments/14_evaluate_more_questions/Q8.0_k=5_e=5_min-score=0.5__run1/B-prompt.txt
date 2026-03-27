@@ -1,0 +1,1340 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ifrs-9-financial-instruments 2025 required">
+<chunk id="827" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.2.46" score="0.0000">
+An entity is not required to restate prior periods to reflect the application of
+these amendments. The entity may restate prior periods if, and only if, it is
+possible without the use of hindsight. If an entity does not restate prior
+periods, the entity shall recognise any difference between the previous
+carrying amount and the carrying amount at the beginning of the annual
+reporting period that includes the date of initial application of these
+amendments in the opening retained earnings (or other component of equity,
+as appropriate) of the annual reporting period that includes the date of initial
+application of these amendments.
+7.2.47–
+[These paragraphs refer to amendments that are not yet effective, and are therefore not
+</chunk>
+
+<chunk id="828" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.2.49" score="0.0000">
+included in this edition.]
+</chunk>
+
+<chunk id="829" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.2.50" score="0.0000">
+[This paragraph refers to amendments that are not yet effective, and is therefore not
+included in this edition.]
+7.2.51–
+[These paragraphs refer to amendments that are not yet effective, and are therefore not
+</chunk>
+
+<chunk id="830" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.2.53" score="0.0000">
+included in this edition.]
+7.3 Withdrawal of IFRIC 9, IFRS 9 (2009), IFRS 9 (2010) and
+</chunk>
+
+<chunk id="831" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.3.1" score="0.0000">
+Reassessment of Embedded Derivatives
+This Standard supersedes IFRIC 9
+. The
+requirements added to IFRS 9 in October 2010 incorporated the requirements
+previously set out in paragraphs 5 and 7 of IFRIC 9. As a consequential
+First-time Adoption of International Financial Reporting
+amendment, IFRS 1
+Standards
+incorporated the requirements previously set out in paragraph 8 of
+</chunk>
+
+<chunk id="832" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="7.3.2" score="0.7297">
+This Standard supersedes IFRS 9 (2009), IFRS 9 (2010) and IFRS 9 (2013).
+However, for annual periods beginning before 1 January 2018, an entity may
+elect to apply those earlier versions of IFRS 9 instead of applying this Standard
+if, and only if, the entity’s relevant date of initial application is before
+1 February 2015.
+expected life of the renegotiated or modified financial asset
+effective
+that are discounted at the financial asset’s original
+interest rate
+credit-adjusted effective interest
+(or the original
+rate
+purchased or originated credit-impaired financial
+for
+assets
+effective interest rate
+) or, when applicable, the revised
+calculated in accordance with paragraph 6.5.10. When
+estimating the expected cash flows of a financial asset, an
+entity shall consider all contractual terms of the financial asset
+(for example, prepayment, call and similar options) but shall
+expected credit losses
+not consider the
+, unless the financial
+purchased or originated credit-impaired financial
+asset is a
+asset
+, in which case an entity shall also consider the initial
+expected credit losses that were considered when calculating
+credit-adjusted effective interest rate
+the original
+.
+A financial asset is past due when a counterparty has failed to
+past due
+make a payment when that payment was contractually due.
+Purchased
+or
+originated
+financial
+asset(s)
+that
+are
+purchased or
+originated
+credit-impaired
+on initial recognition.
+credit-impaired
+financial asset
+The first day of the first reporting period following the change
+reclassification date
+in business model that results in an entity reclassifying
+financial assets.
+A purchase or sale of a financial asset under a contract whose
+regular way purchase
+or sale
+terms require delivery of the asset within the time frame
+established generally by regulation or convention in the
+marketplace concerned.
+Incremental costs that are directly attributable to the
+transaction costs
+acquisition, issue or disposal of a financial asset or financial
+liab
+</chunk>
+
+<chunk id="833" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="3" score="0.0000">
+This term (as defined in IFRS 7) is used in the requirements for presenting the effects of changes
+(f)
+financial liability;
+(g)
+transaction price.
+Appendix B
+Application guidance
+This appendix is an integral part of the Standard.
+Scope (Chapter 2)
+</chunk>
+
+<chunk id="834" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.1" score="0.0000">
+Some contracts require a payment based on climatic, geological or other
+physical variables. (Those based on climatic variables are sometimes referred
+to as ‘weather derivatives’.) If those contracts are not within the scope of
+Insurance Contracts
+, they are within the scope of this Standard.
+</chunk>
+
+<chunk id="835" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.2" score="0.0000">
+This Standard does not change the requirements relating to employee benefit
+Accounting and Reporting by Retirement Benefit Plans
+plans that comply with IAS 26
+and royalty agreements based on the volume of sales or service revenues that
+Revenue from Contracts with Customers
+are accounted for under IFRS 15
+.
+</chunk>
+
+<chunk id="836" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.3" score="0.0000">
+Sometimes, an entity makes what it views as a ‘strategic investment’ in equity
+instruments issued by another entity, with the intention of establishing or
+maintaining a long-term operating relationship with the entity in which the
+investment is made. The investor or joint venturer entity uses IAS 28
+Investments in Associates and Joint Ventures
+to determine whether the equity
+method of accounting shall be applied to such an investment.
+</chunk>
+
+<chunk id="837" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B2.4" score="0.0000">
+This Standard applies to the financial assets and financial liabilities of
+insurers, other than rights and obligations that paragraph 2.1(e) excludes
+because they arise under contracts within the scope of IFRS 17.
+</chunk>
+
+<chunk id="956" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.2" score="0.0000">
+Fees that are an integral part of the effective interest rate of a financial
+instrument include:
+(a)
+origination fees received by the entity relating to the creation or
+acquisition of a financial asset. Such fees may include compensation
+for activities such as evaluating the borrower’s financial condition,
+evaluating and recording guarantees, collateral and other security
+arrangements, negotiating the terms of the instrument, preparing and
+processing documents and closing the transaction. These fees are an
+integral part of generating an involvement with the resulting financial
+instrument.
+(b)
+commitment fees received by the entity to originate a loan when the
+loan
+commitment
+is
+not
+measured
+in
+accordance
+with
+paragraph 4.2.1(a) and it is probable that the entity will enter into a
+specific lending arrangement. These fees are regarded as compensation
+for an ongoing involvement with the acquisition of a financial
+instrument. If the commitment expires without the entity making the
+loan, the fee is recognised as revenue on expiry.
+(c)
+origination fees paid on issuing financial liabilities measured at
+amortised cost. These fees are an integral part of generating an
+involvement with a financial liability. An entity distinguishes fees and
+costs that are an integral part of the effective interest rate for the
+financial liability from origination fees and transaction costs relating
+to the right to provide services, such as investment management
+services.
+</chunk>
+
+<chunk id="957" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.3" score="0.0000">
+Fees that are not an integral part of the effective interest rate of a financial
+instrument and are accounted for in accordance with IFRS 15 include:
+(a)
+fees charged for servicing a loan;
+commitment fees to originate a loan when the loan commitment is not
+(b)
+measured in accordance with paragraph 4.2.1(a) and it is unlikely that
+a specific lending arrangement will be entered into; and
+loan syndication fees received by an entity that arranges a loan and
+(c)
+retains no part of the loan package for itself (or retains a part at the
+same effective interest rate for comparable risk as other participants).
+</chunk>
+
+<chunk id="958" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.4" score="0.0000">
+When applying the effective interest method, an entity generally amortises
+any fees, points paid or received, transaction costs and other premiums or
+discounts that are included in the calculation of the effective interest rate over
+the expected life of the financial instrument. However, a shorter period is
+used if this is the period to which the fees, points paid or received, transaction
+costs, premiums or discounts relate. This will be the case when the variable to
+which the fees, points paid or received, transaction costs, premiums or
+discounts relate is repriced to market rates before the expected maturity of
+the financial instrument. In such a case, the appropriate amortisation period
+is the period to the next such repricing date. For example, if a premium or
+discount on a floating-rate financial instrument reflects the interest that has
+accrued on that financial instrument since the interest was last paid, or
+changes in the market rates since the floating interest rate was reset to the
+market rates, it will be amortised to the next date when the floating interest is
+reset to market rates. This is because the premium or discount relates to the
+period to the next interest reset date because, at that date, the variable to
+which the premium or discount relates (ie interest rates) is reset to the market
+rates. If, however, the premium or discount results from a change in the
+credit spread over the floating rate specified in the financial instrument, or
+other variables that are not reset to the market rates, it is amortised over the
+expected life of the financial instrument.
+</chunk>
+
+<chunk id="959" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.5" score="0.0000">
+For floating-rate financial assets and floating-rate financial liabilities, periodic
+re-estimation of cash flows to reflect the movements in the market rates of
+interest alters the effective interest rate. If a floating-rate financial asset or a
+floating-rate financial liability is recognised initially at an amount equal to the
+principal receivable or payable on maturity, re-estimating the future interest
+payments normally has no significant effect on the carrying amount of the
+asset or the liability.
+</chunk>
+
+<chunk id="960" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.6" score="0.0000">
+If an entity revises its estimates of payments or receipts (excluding
+modifications in accordance with paragraph 5.4.3 and changes in estimates of
+expected credit losses), it shall adjust the gross carrying amount of the
+financial asset or amortised cost of a financial liability (or group of financial
+instruments) to reflect actual and revised estimated contractual cash flows.
+The entity recalculates the gross carrying amount of the financial asset or
+amortised cost of the financial liability as the present value of the estimated
+future contractual cash flows that are discounted at the financial instrument’s
+original effective interest rate (or credit-adjusted effective interest rate for
+purchased or originated credit-impaired financial assets) or, when applicable,
+the
+revised
+effective
+interest
+rate
+calculated
+in
+accordance
+with
+paragraph 6.5.10. The adjustment is recognised in profit or loss as income or
+expense.
+</chunk>
+
+<chunk id="961" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.7" score="0.7083">
+In some cases a financial asset is considered credit-impaired at initial
+recognition because the credit risk is very high, and in the case of a purchase
+it is acquired at a deep discount. An entity is required to include the initial
+expected credit losses in the estimated cash flows when calculating the credit-
+adjusted effective interest rate for financial assets that are considered to be
+purchased or originated credit-impaired at initial recognition. However, this
+does not mean that a credit-adjusted effective interest rate should be applied
+solely because the financial asset has high credit risk at initial recognition.
+Transaction costs
+</chunk>
+
+<chunk id="962" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.8" score="0.0000">
+Transaction costs include fees and commission paid to agents (including
+employees acting as selling agents), advisers, brokers and dealers, levies by
+regulatory agencies and security exchanges, and transfer taxes and duties.
+Transaction costs do not include debt premiums or discounts, financing costs
+or internal administrative or holding costs.
+Write-off
+</chunk>
+
+<chunk id="963" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.4.9" score="0.0000">
+Write-offs can relate to a financial asset in its entirety or to a portion of it. For
+example, an entity plans to enforce the collateral on a financial asset and
+expects to recover no more than 30 per cent of the financial asset from the
+collateral. If the entity has no reasonable prospects of recovering any further
+cash flows from the financial asset, it should write off the remaining
+70 per cent of the financial asset.
+Impairment (Section 5.5)
+Collective and individual assessment basis
+</chunk>
+
+<chunk id="964" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.1" score="0.0000">
+In order to meet the objective of recognising lifetime expected credit losses for
+significant increases in credit risk since initial recognition, it may be necessary
+to perform the assessment of significant increases in credit risk on a collective
+basis by considering information that is indicative of significant increases in
+credit risk on, for example, a group or sub-group of financial instruments.
+This is to ensure that an entity meets the objective of recognising lifetime
+expected credit losses when there are significant increases in credit risk, even
+if evidence of such significant increases in credit risk at the individual
+instrument level is not yet available.
+</chunk>
+
+<chunk id="965" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.2" score="0.0000">
+Lifetime expected credit losses are generally expected to be recognised before
+a financial instrument becomes past due. Typically, credit risk increases
+significantly before a financial instrument becomes past due or other lagging
+borrower-specific factors (for example, a modification or restructuring) are
+observed. Consequently when reasonable and supportable information that is
+more forward-looking than past due information is available without undue
+cost or effort, it must be used to assess changes in credit risk.
+</chunk>
+
+<chunk id="966" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.3" score="0.0000">
+However, depending on the nature of the financial instruments and the credit
+risk information available for particular groups of financial instruments, an
+entity may not be able to identify significant changes in credit risk for
+individual financial instruments before the financial instrument becomes past
+due. This may be the case for financial instruments such as retail loans for
+which there is little or no updated credit risk information that is routinely
+obtained and monitored on an individual instrument until a customer
+breaches the contractual terms. If changes in the credit risk for individual
+financial instruments are not captured before they become past due, a loss
+allowance based only on credit information at an individual financial
+instrument level would not faithfully represent the changes in credit risk
+since initial recognition.
+</chunk>
+
+<chunk id="991" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.28" score="0.0000">
+Expected credit losses are a probability-weighted estimate of credit losses
+(ie the present value of all cash shortfalls) over the expected life of the
+financial instrument. A cash shortfall is the difference between the cash flows
+that are due to an entity in accordance with the contract and the cash flows
+that the entity expects to receive. Because expected credit losses consider the
+amount and timing of payments, a credit loss arises even if the entity expects
+to be paid in full but later than when contractually due.
+</chunk>
+
+<chunk id="992" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.29" score="0.0000">
+For financial assets, a credit loss is the present value of the difference
+between:
+the contractual cash flows that are due to an entity under the contract;
+and
+the cash flows that the entity expects to receive.
+</chunk>
+
+<chunk id="993" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.30" score="0.0000">
+For undrawn loan commitments, a credit loss is the present value of the
+difference between:
+the contractual cash flows that are due to the entity if the holder of
+the loan commitment draws down the loan; and
+the cash flows that the entity expects to receive if the loan is drawn
+down.
+</chunk>
+
+<chunk id="994" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.31" score="0.0000">
+An entity’s estimate of expected credit losses on loan commitments shall be
+consistent with its expectations of drawdowns on that loan commitment, ie it
+shall consider the expected portion of the loan commitment that will be
+drawn down within 12 months of the reporting date when estimating
+12-month expected credit losses, and the expected portion of the loan
+commitment that will be drawn down over the expected life of the loan
+commitment when estimating lifetime expected credit losses.
+</chunk>
+
+<chunk id="995" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.32" score="0.0000">
+For a financial guarantee contract, the entity is required to make payments
+only in the event of a default by the debtor in accordance with the terms of
+the instrument that is guaranteed. Accordingly, cash shortfalls are the
+expected payments to reimburse the holder for a credit loss that it incurs less
+any amounts that the entity expects to receive from the holder, the debtor or
+any other party. If the asset is fully guaranteed, the estimation of cash
+shortfalls for a financial guarantee contract would be consistent with the
+estimations of cash shortfalls for the asset subject to the guarantee.
+</chunk>
+
+<chunk id="996" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.33" score="0.7256">
+For a financial asset that is credit-impaired at the reporting date, but that is
+not a purchased or originated credit-impaired financial asset, an entity shall
+measure the expected credit losses as the difference between the asset’s gross
+carrying amount and the present value of estimated future cash flows
+discounted at the financial asset’s original effective interest rate. Any
+adjustment is recognised in profit or loss as an impairment gain or loss.
+</chunk>
+
+<chunk id="997" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.34" score="0.0000">
+When measuring a loss allowance for a lease receivable, the cash flows used
+for determining the expected credit losses should be consistent with the cash
+Leases
+flows used in measuring the lease receivable in accordance with IFRS 16
+.
+</chunk>
+
+<chunk id="998" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.35" score="0.0000">
+An entity may use practical expedients when measuring expected credit losses
+if they are consistent with the principles in paragraph 5.5.17. An example of a
+practical expedient is the calculation of the expected credit losses on trade
+receivables using a provision matrix. The entity would use its historical credit
+loss experience (adjusted as appropriate in accordance with paragraphs
+B5.5.51–B5.5.52) for trade receivables to estimate the 12-month expected
+credit losses or the lifetime expected credit losses on the financial assets as
+relevant. A provision matrix might, for example, specify fixed provision rates
+depending on the number of days that a trade receivable is past due (for
+example, 1 per cent if not past due, 2 per cent if less than 30 days past due, 3
+per cent if more than 30 days but less than 90 days past due, 20 per cent if
+90–180 days past due etc). Depending on the diversity of its customer base, the
+entity would use appropriate groupings if its historical credit loss experience
+shows significantly different loss patterns for different customer segments.
+Examples of criteria that might be used to group assets include geographical
+region, product type, customer rating, collateral or trade credit insurance and
+type of customer (such as wholesale or retail).
+Definition of default
+</chunk>
+
+<chunk id="999" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.36" score="0.0000">
+Paragraph 5.5.9 requires that when determining whether the credit risk on a
+financial instrument has increased significantly, an entity shall consider the
+change in the risk of a default occurring since initial recognition.
+</chunk>
+
+<chunk id="1000" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.37" score="0.0000">
+When defining default for the purposes of determining the risk of a default
+occurring, an entity shall apply a default definition that is consistent with the
+definition used for internal credit risk management purposes for the relevant
+financial instrument and consider qualitative indicators (for example,
+financial covenants) when appropriate. However, there is a rebuttable
+presumption that default does not occur later than when a financial asset is
+90 days past due unless an entity has reasonable and supportable information
+to demonstrate that a more lagging default criterion is more appropriate. The
+definition of default used for these purposes shall be applied consistently to
+all financial instruments unless information becomes available that
+demonstrates that another default definition is more appropriate for a
+particular financial instrument.
+Period over which to estimate expected credit losses
+</chunk>
+
+<chunk id="1001" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.38" score="0.0000">
+In accordance with paragraph 5.5.19, the maximum period over which
+expected credit losses shall be measured is the maximum contractual period
+over which the entity is exposed to credit risk. For loan commitments and
+financial guarantee contracts, this is the maximum contractual period over
+which an entity has a present contractual obligation to extend credit.
+</chunk>
+
+<chunk id="1005" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.42" score="0.0000">
+Paragraph 5.5.17(a) requires the estimate of expected credit losses to reflect an
+unbiased and probability-weighted amount that is determined by evaluating a
+range of possible outcomes. In practice, this may not need to be a complex
+analysis. In some cases, relatively simple modelling may be sufficient, without
+the need for a large number of detailed simulations of scenarios. For example,
+risk characteristics may be a reasonable estimate of the probability-weighted
+amount. In other situations, the identification of scenarios that specify the
+amount and timing of the cash flows for particular outcomes and the
+estimated probability of those outcomes will probably be needed. In those
+situations, the expected credit losses shall reflect at least two outcomes in
+accordance with paragraph 5.5.18.
+</chunk>
+
+<chunk id="1006" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.43" score="0.0000">
+For lifetime expected credit losses, an entity shall estimate the risk of a
+default occurring on the financial instrument during its expected life.
+12-month expected credit losses are a portion of the lifetime expected credit
+losses and represent the lifetime cash shortfalls that will result if a default
+occurs in the 12 months after the reporting date (or a shorter period if the
+expected life of a financial instrument is less than 12 months), weighted by
+the probability of that default occurring. Thus, 12-month expected credit
+losses are neither the lifetime expected credit losses that an entity will incur
+on financial instruments that it predicts will default in the next 12 months
+nor the cash shortfalls that are predicted over the next 12 months.
+Time value of money
+</chunk>
+
+<chunk id="1007" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.44" score="0.0000">
+Expected credit losses shall be discounted to the reporting date, not to the
+expected default or some other date, using the effective interest rate
+determined at initial recognition or an approximation thereof. If a financial
+instrument has a variable interest rate, expected credit losses shall be
+discounted using the current effective interest rate determined in accordance
+with paragraph B5.4.5.
+</chunk>
+
+<chunk id="1008" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.45" score="0.0000">
+For purchased or originated credit-impaired financial assets, expected credit
+losses shall be discounted using the credit-adjusted effective interest rate
+determined at initial recognition.
+</chunk>
+
+<chunk id="1009" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.46" score="0.0000">
+Expected credit losses on lease receivables shall be discounted using the same
+discount rate used in the measurement of the lease receivable in accordance
+with IFRS 16.
+</chunk>
+
+<chunk id="1010" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.47" score="0.7133">
+The expected credit losses on a loan commitment shall be discounted using
+the effective interest rate, or an approximation thereof, that will be applied
+when recognising the financial asset resulting from the loan commitment.
+This is because for the purpose of applying the impairment requirements, a
+financial asset that is recognised following a draw down on a loan
+commitment shall be treated as a continuation of that commitment instead of
+as a new financial instrument. The expected credit losses on the financial
+asset shall therefore be measured considering the initial credit risk of the loan
+commitment from the date that the entity became a party to the irrevocable
+commitment.
+</chunk>
+
+<chunk id="1011" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.48" score="0.0000">
+Expected credit losses on financial guarantee contracts or on loan
+commitments for which the effective interest rate cannot be determined shall
+be discounted by applying a discount rate that reflects the current market
+assessment of the time value of money and the risks that are specific to the
+cash flows but only if, and to the extent that, the risks are taken into account
+by adjusting the discount rate instead of adjusting the cash shortfalls being
+discounted.
+Reasonable and supportable information
+</chunk>
+
+<chunk id="1012" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.49" score="0.0000">
+For the purpose of this Standard, reasonable and supportable information is
+that which is reasonably available at the reporting date without undue cost or
+effort, including information about past events, current conditions and
+forecasts of future economic conditions. Information that is available for
+financial reporting purposes is considered to be available without undue cost
+or effort.
+</chunk>
+
+<chunk id="1013" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.50" score="0.0000">
+An entity is not required to incorporate forecasts of future conditions over the
+entire expected life of a financial instrument. The degree of judgement that is
+required to estimate expected credit losses depends on the availability of
+detailed information. As the forecast horizon increases, the availability of
+detailed information decreases and the degree of judgement required to
+estimate expected credit losses increases. The estimate of expected credit
+losses does not require a detailed estimate for periods that are far in the
+future—for such periods, an entity may extrapolate projections from
+available, detailed information.
+</chunk>
+
+<chunk id="1014" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.51" score="0.0000">
+An entity need not undertake an exhaustive search for information but shall
+consider all reasonable and supportable information that is available without
+undue cost or effort and that is relevant to the estimate of expected credit
+losses, including the effect of expected prepayments. The information used
+shall include factors that are specific to the borrower, general economic
+conditions and an assessment of both the current as well as the forecast
+direction of conditions at the reporting date. An entity may use various
+sources of data, that may be both internal (entity-specific) and external.
+Possible data sources include internal historical credit loss experience,
+internal ratings, credit loss experience of other entities and external ratings,
+reports and statistics. Entities that have no, or insufficient, sources of entity-
+specific data may use peer group experience for the comparable financial
+instrument (or groups of financial instruments).
+</chunk>
+
+<chunk id="1015" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.52" score="0.0000">
+Historical information is an important anchor or base from which to measure
+expected credit losses. However, an entity shall adjust historical data, such as
+credit loss experience, on the basis of current observable data to reflect the
+effects of the current conditions and its forecasts of future conditions that did
+not affect the period on which the historical data is based, and to remove the
+effects of the conditions in the historical period that are not relevant to the
+future contractual cash flows. In some cases, the best reasonable and
+supportable information could be the unadjusted historical information,
+depending on the nature of the historical information and when it was
+calculated, compared to circumstances at the reporting date and the
+characteristics of the financial instrument being considered. Estimates of
+changes in expected credit losses should reflect, and be directionally
+consistent with, changes in related observable data from period to period
+(such as changes in unemployment rates, property prices, commodity prices,
+payment status or other factors that are indicative of credit losses on the
+financial instrument or in the group of financial instruments and in the
+magnitude of those changes). An entity shall regularly review the
+methodology and assumptions used for estimating expected credit losses to
+reduce any differences between estimates and actual credit loss experience.
+</chunk>
+
+<chunk id="1016" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.53" score="0.0000">
+When using historical credit loss experience in estimating expected credit
+losses, it is important that information about historical credit loss rates is
+applied to groups that are defined in a manner that is consistent with the
+groups for which the historical credit loss rates were observed. Consequently,
+the method used shall enable each group of financial assets to be associated
+with information about past credit loss experience in groups of financial
+assets with similar risk characteristics and with relevant observable data that
+reflects current conditions.
+</chunk>
+
+<chunk id="1017" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.54" score="0.0000">
+Expected credit losses reflect an entity’s own expectations of credit losses.
+However, when considering all reasonable and supportable information that is
+available without undue cost or effort in estimating expected credit losses, an
+entity should also consider observable market information about the credit
+risk of the particular financial instrument or similar financial instruments.
+Collateral
+</chunk>
+
+<chunk id="1018" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.5.55" score="0.0000">
+For the purposes of measuring expected credit losses, the estimate of expected
+cash shortfalls shall reflect the cash flows expected from collateral and other
+credit enhancements that are part of the contractual terms and are not
+recognised separately by the entity. The estimate of expected cash shortfalls
+on a collateralised financial instrument reflects the amount and timing of
+cash flows that are expected from foreclosure on the collateral less the costs of
+obtaining and selling the collateral, irrespective of whether foreclosure is
+probable (ie the estimate of expected cash flows considers the probability of a
+foreclosure and the cash flows that would result from it). Consequently, any
+cash flows that are expected from the realisation of the collateral beyond the
+contractual maturity of the contract should be included in this analysis. Any
+collateral obtained as a result of foreclosure is not recognised as an asset that
+is separate from the collateralised financial instrument unless it meets the
+relevant recognition criteria for an asset in this or other Standards.
+Reclassification of financial assets (Section 5.6)
+</chunk>
+
+<chunk id="1019" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.6.1" score="0.7102">
+If an entity reclassifies financial assets in accordance with paragraph 4.4.1,
+paragraph 5.6.1 requires that the reclassification is applied prospectively from
+the reclassification date. Both the amortised cost measurement category and
+the fair value through other comprehensive income measurement category
+require that the effective interest rate is determined at initial recognition.
+Both of those measurement categories also require that the impairment
+requirements are applied in the same way. Consequently, when an entity
+reclassifies a financial asset between the amortised cost measurement
+category and the fair value through other comprehensive income
+measurement category:
+(a)
+the recognition of interest revenue will not change and therefore the
+(b)
+the measurement of expected credit losses will not change because
+both measurement categories apply the same impairment approach.
+However if a financial asset is reclassified out of the fair value through
+other comprehensive income measurement category and into the
+amortised cost measurement category, a loss allowance would be
+recognised as an adjustment to the gross carrying amount of the
+financial asset from the reclassification date. If a financial asset is
+reclassified out of the amortised cost measurement category and into
+the fair value through other comprehensive income measurement
+category, the loss allowance would be derecognised (and thus would no
+longer be recognised as an adjustment to the gross carrying amount)
+but instead would be recognised as an accumulated impairment
+amount (of an equal amount) in other comprehensive income and
+would be disclosed from the reclassification date.
+</chunk>
+
+<chunk id="1020" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.6.2" score="0.0000">
+However, an entity is not required to separately recognise interest revenue or
+impairment gains or losses for a financial asset measured at fair value through
+profit or loss. Consequently, when an entity reclassifies a financial asset out of
+the fair value through profit or loss measurement category, the effective
+interest rate is determined on the basis of the fair value of the asset at the
+reclassification date. In addition, for the purposes of applying Section 5.5 to
+the financial asset from the reclassification date, the date of the
+reclassification is treated as the date of initial recognition.
+Gains and losses (Section 5.7)
+</chunk>
+
+<chunk id="1021" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.7.1" score="0.0000">
+Paragraph 5.7.5 permits an entity to make an irrevocable election to present
+in other comprehensive income changes in the fair value of an investment in
+an equity instrument that is not held for trading. This election is made on an
+instrument-by-instrument (ie share-by-share) basis. Amounts presented in
+other comprehensive income shall not be subsequently transferred to profit or
+loss. However, the entity may transfer the cumulative gain or loss within
+equity. Dividends on such investments are recognised in profit or loss in
+accordance with paragraph 5.7.6 unless the dividend clearly represents a
+recovery of part of the cost of the investment.
+</chunk>
+
+<chunk id="1022" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.7.1A" score="0.0000">
+Unless paragraph 4.1.5 applies, paragraph 4.1.2A requires that a financial
+asset is measured at fair value through other comprehensive income if the
+contractual terms of the financial asset give rise to cash flows that are solely
+payments of principal and interest on the principal amount outstanding and
+the asset is held in a business model whose objective is achieved by both
+collecting contractual cash flows and selling financial assets. This
+measurement category recognises information in profit or loss as if the
+financial asset is measured at amortised cost, while the financial asset is
+measured in the statement of financial position at fair value. Gains or losses,
+other than those that are recognised in profit or loss in accordance with
+paragraphs 5.7.10–5.7.11, are recognised in other comprehensive income.
+When these financial assets are derecognised, cumulative gains or losses
+previously recognised in other comprehensive income are reclassified to profit
+or loss. This reflects the gain or loss that would have been recognised in profit
+or loss upon derecognition if the financial asset had been measured at
+amortised cost.
+</chunk>
+
+<chunk id="1023" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.7.2" score="0.0000">
+An entity applies IAS 21 to financial assets and financial liabilities that are
+monetary items in accordance with IAS 21 and denominated in a foreign
+currency. IAS 21 requires any foreign exchange gains and losses on monetary
+assets and monetary liabilities to be recognised in profit or loss. An exception
+is a monetary item that is designated as a hedging instrument in a cash flow
+hedge (see paragraph 6.5.11), a hedge of a net investment (see
+paragraph 6.5.13) or a fair value hedge of an equity instrument for which an
+entity has elected to present changes in fair value in other comprehensive
+income in accordance with paragraph 5.7.5 (see paragraph 6.5.8).
+</chunk>
+
+<chunk id="1024" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B5.7.2A" score="0.0000">
+For the purpose of recognising foreign exchange gains and losses under
+IAS 21, a financial asset measured at fair value through other comprehensive
+income in accordance with paragraph 4.1.2A is treated as a monetary item.
+Accordingly, such a financial asset is treated as an asset measured at
+amortised cost in the foreign currency. Exchange differences on the amortised
+cost are recognised in profit or loss and other changes in the carrying amount
+are recognised in accordance with paragraph 5.7.10.
+</chunk>
+</Document>
+
+<Document name="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation">
+<chunk id="1161" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="1" score="0.0000">
+Many reporting entities have investments in foreign operations (as defined in
+IAS 21 paragraph 8). Such foreign operations may be subsidiaries, associates,
+joint ventures or branches. IAS 21 requires an entity to determine the
+functional currency of each of its foreign operations as the currency of the
+primary economic environment of that operation. When translating the
+results and financial position of a foreign operation into a presentation
+currency, the entity is required to recognise foreign exchange differences in
+other comprehensive income until it disposes of the foreign operation.
+</chunk>
+
+<chunk id="1162" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="2" score="0.0000">
+Hedge accounting of the foreign currency risk arising from a net investment
+in a foreign operation will apply only when the net assets of that foreign
+operation are included in the financial statements.
+The item being hedged
+1
+with respect to the foreign currency risk arising from the net investment in a
+foreign operation may be an amount of net assets equal to or less than the
+carrying amount of the net assets of the foreign operation.
+</chunk>
+
+<chunk id="1163" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="3" score="0.6270">
+IFRS 9 requires the designation of an eligible hedged item and eligible hedging
+instruments in a hedge accounting relationship. If there is a designated
+hedging relationship, in the case of a net investment hedge, the gain or loss on
+the hedging instrument that is determined to be an effective hedge of the net
+investment is recognised in other comprehensive income and is included with
+the foreign exchange differences arising on translation of the results and
+financial position of the foreign operation.
+</chunk>
+
+<chunk id="1164" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="4" score="0.0000">
+An entity with many foreign operations may be exposed to a number of
+foreign currency risks. This Interpretation provides guidance on identifying
+the foreign currency risks that qualify as a hedged risk in the hedge of a net
+investment in a foreign operation.
+</chunk>
+
+<chunk id="1165" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="5" score="0.5840">
+IFRS 9 allows an entity to designate either a derivative or a non-derivative
+financial instrument (or a combination of derivative and non-derivative
+financial instruments) as hedging instruments for foreign currency risk. This
+Interpretation provides guidance on where, within a group, hedging
+This will be the case for consolidated financial statements, financial statements in which
+investments such as associates or joint ventures are accounted for using the equity method and
+Joint
+financial statements that include a branch or a joint operation as defined in IFRS 11
+instruments that are hedges of a net investment in a foreign operation can be
+held to qualify for hedge accounting.
+</chunk>
+
+<chunk id="1166" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="6" score="0.6471">
+IAS 21 and IFRS 9 require cumulative amounts recognised in other
+comprehensive income relating to both the foreign exchange differences
+arising on translation of the results and financial position of the foreign
+operation and the gain or loss on the hedging instrument that is determined
+to be an effective hedge of the net investment to be reclassified from equity to
+profit or loss as a reclassification adjustment when the parent disposes of the
+foreign operation. This Interpretation provides guidance on how an entity
+should determine the amounts to be reclassified from equity to profit or loss
+for both the hedging instrument and the hedged item.
+Scope
+</chunk>
+
+<chunk id="1167" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="7" score="0.0000">
+This Interpretation applies to an entity that hedges the foreign currency risk
+arising from its net investments in foreign operations and wishes to qualify
+for hedge accounting in accordance with IFRS 9. For convenience this
+Interpretation refers to such an entity as a parent entity and to the financial
+statements in which the net assets of foreign operations are included as
+consolidated financial statements. All references to a parent entity apply
+equally to an entity that has a net investment in a foreign operation that is a
+joint venture, an associate or a branch.
+</chunk>
+
+<chunk id="1168" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="8" score="0.0000">
+This Interpretation applies only to hedges of net investments in foreign
+operations; it should not be applied by analogy to other types of hedge
+accounting.
+Issues
+</chunk>
+
+<chunk id="1169" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="9" score="0.0000">
+Investments in foreign operations may be held directly by a parent entity or
+indirectly by its subsidiary or subsidiaries. The issues addressed in this
+Interpretation are:
+the nature of the hedged risk and the amount of the hedged item for which a
+(a)
+hedging relationship may be designated:
+(i)
+whether the parent entity may designate as a hedged risk only
+the foreign exchange differences arising from a difference
+between the functional currencies of the parent entity and its
+foreign operation, or whether it may also designate as the
+hedged risk the foreign exchange differences arising from the
+difference between the presentation currency of the parent
+entity’s consolidated financial statements and the functional
+currency of the foreign operation;
+(ii)
+if the parent entity holds the foreign operation indirectly,
+whether the hedged risk may include only the foreign
+exchange differences arising from differences in functional
+currencies between the foreign operation and its immediate
+parent entity, or whether the hedged risk may also include any
+of the foreign operation and any intermediate or ultimate
+parent entity (ie whether the fact that the net investment in the
+foreign operation is held through an intermediate parent
+affects the economic risk to the ultimate parent).
+where in a group the hedging instrument can be held:
+(i)
+whether a qualifying hedge accounting relationship can be
+established only if the entity hedging its net investment is a
+party to the hedging instrument or whether any entity in the
+group, regardless of its functional currency, can hold the
+hedging instrument;
+whether the nature of the hedging instrument (derivative or
+(ii)
+non-derivative) or the method of consolidation affects the
+assessment of hedge effectiveness.
+what amounts should be reclassified from equity to profit or loss as
+reclassification adjustments on disposal of the foreign operation:
+when a foreign operation that was hedged is disposed of, what
+(i)
+amounts from the parent entity’
+</chunk>
+
+<chunk id="1170" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="10" score="0.0000">
+Hedge accounting may be applied only to the foreign exchange differences
+arising between the functional currency of the foreign operation and the
+parent entity’s functional currency.
+</chunk>
+
+<chunk id="1171" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="11" score="0.0000">
+In a hedge of the foreign currency risks arising from a net investment in a
+foreign operation, the hedged item can be an amount of net assets equal to or
+less than the carrying amount of the net assets of the foreign operation in the
+consolidated financial statements of the parent entity. The carrying amount of
+the net assets of a foreign operation that may be designated as the hedged
+item in the consolidated financial statements of a parent depends on whether
+any lower level parent of the foreign operation has applied hedge accounting
+for all or part of the net assets of that foreign operation and that accounting
+has been maintained in the parent’s consolidated financial statements.
+</chunk>
+
+<chunk id="1172" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="12" score="0.0000">
+The hedged risk may be designated as the foreign currency exposure arising
+between the functional currency of the foreign operation and the functional
+currency of any parent entity (the immediate, intermediate or ultimate parent
+entity) of that foreign operation. The fact that the net investment is held
+through an intermediate parent does not affect the nature of the economic
+risk arising from the foreign currency exposure to the ultimate parent entity.
+</chunk>
+
+<chunk id="1173" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="13" score="0.0000">
+An exposure to foreign currency risk arising from a net investment in a
+foreign operation may qualify for hedge accounting only once in the
+consolidated financial statements. Therefore, if the same net assets of a
+foreign operation are hedged by more than one parent entity within the group
+(for example, both a direct and an indirect parent entity) for the same risk,
+only one hedging relationship will qualify for hedge accounting in the
+consolidated financial statements of the ultimate parent. A hedging
+relationship designated by one parent entity in its consolidated financial
+statements need not be maintained by another higher level parent entity.
+However, if it is not maintained by the higher level parent entity, the hedge
+accounting applied by the lower level parent must be reversed before the
+higher level parent’s hedge accounting is recognised.
+Where the hedging instrument can be held
+</chunk>
+
+<chunk id="1174" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="14" score="0.0000">
+A derivative or a non-derivative instrument (or a combination of derivative
+and non-derivative instruments) may be designated as a hedging instrument
+in a hedge of a net investment in a foreign operation. The hedging
+instrument(s) may be held by any entity or entities within the group, as long
+as the designation, documentation and effectiveness requirements of IFRS 9
+paragraph 6.4.1 that relate to a net investment hedge are satisfied. In
+particular, the hedging strategy of the group should be clearly documented
+because of the possibility of different designations at different levels of the
+group.
+</chunk>
+
+<chunk id="1175" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="15" score="0.0000">
+For the purpose of assessing effectiveness, the change in value of the hedging
+instrument in respect of foreign exchange risk is computed by reference to
+the functional currency of the parent entity against whose functional
+currency the hedged risk is measured, in accordance with the hedge
+accounting documentation. Depending on where the hedging instrument is
+held, in the absence of hedge accounting the total change in value might be
+recognised in profit or loss, in other comprehensive income, or both. However,
+the assessment of effectiveness is not affected by whether the change in value
+of the hedging instrument is recognised in profit or loss or in other
+comprehensive income. As part of the application of hedge accounting, the
+total effective portion of the change is included in other comprehensive
+income. The assessment of effectiveness is not affected by whether the
+hedging instrument is a derivative or a non-derivative instrument or by the
+method of consolidation.
+Disposal of a hedged foreign operation
+</chunk>
+
+<chunk id="1176" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="16" score="0.5999">
+When a foreign operation that was hedged is disposed of, the amount
+reclassified to profit or loss as a reclassification adjustment from the foreign
+currency translation reserve in the consolidated financial statements of the
+parent in respect of the hedging instrument is the amount that IFRS 9
+paragraph 6.5.14 requires to be identified. That amount is the cumulative gain
+or loss on the hedging instrument that was determined to be an effective
+hedge.
+</chunk>
+
+<chunk id="1177" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="17" score="0.0000">
+The amount reclassified to profit or loss from the foreign currency translation
+reserve in the consolidated financial statements of a parent in respect of the
+net investment in that foreign operation in accordance with IAS 21
+paragraph 48 is the amount included in that parent’s foreign currency
+translation reserve in respect of that foreign operation. In the ultimate
+parent’s consolidated financial statements, the aggregate net amount
+recognised in the foreign currency translation reserve in respect of all foreign
+operations is not affected by the consolidation method. However, whether the
+ultimate parent uses the direct or the step-by-step method of consolidation
+2
+may affect the amount included in its foreign currency translation reserve in
+respect of an individual foreign operation. The use of the step-by-step method
+of consolidation may result in the reclassification to profit or loss of an
+amount different from that used to determine hedge effectiveness. This
+difference may be eliminated by determining the amount relating to that
+foreign operation that would have arisen if the direct method of consolidation
+had been used. Making this adjustment is not required by IAS 21. However, it
+is an accounting policy choice that should be followed consistently for all net
+investments.
+Effective date
+</chunk>
+
+<chunk id="1178" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18" score="0.0000">
+An entity shall apply this Interpretation for annual periods beginning on or
+after 1 October 2008. An entity shall apply the amendment to paragraph 14
+Improvements to IFRSs
+made by
+issued in April 2009 for annual periods
+beginning on or after 1 July 2009. Earlier application of both is permitted. If
+an entity applies this Interpretation for a period beginning before 1 October
+2008, or the amendment to paragraph 14 before 1 July 2009, it shall disclose
+that fact.
+</chunk>
+
+<chunk id="1179" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18A" score="0.0000">
+[Deleted]
+</chunk>
+
+<chunk id="1180" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18B" score="0.0000">
+IFRS 9, as issued in July 2014, amended paragraphs 3, 5–7, 14, 16, AG1 and
+AG8 and deleted paragraph 18A. An entity shall apply those amendments
+when it applies IFRS 9.
+Transition
+</chunk>
+
+<chunk id="1181" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="19" score="0.0000">
+IAS 8 specifies how an entity applies a change in accounting policy resulting
+from the initial application of an Interpretation. An entity is not required to
+comply with those requirements when first applying the Interpretation. If an
+entity had designated a hedging instrument as a hedge of a net investment but
+the hedge does not meet the conditions for hedge accounting in this
+The direct method is the method of consolidation in which the financial statements of the
+foreign operation are translated directly into the functional currency of the ultimate parent. The
+step-by-step method is the method of consolidation in which the financial statements of the
+foreign operation are first translated into the functional currency of any intermediate parent(s)
+and then translated into the functional currency of the ultimate parent (or the presentation
+Interpretation, the entity shall apply IAS 39 to discontinue that hedge
+accounting prospectively.
+Appendix
+Application guidance
+This appendix is an integral part of the Interpretation.
+</chunk>
+
+<chunk id="1184" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG3" score="0.0000">
+Parent wishes to hedge the foreign exchange risk from its net investment in
+Subsidiary C. Assume that Subsidiary A has an external borrowing of US
+$300 million. The net assets of Subsidiary A at the start of the reporting period
+are ¥400,000 million including the proceeds of the external borrowing of US
+$300 million.
+</chunk>
+
+<chunk id="1185" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG4" score="0.0000">
+The hedged item can be an amount of net assets equal to or less than the
+carrying amount of Parent’s net investment in Subsidiary C (US$300 million)
+in its consolidated financial statements. In its consolidated financial
+statements Parent can designate the US$300 million external borrowing in
+Subsidiary A as a hedge of the EUR/USD spot foreign exchange risk associated
+with its net investment in the US$300 million net assets of Subsidiary C. In
+this case, both the EUR/USD foreign exchange difference on the US$300
+million external borrowing in Subsidiary A and the EUR/USD foreign exchange
+difference on the US$300 million net investment in Subsidiary C are included
+in the foreign currency translation reserve in Parent’s consolidated financial
+statements after the application of hedge accounting.
+</chunk>
+
+<chunk id="1186" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG5" score="0.0000">
+In the absence of hedge accounting, the total USD/EUR foreign exchange
+difference on the US$300 million external borrowing in Subsidiary A would be
+recognised in Parent’s consolidated financial statements as follows:
+•
+USD/JPY spot foreign exchange rate change, translated to euro, in profit or
+loss, and
+•
+JPY/EUR spot foreign exchange rate change in other comprehensive
+income.
+Instead of the designation in paragraph AG4, in its consolidated financial
+statements Parent can designate the US$300 million external borrowing in
+Subsidiary A as a hedge of the GBP/USD spot foreign exchange risk between
+Subsidiary C and Subsidiary B. In this case, the total USD/EUR foreign
+exchange difference on the US$300 million external borrowing in Subsidiary A
+would instead be recognised in Parent’s consolidated financial statements as
+follows:
+•
+the GBP/USD spot foreign exchange rate change in the foreign currency
+translation reserve relating to Subsidiary C,
+•
+GBP/JPY spot foreign exchange rate change, translated to euro, in profit or
+loss, and
+•
+JPY/EUR spot foreign exchange rate change in other comprehensive
+income.
+</chunk>
+
+<chunk id="1187" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG6" score="0.0000">
+Parent cannot designate the US$300 million external borrowing in
+Subsidiary A as a hedge of both the EUR/USD spot foreign exchange risk and
+the GBP/USD spot foreign exchange risk in its consolidated financial
+statements. A single hedging instrument can hedge the same designated risk
+only once. Subsidiary B cannot apply hedge accounting in its consolidated
+financial statements because the hedging instrument is held outside the group
+comprising Subsidiary B and Subsidiary C.
+Where in a group can the hedging instrument be held
+(paragraphs 14 and 15)?
+</chunk>
+
+<chunk id="1188" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG7" score="0.0000">
+As noted in paragraph AG5, the total change in value in respect of foreign
+exchange risk of the US$300 million external borrowing in Subsidiary A would
+be recorded in both profit or loss (USD/JPY spot risk) and other comprehensive
+income (EUR/JPY spot risk) in Parent’s consolidated financial statements in the
+absence of hedge accounting. Both amounts are included for the purpose of
+assessing the effectiveness of the hedge designated in paragraph AG4 because
+the change in value of both the hedging instrument and the hedged item are
+computed by reference to the euro functional currency of Parent against the
+US dollar functional currency of Subsidiary C, in accordance with the hedge
+documentation. The method of consolidation (ie direct method or step-by-step
+method) does not affect the assessment of the effectiveness of the hedge.
+Amounts reclassified to profit or loss on disposal of a
+foreign operation (paragraphs 16 and 17)
+</chunk>
+
+<chunk id="1189" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG8" score="0.5847">
+When Subsidiary C is disposed of, the amounts reclassified to profit or loss in
+Parent’s consolidated financial statements from its foreign currency
+translation reserve (FCTR) are:
+(a)
+in respect of the US$300 million external borrowing of Subsidiary A,
+the amount that IFRS 9 requires to be identified, ie the total change in
+value in respect of foreign exchange risk that was recognised in other
+comprehensive income as the effective portion of the hedge; and
+(b)
+in respect of the US$300 million net investment in Subsidiary C, the
+amount determined by the entity’s consolidation method. If Parent
+uses the direct method, its FCTR in respect of Subsidiary C will be
+determined directly by the EUR/USD foreign exchange rate. If Parent
+uses the step-by-step method, its FCTR in respect of Subsidiary C will
+be determined by the FCTR recognised by Subsidiary B reflecting the
+GBP/USD foreign exchange rate, translated to Parent’s functional
+currency using the EUR/GBP foreign exchange rate. Parent’s use of the
+step-by-step method of consolidation in prior periods does not require
+it to or preclude it from determining the amount of FCTR to be
+reclassified when it disposes of Subsidiary C to be the amount that it
+would have recognised if it had always used the direct method,
+depending on its accounting policy.
+13 and 15)
+</chunk>
+
+<chunk id="1190" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG9" score="0.0000">
+The following examples illustrate that in the consolidated financial
+statements of Parent, the risk that can be hedged is always the risk between
+its functional currency (euro) and the functional currencies of Subsidiaries B
+and C. No matter how the hedges are designated, the maximum amounts that
+can be effective hedges to be included in the foreign currency translation
+reserve in Parent’s consolidated financial statements when both foreign
+operations are hedged are US$300 million for EUR/USD risk and £341 million
+for EUR/GBP risk. Other changes in value due to changes in foreign exchange
+rates are included in Parent’s consolidated profit or loss. Of course, it would
+be possible for Parent to designate US$300 million only for changes in the
+USD/GBP spot foreign exchange rate or £500 million only for changes in the
+GBP/EUR spot foreign exchange rate.
+Parent holds both USD and GBP hedging instruments
+</chunk>
+
+<chunk id="1191" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG10" score="0.0000">
+Parent may wish to hedge the foreign exchange risk in relation to its net
+investment in Subsidiary B as well as that in relation to Subsidiary C. Assume
+that Parent holds suitable hedging instruments denominated in US dollars and
+pounds sterling that it could designate as hedges of its net investments in
+Subsidiary B and Subsidiary C. The designations Parent can make in its
+consolidated financial statements include, but are not limited to, the
+following:
+(a)
+US$300 million hedging instrument designated as a hedge of the US
+$300 million of net investment in Subsidiary C with the risk being the
+spot foreign exchange exposure (EUR/USD) between Parent and
+Subsidiary C and up to £341 million hedging instrument designated as
+a hedge of £341 million of the net investment in Subsidiary B with the
+risk being the spot foreign exchange exposure (EUR/GBP) between
+Parent and Subsidiary B.
+(b)
+US$300 million hedging instrument designated as a hedge of the US
+$300 million of net investment in Subsidiary C with the risk being the
+spot foreign exchange exposure (GBP/USD) between Subsidiary B and
+Subsidiary C and up to £500 million hedging instrument designated as
+a hedge of £500 million of the net investment in Subsidiary B with the
+risk being the spot foreign exchange exposure (EUR/GBP) between
+Parent and Subsidiary B.
+</chunk>
+
+<chunk id="1192" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG11" score="0.0000">
+The EUR/USD risk from Parent’s net investment in Subsidiary C is a different
+risk from the EUR/GBP risk from Parent’s net investment in Subsidiary B.
+However, in the case described in paragraph AG10(a), by its designation of the
+USD hedging instrument it holds, Parent has already fully hedged the
+EUR/USD risk from its net investment in Subsidiary C. If Parent also
+designated a GBP instrument it holds as a hedge of its £500 million net
+investment in Subsidiary B, £159 million of that net investment, representing
+the GBP equivalent of its USD net investment in Subsidiary C, would be
+hedged twice for GBP/EUR risk in Parent’s consolidated financial statements.
+</chunk>
+
+<chunk id="1193" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG12" score="0.0000">
+In the case described in paragraph AG10(b), if Parent designates the hedged
+risk as the spot foreign exchange exposure (GBP/USD) between Subsidiary B
+and Subsidiary C, only the GBP/USD part of the change in the value of its US
+$300 million hedging instrument is included in Parent’s foreign currency
+translation reserve relating to Subsidiary C. The remainder of the change
+(equivalent to the GBP/EUR change on £159 million) is included in Parent’s
+the USD/GBP risk between Subsidiaries B and C does not include the GBP/EUR
+risk, Parent is also able to designate up to £500 million of its net investment in
+Subsidiary B with the risk being the spot foreign exchange exposure (GBP/EUR)
+between Parent and Subsidiary B.
+Subsidiary B holds the USD hedging instrument
+</chunk>
+
+<chunk id="1194" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="AG13" score="0.0000">
+Assume that Subsidiary B holds US$300 million of external debt the proceeds
+of which were transferred to Parent by an inter-company loan denominated in
+pounds sterling. Because both its assets and liabilities increased by
+£159 million, Subsidiary B’s net assets are unchanged. Subsidiary B could
+designate the external debt as a hedge of the GBP/USD risk of its net
+investment in Subsidiary C in its consolidated financial statements. Parent
+could maintain Subsidiary B’s designation of that hedging instrument as a
+hedge of its US$300 million net investment in Subsidiary C for the GBP/USD
+risk (see paragraph 13) and Parent could designate the GBP hedging
+instrument it holds as a hedge of its entire £500 million net investment in
+Subsidiary B. The first hedge, designated by Subsidiary B, would be assessed by
+reference to Subsidiary B’s functional currency (pounds sterling) and the
+second hedge, designated by Parent, would be assessed by reference to
+Parent’s functional currency (euro). In this case, only the GBP/USD risk from
+Parent’s net investment in Subsidiary C has been hedged in Parent’s
+consolidated financial statements by the USD hedging instrument, not the
+entire EUR/USD risk. Therefore, the entire EUR/GBP risk from Parent’s £500
+million net investment in Subsidiary B may be hedged in the consolidated
+financial statements of Parent.
+</chunk>
+</Document>
+</context>
+
+Question: When a financial asset becomes credit-impaired after origination (i.e. moves to Stage 3 under IFRS 9), the manner of recognizing interest income changes. Initially, while the asset is performing (Stage 1 or 2), interest is calculated on the gross carrying amount using the effective interest rate (EIR) determined at origination.
+
+However, once the asset is assessed as credit-impaired, IFRS 9 paragraph 5.4.1 (b) requires that interest income be recognized by applying the EIR (which I believe is not credit adjusted EIR because that bit specially applies to purchased or originated credit impaired financial assets) to the amortized cost of the asset that is, the gross carrying amount less the loss allowance (expected credit loss).
+
+Also, another matter is the unwinding of the discount on the loss allowance as “unwinding of ECL” as interest income for credit impaired loans, which represents the time-value effect on expected recoveries. This unwinding is separate from any changes in the loss allowance due to revised expectations. The complexity for me lies in keeping these two movements distinct. I find it difficult to understand whether the unwinding of ECL is different from the increase or decrease in the total ECL allowance on the reporting date.
+
+Another area of confusion is whether “unwinding of ECL” also applies to performing loans and how this interacts with the presentation of income “at net” when Stage 2 or Stage 3 interest recognition is applied. Because it is not clear to me from IFRS 9 paragraphs whether the interest income calculation methodology for credit impaired loans results in only presentation changes or not.
+
+<identified_approaches>
+{
+  "status": "pass",
+  "assumptions": [
+    "The financial asset is within the scope of IFRS 9 interest recognition and impairment requirements.",
+    "The issue concerns a debt-type financial asset for which the effective interest method is relevant."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Effective interest method",
+      "normalized_label": "effective_interest_method",
+      "rationale_for_inclusion": "The context sets out the effective interest rate framework for allocating amounts over the life of a financial instrument, including amortisation of fees and recalculation of carrying amounts using the original or revised effective interest rate."
+    },
+    {
+      "id": "approach_2",
+      "label": "Expected credit loss model",
+      "normalized_label": "expected_credit_losses",
+      "rationale_for_inclusion": "The context sets out IFRS 9 impairment as discounted cash shortfalls, including measurement for credit-impaired assets and discounting expected cash flows using the applicable effective interest rate."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, references, or operational points
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation
+- references.excerpt must be short and verbatim
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "section": "chunk section number",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "short point including timing, constraints or effort when relevant"
+  ]
+}

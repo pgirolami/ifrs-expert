@@ -1,0 +1,57 @@
+{
+  "assumptions_fr": [
+    "Le contrat reste non désigné comme instrument de couverture jusqu'au 20 décembre 2025.",
+    "Le règlement du 20 décembre 2025 est un règlement physique des deux devises; si la juste valeur finale est négative, les sens des écritures sur le dérivé sont inversés."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, le traitement applicable est celui du dérivé à la juste valeur par résultat. Il faut d'abord comptabiliser la dernière variation de juste valeur au 20 décembre 2025, puis solder l'actif ou le passif dérivé lors du règlement physique, sans OCI ni comptabilité de couverture."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui",
+      "reasoning_fr": "Vous indiquez que le forward FX n'est pas désigné comme couverture et qu'il est correctement classé à la juste valeur par résultat. Dans ce cas, les variations de juste valeur jusqu'à la date de règlement restent comptabilisées en résultat. Le règlement final sert ensuite à éteindre le dérivé et à enregistrer l'échange effectif des devises.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Au 20 décembre 2025: remeasurement final en résultat, puis extinction du dérivé et comptabilisation de la devise reçue/de la devise livrée.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss"
+        },
+        {
+          "section": "5.7.4",
+          "excerpt": "For assets measured at fair value, however, the change in fair value shall be recognised in profit or loss or in other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche ne s'applique pas ici, car le contrat n'est pas désigné comme instrument de couverture. Les mécanismes d'OCI et de test d'efficacité cités dans le contexte visent une relation de couverture documentée. Les écritures finales restent donc en juste valeur par résultat.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucun passage en OCI ni reclassement de réserve de couverture n'est à enregistrer au règlement.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "unless: (a) it is part of a hedging relationship"
+        },
+        {
+          "section": "3",
+          "excerpt": "the gain or loss on the hedging instrument that is determined to be an effective hedge ... is recognised in other comprehensive income"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Écriture de remeasurement finale au 20 décembre 2025 si la juste valeur a encore augmenté: Dr Actif dérivé / Cr Gain de juste valeur sur dérivé (résultat). Si elle a diminué, écriture inverse; si la juste valeur devient négative, constater un passif dérivé.",
+    "Après cette dernière remeasurement, le règlement physique ne crée pas un nouveau résultat distinct du dérivé, sauf la variation de juste valeur entre le dernier arrêté et le 20 décembre 2025.",
+    "Écriture de règlement physique, cas d'un dérivé en actif à l'échéance: Dr Banque - devise reçue ; Cr Banque - devise livrée ; Cr Actif dérivé. Le crédit du dérivé sert à le décomptabiliser intégralement.",
+    "Si le dérivé est en passif à l'échéance, logique inverse sur le dérivé: Dr Passif dérivé au règlement, avec constatation des flux de devise reçue et livrée.",
+    "Le point clé est qu'après le règlement du 20 décembre 2025, le solde du dérivé doit être nul."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "Assume the instrument is a financial liability within the scope of IFRS 9.",
+    "Assume the question concerns subsequent accounting for a debt-like hybrid instrument that may contain an embedded derivative."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 states that financial liabilities are subsequently measured at amortised cost unless they fall within specified exceptions, and related gains or losses are recognised through amortisation and derecognition."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 includes fair value through profit or loss as a distinct subsequent measurement basis for financial liabilities, including derivative liabilities and hybrid contracts that may be measured in their entirety at fair value through profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Separation of embedded derivative",
+      "normalized_label": "embedded_derivative_separation",
+      "rationale_for_inclusion": "For hybrid contracts with a host that is not an asset within IFRS 9, the context includes the separate accounting model under which an embedded derivative is bifurcated and accounted for as a derivative, with the host contract accounted for separately."
+    }
+  ]
+}

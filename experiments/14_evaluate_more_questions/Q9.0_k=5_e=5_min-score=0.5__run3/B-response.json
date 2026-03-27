@@ -1,0 +1,106 @@
+{
+  "assumptions_fr": [
+    "La question porte sur la comptabilisation initiale de l'instrument selon IFRS 9.",
+    "Le prêt est traité comme un instrument financier relevant du champ des extraits IFRS 9 fournis."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'approche pertinente est l'évaluation initiale à la juste valeur par actualisation pour un prêt sans intérêt, mais seulement si les flux futurs et leur échéancier peuvent être établis malgré l'absence de terme fixe. Si cette juste valeur diffère du montant reçu et n'est pas étayée uniquement par des données observables, l'écart initial est différé et non comptabilisé immédiatement en résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "transaction_price",
+      "label_fr": "Comptabilisation initiale au prix de transaction",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 pose le prix de transaction comme point de départ normal à la comptabilisation initiale. Dans cette situation, il n'est applicable que si le montant reçu représente bien la juste valeur du prêt, ce qui n'est pas automatique pour un prêt non garanti et sans intérêt.",
+      "conditions_fr": [
+        "si le montant reçu correspond à la juste valeur du prêt"
+      ],
+      "practical_implication_fr": "Utiliser d'abord le montant reçu comme référence initiale, puis vérifier s'il coïncide avec la juste valeur.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "The fair value of a financial instrument at initial recognition is normally the transaction price"
+        },
+        {
+          "section": "B5.1.1",
+          "excerpt": "if part of the consideration given or received is for something other than the financial instrument"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "present_value_measurement",
+      "label_fr": "Évaluation initiale à la juste valeur par actualisation",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette méthode est celle visée par l'extrait pour un instrument sans intérêt. Elle ne devient toutefois opérationnelle ici que si, malgré l'absence d'échéance fixe, les flux futurs et leur calendrier peuvent être estimés puis actualisés avec un taux de marché pour un instrument similaire.",
+      "conditions_fr": [
+        "si les flux futurs et leur échéancier peuvent être déterminés",
+        "si le taux d'actualisation reflète un instrument similaire"
+      ],
+      "practical_implication_fr": "Calculer la valeur actuelle des flux futurs attendus avec un taux de marché comparable.",
+      "references": [
+        {
+          "section": "B5.1.1",
+          "excerpt": "the fair value of a long-term loan or receivable that carries no interest can be measured as the present value of all future cash receipts"
+        },
+        {
+          "section": "B5.1.1",
+          "excerpt": "discounted using the prevailing market rate(s) of interest for a similar instrument"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "day_one_gain_loss",
+      "label_fr": "Gain ou perte immédiat au jour 1",
+      "applicability": "non",
+      "reasoning_fr": "Un gain ou une perte de jour 1 n'est admis que si la juste valeur est étayée par un prix coté de niveau 1 ou par une technique n'utilisant que des données de marché observables. Pour ce prêt d'actionnaire non garanti, sans intérêt et sans terme fixe, les faits fournis n'indiquent pas une telle base observable.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas passer immédiatement l'écart initial en résultat sur la seule base des faits fournis.",
+      "references": [
+        {
+          "section": "B5.1.2A",
+          "excerpt": "quoted price in an active market for an identical asset"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "uses only data from observable markets"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "recognise the difference between the fair value at initial recognition and the transaction price as a gain or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "deferred_difference",
+      "label_fr": "Différence de jour 1 différée",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si vous calculez une juste valeur par actualisation différente du montant reçu, et que cette juste valeur n'est pas étayée uniquement par des données observables, IFRS 9 impose de différer l'écart initial. Dans cette situation, c'est l'issue la plus cohérente si l'approche d'actualisation est retenue.",
+      "conditions_fr": [
+        "si la juste valeur calculée diffère du prix de transaction",
+        "si la valorisation n'est pas étayée uniquement par des données de marché observables"
+      ],
+      "practical_implication_fr": "Constater l'instrument à la mesure requise puis différer l'écart initial au lieu de le reconnaître immédiatement en résultat.",
+      "references": [
+        {
+          "section": "B5.1.2A",
+          "excerpt": "in all other cases, at the measurement required by paragraph 5.1.1, adjusted to defer the difference"
+        },
+        {
+          "section": "B5.1.2A",
+          "excerpt": "recognise that deferred difference as a gain or loss only to the extent"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "À la comptabilisation initiale, partir du montant reçu puis le comparer à la juste valeur éventuellement calculée.",
+    "Si l'actualisation est utilisée, l'absence de période de remboursement fixe est la contrainte centrale : il faut documenter les flux futurs attendus et leur échéancier.",
+    "Le taux d'actualisation doit être un taux de marché pour un instrument similaire, en tenant compte notamment de la devise, du terme, du type de taux et de facteurs comparables de crédit.",
+    "Si la juste valeur calculée diffère du montant reçu et que la valorisation n'utilise pas uniquement des données observables, l'écart initial doit être différé."
+  ]
+}

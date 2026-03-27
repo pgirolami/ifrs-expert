@@ -1,0 +1,45 @@
+{
+  "assumptions_fr": [
+    "L’exposition couverte est la variabilité des flux d’intérêts variables futurs contractuels d’un portefeuille homogène de prêts à taux variable.",
+    "Le portefeuille est traité comme un groupe d’éléments partageant les mêmes caractéristiques de risque et géré ensemble à des fins de gestion du risque.",
+    "En P1, la relation de couverture documentée vise un nominal de 80m au sein d’un solde hautement probable de 100m."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans votre cas, les 80m désignés en P1 restent la relation couverte. Le passage du solde prévu à 150m en P2 ne transforme pas automatiquement la désignation en un reliquat cumulatif de 70m ; l’augmentation de 50m doit être explicitement désignée et documentée comme tranche additionnelle, sauf rebalancement formel limité au maintien du hedge ratio."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, IFRS 9 permet de couvrir un groupe d’éléments, mais la relation désignée porte sur des quantités désignées et identifiées. Le fait que le solde prévu passe de 100m à 150m en P2 n’élargit pas automatiquement la relation de P1 : les 80m désignés restent couverts, et l’augmentation de 50m doit faire l’objet d’une désignation/documentation explicite si la banque veut la couvrir. Un rebalancement n’est pertinent que s’il sert à maintenir le hedge ratio de la relation existante.",
+      "conditions_fr": [
+        "Le nominal additionnel de 50m n’entre dans la couverture qu’avec une désignation et une documentation explicites en P2.",
+        "Si la banque modifie la relation existante, cette modification doit constituer un rebalancement visant à maintenir un hedge ratio conforme au même objectif de gestion du risque."
+      ],
+      "practical_implication_fr": "En pratique, ne traitez pas automatiquement le solde non couvert comme 70m dans la relation existante ; suivez les 80m de P1 séparément et documentez toute tranche additionnelle en P2.",
+      "references": [
+        {
+          "section": "6.6.1",
+          "excerpt": "managed together on a group basis for risk management purposes"
+        },
+        {
+          "section": "B6.5.7",
+          "excerpt": "adjustments made to the designated quantities"
+        },
+        {
+          "section": "B6.6.11",
+          "excerpt": "requires the specific identification of the nominal amount"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "En P2, conserver la documentation de P1 sur les 80m déjà désignés ; ne pas la redéfinir automatiquement par référence au nouveau total de 150m.",
+    "Si la banque veut couvrir la hausse de 50m, documenter en P2 un nominal additionnel clairement identifié au sein du groupe homogène.",
+    "N’utiliser un rebalancement que pour maintenir le hedge ratio de la relation existante ; une simple croissance du portefeuille ne suffit pas à étendre automatiquement la désignation initiale.",
+    "Le suivi opérationnel est plus robuste si les montants désignés sont tracés par tranche de désignation et par date de documentation."
+  ]
+}

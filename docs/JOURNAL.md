@@ -59,11 +59,19 @@ This journal documents the development progress of the IFRS Expert Assistant - a
         - [Experiment 10](../experiments/10_recall_nih_consistently/EXPERIMENTS.md)
         - [Experiment 11](../experiments/11_remove_extraneous_approaches_while_reserving_nih/EXPERIMENTS.md)
 
-### 2026-03-26 : Preparation for Delivery phase
+- Preparation for Delivery phase
+    - Draft proper [README](README.md) and [METHODOLOGY](METHODOLOGY.md)
+    - Fix all linting errors, failing test, formatting errors
+    - Overhaul mocking strategy that was too brittle
+    - Investigate unstructured.io and langchain
 
-- Draft proper [README](README.md) and [METHODOLOGY](METHODOLOGY.md)
-- Fix all linting errors, failing test, formatting errors
-- Overhaul mocking strategy that was too brittle
-- Investigate unstructured.io and langchain
+### 2026-03-27 : Extend evaluation to other questions
+
+- Obtained 2 additional questions related to IFRS 9 from SME, sourced from Lefebvre Comptable FAQ. Generated 4 additional wording variants for each to evaluate stability of results quantitatively
+    - [Experiment 12](../experiments/12_evaluate_question_2/EXPERIMENTS.md)
+- Generated answers for additional questions and evaluated quality of the answers and the stability across 3 runs. Wrote qualitative experiment summary
+    - [Experiment 13](../experiments/12_evaluate_question_2/EXPERIMENTS.md): question 4
+    - [Experiment 14](../experiments/12_evaluate_question_2/EXPERIMENTS.md): questions 5, 6, 7, 8, 9
+
 
 ## Delivery

@@ -1,0 +1,68 @@
+{
+  "assumptions_fr": [
+    "Le contrat de change à terme est un dérivé au sens d’IFRS 9, non désigné dans une relation de couverture, et reste classé à la juste valeur par résultat jusqu’au 20/12/2025.",
+    "Le contrat est réglé physiquement à l’échéance; les devises remises et reçues sont comptabilisées à la date de règlement.",
+    "Les écritures de règlement ci-dessous supposent qu’à l’échéance la juste valeur est positive (actif dérivé); si elle devient négative, il faut inverser le sens du compte de dérivé."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Oui. Dans cette situation, le traitement applicable est la juste valeur par résultat: il faut comptabiliser la dernière variation de juste valeur jusqu’au 20/12/2025 en résultat, puis enregistrer le règlement physique en soldant le dérivé. La comptabilité de couverture et la comptabilisation à la date de règlement ne changent pas cette conclusion sur ces faits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat (FVTPL)",
+      "applicability": "oui",
+      "reasoning_fr": "Oui. Le contrat est expressément hors comptabilité de couverture et classé FVTPL.\nDans cette situation, la dernière variation de juste valeur entre le dernier arrêté et le 20/12/2025 va en résultat, puis le règlement physique éteint le dérivé; aucun solde ne doit rester après règlement.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Passer la revalorisation finale en résultat, puis solder l’actif dérivé contre les devises échangées au dénouement.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Non. Les extraits IFRS 9 présentent la couverture comme une exception au schéma normal de juste valeur par résultat.\nOr vous indiquez que le forward n’est pas désigné comme instrument de couverture; il n’y a donc ni OCI ni réserve de couverture à traiter à l’échéance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucune écriture d’OCI ou de réserve de couverture n’est requise au 20/12/2025.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "unless: (a) it is part of a hedging relationship"
+        },
+        {
+          "section": "5.7.3",
+          "excerpt": "hedged items in a hedging relationship shall be recognised in accordance with paragraphs 6.5.8–6.5.14"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "settlement_date_accounting",
+      "label_fr": "Comptabilisation à la date de règlement",
+      "applicability": "non",
+      "reasoning_fr": "Non. Le paragraphe 5.7.4 vise le choix de reconnaissance entre date de transaction et date de règlement pour des actifs à recevoir.\nIci, la question porte sur le dénouement d’un dérivé déjà reconnu à la juste valeur par résultat; le traitement déterminant reste donc FVTPL, avec revalorisation finale puis règlement.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche ne pilote pas le schéma comptable final du forward sur les faits décrits.",
+      "references": [
+        {
+          "section": "5.7.4",
+          "excerpt": "If an entity recognises financial assets using settlement date accounting"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Avant le règlement du 20/12/2025, comptabiliser la dernière revalorisation: Dr Actif dérivé / Cr Gain de juste valeur en résultat, ou l’inverse si la juste valeur finale a diminué depuis le dernier arrêté.",
+    "Au règlement physique si le dérivé est un actif à l’échéance: Dr Banque / devise reçue ; Cr Banque / devise livrée ; Cr Actif dérivé.",
+    "Si la juste valeur finale est négative au 20/12/2025, remplacer l’actif dérivé par un passif dérivé et inverser le sens de l’écriture de dérivé au règlement.",
+    "Si la juste valeur a été mise à jour juste avant le dénouement, le règlement ne crée pas un gain ou une perte distinct(e); il matérialise et solde la valeur déjà portée par le dérivé."
+  ]
+}

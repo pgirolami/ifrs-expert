@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns a financial asset that is subject to both the IFRS 9 effective interest requirements and the IFRS 9 expected credit loss requirements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Effective interest method",
+      "normalized_label": "effective_interest_method",
+      "rationale_for_inclusion": "The context sets out IFRS 9's effective interest framework, including fees integral to the effective interest rate, amortisation over the instrument's life, and recalculation using the original or revised effective interest rate."
+    },
+    {
+      "id": "approach_2",
+      "label": "Expected credit loss model",
+      "normalized_label": "expected_credit_losses",
+      "rationale_for_inclusion": "The context sets out IFRS 9's impairment model, measuring probability-weighted cash shortfalls discounted to the reporting date and specifically addressing measurement for credit-impaired assets."
+    }
+  ]
+}

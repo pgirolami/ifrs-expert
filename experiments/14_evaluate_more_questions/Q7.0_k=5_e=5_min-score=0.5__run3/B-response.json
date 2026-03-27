@@ -1,0 +1,59 @@
+{
+  "assumptions_fr": [
+    "Le contrat à terme de change est un dérivé relevant d’IFRS 9 et n’a été désigné dans aucune relation de couverture à aucun moment.",
+    "Le règlement du 20 décembre 2025 est un règlement physique avec échange des deux devises, et non un règlement net en trésorerie.",
+    "La juste valeur du dérivé est mise à jour à la date de règlement avant sa sortie de bilan ; si la position finale est un passif plutôt qu’un actif, les sens débit/crédit s’inversent."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, seul le traitement à la juste valeur par résultat s’applique. Il faut enregistrer une dernière variation de juste valeur en résultat jusqu’au 20 décembre 2025, puis solder le dérivé lors du règlement physique, sans OCI ni réserve de couverture."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_profit_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui",
+      "reasoning_fr": "Le forward FX est décrit comme non désigné en couverture et correctement classé à la juste valeur par résultat. Dans ce cas, les variations de juste valeur continuent d’être comptabilisées en résultat jusqu’à la date de règlement.\nAu 20 décembre 2025, vous passez d’abord la dernière réévaluation de juste valeur, puis vous sortez le dérivé du bilan lors du règlement physique. Si le dérivé est un actif à cette date, son solde crédite l’écriture de règlement.",
+      "conditions_fr": [
+        "Le contrat reste hors relation de couverture désignée jusqu’au règlement."
+      ],
+      "practical_implication_fr": "Écriture type au 20/12/2025 : réévaluation finale en résultat, puis Dr devise reçue / Cr devise livrée / Cr actif dérivé ; si le dérivé est passif, débiter le passif dérivé à la place.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss"
+        },
+        {
+          "section": "5.7.4",
+          "excerpt": "For assets measured at fair value, however, the change in fair value shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche ne s’applique pas ici, car les faits indiquent expressément que le forward n’est pas désigné comme instrument de couverture. Les mécanismes d’OCI et de reclassement propres aux couvertures ne sont donc pas pertinents.\nLa clôture du contrat doit être traitée comme le règlement d’un dérivé FVTPL ordinaire, et non comme la liquidation d’une relation de couverture documentée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucune écriture en OCI ni reclassement de réserve de couverture ; tout reste en résultat jusqu’au règlement.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "unless: (a) it is part of a hedging relationship"
+        },
+        {
+          "section": "B6.5.36",
+          "excerpt": "at the date on which the forward contract is designated as a hedging instrument"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Au 20/12/2025, comptabiliser d’abord la dernière variation de juste valeur depuis la dernière clôture : si la juste valeur augmente, Dr actif dérivé / Cr gain de juste valeur en résultat ; si elle baisse, l’écriture est inverse.",
+    "Après cette réévaluation finale, le règlement physique sert à solder le dérivé : pour un dérivé actif, Dr compte de la devise reçue, Cr compte de la devise livrée, Cr actif dérivé ; pour un dérivé passif, débiter le passif dérivé à la place.",
+    "Si la juste valeur a bien été mise à jour à la date de règlement, il n’y a normalement pas de gain ou perte supplémentaire sur le dérivé au moment du règlement lui-même ; le résultat a déjà été capté par la dernière réévaluation.",
+    "Le contrat n’étant pas désigné en couverture, aucune part de la variation de valeur n’est comptabilisée en autres éléments du résultat global."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns the initial recognition of the shareholder loan as a financial instrument under IFRS 9.",
+    "The issue is limited to identifying initial recognition and measurement approaches grounded in the provided IFRS 9 context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Transaction price",
+      "normalized_label": "transaction_price",
+      "rationale_for_inclusion": "IFRS 9 B5.1.1 states that the fair value of a financial instrument at initial recognition is normally the transaction price."
+    },
+    {
+      "id": "approach_2",
+      "label": "Initial fair value",
+      "normalized_label": "initial_fair_value",
+      "rationale_for_inclusion": "IFRS 9 B5.1.1 and B5.1.2 identify separate initial measurement at fair value when the consideration includes something other than the financial instrument or the loan bears off-market terms, with present value of future cash flows given as the relevant fair value technique."
+    },
+    {
+      "id": "approach_3",
+      "label": "Day-one difference",
+      "normalized_label": "day_one_difference",
+      "rationale_for_inclusion": "IFRS 9 B5.1.2A sets out a distinct recognition treatment when fair value at initial recognition differs from transaction price, with either immediate recognition or deferral depending on observability."
+    }
+  ]
+}

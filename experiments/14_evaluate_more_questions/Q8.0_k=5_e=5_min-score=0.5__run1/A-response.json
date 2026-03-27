@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The financial asset is within the scope of IFRS 9 interest recognition and impairment requirements.",
+    "The issue concerns a debt-type financial asset for which the effective interest method is relevant."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Effective interest method",
+      "normalized_label": "effective_interest_method",
+      "rationale_for_inclusion": "The context sets out the effective interest rate framework for allocating amounts over the life of a financial instrument, including amortisation of fees and recalculation of carrying amounts using the original or revised effective interest rate."
+    },
+    {
+      "id": "approach_2",
+      "label": "Expected credit loss model",
+      "normalized_label": "expected_credit_losses",
+      "rationale_for_inclusion": "The context sets out IFRS 9 impairment as discounted cash shortfalls, including measurement for credit-impaired assets and discounting expected cash flows using the applicable effective interest rate."
+    }
+  ]
+}

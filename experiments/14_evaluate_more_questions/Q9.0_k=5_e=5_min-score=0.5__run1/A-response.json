@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns the initial recognition of the shareholder loan as a financial instrument.",
+    "The request is limited to initial recognition and measurement, including any difference between transaction price and fair value."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Initial recognition at transaction price",
+      "normalized_label": "transaction_price_recognition",
+      "rationale_for_inclusion": "IFRS 9 B5.1.1 states that the fair value of a financial instrument at initial recognition is normally the transaction price."
+    },
+    {
+      "id": "approach_2",
+      "label": "Initial recognition at fair value",
+      "normalized_label": "fair_value_recognition",
+      "rationale_for_inclusion": "IFRS 9 B5.1.1–B5.1.2 include initial measurement at fair value when the consideration is for more than the instrument itself, and illustrate discounting future cash flows for a non-interest-bearing or off-market loan."
+    },
+    {
+      "id": "approach_3",
+      "label": "Immediate day-one gain or loss",
+      "normalized_label": "day_one_gain_loss",
+      "rationale_for_inclusion": "IFRS 9 B5.1.2A(a) requires immediate recognition in profit or loss of the difference between fair value and transaction price when fair value is evidenced by Level 1 inputs or a valuation technique using only observable market data."
+    },
+    {
+      "id": "approach_4",
+      "label": "Deferred day-one difference",
+      "normalized_label": "day_one_deferral",
+      "rationale_for_inclusion": "IFRS 9 B5.1.2A(b) requires the initial difference between fair value and transaction price to be deferred when the fair value is not evidenced by Level 1 inputs or a valuation technique using only observable market data."
+    }
+  ]
+}

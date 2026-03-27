@@ -1,0 +1,1070 @@
+You are an IFRS expert performing structured accounting analysis.
+
+<context>
+<Document name="ifrs-9-financial-instruments 2025 required">
+<chunk id="718" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.6" score="0.0000">
+An entity shall discontinue hedge accounting prospectively only when the
+hedging relationship (or a part of a hedging relationship) ceases to meet the
+qualifying criteria (after taking into account any rebalancing of the
+hedging relationship, if applicable). This includes instances when the
+hedging instrument expires or is sold, terminated or exercised. For this
+purpose, the replacement or rollover of a hedging instrument into another
+hedging instrument is not an expiration or termination if such a
+replacement or rollover is part of, and consistent with, the entity’s
+documented risk management objective. Additionally, for this purpose
+there is not an expiration or termination of the hedging instrument if:
+(a)
+as a consequence of laws or regulations or the introduction of laws
+or regulations, the parties to the hedging instrument agree that one
+or more clearing counterparties replace their original counterparty
+to become the new counterparty to each of the parties. For this
+purpose, a clearing counterparty is a central counterparty
+(sometimes called a ‘clearing organisation’ or ‘clearing agency’) or
+an entity or entities, for example, a clearing member of a clearing
+organisation or a client of a clearing member of a clearing
+organisation, that are acting as a counterparty in order to effect
+clearing by a central counterparty. However, when the parties to the
+hedging instrument replace their original counterparties with
+different counterparties the requirement in this subparagraph is
+met only if each of those parties effects clearing with the same
+central counterparty.
+(b)
+other changes, if any, to the hedging instrument are limited to
+those that are necessary to effect such a replacement of the
+counterparty. Such changes are limited to those that are consistent
+with the terms that would be expected if the hedging instrument
+were originally cleared with the clearing counterparty. These
+changes include changes in the collateral requirements, rights to
+offset receivable
+</chunk>
+
+<chunk id="719" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.7" score="0.0000">
+An entity shall apply:
+(a)
+paragraph 6.5.10 when it discontinues hedge accounting for a fair
+value hedge for which the hedged item is (or is a component of) a
+financial instrument measured at amortised cost; and
+(b)
+paragraph 6.5.12 when it discontinues hedge accounting for cash flow
+hedges.
+Fair value hedges
+</chunk>
+
+<chunk id="720" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.8" score="0.0000">
+As long as a fair value hedge meets the qualifying criteria in
+paragraph 6.4.1, the hedging relationship shall be accounted for as follows:
+the gain or loss on the hedging instrument shall be recognised in
+(a)
+profit or loss (or other comprehensive income, if the hedging
+instrument hedges an equity instrument for which an entity has
+elected to present changes in fair value in other comprehensive
+income in accordance with paragraph 5.7.5).
+(b)
+the hedging gain or loss on the hedged item shall adjust the
+carrying amount of the hedged item (if applicable) and be
+recognised in profit or loss. If the hedged item is a financial asset (or
+a component thereof) that is measured at fair value through other
+comprehensive income in accordance with paragraph 4.1.2A, the
+hedging gain or loss on the hedged item shall be recognised in
+profit or loss. However, if the hedged item is an equity instrument
+for which an entity has elected to present changes in fair value in
+other comprehensive income in accordance with paragraph 5.7.5,
+those amounts shall remain in other comprehensive income. When
+a hedged item is an unrecognised firm commitment (or a
+component thereof), the cumulative change in the fair value of the
+hedged item subsequent to its designation is recognised as an asset
+or a liability with a corresponding gain or loss recognised in profit
+or loss.
+</chunk>
+
+<chunk id="721" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.9" score="0.0000">
+When a hedged item in a fair value hedge is a firm commitment (or a
+component thereof) to acquire an asset or assume a liability, the initial
+carrying amount of the asset or the liability that results from the entity
+meeting the firm commitment is adjusted to include the cumulative change in
+the fair value of the hedged item that was recognised in the statement of
+financial position.
+</chunk>
+
+<chunk id="722" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.10" score="0.0000">
+Any adjustment arising from paragraph 6.5.8(b) shall be amortised to profit or
+loss if the hedged item is a financial instrument (or a component thereof)
+measured at amortised cost. Amortisation may begin as soon as an adjustment
+exists and shall begin no later than when the hedged item ceases to be
+adjusted for hedging gains and losses. The amortisation is based on a
+recalculated effective interest rate at the date that amortisation begins. In the
+case of a financial asset (or a component thereof) that is a hedged item and
+that is measured at fair value through other comprehensive income in
+accordance with paragraph 4.1.2A, amortisation applies in the same manner
+but to the amount that represents the cumulative gain or loss previously
+recognised in accordance with paragraph 6.5.8(b) instead of by adjusting the
+carrying amount.
+Cash flow hedges
+</chunk>
+
+<chunk id="723" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.11" score="0.7228">
+As long as a cash flow hedge meets the qualifying criteria in
+paragraph 6.4.1, the hedging relationship shall be accounted for as follows:
+(a)
+the separate component of equity associated with the hedged item
+(cash flow hedge reserve) is adjusted to the lower of the following (in
+absolute amounts):
+(i)
+the cumulative gain or loss on the hedging instrument from
+inception of the hedge; and
+(ii)
+the cumulative change in fair value (present value) of the
+hedged item (ie the present value of the cumulative change
+in the hedged expected future cash flows) from inception of
+the hedge.
+(b)
+the portion of the gain or loss on the hedging instrument that is
+determined to be an effective hedge (ie the portion that is offset by
+the change in the cash flow hedge reserve calculated in accordance
+with (a)) shall be recognised in other comprehensive income.
+(c)
+any remaining gain or loss on the hedging instrument (or any gain
+or loss required to balance the change in the cash flow hedge
+reserve calculated in accordance with (a)) is hedge ineffectiveness
+that shall be recognised in profit or loss.
+(d)
+the amount that has been accumulated in the cash flow hedge
+reserve in accordance with (a) shall be accounted for as follows:
+(i)
+if a hedged forecast transaction subsequently results in the
+recognition of a non-financial asset or non-financial liability,
+or a hedged forecast transaction for a non-financial asset or a
+non-financial liability becomes a firm commitment for which
+fair value hedge accounting is applied, the entity shall
+remove that amount from the cash flow hedge reserve and
+include it directly in the initial cost or other carrying
+amount of the asset or the liability. This is not a
+reclassification adjustment (see IAS 1) and hence it does not
+affect other comprehensive income.
+(ii)
+for cash flow hedges other than those covered by (i), that
+amount shall be reclassified from the cash flow hedge
+reserve to profit or loss as a reclassification adjustment (see
+IAS 1) in the same
+</chunk>
+
+<chunk id="724" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.12" score="0.6917">
+When an entity discontinues hedge accounting for a cash flow hedge (see
+paragraphs 6.5.6 and 6.5.7(b)) it shall account for the amount that has been
+accumulated in the cash flow hedge reserve in accordance with
+paragraph 6.5.11(a) as follows:
+if the hedged future cash flows are still expected to occur, that amount
+(a)
+shall remain in the cash flow hedge reserve until the future cash flows
+occur or until paragraph 6.5.11(d)(iii) applies. When the future cash
+flows occur, paragraph 6.5.11(d) applies.
+if the hedged future cash flows are no longer expected to occur, that
+(b)
+amount shall be immediately reclassified from the cash flow hedge
+reserve to profit or loss as a reclassification adjustment (see IAS 1). A
+hedged future cash flow that is no longer highly probable to occur may
+still be expected to occur.
+Hedges of a net investment in a foreign operation
+</chunk>
+
+<chunk id="725" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.13" score="0.0000">
+Hedges of a net investment in a foreign operation, including a hedge of a
+monetary item that is accounted for as part of the net investment (see
+IAS 21), shall be accounted for similarly to cash flow hedges:
+(a)
+the portion of the gain or loss on the hedging instrument that is
+determined to be an effective hedge shall be recognised in other
+comprehensive income (see paragraph 6.5.11); and
+(b)
+the ineffective portion shall be recognised in profit or loss.
+</chunk>
+
+<chunk id="726" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.14" score="0.0000">
+The cumulative gain or loss on the hedging instrument relating to the
+effective portion of the hedge that has been accumulated in the foreign
+currency translation reserve shall be reclassified from equity to profit or
+loss as a reclassification adjustment (see IAS 1) in accordance with
+paragraphs 48–49 of IAS 21 on the disposal or partial disposal of the
+foreign operation.
+Accounting for the time value of options
+</chunk>
+
+<chunk id="727" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.15" score="0.0000">
+When an entity separates the intrinsic value and time value of an option
+contract and designates as the hedging instrument only the change in
+intrinsic value of the option (see paragraph 6.2.4(a)), it shall account for the
+time value of the option as follows (see paragraphs B6.5.29–B6.5.33):
+(a)
+an entity shall distinguish the time value of options by the type of
+hedged item that the option hedges (see paragraph B6.5.29):
+(i)
+a transaction related hedged item; or
+(ii)
+a time-period related hedged item.
+the change in fair value of the time value of an option that hedges a
+transaction related hedged item shall be recognised in other
+comprehensive income to the extent that it relates to the hedged item
+and shall be accumulated in a separate component of equity. The
+cumulative change in fair value arising from the time value of the
+option that has been accumulated in a separate component of equity
+(the ‘amount’) shall be accounted for as follows:
+(i)
+if the hedged item subsequently results in the recognition of a
+non-financial asset or a non-financial liability, or a firm
+commitment for a non-financial asset or a non-financial
+liability for which fair value hedge accounting is applied, the
+entity shall remove the amount from the separate component
+of equity and include it directly in the initial cost or other
+carrying amount of the asset or the liability. This is not a
+reclassification adjustment (see IAS 1) and hence does not affect
+other comprehensive income.
+for hedging relationships other than those covered by (i), the
+(ii)
+amount shall be reclassified from the separate component of
+equity to profit or loss as a reclassification adjustment (see
+IAS 1) in the same period or periods during which the hedged
+expected future cash flows affect profit or loss (for example,
+when a forecast sale occurs).
+(iii)
+however, if all or a portion of that amount is not expected to be
+recovered in one or more future periods, the amount that is not
+expected to be recovered shall be imm
+</chunk>
+
+<chunk id="728" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.5.16" score="0.0000">
+When an entity separates the forward element and the spot element of a
+forward contract and designates as the hedging instrument only the change in
+the value of the spot element of the forward contract, or when an entity
+separates the foreign currency basis spread from a financial instrument and
+excludes it from the designation of that financial instrument as the hedging
+instrument (see paragraph 6.2.4(b)), the entity may apply paragraph 6.5.15 to
+the forward element of the forward contract or to the foreign currency basis
+spread in the same manner as it is applied to the time value of an option. In
+that case, the entity shall apply the application guidance in paragraphs
+6.6 Hedges of a group of items
+Eligibility of a group of items as the hedged item
+</chunk>
+
+<chunk id="729" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.6.1" score="0.0000">
+A group of items (including a group of items that constitute a net position;
+see paragraphs B6.6.1–B6.6.8) is an eligible hedged item only if:
+(a)
+it consists of items (including components of items) that are,
+individually, eligible hedged items;
+(b)
+the items in the group are managed together on a group basis for
+risk management purposes; and
+(c)
+in the case of a cash flow hedge of a group of items whose
+variabilities in cash flows are not expected to be approximately
+proportional to the overall variability in cash flows of the group so
+that offsetting risk positions arise:
+(i)
+it is a hedge of foreign currency risk; and
+(ii)
+the designation of that net position specifies the reporting
+period in which the forecast transactions are expected to
+affect profit or loss, as well as their nature and volume (see
+paragraphs B6.6.7–B6.6.8).
+Designation of a component of a nominal amount
+</chunk>
+
+<chunk id="756" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.4" score="0.0000">
+An entity shall amend a hedging relationship as required in paragraph 6.9.1
+by the end of the reporting period during which a change required by interest
+rate benchmark reform is made to the hedged risk, hedged item or hedging
+instrument. For the avoidance of doubt, such an amendment to the formal
+designation of a hedging relationship constitutes neither the discontinuation
+of the hedging relationship nor the designation of a new hedging relationship.
+</chunk>
+
+<chunk id="757" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.5" score="0.0000">
+If changes are made in addition to those changes required by interest rate
+benchmark reform to the financial asset or financial liability designated in a
+hedging relationship (as described in paragraphs 5.4.6–5.4.8) or to the
+designation of the hedging relationship (as required by paragraph 6.9.1), an
+entity shall first apply the applicable requirements in this Standard to
+determine if those additional changes result in the discontinuation of hedge
+accounting. If the additional changes do not result in the discontinuation of
+hedge accounting, an entity shall amend the formal designation of the
+hedging relationship as specified in paragraph 6.9.1.
+</chunk>
+
+<chunk id="758" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.6" score="0.0000">
+Paragraphs 6.9.7–6.9.13 provide exceptions to the requirements specified in
+those paragraphs only. An entity shall apply all other hedge accounting
+requirements in this Standard, including the qualifying criteria in
+paragraph 6.4.1, to hedging relationships that were directly affected by
+interest rate benchmark reform.
+Accounting for qualifying hedging relationships
+Cash flow hedges
+</chunk>
+
+<chunk id="759" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.7" score="0.0000">
+For the purpose of applying paragraph 6.5.11, at the point when an entity
+amends the description of a hedged item as required in paragraph 6.9.1(b), the
+amount accumulated in the cash flow hedge reserve shall be deemed to be
+based on the alternative benchmark rate on which the hedged future cash
+flows are determined.
+</chunk>
+
+<chunk id="760" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.8" score="0.0000">
+For a discontinued hedging relationship, when the interest rate benchmark on
+which the hedged future cash flows had been based is changed as required by
+interest rate benchmark reform, for the purpose of applying paragraph 6.5.12
+in order to determine whether the hedged future cash flows are expected to
+occur, the amount accumulated in the cash flow hedge reserve for that
+hedging relationship shall be deemed to be based on the alternative
+benchmark rate on which the hedged future cash flows will be based.
+Groups of items
+</chunk>
+
+<chunk id="761" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.9" score="0.6892">
+When an entity applies paragraph 6.9.1 to groups of items designated as
+hedged items in a fair value or cash flow hedge, the entity shall allocate the
+hedged items to subgroups based on the benchmark rate being hedged and
+designate the benchmark rate as the hedged risk for each subgroup. For
+example, in a hedging relationship in which a group of items is hedged for
+changes in an interest rate benchmark subject to interest rate benchmark
+reform, the hedged cash flows or fair value of some items in the group could
+be changed to reference an alternative benchmark rate before other items in
+entity would designate the alternative benchmark rate as the hedged risk for
+that relevant subgroup of hedged items. The entity would continue to
+designate the existing interest rate benchmark as the hedged risk for the
+other subgroup of hedged items until the hedged cash flows or fair value of
+those items are changed to reference the alternative benchmark rate or the
+items expire and are replaced with hedged items that reference the alternative
+benchmark rate.
+</chunk>
+
+<chunk id="762" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.10" score="0.0000">
+An entity shall assess separately whether each subgroup meets the
+requirements in paragraph 6.6.1 to be an eligible hedged item. If any
+subgroup fails to meet the requirements in paragraph 6.6.1, the entity shall
+discontinue hedge accounting prospectively for the hedging relationship in its
+entirety. An entity also shall apply the requirements in paragraphs 6.5.8 and
+6.5.11 to account for ineffectiveness related to the hedging relationship in its
+entirety.
+Designation of risk components
+</chunk>
+
+<chunk id="763" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.11" score="0.0000">
+An alternative benchmark rate designated as a non-contractually specified risk
+component that is not separately identifiable (see paragraphs 6.3.7(a) and
+B6.3.8) at the date it is designated shall be deemed to have met that
+requirement at that date, if, and only if, the entity reasonably expects the
+alternative benchmark rate will be separately identifiable within 24 months.
+The 24-month period applies to each alternative benchmark rate separately
+and starts from the date the entity designates the alternative benchmark rate
+as a non-contractually specified risk component for the first time (ie the 24-
+month period applies on a rate-by-rate basis).
+</chunk>
+
+<chunk id="764" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.12" score="0.0000">
+If subsequently an entity reasonably expects that the alternative benchmark
+rate will not be separately identifiable within 24 months from the date the
+entity designated it as a non-contractually specified risk component for the
+first time, the entity shall cease applying the requirement in paragraph 6.9.11
+to that alternative benchmark rate and discontinue hedge accounting
+prospectively from the date of that reassessment for all hedging relationships
+in which the alternative benchmark rate was designated as a non-
+contractually specified risk component.
+</chunk>
+
+<chunk id="765" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.9.13" score="0.0000">
+In addition to those hedging relationships specified in paragraph 6.9.1, an
+entity shall apply the requirements in paragraphs 6.9.11 and 6.9.12 to new
+hedging relationships in which an alternative benchmark rate is designated as
+a non-contractually specified risk component (see paragraphs 6.3.7(a) and
+B6.3.8) when, because of interest rate benchmark reform, that risk component
+is not separately identifiable at the date it is designated.
+6.10.1–
+[These paragraphs refer to amendments that are not yet effective, and are therefore not
+</chunk>
+
+<chunk id="766" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="6.10.2" score="0.0000">
+included in this edition.]
+Chapter 7 Effective date and transition
+7.1 Effective date
+</chunk>
+
+<chunk id="1090" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.4.16" score="0.0000">
+Conversely, if the critical terms of the hedging instrument and the hedged
+item are not closely aligned, there is an increased level of uncertainty about
+the extent of offset. Consequently, the hedge effectiveness during the term of
+the hedging relationship is more difficult to predict. In such a situation it
+might only be possible for an entity to conclude on the basis of a quantitative
+assessment that an economic relationship exists between the hedged item and
+the hedging instrument (see paragraphs B6.4.4–B6.4.6). In some situations a
+quantitative assessment might also be needed to assess whether the hedge
+ratio used for designating the hedging relationship meets the hedge
+effectiveness requirements (see paragraphs B6.4.9–B6.4.11). An entity can use
+the same or different methods for those two different purposes.
+</chunk>
+
+<chunk id="1091" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.4.17" score="0.0000">
+If there are changes in circumstances that affect hedge effectiveness, an entity
+may have to change the method for assessing whether a hedging relationship
+meets the hedge effectiveness requirements in order to ensure that the
+relevant characteristics of the hedging relationship, including the sources of
+hedge ineffectiveness, are still captured.
+</chunk>
+
+<chunk id="1092" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.4.18" score="0.0000">
+An entity’s risk management is the main source of information to perform the
+assessment of whether a hedging relationship meets the hedge effectiveness
+requirements. This means that the management information (or analysis)
+used for decision-making purposes can be used as a basis for assessing
+whether a hedging relationship meets the hedge effectiveness requirements.
+</chunk>
+
+<chunk id="1093" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.4.19" score="0.0000">
+An entity’s documentation of the hedging relationship includes how it will
+assess the hedge effectiveness requirements, including the method or methods
+used. The documentation of the hedging relationship shall be updated for any
+changes to the methods (see paragraph B6.4.17).
+Accounting for qualifying hedging relationships
+(Section 6.5)
+</chunk>
+
+<chunk id="1094" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.1" score="0.0000">
+An example of a fair value hedge is a hedge of exposure to changes in the fair
+value of a fixed-rate debt instrument arising from changes in interest rates.
+Such a hedge could be entered into by the issuer or by the holder.
+</chunk>
+
+<chunk id="1095" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.2" score="0.6917">
+The purpose of a cash flow hedge is to defer the gain or loss on the hedging
+instrument to a period or periods in which the hedged expected future cash
+flows affect profit or loss. An example of a cash flow hedge is the use of a
+swap to change floating rate debt (whether measured at amortised cost or fair
+value) to fixed-rate debt (ie a hedge of a future transaction in which the future
+cash flows being hedged are the future interest payments). Conversely, a
+forecast purchase of an equity instrument that, once acquired, will be
+accounted for at fair value through profit or loss, is an example of an item
+that cannot be the hedged item in a cash flow hedge, because any gain or loss
+on the hedging instrument that would be deferred could not be appropriately
+reclassified to profit or loss during a period in which it would achieve offset.
+For the same reason, a forecast purchase of an equity instrument that, once
+acquired, will be accounted for at fair value with changes in fair value
+presented in other comprehensive income also cannot be the hedged item in a
+cash flow hedge.
+</chunk>
+
+<chunk id="1096" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.3" score="0.0000">
+A hedge of a firm commitment (for example, a hedge of the change in fuel
+price relating to an unrecognised contractual commitment by an electric
+utility to purchase fuel at a fixed price) is a hedge of an exposure to a change
+in fair value. Accordingly, such a hedge is a fair value hedge. However, in
+accordance with paragraph 6.5.4, a hedge of the foreign currency risk of a
+firm commitment could alternatively be accounted for as a cash flow hedge.
+</chunk>
+
+<chunk id="1097" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.4" score="0.0000">
+When measuring hedge ineffectiveness, an entity shall consider the time
+value of money. Consequently, the entity determines the value of the hedged
+item on a present value basis and therefore the change in the value of the
+hedged item also includes the effect of the time value of money.
+</chunk>
+
+<chunk id="1098" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.5" score="0.0000">
+To calculate the change in the value of the hedged item for the purpose of
+measuring hedge ineffectiveness, an entity may use a derivative that would
+have terms that match the critical terms of the hedged item (this is commonly
+referred to as a ‘hypothetical derivative’), and, for example for a hedge of
+a forecast transaction, would be calibrated using the hedged price (or rate)
+level. For example, if the hedge was for a two-sided risk at the current market
+level, the hypothetical derivative would represent a hypothetical forward
+contract that is calibrated to a value of nil at the time of designation of the
+hedging relationship. If the hedge was for example for a one-sided risk, the
+hypothetical derivative would represent the intrinsic value of a hypothetical
+option that at the time of designation of the hedging relationship is at the
+money if the hedged price level is the current market level, or out of the
+money if the hedged price level is above (or, for a hedge of a long position,
+below) the current market level. Using a hypothetical derivative is one
+possible way of calculating the change in the value of the hedged item. The
+hypothetical derivative replicates the hedged item and hence results in the
+same outcome as if that change in value was determined by a different
+approach. Hence, using a ‘hypothetical derivative’ is not a method in its own
+right but a mathematical expedient that can only be used to calculate the
+value of the hedged item. Consequently, a ‘hypothetical derivative’ cannot be
+used to include features in the value of the hedged item that only exist in the
+hedging instrument (but not in the hedged item). An example is debt
+denominated in a foreign currency (irrespective of whether it is fixed-rate or
+variable-rate debt). When using a hypothetical derivative to calculate the
+change in the value of such debt or the present value of the cumulative
+change in its cash flows, the hypothetical derivative cannot simply impute a
+charge for exchanging di
+</chunk>
+
+<chunk id="1099" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.6" score="0.0000">
+The change in the value of the hedged item determined using a
+hypothetical derivative may also be used for the purpose of assessing whether
+a hedging relationship meets the hedge effectiveness requirements.
+Rebalancing the hedging relationship and changes to the hedge
+ratio
+</chunk>
+
+<chunk id="1100" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.5.7" score="0.0000">
+Rebalancing refers to the adjustments made to the designated quantities of
+the hedged item or the hedging instrument of an already existing hedging
+relationship for the purpose of maintaining a hedge ratio that complies with
+the hedge effectiveness requirements. Changes to designated quantities of a
+hedged item or of a hedging instrument for a different purpose do not
+constitute rebalancing for the purpose of this Standard.
+</chunk>
+
+<chunk id="1136" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.4" score="0.0000">
+When a group of items that constitute a net position is designated as a hedged
+item, an entity shall designate the overall group of items that includes the
+items that can make up the net position. An entity is not permitted to
+designate a non-specific abstract amount of a net position. For example, an
+entity has a group of firm sale commitments in nine months’ time for FC100
+and a group of firm purchase commitments in 18 months’ time for FC120. The
+entity cannot designate an abstract amount of a net position up to FC20.
+Instead, it must designate a gross amount of purchases and a gross amount of
+sales that together give rise to the hedged net position. An entity shall
+designate gross positions that give rise to the net position so that the entity is
+able to comply with the requirements for the accounting for qualifying
+hedging relationships.
+Application of the hedge effectiveness requirements to a hedge of a net
+position
+</chunk>
+
+<chunk id="1137" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.5" score="0.0000">
+When an entity determines whether the hedge effectiveness requirements of
+paragraph 6.4.1(c) are met when it hedges a net position, it shall consider the
+changes in the value of the items in the net position that have a similar effect
+as the hedging instrument in conjunction with the fair value change on the
+hedging instrument. For example, an entity has a group of firm sale
+commitments in nine months’ time for FC100 and a group of firm purchase
+commitments in 18 months’ time for FC120. It hedges the foreign currency
+risk of the net position of FC20 using a forward exchange contract for FC20.
+When determining whether the hedge effectiveness requirements of
+paragraph 6.4.1(c) are met, the entity shall consider the relationship between:
+(a)
+the fair value change on the forward exchange contract together with
+the foreign currency risk related changes in the value of the firm sale
+commitments; and
+(b)
+the foreign currency risk related changes in the value of the firm
+purchase commitments.
+</chunk>
+
+<chunk id="1138" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.6" score="0.0000">
+Similarly, if in the example in paragraph B6.6.5 the entity had a nil net
+position it would consider the relationship between the foreign currency risk
+related changes in the value of the firm sale commitments and the foreign
+currency risk related changes in the value of the firm purchase commitments
+when determining whether the hedge effectiveness requirements of
+paragraph 6.4.1(c) are met.
+Cash flow hedges that constitute a net position
+</chunk>
+
+<chunk id="1139" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.7" score="0.0000">
+When an entity hedges a group of items with offsetting risk positions (ie a net
+position), the eligibility for hedge accounting depends on the type of hedge. If
+the hedge is a fair value hedge, then the net position may be eligible as a
+hedged item. If, however, the hedge is a cash flow hedge, then the net position
+can only be eligible as a hedged item if it is a hedge of foreign currency risk
+and the designation of that net position specifies the reporting period in
+which the forecast transactions are expected to affect profit or loss and also
+specifies their nature and volume.
+</chunk>
+
+<chunk id="1140" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.8" score="0.0000">
+For example, an entity has a net position that consists of a bottom layer of
+FC100 of sales and a bottom layer of FC150 of purchases. Both sales and
+purchases are denominated in the same foreign currency. In order to
+sufficiently specify the designation of the hedged net position, the entity
+specifies in the original documentation of the hedging relationship that sales
+can be of Product A or Product B and purchases can be of Machinery Type A,
+Machinery Type B and Raw Material A. The entity also specifies the volumes of
+the transactions by each nature. The entity documents that the bottom layer
+of sales (FC100) is made up of a forecast sales volume of the first FC70 of
+Product A and the first FC30 of Product B. If those sales volumes are expected
+to affect profit or loss in different reporting periods, the entity would include
+that in the documentation, for example, the first FC70 from sales of Product A
+that are expected to affect profit or loss in the first reporting period and the
+first FC30 from sales of Product B that are expected to affect profit or loss in
+the second reporting period. The entity also documents that the bottom layer
+of the purchases (FC150) is made up of purchases of the first FC60 of
+Machinery Type A, the first FC40 of Machinery Type B and the first FC50 of
+Raw Material A. If those purchase volumes are expected to affect profit or loss
+in different reporting periods, the entity would include in the documentation
+a disaggregation of the purchase volumes by the reporting periods in which
+they are expected to affect profit or loss (similarly to how it documents the
+sales volumes). For example, the forecast transaction would be specified as:
+(a)
+the first FC60 of purchases of Machinery Type A that are expected to
+affect profit or loss from the third reporting period over the next
+ten reporting periods;
+(b)
+the first FC40 of purchases of Machinery Type B that are expected to
+affect profit or loss from the fourth reporting period over the next
+20 re
+</chunk>
+
+<chunk id="1141" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.9" score="0.7282">
+For a cash flow hedge of a net position, the amounts determined in
+accordance with paragraph 6.5.11 shall include the changes in the value of the
+items in the net position that have a similar effect as the hedging instrument
+in conjunction with the fair value change on the hedging instrument.
+However, the changes in the value of the items in the net position that have a
+similar effect as the hedging instrument are recognised only once the
+transactions that they relate to are recognised, such as when a forecast sale is
+recognised as revenue. For example, an entity has a group of highly probable
+forecast sales in nine months’ time for FC100 and a group of highly probable
+forecast purchases in 18 months’ time for FC120. It hedges the foreign
+currency risk of the net position of FC20 using a forward exchange contract
+for FC20. When determining the amounts that are recognised in the cash flow
+hedge reserve in accordance with paragraph 6.5.11(a)–6.5.11(b), the entity
+compares:
+the fair value change on the forward exchange contract together with
+the foreign currency risk related changes in the value of the highly
+probable forecast sales; with
+the foreign currency risk related changes in the value of the highly
+probable forecast purchases.
+However, the entity recognises only amounts related to the forward exchange
+contract until the highly probable forecast sales transactions are recognised in
+the financial statements, at which time the gains or losses on those forecast
+transactions are recognised (ie the change in the value attributable to the
+change in the foreign exchange rate between the designation of the hedging
+relationship and the recognition of revenue).
+</chunk>
+
+<chunk id="1142" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.10" score="0.0000">
+Similarly, if in the example the entity had a nil net position it would compare
+the foreign currency risk related changes in the value of the highly probable
+forecast sales with the foreign currency risk related changes in the value of
+the highly probable forecast purchases. However, those amounts are
+recognised only once the related forecast transactions are recognised in the
+financial statements.
+Layers of groups of items designated as the hedged item
+</chunk>
+
+<chunk id="1143" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.11" score="0.0000">
+For the same reasons noted in paragraph B6.3.19, designating layer
+components of groups of existing items requires the specific identification of
+the nominal amount of the group of items from which the hedged layer
+component is defined.
+</chunk>
+
+<chunk id="1144" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.12" score="0.0000">
+A hedging relationship can include layers from several different groups of
+items. For example, in a hedge of a net position of a group of assets and a
+group of liabilities, the hedging relationship can comprise, in combination, a
+layer component of the group of assets and a layer component of the group of
+liabilities.
+Presentation of hedging instrument gains or losses
+</chunk>
+
+<chunk id="1145" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.13" score="0.0000">
+If items are hedged together as a group in a cash flow hedge, they might affect
+different line items in the statement of profit or loss and other comprehensive
+income. The presentation of hedging gains or losses in that statement depends
+on the group of items.
+</chunk>
+
+<chunk id="1146" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B6.6.14" score="0.0000">
+If the group of items does not have any offsetting risk positions (for example,
+a group of foreign currency expenses that affect different line items in the
+statement of profit or loss and other comprehensive income that are hedged
+for foreign currency risk) then the reclassified hedging instrument gains or
+losses shall be apportioned to the line items affected by the hedged items. This
+apportionment shall be done on a systematic and rational basis and shall not
+result in the grossing up of the net gains or losses arising from a single
+hedging instrument.
+</chunk>
+</Document>
+
+<Document name="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation">
+<chunk id="1161" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="1" score="0.0000">
+Many reporting entities have investments in foreign operations (as defined in
+IAS 21 paragraph 8). Such foreign operations may be subsidiaries, associates,
+joint ventures or branches. IAS 21 requires an entity to determine the
+functional currency of each of its foreign operations as the currency of the
+primary economic environment of that operation. When translating the
+results and financial position of a foreign operation into a presentation
+currency, the entity is required to recognise foreign exchange differences in
+other comprehensive income until it disposes of the foreign operation.
+</chunk>
+
+<chunk id="1162" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="2" score="0.0000">
+Hedge accounting of the foreign currency risk arising from a net investment
+in a foreign operation will apply only when the net assets of that foreign
+operation are included in the financial statements.
+The item being hedged
+1
+with respect to the foreign currency risk arising from the net investment in a
+foreign operation may be an amount of net assets equal to or less than the
+carrying amount of the net assets of the foreign operation.
+</chunk>
+
+<chunk id="1163" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="3" score="0.6727">
+IFRS 9 requires the designation of an eligible hedged item and eligible hedging
+instruments in a hedge accounting relationship. If there is a designated
+hedging relationship, in the case of a net investment hedge, the gain or loss on
+the hedging instrument that is determined to be an effective hedge of the net
+investment is recognised in other comprehensive income and is included with
+the foreign exchange differences arising on translation of the results and
+financial position of the foreign operation.
+</chunk>
+
+<chunk id="1164" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="4" score="0.0000">
+An entity with many foreign operations may be exposed to a number of
+foreign currency risks. This Interpretation provides guidance on identifying
+the foreign currency risks that qualify as a hedged risk in the hedge of a net
+investment in a foreign operation.
+</chunk>
+
+<chunk id="1165" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="5" score="0.6732">
+IFRS 9 allows an entity to designate either a derivative or a non-derivative
+financial instrument (or a combination of derivative and non-derivative
+financial instruments) as hedging instruments for foreign currency risk. This
+Interpretation provides guidance on where, within a group, hedging
+This will be the case for consolidated financial statements, financial statements in which
+investments such as associates or joint ventures are accounted for using the equity method and
+Joint
+financial statements that include a branch or a joint operation as defined in IFRS 11
+instruments that are hedges of a net investment in a foreign operation can be
+held to qualify for hedge accounting.
+</chunk>
+
+<chunk id="1166" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="6" score="0.0000">
+IAS 21 and IFRS 9 require cumulative amounts recognised in other
+comprehensive income relating to both the foreign exchange differences
+arising on translation of the results and financial position of the foreign
+operation and the gain or loss on the hedging instrument that is determined
+to be an effective hedge of the net investment to be reclassified from equity to
+profit or loss as a reclassification adjustment when the parent disposes of the
+foreign operation. This Interpretation provides guidance on how an entity
+should determine the amounts to be reclassified from equity to profit or loss
+for both the hedging instrument and the hedged item.
+Scope
+</chunk>
+
+<chunk id="1167" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="7" score="0.0000">
+This Interpretation applies to an entity that hedges the foreign currency risk
+arising from its net investments in foreign operations and wishes to qualify
+for hedge accounting in accordance with IFRS 9. For convenience this
+Interpretation refers to such an entity as a parent entity and to the financial
+statements in which the net assets of foreign operations are included as
+consolidated financial statements. All references to a parent entity apply
+equally to an entity that has a net investment in a foreign operation that is a
+joint venture, an associate or a branch.
+</chunk>
+
+<chunk id="1168" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="8" score="0.0000">
+This Interpretation applies only to hedges of net investments in foreign
+operations; it should not be applied by analogy to other types of hedge
+accounting.
+Issues
+</chunk>
+
+<chunk id="1169" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="9" score="0.0000">
+Investments in foreign operations may be held directly by a parent entity or
+indirectly by its subsidiary or subsidiaries. The issues addressed in this
+Interpretation are:
+the nature of the hedged risk and the amount of the hedged item for which a
+(a)
+hedging relationship may be designated:
+(i)
+whether the parent entity may designate as a hedged risk only
+the foreign exchange differences arising from a difference
+between the functional currencies of the parent entity and its
+foreign operation, or whether it may also designate as the
+hedged risk the foreign exchange differences arising from the
+difference between the presentation currency of the parent
+entity’s consolidated financial statements and the functional
+currency of the foreign operation;
+(ii)
+if the parent entity holds the foreign operation indirectly,
+whether the hedged risk may include only the foreign
+exchange differences arising from differences in functional
+currencies between the foreign operation and its immediate
+parent entity, or whether the hedged risk may also include any
+of the foreign operation and any intermediate or ultimate
+parent entity (ie whether the fact that the net investment in the
+foreign operation is held through an intermediate parent
+affects the economic risk to the ultimate parent).
+where in a group the hedging instrument can be held:
+(i)
+whether a qualifying hedge accounting relationship can be
+established only if the entity hedging its net investment is a
+party to the hedging instrument or whether any entity in the
+group, regardless of its functional currency, can hold the
+hedging instrument;
+whether the nature of the hedging instrument (derivative or
+(ii)
+non-derivative) or the method of consolidation affects the
+assessment of hedge effectiveness.
+what amounts should be reclassified from equity to profit or loss as
+reclassification adjustments on disposal of the foreign operation:
+when a foreign operation that was hedged is disposed of, what
+(i)
+amounts from the parent entity’
+</chunk>
+
+<chunk id="1170" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="10" score="0.0000">
+Hedge accounting may be applied only to the foreign exchange differences
+arising between the functional currency of the foreign operation and the
+parent entity’s functional currency.
+</chunk>
+
+<chunk id="1171" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="11" score="0.0000">
+In a hedge of the foreign currency risks arising from a net investment in a
+foreign operation, the hedged item can be an amount of net assets equal to or
+less than the carrying amount of the net assets of the foreign operation in the
+consolidated financial statements of the parent entity. The carrying amount of
+the net assets of a foreign operation that may be designated as the hedged
+item in the consolidated financial statements of a parent depends on whether
+any lower level parent of the foreign operation has applied hedge accounting
+for all or part of the net assets of that foreign operation and that accounting
+has been maintained in the parent’s consolidated financial statements.
+</chunk>
+
+<chunk id="1172" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="12" score="0.0000">
+The hedged risk may be designated as the foreign currency exposure arising
+between the functional currency of the foreign operation and the functional
+currency of any parent entity (the immediate, intermediate or ultimate parent
+entity) of that foreign operation. The fact that the net investment is held
+through an intermediate parent does not affect the nature of the economic
+risk arising from the foreign currency exposure to the ultimate parent entity.
+</chunk>
+
+<chunk id="1173" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="13" score="0.6367">
+An exposure to foreign currency risk arising from a net investment in a
+foreign operation may qualify for hedge accounting only once in the
+consolidated financial statements. Therefore, if the same net assets of a
+foreign operation are hedged by more than one parent entity within the group
+(for example, both a direct and an indirect parent entity) for the same risk,
+only one hedging relationship will qualify for hedge accounting in the
+consolidated financial statements of the ultimate parent. A hedging
+relationship designated by one parent entity in its consolidated financial
+statements need not be maintained by another higher level parent entity.
+However, if it is not maintained by the higher level parent entity, the hedge
+accounting applied by the lower level parent must be reversed before the
+higher level parent’s hedge accounting is recognised.
+Where the hedging instrument can be held
+</chunk>
+
+<chunk id="1174" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="14" score="0.6384">
+A derivative or a non-derivative instrument (or a combination of derivative
+and non-derivative instruments) may be designated as a hedging instrument
+in a hedge of a net investment in a foreign operation. The hedging
+instrument(s) may be held by any entity or entities within the group, as long
+as the designation, documentation and effectiveness requirements of IFRS 9
+paragraph 6.4.1 that relate to a net investment hedge are satisfied. In
+particular, the hedging strategy of the group should be clearly documented
+because of the possibility of different designations at different levels of the
+group.
+</chunk>
+
+<chunk id="1175" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="15" score="0.0000">
+For the purpose of assessing effectiveness, the change in value of the hedging
+instrument in respect of foreign exchange risk is computed by reference to
+the functional currency of the parent entity against whose functional
+currency the hedged risk is measured, in accordance with the hedge
+accounting documentation. Depending on where the hedging instrument is
+held, in the absence of hedge accounting the total change in value might be
+recognised in profit or loss, in other comprehensive income, or both. However,
+the assessment of effectiveness is not affected by whether the change in value
+of the hedging instrument is recognised in profit or loss or in other
+comprehensive income. As part of the application of hedge accounting, the
+total effective portion of the change is included in other comprehensive
+income. The assessment of effectiveness is not affected by whether the
+hedging instrument is a derivative or a non-derivative instrument or by the
+method of consolidation.
+Disposal of a hedged foreign operation
+</chunk>
+
+<chunk id="1176" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="16" score="0.6349">
+When a foreign operation that was hedged is disposed of, the amount
+reclassified to profit or loss as a reclassification adjustment from the foreign
+currency translation reserve in the consolidated financial statements of the
+parent in respect of the hedging instrument is the amount that IFRS 9
+paragraph 6.5.14 requires to be identified. That amount is the cumulative gain
+or loss on the hedging instrument that was determined to be an effective
+hedge.
+</chunk>
+
+<chunk id="1177" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="17" score="0.0000">
+The amount reclassified to profit or loss from the foreign currency translation
+reserve in the consolidated financial statements of a parent in respect of the
+net investment in that foreign operation in accordance with IAS 21
+paragraph 48 is the amount included in that parent’s foreign currency
+translation reserve in respect of that foreign operation. In the ultimate
+parent’s consolidated financial statements, the aggregate net amount
+recognised in the foreign currency translation reserve in respect of all foreign
+operations is not affected by the consolidation method. However, whether the
+ultimate parent uses the direct or the step-by-step method of consolidation
+2
+may affect the amount included in its foreign currency translation reserve in
+respect of an individual foreign operation. The use of the step-by-step method
+of consolidation may result in the reclassification to profit or loss of an
+amount different from that used to determine hedge effectiveness. This
+difference may be eliminated by determining the amount relating to that
+foreign operation that would have arisen if the direct method of consolidation
+had been used. Making this adjustment is not required by IAS 21. However, it
+is an accounting policy choice that should be followed consistently for all net
+investments.
+Effective date
+</chunk>
+
+<chunk id="1178" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18" score="0.0000">
+An entity shall apply this Interpretation for annual periods beginning on or
+after 1 October 2008. An entity shall apply the amendment to paragraph 14
+Improvements to IFRSs
+made by
+issued in April 2009 for annual periods
+beginning on or after 1 July 2009. Earlier application of both is permitted. If
+an entity applies this Interpretation for a period beginning before 1 October
+2008, or the amendment to paragraph 14 before 1 July 2009, it shall disclose
+that fact.
+</chunk>
+
+<chunk id="1179" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18A" score="0.0000">
+[Deleted]
+</chunk>
+
+<chunk id="1180" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="18B" score="0.0000">
+IFRS 9, as issued in July 2014, amended paragraphs 3, 5–7, 14, 16, AG1 and
+AG8 and deleted paragraph 18A. An entity shall apply those amendments
+when it applies IFRS 9.
+Transition
+</chunk>
+
+<chunk id="1181" doc_uid="ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" section_path="19" score="0.0000">
+IAS 8 specifies how an entity applies a change in accounting policy resulting
+from the initial application of an Interpretation. An entity is not required to
+comply with those requirements when first applying the Interpretation. If an
+entity had designated a hedging instrument as a hedge of a net investment but
+the hedge does not meet the conditions for hedge accounting in this
+The direct method is the method of consolidation in which the financial statements of the
+foreign operation are translated directly into the functional currency of the ultimate parent. The
+step-by-step method is the method of consolidation in which the financial statements of the
+foreign operation are first translated into the functional currency of any intermediate parent(s)
+and then translated into the functional currency of the ultimate parent (or the presentation
+Interpretation, the entity shall apply IAS 39 to discontinue that hedge
+accounting prospectively.
+Appendix
+Application guidance
+This appendix is an integral part of the Interpretation.
+</chunk>
+</Document>
+</context>
+
+Question: I have a technical question on practicalities of applying Cash Flow Hedging under IFRS 9 for grouped items.
+
+Under IFRS 9 cash flow hedge accounting, how should a bank treat subsequent increases in the notional balance of a homogeneous group of floating-rate loans (contractual maturities > 5 years) that has been designated as a group of items sharing the same risk characteristics?
+
+Specifically, assume the bank designates the variable interest cash flows of the loan portfolio as a highly probable forecast transaction and enters into a cash flow hedge in Period 1.
+
+Example:
+Q1: Highly probable forecast balance = 100m
+Hedge designated in Q1 = 80m
+
+Q2: Forecast balance increases to 150m
+In Q2, should the bank:
+- Treat the hedge designation on a cumulative basis, such that the remaining hedgeable amount becomes 70m (i.e., 150m – 80m), or
+- Treat the incremental 50m increase as a separate forecast transaction / separate hedge layer, requiring separate designation and documentation?
+
+<instructions>
+Use only the information in this message's context and the question.
+Do not do any web searches.
+Answer in English.
+
+Your task is NOT to write the final answer.
+
+Your task is:
+1. Determine whether the question is answerable from the provided context
+2. If it is, identify and normalize the distinct accounting approaches grounded in the provided context that are relevant to the accounting issue raised by the question
+
+At this stage:
+- identify approaches
+- do not decide applicability
+- do not choose the best approach
+- do not narrow the list to the most likely answer
+
+An approach must be a distinct top-level IFRS accounting model, accounting treatment, recognition basis, measurement basis, or presentation basis.
+Output only approaches that are peers at the same level of abstraction.
+
+Use the question only to identify the accounting issue.
+Use the context to identify the approaches.
+If the context contains multiple distinct recognized IFRS approaches within that issue, include them.
+
+Do NOT include as separate approaches:
+- reasoning steps
+- diagnostic or classification steps
+- conditions, tests, indicators, or criteria
+- implementation details or mechanics
+- general principles on their own
+- exceptions or prohibitions on their own
+- designation techniques or designation scopes
+- subtypes, variants, or applications of a broader accounting model
+- labels that combine a top-level model with a fact-pattern-specific qualifier
+- vague labels such as "analysis", "assessment", "documentation", or "judgment"
+- labels that merely restate the fact pattern
+
+When a context-grounded concept is only a component, subtype, scoped application, eligibility feature, or variant of a broader accounting model, retain only the broader accounting model as the approach.
+
+Normalization rules:
+- use standard IFRS terminology when available
+- avoid synonyms if a canonical term exists
+- prefer the recognized accounting treatment name
+- normalized_label must be in snake_case
+- normalized_label must be 2–4 words
+- avoid context-specific qualifiers
+- avoid negative wording
+
+Assumptions:
+- include only minimal assumptions needed to identify the accounting issue
+- keep them generic and non-speculative
+- do not use assumptions to eliminate a context-grounded approach
+
+If the context is not sufficient to identify the relevant accounting approaches:
+- return:
+{
+  "status": "needs_clarification",
+  "questions": ["..."]
+}
+- do NOT include assumptions
+- do NOT include approaches
+
+If answerable:
+- return:
+{
+  "status": "pass",
+  ...
+}
+
+For each approach, output:
+- id
+- label
+- normalized_label
+- rationale_for_inclusion
+
+Output rules:
+- return valid JSON only
+- no markdown
+- no prose before or after JSON
+- keep the list focused
+- preserve all materially distinct grounded top-level approaches within the accounting issue
+</instructions>
+
+<output_schema>
+{
+  "status": "pass",
+  "assumptions": [
+    "string"
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "short English label",
+      "normalized_label": "snake_case_label",
+      "rationale_for_inclusion": "1 short sentence"
+    }
+  ]
+}
