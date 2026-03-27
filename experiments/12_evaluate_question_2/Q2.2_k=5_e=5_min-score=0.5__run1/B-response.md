@@ -1,25 +1,40 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.892839+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Lorsqu’un instrument comporte des clauses contractuelles susceptibles d’altérer l’échéancier ou le montant des flux de trésorerie, par exemple à la suite d’un événement déclencheur, respecte-t-il le critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
 
 ## Hypothèses
-La question porte sur le classement et l’évaluation d’un actif financier selon IFRS 9.
-L’instrument est apprécié au regard du critère SPPI afin de déterminer sa base d’évaluation ultérieure admissible.
+   - La question porte sur le classement et l’évaluation d’un actif financier selon IFRS 9.
+   - L’instrument est apprécié au regard du critère SPPI afin de déterminer sa base d’évaluation ultérieure admissible.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Une clause qui peut modifier l’échéancier ou le montant des flux n’exclut pas automatiquement le critère SPPI. Dans cette situation, il faut vérifier les flux possibles avant et après le déclencheur; s’ils restent compatibles avec un prêt basique, le SPPI peut être respecté, sinon l’actif relève du FVPL.
+
+## Points Opérationnels
+
+   - Analyser les flux contractuels possibles avant et après le déclenchement, et non seulement le scénario attendu.
+   - Examiner la nature du déclencheur: un lien avec le risque de crédit est plus compatible avec le SPPI qu’un lien avec un indice d’actions ou la performance d’actifs spécifiques.
+   - Si la clause n’a qu’un effet de minimis ou n’est pas genuine, elle ne modifie pas la conclusion de classement.
+   - La conclusion SPPI détermine ensuite si le coût amorti ou le FVOCI restent ouverts; à défaut, l’actif est mesuré au FVPL.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Après examen des flux avant et après déclenchement, la clause ne crée pas d’exposition étrangère à un prêt basique<br>- Le modèle économique est la détention pour encaissement |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - Les flux susceptibles d’apparaître avant et après l’événement déclencheur restent compatibles avec un prêt basique<br>- Le modèle économique combine encaissement des flux et cession |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - La clause introduit une variabilité ou un déclencheur non cohérent avec un prêt basique |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Après examen des flux avant et après déclenchement, la clause ne crée pas d’exposition étrangère à un prêt basique
@@ -36,8 +51,8 @@ Dans cette situation, le seul fait qu’une clause puisse modifier les flux ne f
  - B4.1.11
     >contractual terms that result in contractual cash flows that are solely payments of principal and interest
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Les flux susceptibles d’apparaître avant et après l’événement déclencheur restent compatibles avec un prêt basique
@@ -54,8 +69,8 @@ Dans cette situation, le FVOCI n’est envisageable que si la clause reste compa
  - B4.1.18
     >does not affect the classification of the financial asset if it could have only a de minimis effect
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause introduit une variabilité ou un déclencheur non cohérent avec un prêt basique

@@ -1,24 +1,40 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.888980+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Certains instruments prévoient des termes contractuels pouvant modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas d’événement déclencheur : un tel instrument peut-il néanmoins être considéré comme respectant le critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
+   - `ifric-16-hedges-of-a-net-investment-in-a-foreign-operation`
 
 ## Hypothèses
-On suppose que la question porte sur le classement et l’évaluation ultérieure d’un actif financier selon IFRS 9.
+   - On suppose que la question porte sur le classement et l’évaluation ultérieure d’un actif financier selon IFRS 9.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui, sous conditions : la seule présence d’un terme déclenché par un événement n’exclut pas le critère SPPI. Il faut apprécier les flux possibles avant et après le déclenchement ; si le mécanisme reste cohérent avec un prêt basique, le SPPI peut être respecté, sinon l’actif relève de la juste valeur par résultat.
+
+## Points Opérationnels
+
+   - Analyser les flux contractuels susceptibles de naître avant et après le déclenchement, sur toute la durée de vie de l’instrument.
+   - Qualifier précisément la nature du trigger : lié au risque de crédit/au prêt basique, ou au contraire à un indice, à des actifs déterminés ou à une autre exposition non basique.
+   - Tenir compte qu’un effet seulement de minimis ou non genuine n’affecte pas le classement.
+   - Une fois le SPPI établi ou écarté, le choix entre coût amorti et FVOCI dépend du modèle économique ; à défaut de SPPI, la juste valeur par résultat s’applique.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Le déclencheur et ses effets restent compatibles avec une logique de prêt basique, sans exposition à un indice d’actions, à des actifs spécifiques ou à une variabilité étrangère au crédit/temps/risques et coûts de base.<br>- Le modèle économique est de détenir l’actif pour encaisser les flux contractuels. |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - Le déclencheur et les flux potentiels avant/après modification restent compatibles avec un prêt basique.<br>- Le modèle économique est de détenir l’actif pour encaisser les flux contractuels et vendre. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - Le déclencheur crée une variabilité de flux non cohérente avec un prêt basique, par exemple liée à un indice d’actions ou à la performance d’actifs déterminés.<br>- L’effet du terme n’est pas seulement de minimis ou non genuine. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur et ses effets restent compatibles avec une logique de prêt basique, sans exposition à un indice d’actions, à des actifs spécifiques ou à une variabilité étrangère au crédit/temps/risques et coûts de base.
@@ -36,8 +52,8 @@ Le coût amorti n’est possible que si l’analyse des flux avant et après le 
  - B4.1.11
     >a contractual term that permits the issuer (ie the debtor) to prepay a debt instrument
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur et les flux potentiels avant/après modification restent compatibles avec un prêt basique.
@@ -55,8 +71,8 @@ La FVOCI n’est envisageable que si ce terme ne fait pas sortir l’instrument 
  - B4.1.11
     >The following are examples of contractual terms that result in contractual cash flows that are solely payments of principal and interest
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur crée une variabilité de flux non cohérente avec un prêt basique, par exemple liée à un indice d’actions ou à la performance d’actifs déterminés.

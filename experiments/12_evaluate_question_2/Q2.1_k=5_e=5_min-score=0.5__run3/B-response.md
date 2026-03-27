@@ -1,25 +1,39 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.889841+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Un instrument dont les termes contractuels peuvent modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas de survenance d’un événement déclencheur, peut-il satisfaire au critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
 
 ## Hypothèses
-La question porte sur la classification et l’évaluation d’un actif financier selon IFRS 9, car le critère SPPI présenté dans le contexte est analysé pour les actifs financiers.
-Toute condition distincte relative au modèle économique est appréciée séparément de la question des caractéristiques contractuelles des flux de trésorerie soulevée ici.
+   - La question porte sur la classification et l’évaluation d’un actif financier selon IFRS 9, car le critère SPPI présenté dans le contexte est analysé pour les actifs financiers.
+   - Toute condition distincte relative au modèle économique est appréciée séparément de la question des caractéristiques contractuelles des flux de trésorerie soulevée ici.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui, un tel instrument peut satisfaire au critère SPPI. Il faut toutefois que les flux contractuels possibles, avant et après le déclenchement, restent compatibles avec un prêt basique; la nature du déclencheur est un indicateur, sans être déterminante à elle seule.
+
+## Points Opérationnels
+
+   - Analyser dès l’origine les flux contractuels possibles avant et après l’activation de la clause sur toute la durée de vie de l’instrument.
+   - Documenter la nature de l’événement déclencheur: un déclencheur lié au risque de crédit est plus favorable à SPPI qu’un déclencheur lié à un indice d’actions.
+   - Ne pas conclure sur le coût amorti ou la JV par OCI sans apprécier séparément le modèle économique.
 
 ## Approches évaluées
 
-### Évaluation au coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Évaluation au coût amorti | OUI SOUS CONDITIONS | - Le déclencheur et ses effets n’introduisent pas d’exposition à un risque ou à une volatilité incompatibles avec un prêt basique.<br>- Le modèle économique pertinent permet une mesure au coût amorti. |
+| 2. Évaluation à la juste valeur par OCI | OUI SOUS CONDITIONS | - Le modèle économique pertinent est de collecte et vente.<br>- La clause déclenchée ne transforme pas les flux en exposition autre qu’au principal, au temps et au risque de crédit. |
+| 3. Évaluation à la juste valeur par résultat | OUI SOUS CONDITIONS | - Le déclencheur ou son mécanisme de révision expose les flux à un indice, une volatilité ou un risque non propre à un prêt basique. |
+
+### 1. Évaluation au coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur et ses effets n’introduisent pas d’exposition à un risque ou à une volatilité incompatibles avec un prêt basique.
@@ -36,8 +50,8 @@ Dans cette situation, le coût amorti n’est envisageable que si la clause qui 
  - B4.1.11
     >prepayment amount substantially represents unpaid amounts of principal and interest
 
-### Évaluation à la juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Évaluation à la juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le modèle économique pertinent est de collecte et vente.
@@ -54,8 +68,8 @@ Dans cette situation, la JV par OCI n’est possible que si la clause reste comp
  - B4.1.11
     >extension option result in contractual cash flows ... solely payments of principal and interest
 
-### Évaluation à la juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Évaluation à la juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur ou son mécanisme de révision expose les flux à un indice, une volatilité ou un risque non propre à un prêt basique.

@@ -66,7 +66,7 @@ reform’ refers to the market-wide reform of an interest rate benchmark as
 described in paragraph 6.8.2.
 </chunk>
 
-<chunk id="653" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="5.4.6" score="0.6100">
+<chunk id="653" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="5.4.6" score="0.6122">
 The basis for determining the contractual cash flows of a financial asset or
 financial liability can change:
 (a)
@@ -85,7 +85,7 @@ because of the activation of an existing contractual term (for example,
 an existing fallback clause is triggered).
 </chunk>
 
-<chunk id="654" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="5.4.7" score="0.5922">
+<chunk id="654" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="5.4.7" score="0.5933">
 As a practical expedient, an entity shall apply paragraph B5.4.5 to account for
 a change in the basis for determining the contractual cash flows of a financial
 asset or financial liability that is required by interest rate benchmark reform.
@@ -274,7 +274,7 @@ Contractual terms that change the timing or amount of contractual cash
 flows
 </chunk>
 
-<chunk id="898" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.10" score="0.6250">
+<chunk id="898" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.10" score="0.6282">
 If a financial asset contains a contractual term that could change the timing
 or amount of contractual cash flows (for example, if the asset can be prepaid
 before maturity or its term can be extended), the entity must determine
@@ -302,7 +302,7 @@ payments and an increase in credit risk. (See also paragraph B4.1.18.)
 included in this edition.]
 </chunk>
 
-<chunk id="900" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.11" score="0.5967">
+<chunk id="900" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.11" score="0.6001">
 The following are examples of contractual terms that result in contractual
 cash flows that are solely payments of principal and interest on the principal
 amount outstanding:
@@ -518,7 +518,7 @@ contractual cash flows that are solely payments of principal and interest on
 the principal amount outstanding.
 </chunk>
 
-<chunk id="916" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.24" score="0.5842">
+<chunk id="916" doc_uid="ifrs-9-financial-instruments 2025 required" section_path="B4.1.24" score="0.5849">
 The underlying pool of instruments may also include instruments that:
 reduce
 the
@@ -629,34 +629,34 @@ were measured as at fair value through profit or loss.
 </Document>
 </context>
 
-Question: Un instrument assorti de termes contractuels pouvant modifier l&#39;échéancier ou le montant des flux de
-trésorerie (par exemple, à la suite de la survenance d&#39;un événement déclencheur) peut-il respecter le critère
+Question: Un instrument assorti de termes contractuels pouvant modifier l'échéancier ou le montant des flux de
+trésorerie (par exemple, à la suite de la survenance d'un événement déclencheur) peut-il respecter le critère
 de « prêt basique » (SPPI) ?
 
 <identified_approaches>
 {
   "status": "pass",
   "assumptions": [
-    "Assume the question concerns classification of a financial asset under IFRS 9."
+    "The question concerns the IFRS 9 classification of a financial asset, for which the SPPI condition is relevant."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Amortised cost",
       "normalized_label": "amortised_cost",
-      "rationale_for_inclusion": "The context links contractual cash flows that are solely payments of principal and interest, including assets with terms that may change cash flow timing or amount, to the condition in paragraph 4.1.2(b) for amortised cost measurement."
+      "rationale_for_inclusion": "The context links satisfaction of the SPPI condition in paragraph 4.1.2(b) to possible measurement at amortised cost, subject to the separate business model requirement."
     },
     {
       "id": "approach_2",
       "label": "Fair value through other comprehensive income",
       "normalized_label": "fair_value_oci",
-      "rationale_for_inclusion": "The context states that the same SPPI condition is also relevant to paragraph 4.1.2A(b), making FVOCI a distinct IFRS 9 measurement basis within this issue."
+      "rationale_for_inclusion": "The context links satisfaction of the SPPI condition in paragraph 4.1.2A(b) to possible measurement at fair value through other comprehensive income, subject to the separate business model requirement."
     },
     {
       "id": "approach_3",
       "label": "Fair value through profit or loss",
-      "normalized_label": "fair_value_pnl",
-      "rationale_for_inclusion": "The context says that if contractual cash flows do not meet the SPPI condition, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "The context indicates that if contractual cash flows are not SPPI, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
     }
   ]
 }

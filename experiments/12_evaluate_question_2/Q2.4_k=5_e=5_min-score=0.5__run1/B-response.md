@@ -1,25 +1,40 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.886593+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Un instrument peut comporter des dispositions contractuelles entraînant une modification de l’échéancier ou du montant des flux de trésorerie, par exemple à la survenance d’un événement déclencheur. Dans ce cas, peut-il encore répondre au critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
+   - `ifric-16-hedges-of-a-net-investment-in-a-foreign-operation`
 
 ## Hypothèses
-La question porte sur le classement d’un actif financier selon IFRS 9.
-L’analyse vise le test des caractéristiques des flux de trésorerie contractuels (SPPI) pour le classement ultérieur.
+   - La question porte sur le classement d’un actif financier selon IFRS 9.
+   - L’analyse vise le test des caractéristiques des flux de trésorerie contractuels (SPPI) pour le classement ultérieur.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui, une clause qui modifie l’échéancier ou le montant des flux n’exclut pas automatiquement le critère SPPI. Dans cette situation, il faut vérifier si les flux pouvant naître avant et après l’événement déclencheur restent compatibles avec un prêt basique ; sinon l’actif ne satisfait plus SPPI.
+
+## Points Opérationnels
+
+   - Analyser dès l’origine les flux pouvant naître avant et après l’événement déclencheur, et non seulement le scénario de base.
+   - Documenter la nature du déclencheur : un lien avec le risque de crédit peut être compatible avec SPPI, alors qu’un lien avec un indice ou des actifs spécifiques peut ne pas l’être.
+   - Si la clause fait échouer le test SPPI, écarter le coût amorti et la JVOCI au profit de la juste valeur par résultat.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - L’analyse des flux avant et après le déclenchement conclut qu’ils restent compatibles avec un prêt basique.<br>- Le déclencheur n’introduit pas une exposition à un indice, à des actifs spécifiques ou à une variabilité non cohérente avec un prêt basique. |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - La clause contractuelle, même activée, ne fait pas sortir l’instrument du test SPPI.<br>- Les flux potentiels demeurent cohérents avec une relation de prêt basique sur la durée de vie de l’instrument. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - La clause modifie les flux de sorte qu’ils ne sont plus uniquement des paiements de principal et d’intérêts.<br>- L’effet de la caractéristique contractuelle n’est pas négligeable et n’est pas purement non authentique. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - L’analyse des flux avant et après le déclenchement conclut qu’ils restent compatibles avec un prêt basique.
@@ -38,8 +53,8 @@ Dans cette situation, la présence d’un événement déclencheur n’empêche 
  - B4.1.11
     >contractual terms that result in contractual cash flows that are solely payments of principal and interest
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause contractuelle, même activée, ne fait pas sortir l’instrument du test SPPI.
@@ -56,8 +71,8 @@ Dans cette situation, la JVOCI reste envisageable pour la même raison que le co
  - B4.1.11
     >a variable interest rate that consists of consideration for the time value of money
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause modifie les flux de sorte qu’ils ne sont plus uniquement des paiements de principal et d’intérêts.

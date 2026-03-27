@@ -1,25 +1,41 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.886221+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Certains instruments prévoient des termes contractuels pouvant modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas d’événement déclencheur : un tel instrument peut-il néanmoins être considéré comme respectant le critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
+   - `ifric-16-hedges-of-a-net-investment-in-a-foreign-operation`
 
 ## Hypothèses
-La question porte sur le classement d’un actif financier selon IFRS 9.
-L’analyse est limitée aux traitements comptables liés au fait que les flux contractuels sont, ou non, compatibles avec un prêt basique (SPPI).
+   - La question porte sur le classement d’un actif financier selon IFRS 9.
+   - L’analyse est limitée aux traitements comptables liés au fait que les flux contractuels sont, ou non, compatibles avec un prêt basique (SPPI).
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Un terme contractuel qui modifie l’échéancier ou le montant des flux n’exclut pas, à lui seul, le critère SPPI. Il faut apprécier les flux possibles avant et après le déclenchement ; s’ils restent compatibles avec principal et intérêts d’un prêt basique, le SPPI peut être respecté, sinon l’actif relève de la juste valeur par résultat.
+
+## Points Opérationnels
+
+   - Analyser à la date de comptabilisation initiale les flux contractuels possibles avant et après l’événement déclencheur.
+   - Documenter la nature du trigger : un déclencheur lié au défaut ou au risque de crédit est plus compatible avec un prêt basique qu’un déclencheur lié à un indice actions.
+   - Vérifier si l’effet du terme est de minimis ou non genuine ; dans ce cas, il n’affecte pas le classement.
+   - Une fois le SPPI conclu, le choix entre coût amorti et FVOCI dépend encore du modèle économique applicable.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Le terme déclencheur ne doit pas introduire une exposition étrangère à un prêt basique, telle qu’un index actions ou des flux pouvant devenir significativement différents d’un benchmark de prêt.<br>- Le modèle économique doit être la détention pour encaissement des flux contractuels. |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - Le terme déclencheur doit laisser subsister des flux assimilables à principal et intérêts malgré l’événement.<br>- Le modèle économique doit combiner encaissement des flux contractuels et vente. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - L’analyse du terme déclencheur montre des flux non compatibles avec un prêt basique ou pouvant devenir significativement différents du benchmark.<br>- L’effet du terme n’est ni de minimis ni non genuine. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le terme déclencheur ne doit pas introduire une exposition étrangère à un prêt basique, telle qu’un index actions ou des flux pouvant devenir significativement différents d’un benchmark de prêt.
@@ -36,8 +52,8 @@ Dans cette situation, la simple présence d’un événement déclencheur ne dis
  - B4.1.11
     >prepayment amount substantially represents unpaid amounts of principal and interest
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le terme déclencheur doit laisser subsister des flux assimilables à principal et intérêts malgré l’événement.
@@ -54,8 +70,8 @@ Dans cette même situation, un instrument avec terme déclenché peut encore sat
  - B4.1.11
     >extension option result in contractual cash flows during the extension period that are solely payments
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - L’analyse du terme déclencheur montre des flux non compatibles avec un prêt basique ou pouvant devenir significativement différents du benchmark.

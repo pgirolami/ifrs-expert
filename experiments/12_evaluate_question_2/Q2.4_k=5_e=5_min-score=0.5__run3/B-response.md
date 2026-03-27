@@ -1,25 +1,41 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.891848+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Un instrument peut comporter des dispositions contractuelles entraînant une modification de l’échéancier ou du montant des flux de trésorerie, par exemple à la survenance d’un événement déclencheur. Dans ce cas, peut-il encore répondre au critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
+   - `ifric-16-hedges-of-a-net-investment-in-a-foreign-operation`
 
 ## Hypothèses
-La question porte sur la classification d’un actif financier selon IFRS 9, car le critère SPPI est examiné dans ce cadre.
-La condition relative au modèle économique est distincte de la question SPPI et n’est pas tranchée ici.
+   - La question porte sur la classification d’un actif financier selon IFRS 9, car le critère SPPI est examiné dans ce cadre.
+   - La condition relative au modèle économique est distincte de la question SPPI et n’est pas tranchée ici.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui, une telle clause n’exclut pas automatiquement le critère SPPI. Il faut analyser les flux possibles avant et après le déclenchement et vérifier que la clause reste dans une logique de prêt basique; sinon, l’actif relève de la juste valeur par résultat.
+
+## Points Opérationnels
+
+   - Analyser tous les flux contractuels possibles avant et après l’événement déclencheur, et pas seulement le scénario jugé le plus probable.
+   - Documenter la nature du déclencheur: un événement lié au risque de crédit est plus compatible avec SPPI qu’un indice actions.
+   - Vérifier si la clause n’a qu’un effet de minimis ou n’est pas genuine; dans ce cas, elle n’affecte pas la classification.
+   - Si une mesure en FVOCI est envisagée, évaluer séparément le modèle économique applicable.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - La clause produit seulement des variations cohérentes avec un prêt basique, par exemple un prépaiement ou une extension avec compensation raisonnable.<br>- Le déclencheur ne fait pas dépendre les flux d’un indice actions, d’une marchandise ou d’actifs / flux de trésorerie spécifiques. |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - La modification contractuelle se limite à des flux de principal et d’intérêt, avec compensation raisonnable le cas échéant.<br>- Le modèle économique requis pour la FVOCI est satisfait séparément. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - La clause expose l’instrument à des risques ou à une variabilité non compatibles avec un prêt basique, par exemple un indice actions ou la performance d’un actif spécifique.<br>- L’effet de la clause n’est ni de minimis ni non genuine. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause produit seulement des variations cohérentes avec un prêt basique, par exemple un prépaiement ou une extension avec compensation raisonnable.
@@ -37,8 +53,8 @@ Il faut apprécier les flux susceptibles de naître avant et après le déclench
  - B4.1.11
     >the prepayment amount substantially represents unpaid amounts of principal and interest on the principal amount outstanding
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La modification contractuelle se limite à des flux de principal et d’intérêt, avec compensation raisonnable le cas échéant.
@@ -56,8 +72,8 @@ Le contexte fourni ne tranche pas le modèle économique; la FVOCI reste donc po
  - B4.1.11
     >the terms of the extension option result in contractual cash flows during the extension period that are solely payments of principal and interest
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause expose l’instrument à des risques ou à une variabilité non compatibles avec un prêt basique, par exemple un indice actions ou la performance d’un actif spécifique.

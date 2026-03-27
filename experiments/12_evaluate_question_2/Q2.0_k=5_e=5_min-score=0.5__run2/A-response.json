@@ -1,26 +1,26 @@
 {
   "status": "pass",
   "assumptions": [
-    "Assume the question concerns classification of a financial asset under IFRS 9."
+    "The question concerns the IFRS 9 classification of a financial asset, for which the SPPI condition is relevant."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Amortised cost",
       "normalized_label": "amortised_cost",
-      "rationale_for_inclusion": "The context links contractual cash flows that are solely payments of principal and interest, including assets with terms that may change cash flow timing or amount, to the condition in paragraph 4.1.2(b) for amortised cost measurement."
+      "rationale_for_inclusion": "The context links satisfaction of the SPPI condition in paragraph 4.1.2(b) to possible measurement at amortised cost, subject to the separate business model requirement."
     },
     {
       "id": "approach_2",
       "label": "Fair value through other comprehensive income",
       "normalized_label": "fair_value_oci",
-      "rationale_for_inclusion": "The context states that the same SPPI condition is also relevant to paragraph 4.1.2A(b), making FVOCI a distinct IFRS 9 measurement basis within this issue."
+      "rationale_for_inclusion": "The context links satisfaction of the SPPI condition in paragraph 4.1.2A(b) to possible measurement at fair value through other comprehensive income, subject to the separate business model requirement."
     },
     {
       "id": "approach_3",
       "label": "Fair value through profit or loss",
-      "normalized_label": "fair_value_pnl",
-      "rationale_for_inclusion": "The context says that if contractual cash flows do not meet the SPPI condition, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "The context indicates that if contractual cash flows are not SPPI, the financial asset cannot be measured at amortised cost or FVOCI and is measured at fair value through profit or loss."
     }
   ]
 }

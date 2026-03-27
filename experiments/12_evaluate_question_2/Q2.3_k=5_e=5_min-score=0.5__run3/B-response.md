@@ -1,25 +1,40 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.885515+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Certains instruments prévoient des termes contractuels pouvant modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas d’événement déclencheur : un tel instrument peut-il néanmoins être considéré comme respectant le critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
+   - `ifric-16-hedges-of-a-net-investment-in-a-foreign-operation`
 
 ## Hypothèses
-La question porte sur le classement d’un actif financier selon IFRS 9.
-Aucun fait supplémentaire n’est donné sur la clause précise; l’analyse est donc limitée à l’existence d’un terme contractuel pouvant modifier les flux en cas d’événement déclencheur.
+   - La question porte sur le classement d’un actif financier selon IFRS 9.
+   - Aucun fait supplémentaire n’est donné sur la clause précise; l’analyse est donc limitée à l’existence d’un terme contractuel pouvant modifier les flux en cas d’événement déclencheur.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui. Un terme contractuel qui modifie l’échéancier ou le montant des flux n’exclut pas, à lui seul, le critère SPPI. Il faut analyser les flux possibles avant et après le déclenchement; un déclencheur cohérent avec un prêt basique peut rester compatible, contrairement à une exposition de type indice actions ou autre risque non basique.
+
+## Points Opérationnels
+
+   - Analyser les flux contractuels possibles avant et après l’événement déclencheur, et pas seulement le scénario attendu.
+   - Examiner la nature du déclencheur: un lien avec le risque de crédit est plus compatible avec un prêt basique qu’un lien avec un indice actions.
+   - Vérifier si la caractéristique est seulement de minimis ou non genuine avant de conclure qu’elle affecte le test SPPI.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - L’analyse des flux avant et après déclenchement conclut qu’ils restent des paiements de principal et d’intérêts.<br>- Le déclencheur ne crée pas une exposition à une variable étrangère à un prêt basique, par exemple un indice actions. |
+| 2. Juste valeur par OCI | OUI SOUS CONDITIONS | - La clause déclenchée ne fait pas dériver les flux vers une exposition non basique.<br>- Les flux susceptibles de naître avant et après l’événement restent des paiements de principal et d’intérêts. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - Le terme déclencheur produit des flux qui ne sont pas uniquement du principal et des intérêts.<br>- L’effet potentiel de la caractéristique est plus que de minimis. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - L’analyse des flux avant et après déclenchement conclut qu’ils restent des paiements de principal et d’intérêts.
@@ -36,8 +51,8 @@ Dans cette situation, le coût amorti reste envisageable au regard du seul enjeu
  - B4.1.11
     >result in contractual cash flows that are solely payments of principal and interest
 
-### Juste valeur par OCI
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par OCI
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause déclenchée ne fait pas dériver les flux vers une exposition non basique.
@@ -54,8 +69,8 @@ Pour cette situation, le filtre SPPI fonctionne de la même manière pour la FVO
  - B4.1.11
     >The following are examples of contractual terms that result in contractual cash flows
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le terme déclencheur produit des flux qui ne sont pas uniquement du principal et des intérêts.

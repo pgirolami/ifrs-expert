@@ -8,6 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.b_response_utils import convert_json_to_markdown
 from src.db import ChunkStore, init_db
 from src.models.chunk import Chunk
 from src.vector.store import VectorStore, get_index_path
@@ -15,6 +16,7 @@ from src.vector.store import VectorStore, get_index_path
 RELEVANCE_SCORE_THRESHOLD = 0.3
 
 logger = logging.getLogger(__name__)
+
 
 # Path to the prompt template files
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -127,6 +129,9 @@ class AnswerCommand:
         self.output_dir = options.output_dir if options else None
         self.save_all = options.save_all if options else False
 
+        # Track retrieved document UIDs for markdown output
+        self._retrieved_doc_uids: list[str] = []
+
         self._vector_store = vector_store
         self._chunk_store = chunk_store
         self._init_db_fn = init_db_fn
@@ -200,6 +205,7 @@ class AnswerCommand:
 
             # Group results by doc_uid to minimize DB calls
             doc_uids = list({result["doc_uid"] for result in selected_results})
+            self._retrieved_doc_uids = doc_uids
 
             with self._chunk_store as store:
                 # Fetch all chunks for all relevant docs at once
@@ -286,9 +292,27 @@ class AnswerCommand:
 
                 logger.info("Step 2 complete: Received final answer from LLM")
 
-                # Save response B if requested
+                # Save response B as JSON to B-response.json (the LLM returns JSON)
                 if self.save_all and self.output_dir:
-                    self._save_file("B-response.md", response_b)
+                    # First, try to parse as JSON and save properly formatted JSON
+                    try:
+                        b_json = json.loads(response_b)
+                        json_path = self.output_dir / "B-response.json"
+                        json_path.write_text(json.dumps(b_json, indent=2, ensure_ascii=False), encoding="utf-8")
+                        logger.info(f"Saved B-response.json to {self.output_dir}")
+                    except json.JSONDecodeError:
+                        # If not valid JSON, save as-is to both files
+                        self._save_file("B-response.json", response_b)
+                        logger.warning("B-response is not valid JSON, saved as-is to B-response.json")
+
+                    # Convert JSON to French markdown and save to B-response.md
+                    try:
+                        b_json = json.loads(response_b) if not hasattr(b_json, "__iter__") else b_json
+                        markdown_content = self._convert_json_to_markdown(b_json)
+                        self._save_file("B-response.md", markdown_content)
+                        logger.info("Converted B-response.json to French markdown B-response.md")
+                    except (json.JSONDecodeError, KeyError) as e:
+                        logger.warning(f"Could not convert B-response to markdown: {e}")
 
                 return response_b
 
@@ -303,6 +327,21 @@ class AnswerCommand:
         file_path = self.output_dir / filename
         file_path.write_text(content, encoding="utf-8")
         logger.info(f"Saved {filename} to {self.output_dir}")
+
+    def _convert_json_to_markdown(self, b_json: dict) -> str:
+        """Convert B-response JSON to French markdown format.
+
+        Args:
+            b_json: Parsed JSON response from LLM
+
+        Returns:
+            Markdown formatted string in French
+        """
+        return convert_json_to_markdown(
+            b_json,
+            question=self.query,
+            doc_uids=self._retrieved_doc_uids,
+        )
 
     def _build_prompt_from_template(
         self,

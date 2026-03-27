@@ -1,25 +1,39 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.887364+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Un instrument dont les termes contractuels peuvent modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas de survenance d’un événement déclencheur, peut-il satisfaire au critère de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
 
 ## Hypothèses
-L’instrument est un actif financier relevant du modèle de classement et d’évaluation d’IFRS 9.
-La question porte sur les conséquences, en matière de classement, de la condition SPPI lorsque les flux contractuels peuvent changer à la suite d’un événement déclencheur.
+   - L’instrument est un actif financier relevant du modèle de classement et d’évaluation d’IFRS 9.
+   - La question porte sur les conséquences, en matière de classement, de la condition SPPI lorsque les flux contractuels peuvent changer à la suite d’un événement déclencheur.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui. La seule présence d’une clause modifiant l’échéancier ou le montant des flux n’empêche pas, à elle seule, le respect du critère SPPI. Il faut toutefois vérifier, dans cette situation, les flux possibles avant et après le déclencheur et s’assurer que le déclencheur n’introduit pas une exposition étrangère à un prêt basique.
+
+## Points Opérationnels
+
+   - Identifier tous les flux contractuels possibles avant et après la survenance du déclencheur.
+   - Documenter la nature du déclencheur: un déclencheur lié à la détérioration du crédit est plus compatible avec SPPI qu’un déclencheur indexé sur des variables de marché de type actions.
+   - Si l’analyse conclut que la clause fait sortir l’instrument de SPPI, exclure le coût amorti et la JV par OCI et retenir la juste valeur par résultat.
 
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Le déclencheur ne crée pas d’exposition à un indice actions ou à un autre facteur non cohérent avec un prêt basique.<br>- Les flux après déclenchement restent cohérents avec une rémunération du temps, du risque de crédit et d’une marge de prêt. |
+| 2. Juste valeur par autres éléments du résultat global | OUI SOUS CONDITIONS | - La clause de variation n’introduit pas de volatilité ou de risque étranger à une relation de prêt basique.<br>- L’analyse des flux potentiels avant et après déclenchement ne met pas en évidence de mécanisme assimilable à une exposition de type actions. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - Le déclencheur modifie les flux d’une manière incompatible avec un prêt basique.<br>- La clause introduit un facteur de rendement ou de risque non lié au temps, au crédit ou aux coûts de prêt de base. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur ne crée pas d’exposition à un indice actions ou à un autre facteur non cohérent avec un prêt basique.
@@ -38,8 +52,8 @@ Dans cette situation, le coût amorti n’est envisageable que si la clause de d
  - B4.1.10
     >more likely in the former case
 
-### Juste valeur par autres éléments du résultat global
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par autres éléments du résultat global
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause de variation n’introduit pas de volatilité ou de risque étranger à une relation de prêt basique.
@@ -56,8 +70,8 @@ Dans cette situation, la juste valeur par OCI n’est possible que si la même a
  - B4.1.11
     >a variable interest rate that consists of consideration for the time value of money
 
-### Juste valeur par résultat
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur modifie les flux d’une manière incompatible avec un prêt basique.

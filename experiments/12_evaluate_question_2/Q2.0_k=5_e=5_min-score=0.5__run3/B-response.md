@@ -1,25 +1,41 @@
 # Analyse d'une question comptable
 
-**Date**: 2026-03-27T09:20:15.893774+00:00
+**Date**: 2026-03-27
+
 **Question**:
->Question not provided
+>Un instrument assorti de termes contractuels pouvant modifier l'échéancier ou le montant des flux de
+trésorerie (par exemple, à la suite de la survenance d'un événement déclencheur) peut-il respecter le critère
+de « prêt basique » (SPPI) ?
 
 **Documentation consultée**
-   - (documentation non disponible)
+   - `ifrs-9-financial-instruments 2025 required`
 
 ## Hypothèses
-La question porte sur le classement d’un actif financier selon IFRS 9 et sur sa mesure ultérieure au regard de la condition SPPI.
+   - La question porte sur le classement d’un actif financier selon IFRS 9 et sur sa mesure ultérieure au regard de la condition SPPI.
 
 ## Recommandation
 
-**oui_sous_conditions**
+**OUI SOUS CONDITIONS**
+
 Oui. Un terme contractuel pouvant modifier l’échéancier ou le montant des flux n’empêche pas, à lui seul, le respect du critère SPPI.
 Il faut toutefois que les flux susceptibles de naître avant et après le déclencheur restent compatibles avec un prêt basique; sinon, la mesure bascule vers le FVTPL.
 
+## Points Opérationnels
+
+   - Analyser la clause sur toute la durée de vie de l’instrument, en examinant les flux possibles avant et après l’événement déclencheur.
+   - Regarder la nature du déclencheur: un lien avec le risque de crédit est plus compatible avec SPPI qu’un lien avec un indice actions ou une autre variable non basique.
+   - Documenter si les flux pourraient devenir significativement différents d’un instrument de référence de prêt basique; dans ce cas, la conclusion s’oriente vers le FVTPL.
+
 ## Approches évaluées
 
-### Coût amorti
-**Applicabilité**: oui_sous_conditions
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Le déclencheur ne fait pas dépendre les flux d’un indice actions, d’une commodité ou d’un autre facteur non basique.<br>- Les flux possibles avant et après le changement ne peuvent pas devenir significativement différents de ceux d’un prêt basique. |
+| 2. Juste valeur par autres éléments du résultat global (FVOCI) | OUI SOUS CONDITIONS | - La clause est de nature prépaiement, put ou extension avec une compensation raisonnable.<br>- La modification contractuelle ne crée pas des flux incompatibles avec un prêt basique. |
+| 3. Juste valeur par résultat (FVTPL) | OUI SOUS CONDITIONS | - La clause peut conduire à des flux significativement différents des flux de référence d’un prêt basique.<br>- Ou la condition SPPI n’est pas évaluable à l’origine dans les situations couvertes par le texte. |
+
+### 1. Coût amorti
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - Le déclencheur ne fait pas dépendre les flux d’un indice actions, d’une commodité ou d’un autre facteur non basique.
@@ -37,8 +53,8 @@ Le coût amorti reste envisageable si l’analyse des flux pouvant survenir avan
  - B4.1.11
     >a contractual term that permits the issuer (ie the debtor) to prepay a debt instrument
 
-### Juste valeur par autres éléments du résultat global (FVOCI)
-**Applicabilité**: oui_sous_conditions
+### 2. Juste valeur par autres éléments du résultat global (FVOCI)
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause est de nature prépaiement, put ou extension avec une compensation raisonnable.
@@ -56,8 +72,8 @@ Cette voie n’est ouverte que si la clause ne fait pas dériver les flux vers a
  - B4.1.12
     >is eligible to be measured at amortised cost or fair value through other comprehensive income
 
-### Juste valeur par résultat (FVTPL)
-**Applicabilité**: oui_sous_conditions
+### 3. Juste valeur par résultat (FVTPL)
+**Applicabilité**: OUI SOUS CONDITIONS
 
 **Conditions**:
    - La clause peut conduire à des flux significativement différents des flux de référence d’un prêt basique.
