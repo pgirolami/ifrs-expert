@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The securitisation positions are financial assets within the scope of IFRS 9.",
+    "The question concerns debt-type securitisation tranches rather than the separate OCI election for equity instruments."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 paragraph 4.1.2 identifies amortised cost as a top-level classification category for financial assets, and the contractually linked instrument guidance is relevant to whether a tranche can qualify for it."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through OCI",
+      "normalized_label": "fair_value_through_oci",
+      "rationale_for_inclusion": "IFRS 9 paragraph 4.1.2A identifies fair value through OCI as a top-level classification category for debt instruments, and the contractually linked instrument guidance is relevant to whether a tranche can qualify for it."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_pl",
+      "rationale_for_inclusion": "IFRS 9 paragraph 4.1.4 provides fair value through profit or loss as the residual classification category, and paragraph B4.1.26 specifically requires this outcome when the contractually linked instrument conditions cannot be assessed or are not met."
+    }
+  ]
+}

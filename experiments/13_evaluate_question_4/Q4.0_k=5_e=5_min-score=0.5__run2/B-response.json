@@ -1,0 +1,90 @@
+{
+  "assumptions_fr": [
+    "Les instruments visés sont des actifs financiers entrant dans le champ d’application d’IFRS 9.",
+    "La question porte sur la classification ultérieure de tranches de dette en titrisation, et non sur la comptabilité de couverture ni sur la décomptabilisation.",
+    "Le modèle économique de la banque et les caractéristiques détaillées du pool sous-jacent ne sont pas précisés pour chaque tranche."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Oui, il faut faire l’analyse SPPI pour chaque tranche pertinente, sans exemption implicite pour les instruments contractuellement liés. Pour les CLIs, IFRS 9 impose même une analyse supplémentaire en look-through; si elle ne peut pas être effectuée à l’origine, la tranche est à la juste valeur par résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans votre cas de tranches de titrisation détenues ou retenues par une banque, le coût amorti n’est possible que si la tranche passe l’analyse spécifique des instruments contractuellement liés et si la banque est dans un modèle de détention pour encaisser. Il n’existe pas de dispense implicite pour les CLIs : IFRS 9 exige au contraire de regarder la tranche et le pool sous-jacent; à défaut d’évaluation possible à l’origine, ce classement tombe.",
+      "conditions_fr": [
+        "Le modèle économique de la banque est de détenir l’actif pour encaisser les flux contractuels.",
+        "La tranche satisfait aux conditions spécifiques des instruments contractuellement liés et cette analyse peut être démontrée à la comptabilisation initiale."
+      ],
+      "practical_implication_fr": "Documenter dès l’origine le look-through sur le pool sous-jacent et le modèle « détenir pour encaisser ».",
+      "references": [
+        {
+          "section": "4.1.2",
+          "excerpt": "held within a business model whose objective is to hold financial assets in order to collect contractual cash flows"
+        },
+        {
+          "section": "B4.1.21",
+          "excerpt": "a tranche has cash flow characteristics that are payments of principal and interest on the principal amount outstanding only if"
+        },
+        {
+          "section": "B4.1.26",
+          "excerpt": "If the holder cannot assess the conditions in paragraph B4.1.21 at initial recognition, the tranche must be measured at fair value through profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_oci",
+      "label_fr": "Juste valeur par autres éléments du résultat global",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la FVOCI n’est ouverte que si la tranche de titrisation satisfait d’abord l’analyse CLI/SPPI, puis si elle est gérée dans un modèle de collecte et vente. Là encore, il n’y a aucune exemption implicite pour les CLIs : l’évaluation de la tranche et du pool sous-jacent reste nécessaire avant d’envisager ce classement.",
+      "conditions_fr": [
+        "Le modèle économique de la banque est atteint par la collecte des flux contractuels et par la vente des actifs financiers.",
+        "La tranche satisfait aux conditions spécifiques des instruments contractuellement liés et cette analyse peut être démontrée à la comptabilisation initiale."
+      ],
+      "practical_implication_fr": "Documenter dès l’origine le look-through et un modèle « collecte et vente » cohérent avec la gestion du portefeuille.",
+      "references": [
+        {
+          "section": "4.1.2A",
+          "excerpt": "objective is achieved by both collecting contractual cash flows and selling financial assets"
+        },
+        {
+          "section": "B4.1.21",
+          "excerpt": "a tranche has cash flow characteristics that are payments of principal and interest on the principal amount outstanding only if"
+        },
+        {
+          "section": "B4.1.26",
+          "excerpt": "If the holder cannot assess the conditions in paragraph B4.1.21 at initial recognition, the tranche must be measured at fair value through profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_pl",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui",
+      "reasoning_fr": "Dans votre cas, la juste valeur par résultat est la catégorie résiduelle et devient l’issue obligatoire dès que la tranche ne satisfait pas l’analyse CLI/SPPI ou que cette analyse ne peut pas être faite à l’origine. C’est précisément le point clé pour les tranches de titrisation : IFRS 9 ne crée pas d’exemption, mais une règle explicite de bascule en JVR en cas d’échec ou d’impossibilité d’évaluation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Si la tranche échoue au test CLI/SPPI ou si l’information initiale est insuffisante, la classer en juste valeur par résultat.",
+      "references": [
+        {
+          "section": "4.1.4",
+          "excerpt": "A financial asset shall be measured at fair value through profit or loss unless"
+        },
+        {
+          "section": "B4.1.26",
+          "excerpt": "the tranche must be measured at fair value through profit or loss"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "L’analyse CLI/SPPI se fait à la comptabilisation initiale de chaque tranche retenue ou acquise; elle n’est pas facultative.",
+    "Pour un instrument contractuellement lié, il faut aller au-delà de la tranche et remonter jusqu’au pool d’instruments qui crée les flux.",
+    "Le fait qu’une tranche soit mezzanine ou junior peut conduire souvent à une conclusion JVR en pratique, mais seulement après l’analyse requise par IFRS 9, pas par présomption.",
+    "Si le détenteur ne peut pas apprécier les conditions de B4.1.21 à l’origine, la conséquence opérationnelle est directement la juste valeur par résultat."
+  ]
+}

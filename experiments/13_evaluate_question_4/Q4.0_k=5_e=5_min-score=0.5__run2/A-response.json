@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The instruments in question are financial assets within the scope of IFRS 9.",
+    "The issue concerns the subsequent measurement classification of debt instrument tranches, not hedge accounting or derecognition."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level classification for financial assets, including debt instruments, when the relevant classification requirements are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a distinct top-level classification for financial assets when the relevant classification requirements are met."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual classification for financial assets, and the contractually linked instruments guidance explicitly states that a tranche must be measured at fair value through profit or loss in certain cases."
+    }
+  ]
+}

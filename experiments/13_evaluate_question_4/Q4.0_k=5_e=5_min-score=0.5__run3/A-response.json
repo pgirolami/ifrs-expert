@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The instruments under consideration are financial assets within the scope of IFRS 9.",
+    "The issue concerns the subsequent classification and measurement of securitisation tranches held by a bank."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a distinct subsequent measurement category for financial assets, including debt instruments if the relevant classification requirements are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through OCI",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a separate subsequent measurement category for financial assets when the applicable classification requirements are met."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual measurement category for financial assets and specifically notes that certain contractually linked tranches must be measured this way when the relevant classification requirements are not satisfied or cannot be assessed."
+    }
+  ]
+}
