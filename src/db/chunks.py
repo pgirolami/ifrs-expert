@@ -131,7 +131,16 @@ def insert_chunks_from_file(pdf_path: Path, doc_uid: str) -> list[int]:
     logger.info(f"Extracting chunks from {pdf_path}")
     raw_chunks = extract_chunks(pdf_path)
 
-    chunks = [Chunk(doc_uid=doc_uid, section_path=c.section_path, page_start=c.page_start, page_end=c.page_end, text=c.text) for c in raw_chunks]
+    chunks = [
+        Chunk(
+            doc_uid=doc_uid,
+            section_path=c.section_path,
+            page_start=c.page_start,
+            page_end=c.page_end,
+            text=c.text,
+        )
+        for c in raw_chunks
+    ]
 
     with ChunkStore() as store:
         return store.insert_chunks(chunks)

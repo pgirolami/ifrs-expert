@@ -7,19 +7,23 @@ import logging
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from src.commands import AnswerOptions, ChunkCommand, ListCommand, QueryOptions
 from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
 from src.commands.store import create_store_command
 from src.logging_config import setup_logging
 
-setup_logging()
-
 logger = logging.getLogger(__name__)
 
 
 def main() -> int:
     """Entry point for the CLI."""
+    # Load environment variables from .env file before any other imports
+    load_dotenv()
+    setup_logging()
+
     parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management")
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")

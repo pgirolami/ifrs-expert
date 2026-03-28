@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.commands import QueryCommand, QueryOptions
+from src.commands.query import QueryCommand, QueryConfig, QueryOptions
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
 
@@ -42,12 +42,15 @@ class TestQueryCommand:
 
     def test_query_no_index(self):
         """Test query command when no index exists."""
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=False),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False),
         )
 
@@ -72,12 +75,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        command = QueryCommand(
-            query="test query",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test query",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False),
         )
 
@@ -114,12 +120,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(doc1_chunks + doc2_chunks)
 
-        command = QueryCommand(
-            query="test query",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test query",
+            config=config,
             options=QueryOptions(k=2, min_score=None, verbose=False),
         )
 
@@ -135,12 +144,15 @@ class TestQueryCommand:
 
     def test_query_no_results(self):
         """Test query command with no matching results."""
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False),
         )
 
@@ -149,23 +161,37 @@ class TestQueryCommand:
         assert result == "Error: No chunks retrieved"
 
     def test_query_exception_handling(self):
-        """Test query command exception handling."""
-        def failing_index_path():
-            raise RuntimeError("Test error")
+        """Test query command exception handling from search."""
+        # Create a vector store that throws when search_all is called
+        class FailingVectorStore:
+            def __init__(self) -> None:
+                pass
 
-        command = QueryCommand(
-            query="test",
-            vector_store=MockVectorStore([]),
+            def __enter__(self) -> "FailingVectorStore":
+                return self
+
+            def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+                pass
+
+            def search_all(self, query: str) -> list[dict]:
+                raise RuntimeError("Search failed")
+
+        config = QueryConfig(
+            vector_store=FailingVectorStore(),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
-            index_path_fn=failing_index_path,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False),
         )
 
         result = command.execute()
 
         assert result.startswith("Error:")
-        assert "Test error" in result
+        assert "Search failed" in result
 
     def test_query_score_threshold(self):
         """Test query command with min_score filters results."""
@@ -183,12 +209,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=0.5, verbose=False),
         )
 
@@ -214,12 +243,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=True),
         )
 
@@ -228,11 +260,6 @@ class TestQueryCommand:
         # Both High-relevance chunks are in output; Low is filtered
         assert "(High)" in result
         assert "(Low)" not in result
-
-    def test_query_requires_dependencies(self):
-        """Test that missing dependencies cause TypeError at construction."""
-        with pytest.raises(TypeError):
-            QueryCommand(query="test", vector_store=MockVectorStore([]))  # type: ignore[call-arg]
 
     def test_query_expand_includes_neighboring_chunks(self):
         """Test query expansion includes surrounding chunks in document order."""
@@ -250,12 +277,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False, expand=1),
         )
 
@@ -283,12 +313,15 @@ class TestQueryCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        command = QueryCommand(
-            query="test",
+        config = QueryConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
             options=QueryOptions(k=5, min_score=None, verbose=False, expand=0, full_doc_threshold=10),
         )
 

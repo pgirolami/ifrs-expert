@@ -59,11 +59,11 @@ class TestIsSectionNumber:
 
 
 class TestExtractPageNumber:
-    """Tests for extract_page_number function."""
+    """Tests for extract_page_number_from_footer function."""
 
     def test_extract_page_number_from_footer(self):
         """Test extracting page number from footer."""
-        from src.pdf.extraction import extract_page_number
+        from src.pdf.extraction import extract_page_number_from_footer
 
         blocks = [
             {
@@ -79,12 +79,12 @@ class TestExtractPageNumber:
             }
         ]
 
-        result = extract_page_number(blocks)
+        result = extract_page_number_from_footer(blocks)
         assert result == "A856"
 
     def test_extract_page_number_not_in_footer(self):
         """Test that non-footer text is not extracted."""
-        from src.pdf.extraction import extract_page_number
+        from src.pdf.extraction import extract_page_number_from_footer
 
         blocks = [
             {
@@ -100,17 +100,17 @@ class TestExtractPageNumber:
             }
         ]
 
-        result = extract_page_number(blocks)
+        result = extract_page_number_from_footer(blocks)
         assert result is None
 
     def test_extract_page_number_empty_blocks(self):
         """Test empty blocks."""
-        from src.pdf.extraction import extract_page_number
+        from src.pdf.extraction import extract_page_number_from_footer
 
-        result = extract_page_number([])
+        result = extract_page_number_from_footer([])
         assert result is None
 
-        result = extract_page_number([{"type": 1}])
+        result = extract_page_number_from_footer([{"type": 1}])
         assert result is None
 
 

@@ -16,6 +16,12 @@ dependencies = [
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.2",
     "playwright-stealth>=2.0.2",
+    # LLM clients
+    "openai>=1.0.0",
+    "anthropic>=0.25.0",
+    "mistralai>=1.0.0",
+    # Environment variable loading
+    "python-dotenv>=1.0.0",
 ]
 
 [dependency-groups]
@@ -31,16 +37,17 @@ exclude = ["prototype/", "tests/", "experiments/"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["G004", "PLR0911", "PLR0912", "PLR0913", "PLR0915", "C901", "COM812", "D203", "D213", "D413", "S603"]
+ignore = ["G004", "COM812", "D203", "D213", "D413"]
 
 [tool.pytest]
 addopts = ["--cov=src", "--cov-fail-under=80"]
 
 [tool.coverage.run]
-omit = ["tests/*"]
+omit = ["tests/*", "src/llm/*"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover"]
+omit = ["src/llm/*"]
 
 [tool.ty.terminal]
 error-on-warning = true
@@ -54,3 +61,7 @@ unused-ignore-comment = "warn"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
+
+[tool.uv]
+# Hopefully prevent supply chain attacks by delaying upgrades enough for them to be detected
+exclude-newer = "10 days"

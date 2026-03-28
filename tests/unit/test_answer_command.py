@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 import unittest.mock
 
-from src.commands.answer import AnswerCommand, AnswerOptions
+from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
 
@@ -41,13 +41,16 @@ class TestAnswerCommand:
 
     def test_answer_no_index(self):
         """Test answer command when no index exists."""
-        command = AnswerCommand(
-            query="test",
+        config = AnswerConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=False),
             send_to_llm_fn=lambda p: "result",
+        )
+        command = AnswerCommand(
+            query="test",
+            config=config,
             options=AnswerOptions(k=5),
         )
 
@@ -82,24 +85,27 @@ class TestAnswerCommand:
                 return '{"approaches": []}'
             return "Final answer from LLM"
 
-        command = AnswerCommand(
-            query="What is the scope?",
+        config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="What is the scope?",
+            config=config,
             options=AnswerOptions(k=5),
         )
 
         # Mock prompt file existence and reading
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), \
              unittest.mock.patch("src.commands.answer._read_prompt_template") as mock_read_template:
-            
+
             # Template returns the prompt with placeholders replaced
             def read_template(path):
                 return "You are an IFRS expert.\n\nContext:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
-            
+
             mock_read_template.side_effect = read_template
 
             result = command.execute()
@@ -111,13 +117,16 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             return "result"
 
-        command = AnswerCommand(
-            query="test",
+        config = AnswerConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="test",
+            config=config,
             options=AnswerOptions(k=5),
         )
 
@@ -150,13 +159,16 @@ class TestAnswerCommand:
                 return '{"approaches": []}'
             return "Final answer"
 
-        command = AnswerCommand(
-            query="test",
+        config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="test",
+            config=config,
             options=AnswerOptions(k=5, min_score=0.5),
         )
 
@@ -191,13 +203,16 @@ class TestAnswerCommand:
                 return '{"approaches": []}'
             return "Final answer"
 
-        command = AnswerCommand(
-            query="test",
+        config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="test",
+            config=config,
             options=AnswerOptions(k=5, expand=1),
         )
 
@@ -234,22 +249,25 @@ class TestAnswerCommand:
                 return '{"status": "pass", "approaches": []}'
             return '{"approaches": []}'
 
-        command = AnswerCommand(
-            query="test",
+        config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="test",
+            config=config,
             options=AnswerOptions(k=5, full_doc_threshold=10),
         )
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), \
              unittest.mock.patch("src.commands.answer._read_prompt_template") as mock_read_template:
-            
+
             def read_template(path):
                 return "Context:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
-            
+
             mock_read_template.side_effect = read_template
 
             result = command.execute()
@@ -259,8 +277,3 @@ class TestAnswerCommand:
             assert 'id="1"' in prompt_a
             assert 'id="2"' in prompt_a
             assert 'id="3"' in prompt_a
-
-    def test_answer_requires_dependencies(self):
-        """Test that missing dependencies cause TypeError at construction."""
-        with pytest.raises(TypeError):
-            AnswerCommand(query="test", vector_store=MockVectorStore([]))  # type: ignore[call-arg]

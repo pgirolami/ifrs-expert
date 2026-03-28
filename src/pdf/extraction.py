@@ -72,8 +72,8 @@ class SpanContent(TypedDict):
     flags: int
 
 
-class Section(TypedDict):
-    """Type for a section."""
+class SectionMarker(TypedDict):
+    """Type for a section marker (number found in left margin)."""
 
     number: str
     y: float
@@ -106,30 +106,16 @@ def is_section_title(text: str) -> bool:
     - Title case or all caps
     - Not matching section number patterns
     - Not just numbers/letters combinations
-
-    Examples that ARE titles:
-    - "Appendix A"
-    - "Defined terms"
-    - "Lessee involvement with the underlying asset before the commencement date"
-    - "Legal title to the underlying asset"
-
-    Examples that are NOT titles:
-    - "7.3.2" (section number)
-    - "B44" (section number)
     """
     if not text:
         return False
 
-    # If it matches section number pattern, it's not a title
     if is_section_number(text):
         return False
 
-    # If it's just a few characters, probably not a title
     if len(text) < MIN_SECTION_TEXT_LENGTH:
         return False
 
-    # Check for common title patterns
-    # Titles often start with "Appendix", "Defined terms", etc.
     title_starters = [
         "appendix",
         "defined",
@@ -156,35 +142,85 @@ def is_section_title(text: str) -> bool:
     return any(lower_text.startswith(starter) for starter in title_starters)
 
 
-def extract_page_number(blocks: list[BlockDict]) -> str | None:
+def extract_page_number_from_footer(blocks: list[BlockDict]) -> str | None:
     """Extract the page number from footer area of the page."""
     for block in blocks:
         if block.get("type") == 0:
             bbox = block.get("bbox", [0, 0, 0, 0])
-            # Page numbers are typically in the footer area (y > FOOTER_Y_THRESHOLD)
             if bbox[1] > FOOTER_Y_THRESHOLD:
                 for line in block.get("lines", []):
                     for span in line.get("spans", []):
                         span_text = span.get("text", "").strip()
-                        # Look for page number pattern (e.g., "A856", "2", etc.)
-                        if span_text and len(span_text) <= MAX_PAGE_NUMBER_LENGTH and ((span_text[0].isalpha() or span_text[0].isdigit()) and span_text.replace(" ", "").isalnum()):
+                        if span_text and len(span_text) <= MAX_PAGE_NUMBER_LENGTH and (span_text[0].isalpha() or span_text[0].isdigit()) and span_text.replace(" ", "").isalnum():
                             return span_text
     return None
 
 
-def extract_chunks(pdf_path: Path) -> list[Chunk]:
-    """Extract chunks from a PDF file.
+def is_page_header_text(span: SpanContent) -> bool:
+    """Check if span is a page header (document identifier like 'IFRS 9')."""
+    text = span["text"]
+    if not text:
+        return False
 
-    Args:
-        pdf_path: Path to the PDF file.
+    # Must be all caps, short, at top of page, in left margin
+    return text.isupper() and len(text) < PAGE_HEADER_MAX_LENGTH and span["y"] < PAGE_HEADER_Y_THRESHOLD and span["x0"] < PAGE_HEADER_X_THRESHOLD
 
-    Returns:
-        List of Chunk objects.
 
-    """
+def is_in_left_margin(span: SpanContent, margin_x_threshold: float) -> bool:
+    """Check if span is in the left margin area."""
+    return span["x0"] < margin_x_threshold
+
+
+def is_footer_text(span: SpanContent) -> bool:
+    """Check if span is in the footer area of the page."""
+    return span["y"] > FOOTER_Y_THRESHOLD
+
+
+def is_standalone_section_number(span: SpanContent, section_num: str) -> bool:
+    """Check if span is the section number itself (not content)."""
+    text = span["text"].strip()
+    return text == section_num
+
+
+def is_meaningful_content(span: SpanContent) -> bool:
+    """Check if span has meaningful content (not just a heading)."""
+    text = span["text"].strip()
+    if not text:
+        return False
+    return len(text) > MIN_CONTENT_LENGTH
+
+
+def is_likely_header_line(line: str) -> bool:
+    """Check if a line looks like a section header (all caps, short, no numbers)."""
+    if not line:
+        return False
+    return line.isupper() and len(line) < HEADER_MAX_LENGTH and not any(c.isdigit() for c in line)
+
+
+def is_identification_header(line: str) -> bool:
+    """Check if line is an Identification section header."""
+    return "Identification" in line and len(line) < IDENTIFICATION_MAX_LENGTH
+
+
+def is_short_title_line(line: str) -> bool:
+    """Check if a line looks like a short title (few words, title-like)."""
+    if not line:
+        return False
+
+    words = line.split()
+    if len(words) > TITLE_WORD_COUNT:
+        return False
+
+    if not line[0].isupper():
+        return False
+
+    title_indicators = ["title", "disclosure", "identification", "measurement", "recognition", "lessee", "paragraph"]
+    return any(word in line.lower() for word in title_indicators)
+
+
+def collect_all_spans_from_pdf(pdf_path: Path) -> list[SpanContent]:
+    """Load PDF and collect all text spans with their positions."""
     doc: fitz.Document = fitz.open(str(pdf_path))
-
-    # Collect all spans from all pages with page info
     all_content: list[SpanContent] = []
 
     for page_num in range(len(doc)):
@@ -193,11 +229,11 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         blocks: list[BlockDict] = text_dict.get("blocks", [])
 
         # Get page number from footer
-        page_number: str | None = extract_page_number(blocks)
+        page_number = extract_page_number_from_footer(blocks)
         if page_number is None:
             page_number = str(page_num + 1)
 
-        # Collect all spans
+        # Collect all text spans
         for block in blocks:
             if block.get("type") == 0:
                 for line in block.get("lines", []):
@@ -220,19 +256,24 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
     doc.close()
 
-    # Sort by page_index, then y, then x
+    # Sort by page, then vertical position, then horizontal position
     all_content.sort(key=lambda s: (s["page_index"], s["y"], s["x0"]))
+    return all_content
 
-    # Find section numbers and detect bold titles
-    sections: list[Section] = []
+
+def find_section_markers(all_content: list[SpanContent]) -> list[SectionMarker]:
+    """Find section numbers in the left margin of the PDF."""
+    sections: list[SectionMarker] = []
+
     for span in all_content:
-        text: str = span["text"].strip()
+        text = span["text"].strip()
+
         # Skip footer area
-        if span["y"] > FOOTER_Y_THRESHOLD:
+        if is_footer_text(span):
             continue
-        # Section numbers: left margin, valid section number pattern
-        if span["x0"] < LEFT_MARGIN_THRESHOLD and is_section_number(text):
-            # Check if this is a bold title (flags=BOLD_TEXT_FLAG means bold in PDF)
+
+        # Look for section numbers in left margin
+        if is_in_left_margin(span, LEFT_MARGIN_THRESHOLD) and is_section_number(text):
             is_bold = span.get("flags", 0) == BOLD_TEXT_FLAG
             sections.append(
                 {
@@ -245,214 +286,265 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 },
             )
 
-    # Sort sections by page, then y
+    # Sort by page, then vertical position
     sections.sort(key=lambda s: (s["page_index"], s["y"]))
 
-    # Deduplicate sections (same section can appear on multiple pages)
+    # Deduplicate (same section can appear on multiple pages)
     seen: set[str] = set()
-    unique_sections: list[Section] = []
+    unique_sections: list[SectionMarker] = []
     for s in sections:
         if s["number"] not in seen:
             seen.add(s["number"])
             unique_sections.append(s)
-    sections = unique_sections
 
-    # Extract text for each section
+    return unique_sections
+
+
+def find_bold_title_after_section(
+    section: SectionMarker,
+    next_section: SectionMarker | None,
+    all_content: list[SpanContent],
+) -> tuple[int, float] | None:
+    """Find the next bold title that marks a section boundary.
+
+    Looks for bold text on a different page than current section,
+    which indicates a new major section starts.
+    """
+    section_page = section["page_index"]
+    section_y = section["y"]
+
+    next_page = next_section["page_index"] if next_section else float("inf")
+    next_y = next_section["y"] if next_section else float("inf")
+
+    for span in all_content:
+        # Skip pages before current section
+        if span["page_index"] < section_page:
+            continue
+        # Skip past the next section
+        if span["page_index"] > next_page:
+            continue
+
+        # Skip if on same page and before current section
+        if span["page_index"] == section_page and span["y"] <= section_y:
+            continue
+
+        # Skip the next section itself
+        if span["page_index"] == next_page and span["y"] >= next_y:
+            continue
+
+        # Look for bold text on a different page
+        if span.get("flags", 0) == BOLD_TEXT_FLAG and span["page_index"] != section_page:
+            return (span["page_index"], span["y"])
+
+    return None
+
+
+def is_section_number_in_margin(span: SpanContent, section_num: str) -> bool:
+    """Check if span is a section number in the left margin."""
+    if is_standalone_section_number(span, section_num):
+        return True
+    text = span["text"].strip()
+    return is_in_left_margin(span, LEFT_MARGIN_THRESHOLD) and is_section_number(text)
+
+
+def is_within_page_boundaries(
+    span: SpanContent,
+    section: SectionMarker,
+    next_section: SectionMarker | None,
+    bold_boundary: tuple[int, float] | None,
+) -> bool:
+    """Check if span is within the page boundaries for the section."""
+    section_page = section["page_index"]
+    section_y = section["y"]
+    next_page = next_section["page_index"] if next_section else float("inf")
+    next_y = next_section["y"] if next_section else float("inf")
+
+    span_page = span["page_index"]
+    span_y = span["y"]
+
+    # On section's page
+    if span_page == section_page:
+        return span_y >= section_y
+
+    # On next section's page
+    if span_page == next_page:
+        return span_y < next_y
+
+    # On intermediate pages - check for bold boundary
+    if bold_boundary:
+        bold_page, bold_y = bold_boundary
+        if span_page == bold_page:
+            return span_y < bold_y
+
+    # Between sections
+    return section_page < span_page < next_page
+
+
+def is_within_horizontal_boundaries(span: SpanContent, section_x_end: float) -> bool:
+    """Check if span is within horizontal content boundaries."""
+    # If in left margin, must have meaningful content
+    if is_in_left_margin(span, section_x_end + SECTION_X_BUFFER):
+        return is_meaningful_content(span)
+    return True
+
+
+def determine_content_boundaries(
+    span: SpanContent,
+    section: SectionMarker,
+    next_section: SectionMarker | None,
+    bold_boundary: tuple[int, float] | None,
+) -> bool:
+    """Determine if a span is within the content boundaries of a section.
+
+    Returns True if the span should be included in the section's content.
+    """
+    section_x_end = section["x1"]
+
+    # Skip footer
+    if is_footer_text(span):
+        return False
+
+    # Skip page headers
+    if is_page_header_text(span):
+        return False
+
+    # Skip section numbers in left margin
+    if is_section_number_in_margin(span, section["number"]):
+        return False
+
+    # Check vertical boundaries
+    if not is_within_page_boundaries(span, section, next_section, bold_boundary):
+        return False
+
+    # Check horizontal boundaries
+    return is_within_horizontal_boundaries(span, section_x_end)
+
+
+def extract_text_for_section(
+    section: SectionMarker,
+    next_section: SectionMarker | None,
+    all_content: list[SpanContent],
+) -> str:
+    """Extract and clean text content for a single section."""
+    # Find bold title boundary
+    bold_boundary = find_bold_title_after_section(section, next_section, all_content)
+
+    # Collect text spans within boundaries
+    text_parts: list[str] = []
+
+    for span in all_content:
+        if determine_content_boundaries(span, section, next_section, bold_boundary):
+            text = span["text"].strip()
+            if text:
+                text_parts.append(text)
+
+    # Join and clean the text
+    raw_text = "\n".join(text_parts)
+    return clean_extracted_text(raw_text)
+
+
+def clean_extracted_text(text: str) -> str:
+    """Clean up extracted text by removing headers and short titles."""
+    if not text:
+        return ""
+
+    lines = text.split("\n")
+    cleaned_lines: list[str] = []
+
+    for line in lines:
+        # Skip likely headers
+        if is_likely_header_line(line):
+            continue
+        # Skip short titles
+        if is_short_title_line(line):
+            continue
+
+        # Clean whitespace but preserve structure
+        cleaned = " ".join(line.split())
+        if cleaned:
+            cleaned_lines.append(cleaned)
+
+    return "\n".join(cleaned_lines)
+
+
+def track_pages_with_content(
+    section: SectionMarker,
+    next_section: SectionMarker | None,
+    all_content: list[SpanContent],
+    bold_boundary: tuple[int, float] | None,
+) -> set[str]:
+    """Track which pages have content for this section."""
+    section_page = section["page_index"]
+    next_page = next_section["page_index"] if next_section else float("inf")
+    section_y = section["y"]
+    next_y = next_section["y"] if next_section else float("inf")
+    bold_page = bold_boundary[0] if bold_boundary else -1
+
+    content_pages: set[str] = set()
+
+    for span in all_content:
+        span_page = span["page_index"]
+        span_y = span["y"]
+
+        # Skip pages outside range
+        if span_page < section_page or span_page > next_page:
+            continue
+
+        # Skip footer
+        if is_footer_text(span):
+            continue
+
+        # On section's page, skip content before section
+        if span_page == section_page and span_y < section_y:
+            continue
+
+        # Skip bold boundary page (belongs to next section)
+        if bold_boundary and span_page == bold_page:
+            continue
+
+        # Skip if past next section
+        if span_page == next_page and span_y >= next_y:
+            continue
+
+        if span["text"].strip():
+            content_pages.add(span["page"])
+
+    return content_pages
+
+
+def extract_chunks(pdf_path: Path) -> list[Chunk]:
+    """Extract structured chunks from a PDF file.
+
+    Identifies sections by finding section numbers in the left margin,
+    then extracts the content between section markers.
+    """
+    # Phase 1: Collect all spans from PDF
+    all_content = collect_all_spans_from_pdf(pdf_path)
+
+    # Phase 2: Identify section markers
+    sections = find_section_markers(all_content)
+
+    # Phase 3: Extract text for each section
     results: list[Chunk] = []
 
     for i, section in enumerate(sections):
-        section_num: str = section["number"]
-        section_y: float = section["y"]
-        section_x_end: float = section["x1"]
-        section_page: str = section["page"]
-        section_page_index: int = section["page_index"]
+        # Find next section to determine content boundaries
+        next_section = sections[i + 1] if i + 1 < len(sections) else None
 
-        # Find next section's page and y
-        next_page_index: float
-        next_y: float
+        # Extract text content
+        text = extract_text_for_section(section, next_section, all_content)
 
-        if i + 1 < len(sections):
-            next_section: Section = sections[i + 1]
-            next_page_index = next_section["page_index"]
-            next_y = next_section["y"]
-        else:
-            next_page_index = float("inf")
-            next_y = float("inf")
+        # Determine page range
+        bold_boundary = find_bold_title_after_section(section, next_section, all_content)
+        content_pages = track_pages_with_content(section, next_section, all_content, bold_boundary)
 
-        # Look for the next bold title after the current section (on any page).
-        # This handles cases like page A427 where 7.3.2 is followed by Appendix A on the next page.
-        # Bold titles (flags=20) indicate new sections that should act as boundaries.
-        # Only consider bold titles on a different page than the current section - on the same
-        # page, the section's own bold content is part of the section and should not act as a boundary.
-        bold_title_page_index: int = -1
-        bold_title_y: float = float("inf")
-
-        for span in all_content:
-            if span["page_index"] < section_page_index:
-                continue
-            if span["page_index"] > next_page_index:
-                continue
-            # Skip if we're on the same page and before the section
-            if span["page_index"] == section_page_index and span["y"] <= section_y:
-                continue
-            # Skip the next section itself if it's not bold
-            if span["page_index"] == next_page_index and span["y"] >= next_y:
-                continue
-
-            # Check if this is a bold title (flags=BOLD_TEXT_FLAG) on a different page
-            # Only consider bold titles on a different page - on the same page as the
-            # current section, the section's own bold content (like "(a)", "(b)", "(c)")
-            # should not act as a boundary. The next page is where we'd find a new section.
-            if span.get("flags", 0) == BOLD_TEXT_FLAG and span["page_index"] != section_page_index:
-                bold_title_page_index = span["page_index"]
-                bold_title_y = span["y"]
-                break
-
-        section_text_parts: list[str] = []
-
-        # Collect text from all pages from current section to next section
-        # For each page, content ends at the next section's y position (if on same page)
-        # or at the end of the page content (if on intermediate pages)
-
-        for span in all_content:
-            # Skip footer
-            if span["y"] > FOOTER_Y_THRESHOLD:
-                continue
-
-            # Determine the upper y bound for this span's page
-            page_upper_y: float = float("inf")
-
-            # If on same page as current section
-            if span["page_index"] == section_page_index:
-                if span["y"] < section_y:
-                    continue
-                # Use next section's y as upper bound
-                page_upper_y = next_y
-
-            # If on the page where next section starts
-            elif span["page_index"] == next_page_index:
-                # Content should be BEFORE next section starts
-                page_upper_y = next_y
-
-            # If between current section and next section pages
-            elif span["page_index"] > section_page_index and span["page_index"] < next_page_index:
-                # Check if we've passed the bold title boundary - on the bold title page,
-                # only skip content at/after the bold title
-                if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index and span["y"] >= bold_title_y:
-                    continue
-                # Include all content on intermediate pages
-            else:
-                # Outside the range
-                continue
-
-            # Check if within bounds
-            if span["page_index"] == next_page_index and span["y"] >= page_upper_y:
-                continue
-
-            # Skip page header text (all caps, short, appears at top of content area)
-            # These are document identifiers like "IFRS 9" that appear at the top of pages
-            text: str = span["text"]
-            if (
-                text
-                and text.isupper()
-                and len(text) < PAGE_HEADER_MAX_LENGTH
-                and span["y"] < PAGE_HEADER_Y_THRESHOLD  # Only at top of content area
-                and span["x0"] < PAGE_HEADER_X_THRESHOLD  # In left margin area
-            ):
-                continue
-
-            # Skip section numbers
-            if text.strip() == section_num:
-                continue
-            if is_section_number(text.strip()) and span["x0"] < LEFT_MARGIN_THRESHOLD:
-                continue
-
-            # Skip spans in left margin (where section numbers are)
-            if span["x0"] < section_x_end + SECTION_X_BUFFER:
-                # But keep spans that have meaningful content
-                if text.strip() and len(text.strip()) > MIN_CONTENT_LENGTH:
-                    pass  # Could be content, but check more
-                else:
-                    continue
-
-            if text.strip():
-                section_text_parts.append(text.strip())
-
-        # Join text, trying to preserve paragraph structure
-        text: str = "\n".join(section_text_parts)
-
-        # Clean up text
-        lines: list[str] = text.split("\n")
-        cleaned_lines: list[str] = []
-        for line in lines:
-            # Skip header text (all caps, short)
-            # But preserve lines that contain digits (e.g., "IAS 21." is a reference, not a header)
-            if line.isupper() and len(line) < HEADER_MAX_LENGTH and not any(c.isdigit() for c in line):
-                continue
-            # Skip section titles
-            if "Identification" in line and len(line) < IDENTIFICATION_MAX_LENGTH:
-                continue
-            # Clean up whitespace but preserve structure
-            cleaned: str = " ".join(line.split())
-            if cleaned:
-                cleaned_lines.append(cleaned)
-
-        # Final pass: filter out section headers/titles
-        # These are typically short lines, all caps, or contain specific patterns
-        final_lines: list[str] = []
-        for line in cleaned_lines:
-            # Skip all caps short lines (likely headers) but keep lines with numbers
-            # (e.g., "IAS 21." is a standard reference, not a header)
-            if line.isupper() and len(line) < SHORT_TITLE_LENGTH and not any(c.isdigit() for c in line):
-                continue
-            # Skip lines that are just a few words AND look like titles
-            if (
-                len(line.split()) <= TITLE_WORD_COUNT
-                and line[0].isupper()
-                and any(
-                    word in line.lower()
-                    for word in [
-                        "title",
-                        "disclosure",
-                        "identification",
-                        "measurement",
-                        "recognition",
-                        "lessee",
-                        "paragraph",
-                    ]
-                )
-            ):
-                continue
-            final_lines.append(line)
-
-        text = "\n".join(final_lines)
-
-        # Determine page_end - track which pages content appears on
-        page_end: str = section_page
-        content_pages: set[str] = set()
-        for span in all_content:
-            if span["page_index"] < section_page_index:
-                continue
-            if span["page_index"] > next_page_index:
-                continue
-            if span["y"] > FOOTER_Y_THRESHOLD:  # Skip footer
-                continue
-            if span["page_index"] == section_page_index and span["y"] < section_y:
-                continue
-            # Skip spans on the bold title boundary page - the bold title indicates
-            # a new section starts, so all content on that page belongs to the next section
-            if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index:
-                continue
-            if span["text"].strip():
-                content_pages.add(span["page"])
-
-        if content_pages:
-            page_end = sorted(content_pages)[-1]  # Last page in the set
+        page_start = section["page"]
+        page_end = content_pages.pop() if content_pages else section["page"]
 
         results.append(
             Chunk(
-                section_path=section_num,
-                page_start=section_page,
+                section_path=section["number"],
+                page_start=page_start,
                 page_end=page_end,
                 text=text,
             ),
