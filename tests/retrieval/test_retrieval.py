@@ -32,7 +32,7 @@ def ingested_ifrs16(temp_index_dir):
         pytest.skip(f"PDF not found: {IFRS16_LEASES_PDF}")
 
     # Import here to ensure app is configured
-    from src.commands import StoreCommand
+    from src.commands.store import create_store_command
     from src.db import init_db
     from src.vector import VectorStore
     from src.vector.store import set_index_path
@@ -46,7 +46,7 @@ def ingested_ifrs16(temp_index_dir):
     init_db()
 
     # Ingest the PDF
-    command = StoreCommand(pdf_path=IFRS16_LEASES_PDF, doc_uid=DOC_UID)
+    command = create_store_command(pdf_path=IFRS16_LEASES_PDF, doc_uid=DOC_UID)
     result = command.execute()
     assert not result.startswith("Error:"), f"Failed to ingest PDF: {result}"
 
@@ -74,9 +74,13 @@ def run_query(query: str, k: int = 5, min_score: float | None = None) -> list[di
     Returns:
         List of result dictionaries
     """
-    from src.commands import QueryCommand, QueryOptions
+    from src.commands.query import create_query_command
+    from src.commands import QueryOptions
 
-    command = QueryCommand(query=query, options=QueryOptions(k=k, min_score=min_score, verbose=False))
+    command = create_query_command(
+        query=query,
+        options=QueryOptions(k=k, min_score=min_score, verbose=False),
+    )
     result = command.execute()
 
     # Handle error results

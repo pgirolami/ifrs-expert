@@ -439,9 +439,9 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
                 continue
             if span["page_index"] == section_page_index and span["y"] < section_y:
                 continue
-            # Skip spans on/beyond the bold title boundary page - on the bold title
-            # page, only skip content at/after the bold title
-            if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index and span["y"] >= bold_title_y:
+            # Skip spans on the bold title boundary page - the bold title indicates
+            # a new section starts, so all content on that page belongs to the next section
+            if bold_title_page_index > 0 and span["page_index"] == bold_title_page_index:
                 continue
             if span["text"].strip():
                 content_pages.add(span["page"])

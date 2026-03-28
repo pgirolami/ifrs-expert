@@ -32,9 +32,7 @@ def extract_question_from_prompt(prompt_path: Path) -> str | None:
     match = re.search(r"Question:\s*(.+?)(?:\n\n|\n<|\Z)", content, re.DOTALL)
     if match:
         # Clean up the question - decode HTML entities and normalize
-        question = match.group(1).strip()
-        question = question.replace("&#39;", "'").replace("&amp;", "&")
-        return question
+        return match.group(1).strip().replace("&#39;", "'").replace("&amp;", "&")
 
     return None
 
@@ -134,15 +132,13 @@ def convert_directory(dir_path: Path) -> None:
         logger.info(f"Processing: {b_response_file}")
         try:
             convert_file(b_response_file, output_dir)
-        except Exception as e:
-            logger.error(f"Error processing {b_response_file}: {e}")
+        except (FileNotFoundError, ValueError, json.JSONDecodeError):
+            logger.exception(f"Error processing {b_response_file}")
 
 
 def main() -> int:
     """Entry point for B-response converter."""
-    parser = argparse.ArgumentParser(
-        description="Convert B-response.md (JSON) to formatted French markdown + JSON"
-    )
+    parser = argparse.ArgumentParser(description="Convert B-response.md (JSON) to formatted French markdown + JSON")
     parser.add_argument(
         "input",
         type=Path,
@@ -163,10 +159,10 @@ def main() -> int:
             convert_directory(args.input)
         else:
             convert_file(args.input, args.output_dir)
-        return 0
-    except Exception as e:
-        logger.error(f"Error: {e}")
+    except (FileNotFoundError, ValueError, json.JSONDecodeError):
+        logger.exception("Error")
         return 1
+    return 0
 
 
 if __name__ == "__main__":

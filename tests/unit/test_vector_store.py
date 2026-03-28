@@ -1,78 +1,55 @@
 """Tests for vector store functionality."""
 
 import pytest
+import tempfile
+from pathlib import Path
+
+from src.vector.store import VectorStore, set_index_path, compute_embeddings
+
+
+@pytest.fixture(autouse=True)
+def temp_index():
+    """Use a temporary index for each test."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        index_path = Path(tmpdir) / "faiss.index"
+        set_index_path(index_path)
+        yield index_path
+        set_index_path(None)
 
 
 class TestVectorStoreSearch:
     """Tests for VectorStore search functionality."""
 
-    def test_search_returns_correct_structure(self):
+    def test_search_returns_correct_structure(self, temp_index):
         """Test that search returns expected result structure."""
-        # Test the search logic directly
-        id_map = {
-            0: ("doc1", 1),
-            1: ("doc1", 2),
-        }
-        distances = [[0.1, 0.2]]
-        indices = [[0, 1]]
+        # Add embeddings
+        with VectorStore() as store:
+            store.add_embeddings("doc1", [1, 2], ["hello world test", "another document"])
 
-        results: list[dict] = []
-        for dist, idx in zip(distances[0], indices[0], strict=True):
-            if idx >= 0 and idx in id_map:
-                doc_uid, chunk_id = id_map[idx]
-                results.append(
-                    {
-                        "doc_uid": doc_uid,
-                        "chunk_id": chunk_id,
-                        "distance": float(dist),
-                    }
-                )
+        with VectorStore() as store:
+            results = store.search("test query", k=5)
 
-        assert len(results) == 2
-        assert results[0]["doc_uid"] == "doc1"
-        assert results[0]["chunk_id"] == 1
+        assert len(results) >= 1
+        assert "doc_uid" in results[0]
+        assert "chunk_id" in results[0]
+        assert "score" in results[0]
 
-    def test_search_handles_empty_index(self):
+    def test_search_handles_empty_index(self, temp_index):
         """Test that search handles empty index results."""
-        id_map = {}
-        distances = [[]]
-        indices = [[]]
-
-        results: list[dict] = []
-        for dist, idx in zip(distances[0], indices[0], strict=True):
-            if idx >= 0 and idx in id_map:
-                doc_uid, chunk_id = id_map[idx]
-                results.append(
-                    {
-                        "doc_uid": doc_uid,
-                        "chunk_id": chunk_id,
-                        "distance": float(dist),
-                    }
-                )
+        with VectorStore() as store:
+            results = store.search("test", k=5)
 
         assert results == []
 
-    def test_search_filters_invalid_indices(self):
-        """Test that search filters out invalid indices."""
-        id_map = {
-            0: ("doc1", 1),
-            1: ("doc1", 2),
-        }
-        distances = [[0.1, 0.2, 0.3]]
-        indices = [[0, 1, 999]]  # 999 is invalid
+    def test_search_filters_by_k(self, temp_index):
+        """Test that search respects k parameter."""
+        # Add multiple embeddings
+        texts = [f"document number {i}" for i in range(10)]
+        chunk_ids = list(range(10))
+        with VectorStore() as store:
+            store.add_embeddings("doc1", chunk_ids, texts)
 
-        results: list[dict] = []
-        for dist, idx in zip(distances[0], indices[0], strict=True):
-            if idx >= 0 and idx in id_map:
-                doc_uid, chunk_id = id_map[idx]
-                results.append(
-                    {
-                        "doc_uid": doc_uid,
-                        "chunk_id": chunk_id,
-                        "distance": float(dist),
-                    }
-                )
+        with VectorStore() as store:
+            results = store.search("test query", k=3)
 
-        assert len(results) == 2
-        assert results[0]["chunk_id"] == 1
-        assert results[1]["chunk_id"] == 2
+        assert len(results) == 3

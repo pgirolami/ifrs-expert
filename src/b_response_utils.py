@@ -27,7 +27,7 @@ def convert_json_to_markdown(
         Markdown formatted string in French
     """
     # Get date in YYYY-MM-DD format (local timezone)
-    now = datetime.now().strftime("%Y-%m-%d")
+    now = datetime.now().astimezone().strftime("%Y-%m-%d")
 
     # Get assumptions
     assumptions = b_json.get("assumptions_fr", [])
@@ -101,10 +101,7 @@ def convert_json_to_markdown(
         conditions = approach.get("conditions_fr", [])
 
         # Format conditions as bullet points
-        if conditions:
-            conditions_text = "<br>".join(f"- {c}" for c in conditions)
-        else:
-            conditions_text = "- (non spécifiées)"
+        conditions_text = "<br>".join(f"- {c}" for c in conditions) if conditions else "- (non spécifiées)"
 
         # Escape pipes in content for markdown table
         label_escaped = label_fr.replace("|", "\\|")
