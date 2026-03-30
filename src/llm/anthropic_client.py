@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "Anthropic API authentication failed. Please check your ANTHROPIC_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Anthropic returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
+HIGH_THINKING_BUDGET_TOKENS = 4096
+THINKING_MODEL_PREFIXES = ("claude-3-7", "claude-sonnet-4", "claude-opus-4")
 
 
 def _extract_text_from_blocks(content: list[Any]) -> list[str]:
@@ -69,6 +71,7 @@ class AnthropicClient(LLMClient):
                 messages=messages,
                 temperature=0.0,
                 max_tokens=8192,
+                **self._thinking_kwargs(),
             )
         except Exception as e:
             error_str = str(e)
@@ -106,6 +109,7 @@ class AnthropicClient(LLMClient):
             messages=messages,
             temperature=0.0,
             max_tokens=8192,
+            **self._thinking_kwargs(),
         )
 
         json_parts = _extract_text_from_blocks(response.content)
@@ -119,3 +123,17 @@ class AnthropicClient(LLMClient):
         except json.JSONDecodeError:
             logger.exception(JSON_PARSE_FAILED_MESSAGE)
             raise
+
+    def _thinking_kwargs(self) -> dict[str, dict[str, int | str]]:
+        """Return Anthropic thinking settings for thinking-capable models."""
+        if self._model.startswith(THINKING_MODEL_PREFIXES):
+            logger.info(
+                f"Using Anthropic thinking budget {HIGH_THINKING_BUDGET_TOKENS} for model {self._model}"
+            )
+            return {
+                "thinking": {
+                    "type": "enabled",
+                    "budget_tokens": HIGH_THINKING_BUDGET_TOKENS,
+                }
+            }
+        return {}

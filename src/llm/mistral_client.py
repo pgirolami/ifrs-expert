@@ -20,6 +20,9 @@ SDK_NOT_INSTALLED_MESSAGE = "mistralai package is not installed. Install it with
 AUTH_FAILED_MESSAGE = "Mistral API authentication failed. Please check your MISTRAL_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Mistral returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
+HIGH_REASONING_EFFORT = "high"
+REASONING_PROMPT_MODE = "reasoning"
+REASONING_MODEL_PREFIXES = ("magistral",)
 
 
 class MistralClient(LLMClient):
@@ -61,6 +64,7 @@ class MistralClient(LLMClient):
                 model=self._model,
                 messages=messages,
                 temperature=0.0,
+                **self._reasoning_kwargs(),
             )
         except Exception as e:
             error_str = str(e)
@@ -105,12 +109,23 @@ class MistralClient(LLMClient):
             messages=messages,
             temperature=0.0,
             response_format={"type": "json_object"},
+            **self._reasoning_kwargs(),
         )
 
         content = response.choices[0].message.content
         if content is None:
             raise RuntimeError(EMPTY_RESPONSE_MESSAGE)
         return self._parse_json_response(content)
+
+    def _reasoning_kwargs(self) -> dict[str, str]:
+        """Return Mistral reasoning settings for reasoning-capable models."""
+        if self._model.startswith(REASONING_MODEL_PREFIXES):
+            logger.info(f"Using Mistral reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
+            return {
+                "reasoning_effort": HIGH_REASONING_EFFORT,
+                "prompt_mode": REASONING_PROMPT_MODE,
+            }
+        return {}
 
     def _parse_json_response(self, content: str) -> dict[str, Any]:
         """Parse JSON from the response content, stripping markdown code fences if present."""

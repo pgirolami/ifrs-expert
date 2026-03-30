@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
+HIGH_REASONING_EFFORT = "high"
+REASONING_MODEL_PREFIXES = ("gpt-5", "o1", "o3", "o4")
 
 
 class OpenAIClient(LLMClient):
@@ -52,6 +54,7 @@ class OpenAIClient(LLMClient):
                 model=self._model,
                 messages=messages,
                 temperature=0.0,
+                **self._reasoning_kwargs(),
             )
         except Exception as e:
             error_str = str(e)
@@ -74,7 +77,6 @@ class OpenAIClient(LLMClient):
         Returns:
             Parsed JSON response from the LLM
         """
-        # Use JSON mode for more reliable JSON output
         messages: list[ChatCompletionMessageParam] = []
         if system:
             messages.append({"role": "system", "content": system})
@@ -86,12 +88,20 @@ class OpenAIClient(LLMClient):
             messages=messages,
             temperature=0.0,
             response_format={"type": "json_object"},
+            **self._reasoning_kwargs(),
         )
 
         content = response.choices[0].message.content
         if content is None:
             raise RuntimeError(EMPTY_RESPONSE_MESSAGE)
         return self._parse_json_response(content)
+
+    def _reasoning_kwargs(self) -> dict[str, str]:
+        """Return OpenAI reasoning settings for models that support them."""
+        if self._model.startswith(REASONING_MODEL_PREFIXES):
+            logger.info(f"Using OpenAI reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
+            return {"reasoning_effort": HIGH_REASONING_EFFORT}
+        return {}
 
     def _parse_json_response(self, content: str) -> dict[str, Any]:
         """Parse JSON from the response content."""
