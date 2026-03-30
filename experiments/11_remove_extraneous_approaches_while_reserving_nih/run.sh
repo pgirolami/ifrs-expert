@@ -8,11 +8,27 @@ PROJECT_DIR="$SCRIPT_DIR/../../"
 # Change to project directory for uv to find src module
 cd "$PROJECT_DIR"
 
-# Default values
-K="${1:-5}"
-E="${2:-5}"
-MIN_SCORE="${3:-0.5}"
-F="${4:-0}"
+# First argument: directory containing question files (required)
+QUESTIONS_DIR="${1:-}"
+
+if [ -z "$QUESTIONS_DIR" ]; then
+  echo "Usage: $0 <questions_dir> [K] [E] [MIN_SCORE] [F]"
+  echo "  questions_dir: Directory containing Q*.txt question files"
+  echo "  K: Number of chunks (default: 5)"
+  echo "  E: Number of evaluations (default: 5)"
+  echo "  MIN_SCORE: Minimum score threshold (default: 0.5)"
+  echo "  F: Filter type (default: 0)"
+  exit 1
+fi
+
+# Resolve to absolute path (relative to SCRIPT_DIR, not current working directory)
+QUESTIONS_DIR="$(cd "$SCRIPT_DIR" && realpath "$QUESTIONS_DIR")"
+
+# Default values for remaining parameters
+K="${2:-5}"
+E="${3:-5}"
+MIN_SCORE="${4:-0.5}"
+F="${5:-0}"
 
 OUTPUT_DIR="$SCRIPT_DIR"
 mkdir -p "$OUTPUT_DIR"
@@ -26,7 +42,7 @@ else
   CMD_SUFFIX=""
 fi
 
-for question_file in "$PROJECT_DIR"/experiments/00_QUESTIONS/Q*.txt; do
+for question_file in "$QUESTIONS_DIR"/Q*.txt; do
   question_name="$(basename "$question_file" .txt)"
   
   # Start all 3 runs in parallel

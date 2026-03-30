@@ -1,27 +1,34 @@
 {
   "status": "pass",
   "assumptions": [
-    "The question concerns hedge accounting under IFRS 9 for foreign currency risk in consolidated financial statements.",
-    "The intragroup dividend arrangement gives rise to a foreign-currency exposure through an intragroup balance or transaction."
+    "The question concerns consolidated financial statements.",
+    "The intragroup dividends give rise to a recognised intragroup monetary receivable/payable with foreign currency exposure.",
+    "The issue is whether that foreign currency exposure can be addressed through IFRS 9 hedge accounting in consolidation."
   ],
   "approaches": [
     {
       "id": "approach_1",
-      "label": "Fair value hedge",
-      "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as a distinct hedge accounting model for exposure to changes in the fair value of a recognised asset or liability or an unrecognised firm commitment that could affect profit or loss."
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a top-level hedge accounting model and specifically addresses when intragroup foreign currency exposures may qualify in consolidated financial statements."
     },
     {
       "id": "approach_2",
-      "label": "Cash flow hedge",
-      "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "IFRS 9 identifies a cash flow hedge as a distinct hedge accounting model for exposure to variability in cash flows of a recognised asset or liability or a highly probable forecast transaction that could affect profit or loss, including certain forecast intragroup foreign currency exposures in consolidation."
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct top-level hedge accounting model for recognised assets or liabilities and firm commitments."
     },
     {
       "id": "approach_3",
-      "label": "Hedge of a net investment",
+      "label": "Hedge of a net investment in a foreign operation",
       "normalized_label": "net_investment_hedge",
-      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk in consolidated financial statements."
+      "rationale_for_inclusion": "The provided context includes IFRS 9 and IFRIC 16 guidance on net investment hedges as a separate hedge accounting model for foreign currency risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context distinguishes exposures that qualify for hedge accounting from those that do not, making ordinary accounting without hedge accounting a separate relevant top-level treatment."
     }
   ]
 }
