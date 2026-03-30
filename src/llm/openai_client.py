@@ -2,12 +2,10 @@
 
 import json
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from openai import OpenAI
-
-if TYPE_CHECKING:
-    from openai.types.chat import ChatCompletionMessageParam
+from openai.types.chat import ChatCompletion, ChatCompletionMessageParam
 
 from src.llm.base import LLMClient
 
@@ -50,12 +48,7 @@ class OpenAIClient(LLMClient):
 
         logger.info(f"Calling OpenAI model {self._model}")
         try:
-            response = self._client.chat.completions.create(
-                model=self._model,
-                messages=messages,
-                temperature=0.0,
-                **self._reasoning_kwargs(),
-            )
+            response = self._create_text_completion(messages)
         except Exception as e:
             error_str = str(e)
             if "401" in error_str or "api_key" in error_str.lower() or "Unauthorized" in error_str:
@@ -83,25 +76,50 @@ class OpenAIClient(LLMClient):
         messages.append({"role": "user", "content": prompt})
 
         logger.info(f"Calling OpenAI model {self._model} with JSON mode")
-        response = self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            temperature=0.0,
-            response_format={"type": "json_object"},
-            **self._reasoning_kwargs(),
-        )
+        response = self._create_json_completion(messages)
 
         content = response.choices[0].message.content
         if content is None:
             raise RuntimeError(EMPTY_RESPONSE_MESSAGE)
         return self._parse_json_response(content)
 
-    def _reasoning_kwargs(self) -> dict[str, str]:
-        """Return OpenAI reasoning settings for models that support them."""
-        if self._model.startswith(REASONING_MODEL_PREFIXES):
+    def _create_text_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
+        """Create a text completion with model-specific settings."""
+        if self._uses_reasoning():
             logger.info(f"Using OpenAI reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
-            return {"reasoning_effort": HIGH_REASONING_EFFORT}
-        return {}
+            return self._client.chat.completions.create(
+                model=self._model,
+                messages=messages,
+                reasoning_effort=HIGH_REASONING_EFFORT,
+            )
+
+        return self._client.chat.completions.create(
+            model=self._model,
+            messages=messages,
+            temperature=0.0,
+        )
+
+    def _create_json_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
+        """Create a JSON completion with model-specific settings."""
+        if self._uses_reasoning():
+            logger.info(f"Using OpenAI reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
+            return self._client.chat.completions.create(
+                model=self._model,
+                messages=messages,
+                response_format={"type": "json_object"},
+                reasoning_effort=HIGH_REASONING_EFFORT,
+            )
+
+        return self._client.chat.completions.create(
+            model=self._model,
+            messages=messages,
+            temperature=0.0,
+            response_format={"type": "json_object"},
+        )
+
+    def _uses_reasoning(self) -> bool:
+        """Return whether the current model supports OpenAI reasoning settings."""
+        return self._model.startswith(REASONING_MODEL_PREFIXES)
 
     def _parse_json_response(self, content: str) -> dict[str, Any]:
         """Parse JSON from the response content."""

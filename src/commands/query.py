@@ -13,7 +13,6 @@ from src.vector.store import VectorStore, get_index_path
 
 logger = logging.getLogger(__name__)
 
-RELEVANCE_SCORE_THRESHOLD = 0.3
 RELEVANCE_HIGH_THRESHOLD = 0.3
 
 
@@ -32,14 +31,16 @@ class QueryOptions:
     """Options for query command."""
 
     k: int = 5
-    min_score: float | None = None
+    min_score: float | None = 0.55
     verbose: bool = True
-    expand: int = 0
+    expand: int = 5
     full_doc_threshold: int = 0
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
-def _init_expansion_data(results: list[SearchResult]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
+def _init_expansion_data(
+    results: list[SearchResult],
+) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
     """Initialize expansion data structures."""
     result_score_by_chunk: dict[tuple[str, int], float] = {}
     doc_order: list[str] = []
@@ -143,9 +144,9 @@ class QueryCommand:
         """Initialize the query command."""
         self.query = query
         self.k = options.k if options else 5
-        self.min_score = options.min_score if options else None
+        self.min_score = options.min_score if options and options.min_score is not None else 0.6
         self.verbose = options.verbose if options else True
-        self.expand = options.expand if options else 0
+        self.expand = options.expand if options else 5
         self.full_doc_threshold = options.full_doc_threshold if options else 0
 
         self._config = config
@@ -195,15 +196,12 @@ class QueryCommand:
 
         selected_results = self._select_results(ranked_results)
         if not selected_results:
-            return f"Error: No chunks found with score >= {RELEVANCE_SCORE_THRESHOLD}"
+            return f"Error: No chunks found with score >= {self.min_score}"
 
         doc_chunks = self._fetch_chunks(selected_results)
 
         if self.expand > 0 or self.full_doc_threshold > 0:
             selected_results = self._expand_chunks(selected_results, doc_chunks)
-
-        if not selected_results:
-            return "Error: No chunks retrieved"
 
         return self._format_output(selected_results, doc_chunks)
 
@@ -246,10 +244,7 @@ class QueryCommand:
 
     def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
         """Select top-k results per document."""
-        effective_min_score = self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD
-        logger.info(f"Effective min_score: {effective_min_score}")
-
-        selected_results = self._select_top_k_per_document(ranked_results, self.k, effective_min_score)
+        selected_results = self._select_top_k_per_document(ranked_results, self.k, self.min_score)
         logger.info(f"Per-document selection: {len(selected_results)} chunks")
 
         return selected_results

@@ -1,0 +1,69 @@
+{
+  "assumptions_fr": [
+    "La question porte sur la comptabilité de couverture selon IFRS 9 dans les comptes consolidés.",
+    "L’exposition analysée est la composante change d’un dividende intragroupe pour lequel une créance à recevoir a déjà été comptabilisée."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement pour la composante change qui subsiste en consolidation et affecte le résultat consolidé. Parmi les traitements proposés, une couverture de juste valeur ou de flux de trésorerie peut être envisagée selon la désignation retenue; la couverture d’investissement net ne correspond pas aux faits décrits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le dividende intragroupe a déjà donné lieu à une créance à recevoir, donc à un poste reconnu.\nUne couverture de juste valeur est envisageable si la désignation vise uniquement la variation de change sur ce poste monétaire et si cet effet continue d’impacter le résultat consolidé malgré les éliminations intragroupe.",
+      "conditions_fr": [
+        "la composante change sur la créance de dividende affecte encore le résultat consolidé",
+        "la désignation porte uniquement sur ce risque de change jusqu’au règlement"
+      ],
+      "practical_implication_fr": "Documenter au niveau consolidé la variation de change du poste monétaire reconnu, sans viser le dividende intragroupe éliminé lui-même.",
+      "references": [
+        {
+          "section": "approach_1.rationale_for_inclusion",
+          "excerpt": "a hedge of exposure to changes in fair value of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le règlement futur de la créance de dividende en devise crée une variabilité des flux de trésorerie du groupe en monnaie fonctionnelle.\nCette approche est pertinente si cette variabilité de change n’est pas entièrement neutralisée en consolidation et constitue bien l’exposition couverte jusqu’au règlement.",
+      "conditions_fr": [
+        "le règlement du dividende en devise expose encore le groupe à une variabilité de change en résultat consolidé",
+        "la couverture vise le flux futur de règlement de la créance déjà comptabilisée"
+      ],
+      "practical_implication_fr": "Prévoir une documentation et un suivi consolidés du risque de change jusqu’au règlement du dividende.",
+      "references": [
+        {
+          "section": "approach_2.rationale_for_inclusion",
+          "excerpt": "a hedge of exposure to variability in cash flows of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La situation décrite porte sur un dividende intragroupe déclaré avec créance à recevoir, donc sur un poste monétaire distinct à régler.\nCela ne correspond pas, dans ces faits, à la couverture de l’investissement net du groupe dans une activité étrangère.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas documenter ce dividende déclaré sous le modèle de couverture d’investissement net.",
+      "references": [
+        {
+          "section": "approach_3.rationale_for_inclusion",
+          "excerpt": "hedge accounting for a net investment in a foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La documentation doit être faite au niveau consolidé sur la seule composante change pertinente, pas sur le dividende intragroupe en tant que tel.",
+    "Le point décisif est de démontrer que le risque de change sur la créance de dividende continue d’affecter le résultat consolidé après éliminations intragroupe.",
+    "Le choix entre juste valeur et flux de trésorerie doit rester cohérent avec la manière dont l’effet de change du poste couvert et de l’instrument de couverture sera comptabilisé en consolidation.",
+    "Si l’exposition était analysée en substance comme relevant de l’investissement net dans une activité étrangère, la conclusion ci-dessus devrait être revue."
+  ]
+}

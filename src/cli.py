@@ -83,7 +83,7 @@ def main() -> int:
         "--min-score",
         type=float,
         default=None,
-        help="Minimum relevance score (0-1). Results below this are excluded.",
+        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.6.",
     )
     query_parser.add_argument(
         "-e",
@@ -129,7 +129,7 @@ def main() -> int:
         "--min-score",
         type=float,
         default=None,
-        help="Minimum relevance score (0-1). Results below this are excluded.",
+        help="Minimum relevance score (-1 to 1). Results below this are excluded. Default: 0.6.",
     )
     answer_parser.add_argument(
         "--output-dir",
@@ -155,7 +155,7 @@ def main() -> int:
 
     if result.startswith("Error:"):
         logger.error(result)
-        sys.stderr.buffer.write(f"{result}\n".encode("utf-8"))
+        sys.stderr.buffer.write(f"{result}\n".encode())
         return 1
 
     logger.info(f"CLI command completed successfully: {args.command}")

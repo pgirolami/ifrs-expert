@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Promptfoo wrapper for IFRS Expert.
 
 Canonical Promptfoo `exec:` contract:
@@ -13,9 +12,33 @@ argv[3].test.options.mode when available.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
+from pathlib import Path
 from typing import Final
+
+PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from dotenv import load_dotenv
+
+from src.commands import AnswerOptions
+from src.commands.answer import create_answer_command
+from src.logging_config import setup_logging
+
+PROMPT_ARG_INDEX: Final[int] = 1
+CONTEXT_ARG_INDEX: Final[int] = 3
+MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
+DEFAULT_K: Final[int] = 5
+DEFAULT_MIN_SCORE: Final[float] = 0.55
+DEFAULT_EXPAND: Final[int] = 5
+
+CANNED_JUSTIFICATION: Final[str] = (
+    "Une documentation de couverture peut être envisagée sous IFRS 9 si l'analyse "
+    "pertinente est celle d'un élément monétaire intragroupe reconnu créant une "
+    "exposition de change résiduelle au niveau consolidé et si les exigences de "
+    "documentation, de désignation et d'efficacité sont respectées."
+)
 
 CANNED_RESPONSE: Final[str] = json.dumps(
     {
@@ -25,7 +48,7 @@ CANNED_RESPONSE: Final[str] = json.dumps(
         ],
         "recommendation": {
             "answer": "oui_sous_conditions",
-            "justification": "Une documentation de couverture peut être envisagée sous IFRS 9 si l'analyse pertinente est celle d'un élément monétaire intragroupe reconnu créant une exposition de change résiduelle au niveau consolidé et si les exigences de documentation, de désignation et d'efficacité sont respectées.",
+            "justification": CANNED_JUSTIFICATION,
         },
         "approaches": [
             {
@@ -53,12 +76,23 @@ CANNED_RESPONSE: Final[str] = json.dumps(
 )
 
 
+def _write_stdout(payload: str) -> None:
+    """Write one UTF-8 payload line to stdout."""
+    sys.stdout.buffer.write(payload.encode("utf-8") + b"\n")
+
+
+def _error_payload(message: str) -> str:
+    """Build a JSON error payload."""
+    return json.dumps({"error": message}, ensure_ascii=False)
+
+
 def _load_context() -> dict[str, object]:
-    if len(sys.argv) < 4:
+    """Load Promptfoo context from argv when available."""
+    if len(sys.argv) < MIN_ARG_COUNT_FOR_CONTEXT:
         return {}
 
     try:
-        raw_context = json.loads(sys.argv[3])
+        raw_context = json.loads(sys.argv[CONTEXT_ARG_INDEX])
     except json.JSONDecodeError:
         return {}
 
@@ -66,6 +100,7 @@ def _load_context() -> dict[str, object]:
 
 
 def _extract_mode(context: dict[str, object]) -> str | None:
+    """Extract the eval mode from Promptfoo context."""
     test_data = context.get("test")
     if isinstance(test_data, dict):
         options = test_data.get("options")
@@ -86,6 +121,7 @@ def _extract_mode(context: dict[str, object]) -> str | None:
 
 
 def _extract_question(prompt: str, mode: str | None) -> str:
+    """Extract the question text from the rendered prompt."""
     stripped_prompt = prompt.strip()
     if mode is None:
         return stripped_prompt
@@ -98,50 +134,52 @@ def _extract_question(prompt: str, mode: str | None) -> str:
 
 
 def _run_live(question: str) -> tuple[int, str]:
-    result = subprocess.run(
-        ["uv", "run", "python", "-m", "src.cli", "answer", "-k", "5", "--min-score", "0.3"],
-        input=question,
-        capture_output=True,
-        text=True,
-        timeout=120,
+    """Run the real answer pipeline for one question."""
+    load_dotenv()
+    setup_logging()
+
+    command = create_answer_command(
+        query=question,
+        options=AnswerOptions(k=DEFAULT_K, min_score=DEFAULT_MIN_SCORE, expand=DEFAULT_EXPAND),
     )
+    result = command.execute()
 
-    if result.returncode != 0:
-        stderr_lines = result.stderr.strip().splitlines() if result.stderr else []
-        error_lines = [line for line in stderr_lines if line.startswith("Error:")]
-        error_message = error_lines[0] if error_lines else "Error: Command failed"
-        return 1, json.dumps({"error": error_message}, ensure_ascii=False)
+    if result.error is not None:
+        return 1, _error_payload(result.error)
 
-    output = result.stdout.strip()
-    if not output:
-        return 1, json.dumps({"error": "Error: Empty response from CLI"}, ensure_ascii=False)
+    if result.prompt_b_raw_response is not None:
+        return 0, result.prompt_b_raw_response
 
-    return 0, output
+    if result.prompt_b_markdown is not None:
+        return 0, result.prompt_b_markdown
+
+    return 1, _error_payload("Error: Empty response from CLI")
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
-        print(json.dumps({"error": "Error: Missing prompt argument"}, ensure_ascii=False))
+    """Run the Promptfoo wrapper entry point."""
+    if len(sys.argv) <= PROMPT_ARG_INDEX:
+        _write_stdout(_error_payload("Error: Missing prompt argument"))
         return 1
 
-    prompt = sys.argv[1]
+    prompt = sys.argv[PROMPT_ARG_INDEX]
     context = _load_context()
     mode = _extract_mode(context)
     if mode is None:
-        print(json.dumps({"error": "Error: Missing mode in Promptfoo test options"}, ensure_ascii=False))
+        _write_stdout(_error_payload("Error: Missing mode in Promptfoo test options"))
         return 1
 
     question = _extract_question(prompt, mode)
     if not question:
-        print(json.dumps({"error": "Error: Missing question text"}, ensure_ascii=False))
+        _write_stdout(_error_payload("Error: Missing question text"))
         return 1
 
     if mode == "canned":
-        print(CANNED_RESPONSE)
+        _write_stdout(CANNED_RESPONSE)
         return 0
 
     exit_code, payload = _run_live(question)
-    print(payload)
+    _write_stdout(payload)
     return exit_code
 
 

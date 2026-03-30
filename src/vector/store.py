@@ -75,6 +75,8 @@ class VectorStore:
         self._id_map: dict[int, tuple[str, int]] = {}  # faiss_id -> (doc_uid, chunk_id)
         self._index_path = index_path
         self._id_map_path = id_map_path
+        self._added_doc_uids: set[str] = set()
+        self._deleted_doc_uids: set[str] = set()
 
     def _resolve_index_path(self) -> Path:
         """Resolve the index path, using instance or global default."""
@@ -90,11 +92,16 @@ class VectorStore:
 
     def __enter__(self) -> Self:
         """Context manager entry - load or create index."""
+        self._added_doc_uids.clear()
+        self._deleted_doc_uids.clear()
         self._load_or_create_index()
         return self
 
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
-        """Context manager exit - save index."""
+        """Context manager exit - save index when it changed."""
+        if not self._has_persisted_changes():
+            logger.info("Skipping FAISS index save because no documents were added or deleted")
+            return
         self._save_index()
 
     def _get_model(self) -> SentenceTransformer:
@@ -103,6 +110,10 @@ class VectorStore:
             logger.info(f"Loading embedding model: {EMBEDDING_MODEL}")
             self._model = SentenceTransformer(EMBEDDING_MODEL)
         return self._model
+
+    def _has_persisted_changes(self) -> bool:
+        """Return whether documents were added to or deleted from the index."""
+        return bool(self._added_doc_uids or self._deleted_doc_uids)
 
     def _load_or_create_index(self) -> None:
         """Load existing index or create a new one."""
@@ -141,6 +152,8 @@ class VectorStore:
             with id_map_path.open("w") as f:
                 json.dump({str(k): list(v) for k, v in self._id_map.items()}, f)
 
+            self._added_doc_uids.clear()
+            self._deleted_doc_uids.clear()
             logger.info(f"Saved index with {self._index.ntotal} vectors")
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
@@ -175,7 +188,8 @@ class VectorStore:
         for i, chunk_id in enumerate(chunk_ids):
             self._id_map[start_id + i] = (doc_uid, chunk_id)
 
-        logger.info(f"Added {len(texts)} embeddings to index")
+        self._added_doc_uids.add(doc_uid)
+        logger.info(f"Added {len(texts)} embeddings to index for doc_uid={doc_uid}")
 
     def search(self, query: str, k: int = 5) -> list[SearchResult]:
         """Search for similar chunks.
@@ -278,6 +292,7 @@ class VectorStore:
             self._index.add(np.array(new_vectors).astype("float32"))  # type: ignore[union-attr]
             self._id_map = new_id_map
 
+        self._deleted_doc_uids.add(doc_uid)
         logger.info(f"Deleted {count} embeddings for doc_uid={doc_uid}")
         return count
 

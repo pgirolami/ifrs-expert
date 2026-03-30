@@ -20,8 +20,6 @@ if TYPE_CHECKING:
     from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
 
-RELEVANCE_SCORE_THRESHOLD = 0.3
-
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -45,15 +43,17 @@ class AnswerOptions:
     """Options for answer command."""
 
     k: int = 5
-    min_score: float | None = None
-    expand: int = 0
+    min_score: float | None = 0.55
+    expand: int = 5
     full_doc_threshold: int = 0
     output_dir: Path | None = None
     save_all: bool = False
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
-def _init_expansion_data(results: list[SearchResult]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
+def _init_expansion_data(
+    results: list[SearchResult],
+) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
     """Initialize expansion data structures."""
     result_score_by_chunk: dict[tuple[str, int], float] = {}
     doc_order: list[str] = []
@@ -193,8 +193,8 @@ class AnswerCommand:
         """Initialize the answer command."""
         self.query = query
         self.k = options.k if options else 5
-        self.min_score = options.min_score if options else None
-        self.expand = options.expand if options else 0
+        self.min_score = options.min_score if options and options.min_score is not None else 0.6
+        self.expand = options.expand if options else 5
         self.full_doc_threshold = options.full_doc_threshold if options else 0
 
         self._retrieved_doc_uids: list[str] = []
@@ -202,7 +202,9 @@ class AnswerCommand:
 
     def execute(self) -> AnswerCommandResult:
         """Execute the answer command and return the run artifacts."""
-        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k})")
+        logger.info(
+            f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, f={self.full_doc_threshold}, min-score={self.min_score})"
+        )
 
         validation_error = self._get_validation_error()
         if validation_error:
@@ -244,13 +246,15 @@ class AnswerCommand:
         """Execute the main workflow."""
         ranked_results = self._search_chunks()
         if not ranked_results:
-            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
+            return AnswerCommandResult.failure(
+                query=self.query, error="Error: No chunks retrieved", error_stage="retrieval"
+            )
 
         selected_results = self._select_results(ranked_results)
         if not selected_results:
             return AnswerCommandResult.failure(
                 query=self.query,
-                error=f"Error: No chunks found with score >= {RELEVANCE_SCORE_THRESHOLD}",
+                error=f"Error: No chunks found with score >= {self.min_score}",
                 error_stage="retrieval",
             )
 
@@ -258,9 +262,6 @@ class AnswerCommand:
 
         if self.expand > 0 or self.full_doc_threshold > 0:
             selected_results = self._expand_chunks(selected_results, doc_chunks)
-
-        if not selected_results:
-            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
 
         result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
         return self._process_prompts(result, selected_results, doc_chunks)
@@ -271,15 +272,22 @@ class AnswerCommand:
             ranked_results = vector_store.search_all(self.query)
 
         logger.info(f"Search returned {len(ranked_results)} raw results")
+        if ranked_results:
+            top_result = ranked_results[0]
+            logger.info(
+                f"Top retrieved chunk: doc_uid={top_result['doc_uid']}, chunk_id={top_result['chunk_id']}, score={top_result['score']:.4f}"
+            )
+        else:
+            logger.warning(f"What ?? {ranked_results}")
+
         return ranked_results
 
     def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
         """Select top-k results per document."""
-        effective_min_score = self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD
-        logger.info(f"Effective min_score: {effective_min_score}")
-
-        selected_results = self._select_top_k_per_document(ranked_results, self.k, effective_min_score)
-        logger.info(f"Per-document selection: {len(selected_results)} chunks")
+        selected_results = self._select_top_k_per_document(ranked_results, self.k, self.min_score)
+        logger.info(
+            f"{len(selected_results)} chunks with score≥{self.min_score} out of the original {len(ranked_results)}"
+        )
 
         return selected_results
 
@@ -416,7 +424,11 @@ class AnswerCommand:
     def _build_prompt_b(self, context: str, approaches_json: str) -> str:
         """Build Prompt B by substituting placeholders."""
         template = _read_prompt_template(PROMPT_B_PATH)
-        return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
+        return (
+            template.replace("{{CHUNKS}}", context)
+            .replace("{{QUERY}}", self.query)
+            .replace("{{APPROACHES_JSON}}", approaches_json)
+        )
 
     def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure."""
@@ -456,7 +468,13 @@ class AnswerCommand:
 
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""
-        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
+        return (
+            text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&apos;")
+        )
 
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""

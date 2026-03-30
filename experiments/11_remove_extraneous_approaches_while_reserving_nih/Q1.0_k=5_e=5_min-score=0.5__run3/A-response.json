@@ -1,27 +1,27 @@
 {
   "status": "pass",
   "assumptions": [
-    "The question concerns hedge accounting under IFRS 9 in consolidated financial statements.",
-    "The intragroup dividend receivable is denominated in a foreign currency and creates foreign exchange exposure in consolidation."
+    "The question concerns hedge accounting for foreign currency risk under IFRS 9 in consolidated financial statements.",
+    "The intragroup dividend has been declared and has resulted in a recognised receivable between group entities."
   ],
   "approaches": [
     {
       "id": "approach_1",
       "label": "Fair value hedge",
       "normalized_label": "fair_value_hedge",
-      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as a hedge of changes in the fair value of a recognised asset or liability attributable to a particular risk, which is relevant because the fact pattern includes a recognised receivable."
+      "rationale_for_inclusion": "IFRS 9 identifies a fair value hedge as a hedge of exposure to changes in the fair value of a recognised asset or liability attributable to a particular risk, which is relevant when a dividend receivable has already been recognised."
     },
     {
       "id": "approach_2",
       "label": "Cash flow hedge",
       "normalized_label": "cash_flow_hedge",
-      "rationale_for_inclusion": "IFRS 9 identifies a cash flow hedge as a hedge of variability in cash flows of a recognised asset or liability or a highly probable forecast transaction, and the context specifically discusses qualifying intragroup foreign currency exposures in consolidated financial statements."
+      "rationale_for_inclusion": "IFRS 9 identifies a cash flow hedge as a hedge of exposure to variability in cash flows attributable to a particular risk associated with a recognised asset or liability or a highly probable forecast transaction, and the context specifically discusses foreign currency risk on intragroup transactions in consolidated financial statements."
     },
     {
       "id": "approach_3",
       "label": "Hedge of a net investment in a foreign operation",
       "normalized_label": "net_investment_hedge",
-      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify net investment hedging as a distinct hedge accounting model for foreign currency risk in consolidated financial statements."
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk in consolidated financial statements when foreign operations within the group are involved."
     }
   ]
 }

@@ -1,3 +1,8 @@
+evaluateOptions:
+  cache: false
+  maxConcurrency: 2 # Loading the embeddings is almost 4GB per run
+  delay: 5000
+
 prompts:
   - '{{question}}'
 
@@ -6,63 +11,56 @@ providers:
 
 tests:
   - vars:
-      question: "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?"
+      question: file://experiments/00_QUESTIONS/Q1/Q1.0.txt
     options:
       mode: live
     description: "Q1.0 - Intragroup FX hedge on recognized dividend receivable"
-    assert:
+    assert: &shared_hedge_assertions
       - type: is-json
         value: file://./prompts/answer_prompt_B.json
         description: "Output matches expected JSON schema"
 
       - type: javascript
         value: |
-          const data = JSON.parse(output);
-          return Array.isArray(data.assumptions_fr) &&
-                data.assumptions_fr.length >= 1 &&
-                Array.isArray(data.approaches) &&
-                data.approaches.length >= 3 &&
-                Array.isArray(data.operational_points_fr) &&
-                data.operational_points_fr.length >= 1;
+            const data = JSON.parse(output);
+            return Array.isArray(data.assumptions_fr) &&
+                   data.assumptions_fr.length >= 1 &&
+                   Array.isArray(data.approaches) &&
+                   data.approaches.length >= 3 &&
+                   Array.isArray(data.operational_points_fr) &&
+                   data.operational_points_fr.length >= 1;
         description: "Core structured fields are present and non-empty"
 
       - type: javascript
         value: |
-          const data = JSON.parse(output);
-          const labels = data.approaches.map(a => a.normalized_label);
-          return labels.includes('cash_flow_hedge') &&
-                labels.includes('fair_value_hedge') &&
-                labels.includes('net_investment_hedge');
-        description: "Contains all expected hedge approaches"
+            const data = JSON.parse(output);
+            const labels = data.approaches.map(a => a.normalized_label);
+            return labels.includes('cash_flow_hedge') &&
+                   labels.includes('fair_value_hedge') &&
+                   labels.includes('net_investment_hedge');
+        description: "All expected hedge approaches are identified"
 
       - type: javascript
         value: |
-          const data = JSON.parse(output);
-          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+            const data = JSON.parse(output);
+            return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
         description: "Recommendation answer is one of the allowed values"
 
       - type: javascript
         value: |
-          const data = JSON.parse(output);
-          return typeof data.recommendation?.justification === 'string' &&
-                  data.recommendation.justification.length > 80;
+            const data = JSON.parse(output);
+            return typeof data.recommendation?.justification === 'string' &&
+                   data.recommendation.justification.length > 80;
         description: "Recommendation includes a non-trivial justification"
 
       - type: javascript
         value: |
-          const data = JSON.parse(output);
-          return Array.isArray(data.operational_points_fr) && data.operational_points_fr.length >= 1;
-        description: "Operational points are present"
-
-
-      - type: javascript
-        value: |
-          const data = JSON.parse(output);
-          return data.approaches.every(a =>
-            typeof a.applicability === 'string' &&
-            Array.isArray(a.references) &&
-            a.references.length >= 1
-          );
+            const data = JSON.parse(output);
+            return data.approaches.every(a =>
+              typeof a.applicability === 'string' &&
+              Array.isArray(a.references) &&
+              a.references.length >= 1
+            );
         description: "Each approach has applicability and at least one reference"
 
       - type: llm-rubric
@@ -73,8 +71,28 @@ tests:
           - provide reasoning that would be useful to an IFRS expert
           - include practical next steps or operational implications
         threshold: 0.8
-        provider: openai:gpt-5.4
-        description: "Answer is coherent, useful, and practically actionable"
+        description: "LLM-as-judge considers the answer is coherent, useful, and practically actionable"
+
+  - vars:
+      question: file://experiments/00_QUESTIONS/Q1/Q1.1.txt
+    options:
+      mode: live
+    description: "Q1.1 - Intragroup FX hedge wording variant"
+    assert: *shared_hedge_assertions
+
+  - vars:
+      question: file://experiments/00_QUESTIONS/Q1/Q1.2.txt
+    options:
+      mode: live
+    description: "Q1.2 - Intragroup FX hedge wording variant"
+    assert: *shared_hedge_assertions
+
+  - vars:
+      question: file://experiments/00_QUESTIONS/Q1/Q1.3.txt
+    options:
+      mode: live
+    description: "Q1.3 - Intragroup FX hedge wording variant"
+    assert: *shared_hedge_assertions
 
 readme: |
   IFRS Expert Evaluation Suite
@@ -86,5 +104,5 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Run: npm run eval
-  View: npm run eval:view
+  Run: npx promptfoo eval
+  View: npx promptfoo view

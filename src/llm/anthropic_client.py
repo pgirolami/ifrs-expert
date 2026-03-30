@@ -6,6 +6,7 @@ from typing import Any
 
 import anthropic
 from anthropic.types import Message, MessageParam
+from anthropic.types.thinking_config_enabled_param import ThinkingConfigEnabledParam
 
 from src.llm.base import LLMClient
 
@@ -29,7 +30,6 @@ def _extract_text_from_blocks(content: list[Any]) -> list[str]:
     """
     result: list[str] = []
     for block in content:
-        # Use getattr to safely access text attribute from union type
         text_attr = getattr(block, "text", None)
         if text_attr:
             result.append(text_attr)
@@ -66,13 +66,7 @@ class AnthropicClient(LLMClient):
 
         logger.info(f"Calling Anthropic model {self._model}")
         try:
-            response: Message = self._client.messages.create(
-                model=self._model,
-                messages=messages,
-                temperature=0.0,
-                max_tokens=8192,
-                **self._thinking_kwargs(),
-            )
+            response = self._create_message(messages)
         except Exception as e:
             error_str = str(e)
             if "401" in error_str or "api_key" in error_str.lower() or "Unauthorized" in error_str:
@@ -95,7 +89,6 @@ class AnthropicClient(LLMClient):
         Returns:
             Parsed JSON response from the LLM
         """
-        # Add JSON instruction to prompt for more reliable JSON output
         json_prompt = f"{prompt}\n\nRespond with valid JSON only, no additional text."
 
         messages: list[MessageParam] = []
@@ -104,13 +97,7 @@ class AnthropicClient(LLMClient):
         messages.append(MessageParam(role="user", content=json_prompt))
 
         logger.info(f"Calling Anthropic model {self._model} for JSON")
-        response: Message = self._client.messages.create(
-            model=self._model,
-            messages=messages,
-            temperature=0.0,
-            max_tokens=8192,
-            **self._thinking_kwargs(),
-        )
+        response = self._create_message(messages)
 
         json_parts = _extract_text_from_blocks(response.content)
 
@@ -124,16 +111,32 @@ class AnthropicClient(LLMClient):
             logger.exception(JSON_PARSE_FAILED_MESSAGE)
             raise
 
-    def _thinking_kwargs(self) -> dict[str, dict[str, int | str]]:
-        """Return Anthropic thinking settings for thinking-capable models."""
-        if self._model.startswith(THINKING_MODEL_PREFIXES):
-            logger.info(
-                f"Using Anthropic thinking budget {HIGH_THINKING_BUDGET_TOKENS} for model {self._model}"
+    def _create_message(self, messages: list[MessageParam]) -> Message:
+        """Create an Anthropic message with optional thinking enabled."""
+        if self._uses_thinking():
+            return self._client.messages.create(
+                model=self._model,
+                messages=messages,
+                temperature=0.0,
+                max_tokens=8192,
+                thinking=self._thinking_config(),
             )
-            return {
-                "thinking": {
-                    "type": "enabled",
-                    "budget_tokens": HIGH_THINKING_BUDGET_TOKENS,
-                }
-            }
-        return {}
+
+        return self._client.messages.create(
+            model=self._model,
+            messages=messages,
+            temperature=0.0,
+            max_tokens=8192,
+        )
+
+    def _uses_thinking(self) -> bool:
+        """Return whether the current model supports Anthropic thinking."""
+        return self._model.startswith(THINKING_MODEL_PREFIXES)
+
+    def _thinking_config(self) -> ThinkingConfigEnabledParam:
+        """Return Anthropic thinking settings for thinking-capable models."""
+        logger.info(f"Using Anthropic thinking budget {HIGH_THINKING_BUDGET_TOKENS} for model {self._model}")
+        return ThinkingConfigEnabledParam(
+            type="enabled",
+            budget_tokens=HIGH_THINKING_BUDGET_TOKENS,
+        )

@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "answer_prompt_B.schema.json",
   "title": "IFRS Expert Answer Artifact",
   "description": "JSON schema for structured IFRS expert decision artifact returned by answer_prompt_B.txt",
   "oneOf": [
@@ -15,7 +14,10 @@
     "NeedsClarificationResponse": {
       "type": "object",
       "description": "Response when identified_approaches.status is 'needs_clarification'",
-      "required": ["status", "questions_fr"],
+      "required": [
+        "status",
+        "questions_fr"
+      ],
       "properties": {
         "status": {
           "type": "string",
@@ -35,7 +37,12 @@
     },
     "FullAnswerResponse": {
       "type": "object",
-      "required": ["assumptions_fr", "recommendation", "approaches", "operational_points_fr"],
+      "required": [
+        "assumptions_fr",
+        "recommendation",
+        "approaches",
+        "operational_points_fr"
+      ],
       "properties": {
         "assumptions_fr": {
           "type": "array",
@@ -48,17 +55,24 @@
         "recommendation": {
           "type": "object",
           "description": "Final recommendation object",
-          "required": ["answer", "justification"],
+          "required": [
+            "answer",
+            "justification"
+          ],
           "properties": {
             "answer": {
               "type": "string",
-              "enum": ["oui", "non", "oui_sous_conditions"],
+              "enum": [
+                "oui",
+                "non",
+                "oui_sous_conditions"
+              ],
               "description": "Recommendation answer"
             },
             "justification": {
               "type": "string",
               "description": "2-3 lines max justification",
-              "maxLength": 300
+              "maxLength": 500
             }
           }
         },
@@ -81,7 +95,15 @@
     },
     "Approach": {
       "type": "object",
-      "required": ["id", "normalized_label", "label_fr", "applicability", "reasoning_fr", "practical_implication_fr", "references"],
+      "required": [
+        "id",
+        "normalized_label",
+        "label_fr",
+        "applicability",
+        "reasoning_fr",
+        "practical_implication_fr",
+        "references"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -99,7 +121,11 @@
         },
         "applicability": {
           "type": "string",
-          "enum": ["oui", "non", "oui_sous_conditions"],
+          "enum": [
+            "oui",
+            "non",
+            "oui_sous_conditions"
+          ],
           "description": "Whether this approach applies to the specific situation"
         },
         "reasoning_fr": {
@@ -131,7 +157,10 @@
     },
     "Reference": {
       "type": "object",
-      "required": ["section", "excerpt"],
+      "required": [
+        "section",
+        "excerpt"
+      ],
       "properties": {
         "section": {
           "type": "string",
