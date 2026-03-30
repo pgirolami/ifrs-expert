@@ -1,28 +1,55 @@
 """Tests for answer command."""
 
-from pathlib import Path
+from __future__ import annotations
 
-import pytest
 import unittest.mock
+from typing import cast
 
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
+from src.interfaces import SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
 
+VALID_PROMPT_B_RESPONSE = """{
+  "assumptions_fr": ["Hypothèse de test"],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Justification de test"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui",
+      "reasoning_fr": "Le traitement s'applique dans cette situation de test.",
+      "conditions_fr": ["Condition de test"],
+      "practical_implication_fr": "Implication de test",
+      "references": [
+        {
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": ["Point opérationnel de test"]
+}"""
 
-class MockVectorStore:
+
+class MockVectorStore(SearchVectorStoreProtocol):
     """Minimal mock for VectorStore context manager."""
 
-    def __init__(self, search_results: list[dict]) -> None:
-        self._search_results = search_results
+    def __init__(self, search_results: list[dict[str, str | int | float]]) -> None:
+        self._search_results = cast(list[SearchResult], search_results)
 
     def __enter__(self) -> "MockVectorStore":
         return self
 
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
-        pass
+        return None
 
-    def search_all(self, query: str) -> list[dict]:
+    def search_all(self, query: str) -> list[SearchResult]:
         return self._search_results
 
 
@@ -39,28 +66,25 @@ class MockIndexPath:
 class TestAnswerCommand:
     """Tests for answer command using dependency injection."""
 
-    def test_answer_no_index(self):
+    def test_answer_no_index(self) -> None:
         """Test answer command when no index exists."""
         config = AnswerConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=False),
-            send_to_llm_fn=lambda p: "result",
+            send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(
-            query="test",
-            config=config,
-            options=AnswerOptions(k=5),
-        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
 
         result = command.execute()
 
-        assert result.startswith("Error:")
-        assert "No index found" in result
+        assert result.success is False
+        assert result.error is not None
+        assert "No index found" in result.error
 
-    def test_answer_with_results(self):
-        """Test answer returns prompt with embedded chunks."""
+    def test_answer_with_results_returns_result_artifacts(self) -> None:
+        """Test answer command returns a structured result with artifacts."""
         search_results = [
             {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
             {"doc_uid": "doc1", "chunk_id": 2, "score": 0.8},
@@ -75,15 +99,13 @@ class TestAnswerCommand:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        # Track calls to mock_send_to_llm
         call_count = [0]
 
         def mock_send_to_llm(prompt: str) -> str:
             call_count[0] += 1
-            # First call is Prompt A -> return JSON, second is Prompt B -> return final
             if call_count[0] == 1:
-                return '{"approaches": []}'
-            return "Final answer from LLM"
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
@@ -92,50 +114,44 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(
-            query="What is the scope?",
-            config=config,
-            options=AnswerOptions(k=5),
-        )
+        command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(k=5))
 
-        # Mock prompt file existence and reading
-        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), \
-             unittest.mock.patch("src.commands.answer._read_prompt_template") as mock_read_template:
-
-            # Template returns the prompt with placeholders replaced
-            def read_template(path):
-                return "You are an IFRS expert.\n\nContext:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
-
-            mock_read_template.side_effect = read_template
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), unittest.mock.patch(
+            "src.commands.answer._read_prompt_template",
+        ) as mock_read_template:
+            mock_read_template.side_effect = lambda path: "You are an IFRS expert.\n\nContext:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
 
             result = command.execute()
 
-            assert "Final answer from LLM" in result
+        assert result.success is True
+        assert result.error is None
+        assert result.prompt_a_text is not None
+        assert result.prompt_a_raw_response == '{"status": "pass", "approaches": []}'
+        assert result.prompt_a_json is not None
+        assert result.prompt_b_text is not None
+        assert result.prompt_b_raw_response == VALID_PROMPT_B_RESPONSE
+        assert result.prompt_b_json is not None
+        assert result.prompt_b_markdown is not None
+        assert result.retrieved_doc_uids == ["doc1"]
 
-    def test_answer_no_results(self):
+    def test_answer_no_results(self) -> None:
         """Test answer command with no matching results."""
-        def mock_send_to_llm(prompt: str) -> str:
-            return "result"
-
         config = AnswerConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
-            send_to_llm_fn=mock_send_to_llm,
+            send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(
-            query="test",
-            config=config,
-            options=AnswerOptions(k=5),
-        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
 
-            assert result == "Error: No chunks retrieved"
+        assert result.success is False
+        assert result.error == "Error: No chunks retrieved"
 
-    def test_answer_min_score_filter(self):
+    def test_answer_min_score_filter(self) -> None:
         """Test answer command respects min_score filter."""
         search_results = [
             {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
@@ -155,9 +171,9 @@ class TestAnswerCommand:
 
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
-            if "You are an IFRS expert" in prompt:
-                return '{"approaches": []}'
-            return "Final answer"
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
@@ -166,24 +182,19 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(
-            query="test",
-            config=config,
-            options=AnswerOptions(k=5, min_score=0.5),
-        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
 
-            # Verify that the low relevance content was filtered out
-            assert "high relevance content" in captured_prompts[0]
-            assert "low relevance content" not in captured_prompts[0]
+        assert result.success is True
+        assert captured_prompts
+        assert "high relevance content" in captured_prompts[0]
+        assert "low relevance content" not in captured_prompts[0]
 
-    def test_answer_expand_includes_neighboring_chunks(self):
+    def test_answer_expand_includes_neighboring_chunks(self) -> None:
         """Test answer expansion includes surrounding chunks in document order."""
-        search_results = [
-            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
-        ]
+        search_results = [{"doc_uid": "doc1", "chunk_id": 2, "score": 0.9}]
 
         mock_chunks = [
             Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="chunk 1"),
@@ -199,9 +210,9 @@ class TestAnswerCommand:
 
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
-            if "You are an IFRS expert" in prompt:
-                return '{"approaches": []}'
-            return "Final answer"
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
@@ -210,26 +221,21 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(
-            query="test",
-            config=config,
-            options=AnswerOptions(k=5, expand=1),
-        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, expand=1))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
 
-            prompt_a = captured_prompts[0]
-            assert '<Document name="doc1">' in prompt_a
-            assert 'id="1"' in prompt_a
-            assert 'id="2"' in prompt_a
-            assert 'id="3"' in prompt_a  # expand=1 includes surrounding chunks
+        assert result.success is True
+        prompt_a = captured_prompts[0]
+        assert '<Document name="doc1">' in prompt_a
+        assert 'id="1"' in prompt_a
+        assert 'id="2"' in prompt_a
+        assert 'id="3"' in prompt_a
 
-    def test_answer_full_doc_threshold_uses_total_text_size(self):
+    def test_answer_full_doc_threshold_uses_total_text_size(self) -> None:
         """Test answer includes the full document when total text size is below threshold."""
-        search_results = [
-            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
-        ]
+        search_results = [{"doc_uid": "doc1", "chunk_id": 2, "score": 0.9}]
 
         mock_chunks = [
             Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="aa"),
@@ -245,9 +251,9 @@ class TestAnswerCommand:
 
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
-            if 'status": "pass"' in prompt or 'status": "needs_clarification"' in prompt:
+            if len(captured_prompts) == 1:
                 return '{"status": "pass", "approaches": []}'
-            return '{"approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
@@ -256,24 +262,17 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(
-            query="test",
-            config=config,
-            options=AnswerOptions(k=5, full_doc_threshold=10),
-        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, full_doc_threshold=10))
 
-        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), \
-             unittest.mock.patch("src.commands.answer._read_prompt_template") as mock_read_template:
-
-            def read_template(path):
-                return "Context:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
-
-            mock_read_template.side_effect = read_template
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), unittest.mock.patch(
+            "src.commands.answer._read_prompt_template",
+        ) as mock_read_template:
+            mock_read_template.side_effect = lambda path: "Context:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
 
             result = command.execute()
 
-            prompt_a = captured_prompts[0]
-            # All 3 chunks should be included when full_doc_threshold is triggered
-            assert 'id="1"' in prompt_a
-            assert 'id="2"' in prompt_a
-            assert 'id="3"' in prompt_a
+        assert result.success is True
+        prompt_a = captured_prompts[0]
+        assert 'id="1"' in prompt_a
+        assert 'id="2"' in prompt_a
+        assert 'id="3"' in prompt_a

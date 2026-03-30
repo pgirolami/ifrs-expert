@@ -11,6 +11,8 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
+from src.interfaces import SearchResult
+
 # Suppress sentence-transformers logging
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
@@ -175,7 +177,7 @@ class VectorStore:
 
         logger.info(f"Added {len(texts)} embeddings to index")
 
-    def search(self, query: str, k: int = 5) -> list[dict]:
+    def search(self, query: str, k: int = 5) -> list[SearchResult]:
         """Search for similar chunks.
 
         Args:
@@ -194,7 +196,7 @@ class VectorStore:
         bounded_k = min(k, self._index.ntotal)
         return self._search_with_k(query, bounded_k)
 
-    def search_all(self, query: str) -> list[dict]:
+    def search_all(self, query: str) -> list[SearchResult]:
         """Search across the full index and return all ranked results."""
         if self._index is None or self._index.ntotal == 0:
             logger.warning("Index is empty, no results to return")
@@ -202,7 +204,7 @@ class VectorStore:
 
         return self._search_with_k(query, self._index.ntotal)
 
-    def _search_with_k(self, query: str, k: int) -> list[dict]:
+    def _search_with_k(self, query: str, k: int) -> list[SearchResult]:
         """Run a FAISS search with the specified k."""
         model = self._get_model()
         query_embedding = model.encode([query]).astype("float32")
@@ -213,7 +215,7 @@ class VectorStore:
         # Search using inner product (which becomes cosine similarity with normalized vectors)
         scores, indices = self._index.search(query_embedding, k)  # type: ignore[union-attr]
 
-        results: list[dict] = []
+        results: list[SearchResult] = []
         for score, idx in zip(scores[0], indices[0], strict=True):
             if idx >= 0 and idx in self._id_map:
                 doc_uid, chunk_id = self._id_map[idx]

@@ -60,13 +60,16 @@ Requirements:
   - [IFRS 9](https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifrs-9-financial-instruments.pdf)
   - [IFRIC 16](https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf)
 
+Setup:
+```bash
+uv sync --all-groups
+```
 
+uv run streamlit run streamlit_app.py
 ### Ingest the IFRS 9 & IFRIC 16 PDFs
 This only needs to be done once.
 
 ```bash
-uv sync --all-groups
-
 uv run python -m src.cli store "~/Downloads/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation" --doc-uid ifric-16
 uv run python -m src.cli store "~/Downloads/ifrs-9-financial-instruments.pdf" --doc-uid ifrs-9
 ```
@@ -87,7 +90,7 @@ What to expect:
 - `list` prints the document IDs currently loaded in SQLite, you should see `ifrs-9` and `ifric-16`
 
 
-### Run the retrieval process
+### Run the retrieval process through the CLI
 
 ```bash
 echo 'Can a derivative be designated as a hedging instrument in a hedge of a net investment in a foreign operation?\n' \
@@ -106,7 +109,7 @@ Notes:
 - `-f` is the size threshold under which a single chunk in a document expands to all the chunks in the document (used to handle the large variation in document size)
 - `--json` returns the full result as JSON rather than a plain text sumary
 
-### Run the full answer pipeline
+### Run the full answer pipeline through the CLI
 
 The `answer` command uses direct API calls to OpenAI, Anthropic, or Mistral. Set the provider and its API key via an environment variable or in the `.env` file (see `.env.example`).
 
@@ -132,6 +135,20 @@ What to expect:
     - B-reponse.json and B-response.md
 - if there is an error at any stage, an `A-error.txt` or `B-error.txt` file will be written
 - a more detailed log of the run in [logs/app.log](./logs/app.log) 
+
+### Run the full answer pipeline and follow-up questions through the app
+
+Launch the chat UI:
+
+```bash
+uv run streamlit run streamlit_app.py
+```
+
+What to expect:
+- the app initially shows only the chat input
+- the first question runs the grounded `AnswerCommand` pipeline
+- the first grounded answer is rendered as Markdown in chat bubbles
+- later follow-up turns reuse the first grounded answer and previous turns as conversation context and go directly to the configured LLM
 
 ### What this system demonstrates
 
@@ -205,7 +222,7 @@ Key outcomes:
 
 - The tests & evaluations were done on a small corpus so far which includes IFRS 9 and IFRIC 16.
 - PDF extraction is heuristic and layout-dependent; section detection is based on coordinates and formatting rules, not a robust parser.
-- The project is CLI-first today. There is no finished UI layer in the repository.
+- Follow-up turns in the Streamlit UI currently reuse the first grounded answer as context and do not rerun retrieval automatically.
 - Code quality is uneven in places because the repository grew through experiments; some analysis scripts are brittle .
 
 ## 7. Future work
@@ -213,7 +230,10 @@ Key outcomes:
 - Continue to improve prompts as new failures are discovered
   - start by addressing the issue uncovered in Experiment 14 regarding answers being too confident & closed when uncertainty still remains
 
-- Extend the corpus beyond the current IFRS 9 / IFRIC 16 focus, including overlapping guidance such as IFRS 13, doctrine, Big 4 materials, blog posts and forums.
+- Extend the corpus beyond the current IFRS 9 / IFRIC 16 focus, including
+  - overlapping guidance such as IFRS 13
+  - Big 4 materials
+  - blog posts and forums
 
 - Make ingestion more robust, especially section boundary detection and expansion to better structural units.
   - Consider ingesting straight from the IFRS website because it will simplify aligning section path & text

@@ -63,9 +63,9 @@ class TestExtractPageNumber:
 
     def test_extract_page_number_from_footer(self):
         """Test extracting page number from footer."""
-        from src.pdf.extraction import extract_page_number_from_footer
+        from src.pdf.extraction import BlockDict, extract_page_number_from_footer
 
-        blocks = [
+        blocks: list[BlockDict] = [
             {
                 "type": 0,
                 "bbox": [0, 720, 100, 750],
@@ -84,9 +84,9 @@ class TestExtractPageNumber:
 
     def test_extract_page_number_not_in_footer(self):
         """Test that non-footer text is not extracted."""
-        from src.pdf.extraction import extract_page_number_from_footer
+        from src.pdf.extraction import BlockDict, extract_page_number_from_footer
 
-        blocks = [
+        blocks: list[BlockDict] = [
             {
                 "type": 0,
                 "bbox": [0, 100, 100, 150],
@@ -105,12 +105,13 @@ class TestExtractPageNumber:
 
     def test_extract_page_number_empty_blocks(self):
         """Test empty blocks."""
-        from src.pdf.extraction import extract_page_number_from_footer
+        from src.pdf.extraction import BlockDict, extract_page_number_from_footer
 
         result = extract_page_number_from_footer([])
         assert result is None
 
-        result = extract_page_number_from_footer([{"type": 1}])
+        minimal_block: BlockDict = {"type": 1, "bbox": [0, 0, 0, 0], "lines": []}
+        result = extract_page_number_from_footer([minimal_block])
         assert result is None
 
 

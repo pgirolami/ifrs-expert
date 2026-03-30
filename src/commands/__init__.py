@@ -5,9 +5,11 @@ from src.commands.chunk import ChunkCommand
 from src.commands.list import ListCommand
 from src.commands.query import QueryCommand, QueryConfig, QueryOptions
 from src.commands.store import StoreCommand
+from src.models.answer_command_result import AnswerCommandResult
 
 __all__ = [
     "AnswerCommand",
+    "AnswerCommandResult",
     "AnswerConfig",
     "AnswerOptions",
     "ChunkCommand",

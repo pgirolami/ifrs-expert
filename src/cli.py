@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from dotenv import load_dotenv
 
@@ -15,12 +17,14 @@ from src.commands.query import create_query_command
 from src.commands.store import create_store_command
 from src.logging_config import setup_logging
 
+if TYPE_CHECKING:
+    from src.models.answer_command_result import AnswerCommandResult
+
 logger = logging.getLogger(__name__)
 
 
 def main() -> int:
     """Entry point for the CLI."""
-    # Load environment variables from .env file before any other imports
     load_dotenv()
     setup_logging()
 
@@ -28,7 +32,6 @@ def main() -> int:
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # Chunk command
     chunk_parser = subparsers.add_parser(
         "chunk",
         help="Parse a PDF file into chunks and output as JSON",
@@ -38,7 +41,6 @@ def main() -> int:
         help="Path to the PDF file to chunk",
     )
 
-    # Store command
     store_parser = subparsers.add_parser(
         "store",
         help="Extract chunks from a PDF and store in the database",
@@ -52,7 +54,6 @@ def main() -> int:
         help="Document UID to use (default: PDF filename stem)",
     )
 
-    # List command
     list_parser = subparsers.add_parser(
         "list",
         help="List documents or chunks in the database",
@@ -62,7 +63,6 @@ def main() -> int:
         help="Show chunks for a specific document",
     )
 
-    # Query command
     query_parser = subparsers.add_parser(
         "query",
         help="Search for similar chunks using text query (reads query from stdin)",
@@ -100,7 +100,6 @@ def main() -> int:
         help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
     )
 
-    # Answer command
     answer_parser = subparsers.add_parser(
         "answer",
         help="Search for chunks and embed them into a prompt template (reads query from stdin)",
@@ -152,17 +151,14 @@ def main() -> int:
 
     logger.info(f"CLI command received: {args.command}")
 
-    # Execute command and output result
     result = _execute_command(args)
 
-    # Handle result
     if result.startswith("Error:"):
         logger.error(result)
         return 1
 
     logger.info(f"CLI command completed successfully: {args.command}")
 
-    # Output result to stdout (skip if --save-all was used, files are already saved)
     if not (args.command == "answer" and getattr(args, "save_all", False)):
         sys.stdout.buffer.write(result.encode("utf-8") + b"\n")
     return 0
@@ -172,12 +168,17 @@ def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
     if args.command == "chunk":
         command = ChunkCommand(pdf_path=Path(args.pdf))
-    elif args.command == "store":
+        return command.execute()
+
+    if args.command == "store":
         command = create_store_command(pdf_path=Path(args.pdf), doc_uid=args.doc_uid)
-    elif args.command == "list":
+        return command.execute()
+
+    if args.command == "list":
         command = ListCommand(doc_uid=args.doc_uid)
-    elif args.command == "query":
-        # Read query from stdin
+        return command.execute()
+
+    if args.command == "query":
         query = sys.stdin.read().strip()
         verbose = not getattr(args, "json", False)
         command = create_query_command(
@@ -190,27 +191,105 @@ def _execute_command(args: argparse.Namespace) -> str:
                 full_doc_threshold=args.full_doc_threshold,
             ),
         )
-    elif args.command == "answer":
-        # Read query from stdin
-        query = sys.stdin.read().strip()
-        command = create_answer_command(
-            query=query,
-            options=AnswerOptions(
-                k=args.k,
-                min_score=args.min_score,
-                expand=args.expand,
-                full_doc_threshold=args.full_doc_threshold,
-                output_dir=args.output_dir,
-                save_all=args.save_all,
-            ),
-        )
-    else:
-        return f"Error: Unknown command: {args.command}"
+        return command.execute()
 
-    return command.execute()
+    if args.command == "answer":
+        return _execute_answer_command(args)
+
+    return f"Error: Unknown command: {args.command}"
 
 
-# Keep backward compatibility - expose query_command for tests
+def _execute_answer_command(args: argparse.Namespace) -> str:
+    """Execute the answer command while keeping CLI behavior unchanged."""
+    option_error = _get_answer_option_error(args)
+    if option_error:
+        return option_error
+
+    query = sys.stdin.read().strip()
+    command = create_answer_command(
+        query=query,
+        options=AnswerOptions(
+            k=args.k,
+            min_score=args.min_score,
+            expand=args.expand,
+            full_doc_threshold=args.full_doc_threshold,
+            output_dir=args.output_dir,
+            save_all=args.save_all,
+        ),
+    )
+    result = command.execute()
+
+    if args.save_all and args.output_dir is not None:
+        _save_answer_command_result(result, args.output_dir)
+
+    if result.error:
+        return result.error
+
+    return _answer_stdout_text(result)
+
+
+def _get_answer_option_error(args: argparse.Namespace) -> str | None:
+    """Validate CLI-only answer options."""
+    if getattr(args, "save_all", False) and getattr(args, "output_dir", None) is None:
+        return "Error: --save-all requires --output-dir to be specified"
+
+    output_dir = getattr(args, "output_dir", None)
+    if output_dir is not None and not output_dir.exists():
+        return f"Error: Output directory does not exist: {output_dir}"
+
+    return None
+
+
+def _save_answer_command_result(result: AnswerCommandResult, output_dir: Path) -> None:
+    """Persist answer artifacts using the historical CLI file layout."""
+    if result.prompt_a_text is not None:
+        _write_text_file(output_dir / "A-prompt.txt", result.prompt_a_text)
+
+    if result.prompt_a_raw_response is not None:
+        _write_text_file(output_dir / "A-response.json", result.prompt_a_raw_response)
+
+    if result.prompt_b_text is not None:
+        _write_text_file(output_dir / "B-prompt.txt", result.prompt_b_text)
+
+    if result.prompt_b_raw_response is not None:
+        _write_b_response_json(output_dir / "B-response.json", result)
+
+    if result.prompt_b_markdown is not None:
+        _write_text_file(output_dir / "B-response.md", result.prompt_b_markdown)
+
+    if result.error is not None and result.error_stage == "prompt_a":
+        _write_text_file(output_dir / "A-error.txt", result.error)
+
+    if result.error is not None and result.error_stage == "prompt_b":
+        _write_text_file(output_dir / "B-error.txt", result.error)
+
+
+def _write_b_response_json(path: Path, result: AnswerCommandResult) -> None:
+    """Write the historical B-response.json artifact."""
+    if result.prompt_b_json is not None:
+        path.write_text(json.dumps(result.prompt_b_json, indent=2, ensure_ascii=False), encoding="utf-8")
+        return
+
+    if result.prompt_b_raw_response is not None:
+        path.write_text(result.prompt_b_raw_response, encoding="utf-8")
+
+
+def _write_text_file(path: Path, content: str) -> None:
+    """Write UTF-8 text content to a file."""
+    path.write_text(content, encoding="utf-8")
+
+
+def _answer_stdout_text(result: AnswerCommandResult) -> str:
+    """Build the stdout payload for the answer command."""
+    if result.prompt_b_raw_response is not None:
+        return result.prompt_b_raw_response
+
+    if result.prompt_b_markdown is not None:
+        return result.prompt_b_markdown
+
+    return ""
+
+
 def query_command(args: argparse.Namespace) -> int:
     """Backward compatibility wrapper for tests."""
     result = _execute_command(args)

@@ -472,7 +472,7 @@ def track_pages_with_content(
     next_section: SectionMarker | None,
     all_content: list[SpanContent],
     bold_boundary: tuple[int, float] | None,
-) -> set[str]:
+) -> dict[int, str]:
     """Track which pages have content for this section."""
     section_page = section["page_index"]
     next_page = next_section["page_index"] if next_section else float("inf")
@@ -480,7 +480,7 @@ def track_pages_with_content(
     next_y = next_section["y"] if next_section else float("inf")
     bold_page = bold_boundary[0] if bold_boundary else -1
 
-    content_pages: set[str] = set()
+    content_pages: dict[int, str] = {}
 
     for span in all_content:
         span_page = span["page_index"]
@@ -507,7 +507,7 @@ def track_pages_with_content(
             continue
 
         if span["text"].strip():
-            content_pages.add(span["page"])
+            content_pages[span_page] = span["page"]
 
     return content_pages
 
@@ -539,7 +539,11 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
         content_pages = track_pages_with_content(section, next_section, all_content, bold_boundary)
 
         page_start = section["page"]
-        page_end = content_pages.pop() if content_pages else section["page"]
+        if content_pages:
+            last_content_page_index = max(content_pages)
+            page_end = content_pages[last_content_page_index]
+        else:
+            page_end = section["page"]
 
         results.append(
             Chunk(

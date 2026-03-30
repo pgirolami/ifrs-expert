@@ -5,12 +5,13 @@ from unittest.mock import patch
 
 import pytest
 
-from src.commands.store import StoreCommand, MAX_CHUNK_CHARS
+from src.commands.store import MAX_CHUNK_CHARS, StoreCommand
+from src.interfaces import SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
 
 
-class MockVectorStore:
+class MockVectorStore(VectorStoreProtocol):
     """Minimal mock for VectorStore context manager."""
 
     def __init__(self) -> None:
@@ -22,11 +23,14 @@ class MockVectorStore:
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         pass
 
+    def search_all(self, query: str) -> list[SearchResult]:
+        return []
+
     def delete_by_doc(self, doc_uid: str) -> int:
         return self._deleted_count
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
-        pass
+        return None
 
 
 class TestStoreCommand:

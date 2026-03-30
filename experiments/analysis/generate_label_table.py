@@ -79,9 +79,9 @@ def format_table(exp_name: str, label_counts: dict[str, dict[str, int]]) -> str:
         return (0, 0)
     
     all_questions.sort(key=question_sort_key)
-    all_labels = sorted(all_labels)
+    sorted_labels = sorted(all_labels)
     
-    if not all_labels or not all_questions:
+    if not sorted_labels or not all_questions:
         return f"No data for {exp_name}"
     
     # Build header - short question IDs
@@ -91,7 +91,7 @@ def format_table(exp_name: str, label_counts: dict[str, dict[str, int]]) -> str:
     
     # Build rows
     rows = []
-    for label in all_labels:
+    for label in sorted_labels:
         row = f"| {label} |"
         total = 0
         for question_id in all_questions:

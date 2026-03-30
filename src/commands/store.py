@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.db import ChunkStore, init_db
+from src.interfaces import ChunkStoreProtocol, VectorStoreProtocol
 from src.pdf import extract_chunks
 from src.vector.store import VectorStore
 
@@ -17,8 +18,8 @@ logger = logging.getLogger(__name__)
 MAX_CHUNK_CHARS = 2000
 
 # Type aliases for dependency injection
-StoreChunkStore = ChunkStore
-StoreVectorStore = VectorStore
+StoreChunkStore = ChunkStoreProtocol
+StoreVectorStore = VectorStoreProtocol
 StoreInitDb = Callable[[], None]
 StoreIndexPath = Callable[[], Path]
 

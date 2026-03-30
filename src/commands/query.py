@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.db import ChunkStore, init_db
+from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.vector.store import VectorStore, get_index_path
 
@@ -20,8 +21,8 @@ RELEVANCE_HIGH_THRESHOLD = 0.3
 class QueryConfig:
     """Configuration for QueryCommand."""
 
-    vector_store: VectorStore
-    chunk_store: ChunkStore
+    vector_store: SearchVectorStoreProtocol
+    chunk_store: ReadChunkStoreProtocol
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
 
@@ -38,7 +39,7 @@ class QueryOptions:
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
-def _init_expansion_data(results: list[dict]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
+def _init_expansion_data(results: list[SearchResult]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
     """Initialize expansion data structures."""
     result_score_by_chunk: dict[tuple[str, int], float] = {}
     doc_order: list[str] = []
@@ -78,7 +79,7 @@ def _include_full_document(
 
 
 def _expand_with_neighbour_chunks(
-    results: list[dict],
+    results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
     selected_ids_by_doc: dict[str, set[int]],
     expand: int,
@@ -110,9 +111,9 @@ def _build_expanded_results(
     doc_chunks: dict[str, list[Chunk]],
     selected_ids_by_doc: dict[str, set[int]],
     result_score_by_chunk: dict[tuple[str, int], float],
-) -> list[dict]:
+) -> list[SearchResult]:
     """Build the final expanded results list."""
-    expanded_results: list[dict] = []
+    expanded_results: list[SearchResult] = []
     for doc_uid in doc_order:
         for chunk in doc_chunks.get(doc_uid, []):
             chunk_id = chunk.chunk_id
@@ -206,7 +207,7 @@ class QueryCommand:
 
         return self._format_output(selected_results, doc_chunks)
 
-    def _format_output(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str:
+    def _format_output(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Format and return the output."""
         if not self.verbose:
             chunks_output = self._build_json_output(results, doc_chunks)
@@ -235,7 +236,7 @@ class QueryCommand:
 
         return None
 
-    def _search_chunks(self) -> list[dict]:
+    def _search_chunks(self) -> list[SearchResult]:
         """Search for relevant chunks."""
         with self._config.vector_store as vector_store:
             ranked_results = vector_store.search_all(self.query)
@@ -243,7 +244,7 @@ class QueryCommand:
         logger.info(f"Search returned {len(ranked_results)} raw results")
         return ranked_results
 
-    def _select_results(self, ranked_results: list[dict]) -> list[dict]:
+    def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
         """Select top-k results per document."""
         effective_min_score = self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD
         logger.info(f"Effective min_score: {effective_min_score}")
@@ -255,12 +256,12 @@ class QueryCommand:
 
     def _select_top_k_per_document(
         self,
-        ranked_results: list[dict],
+        ranked_results: list[SearchResult],
         k: int,
         min_score: float,
-    ) -> list[dict]:
+    ) -> list[SearchResult]:
         """Select up to k chunks per document above the score threshold."""
-        selected_results: list[dict] = []
+        selected_results: list[SearchResult] = []
         counts_by_doc: dict[str, int] = {}
 
         for result in ranked_results:
@@ -276,7 +277,7 @@ class QueryCommand:
 
         return selected_results
 
-    def _fetch_chunks(self, selected_results: list[dict]) -> dict[str, list[Chunk]]:
+    def _fetch_chunks(self, selected_results: list[SearchResult]) -> dict[str, list[Chunk]]:
         """Fetch chunk details from database."""
         self._config.init_db_fn()
 
@@ -291,9 +292,9 @@ class QueryCommand:
 
     def _expand_chunks(
         self,
-        results: list[dict],
+        results: list[SearchResult],
         doc_chunks: dict[str, list[Chunk]],
-    ) -> list[dict]:
+    ) -> list[SearchResult]:
         """Expand results by including surrounding chunks from each document."""
         result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_data(results)
 
@@ -311,7 +312,7 @@ class QueryCommand:
 
         return expanded_results
 
-    def _build_json_output(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> list[dict]:
+    def _build_json_output(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[SearchResult]:
         """Build JSON output."""
         chunks_output = []
         for result in results:
@@ -337,7 +338,7 @@ class QueryCommand:
                     break
         return chunks_output
 
-    def _build_verbose_output(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str:
+    def _build_verbose_output(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build verbose text output."""
         output_lines = []
         for result in results:

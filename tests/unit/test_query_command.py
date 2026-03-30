@@ -2,20 +2,22 @@
 
 import json
 from pathlib import Path
+from typing import cast
 from unittest.mock import MagicMock
 
 import pytest
 
 from src.commands.query import QueryCommand, QueryConfig, QueryOptions
+from src.interfaces import SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
 
 
-class MockVectorStore:
+class MockVectorStore(SearchVectorStoreProtocol):
     """Minimal mock for VectorStore context manager."""
 
-    def __init__(self, search_results: list[dict]) -> None:
-        self._search_results = search_results
+    def __init__(self, search_results: list[dict[str, str | int | float]]) -> None:
+        self._search_results = cast(list[SearchResult], search_results)
 
     def __enter__(self) -> "MockVectorStore":
         return self
@@ -23,7 +25,7 @@ class MockVectorStore:
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         pass
 
-    def search_all(self, query: str) -> list[dict]:
+    def search_all(self, query: str) -> list[SearchResult]:
         return self._search_results
 
 
@@ -163,7 +165,7 @@ class TestQueryCommand:
     def test_query_exception_handling(self):
         """Test query command exception handling from search."""
         # Create a vector store that throws when search_all is called
-        class FailingVectorStore:
+        class FailingVectorStore(SearchVectorStoreProtocol):
             def __init__(self) -> None:
                 pass
 
@@ -173,7 +175,7 @@ class TestQueryCommand:
             def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
                 pass
 
-            def search_all(self, query: str) -> list[dict]:
+            def search_all(self, query: str) -> list[SearchResult]:
                 raise RuntimeError("Search failed")
 
         config = QueryConfig(

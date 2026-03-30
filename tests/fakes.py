@@ -2,10 +2,11 @@
 
 from typing import Self
 
+from src.interfaces import ChunkStoreProtocol
 from src.models.chunk import Chunk
 
 
-class InMemoryChunkStore:
+class InMemoryChunkStore(ChunkStoreProtocol):
     """In-memory implementation of chunk storage for testing."""
 
     def __init__(self) -> None:

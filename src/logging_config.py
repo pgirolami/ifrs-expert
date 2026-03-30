@@ -22,7 +22,7 @@ def setup_logging() -> None:
     handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")
     handler.setLevel(logging.INFO)
 
-    formatter = logging.Formatter(fmt="%(asctime)s - %(message)s", datefmt="%H:%M")
+    formatter = logging.Formatter(fmt="%(asctime)s - %(message)s", datefmt="%H:%M:%S")
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
 

@@ -1,16 +1,24 @@
-"""Answer command - retrieve chunks and embed them into a prompt template."""
+"""Answer command - retrieve chunks and run the two-step answer pipeline."""
+
+from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.b_response_utils import convert_json_to_markdown
 from src.db import ChunkStore, init_db
 from src.llm import get_client
-from src.models.chunk import Chunk
+from src.models.answer_command_result import AnswerCommandResult, JSONValue
 from src.vector.store import VectorStore, get_index_path
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
+    from src.models.chunk import Chunk
 
 RELEVANCE_SCORE_THRESHOLD = 0.3
 
@@ -25,8 +33,8 @@ PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 class AnswerConfig:
     """Configuration for AnswerCommand - consolidates dependencies."""
 
-    vector_store: VectorStore
-    chunk_store: ChunkStore
+    vector_store: SearchVectorStoreProtocol
+    chunk_store: ReadChunkStoreProtocol
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
     send_to_llm_fn: Callable[[str], str]
@@ -44,50 +52,8 @@ class AnswerOptions:
     save_all: bool = False
 
 
-class AnswerResult:
-    """Result of answer command execution."""
-
-    def __init__(
-        self,
-        status: str,
-        data: str | None = None,
-        error: str | None = None,
-    ) -> None:
-        """Initialize answer result.
-
-        Args:
-            status: Status of the result ("ok" or "error").
-            data: The result data if successful.
-            error: The error message if failed.
-        """
-        self.success = status == "ok"
-        self.data = data
-        self.error = error
-
-    @staticmethod
-    def ok(data: str) -> "AnswerResult":
-        """Create a successful result."""
-        return AnswerResult(status="ok", data=data)
-
-    @staticmethod
-    def err(message: str) -> "AnswerResult":
-        """Create an error result."""
-        return AnswerResult(status="error", error=message)
-
-
-def _read_prompt_template(path: Path) -> str:
-    """Read the prompt template from file."""
-    lines = path.read_text(encoding="utf-8").split("\n")
-    return "\n".join(line for line in lines if not line.lstrip().startswith("#"))
-
-
-def _prompt_file_exists(path: Path) -> bool:
-    """Check if prompt template file exists."""
-    return path.exists()
-
-
 # Helper functions for chunk expansion (extracted to reduce complexity)
-def _init_expansion_data(results: list[dict]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
+def _init_expansion_data(results: list[SearchResult]) -> tuple[dict[tuple[str, int], float], list[str], dict[str, set[int]]]:
     """Initialize expansion data structures."""
     result_score_by_chunk: dict[tuple[str, int], float] = {}
     doc_order: list[str] = []
@@ -127,7 +93,7 @@ def _include_full_document(
 
 
 def _expand_with_neighbour_chunks(
-    results: list[dict],
+    results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
     selected_ids_by_doc: dict[str, set[int]],
     expand: int,
@@ -159,9 +125,9 @@ def _build_expanded_results(
     doc_chunks: dict[str, list[Chunk]],
     selected_ids_by_doc: dict[str, set[int]],
     result_score_by_chunk: dict[tuple[str, int], float],
-) -> list[dict]:
+) -> list[SearchResult]:
     """Build the final expanded results list."""
-    expanded_results: list[dict] = []
+    expanded_results: list[SearchResult] = []
     for doc_uid in doc_order:
         for chunk in doc_chunks.get(doc_uid, []):
             chunk_id = chunk.chunk_id
@@ -179,8 +145,44 @@ def _build_expanded_results(
     return expanded_results
 
 
+def _read_prompt_template(path: Path) -> str:
+    """Read the prompt template from file."""
+    lines = path.read_text(encoding="utf-8").split("\n")
+    return "\n".join(line for line in lines if not line.lstrip().startswith("#"))
+
+
+def _prompt_file_exists(path: Path) -> bool:
+    """Check if prompt template file exists."""
+    return path.exists()
+
+
+def _coerce_json_value(value: object) -> JSONValue:
+    """Coerce a Python value into the JSONValue type."""
+    if value is None or isinstance(value, str | int | float | bool):
+        return value
+    if isinstance(value, list):
+        return [_coerce_json_value(item) for item in value]
+    if isinstance(value, dict):
+        coerced: dict[str, JSONValue] = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                msg = f"JSON object keys must be strings, got {type(key).__name__}"
+                raise TypeError(msg)
+            coerced[key] = _coerce_json_value(item)
+        return coerced
+
+    msg = f"Unsupported JSON value type: {type(value).__name__}"
+    raise TypeError(msg)
+
+
+def _parse_json_value(raw_text: str) -> JSONValue:
+    """Parse raw JSON text into a typed JSON value."""
+    parsed: object = json.loads(raw_text)
+    return _coerce_json_value(parsed)
+
+
 class AnswerCommand:
-    """Retrieve chunks and embed them into a prompt template."""
+    """Retrieve chunks and run the two-step answer pipeline."""
 
     def __init__(
         self,
@@ -194,53 +196,40 @@ class AnswerCommand:
         self.min_score = options.min_score if options else None
         self.expand = options.expand if options else 0
         self.full_doc_threshold = options.full_doc_threshold if options else 0
-        self.output_dir = options.output_dir if options else None
-        self.save_all = options.save_all if options else False
 
         self._retrieved_doc_uids: list[str] = []
         self._config = config
 
-    def execute(self) -> str:
-        """Execute the answer command and return the LLM response."""
+    def execute(self) -> AnswerCommandResult:
+        """Execute the answer command and return the run artifacts."""
         logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k})")
 
-        # Run validation and get error early
-        error = self._check_input_validation()
-        if error:
-            return error
+        validation_error = self._get_validation_error()
+        if validation_error:
+            return AnswerCommandResult.failure(query=self.query, error=validation_error, error_stage="validation")
 
-        error = self._check_file_prerequisites()
-        if error:
-            return error
+        prerequisite_error = self._get_prerequisite_error()
+        if prerequisite_error:
+            return AnswerCommandResult.failure(query=self.query, error=prerequisite_error, error_stage="prerequisite")
 
-        # Execute workflow
-        result = self._execute_workflow()
-        if result.error:
-            return result.error
+        try:
+            return self._execute_workflow()
+        except Exception as e:
+            logger.exception("Error executing answer command")
+            return AnswerCommandResult.failure(query=self.query, error=f"Error: {e}", error_stage="workflow")
 
-        return result.data or ""
-
-    def _check_input_validation(self) -> str | None:
-        """Validate input parameters - returns error message or None."""
-        errors: list[str] = []
-
+    def _get_validation_error(self) -> str | None:
+        """Get validation error or None."""
         if not self.query or not self.query.strip():
-            errors.append("Query cannot be empty")
+            return "Error: Query cannot be empty"
         if self.expand < 0:
-            errors.append("expand must be >= 0")
+            return "Error: expand must be >= 0"
         if self.full_doc_threshold < 0:
-            errors.append("full_doc_threshold must be >= 0")
-        if self.save_all and not self.output_dir:
-            errors.append("--save-all requires --output-dir to be specified")
-        if self.output_dir and not self.output_dir.exists():
-            errors.append(f"Output directory does not exist: {self.output_dir}")
-
-        if errors:
-            return "Error: " + ", ".join(errors)
+            return "Error: full_doc_threshold must be >= 0"
         return None
 
-    def _check_file_prerequisites(self) -> str | None:
-        """Check file prerequisites - returns error message or None."""
+    def _get_prerequisite_error(self) -> str | None:
+        """Get prerequisite error or None."""
         if not _prompt_file_exists(PROMPT_A_PATH):
             return "Error: Prompt A template not found."
         if not _prompt_file_exists(PROMPT_B_PATH):
@@ -249,39 +238,34 @@ class AnswerCommand:
         index_path = self._config.index_path_fn()
         if not index_path.exists():
             return "Error: No index found. Please run 'store' command first."
-
         return None
 
-    def _execute_workflow(self) -> AnswerResult:
+    def _execute_workflow(self) -> AnswerCommandResult:
         """Execute the main workflow."""
-        try:
-            ranked_results = self._search_chunks()
-            if not ranked_results:
-                return AnswerResult.err("Error: No chunks retrieved")
+        ranked_results = self._search_chunks()
+        if not ranked_results:
+            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
 
-            selected_results = self._select_results(ranked_results)
-            if not selected_results:
-                return AnswerResult.err(f"Error: No chunks found with score >= {RELEVANCE_SCORE_THRESHOLD}")
+        selected_results = self._select_results(ranked_results)
+        if not selected_results:
+            return AnswerCommandResult.failure(
+                query=self.query,
+                error=f"Error: No chunks found with score >= {RELEVANCE_SCORE_THRESHOLD}",
+                error_stage="retrieval",
+            )
 
-            doc_chunks = self._fetch_chunks(selected_results)
+        doc_chunks = self._fetch_chunks(selected_results)
 
-            if self.expand > 0 or self.full_doc_threshold > 0:
-                selected_results = self._expand_chunks(selected_results, doc_chunks)
+        if self.expand > 0 or self.full_doc_threshold > 0:
+            selected_results = self._expand_chunks(selected_results, doc_chunks)
 
-            if not selected_results:
-                return AnswerResult.err("Error: No chunks retrieved")
+        if not selected_results:
+            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
 
-            response = self._process_prompts(selected_results, doc_chunks)
-            if isinstance(response, AnswerResult):
-                return response
+        result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
+        return self._process_prompts(result, selected_results, doc_chunks)
 
-            return AnswerResult.ok(response)
-
-        except Exception as e:
-            logger.exception("Error executing answer command")
-            return AnswerResult.err(f"Error: {e}")
-
-    def _search_chunks(self) -> list[dict]:
+    def _search_chunks(self) -> list[SearchResult]:
         """Search for relevant chunks."""
         with self._config.vector_store as vector_store:
             ranked_results = vector_store.search_all(self.query)
@@ -289,7 +273,7 @@ class AnswerCommand:
         logger.info(f"Search returned {len(ranked_results)} raw results")
         return ranked_results
 
-    def _select_results(self, ranked_results: list[dict]) -> list[dict]:
+    def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
         """Select top-k results per document."""
         effective_min_score = self.min_score if self.min_score is not None else RELEVANCE_SCORE_THRESHOLD
         logger.info(f"Effective min_score: {effective_min_score}")
@@ -301,12 +285,12 @@ class AnswerCommand:
 
     def _select_top_k_per_document(
         self,
-        ranked_results: list[dict],
+        ranked_results: list[SearchResult],
         k: int,
         min_score: float,
-    ) -> list[dict]:
+    ) -> list[SearchResult]:
         """Select up to k chunks per document above the score threshold."""
-        selected_results: list[dict] = []
+        selected_results: list[SearchResult] = []
         counts_by_doc: dict[str, int] = {}
 
         for result in ranked_results:
@@ -322,7 +306,7 @@ class AnswerCommand:
 
         return selected_results
 
-    def _fetch_chunks(self, selected_results: list[dict]) -> dict[str, list[Chunk]]:
+    def _fetch_chunks(self, selected_results: list[SearchResult]) -> dict[str, list[Chunk]]:
         """Fetch chunk details from database."""
         self._config.init_db_fn()
 
@@ -338,9 +322,9 @@ class AnswerCommand:
 
     def _expand_chunks(
         self,
-        results: list[dict],
+        results: list[SearchResult],
         doc_chunks: dict[str, list[Chunk]],
-    ) -> list[dict]:
+    ) -> list[SearchResult]:
         """Expand results by including surrounding chunks from each document."""
         result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_data(results)
 
@@ -353,92 +337,69 @@ class AnswerCommand:
 
         if self.full_doc_threshold > 0:
             for doc_uid in full_doc_docs:
-                doc_size = sum(len(c.text) for c in doc_chunks.get(doc_uid, []))
+                doc_size = sum(len(chunk.text) for chunk in doc_chunks.get(doc_uid, []))
                 logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={self.full_doc_threshold})")
 
         return expanded_results
 
-    def _process_prompts(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str | AnswerResult:
-        """Build prompts, send to LLM, and process responses."""
+    def _process_prompts(
+        self,
+        result: AnswerCommandResult,
+        results: list[SearchResult],
+        doc_chunks: dict[str, list[Chunk]],
+    ) -> AnswerCommandResult:
+        """Build prompts, send to LLM, and collect artifacts."""
         chunk_summary = self._build_chunk_summary(results, doc_chunks)
         formatted_chunks = self._format_chunks(results, doc_chunks)
 
-        # Step 1: Send Prompt A
-        response_a = self._send_prompt_a(formatted_chunks, chunk_summary)
-        if isinstance(response_a, AnswerResult):
-            return response_a
-
-        # response_a is guaranteed to be list[dict] after the check above
-        return self._send_prompt_b(response_a)  # type: ignore[arg-type]
-
-    def _send_prompt_a(self, formatted_chunks: list[str], chunk_summary: str) -> str | AnswerResult:
-        """Send Prompt A to LLM and return parsed JSON."""
-        prompt_a = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
-        prompt_content = _extract_prompt_content(prompt_a)
-
-        if self.save_all and self.output_dir:
-            self._save_file("A-prompt.txt", prompt_content)
+        prompt_a_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
+        result.prompt_a_text = _extract_prompt_content(prompt_a_full)
 
         try:
-            response_a = self._config.send_to_llm_fn(prompt_content)
+            result.prompt_a_raw_response = self._config.send_to_llm_fn(result.prompt_a_text)
         except RuntimeError as e:
-            logger.exception("LLM call failed")
-            if self.save_all and self.output_dir:
-                self._save_file("A-error.txt", str(e))
-            return AnswerResult.err(f"Error: LLM call failed: {e}")
-
-        if self.save_all and self.output_dir:
-            self._save_file("A-response.json", response_a)
+            logger.exception("Prompt A LLM call failed")
+            result.error = f"Error: LLM call failed: {e}"
+            result.error_stage = "prompt_a"
+            return result
 
         try:
-            return json.loads(response_a)
-        except json.JSONDecodeError as e:
-            logger.exception("Could not parse JSON response from LLM")
-            return AnswerResult.err(f"Error: LLM returned invalid JSON: {e}\n\nResponse was:\n{response_a}")
+            result.prompt_a_json = _parse_json_value(result.prompt_a_raw_response)
+        except (json.JSONDecodeError, TypeError) as e:
+            logger.exception("Could not parse JSON response from Prompt A")
+            result.error = f"Error: LLM returned invalid JSON: {e}\n\nResponse was:\n{result.prompt_a_raw_response}"
+            result.error_stage = "prompt_a_parse"
+            return result
 
-    def _send_prompt_b(self, approaches_json: list[dict]) -> AnswerResult:
-        """Send Prompt B to LLM and return the final response."""
-        prompt_b = self._build_prompt_b("", json.dumps(approaches_json, indent=2))
-
-        if self.save_all and self.output_dir:
-            self._save_file("B-prompt.txt", prompt_b)
+        result.prompt_b_text = self._build_prompt_b("", json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
         try:
-            response_b = self._config.send_to_llm_fn(prompt_b)
+            result.prompt_b_raw_response = self._config.send_to_llm_fn(result.prompt_b_text)
         except RuntimeError as e:
-            logger.exception("LLM call failed")
-            if self.save_all and self.output_dir:
-                self._save_file("B-error.txt", str(e))
-            return AnswerResult.err(f"Error: LLM call failed: {e}")
+            logger.exception("Prompt B LLM call failed")
+            result.error = f"Error: LLM call failed: {e}"
+            result.error_stage = "prompt_b"
+            return result
 
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        if self.save_all and self.output_dir:
-            self._save_response_b(response_b)
+        if result.prompt_b_raw_response is not None:
+            try:
+                result.prompt_b_json = _parse_json_value(result.prompt_b_raw_response)
+            except (json.JSONDecodeError, TypeError) as e:
+                logger.warning(f"Prompt B response could not be parsed as JSON: {e}")
+            else:
+                if isinstance(result.prompt_b_json, dict):
+                    result.prompt_b_markdown = convert_json_to_markdown(
+                        result.prompt_b_json,
+                        question=self.query,
+                        doc_uids=self._retrieved_doc_uids,
+                    )
+                else:
+                    logger.warning("Prompt B response parsed as JSON but is not an object; markdown conversion skipped")
 
-        return AnswerResult.ok(response_b)
-
-    def _save_response_b(self, response_b: str) -> None:
-        """Save response B to files."""
-        # Guard against output_dir being None (shouldn't happen due to validation)
-        if not self.output_dir:
-            return
-        try:
-            b_json = json.loads(response_b)
-            json_path = self.output_dir / "B-response.json"
-            json_path.write_text(json.dumps(b_json, indent=2, ensure_ascii=False), encoding="utf-8")
-            logger.info(f"Saved B-response.json to {self.output_dir}")
-        except json.JSONDecodeError:
-            self._save_file("B-response.json", response_b)
-            logger.warning("B-response is not valid JSON, saved as-is to B-response.json")
-
-        try:
-            b_json = json.loads(response_b)
-            markdown_content = self._convert_json_to_markdown(b_json)
-            self._save_file("B-response.md", markdown_content)
-            logger.info("Converted B-response.json to French markdown B-response.md")
-        except (json.JSONDecodeError, KeyError) as e:
-            logger.warning(f"Could not convert B-response to markdown: {e}")
+        result.mark_success()
+        return result
 
     def _build_prompt_from_template(
         self,
@@ -457,7 +418,7 @@ class AnswerCommand:
         template = _read_prompt_template(PROMPT_B_PATH)
         return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
 
-    def _format_chunks(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
+    def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure."""
         doc_order: list[str] = []
         chunk_ids_by_doc: dict[str, set[int]] = {}
@@ -497,7 +458,7 @@ class AnswerCommand:
         """Escape special XML characters."""
         return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
 
-    def _build_chunk_summary(self, results: list[dict], doc_chunks: dict[str, list[Chunk]]) -> str:
+    def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""
         if not results:
             return "Retrieved chunks:\n- none"
@@ -532,18 +493,6 @@ class AnswerCommand:
             lines.append(f"- {doc_uid}: {sections_text}")
 
         return "\n".join(lines)
-
-    def _save_file(self, filename: str, content: str) -> None:
-        """Save content to a file in the output directory."""
-        if not self.output_dir:
-            return
-        file_path = self.output_dir / filename
-        file_path.write_text(content, encoding="utf-8")
-        logger.info(f"Saved {filename} to {self.output_dir}")
-
-    def _convert_json_to_markdown(self, b_json: dict) -> str:
-        """Convert B-response JSON to French markdown format."""
-        return convert_json_to_markdown(b_json, question=self.query, doc_uids=self._retrieved_doc_uids)
 
 
 def _extract_prompt_content(full_output: str) -> str:
