@@ -155,6 +155,7 @@ def main() -> int:
 
     if result.startswith("Error:"):
         logger.error(result)
+        sys.stderr.buffer.write(f"{result}\n".encode("utf-8"))
         return 1
 
     logger.info(f"CLI command completed successfully: {args.command}")

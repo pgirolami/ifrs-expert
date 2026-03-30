@@ -218,14 +218,49 @@ Key outcomes:
 - Answer stability is a core problem  
   → The same question phrased differently could lead to different approaches being identified without careful prompt design
 
-## 6. Limitations
+## 6. Evaluation
+
+This repository includes a minimal Promptfoo-based regression suite for quick sanity checks.
+
+### Running evaluations
+
+```bash
+npm install
+npm run eval
+```
+
+This runs a small regression suite based on real IFRS questions:
+- **5 test cases** covering hedge accounting scenarios
+- **3 assertions per case**:
+  - Response is valid JSON with non-empty answer (50+ chars)
+  - Contains a clear conclusion (Oui/Non/applicable)
+  - Mentions IFRS or hedge accounting concepts
+
+### Test cases
+
+The suite includes Q1 variants about intragroup FX hedge accounting, plus Q2 (net investment hedge) and Q3 (future intragroup transaction). These are reused from the experiments directory.
+
+### Wrapper script
+
+`scripts/run_answer.py` wraps the CLI for Promptfoo:
+- Calls `uv run python -m src.cli answer`
+- Returns JSON with the answer text
+- Currently uses a canned response for CI; set `OPENAI_API_KEY` to use the real LLM pipeline
+
+### Output
+
+Results are saved to `results.json` with detailed assertion results. Run `npm run eval:view` to open the Promptfoo UI.
+
+---
+
+## 7. Limitations
 
 - The tests & evaluations were done on a small corpus so far which includes IFRS 9 and IFRIC 16.
 - PDF extraction is heuristic and layout-dependent; section detection is based on coordinates and formatting rules, not a robust parser.
 - Follow-up turns in the Streamlit UI currently reuse the first grounded answer as context and do not rerun retrieval automatically.
 - Code quality is uneven in places because the repository grew through experiments; some analysis scripts are brittle .
 
-## 7. Future work
+## 8. Future work
 
 - Continue to improve prompts as new failures are discovered
   - start by addressing the issue uncovered in Experiment 14 regarding answers being too confident & closed when uncertainty still remains

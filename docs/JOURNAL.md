@@ -73,5 +73,10 @@ This journal documents the development progress of the IFRS Expert Assistant - a
     - [Experiment 13](../experiments/12_evaluate_question_2/EXPERIMENTS.md): question 4
     - [Experiment 14](../experiments/12_evaluate_question_2/EXPERIMENTS.md): questions 5, 6, 7, 8, 9
 
+### 2026-03-30 : Tighten prototype
+
+- Call LLM APIs rather than use Pi to get LLM responses (OpenAI & Mistral checked, Anthropic implemented)
+- Add a POC Streamlit app to ask questions & ask follow-ups
+- Add PromptFoo for evals, added a few evals
 
 ## Delivery

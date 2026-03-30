@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "answer_prompt_B.schema.json",
+  "title": "IFRS Expert Answer Artifact",
+  "description": "JSON schema for structured IFRS expert decision artifact returned by answer_prompt_B.txt",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/NeedsClarificationResponse"
+    },
+    {
+      "$ref": "#/definitions/FullAnswerResponse"
+    }
+  ],
+  "definitions": {
+    "NeedsClarificationResponse": {
+      "type": "object",
+      "description": "Response when identified_approaches.status is 'needs_clarification'",
+      "required": ["status", "questions_fr"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "const": "needs_clarification",
+          "description": "Must be 'needs_clarification'"
+        },
+        "questions_fr": {
+          "type": "array",
+          "description": "Clarification questions in French",
+          "items": {
+            "type": "string",
+            "description": "A clarification question"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "FullAnswerResponse": {
+      "type": "object",
+      "required": ["assumptions_fr", "recommendation", "approaches", "operational_points_fr"],
+      "properties": {
+        "assumptions_fr": {
+          "type": "array",
+          "description": "List of assumptions made in French",
+          "items": {
+            "type": "string",
+            "description": "An assumption statement"
+          }
+        },
+        "recommendation": {
+          "type": "object",
+          "description": "Final recommendation object",
+          "required": ["answer", "justification"],
+          "properties": {
+            "answer": {
+              "type": "string",
+              "enum": ["oui", "non", "oui_sous_conditions"],
+              "description": "Recommendation answer"
+            },
+            "justification": {
+              "type": "string",
+              "description": "2-3 lines max justification",
+              "maxLength": 300
+            }
+          }
+        },
+        "approaches": {
+          "type": "array",
+          "description": "List of identified approaches with applicability analysis",
+          "items": {
+            "$ref": "#/definitions/Approach"
+          }
+        },
+        "operational_points_fr": {
+          "type": "array",
+          "description": "Operational implementation points in French",
+          "items": {
+            "type": "string",
+            "description": "Short point including timing, constraints or effort when relevant"
+          }
+        }
+      }
+    },
+    "Approach": {
+      "type": "object",
+      "required": ["id", "normalized_label", "label_fr", "applicability", "reasoning_fr", "practical_implication_fr", "references"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique approach identifier (e.g., 'approach_1')",
+          "pattern": "^approach_\\d+$"
+        },
+        "normalized_label": {
+          "type": "string",
+          "description": "Snake_case normalized label for the approach",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label_fr": {
+          "type": "string",
+          "description": "Short French label for the approach"
+        },
+        "applicability": {
+          "type": "string",
+          "enum": ["oui", "non", "oui_sous_conditions"],
+          "description": "Whether this approach applies to the specific situation"
+        },
+        "reasoning_fr": {
+          "type": "string",
+          "description": "2-4 lines rationale explicitly tied to the situation",
+          "maxLength": 500
+        },
+        "conditions_fr": {
+          "type": "array",
+          "description": "List of real limiting conditions (not restatements of general IFRS test)",
+          "items": {
+            "type": "string",
+            "description": "A short condition"
+          },
+          "default": []
+        },
+        "practical_implication_fr": {
+          "type": "string",
+          "description": "1 line practical implication"
+        },
+        "references": {
+          "type": "array",
+          "description": "Verbatim references from source chunks",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        }
+      }
+    },
+    "Reference": {
+      "type": "object",
+      "required": ["section", "excerpt"],
+      "properties": {
+        "section": {
+          "type": "string",
+          "description": "Chunk section number or identifier"
+        },
+        "excerpt": {
+          "type": "string",
+          "description": "Short verbatim excerpt from the source"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ifrs-expert",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "eval": "npx promptfoo eval",
+    "eval:view": "npx promptfoo view"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.121.3"
+  }
+}
