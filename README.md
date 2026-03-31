@@ -193,14 +193,17 @@ export LLM_PROVIDER=mistral
 export MISTRAL_API_KEY=xxx
 ```
 
-After cloning the repo, set up its dependencies
+Run the full demo flow end-to-end with the following
 ```bash
-uv sync --all-groups
+make demo
 ```
+or go-through it line by line by following the instructions.
 
 ### Ingest documents
 
 ```bash
+uv sync --all-groups
+
 
 curl https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifrs-9-financial-instruments.pdf --output /tmp/ifrs-9-financial-instruments.pdf
 
