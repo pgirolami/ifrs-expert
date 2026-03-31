@@ -233,6 +233,17 @@ echo "Est-ce que je peux appliquer une documentation de couverture dans les comp
 
 ---
 
+## Development process
+
+This project was developed through an iterative, experiment-driven approach with a subject-matter expert.
+
+- See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the approach used to go from a single question to a prototype assistant
+- See [`docs/JOURNAL.md`](docs/JOURNAL.md) for a chronological record of experiments, failures, and improvements
+
+These documents reflect how the system evolved in response to real-world constraints and feedback.
+
+---
+
 ## Limitations
 
 - Limited corpus (IFRS 9 + IFRIC 16)
