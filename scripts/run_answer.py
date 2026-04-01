@@ -5,13 +5,15 @@ Canonical Promptfoo `exec:` contract:
   argv[2] = provider options JSON
   argv[3] = context JSON
 
-This wrapper reads the question from argv[1] and reads per-test mode from
-argv[3].test.options.mode when available.
+This wrapper reads the question from argv[1], can read provider-level options
+from argv[2], and reads per-test mode from argv[3].test.options.mode when
+available.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Final
@@ -27,7 +29,9 @@ from src.commands.answer import create_answer_command
 from src.logging_config import setup_logging
 
 PROMPT_ARG_INDEX: Final[int] = 1
+PROVIDER_OPTIONS_ARG_INDEX: Final[int] = 2
 CONTEXT_ARG_INDEX: Final[int] = 3
+MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS: Final[int] = 3
 MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
 DEFAULT_K: Final[int] = 5
 DEFAULT_MIN_SCORE: Final[float] = 0.55
@@ -86,6 +90,19 @@ def _error_payload(message: str) -> str:
     return json.dumps({"error": message}, ensure_ascii=False)
 
 
+def _load_provider_options() -> dict[str, object]:
+    """Load Promptfoo provider options from argv when available."""
+    if len(sys.argv) < MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS:
+        return {}
+
+    try:
+        raw_provider_options = json.loads(sys.argv[PROVIDER_OPTIONS_ARG_INDEX])
+    except json.JSONDecodeError:
+        return {}
+
+    return raw_provider_options if isinstance(raw_provider_options, dict) else {}
+
+
 def _load_context() -> dict[str, object]:
     """Load Promptfoo context from argv when available."""
     if len(sys.argv) < MIN_ARG_COUNT_FOR_CONTEXT:
@@ -133,9 +150,71 @@ def _extract_question(prompt: str, mode: str | None) -> str:
     return stripped_prompt
 
 
-def _run_live(question: str) -> tuple[int, str]:
+def _extract_llm_provider_from_mapping(mapping: dict[str, object]) -> str | None:
+    """Extract an LLM provider override from one mapping."""
+    for key in ("llm_provider", "llmProvider", "LLM_PROVIDER"):
+        value = mapping.get(key)
+        if isinstance(value, str):
+            provider = value.strip()
+            if provider:
+                return provider
+    return None
+
+
+def _append_mapping_if_dict(
+    mappings: list[dict[str, object]],
+    value: object,
+) -> None:
+    """Append a value when it is a dict[str, object]."""
+    if isinstance(value, dict):
+        mappings.append(value)
+
+
+def _candidate_llm_provider_mappings(
+    provider_options: dict[str, object],
+    context: dict[str, object],
+) -> list[dict[str, object]]:
+    """Return candidate mappings that may contain an LLM provider override."""
+    mappings: list[dict[str, object]] = [provider_options]
+    _append_mapping_if_dict(mappings, provider_options.get("config"))
+    _append_mapping_if_dict(mappings, provider_options.get("env"))
+
+    test_data = context.get("test")
+    if isinstance(test_data, dict):
+        _append_mapping_if_dict(mappings, test_data.get("options"))
+
+    prompt_data = context.get("prompt")
+    if isinstance(prompt_data, dict):
+        _append_mapping_if_dict(mappings, prompt_data.get("config"))
+
+    return mappings
+
+
+def _extract_llm_provider(
+    provider_options: dict[str, object],
+    context: dict[str, object],
+) -> str | None:
+    """Extract an LLM provider override, preferring provider options."""
+    for mapping in _candidate_llm_provider_mappings(provider_options, context):
+        provider_override = _extract_llm_provider_from_mapping(mapping)
+        if provider_override is not None:
+            return provider_override
+
+    return None
+
+
+def _apply_llm_provider_override(llm_provider: str | None) -> None:
+    """Apply an LLM provider override to the process environment."""
+    if llm_provider is None:
+        return
+
+    os.environ["LLM_PROVIDER"] = llm_provider
+
+
+def _run_live(question: str, llm_provider: str | None) -> tuple[int, str]:
     """Run the real answer pipeline for one question."""
     load_dotenv()
+    _apply_llm_provider_override(llm_provider)
     setup_logging()
 
     command = create_answer_command(
@@ -163,6 +242,7 @@ def main() -> int:
         return 1
 
     prompt = sys.argv[PROMPT_ARG_INDEX]
+    provider_options = _load_provider_options()
     context = _load_context()
     mode = _extract_mode(context)
     if mode is None:
@@ -178,7 +258,8 @@ def main() -> int:
         _write_stdout(CANNED_RESPONSE)
         return 0
 
-    exit_code, payload = _run_live(question)
+    llm_provider = _extract_llm_provider(provider_options, context)
+    exit_code, payload = _run_live(question, llm_provider)
     _write_stdout(payload)
     return exit_code
 

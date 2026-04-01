@@ -7,7 +7,14 @@ prompts:
   - '{{question}}'
 
 providers:
-  - exec:uv run python scripts/run_answer.py
+  - id: "exec:uv run python scripts/run_answer.py"
+    label: "OpenAI GPT 5.4"
+    config:
+      llm_provider: openai
+  - id: "exec:uv run python scripts/run_answer.py"
+    label: "Mistral Large 3"
+    config:
+      llm_provider: Mistral
 
 tests:
   - vars:

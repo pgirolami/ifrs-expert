@@ -15,16 +15,16 @@ It was **developed in collaboration with an IFRS subject-matter expert**, starti
 Building LLM systems in practice quickly surfaces non-obvious challenges:
 
 - **Retrieval completeness directly impacts reasoning correctness**  
-  Missing IFRIC 16 sections caused the system to miss *net investment hedge* entirely.
+  Missing sections caused the system to miss an accounting approach entirely (*net investment hedge*).
 
 - **Answers are unstable across question phrasing**  
-  The same question expressed differently led to different approaches being identified.
+  The same question expressed differently led to different accounting approaches being identified.
 
 - **Single-pass prompting is unreliable**  
-  Asking the model to both identify and evaluate approaches in one step produced inconsistent results.
+  Asking the model to both identify and evaluate accounting approaches in one step produced inconsistent results.
 
 - **Correctness is not enough**  
-  Expert users require **traceability**: answers must cite and justify their reasoning from source material.
+  Expert users require answers to cite and justify their reasoning from source material.
 
 This project addresses these issues through:
 - structured retrieval over IFRS standards
@@ -43,6 +43,8 @@ This project addresses these issues through:
 **Output (excerpt)**
 
 ```
+(...)
+
 ### 2. Couverture de juste valeur
 **Applicabilité**: OUI SOUS CONDITIONS
 
@@ -65,6 +67,8 @@ La créance à recevoir comptabilisée est, selon l'hypothèse, un poste monéta
     >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements
  - 6.4.1
     >at the inception of the hedging relationship there is formal designation and documentation
+
+(...)
 ```
 
 The full structured output [(example)](./experiments/11_remove_extraneous_approaches_while_reserving_nih/Q1.0_k=5_e=5_min-score=0.5__run1/B-response.md) includes:
@@ -90,7 +94,7 @@ retrieve → structure → reason → evaluate
   - IFRS PDFs are parsed into section-aligned chunks (not arbitrary text windows)
 
 - **Semantic retrieval**
-  - embeddings (`BAAI/bge-m3`) + FAISS
+  - embeddings (`BAAI/bge-m3`) + cosine similarity search using FAISS
   - top-k per document + chunk expansion
 
 - **Two-stage reasoning**
@@ -133,14 +137,14 @@ Aligning chunks with sections:
 ---
 
 ### Retrieval strategy matters as much as prompting
-- top-k per document > global top-k
+- Moving from global top-k to top-k *per document* handled relevancy competition among documents
 - chunk expansion improves recall
 - missing documents = missing reasoning paths
 
 ---
 
 ### Structured outputs enable evaluation
-Moving from free text → JSON made it possible to:
+Moving from free text to JSON made it possible to:
 - validate outputs programmatically
 - assert presence of key approaches
 - detect regressions
@@ -156,11 +160,15 @@ The project includes two complementary evaluation approaches:
 This is an ad-hoc implementation built incrementally from inception
 - multiple question variants
 - repeated runs
-- qualitative analysis of failure modes
+- qualitative analysis of failure modes and some automated quantitative analysis
 
 With PromptFoo setup, it is no longer going to be used going forward.
 
 ### 2. Promptfoo regression suite
+
+PromptFoo helps ensure the behavior is stable over phrasing variants, questions, LLM models and, of course, changes in the pipeline.
+
+Run it with:
 
 ```bash
 npx promptfoo eval
@@ -172,14 +180,8 @@ Checks include:
 - consistency of recommendation
 - basic reasoning quality (LLM-graded rubric)
 
-This transforms evaluation from:
-```
-“looks good”
-```
-to:
-```
-“behavior is stable and testable”
-```
+
+![Example PromptFoo run comparing 2 models](./docs/PromptFoo-run.png)
 
 ---
 
@@ -264,7 +266,7 @@ These documents reflect how the system evolved in response to real-world constra
 
 ## Summary
 
-This project is more than a PDF chatbot: it is an exploration of how to build **reliable LLM systems** by:
+This project is an exploration of how to build **reliable LLM systems** by:
 - grounding *reasoning* in explicit sources
 - structuring outputs for inspection
 - iterating with real users

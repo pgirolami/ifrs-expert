@@ -107,8 +107,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique approach identifier (e.g., 'approach_1')",
-          "pattern": "^approach_\\d+$"
+          "description": "Unique approach identifier (e.g., 'approach_1')"
         },
         "normalized_label": {
           "type": "string",
