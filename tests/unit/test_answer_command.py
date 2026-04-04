@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import unittest.mock
 from typing import cast
 
@@ -66,8 +67,8 @@ class MockIndexPath:
 class TestAnswerCommand:
     """Tests for answer command using dependency injection."""
 
-    def test_answer_no_index(self) -> None:
-        """Test answer command when no index exists."""
+    def test_answer_no_index(self, caplog) -> None:
+        """Test answer command logs and fails clearly when no index exists."""
         config = AnswerConfig(
             vector_store=MockVectorStore([]),
             chunk_store=InMemoryChunkStore(),
@@ -77,11 +78,13 @@ class TestAnswerCommand:
         )
         command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
 
-        result = command.execute()
+        with caplog.at_level(logging.INFO):
+            result = command.execute()
 
         assert result.success is False
         assert result.error is not None
         assert "No index found" in result.error
+        assert "Missing vector index" in caplog.text
 
     def test_answer_with_results_returns_result_artifacts(self) -> None:
         """Test answer command returns a structured result with artifacts."""

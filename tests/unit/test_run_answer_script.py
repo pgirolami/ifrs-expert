@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
+from src.models.answer_command_result import AnswerCommandResult
+
 import pytest
 
 
@@ -53,6 +55,15 @@ def test_run_answer_script_supports_direct_execution_from_repo_root() -> None:
     assert len(payload["approaches"]) == 3
 
 
+def test_extract_mode_defaults_to_live_when_missing() -> None:
+    """The wrapper should default to live mode when Promptfoo does not pass one."""
+    run_answer = _load_run_answer_module()
+
+    mode = run_answer._extract_mode({})
+
+    assert mode == "live"
+
+
 def test_extract_llm_provider_prefers_provider_options_over_context() -> None:
     """Provider-level Promptfoo config should take precedence over test options."""
     run_answer = _load_run_answer_module()
@@ -75,6 +86,54 @@ def test_extract_llm_provider_falls_back_to_test_options() -> None:
     )
 
     assert provider == "mistral"
+
+
+def test_promptfoo_artifact_output_dir_uses_family_variant_and_provider(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Promptfoo artifact paths should group files by family, variant, and provider."""
+    run_answer = _load_run_answer_module()
+    monkeypatch.setenv(run_answer.PROMPTFOO_ARTIFACTS_DIR_ENV, str(tmp_path))
+
+    output_dir = run_answer._artifact_output_dir(
+        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0"}}},
+        llm_provider="Mistral Large 3",
+    )
+
+    assert output_dir == tmp_path / "Q1" / "Q1.0" / "mistral-large-3"
+
+
+def test_write_promptfoo_artifacts_persists_historical_answer_files(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """The wrapper should save the usual prompt and response files when Promptfoo artifact archiving is enabled."""
+    run_answer = _load_run_answer_module()
+    monkeypatch.setenv(run_answer.PROMPTFOO_ARTIFACTS_DIR_ENV, str(tmp_path))
+    result = AnswerCommandResult(
+        query="Test query",
+        success=True,
+        prompt_a_text="Prompt A",
+        prompt_a_raw_response='{"status": "pass"}',
+        prompt_b_text="Prompt B",
+        prompt_b_raw_response='{"answer": "oui"}',
+        prompt_b_json={"answer": "oui"},
+        prompt_b_markdown="# Markdown",
+    )
+
+    run_answer._write_promptfoo_artifacts(
+        result=result,
+        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0"}}},
+        llm_provider="Mistral Large 3",
+    )
+
+    artifact_dir = tmp_path / "Q1" / "Q1.0" / "mistral-large-3"
+    assert (artifact_dir / "A-prompt.txt").read_text(encoding="utf-8") == "Prompt A"
+    assert (artifact_dir / "A-response.json").read_text(encoding="utf-8") == '{"status": "pass"}'
+    assert (artifact_dir / "B-prompt.txt").read_text(encoding="utf-8") == "Prompt B"
+    assert '"answer": "oui"' in (artifact_dir / "B-response.json").read_text(encoding="utf-8")
+    assert (artifact_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown"
 
 
 def test_apply_llm_provider_override_updates_environment(monkeypatch: pytest.MonkeyPatch) -> None:

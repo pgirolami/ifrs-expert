@@ -233,12 +233,15 @@ class AnswerCommand:
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
         if not _prompt_file_exists(PROMPT_A_PATH):
+            logger.error(f"Missing Prompt A template at {PROMPT_A_PATH}")
             return "Error: Prompt A template not found."
         if not _prompt_file_exists(PROMPT_B_PATH):
+            logger.error(f"Missing Prompt B template at {PROMPT_B_PATH}")
             return "Error: Prompt B template not found."
 
         index_path = self._config.index_path_fn()
         if not index_path.exists():
+            logger.error(f"Missing vector index at {index_path}; corpus must be built before running the answer pipeline")
             return "Error: No index found. Please run 'store' command first."
         return None
 
