@@ -1,0 +1,192 @@
+"""Integration tests for end-to-end inbox ingestion."""
+
+from __future__ import annotations
+
+import json
+import shutil
+import tempfile
+from pathlib import Path
+
+import pytest
+from bs4 import BeautifulSoup
+
+from src.commands.ingest import IngestCommand
+from src.commands.store import create_store_command
+from src.db import ChunkStore, DocumentStore, init_db
+from tests.fakes import RecordingVectorStore
+
+
+@pytest.fixture
+def temp_db_path() -> Path:
+    """Patch the global DB path to an isolated temporary database."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        import src.db.connection as connection_module
+
+        original_path = connection_module.DB_PATH
+        connection_module.DB_PATH = db_path
+        yield db_path
+        connection_module.DB_PATH = original_path
+
+
+@pytest.fixture
+def capture_root(tmp_path: Path) -> Path:
+    """Create the ingest directory layout."""
+    root = tmp_path / "ifrs-expert"
+    (root / "inbox").mkdir(parents=True)
+    (root / "processed").mkdir()
+    (root / "failed").mkdir()
+    (root / "skipped").mkdir()
+    return root
+
+
+def _example_file(name: str) -> Path:
+    examples_dir = Path(__file__).parent.parent.parent / "examples"
+    return examples_dir / name
+
+
+def _write_html_sidecar(sidecar_path: Path, canonical_url: str, title: str) -> None:
+    sidecar_path.write_text(
+        json.dumps(
+            {
+                "url": canonical_url,
+                "title": title,
+                "captured_at": "2026-04-04T14:23:10Z",
+                "source_domain": "www.ifrs.org",
+                "canonical_url": canonical_url,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def _extract_canonical_url(html_path: Path) -> str:
+    html_text = html_path.read_text(encoding="utf-8")
+    canonical_prefix = "<link rel=\"canonical\"\n    href=\""
+    start = html_text.index(canonical_prefix) + len(canonical_prefix)
+    end = html_text.index("\">", start)
+    return html_text[start:end]
+
+
+def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None):
+    return create_store_command(
+        source_path=source_path,
+        extractor=extractor,
+        doc_uid=explicit_doc_uid,
+        vector_store=RecordingVectorStore(),
+    )
+
+
+def test_ingest_command_imports_pdf_from_inbox(temp_db_path: Path, capture_root: Path) -> None:
+    """PDF files dropped into inbox/ should be imported and archived to processed/."""
+    del temp_db_path
+    inbox_pdf = capture_root / "inbox" / "ifrs-16-leases_38-39.pdf"
+    shutil.copy(_example_file("ifrs-16-leases_38-39.pdf"), inbox_pdf)
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+
+    output = command.execute()
+
+    assert "1 imported" in output
+    assert (capture_root / "processed" / inbox_pdf.name).exists()
+    with DocumentStore() as document_store:
+        document = document_store.get_document("ifrs-16-leases_38-39")
+    assert document is not None, "Expected PDF ingestion to upsert a document record"
+    assert document.source_type == "pdf"
+    with ChunkStore() as chunk_store:
+        chunks = chunk_store.get_chunks_by_doc("ifrs-16-leases_38-39")
+    assert chunks, "Expected stored PDF chunks after ingestion"
+
+
+def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
+    """Representative IFRS HTML captures should ingest into the database and processed/."""
+    del temp_db_path
+    html_source = _example_file(
+        "www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html"
+    )
+    inbox_html = capture_root / "inbox" / "20260404T142310Z--ifrs9.html"
+    inbox_json = capture_root / "inbox" / "20260404T142310Z--ifrs9.json"
+    shutil.copy(html_source, inbox_html)
+    canonical_url = _extract_canonical_url(inbox_html)
+    _write_html_sidecar(inbox_json, canonical_url=canonical_url, title="IFRS 9")
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+
+    output = command.execute()
+
+    assert "1 imported" in output
+    assert (capture_root / "processed" / inbox_html.name).exists()
+    assert (capture_root / "processed" / inbox_json.name).exists()
+    with DocumentStore() as document_store:
+        document = document_store.get_document("ifrs9")
+    assert document is not None, "Expected HTML ingestion to upsert a document record"
+    assert document.source_type == "html"
+    assert document.canonical_url == canonical_url
+    with ChunkStore() as chunk_store:
+        chunks = chunk_store.get_chunks_by_doc("ifrs9")
+    assert any(chunk.section_path == "2.4" for chunk in chunks)
+    assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
+
+
+def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_path: Path, capture_root: Path) -> None:
+    """HTML captures should skip when unchanged and replace existing chunks when changed."""
+    del temp_db_path
+    html_source = _example_file(
+        "www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html"
+    )
+
+    first_html = capture_root / "inbox" / "20260404T142310Z--ifric16.html"
+    first_json = capture_root / "inbox" / "20260404T142310Z--ifric16.json"
+    shutil.copy(html_source, first_html)
+    canonical_url = _extract_canonical_url(first_html)
+    _write_html_sidecar(first_json, canonical_url=canonical_url, title="IFRIC 16")
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+    first_output = command.execute()
+    assert "1 imported" in first_output
+
+    second_html = capture_root / "inbox" / "20260405T142310Z--ifric16.html"
+    second_json = capture_root / "inbox" / "20260405T142310Z--ifric16.json"
+    shutil.copy(html_source, second_html)
+    _write_html_sidecar(second_json, canonical_url=canonical_url, title="IFRIC 16")
+
+    skip_output = command.execute()
+
+    assert "1 skipped" in skip_output
+    assert (capture_root / "skipped" / second_html.name).exists()
+    assert (capture_root / "skipped" / second_json.name).exists()
+
+    third_html = capture_root / "inbox" / "20260406T142310Z--ifric16.html"
+    third_json = capture_root / "inbox" / "20260406T142310Z--ifric16.json"
+    soup = BeautifulSoup(html_source.read_text(encoding="utf-8"), "html.parser")
+    paragraph = soup.select_one("div.topic.paragraph#IFRIC16_1 td.paragraph_col2 > .body > p")
+    assert paragraph is not None, "Expected to locate the first IFRIC 16 paragraph"
+    paragraph.append(" Additional integration test sentence.")
+    third_html.write_text(str(soup), encoding="utf-8")
+    _write_html_sidecar(third_json, canonical_url=canonical_url, title="IFRIC 16")
+
+    replace_output = command.execute()
+
+    assert "1 imported" in replace_output
+    with ChunkStore() as chunk_store:
+        chunks = chunk_store.get_chunks_by_doc("ifric16")
+    first_chunk = next(chunk for chunk in chunks if chunk.section_path == "1")
+    assert "Additional integration test sentence." in first_chunk.text
+
+
+def test_ingest_command_moves_invalid_html_to_failed(temp_db_path: Path, capture_root: Path) -> None:
+    """Invalid HTML sidecars should be archived under failed/."""
+    del temp_db_path
+    bad_html = capture_root / "inbox" / "20260404T142310Z--broken.html"
+    bad_json = capture_root / "inbox" / "20260404T142310Z--broken.json"
+    bad_html.write_text("<html></html>", encoding="utf-8")
+    bad_json.write_text("{not valid json}", encoding="utf-8")
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+
+    output = command.execute()
+
+    assert "1 failed" in output
+    assert "invalid sidecar JSON" in output
+    assert (capture_root / "failed" / bad_html.name).exists()
+    assert (capture_root / "failed" / bad_json.name).exists()

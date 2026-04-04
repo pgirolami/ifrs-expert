@@ -6,6 +6,13 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.commands.constants import (
+    DEFAULT_EXPAND,
+    DEFAULT_FULL_DOC_THRESHOLD,
+    DEFAULT_MIN_SCORE,
+    DEFAULT_RETRIEVAL_K,
+    DEFAULT_VERBOSE,
+)
 from src.db import ChunkStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
@@ -30,11 +37,11 @@ class QueryConfig:
 class QueryOptions:
     """Options for query command."""
 
-    k: int = 5
-    min_score: float | None = 0.55
-    verbose: bool = True
-    expand: int = 5
-    full_doc_threshold: int = 0
+    k: int = DEFAULT_RETRIEVAL_K
+    min_score: float | None = DEFAULT_MIN_SCORE
+    verbose: bool = DEFAULT_VERBOSE
+    expand: int = DEFAULT_EXPAND
+    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
@@ -143,11 +150,11 @@ class QueryCommand:
     ) -> None:
         """Initialize the query command."""
         self.query = query
-        self.k = options.k if options else 5
-        self.min_score = options.min_score if options and options.min_score is not None else 0.6
-        self.verbose = options.verbose if options else True
-        self.expand = options.expand if options else 5
-        self.full_doc_threshold = options.full_doc_threshold if options else 0
+        self.k = options.k if options else DEFAULT_RETRIEVAL_K
+        self.min_score = options.min_score if options and options.min_score is not None else DEFAULT_MIN_SCORE
+        self.verbose = options.verbose if options else DEFAULT_VERBOSE
+        self.expand = options.expand if options else DEFAULT_EXPAND
+        self.full_doc_threshold = options.full_doc_threshold if options else DEFAULT_FULL_DOC_THRESHOLD
 
         self._config = config
 

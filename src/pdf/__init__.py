@@ -1,5 +1,5 @@
-"""PDF extraction module for IFRS Expert."""
+"""Backward-compatible PDF extraction module."""
 
-from src.pdf.extraction import extract_chunks
+from src.extraction.pdf import extract_chunks
 
 __all__ = ["extract_chunks"]

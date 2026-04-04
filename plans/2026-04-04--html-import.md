@@ -148,7 +148,8 @@ Required fields:
   "url": "https://example.com/path",
   "title": "IFRS 9 — Hedge accounting",
   "captured_at": "2026-04-04T14:23:10Z",
-  "source_domain": "example.com"
+  "source_domain": "example.com",
+  "canonical_url": "https://example.com/canonical-path"
 }
 ```
 
@@ -161,11 +162,11 @@ Optional fields:
 }
 ```
 
-Required for HTML ingestion decisions:
+`canonical_url` must always be present for HTML ingestion and is the authoritative source URL stored on the document record.
 
-- `canonical_url`
+The extension should populate `canonical_url` from the page DOM using:
 
-`canonical_url` must always be present for HTML ingestion and should be treated as the authoritative URL for document identity.
+- `document.querySelector('link[rel="canonical"]')?.href`
 
 The extension should save the rendered DOM using:
 
@@ -201,8 +202,8 @@ uv run python -m src.cli ingest
 ```text
 Processed 4 item(s): 2 imported, 1 skipped, 1 failed
 Imported: /Users/.../inbox/ifrs-9.pdf -> doc_uid=ifrs-9 (145 chunks)
-Imported: https://example.com/ifrs/ifrs-9 -> doc_uid=ifrs-9-section-6-3 (12 chunks)
-Skipped: https://example.com/ifrs/ifrs-9-section-6-3 (unchanged content)
+Imported: https://www.ifrs.org/.../ifrs-9-financial-instruments.html -> doc_uid=ifrs9 (12 chunks)
+Skipped: https://www.ifrs.org/.../ifrs-9-financial-instruments.html (unchanged content)
 Failed:  /Users/.../inbox/broken.html (invalid sidecar JSON)
 ```
 
@@ -232,6 +233,7 @@ The protocol should cover:
 - extracting document metadata
 - extracting structure-aware chunks
 - deriving or confirming `doc_uid`
+- returning enough structured document metadata for `documents` upsert and skip decisions
 
 ### 2. Store command refactor
 
@@ -293,26 +295,106 @@ The logic remains structure-aware and section-based.
 
 ### HTML
 
-HTML parsing should be as structure-aware as PDF parsing.
+HTML parsing should be as structure-aware as PDF parsing, but the implementation can now be concrete because we have representative IFRS examples in `examples/`.
 
-The parser should:
+The parser will use the IFRS HTML viewer structure visible in those examples.
 
-- use known stable selectors from the representative HTML page(s)
-- isolate only the IFRS content area
-- ignore navigation, headers, footers, and account chrome
-- derive section paths from the page’s real structure
-- preserve paragraph numbering, heading hierarchy, and anchors where present
+#### Source metadata extraction
 
-No generic heuristics are needed for v1 because the target pages share the same structure.
+From the saved HTML, the parser should extract:
+
+- canonical URL from `link[rel="canonical"]`
+- short document identifier from `meta[name="DC.Identifier"]`
+- document title from the page metadata or sidecar
+
+Planned rules:
+
+- `canonical_url` from the sidecar is required
+- `link[rel="canonical"]` in the HTML is also required
+- the sidecar `canonical_url` and HTML canonical URL must match
+- `doc_uid` for HTML should come from `meta[name="DC.Identifier"]` because it is short and stable in the provided examples (for example `ifrs9` and `ifric16`)
+- if `meta[name="DC.Identifier"]` is missing, the import should fail rather than guess
+
+#### Content root selection
+
+Based on the representative IFRS pages, the parser should treat this as the content root:
+
+- `section.ifrs-cmp-htmlviewer__section`
+
+This avoids page chrome outside the actual standard text.
+
+#### Paragraph node selection
+
+Within the content root, the parser should identify chunk candidates with:
+
+- `div.topic.paragraph[id]`
+
+The examples show that these paragraph nodes are stable even when the nesting level differs (`nested3`, `nested4`, `nested5`) or when additional classes such as `principles` and `noprinciples` are present.
+
+#### Section path extraction
+
+For each paragraph node, extract the section path from:
+
+- `td.paragraph_col1 .paranum > p`
+
+Examples from the provided files include:
+
+- `1`
+- `AG8`
+- `2.4`
+- `3.1.1`
+- `4.2.1`
+
+This extracted paragraph identifier becomes `section_path`.
+
+#### Text extraction
+
+For each paragraph node, extract text from:
+
+- `td.paragraph_col2 > .body`
+
+Rules for text extraction:
+
+- flatten visible text across nested inline elements (`p`, `span`, `a`, `em`, etc.)
+- preserve the logical reading order
+- normalize whitespace aggressively because the expected text is often split across multiple DOM nodes
+- include ordered-list content that appears inside the paragraph body, such as `table.ol` rows with `(a)`, `(b)`, etc.
+- exclude hidden educational or annotation-only content such as nodes with `style="display: none;"`
+- exclude UI-only controls and page chrome because parsing starts from the content root
+
+The matching principle for validation is:
+
+- overall text content must match after whitespace normalization
+- `section_path` must match exactly
+
+#### Parsing scope for v1
+
+For v1 we will extract only paragraph nodes and their text, where the paragraph identifier comes from the IFRS paragraph marker in the left column.
+
+These identifiers are not limited to simple numbers. They can include values such as:
+
+- `1`
+- `3.1.1`
+- `AG8`
+
+We will not implement additional heading-based chunking or generic fallback heuristics because the representative IFRS pages already provide a stable paragraph-level structure.
 
 ### Representative examples
 
-Store development examples under `examples/`, alongside the existing PDF examples.
+Development and validation should use the provided HTML and partial expected-output files under `examples/`.
 
-Examples should include:
+In particular:
 
-- one or more representative IFRS HTML pages
-- notes or expected section outputs where useful for parser validation
+- `...ifric16.html`
+- `...ifric16__CHUNKS.json`
+- `...ifrs9.html`
+- `...ifrs9__CHUNKS.json`
+
+The `__CHUNKS.json` files are partial expectations, not complete exports. They should be used to verify:
+
+- selector correctness
+- exact `section_path` extraction
+- normalized text reconstruction from fragmented DOM content
 
 ## Chunking Strategy
 
@@ -324,9 +406,11 @@ For both HTML and PDF, extractors should produce `Chunk` records aligned to real
 
 For v1, HTML chunking should use only:
 
-1. numbered paragraph nodes and their text
+1. paragraph nodes and their text
 
-This should be implemented directly from the stable page structure rather than with fallback chunk-boundary strategies.
+Each paragraph node becomes exactly one chunk.
+
+This should be implemented directly from the stable page structure described above rather than with fallback chunk-boundary strategies.
 
 Each HTML chunk should preserve enough metadata to support traceability and later citation.
 
@@ -351,7 +435,8 @@ Recommended fields:
 
 Notes:
 
-- for HTML, `doc_uid` is derived from the canonical URL
+- for HTML, `canonical_url` is stored as the authoritative source URL on the document record
+- for HTML, `doc_uid` is derived from `meta[name="DC.Identifier"]` in the saved HTML, not from `canonical_url`
 - for PDFs, `doc_uid` remains the explicit CLI value or filename stem
 - no raw HTML hash is stored in v1
 
@@ -376,7 +461,8 @@ Recommended chunk-level locator fields:
 Notes:
 
 - PDF chunks keep `page_start` and `page_end`
-- HTML chunks leave page fields empty and use `source_anchor` where relevant
+- HTML chunks leave page fields empty
+- for HTML, `source_anchor` should be populated from the paragraph node id, for example `IFRS09_3.1.1` or `IFRIC16_AG8`
 
 ## Deduplication and Skip Rules
 
@@ -385,7 +471,9 @@ For HTML captures, deduplicate by canonical document identity and extracted cont
 Recommended behavior:
 
 - require `canonical_url` for every HTML capture
-- derive `doc_uid` from `canonical_url`
+- extract and validate `link[rel="canonical"]` from the saved HTML
+- require the sidecar `canonical_url` to match the HTML canonical URL
+- derive `doc_uid` from `meta[name="DC.Identifier"]`
 - if a document with that `doc_uid` already exists, compare the newly extracted chunk payload with the stored chunk payload
 - if identical, do not replace the document and move the raw files to `skipped/`
 - if changed, replace the document contents through `StoreCommand`
@@ -410,6 +498,9 @@ Validate before calling `StoreCommand`:
 - `url` is HTTP or HTTPS
 - `canonical_url` is present and is an HTTP or HTTPS URL
 - `source_domain` is non-empty
+- the saved HTML contains `link[rel="canonical"]`
+- the saved HTML contains `meta[name="DC.Identifier"]`
+- the HTML canonical URL matches the sidecar `canonical_url`
 
 If validation fails, move both files to `failed/`.
 
@@ -433,8 +524,8 @@ Important events:
 - PDFs found
 - sidecar validation failures
 - extractor selected
-- canonical URL chosen for HTML
-- `doc_uid` chosen
+- canonical URL extracted from HTML and matched to sidecar
+- `doc_uid` extracted from `meta[name="DC.Identifier"]`
 - skip decision
 - replace decision
 - chunk count produced
@@ -457,6 +548,7 @@ Cover:
 - skip decision for unchanged HTML
 - archive destination selection
 - HTML parsing using representative files from `examples/`
+- text normalization against partial `__CHUNKS.json` expectations
 
 ### Integration tests
 
@@ -502,7 +594,8 @@ Deliver:
 
 - `src/extraction/html.py`
 - selector-based HTML parsing from representative examples
-- `doc_uid` derivation from canonical URL
+- canonical URL extraction and validation from `link[rel="canonical"]`
+- `doc_uid` derivation from `meta[name="DC.Identifier"]`
 - unchanged-content detection
 - `skipped/` archive behavior
 
@@ -540,7 +633,7 @@ Success criteria:
 
 1. Exact IFRS URL patterns do not matter for planning because the user will capture pages via the extension.
 2. Stable selectors exist on the target pages.
-3. `doc_uid` should be normalized from `canonical_url` for HTML imports.
+3. `canonical_url` is authoritative for HTML source identity, but `doc_uid` should come from `meta[name="DC.Identifier"]` in the saved HTML.
 4. Unchanged HTML captures should move to `skipped/`.
 5. Raw HTML hashes should not be stored in the database in v1.
 

@@ -1,139 +1,208 @@
-"""Store command - extract chunks from a PDF and store in database and vector index."""
+"""Store command - extract chunks from a source file and persist them."""
+
+from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
-from src.db import ChunkStore, init_db
-from src.interfaces import ChunkStoreProtocol, VectorStoreProtocol
-from src.pdf import extract_chunks
+from src.db import ChunkStore, DocumentStore, init_db
+from src.extraction import HtmlExtractor, PdfExtractor
+from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ExtractorProtocol, VectorStoreProtocol
+from src.models.chunk import Chunk
 from src.vector.store import VectorStore
-
-if TYPE_CHECKING:
-    from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 
-MAX_CHUNK_CHARS = 2000
+MAX_CHUNK_CHARS = 8000
 
-# Type aliases for dependency injection
 StoreChunkStore = ChunkStoreProtocol
+StoreDocumentStore = DocumentStoreProtocol
 StoreVectorStore = VectorStoreProtocol
 StoreInitDb = Callable[[], None]
-StoreIndexPath = Callable[[], Path]
+
+
+@dataclass
+class StoreCommandResult:
+    """Structured result for one store operation."""
+
+    status: str
+    doc_uid: str
+    chunk_count: int
+    embedding_count: int
+    reason: str | None = None
+
+    def to_stdout(self) -> str:
+        """Return the historical CLI-facing text output."""
+        if self.status == "failed":
+            reason = self.reason or "unknown error"
+            return f"Error: {reason}"
+        if self.status == "skipped":
+            reason = self.reason or "unchanged content"
+            return f"Skipped: doc_uid={self.doc_uid} ({reason})"
+        return f"Stored {self.chunk_count} chunks and {self.embedding_count} embeddings for doc_uid={self.doc_uid}"
 
 
 class StoreCommand:
-    """Extract chunks from a PDF and store in the database and vector index.
-
-    Dependencies are required - use create_store_command() factory for production.
-    """
+    """Extract chunks from a source file and store them in the database and vector index."""
 
     def __init__(
         self,
-        pdf_path: Path,
+        source_path: Path,
+        extractor: ExtractorProtocol,
         chunk_store: StoreChunkStore,
+        document_store: StoreDocumentStore,
         vector_store: StoreVectorStore,
         init_db_fn: StoreInitDb,
-        doc_uid: str | None = None,
+        explicit_doc_uid: str | None = None,
     ) -> None:
-        """Initialize the store command.
-
-        Args:
-            pdf_path: Path to the PDF file.
-            chunk_store: Chunk store instance (required).
-            vector_store: Vector store instance (required).
-            init_db_fn: DB init function (required).
-            doc_uid: Optional document UID (defaults to PDF filename stem).
-
-        Note:
-            For production use, call create_store_command() instead.
-        """
-        self.pdf_path = pdf_path
-        self.doc_uid = doc_uid or pdf_path.stem
+        self.source_path = source_path
+        self._extractor = extractor
         self._chunk_store = chunk_store
+        self._document_store = document_store
         self._vector_store = vector_store
         self._init_db_fn = init_db_fn
+        self._explicit_doc_uid = explicit_doc_uid
 
     def execute(self) -> str:
-        """Execute the store command - extract and store chunks."""
-        if not self.pdf_path.exists():
-            return f"Error: PDF file not found: {self.pdf_path}"
+        """Execute the store command and return CLI-facing text."""
+        return self.execute_result().to_stdout()
+
+    def execute_result(self) -> StoreCommandResult:
+        """Execute the store command and return a structured result."""
+        if not self.source_path.exists():
+            return StoreCommandResult(
+                status="failed",
+                doc_uid=self._explicit_doc_uid or self.source_path.stem,
+                chunk_count=0,
+                embedding_count=0,
+                reason=f"Source file not found: {self.source_path}",
+            )
 
         try:
-            # Initialize database if needed
             self._init_db_fn()
+            extracted_document = self._extractor.extract(
+                source_path=self.source_path,
+                explicit_doc_uid=self._explicit_doc_uid,
+            )
+            doc_uid = extracted_document.document.doc_uid
+            chunks = extracted_document.chunks
 
-            # Extract chunks from PDF
-            logger.info(f"Extracting chunks from {self.pdf_path}")
-            chunks: list[Chunk] = extract_chunks(self.pdf_path)
-            logger.info(f"Extracted {len(chunks)} chunks")
+            self._truncate_oversized_chunks(chunks)
 
-            # Set doc_uid on all chunks (PDF extraction may return empty doc_uid)
-            for chunk in chunks:
-                chunk.doc_uid = self.doc_uid
+            with self._chunk_store as chunk_store:
+                existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
+                if self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks):
+                    logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
+                    return StoreCommandResult(
+                        status="skipped",
+                        doc_uid=doc_uid,
+                        chunk_count=len(chunks),
+                        embedding_count=0,
+                        reason="unchanged content",
+                    )
 
-            # Truncate oversized chunks
-            truncated_count = 0
-            for chunk in chunks:
-                if len(chunk.text) > MAX_CHUNK_CHARS:
-                    original_len = len(chunk.text)
-                    chunk.text = chunk.text[:MAX_CHUNK_CHARS]
-                    truncated_count += 1
-                    logger.warning(f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars")
-            if truncated_count > 0:
-                logger.info(f"Truncated {truncated_count} oversized chunk(s)")
+                if existing_chunks:
+                    logger.info(f"Replacing {len(existing_chunks)} existing chunks for {doc_uid}")
+                    chunk_store.delete_chunks_by_doc(doc_uid)
 
-            # Store in database
-            with self._chunk_store as store:
-                # Delete existing chunks for this document if any
-                existing = store.get_chunks_by_doc(self.doc_uid)
-                if existing:
-                    logger.info(f"Replacing {len(existing)} existing chunks for {self.doc_uid}")
-                    store.delete_chunks_by_doc(self.doc_uid)
+                chunk_store.insert_chunks(chunks)
+                logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
 
-                # Insert new chunks
-                ids = store.insert_chunks(chunks)
-                logger.info(f"Stored {len(ids)} chunks with doc_uid={self.doc_uid}")
+            with self._document_store as document_store:
+                document_store.upsert_document(extracted_document.document)
 
-            # Store embeddings in vector index
             embeddings_stored = 0
             with self._vector_store as vector_store:
-                # Delete existing embeddings for this document
-                deleted = vector_store.delete_by_doc(self.doc_uid)
+                deleted = vector_store.delete_by_doc(doc_uid)
                 if deleted > 0:
-                    logger.info(f"Deleted {deleted} existing embeddings for {self.doc_uid}")
+                    logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
 
-                # Add embeddings (only for chunks with valid IDs)
-                chunks_with_ids = [c for c in chunks if c.chunk_id is not None]
+                chunks_with_ids = [chunk for chunk in chunks if chunk.chunk_id is not None]
                 if chunks_with_ids:
-                    chunk_ids = [c.chunk_id for c in chunks_with_ids]
-                    texts = [c.text for c in chunks_with_ids]
-                    vector_store.add_embeddings(self.doc_uid, chunk_ids, texts)
+                    chunk_ids = [chunk.chunk_id for chunk in chunks_with_ids if chunk.chunk_id is not None]
+                    texts = [chunk.text for chunk in chunks_with_ids]
+                    vector_store.add_embeddings(doc_uid, chunk_ids, texts)
                     embeddings_stored = len(texts)
-                    logger.info(f"Stored {embeddings_stored} embeddings for doc_uid={self.doc_uid}")
+                    logger.info(f"Stored {embeddings_stored} embeddings for doc_uid={doc_uid}")
 
-            return f"Stored {len(chunks)} chunks and {embeddings_stored} embeddings for doc_uid={self.doc_uid}"
-        except Exception as e:
-            logger.exception("Error storing chunks")
-            return f"Error: {e}"
+            return StoreCommandResult(
+                status="stored",
+                doc_uid=doc_uid,
+                chunk_count=len(chunks),
+                embedding_count=embeddings_stored,
+            )
+        except Exception as error:
+            logger.exception(f"Error storing source file: {self.source_path}")
+            return StoreCommandResult(
+                status="failed",
+                doc_uid=self._explicit_doc_uid or self.source_path.stem,
+                chunk_count=0,
+                embedding_count=0,
+                reason=str(error),
+            )
+
+    def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
+        truncated_count = 0
+        for chunk in chunks:
+            if len(chunk.text) > MAX_CHUNK_CHARS:
+                original_len = len(chunk.text)
+                chunk.text = chunk.text[:MAX_CHUNK_CHARS]
+                truncated_count += 1
+                logger.warning(f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars")
+        if truncated_count > 0:
+            logger.info(f"Truncated {truncated_count} oversized chunk(s)")
+
+    def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
+        if len(existing_chunks) != len(new_chunks):
+            return False
+        return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
+
+    def _payload(self, chunk: Chunk) -> tuple[str, str, str, str, str]:
+        return (
+            chunk.section_path,
+            chunk.page_start,
+            chunk.page_end,
+            chunk.source_anchor,
+            chunk.text,
+        )
 
 
-def create_store_command(pdf_path: Path, doc_uid: str | None = None) -> StoreCommand:
-    """Create StoreCommand with real dependencies.
+def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
+    suffix = source_path.suffix.lower()
+    if suffix == ".pdf":
+        return PdfExtractor()
+    if suffix == ".html":
+        return HtmlExtractor(sidecar_path=source_path.with_suffix(".json"))
+    raise ValueError(f"Unsupported source type: {source_path}")
 
-    Args:
-        pdf_path: Path to the PDF file.
-        doc_uid: Optional document UID.
 
-    Returns:
-        StoreCommand configured with production dependencies.
+def create_store_command(
+    source_path: Path | None = None,
+    doc_uid: str | None = None,
+    extractor: ExtractorProtocol | None = None,
+    chunk_store: StoreChunkStore | None = None,
+    document_store: StoreDocumentStore | None = None,
+    vector_store: StoreVectorStore | None = None,
+    init_db_fn: StoreInitDb = init_db,
+    pdf_path: Path | None = None,
+) -> StoreCommand:
+    """Create StoreCommand with real dependencies by default.
+
+    The pdf_path parameter is preserved for backward compatibility.
     """
+    resolved_source_path = source_path or pdf_path
+    if resolved_source_path is None:
+        raise TypeError("create_store_command() requires source_path or pdf_path")
+
+    resolved_extractor = extractor or _default_extractor_for_source(resolved_source_path)
     return StoreCommand(
-        pdf_path=pdf_path,
-        doc_uid=doc_uid,
-        chunk_store=ChunkStore(),
-        vector_store=VectorStore(),
-        init_db_fn=init_db,
+        source_path=resolved_source_path,
+        extractor=resolved_extractor,
+        chunk_store=chunk_store or ChunkStore(),
+        document_store=document_store or DocumentStore(),
+        vector_store=vector_store or VectorStore(),
+        init_db_fn=init_db_fn,
+        explicit_doc_uid=doc_uid,
     )

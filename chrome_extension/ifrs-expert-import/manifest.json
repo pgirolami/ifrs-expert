@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "IFRS Expert Import",
+  "version": "0.1.0",
+  "description": "Capture the rendered IFRS HTML page and save it into Downloads/ifrs-expert/inbox.",
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Import to IFRS Expert"
+  }
+}

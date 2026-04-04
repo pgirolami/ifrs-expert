@@ -1,98 +1,226 @@
-"""Tests for store command."""
+"""Tests for the generalized store command."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
 from src.commands.store import MAX_CHUNK_CHARS, StoreCommand
-from src.interfaces import SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
-from tests.fakes import InMemoryChunkStore
+from src.models.document import DocumentRecord
+from src.models.extraction import ExtractedDocument
+from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, RecordingVectorStore
 
 
-class MockVectorStore(VectorStoreProtocol):
-    """Minimal mock for VectorStore context manager."""
+@dataclass
+class FakeExtractor:
+    """Test extractor returning a prepared extraction result."""
 
-    def __init__(self) -> None:
-        self._deleted_count = 0
+    extracted_document: ExtractedDocument
+    skip_if_unchanged: bool = False
 
-    def __enter__(self) -> "MockVectorStore":
-        return self
-
-    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
-        pass
-
-    def search_all(self, query: str) -> list[SearchResult]:
-        return []
-
-    def delete_by_doc(self, doc_uid: str) -> int:
-        return self._deleted_count
-
-    def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
-        return None
+    def extract(self, source_path: Path, explicit_doc_uid: str | None) -> ExtractedDocument:
+        del source_path
+        if explicit_doc_uid is not None:
+            self.extracted_document.document.doc_uid = explicit_doc_uid
+            for chunk in self.extracted_document.chunks:
+                chunk.doc_uid = explicit_doc_uid
+        return self.extracted_document
 
 
 class TestStoreCommand:
     """Tests for store command using dependency injection."""
 
-    def test_store_command_success(self, tmp_path):
-        """Test store command stores chunks in DB and vector store."""
-        pdf_path = tmp_path / "test.pdf"
-        pdf_path.write_text("dummy")
+    def test_store_command_success(self, tmp_path: Path) -> None:
+        """Store command should persist document metadata, chunks, and embeddings."""
+        source_path = tmp_path / "test.pdf"
+        source_path.write_text("dummy", encoding="utf-8")
 
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="pdf",
+                    source_title="IFRS 9",
+                    source_url=None,
+                    canonical_url=None,
+                    captured_at=None,
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        section_path="1.1",
+                        page_start="A1",
+                        page_end="A1",
+                        text="test content",
+                    )
+                ],
+            )
+        )
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
         command = StoreCommand(
-            pdf_path=pdf_path,
-            chunk_store=InMemoryChunkStore(),
-            vector_store=MockVectorStore(),
+            source_path=source_path,
+            extractor=extractor,
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
             init_db_fn=lambda: None,
-            doc_uid=None,
+            explicit_doc_uid=None,
         )
 
-        with patch("src.commands.store.extract_chunks") as mock_extract:
-            mock_extract.return_value = [
-                Chunk(section_path="1.1", page_start="A1", page_end="A1", text="test content")
-            ]
+        result = command.execute_result()
 
-            result = command.execute()
+        assert result.status == "stored"
+        assert result.doc_uid == "ifrs9"
+        assert result.chunk_count == 1
+        stored_document = document_store.get_document("ifrs9")
+        assert stored_document is not None, "Expected document metadata to be stored"
+        assert stored_document.source_type == "pdf"
+        assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "test content"
+        assert vector_store.added_embeddings == [("ifrs9", [1], ["test content"])]
+        assert command.execute().startswith("Stored 1 chunks")
 
-            assert not result.startswith("Error:"), f"Expected success, got error: {result}"
-            assert "1 chunks" in result
-            mock_extract.assert_called_once_with(pdf_path)
+    def test_store_command_skips_unchanged_html_chunks(self, tmp_path: Path) -> None:
+        """HTML imports should be skipped when the extracted payload is unchanged."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
 
-    def test_store_command_oversized_chunks_truncated(self, tmp_path):
-        """Test store command truncates oversized chunks."""
-        pdf_path = tmp_path / "test.pdf"
-        pdf_path.write_text("dummy")
-
-        command = StoreCommand(
-            pdf_path=pdf_path,
-            chunk_store=InMemoryChunkStore(),
-            vector_store=MockVectorStore(),
-            init_db_fn=lambda: None,
-            doc_uid=None,
+        existing_chunk = Chunk(
+            doc_uid="ifrs9",
+            section_path="2.4",
+            page_start="",
+            page_end="",
+            source_anchor="IFRS09_2.4",
+            text="existing content",
+        )
+        chunk_store.insert_chunks([existing_chunk])
+        document_store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS 9",
+                source_url="https://www.ifrs.org/original.html",
+                canonical_url="https://www.ifrs.org/original.html",
+                captured_at="2026-04-04T14:23:10Z",
+            )
         )
 
-        with patch("src.commands.store.extract_chunks") as mock_extract:
-            oversized_text = "x" * (MAX_CHUNK_CHARS + 1)
-            mock_extract.return_value = [
-                Chunk(section_path="1.1", page_start="A1", page_end="A1", text=oversized_text)
-            ]
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/original.html",
+                    canonical_url="https://www.ifrs.org/original.html",
+                    captured_at="2026-04-05T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        section_path="2.4",
+                        page_start="",
+                        page_end="",
+                        source_anchor="IFRS09_2.4",
+                        text="existing content",
+                    )
+                ],
+            ),
+            skip_if_unchanged=True,
+        )
 
-            result = command.execute()
-
-            # Should succeed but truncate the chunk
-            assert result.startswith("Stored")
-            assert "1 chunks" in result
-
-    def test_store_command_file_not_found(self):
-        """Test store command fails when PDF doesn't exist."""
         command = StoreCommand(
-            pdf_path=Path("/nonexistent/file.pdf"),
-            chunk_store=InMemoryChunkStore(),
-            vector_store=MockVectorStore(),
+            source_path=source_path,
+            extractor=extractor,
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
             init_db_fn=lambda: None,
-            doc_uid=None,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "skipped"
+        assert result.chunk_count == 1
+        assert vector_store.added_embeddings == []
+        assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "existing content"
+        assert command.execute().startswith("Skipped: doc_uid=ifrs9")
+
+    def test_store_command_truncates_oversized_chunks(self, tmp_path: Path) -> None:
+        """Oversized chunks should be truncated before persistence."""
+        source_path = tmp_path / "test.pdf"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs16",
+                    source_type="pdf",
+                    source_title="IFRS 16",
+                    source_url=None,
+                    canonical_url=None,
+                    captured_at=None,
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs16",
+                        section_path="B43",
+                        page_start="A856",
+                        page_end="A856",
+                        text="x" * (MAX_CHUNK_CHARS + 20),
+                    )
+                ],
+            )
+        )
+
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            init_db_fn=lambda: None,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+        stored_chunk = chunk_store.get_chunks_by_doc("ifrs16")[0]
+
+        assert result.status == "stored"
+        assert len(stored_chunk.text) == MAX_CHUNK_CHARS
+
+    def test_store_command_file_not_found(self) -> None:
+        """Missing source files should return an error result."""
+        command = StoreCommand(
+            source_path=Path("/nonexistent/file.pdf"),
+            extractor=FakeExtractor(
+                extracted_document=ExtractedDocument(
+                    document=DocumentRecord(
+                        doc_uid="missing",
+                        source_type="pdf",
+                        source_title="Missing",
+                        source_url=None,
+                        canonical_url=None,
+                        captured_at=None,
+                    ),
+                    chunks=[],
+                )
+            ),
+            chunk_store=InMemoryChunkStore(),
+            document_store=InMemoryDocumentStore(),
+            vector_store=RecordingVectorStore(),
+            init_db_fn=lambda: None,
+            explicit_doc_uid=None,
         )
 
         result = command.execute()
@@ -100,54 +228,10 @@ class TestStoreCommand:
         assert result.startswith("Error:")
         assert "not found" in result
 
-    def test_store_command_requires_dependencies(self, tmp_path):
-        """Test that missing dependencies cause TypeError at construction."""
-        pdf_path = tmp_path / "test.pdf"
-        pdf_path.write_text("dummy")
-
-        # Missing required arguments should raise TypeError
-        with pytest.raises(TypeError):
-            StoreCommand(pdf_path=pdf_path)  # type: ignore[call-arg]
+    def test_store_command_requires_dependencies(self, tmp_path: Path) -> None:
+        """The constructor should keep dependency injection explicit."""
+        source_path = tmp_path / "test.pdf"
+        source_path.write_text("dummy", encoding="utf-8")
 
         with pytest.raises(TypeError):
-            StoreCommand(pdf_path=pdf_path, chunk_store=InMemoryChunkStore())  # type: ignore[call-arg]
-
-    def test_store_command_replaces_existing_chunks(self, tmp_path):
-        """Test store command replaces existing chunks for same doc_uid."""
-        pdf_path = tmp_path / "test.pdf"
-        pdf_path.write_text("dummy")
-
-        chunk_store = InMemoryChunkStore()
-
-        # Insert a chunk first
-        with chunk_store as store:
-            store.insert_chunks([
-                Chunk(doc_uid="test", section_path="1.0", page_start="A1", page_end="A1", text="old content")
-            ])
-
-        # Verify initial state - should have 1 chunk
-        with chunk_store as store:
-            chunks = store.get_chunks_by_doc("test")
-            assert len(chunks) == 1
-
-        # Now run store command with same doc_uid
-        command = StoreCommand(
-            pdf_path=pdf_path,
-            chunk_store=chunk_store,
-            vector_store=MockVectorStore(),
-            init_db_fn=lambda: None,
-            doc_uid="test",
-        )
-
-        with patch("src.commands.store.extract_chunks") as mock_extract:
-            mock_extract.return_value = [
-                Chunk(section_path="2.0", page_start="B1", page_end="B1", text="new content")
-            ]
-
-            result = command.execute()
-
-            # Old chunk should be replaced
-            with chunk_store as store:
-                chunks = store.get_chunks_by_doc("test")
-                assert len(chunks) == 1
-                assert chunks[0].text == "new content"
+            StoreCommand(source_path=source_path)  # type: ignore[call-arg]

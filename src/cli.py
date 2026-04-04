@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from dotenv import load_dotenv
 
 from src.answer_artifacts import save_answer_command_result
-from src.commands import AnswerOptions, ChunkCommand, ListCommand, QueryOptions
+from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryOptions
 from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
 from src.commands.store import create_store_command
@@ -29,7 +29,6 @@ def main() -> int:
     setup_logging()
 
     parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management")
-
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     chunk_parser = subparsers.add_parser(
@@ -43,15 +42,20 @@ def main() -> int:
 
     store_parser = subparsers.add_parser(
         "store",
-        help="Extract chunks from a PDF and store in the database",
+        help="Extract chunks from a PDF or HTML capture and store them in the database",
     )
     store_parser.add_argument(
-        "pdf",
-        help="Path to the PDF file to store",
+        "source",
+        help="Path to the source file to store (.pdf or .html)",
     )
     store_parser.add_argument(
         "--doc-uid",
-        help="Document UID to use (default: PDF filename stem)",
+        help="Document UID to use for PDF ingestion (default: filename stem)",
+    )
+
+    subparsers.add_parser(
+        "ingest",
+        help="Scan ~/Downloads/ifrs-expert/inbox and ingest HTML capture pairs plus PDFs",
     )
 
     list_parser = subparsers.add_parser(
@@ -172,7 +176,11 @@ def _execute_command(args: argparse.Namespace) -> str:
         return command.execute()
 
     if args.command == "store":
-        command = create_store_command(pdf_path=Path(args.pdf), doc_uid=args.doc_uid)
+        command = create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid)
+        return command.execute()
+
+    if args.command == "ingest":
+        command = IngestCommand()
         return command.execute()
 
     if args.command == "list":

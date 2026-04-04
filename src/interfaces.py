@@ -1,8 +1,13 @@
-"""Abstract interfaces for store dependencies."""
+"""Abstract interfaces for store dependencies and extraction."""
 
+from __future__ import annotations
+
+from pathlib import Path
 from typing import Protocol, Self, TypedDict
 
 from src.models.chunk import Chunk
+from src.models.document import DocumentRecord
+from src.models.extraction import ExtractedDocument
 
 
 class SearchResult(TypedDict):
@@ -39,6 +44,22 @@ class ChunkStoreProtocol(ReadChunkStoreProtocol, Protocol):
         """Delete all chunks for a document."""
 
 
+class DocumentStoreProtocol(Protocol):
+    """Protocol for document metadata storage."""
+
+    def __enter__(self) -> Self:
+        """Enter context manager."""
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        """Exit context manager."""
+
+    def upsert_document(self, document: DocumentRecord) -> None:
+        """Insert or update a document record."""
+
+    def get_document(self, doc_uid: str) -> DocumentRecord | None:
+        """Fetch a document record by UID."""
+
+
 class SearchVectorStoreProtocol(Protocol):
     """Protocol for vector-store searches used by query/answer flows."""
 
@@ -60,3 +81,13 @@ class VectorStoreProtocol(SearchVectorStoreProtocol, Protocol):
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
         """Add embeddings for chunks."""
+
+
+class ExtractorProtocol(Protocol):
+    """Protocol for source extractors used by StoreCommand."""
+
+    source_type: str
+    skip_if_unchanged: bool
+
+    def extract(self, source_path: Path, explicit_doc_uid: str | None) -> ExtractedDocument:
+        """Extract one source file into structured metadata and chunks."""

@@ -2,5 +2,6 @@
 
 from src.db.chunks import ChunkStore
 from src.db.connection import DB_PATH, init_db
+from src.db.documents import DocumentStore
 
-__all__ = ["DB_PATH", "ChunkStore", "init_db"]  # isort: skip
+__all__ = ["DB_PATH", "ChunkStore", "DocumentStore", "init_db"]

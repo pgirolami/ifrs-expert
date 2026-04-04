@@ -9,6 +9,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.b_response_utils import convert_json_to_markdown
+from src.commands.constants import (
+    DEFAULT_EXPAND,
+    DEFAULT_FULL_DOC_THRESHOLD,
+    DEFAULT_MIN_SCORE,
+    DEFAULT_RETRIEVAL_K,
+)
 from src.db import ChunkStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
@@ -42,10 +48,10 @@ class AnswerConfig:
 class AnswerOptions:
     """Options for answer command."""
 
-    k: int = 5
-    min_score: float | None = 0.55
-    expand: int = 5
-    full_doc_threshold: int = 0
+    k: int = DEFAULT_RETRIEVAL_K
+    min_score: float | None = DEFAULT_MIN_SCORE
+    expand: int = DEFAULT_EXPAND
+    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     output_dir: Path | None = None
     save_all: bool = False
 
@@ -192,10 +198,10 @@ class AnswerCommand:
     ) -> None:
         """Initialize the answer command."""
         self.query = query
-        self.k = options.k if options else 5
-        self.min_score = options.min_score if options and options.min_score is not None else 0.6
-        self.expand = options.expand if options else 5
-        self.full_doc_threshold = options.full_doc_threshold if options else 0
+        self.k = options.k if options else DEFAULT_RETRIEVAL_K
+        self.min_score = options.min_score if options and options.min_score is not None else DEFAULT_MIN_SCORE
+        self.expand = options.expand if options else DEFAULT_EXPAND
+        self.full_doc_threshold = options.full_doc_threshold if options else DEFAULT_FULL_DOC_THRESHOLD
 
         self._retrieved_doc_uids: list[str] = []
         self._config = config

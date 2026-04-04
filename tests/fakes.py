@@ -1,9 +1,13 @@
 """In-memory fakes for testing."""
 
+from __future__ import annotations
+
+from dataclasses import replace
 from typing import Self
 
-from src.interfaces import ChunkStoreProtocol
+from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
+from src.models.document import DocumentRecord
 
 
 class InMemoryChunkStore(ChunkStoreProtocol):
@@ -11,37 +15,82 @@ class InMemoryChunkStore(ChunkStoreProtocol):
 
     def __init__(self) -> None:
         self._chunks: list[Chunk] = []
-        self._next_id: int = 1
+        self._next_id = 1
 
     def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
-        pass
+        return None
 
     def insert_chunks(self, chunks: list[Chunk]) -> list[int]:
         ids: list[int] = []
         for chunk in chunks:
-            # Preserve existing chunk_id if set, otherwise assign new one
             chunk_id = chunk.chunk_id if chunk.chunk_id is not None else self._next_id
-            if chunk.chunk_id is None:
-                self._next_id += 1
+            self._next_id = max(self._next_id, chunk_id + 1)
+            stored_chunk = replace(chunk, chunk_id=chunk_id)
             chunk.chunk_id = chunk_id
+            self._chunks.append(stored_chunk)
             ids.append(chunk_id)
-            self._chunks.append(chunk)
         return ids
 
     def get_chunks_by_doc(self, doc_uid: str) -> list[Chunk]:
-        return [c for c in self._chunks if c.doc_uid == doc_uid]
+        return [replace(chunk) for chunk in self._chunks if chunk.doc_uid == doc_uid]
 
     def get_all_docs(self) -> list[str]:
-        return sorted(set(c.doc_uid for c in self._chunks))
+        return sorted({chunk.doc_uid for chunk in self._chunks})
 
     def delete_chunks_by_doc(self, doc_uid: str) -> int:
         original_count = len(self._chunks)
-        self._chunks = [c for c in self._chunks if c.doc_uid != doc_uid]
+        self._chunks = [chunk for chunk in self._chunks if chunk.doc_uid != doc_uid]
         return original_count - len(self._chunks)
 
     def clear(self) -> None:
         self._chunks.clear()
         self._next_id = 1
+
+
+class InMemoryDocumentStore(DocumentStoreProtocol):
+    """In-memory implementation of document storage for testing."""
+
+    def __init__(self) -> None:
+        self._documents: dict[str, DocumentRecord] = {}
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        return None
+
+    def upsert_document(self, document: DocumentRecord) -> None:
+        self._documents[document.doc_uid] = replace(document)
+
+    def get_document(self, doc_uid: str) -> DocumentRecord | None:
+        document = self._documents.get(doc_uid)
+        if document is None:
+            return None
+        return replace(document)
+
+
+class RecordingVectorStore(VectorStoreProtocol):
+    """Vector store fake that records operations for assertions."""
+
+    def __init__(self) -> None:
+        self.deleted_doc_uids: list[str] = []
+        self.added_embeddings: list[tuple[str, list[int], list[str]]] = []
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        return None
+
+    def search_all(self, query: str) -> list[SearchResult]:
+        return []
+
+    def delete_by_doc(self, doc_uid: str) -> int:
+        self.deleted_doc_uids.append(doc_uid)
+        return 0
+
+    def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
+        self.added_embeddings.append((doc_uid, chunk_ids, texts))
