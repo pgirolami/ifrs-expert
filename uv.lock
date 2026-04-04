@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-03-20T11:05:05.3811Z"
+exclude-newer = "2026-03-25T06:40:10.833262Z"
 exclude-newer-span = "P10D"
 
 [[package]]
@@ -605,6 +605,7 @@ dependencies = [
     { name = "openai" },
     { name = "pymupdf" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "sentence-transformers" },
     { name = "streamlit" },
 ]
@@ -637,6 +638,7 @@ requires-dist = [
     { name = "openai", specifier = ">=1.0.0" },
     { name = "pymupdf", specifier = ">=1.27.2" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "sentence-transformers", specifier = ">=2.2.0" },
     { name = "streamlit", specifier = ">=1.43.0" },
 ]

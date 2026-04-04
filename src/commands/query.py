@@ -185,6 +185,7 @@ class QueryCommand:
         """Get prerequisite error or None."""
         index_path = self._config.index_path_fn()
         if not index_path.exists():
+            logger.error(f"Missing vector index at {index_path}; corpus must be built before running queries")
             return "Error: No index found. Please run 'store' command first."
         return None
 
@@ -230,6 +231,7 @@ class QueryCommand:
         """Check that required indexes exist."""
         index_path = self._config.index_path_fn()
         if not index_path.exists():
+            logger.error(f"Missing vector index at {index_path}; corpus must be built before running queries")
             return "Error: No index found. Please run 'store' command first."
 
         return None

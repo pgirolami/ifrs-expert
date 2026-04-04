@@ -7,13 +7,15 @@ Canonical Promptfoo `exec:` contract:
 
 This wrapper reads the question from argv[1], can read provider-level options
 from argv[2], and reads per-test mode from argv[3].test.options.mode when
-available.
+available. When Promptfoo does not pass a mode, the wrapper defaults to live.
 """
 
 from __future__ import annotations
 
 import json
+import logging
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Final
@@ -24,9 +26,13 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from dotenv import load_dotenv
 
+from src.answer_artifacts import save_answer_command_result
 from src.commands import AnswerOptions
 from src.commands.answer import create_answer_command
 from src.logging_config import setup_logging
+from src.models.answer_command_result import AnswerCommandResult
+
+logger = logging.getLogger(__name__)
 
 PROMPT_ARG_INDEX: Final[int] = 1
 PROVIDER_OPTIONS_ARG_INDEX: Final[int] = 2
@@ -36,6 +42,7 @@ MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
 DEFAULT_K: Final[int] = 5
 DEFAULT_MIN_SCORE: Final[float] = 0.55
 DEFAULT_EXPAND: Final[int] = 5
+PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 
 CANNED_JUSTIFICATION: Final[str] = (
     "Une documentation de couverture peut être envisagée sous IFRS 9 si l'analyse "
@@ -116,8 +123,8 @@ def _load_context() -> dict[str, object]:
     return raw_context if isinstance(raw_context, dict) else {}
 
 
-def _extract_mode(context: dict[str, object]) -> str | None:
-    """Extract the eval mode from Promptfoo context."""
+def _extract_mode(context: dict[str, object]) -> str:
+    """Extract the eval mode from Promptfoo context, defaulting to live."""
     test_data = context.get("test")
     if isinstance(test_data, dict):
         options = test_data.get("options")
@@ -134,15 +141,12 @@ def _extract_mode(context: dict[str, object]) -> str | None:
             if isinstance(mode, str) and mode in {"canned", "live"}:
                 return mode
 
-    return None
+    return "live"
 
 
-def _extract_question(prompt: str, mode: str | None) -> str:
+def _extract_question(prompt: str, mode: str) -> str:
     """Extract the question text from the rendered prompt."""
     stripped_prompt = prompt.strip()
-    if mode is None:
-        return stripped_prompt
-
     prefix = f"{mode} "
     if stripped_prompt.startswith(prefix):
         return stripped_prompt[len(prefix) :]
@@ -211,7 +215,56 @@ def _apply_llm_provider_override(llm_provider: str | None) -> None:
     os.environ["LLM_PROVIDER"] = llm_provider
 
 
-def _run_live(question: str, llm_provider: str | None) -> tuple[int, str]:
+def _slugify_component(value: str) -> str:
+    """Normalize one path component for Promptfoo artifacts."""
+    normalized = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return normalized or "default"
+
+
+def _artifact_output_dir(context: dict[str, object], llm_provider: str | None) -> Path | None:
+    """Build the Promptfoo artifact output directory from context metadata."""
+    base_dir = os.environ.get(PROMPTFOO_ARTIFACTS_DIR_ENV)
+    if base_dir is None or not base_dir.strip():
+        return None
+
+    family = "unknown-family"
+    variant = "unknown-variant"
+    test_data = context.get("test")
+    if isinstance(test_data, dict):
+        metadata = test_data.get("metadata")
+        if isinstance(metadata, dict):
+            family_value = metadata.get("family")
+            if isinstance(family_value, str) and family_value.strip():
+                family = family_value.strip()
+            variant_value = metadata.get("variant")
+            if isinstance(variant_value, str) and variant_value.strip():
+                variant = variant_value.strip()
+
+    provider_component = _slugify_component(llm_provider or os.environ.get("LLM_PROVIDER", "default"))
+    output_dir = Path(base_dir) / family / variant / provider_component
+
+    repeat_index = context.get("repeatIndex")
+    if isinstance(repeat_index, int) and repeat_index > 0:
+        output_dir = output_dir / f"repeat-{repeat_index}"
+
+    return output_dir
+
+
+def _write_promptfoo_artifacts(
+    result: AnswerCommandResult,
+    context: dict[str, object],
+    llm_provider: str | None,
+) -> None:
+    """Persist answer artifacts when Promptfoo archiving is enabled."""
+    output_dir = _artifact_output_dir(context=context, llm_provider=llm_provider)
+    if output_dir is None:
+        return
+
+    save_answer_command_result(result=result, output_dir=output_dir)
+    logger.info(f"Saved Promptfoo answer artifacts to {output_dir}")
+
+
+def _run_live(question: str, llm_provider: str | None, context: dict[str, object]) -> tuple[int, str]:
     """Run the real answer pipeline for one question."""
     load_dotenv()
     _apply_llm_provider_override(llm_provider)
@@ -222,8 +275,10 @@ def _run_live(question: str, llm_provider: str | None) -> tuple[int, str]:
         options=AnswerOptions(k=DEFAULT_K, min_score=DEFAULT_MIN_SCORE, expand=DEFAULT_EXPAND),
     )
     result = command.execute()
+    _write_promptfoo_artifacts(result=result, context=context, llm_provider=llm_provider)
 
     if result.error is not None:
+        logger.error(f"Answer pipeline failed during Promptfoo live run: {result.error}")
         return 1, _error_payload(result.error)
 
     if result.prompt_b_raw_response is not None:
@@ -245,10 +300,6 @@ def main() -> int:
     provider_options = _load_provider_options()
     context = _load_context()
     mode = _extract_mode(context)
-    if mode is None:
-        _write_stdout(_error_payload("Error: Missing mode in Promptfoo test options"))
-        return 1
-
     question = _extract_question(prompt, mode)
     if not question:
         _write_stdout(_error_payload("Error: Missing question text"))
@@ -259,7 +310,7 @@ def main() -> int:
         return 0
 
     llm_provider = _extract_llm_provider(provider_options, context)
-    exit_code, payload = _run_live(question, llm_provider)
+    exit_code, payload = _run_live(question, llm_provider, context)
     _write_stdout(payload)
     return exit_code
 

@@ -174,6 +174,48 @@ Run it with:
 npx promptfoo eval
 ```
 
+The root `promptfooconfig.yaml` is generated from:
+- `promptfoo_src/base.yaml`
+- `experiments/00_QUESTIONS/*/family.yaml`
+
+When you update Promptfoo families or assertions, rebuild it with:
+
+```bash
+npm run eval:build
+```
+
+The archived Promptfoo run entrypoint is:
+
+```bash
+make eval EXPERIMENT_DIR=promptfoo_regression
+```
+
+`EXPERIMENT_DIR` is required so each run is explicitly attached to an experiment folder.
+For relative values, the runner automatically prefixes `experiments/`.
+
+You can also use Make shortcuts for focused runs and alternate archive locations:
+
+```bash
+make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
+make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="Mistral Large 3"
+make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral smoke"
+make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
+```
+
+That command writes an HTML report plus per-test prompt/response artifacts under:
+
+```text
+experiments/<experiment_subdir>/runs/<timestamp>_<slug>/
+```
+
+Each generated test includes Promptfoo metadata for focused runs, for example:
+
+```bash
+npx promptfoo eval --filter-metadata family=Q1
+npx promptfoo eval --filter-metadata variant=Q1.0
+uv run python scripts/run_promptfoo_eval.py --description "Q1 mistral" -- --filter-metadata family=Q1
+```
+
 Checks include:
 - valid JSON schema
 - presence of expected approaches
