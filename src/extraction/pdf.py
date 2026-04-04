@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 import fitz
 
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # Section number validation thresholds
 MAX_SECTION_NUMBER_LENGTH = 8

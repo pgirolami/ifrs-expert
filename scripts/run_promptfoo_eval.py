@@ -82,9 +82,7 @@ class PromptfooEvalRunner:
         logger.info(f"Running Promptfoo eval with archived HTML report at {run_layout.report_path}")
         completed_process = self._command_runner(eval_command, env, self._project_root)
         if completed_process.returncode != 0:
-            logger.warning(
-                f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir}"
-            )
+            logger.warning(f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir}")
         return completed_process.returncode
 
     def _build_run_layout(self, description: str | None) -> PromptfooRunLayout:

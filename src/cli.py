@@ -171,23 +171,21 @@ def main() -> int:
 
 def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
+    result: str
+
     if args.command == "chunk":
         command = ChunkCommand(pdf_path=Path(args.pdf))
-        return command.execute()
-
-    if args.command == "store":
+        result = command.execute()
+    elif args.command == "store":
         command = create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid)
-        return command.execute()
-
-    if args.command == "ingest":
+        result = command.execute()
+    elif args.command == "ingest":
         command = IngestCommand()
-        return command.execute()
-
-    if args.command == "list":
+        result = command.execute()
+    elif args.command == "list":
         command = ListCommand(doc_uid=args.doc_uid)
-        return command.execute()
-
-    if args.command == "query":
+        result = command.execute()
+    elif args.command == "query":
         query = sys.stdin.read().strip()
         verbose = not getattr(args, "json", False)
         command = create_query_command(
@@ -200,12 +198,13 @@ def _execute_command(args: argparse.Namespace) -> str:
                 full_doc_threshold=args.full_doc_threshold,
             ),
         )
-        return command.execute()
+        result = command.execute()
+    elif args.command == "answer":
+        result = _execute_answer_command(args)
+    else:
+        result = f"Error: Unknown command: {args.command}"
 
-    if args.command == "answer":
-        return _execute_answer_command(args)
-
-    return f"Error: Unknown command: {args.command}"
+    return result
 
 
 def _execute_answer_command(args: argparse.Namespace) -> str:

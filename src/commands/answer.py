@@ -208,9 +208,7 @@ class AnswerCommand:
 
     def execute(self) -> AnswerCommandResult:
         """Execute the answer command and return the run artifacts."""
-        logger.info(
-            f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, f={self.full_doc_threshold}, min-score={self.min_score})"
-        )
+        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, f={self.full_doc_threshold}, min-score={self.min_score})")
 
         validation_error = self._get_validation_error()
         if validation_error:
@@ -255,9 +253,7 @@ class AnswerCommand:
         """Execute the main workflow."""
         ranked_results = self._search_chunks()
         if not ranked_results:
-            return AnswerCommandResult.failure(
-                query=self.query, error="Error: No chunks retrieved", error_stage="retrieval"
-            )
+            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
 
         selected_results = self._select_results(ranked_results)
         if not selected_results:
@@ -283,9 +279,7 @@ class AnswerCommand:
         logger.info(f"Search returned {len(ranked_results)} raw results")
         if ranked_results:
             top_result = ranked_results[0]
-            logger.info(
-                f"Top retrieved chunk: doc_uid={top_result['doc_uid']}, chunk_id={top_result['chunk_id']}, score={top_result['score']:.4f}"
-            )
+            logger.info(f"Top retrieved chunk: doc_uid={top_result['doc_uid']}, chunk_id={top_result['chunk_id']}, score={top_result['score']:.4f}")
         else:
             logger.warning(f"What ?? {ranked_results}")
 
@@ -294,9 +288,7 @@ class AnswerCommand:
     def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
         """Select top-k results per document."""
         selected_results = self._select_top_k_per_document(ranked_results, self.k, self.min_score)
-        logger.info(
-            f"{len(selected_results)} chunks with score≥{self.min_score} out of the original {len(ranked_results)}"
-        )
+        logger.info(f"{len(selected_results)} chunks with score≥{self.min_score} out of the original {len(ranked_results)}")
 
         return selected_results
 
@@ -433,11 +425,7 @@ class AnswerCommand:
     def _build_prompt_b(self, context: str, approaches_json: str) -> str:
         """Build Prompt B by substituting placeholders."""
         template = _read_prompt_template(PROMPT_B_PATH)
-        return (
-            template.replace("{{CHUNKS}}", context)
-            .replace("{{QUERY}}", self.query)
-            .replace("{{APPROACHES_JSON}}", approaches_json)
-        )
+        return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
 
     def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         """Format chunks grouped by document for clearer prompt structure."""
@@ -477,13 +465,7 @@ class AnswerCommand:
 
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""
-        return (
-            text.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace('"', "&quot;")
-            .replace("'", "&apos;")
-        )
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
 
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""

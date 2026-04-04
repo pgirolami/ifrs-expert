@@ -6,15 +6,16 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol
 
-from src.commands.store import StoreCommandResult, create_store_command
+from src.commands.store import StoreCommand, StoreCommandResult, create_store_command
 from src.extraction import HtmlExtractor, PdfExtractor
 from src.extraction.html import HtmlSidecar, HtmlValidationError
 from src.interfaces import ExtractorProtocol
 
 logger = logging.getLogger(__name__)
 
-StoreCommandFactory = Callable[[Path, ExtractorProtocol, str | None], object]
+StoreCommandFactory = Callable[[Path, ExtractorProtocol, str | None], "StoreCommandLike"]
 
 
 @dataclass(frozen=True)
@@ -28,7 +29,8 @@ class CaptureDirectories:
     skipped: Path
 
     @classmethod
-    def from_root(cls, root: Path) -> "CaptureDirectories":
+    def from_root(cls, root: Path) -> CaptureDirectories:
+        """Build the standard capture directory layout from a root path."""
         return cls(
             root=root,
             inbox=root / "inbox",
@@ -38,6 +40,7 @@ class CaptureDirectories:
         )
 
     def ensure_exists(self) -> None:
+        """Create the capture directories when they do not already exist."""
         self.root.mkdir(parents=True, exist_ok=True)
         self.inbox.mkdir(parents=True, exist_ok=True)
         self.processed.mkdir(parents=True, exist_ok=True)
@@ -57,11 +60,11 @@ class IngestItem:
     explicit_doc_uid: str | None = None
 
 
-class StoreCommandLike:
+class StoreCommandLike(Protocol):
     """Structural typing helper for injected store commands."""
 
     def execute_result(self) -> StoreCommandResult:
-        raise NotImplementedError
+        """Execute storage and return the structured result."""
 
 
 class IngestCommand:
@@ -72,9 +75,8 @@ class IngestCommand:
         capture_root: Path | None = None,
         store_command_factory: StoreCommandFactory | None = None,
     ) -> None:
-        self._directories = CaptureDirectories.from_root(
-            capture_root or (Path.home() / "Downloads" / "ifrs-expert")
-        )
+        """Initialize the ingest command with its capture root and store factory."""
+        self._directories = CaptureDirectories.from_root(capture_root or (Path.home() / "Downloads" / "ifrs-expert"))
         self._store_command_factory = store_command_factory or self._default_store_command_factory
 
     def execute(self) -> str:
@@ -106,7 +108,7 @@ class IngestCommand:
                     item.explicit_doc_uid,
                 )
                 store_result = store_command.execute_result()
-            except Exception as error:
+            except (OSError, RuntimeError, ValueError) as error:
                 store_result = StoreCommandResult(
                     status="failed",
                     doc_uid=item.source_path.stem,
@@ -118,9 +120,7 @@ class IngestCommand:
             if store_result.status == "stored":
                 imported_count += 1
                 self._archive_paths(paths=item.related_paths, destination_dir=self._directories.processed)
-                results.append(
-                    f"Imported: {item.reference} -> doc_uid={store_result.doc_uid} ({store_result.chunk_count} chunks)"
-                )
+                results.append(f"Imported: {item.reference} -> doc_uid={store_result.doc_uid} ({store_result.chunk_count} chunks)")
                 continue
 
             if store_result.status == "skipped":
@@ -136,9 +136,7 @@ class IngestCommand:
             results.append(f"Failed: {item.reference} ({reason})")
 
         processed_count = imported_count + skipped_count + failed_count
-        summary_lines = [
-            f"Processed {processed_count} item(s): {imported_count} imported, {skipped_count} skipped, {failed_count} failed"
-        ]
+        summary_lines = [f"Processed {processed_count} item(s): {imported_count} imported, {skipped_count} skipped, {failed_count} failed"]
         summary_lines.extend(results)
         return "\n".join(summary_lines)
 
@@ -254,7 +252,7 @@ class IngestCommand:
         source_path: Path,
         extractor: ExtractorProtocol,
         explicit_doc_uid: str | None,
-    ) -> StoreCommandLike:
+    ) -> StoreCommand:
         return create_store_command(
             source_path=source_path,
             extractor=extractor,

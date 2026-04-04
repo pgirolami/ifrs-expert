@@ -81,3 +81,9 @@ It documents how the system evolved from a single prompt to a structured, evalua
 - Add a POC Streamlit app to ask questions & ask follow-ups
 - Add PromptFoo for evals, added a few evals
 - Setup automated demo
+
+### 2026-04-04 : Prepare for more improvements & evaluations
+
+- Setup PromptFoo to scale to many questions & to persist the HTML results 
+- Make standards ingestion more robust by ingesting straight from HTML, see [plan](../plans/2026-04-04--html-import.md). This paves the way for ingesting section titles and testing whether similarity on just the section titles would help retrieval
+-

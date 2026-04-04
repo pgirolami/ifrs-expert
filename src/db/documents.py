@@ -18,11 +18,13 @@ class DocumentStore:
     _conn: sqlite3.Connection
 
     def __enter__(self) -> Self:
+        """Open the SQLite connection for document operations."""
         self._conn = get_connection()
         self._conn.row_factory = sqlite3.Row
         return self
 
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        """Close the SQLite connection for document operations."""
         self._conn.close()
 
     def upsert_document(self, document: DocumentRecord) -> None:

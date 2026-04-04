@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from src.models.chunk import Chunk
-from src.models.document import DocumentRecord
+if TYPE_CHECKING:
+    from src.models.chunk import Chunk
+    from src.models.document import DocumentRecord
 
 
 @dataclass

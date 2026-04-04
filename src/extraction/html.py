@@ -6,18 +6,28 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
+from typing import TYPE_CHECKING, Final, NoReturn
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
-from bs4.element import NavigableString, Tag
+from bs4.element import Tag
 
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
 
-INLINE_TEXT_TAGS = {"a", "em", "i", "p", "span", "strong", "sup", "sub"}
-REQUIRED_SIDECAR_FIELDS = ("url", "title", "captured_at", "source_domain", "canonical_url")
+if TYPE_CHECKING:
+    from pathlib import Path
+
+INLINE_TEXT_TAGS: Final[set[str]] = {"a", "em", "i", "p", "span", "strong", "sup", "sub"}
+REQUIRED_SIDECAR_FIELDS: Final[tuple[str, ...]] = (
+    "url",
+    "title",
+    "captured_at",
+    "source_domain",
+    "canonical_url",
+)
+TABLE_ROW_WITH_LABEL_CELL_COUNT: Final[int] = 2
 
 
 class HtmlValidationError(ValueError):
@@ -37,25 +47,25 @@ class HtmlSidecar:
     content_type: str | None
 
     @classmethod
-    def from_path(cls, sidecar_path: Path) -> "HtmlSidecar":
+    def from_path(cls, sidecar_path: Path) -> HtmlSidecar:
         """Load and validate an HTML sidecar file."""
         try:
             payload = json.loads(sidecar_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as error:
-            raise HtmlValidationError("invalid sidecar JSON") from error
+            _fail_validation("invalid sidecar JSON", cause=error)
 
         for field_name in REQUIRED_SIDECAR_FIELDS:
             value = payload.get(field_name)
             if not isinstance(value, str) or not value.strip():
-                raise HtmlValidationError(f"missing required sidecar field: {field_name}")
+                _fail_validation(f"missing required sidecar field: {field_name}")
 
         _validate_http_url(payload["url"], field_name="url")
         _validate_http_url(payload["canonical_url"], field_name="canonical_url")
 
         try:
-            datetime.fromisoformat(payload["captured_at"].replace("Z", "+00:00"))
+            datetime.fromisoformat(payload["captured_at"])
         except ValueError as error:
-            raise HtmlValidationError("captured_at must be an ISO-8601 timestamp") from error
+            _fail_validation("captured_at must be an ISO-8601 timestamp", cause=error)
 
         return cls(
             url=payload["url"],
@@ -75,6 +85,7 @@ class HtmlExtractor:
     skip_if_unchanged = True
 
     def __init__(self, sidecar_path: Path) -> None:
+        """Initialize the extractor with the matching JSON sidecar path."""
         self._sidecar_path = sidecar_path
 
     def extract(self, source_path: Path, explicit_doc_uid: str | None) -> ExtractedDocument:
@@ -82,27 +93,27 @@ class HtmlExtractor:
         del explicit_doc_uid
 
         if not source_path.exists():
-            raise HtmlValidationError(f"HTML file not found: {source_path}")
+            _fail_validation(f"HTML file not found: {source_path}")
         if not self._sidecar_path.exists():
-            raise HtmlValidationError(f"HTML sidecar not found: {self._sidecar_path}")
+            _fail_validation(f"HTML sidecar not found: {self._sidecar_path}")
 
         sidecar = HtmlSidecar.from_path(self._sidecar_path)
         soup = BeautifulSoup(source_path.read_text(encoding="utf-8"), "html.parser")
 
         canonical_url = self._extract_canonical_url(soup)
         if canonical_url != sidecar.canonical_url:
-            raise HtmlValidationError("HTML canonical URL does not match sidecar canonical URL")
+            _fail_validation("HTML canonical URL does not match sidecar canonical URL")
 
         identifier_tag = soup.select_one('meta[name="DC.Identifier"]')
         if not isinstance(identifier_tag, Tag):
-            raise HtmlValidationError("HTML is missing meta[name=\"DC.Identifier\"]")
-        doc_uid = identifier_tag.get("content", "").strip()
+            _fail_validation('HTML is missing meta[name="DC.Identifier"]')
+        doc_uid = _tag_attribute_as_string(identifier_tag, "content")
         if not doc_uid:
-            raise HtmlValidationError("HTML DC.Identifier must be non-empty")
+            _fail_validation("HTML DC.Identifier must be non-empty")
 
         content_root = soup.select_one("section.ifrs-cmp-htmlviewer__section")
         if not isinstance(content_root, Tag):
-            raise HtmlValidationError("HTML is missing the IFRS content root")
+            _fail_validation("HTML is missing the IFRS content root")
 
         chunks = self._extract_chunks(doc_uid=doc_uid, content_root=content_root)
 
@@ -121,10 +132,10 @@ class HtmlExtractor:
     def _extract_canonical_url(self, soup: BeautifulSoup) -> str:
         canonical_tag = soup.select_one('link[rel="canonical"]')
         if not isinstance(canonical_tag, Tag):
-            raise HtmlValidationError("HTML is missing link[rel=\"canonical\"]")
-        canonical_url = canonical_tag.get("href", "").strip()
+            _fail_validation('HTML is missing link[rel="canonical"]')
+        canonical_url = _tag_attribute_as_string(canonical_tag, "href")
         if not canonical_url:
-            raise HtmlValidationError("HTML canonical URL must be non-empty")
+            _fail_validation("HTML canonical URL must be non-empty")
         _validate_http_url(canonical_url, field_name="canonical URL")
         return canonical_url
 
@@ -152,7 +163,7 @@ class HtmlExtractor:
                     section_path=section_path,
                     page_start="",
                     page_end="",
-                    source_anchor=paragraph.get("id", "").strip(),
+                    source_anchor=_tag_attribute_as_string(paragraph, "id"),
                     text=text,
                 )
             )
@@ -196,7 +207,7 @@ class HtmlExtractor:
 
     def _extract_table_lines(self, table: Tag) -> list[str]:
         bodies = table.find_all("tbody", recursive=False)
-        row_containers = bodies if bodies else [table]
+        row_containers = bodies or [table]
         rows: list[Tag] = []
         for container in row_containers:
             rows.extend(container.find_all("tr", recursive=False))
@@ -210,7 +221,7 @@ class HtmlExtractor:
             if _is_hidden(row):
                 continue
             cells = row.find_all("td", recursive=False)
-            if len(cells) >= 2:
+            if len(cells) >= TABLE_ROW_WITH_LABEL_CELL_COUNT:
                 label = _flatten_inline_text(cells[0]).replace(" ", "")
                 body_lines = self._extract_body_lines(cells[1])
                 if body_lines:
@@ -227,24 +238,37 @@ class HtmlExtractor:
         return lines
 
 
+def _fail_validation(message: str, *, cause: Exception | None = None) -> NoReturn:
+    if cause is None:
+        raise HtmlValidationError(message)
+    raise HtmlValidationError(message) from cause
+
+
 def _optional_string(value: object) -> str | None:
     if value is None:
         return None
     if isinstance(value, str):
         stripped = value.strip()
         return stripped or None
-    raise HtmlValidationError("optional sidecar fields must be strings when present")
+    _fail_validation("optional sidecar fields must be strings when present")
 
 
 def _validate_http_url(value: str, field_name: str) -> None:
     parsed = urlparse(value)
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise HtmlValidationError(f"{field_name} must be an HTTP or HTTPS URL")
+        _fail_validation(f"{field_name} must be an HTTP or HTTPS URL")
 
 
 def _is_hidden(node: Tag) -> bool:
-    style = node.get("style", "")
-    return "display: none" in style.lower() or node.has_attr("hidden") or node.get("aria-hidden") == "true"
+    style = _tag_attribute_as_string(node, "style")
+    return "display: none" in style.lower() or node.has_attr("hidden") or _tag_attribute_as_string(node, "aria-hidden") == "true"
+
+
+def _tag_attribute_as_string(node: Tag, attribute_name: str) -> str:
+    attribute_value = node.get(attribute_name)
+    if isinstance(attribute_value, str):
+        return attribute_value.strip()
+    return ""
 
 
 def _flatten_inline_text(node: Tag) -> str:
@@ -257,8 +281,7 @@ def _flatten_inline_text(node: Tag) -> str:
 
 
 def _normalize_whitespace(text: str) -> str:
-    text = text.replace("\xa0", " ")
-    text = re.sub(r"\s+", " ", text).strip()
-    text = re.sub(r"\s+([,.;:)?\]])", r"\1", text)
-    text = re.sub(r"([([\]])\s+", r"\1", text)
-    return text
+    normalized_text = text.replace("\xa0", " ")
+    normalized_text = re.sub(r"\s+", " ", normalized_text).strip()
+    normalized_text = re.sub(r"\s+([,.;:)?\]])", r"\1", normalized_text)
+    return re.sub(r"([([\]])\s+", r"\1", normalized_text)

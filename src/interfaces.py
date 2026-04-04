@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Protocol, Self, TypedDict
+from typing import TYPE_CHECKING, Protocol, Self, TypedDict
 
-from src.models.chunk import Chunk
-from src.models.document import DocumentRecord
-from src.models.extraction import ExtractedDocument
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from src.models.chunk import Chunk
+    from src.models.document import DocumentRecord
+    from src.models.extraction import ExtractedDocument
 
 
 class SearchResult(TypedDict):

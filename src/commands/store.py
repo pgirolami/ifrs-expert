@@ -5,13 +5,17 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.db import ChunkStore, DocumentStore, init_db
 from src.extraction import HtmlExtractor, PdfExtractor
 from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ExtractorProtocol, VectorStoreProtocol
-from src.models.chunk import Chunk
 from src.vector.store import VectorStore
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +25,16 @@ StoreChunkStore = ChunkStoreProtocol
 StoreDocumentStore = DocumentStoreProtocol
 StoreVectorStore = VectorStoreProtocol
 StoreInitDb = Callable[[], None]
+
+
+@dataclass(frozen=True)
+class StoreDependencies:
+    """Dependencies required by StoreCommand."""
+
+    chunk_store: StoreChunkStore
+    document_store: StoreDocumentStore
+    vector_store: StoreVectorStore
+    init_db_fn: StoreInitDb
 
 
 @dataclass
@@ -51,18 +65,13 @@ class StoreCommand:
         self,
         source_path: Path,
         extractor: ExtractorProtocol,
-        chunk_store: StoreChunkStore,
-        document_store: StoreDocumentStore,
-        vector_store: StoreVectorStore,
-        init_db_fn: StoreInitDb,
+        dependencies: StoreDependencies,
         explicit_doc_uid: str | None = None,
     ) -> None:
+        """Initialize the store command with its source, extractor, and storage dependencies."""
         self.source_path = source_path
         self._extractor = extractor
-        self._chunk_store = chunk_store
-        self._document_store = document_store
-        self._vector_store = vector_store
-        self._init_db_fn = init_db_fn
+        self._dependencies = dependencies
         self._explicit_doc_uid = explicit_doc_uid
 
     def execute(self) -> str:
@@ -81,7 +90,7 @@ class StoreCommand:
             )
 
         try:
-            self._init_db_fn()
+            self._dependencies.init_db_fn()
             extracted_document = self._extractor.extract(
                 source_path=self.source_path,
                 explicit_doc_uid=self._explicit_doc_uid,
@@ -91,7 +100,7 @@ class StoreCommand:
 
             self._truncate_oversized_chunks(chunks)
 
-            with self._chunk_store as chunk_store:
+            with self._dependencies.chunk_store as chunk_store:
                 existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
                 if self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks):
                     logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
@@ -110,11 +119,11 @@ class StoreCommand:
                 chunk_store.insert_chunks(chunks)
                 logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
 
-            with self._document_store as document_store:
+            with self._dependencies.document_store as document_store:
                 document_store.upsert_document(extracted_document.document)
 
             embeddings_stored = 0
-            with self._vector_store as vector_store:
+            with self._dependencies.vector_store as vector_store:
                 deleted = vector_store.delete_by_doc(doc_uid)
                 if deleted > 0:
                     logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
@@ -155,8 +164,6 @@ class StoreCommand:
             logger.info(f"Truncated {truncated_count} oversized chunk(s)")
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
-        if len(existing_chunks) != len(new_chunks):
-            return False
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
 
     def _payload(self, chunk: Chunk) -> tuple[str, str, str, str, str]:
@@ -169,23 +176,33 @@ class StoreCommand:
         )
 
 
+def _build_default_store_dependencies() -> StoreDependencies:
+    """Build the production dependencies for StoreCommand."""
+    return StoreDependencies(
+        chunk_store=ChunkStore(),
+        document_store=DocumentStore(),
+        vector_store=VectorStore(),
+        init_db_fn=init_db,
+    )
+
+
 def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
+    """Select the default extractor for a source path based on its file suffix."""
     suffix = source_path.suffix.lower()
     if suffix == ".pdf":
         return PdfExtractor()
     if suffix == ".html":
         return HtmlExtractor(sidecar_path=source_path.with_suffix(".json"))
-    raise ValueError(f"Unsupported source type: {source_path}")
+
+    message = f"Unsupported source type: {source_path}"
+    raise ValueError(message)
 
 
 def create_store_command(
     source_path: Path | None = None,
     doc_uid: str | None = None,
     extractor: ExtractorProtocol | None = None,
-    chunk_store: StoreChunkStore | None = None,
-    document_store: StoreDocumentStore | None = None,
-    vector_store: StoreVectorStore | None = None,
-    init_db_fn: StoreInitDb = init_db,
+    dependencies: StoreDependencies | None = None,
     pdf_path: Path | None = None,
 ) -> StoreCommand:
     """Create StoreCommand with real dependencies by default.
@@ -194,15 +211,14 @@ def create_store_command(
     """
     resolved_source_path = source_path or pdf_path
     if resolved_source_path is None:
-        raise TypeError("create_store_command() requires source_path or pdf_path")
+        message = "create_store_command() requires source_path or pdf_path"
+        raise TypeError(message)
 
+    resolved_dependencies = dependencies or _build_default_store_dependencies()
     resolved_extractor = extractor or _default_extractor_for_source(resolved_source_path)
     return StoreCommand(
         source_path=resolved_source_path,
         extractor=resolved_extractor,
-        chunk_store=chunk_store or ChunkStore(),
-        document_store=document_store or DocumentStore(),
-        vector_store=vector_store or VectorStore(),
-        init_db_fn=init_db_fn,
+        dependencies=resolved_dependencies,
         explicit_doc_uid=doc_uid,
     )

@@ -44,7 +44,11 @@ class ChunkStore:
             ),
         )
         self._conn.commit()
-        return int(cursor.lastrowid)
+        chunk_id = cursor.lastrowid
+        if chunk_id is None:
+            msg = "SQLite did not return a lastrowid for inserted chunk"
+            raise sqlite3.OperationalError(msg)
+        return chunk_id
 
     def insert_chunks(self, chunks: list[Chunk]) -> list[int]:
         """Insert multiple chunks and update their chunk_id values."""

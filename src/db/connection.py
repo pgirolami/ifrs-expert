@@ -35,10 +35,7 @@ def init_db() -> None:
             )
             """
         )
-        applied_migrations = {
-            row["name"]
-            for row in conn.execute("SELECT name FROM schema_migrations").fetchall()
-        }
+        applied_migrations = {row["name"] for row in conn.execute("SELECT name FROM schema_migrations").fetchall()}
 
         applied_count = 0
         for migration_file in sorted(migrations_dir.glob("*.sql")):

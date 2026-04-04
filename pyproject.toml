@@ -28,7 +28,7 @@ audit = ["pip-audit"]
 [tool.ruff]
 line-length = 240
 target-version = "py311"
-exclude = ["prototype/", "tests/", "experiments/"]
+exclude = ["prototype/", "tests/", "experiments/", "scripts/"]
 
 [tool.ruff.lint]
 select = ["ALL"]
