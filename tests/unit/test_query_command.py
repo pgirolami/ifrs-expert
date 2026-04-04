@@ -131,7 +131,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test query",
             config=config,
-            options=QueryOptions(k=2, min_score=None, verbose=False),
+            options=QueryOptions(k=2, min_score=None, verbose=False, expand=0),
         )
 
         result = command.execute()
@@ -220,7 +220,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=0.5, verbose=False),
+            options=QueryOptions(k=5, min_score=0.5, verbose=False, expand=0),
         )
 
         result = command.execute()
@@ -254,7 +254,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=True),
+            options=QueryOptions(k=5, min_score=None, verbose=True, expand=0),
         )
 
         result = command.execute()

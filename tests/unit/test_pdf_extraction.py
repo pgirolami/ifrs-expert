@@ -127,7 +127,8 @@ class TestExtractChunks:
         """
         from src.pdf.extraction import extract_chunks
 
-        pdf_path = Path("../examples/ifrs/ifrs-9-financial-instruments 2025 required.pdf")
+        pdf_path = Path(__file__).parent.parent.parent / "examples" / "ifrs" / "ifrs-9-financial-instruments 2025 required.pdf"
+        assert pdf_path.exists(), f"Missing test PDF: {pdf_path}"
         chunks = extract_chunks(pdf_path)
 
         # Find section 6.5.2

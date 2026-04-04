@@ -63,13 +63,14 @@ def ingested_ifrs16(temp_index_dir):
     set_index_path(None)
 
 
-def run_query(query: str, k: int = 5, min_score: float | None = None) -> list[dict]:
+def run_query(query: str, k: int = 5, min_score: float | None = None, expand: int = 0) -> list[dict]:
     """Run a query and return results.
 
     Args:
         query: Query text
         k: Number of results
         min_score: Minimum score threshold
+        expand: Number of neighboring chunks to include
 
     Returns:
         List of result dictionaries
@@ -79,7 +80,7 @@ def run_query(query: str, k: int = 5, min_score: float | None = None) -> list[di
 
     command = create_query_command(
         query=query,
-        options=QueryOptions(k=k, min_score=min_score, verbose=False),
+        options=QueryOptions(k=k, min_score=min_score, verbose=False, expand=expand),
     )
     result = command.execute()
 

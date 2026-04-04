@@ -185,7 +185,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5, expand=0))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
