@@ -1,9 +1,11 @@
 """Vector store for IFRS Expert using FAISS and SentenceTransformers."""
 # ruff: noqa: PLW0603
 
+import hashlib
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Self
 
@@ -21,6 +23,8 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL = "BAAI/bge-m3"
+QUERY_EMBEDDING_CACHE_VERSION = "v1"
+QUERY_EMBEDDING_NDIM = 2
 
 # Default paths (can be overridden for testing)
 _index_path: Path | None = None
@@ -59,15 +63,37 @@ def get_id_map_path() -> Path:
     return _id_map_path
 
 
+def _default_query_cache_dir() -> Path:
+    """Get the default directory for cached query embeddings."""
+    return Path(__file__).parent.parent.parent / "data" / "cache" / "query_embeddings"
+
+
+def _normalize_query_for_cache(query: str) -> str:
+    """Normalize a query string before generating a cache key."""
+    return query.strip()
+
+
+def _slugify_path_component(value: str) -> str:
+    """Convert a string into a filesystem-safe path component."""
+    lowered = value.lower()
+    return re.sub(r"[^a-z0-9._-]+", "_", lowered)
+
+
 class VectorStore:
     """Manages vector embeddings using FAISS and SentenceTransformers."""
 
-    def __init__(self, index_path: Path | None = None, id_map_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        index_path: Path | None = None,
+        id_map_path: Path | None = None,
+        query_cache_dir: Path | None = None,
+    ) -> None:
         """Initialize the vector store.
 
         Args:
             index_path: Optional custom path for FAISS index. Defaults to data/index/faiss.index.
             id_map_path: Optional custom path for ID mapping file.
+            query_cache_dir: Optional custom directory for cached query embeddings.
 
         """
         self._index: faiss.Index | None = None
@@ -75,6 +101,7 @@ class VectorStore:
         self._id_map: dict[int, tuple[str, int]] = {}  # faiss_id -> (doc_uid, chunk_id)
         self._index_path = index_path
         self._id_map_path = id_map_path
+        self._query_cache_dir = query_cache_dir
         self._added_doc_uids: set[str] = set()
         self._deleted_doc_uids: set[str] = set()
 
@@ -96,6 +123,12 @@ class VectorStore:
         self._deleted_doc_uids.clear()
         self._load_or_create_index()
         return self
+
+    def _resolve_query_cache_dir(self) -> Path:
+        """Resolve the query embedding cache directory."""
+        cache_dir = self._query_cache_dir or _default_query_cache_dir()
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
 
     def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         """Context manager exit - save index when it changed."""
@@ -155,6 +188,57 @@ class VectorStore:
             self._added_doc_uids.clear()
             self._deleted_doc_uids.clear()
             logger.info(f"Saved index with {self._index.ntotal} vectors")
+
+    def _get_query_cache_path(self, query: str) -> Path:
+        """Build the file path for a cached query embedding."""
+        normalized_query = _normalize_query_for_cache(query)
+        cache_key = f"{QUERY_EMBEDDING_CACHE_VERSION}:{EMBEDDING_MODEL}:{normalized_query}"
+        cache_key_hash = hashlib.sha256(cache_key.encode("utf-8")).hexdigest()
+        model_slug = _slugify_path_component(EMBEDDING_MODEL)
+        return self._resolve_query_cache_dir() / f"{model_slug}--{cache_key_hash}.npy"
+
+    def _load_cached_query_embedding(self, query: str) -> np.ndarray | None:
+        """Load a cached query embedding from disk when available."""
+        cache_path = self._get_query_cache_path(query)
+        if not cache_path.exists():
+            return None
+
+        try:
+            cached_embedding = np.load(cache_path, allow_pickle=False)
+        except (OSError, ValueError) as e:
+            logger.warning(f"Could not load cached query embedding from {cache_path}: {e}")
+            return None
+
+        if cached_embedding.ndim != QUERY_EMBEDDING_NDIM:
+            logger.warning(f"Ignoring cached query embedding with invalid shape {cached_embedding.shape} at {cache_path}")
+            return None
+
+        logger.info(f"Loaded cached query embedding from {cache_path}")
+        return cached_embedding.astype("float32")
+
+    def _save_query_embedding(self, query: str, query_embedding: np.ndarray) -> None:
+        """Persist a normalized query embedding to disk."""
+        cache_path = self._get_query_cache_path(query)
+
+        try:
+            np.save(cache_path, query_embedding)
+        except OSError as e:
+            logger.warning(f"Could not save query embedding cache to {cache_path}: {e}")
+            return
+
+        logger.info(f"Saved query embedding cache to {cache_path}")
+
+    def _get_query_embedding(self, query: str) -> np.ndarray:
+        """Get a normalized query embedding, using the file cache when possible."""
+        cached_embedding = self._load_cached_query_embedding(query)
+        if cached_embedding is not None:
+            return cached_embedding
+
+        model = self._get_model()
+        query_embedding = model.encode([query]).astype("float32")
+        query_embedding = query_embedding / np.linalg.norm(query_embedding, axis=1, keepdims=True)
+        self._save_query_embedding(query, query_embedding)
+        return query_embedding
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
         """Add embeddings for chunks to the index.
@@ -220,11 +304,7 @@ class VectorStore:
 
     def _search_with_k(self, query: str, k: int) -> list[SearchResult]:
         """Run a FAISS search with the specified k."""
-        model = self._get_model()
-        query_embedding = model.encode([query]).astype("float32")
-
-        # Normalize query embedding for cosine similarity
-        query_embedding = query_embedding / np.linalg.norm(query_embedding, axis=1, keepdims=True)
+        query_embedding = self._get_query_embedding(query)
 
         # Search using inner product (which becomes cosine similarity with normalized vectors)
         scores, indices = self._index.search(query_embedding, k)  # type: ignore[union-attr]

@@ -13,6 +13,14 @@ import pytest
 from src.vector.store import VectorStore, compute_embeddings, set_index_path
 
 
+def _write_seeded_index(index_path: Path, id_map_path: Path) -> None:
+    """Write a one-vector index and ID map for search tests."""
+    index = faiss.IndexFlatIP(3)
+    index.add(np.array([[1.0, 0.0, 0.0]], dtype="float32"))
+    faiss.write_index(index, str(index_path))
+    id_map_path.write_text('{"0": ["doc-1", 11]}', encoding="utf-8")
+
+
 @pytest.fixture(autouse=True)
 def temp_index():
     """Use a temporary index for each test."""
@@ -26,6 +34,10 @@ def temp_index():
 class FakeSentenceTransformer:
     """Minimal embedding model stub for vector-store tests."""
 
+    def __init__(self) -> None:
+        """Record encode calls for cache assertions."""
+        self.encode_calls: list[str] = []
+
     def encode(
         self,
         inputs: str | list[str],
@@ -36,8 +48,10 @@ class FakeSentenceTransformer:
         del batch_size, show_progress_bar
 
         if isinstance(inputs, str):
+            self.encode_calls.append(inputs)
             return np.array([1.0, 0.0, 0.0], dtype="float32")
 
+        self.encode_calls.append("\n".join(inputs))
         embeddings: list[np.ndarray] = []
         for index, _text in enumerate(inputs, start=1):
             embeddings.append(np.array([float(index), 0.0, 0.0], dtype="float32"))
@@ -80,6 +94,57 @@ class TestVectorStoreSearch:
             results = store.search("test query", k=3)
 
         assert len(results) == 3
+
+
+class TestVectorStoreQueryEmbeddingCache:
+    """Tests for file-backed query embedding cache behavior."""
+
+    def test_search_reuses_cached_query_embedding_across_runs(self, tmp_path: Path) -> None:
+        """A second identical search should hit the on-disk cache instead of re-encoding."""
+        index_path = tmp_path / "faiss.index"
+        id_map_path = tmp_path / "id_map.json"
+        cache_dir = tmp_path / "query_cache"
+        _write_seeded_index(index_path, id_map_path)
+
+        first_model = FakeSentenceTransformer()
+        first_store = VectorStore(index_path=index_path, id_map_path=id_map_path, query_cache_dir=cache_dir)
+        first_store._model = first_model
+
+        with first_store:
+            first_results = first_store.search("revenue recognition", k=1)
+
+        assert len(first_model.encode_calls) == 1, "Expected first search to compute an embedding"
+        assert len(list(cache_dir.glob("*.npy"))) == 1, "Expected first search to persist one cache file"
+
+        second_model = FakeSentenceTransformer()
+        second_store = VectorStore(index_path=index_path, id_map_path=id_map_path, query_cache_dir=cache_dir)
+        second_store._model = second_model
+
+        with second_store:
+            second_results = second_store.search("revenue recognition", k=1)
+
+        assert second_results == first_results
+        assert second_model.encode_calls == [], "Expected second search to reuse cached embedding without encoding"
+
+    def test_search_creates_distinct_cache_files_for_distinct_queries(self, tmp_path: Path) -> None:
+        """Different query texts should persist to different cache files."""
+        index_path = tmp_path / "faiss.index"
+        id_map_path = tmp_path / "id_map.json"
+        cache_dir = tmp_path / "query_cache"
+        _write_seeded_index(index_path, id_map_path)
+
+        model = FakeSentenceTransformer()
+        store = VectorStore(index_path=index_path, id_map_path=id_map_path, query_cache_dir=cache_dir)
+        store._model = model
+
+        with store:
+            store.search("revenue recognition", k=1)
+            store.search("lease liability", k=1)
+
+        cache_files = sorted(path.name for path in cache_dir.glob("*.npy"))
+
+        assert len(cache_files) == 2, "Expected distinct queries to create two cache files"
+        assert len(set(cache_files)) == 2, "Expected distinct cache filenames for distinct queries"
 
 
 class TestVectorStorePersistence:
