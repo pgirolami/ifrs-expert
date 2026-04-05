@@ -113,6 +113,420 @@ tests:
     description: 'Q1.4 - Intragroup FX hedge wording variant'
     assert: *q1_assertions
 
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q10/Q10.0.txt'
+    metadata:
+      family: 'Q10'
+      variant: 'Q10.0'
+      question_path: 'experiments/00_QUESTIONS/Q10/Q10.0.txt'
+    description: 'Q10.0 - Question to be defined'
+    assert: &q10_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q2/Q2.0.txt'
+    metadata:
+      family: 'Q2'
+      variant: 'Q2.0'
+      question_path: 'experiments/00_QUESTIONS/Q2/Q2.0.txt'
+    description: 'Q2.0 - SPPI test and trigger events'
+    assert: &q2_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q2/Q2.1.txt'
+    metadata:
+      family: 'Q2'
+      variant: 'Q2.1'
+      question_path: 'experiments/00_QUESTIONS/Q2/Q2.1.txt'
+    description: 'Q2.1 - SPPI test and trigger events variant'
+    assert: *q2_assertions
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q2/Q2.2.txt'
+    metadata:
+      family: 'Q2'
+      variant: 'Q2.2'
+      question_path: 'experiments/00_QUESTIONS/Q2/Q2.2.txt'
+    description: 'Q2.2 - SPPI test and trigger events variant'
+    assert: *q2_assertions
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q2/Q2.3.txt'
+    metadata:
+      family: 'Q2'
+      variant: 'Q2.3'
+      question_path: 'experiments/00_QUESTIONS/Q2/Q2.3.txt'
+    description: 'Q2.3 - SPPI test and trigger events variant'
+    assert: *q2_assertions
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q2/Q2.4.txt'
+    metadata:
+      family: 'Q2'
+      variant: 'Q2.4'
+      question_path: 'experiments/00_QUESTIONS/Q2/Q2.4.txt'
+    description: 'Q2.4 - SPPI test and trigger events variant'
+    assert: *q2_assertions
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q3/Q3.0.txt'
+    metadata:
+      family: 'Q3'
+      variant: 'Q3.0'
+      question_path: 'experiments/00_QUESTIONS/Q3/Q3.0.txt'
+    description: 'Q3.0 - SPPI test for debt instruments'
+    assert: &q3_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q4/Q4.0.txt'
+    metadata:
+      family: 'Q4'
+      variant: 'Q4.0'
+      question_path: 'experiments/00_QUESTIONS/Q4/Q4.0.txt'
+    description: 'Q4.0 - Cash flow hedge for grouped floating-rate items'
+    assert: &q4_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q5/Q5.0.txt'
+    metadata:
+      family: 'Q5'
+      variant: 'Q5.0'
+      question_path: 'experiments/00_QUESTIONS/Q5/Q5.0.txt'
+    description: 'Q5.0 - Profit participating loan liability'
+    assert: &q5_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q6/Q6.0.txt'
+    metadata:
+      family: 'Q6'
+      variant: 'Q6.0'
+      question_path: 'experiments/00_QUESTIONS/Q6/Q6.0.txt'
+    description: 'Q6.0 - Profit participating loan classification'
+    assert: &q6_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q7/Q7.0.txt'
+    metadata:
+      family: 'Q7'
+      variant: 'Q7.0'
+      question_path: 'experiments/00_QUESTIONS/Q7/Q7.0.txt'
+    description: 'Q7.0 - Forward FX contract journal entries'
+    assert: &q7_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q8/Q8.0.txt'
+    metadata:
+      family: 'Q8'
+      variant: 'Q8.0'
+      question_path: 'experiments/00_QUESTIONS/Q8/Q8.0.txt'
+    description: 'Q8.0 - Stage 3 interest income and ECL unwinding'
+    assert: &q8_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
+  - vars:
+      question: 'file://experiments/00_QUESTIONS/Q9/Q9.0.txt'
+    metadata:
+      family: 'Q9'
+      variant: 'Q9.0'
+      question_path: 'experiments/00_QUESTIONS/Q9/Q9.0.txt'
+    description: 'Q9.0 - Fair value of interest-free loan'
+    assert: &q9_assertions
+      - type: 'is-json'
+        value: 'file://./prompts/answer_prompt_B.json'
+        description: 'Output matches expected JSON schema'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return Array.isArray(data.assumptions_fr) &&
+                 data.assumptions_fr.length >= 1 &&
+                 Array.isArray(data.approaches) &&
+                 data.approaches.length >= 1 &&
+                 Array.isArray(data.operational_points_fr) &&
+                 data.operational_points_fr.length >= 1;
+        description: 'Core structured fields are present and non-empty'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+        description: 'Recommendation answer is one of the allowed values'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return typeof data.recommendation?.justification === 'string' &&
+                 data.recommendation.justification.length > 50;
+        description: 'Recommendation includes a non-trivial justification'
+      - type: 'javascript'
+        value: |
+          const data = JSON.parse(output);
+          return data.approaches.every(a =>
+            typeof a.applicability === 'string' &&
+            Array.isArray(a.references) &&
+            a.references.length >= 1
+          );
+        description: 'Each approach has applicability and at least one reference'
+
 readme: |
   IFRS Expert Evaluation Suite
   
