@@ -39,12 +39,12 @@ def _extract_text_from_blocks(content: list[Any]) -> list[str]:
 class AnthropicClient(LLMClient):
     """Anthropic API client."""
 
-    def __init__(self, api_key: str, model: str = "claude-3-haiku-20240307") -> None:
+    def __init__(self, api_key: str, model: str) -> None:
         """Initialize the Anthropic client.
 
         Args:
             api_key: Anthropic API key
-            model: Model identifier (default: claude-3-haiku-20240307)
+            model: Model identifier
         """
         self._client = anthropic.Anthropic(api_key=api_key)
         self._model = model

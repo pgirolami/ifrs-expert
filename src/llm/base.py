@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 # Error messages
 MISSING_API_KEY_MESSAGE = "API key environment variable is required for this provider. Set it in your environment or .env file."
+MISSING_MODEL_MESSAGE = "Model environment variable is required for this provider. Set it in your environment or .env file."
 UNKNOWN_PROVIDER_MESSAGE = "Provider not supported."
 
 AUTH_FAILED_MESSAGES = {

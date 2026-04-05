@@ -21,12 +21,12 @@ REASONING_MODEL_PREFIXES = ("gpt-5", "o1", "o3", "o4")
 class OpenAIClient(LLMClient):
     """OpenAI API client."""
 
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini") -> None:
+    def __init__(self, api_key: str, model: str) -> None:
         """Initialize the OpenAI client.
 
         Args:
             api_key: OpenAI API key
-            model: Model identifier (default: gpt-4o-mini)
+            model: Model identifier
         """
         self._client = OpenAI(api_key=api_key)
         self._model = model

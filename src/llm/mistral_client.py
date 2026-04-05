@@ -29,12 +29,12 @@ REASONING_MODEL_PREFIXES = ("magistral",)
 class MistralClient(LLMClient):
     """Mistral API client."""
 
-    def __init__(self, api_key: str, model: str = "mistral-small-latest") -> None:
+    def __init__(self, api_key: str, model: str) -> None:
         """Initialize the Mistral client.
 
         Args:
             api_key: Mistral API key
-            model: Model identifier (default: mistral-small-latest)
+            model: Model identifier
         """
         if not MISTRAL_SDK_AVAILABLE:
             raise ImportError(SDK_NOT_INSTALLED_MESSAGE)

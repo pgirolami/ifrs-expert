@@ -380,9 +380,7 @@ class AnswerCommand:
             result.error_stage = "prompt_a_parse"
             return result
 
-        result.prompt_b_text = self._build_prompt_b(
-            "\n\n".join(formatted_chunks), json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False)
-        )
+        result.prompt_b_text = self._build_prompt_b("\n\n".join(formatted_chunks), json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
         try:
             result.prompt_b_raw_response = self._config.send_to_llm_fn(result.prompt_b_text)
