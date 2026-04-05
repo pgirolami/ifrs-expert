@@ -279,3 +279,83 @@ class TestAnswerCommand:
         assert 'id="1"' in prompt_a
         assert 'id="2"' in prompt_a
         assert 'id="3"' in prompt_a
+
+    def test_answer_prompt_a_contains_context(self) -> None:
+        """Test that prompt A contains the retrieved chunk content."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        unique_chunk_text = "UNIQUE_MARKER_12345_CONTEXT_CONTENT"
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        captured_prompts: list[str] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
+            result = command.execute()
+
+        assert result.success is True
+        assert len(captured_prompts) == 2
+        prompt_a = captured_prompts[0]
+        assert unique_chunk_text in prompt_a, "Prompt A should contain the chunk context"
+
+    def test_answer_prompt_b_contains_context(self) -> None:
+        """Test that prompt B contains the retrieved chunk content (the bug fix verification)."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        unique_chunk_text = "UNIQUE_MARKER_67890_CONTEXT_FOR_PROMPT_B"
+        mock_chunks = [
+            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        captured_prompts: list[str] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
+            result = command.execute()
+
+        assert result.success is True
+        assert len(captured_prompts) == 2
+        prompt_b = captured_prompts[1]
+        assert unique_chunk_text in prompt_b, "Prompt B should contain the chunk context"
