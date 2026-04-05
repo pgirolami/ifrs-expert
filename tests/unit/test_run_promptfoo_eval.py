@@ -151,3 +151,20 @@ def test_promptfoo_eval_runner_sets_experiment_config_dir_and_artifact_env(tmp_p
     assert eval_cwd == tmp_path
     assert eval_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV] == build_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV]
     assert eval_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV] == build_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV]
+
+
+def test_promptfoo_eval_runner_uses_explicit_config_dir_when_provided(tmp_path: Path) -> None:
+    """An explicit Promptfoo config dir should override the default experiment-local path."""
+    run_promptfoo_eval = _load_run_promptfoo_eval_module()
+    custom_promptfoo_config_dir = tmp_path / "custom-promptfoo"
+    runner = run_promptfoo_eval.PromptfooEvalRunner(
+        project_root=tmp_path,
+        experiment_dir=tmp_path / "experiments" / "promptfoo_regression",
+        promptfoo_config_dir=custom_promptfoo_config_dir,
+        now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
+        command_runner=RecordingCommandRunner(),
+    )
+
+    run_layout = runner._build_run_layout(description="Q1 live mistral")
+
+    assert run_layout.promptfoo_config_dir == custom_promptfoo_config_dir

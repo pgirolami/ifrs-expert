@@ -43,12 +43,14 @@ class PromptfooEvalRunner:
         self,
         project_root: Path,
         experiment_dir: Path,
+        promptfoo_config_dir: Path | None = None,
         now_fn: Callable[[], datetime] | None = None,
         command_runner: Callable[[list[str], dict[str, str], Path], subprocess.CompletedProcess[str]] | None = None,
     ) -> None:
         """Initialize the Promptfoo eval runner."""
         self._project_root = project_root
         self._experiment_dir = experiment_dir
+        self._promptfoo_config_dir = promptfoo_config_dir or experiment_dir / ".promptfoo"
         self._now_fn = now_fn or (lambda: datetime.now(tz=UTC))
         self._command_runner = command_runner or _run_command
 
@@ -96,7 +98,7 @@ class PromptfooEvalRunner:
             run_dir=run_dir,
             artifacts_dir=run_dir / "artifacts",
             metadata_path=run_dir / "run.json",
-            promptfoo_config_dir=self._experiment_dir / ".promptfoo",
+            promptfoo_config_dir=self._promptfoo_config_dir,
             description=resolved_description,
         )
 
@@ -200,7 +202,13 @@ def main() -> int:
         promptfoo_args = promptfoo_args[1:]
 
     experiment_dir = resolve_experiment_dir(project_root=PROJECT_ROOT, experiment_dir=args.experiment_dir)
-    runner = PromptfooEvalRunner(project_root=PROJECT_ROOT, experiment_dir=experiment_dir)
+    promptfoo_config_dir_env = os.environ.get(PROMPTFOO_CONFIG_DIR_ENV)
+    promptfoo_config_dir = Path(promptfoo_config_dir_env) if promptfoo_config_dir_env else None
+    runner = PromptfooEvalRunner(
+        project_root=PROJECT_ROOT,
+        experiment_dir=experiment_dir,
+        promptfoo_config_dir=promptfoo_config_dir,
+    )
     resolved_promptfoo_args = build_promptfoo_args(
         base_args=promptfoo_args,
         family=args.family,

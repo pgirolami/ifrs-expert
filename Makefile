@@ -48,7 +48,7 @@ guard-experiment-dir:
 	fi
 
 eval: guard-experiment-dir
-	uv run python scripts/run_promptfoo_eval.py \
+	PROMPTFOO_CONFIG_DIR="$(PROMPTFOO_CONFIG_DIR)" uv run python scripts/run_promptfoo_eval.py \
 		--experiment-dir "$(EXPERIMENT_DIR)" \
 		$(if $(DESCRIPTION),--description "$(DESCRIPTION)") \
 		$(if $(FAMILY),--family "$(FAMILY)") \
