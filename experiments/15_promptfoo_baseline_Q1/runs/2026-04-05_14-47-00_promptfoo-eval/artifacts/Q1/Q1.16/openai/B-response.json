@@ -1,0 +1,81 @@
+{
+  "assumptions_fr": [
+    "La créance de dividendes intragroupe est un élément monétaire comptabilisé qui génère une exposition de change dans les comptes consolidés.",
+    "La question porte sur l’éligibilité de cette exposition au hedge accounting selon IFRS 9 en comptes consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Oui, dans cette situation, l’exposition de change sur une créance intragroupe monétaire peut faire l’objet d’une documentation de couverture IFRS au niveau consolidé. Le modèle le plus adapté ici est la couverture de juste valeur, sous réserve que le risque de change ne soit pas intégralement éliminé en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui",
+      "reasoning_fr": "La créance de dividendes est, selon les hypothèses, un actif monétaire déjà comptabilisé exposé au risque de change. IFRS 9 permet qu’un élément monétaire intragroupe soit désigné comme élément couvert en consolidation pour son risque de change lorsqu’il crée une exposition non totalement éliminée en consolidation. Ce risque affecte le résultat, ce qui correspond à une couverture de juste valeur d’un actif comptabilisé au titre d’un risque particulier.",
+      "conditions_fr": [
+        "Le risque de change sur la créance intragroupe ne doit pas être totalement éliminé en consolidation."
+      ],
+      "practical_implication_fr": "Documenter la relation de couverture sur le risque de change de la créance intragroupe et comptabiliser l’inefficacité en résultat.",
+      "references": [
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "section": "6.5.2(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Les faits décrits portent sur une créance déjà comptabilisée en tant qu’élément monétaire intragroupe, avec une exposition de change sur sa valeur en consolidation. Dans cette situation, le risque décrit est celui de réévaluation d’un poste existant, et non une variabilité de flux de trésorerie d’une transaction future ou d’un poste à flux variables. Le cas s’aligne donc sur une couverture de juste valeur plutôt que sur une couverture de flux.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas retenir ce modèle sur la seule base des faits décrits pour la créance de dividendes déjà reconnue.",
+      "references": [
+        {
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net à l’étranger",
+      "applicability": "non",
+      "reasoning_fr": "La créance de dividendes intragroupe n’est pas un investissement net dans une activité à l’étranger mais un poste monétaire intragroupe distinct. IFRIC 16 limite ce modèle aux couvertures du risque de change lié aux net assets d’une activité étrangère inclus dans les états financiers. Ce n’est pas la situation décrite ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas documenter cette exposition comme couverture d’investissement net.",
+      "references": [
+        {
+          "section": "6.5.2(c)",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "section": "ifric-16 7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "section": "ifric-16 10",
+          "excerpt": "the hedged item can be an amount of net assets"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Au niveau consolidé, vérifier et documenter que l’écart de change sur la créance intragroupe n’est pas entièrement éliminé en consolidation.",
+    "La documentation doit être établie à l’origine de la relation de couverture, avec identification de l’instrument de couverture, de la créance couverte et du risque de change couvert.",
+    "L’analyse d’efficacité doit être formalisée conformément à IFRS 9, y compris le lien économique et le hedge ratio.",
+    "Le choix pratique à privilégier sur les faits décrits est la couverture de juste valeur, pas la couverture d’investissement net."
+  ]
+}

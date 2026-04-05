@@ -1,0 +1,78 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été comptabilisé en créance dans les états financiers consolidés.",
+    "La question porte sur une exposition de change existant au niveau des comptes consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, l’exposition de change porte sur une créance reconnue en consolidation. Elle ne relève pas d’une couverture d’investissement net ni d’un simple écart de conversion de filiale ; elle se rattache à un actif financier comptabilisé dans les états consolidés."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "IFRIC 16 vise la couverture du risque de change sur un investissement net dans une activité à l’étranger, c’est-à-dire un montant de nets actifs. Ici, le fait décrit est une créance de dividende reconnue en consolidation, et non un montant de nets actifs de la filiale.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La désignation ne doit pas être fondée sur le modèle de couverture d’investissement net.",
+      "references": [
+        {
+          "section": "10",
+          "excerpt": "the hedged item can be an amount of net assets"
+        },
+        {
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "foreign_translation",
+      "label_fr": "Comptabilisation des écarts de conversion d’une activité étrangère",
+      "applicability": "non",
+      "reasoning_fr": "Le traitement de conversion visé dans IFRIC 16 concerne les différences de change sur la traduction des résultats et de la situation financière d’une activité étrangère, reconnues en OCI jusqu’à la cession. La question vise au contraire une créance spécifique déjà reconnue dans les comptes consolidés.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il ne faut pas analyser cette exposition comme un simple écart de conversion de filiale comptabilisé en OCI.",
+      "references": [
+        {
+          "section": "1",
+          "excerpt": "recognise foreign exchange differences in other comprehensive income until it disposes of the foreign operation"
+        },
+        {
+          "section": "6",
+          "excerpt": "foreign exchange differences arising on translation of the results and financial position of the foreign operation"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "financial_asset_accounting",
+      "label_fr": "Comptabilisation en actif financier",
+      "applicability": "oui",
+      "reasoning_fr": "Le contexte fourni indique qu’une créance est reconnue lorsqu’une entité devient partie au contrat et détient un droit légal de recevoir de la trésorerie. Dès lors que le dividende intragroupe est reconnu comme créance en consolidation, l’exposition de change est attachée à un actif financier comptabilisé dans ces états financiers.",
+      "conditions_fr": [],
+      "practical_implication_fr": "L’élément couvert doit être documenté comme l’exposition de change de la créance de dividende reconnue en consolidation.",
+      "references": [
+        {
+          "section": "B3.1.1",
+          "excerpt": "recognises all of its contractual rights and obligations"
+        },
+        {
+          "section": "B3.1.2",
+          "excerpt": "Unconditional receivables and payables are recognised as assets or liabilities"
+        },
+        {
+          "section": "4.1.1",
+          "excerpt": "an entity shall classify financial assets"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point déterminant est le moment où la créance de dividende est reconnue en consolidation ; c’est à ce stade que l’exposition de change existe dans ces comptes.",
+    "La documentation de couverture doit viser la créance reconnue en consolidation, et non l’investissement net dans la filiale ni les écarts de conversion de ses états financiers.",
+    "L’analyse doit rester cohérente avec le traitement consolidé effectif : si la créance n’était pas reconnue, la conclusion pourrait changer."
+  ]
+}

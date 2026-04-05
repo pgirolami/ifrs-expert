@@ -1,0 +1,103 @@
+{
+  "assumptions_fr": [
+    "La question vise les comptes consolidés.",
+    "Le risque couvert envisagé est le risque de change.",
+    "La relation de couverture est appréciée au regard des règles de comptabilité de couverture d’IFRS 9."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement si la créance de dividende intragroupe constitue un élément monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés en consolidation. Dans ce cas, la voie pertinente est la couverture de juste valeur ; sinon, la documentation de couverture n’est pas recevable en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance reconnue est un actif comptabilisé, ce qui correspond en principe au modèle de couverture de juste valeur. En consolidation, un poste intragroupe n’est toutefois éligible que par exception s’il s’agit d’un élément monétaire intragroupe générant des écarts de change non totalement éliminés ; c’est ce point qui conditionne la recevabilité ici.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe.",
+        "Les écarts de change sur cette créance ne sont pas totalement éliminés en consolidation, notamment en présence de monnaies fonctionnelles différentes.",
+        "Le risque couvert est bien le risque de change affectant le résultat consolidé."
+      ],
+      "practical_implication_fr": "La documentation doit viser la créance reconnue et démontrer que son risque de change affecte le résultat consolidé.",
+      "references": [
+        {
+          "section": "6.5.1",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset"
+        },
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "section": "6.3.6",
+          "excerpt": "that are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "La situation décrite porte sur des dividendes intragroupe ayant déjà donné lieu à la reconnaissance d’une créance. Ce n’est donc plus une transaction future hautement probable ni une variabilité de flux à venir au sens du modèle de cash flow hedge ; l’exposition est celle d’un poste monétaire déjà comptabilisé.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le modèle de cash flow hedge ne paraît pas adapté à une créance de dividende déjà reconnue.",
+      "references": [
+        {
+          "section": "6.5.1",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question ne porte pas sur le risque de change d’un investissement net dans une activité à l’étranger, mais sur une créance de dividende intragroupe. Le modèle de net investment hedge vise les net assets d’une foreign operation, pas un dividende intragroupe déclaré et comptabilisé en créance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle n’est pas le bon véhicule de documentation pour une créance de dividende intragroupe.",
+      "references": [
+        {
+          "section": "6.5.1",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "section": "ifric-16 6",
+          "excerpt": "applies only to hedges of net investments in foreign operations"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "derivative_fvtpl",
+      "label_fr": "Dérivé à la JV par résultat",
+      "applicability": "oui",
+      "reasoning_fr": "Si les conditions de la comptabilité de couverture ne sont pas remplies, le dérivé reste comptabilisé séparément à la juste valeur par résultat. Cette approche ne permet pas de documenter une couverture IFRS recevable de la créance, mais constitue le traitement par défaut du dérivé dans cette situation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "À défaut de couverture qualifiante, les variations de juste valeur du dérivé passent en résultat.",
+      "references": [
+        {
+          "section": "4.2.1",
+          "excerpt": "derivatives that are liabilities, shall be subsequently measured at fair value"
+        },
+        {
+          "section": "B3.1.1",
+          "excerpt": "an entity recognises all of its contractual rights and obligations under derivatives"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est de vérifier si la créance de dividende intragroupe est un poste monétaire générant des écarts de change non totalement éliminés en consolidation.",
+    "Si cette condition n’est pas démontrée, la règle générale d’IFRS 9 exclut les postes intragroupe comme éléments couverts en comptes consolidés.",
+    "La documentation doit être établie dès l’origine de la relation de couverture et montrer que le risque couvert affecte le résultat consolidé.",
+    "À défaut de qualification en couverture IFRS, le dérivé suit son traitement de juste valeur par résultat."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been recognised as a receivable in the consolidated financial statements.",
+    "The accounting issue concerns a foreign currency exposure arising in the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 in the provided context specifically addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation and identifies the hedged item as an amount of net assets."
+    },
+    {
+      "id": "approach_2",
+      "label": "Foreign operation translation accounting",
+      "normalized_label": "foreign_translation",
+      "rationale_for_inclusion": "The context explains that IAS 21 requires foreign exchange differences on translation of a foreign operation to be recognised in OCI until disposal, which is directly relevant to foreign currency exposures in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Financial asset accounting",
+      "normalized_label": "financial_asset_accounting",
+      "rationale_for_inclusion": "IFRS 9 in the context includes recognition and classification requirements for financial assets, which is relevant because the intragroup dividend has been recognised as a receivable in consolidated financial statements."
+    }
+  ]
+}

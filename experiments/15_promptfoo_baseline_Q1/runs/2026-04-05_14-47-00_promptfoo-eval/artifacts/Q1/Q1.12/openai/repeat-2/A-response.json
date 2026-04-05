@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The dividend receivable/payable is denominated in a foreign currency and creates a foreign exchange exposure.",
+    "The issue is the formal accounting designation of that exposure rather than only economic hedging."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a distinct top-level hedge accounting model for recognised assets or liabilities and components thereof."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a separate hedge accounting model, including for highly probable forecast transactions and certain qualifying intragroup foreign currency exposures in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "Derivative at fair value through profit or loss",
+      "normalized_label": "derivative_fvtpl",
+      "rationale_for_inclusion": "Where a formal hedging relationship is not applied, IFRS 9 requires derivatives to be recognised separately and measured at fair value through profit or loss."
+    }
+  ]
+}

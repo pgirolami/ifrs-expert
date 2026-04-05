@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
-REASONING_EFFORT = "xhigh"
+REASONING_EFFORT = "low"
 
 
 class OpenAIClient(LLMClient):

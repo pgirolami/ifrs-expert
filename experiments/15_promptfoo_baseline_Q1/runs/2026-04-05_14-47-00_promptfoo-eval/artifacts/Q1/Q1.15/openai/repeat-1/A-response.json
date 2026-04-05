@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable creates a recognized foreign currency exposure in the consolidated financial statements.",
+    "The question is about hedge accounting under IFRS for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The provided context specifically addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation and the designation of a hedged item in that model."
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des comptes consolidés établis selon IFRS 9.",
+    "Le dividende intragroupe a déjà donné lieu à la comptabilisation d'une créance, donc il s'agit d'un poste monétaire reconnu exposé au risque de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en comptes consolidés, le risque de change d'une créance intragroupe peut être désigné en comptabilité de couverture si la variation de change n'est pas totalement éliminée en consolidation. Dans cette situation, l'approche la plus pertinente est la couverture de juste valeur."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende intragroupe est un actif reconnu. IFRS 9 prévoit qu'en consolidation, le risque de change d'un poste monétaire intragroupe peut être un élément couvert s'il crée des gains ou pertes de change qui ne sont pas totalement éliminés en consolidation. Dans ce cas, une désignation en couverture de juste valeur est compatible avec la nature d'un actif reconnu exposé à un risque particulier affectant le résultat.",
+      "conditions_fr": [
+        "La créance intragroupe doit être un poste monétaire.",
+        "Le risque de change doit générer des gains ou pertes non totalement éliminés en consolidation, notamment entre entités à monnaies fonctionnelles différentes."
+      ],
+      "practical_implication_fr": "Documenter dès l'origine la relation de couverture sur le risque de change de la créance intragroupe reconnue.",
+      "references": [
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "section": "6.5.2(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Les extraits fournis sur les situations intragroupe visent, pour la couverture de flux, surtout les transactions intragroupe prévues et hautement probables. Ici, les faits portent sur une créance déjà comptabilisée au titre d'un dividende intragroupe, et non sur une transaction future. Sur cette base documentaire, cette approche n'est pas celle qui correspond au cas décrit.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette voie ne devrait pas être retenue pour une créance de dividende déjà reconnue dans les faits décrits.",
+      "references": [
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        },
+        {
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_profit",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui",
+      "reasoning_fr": "À défaut de comptabilité de couverture, le dérivé utilisé pour couvrir le risque de change serait comptabilisé séparément et mesuré à la juste valeur par résultat. Cette approche ne rend pas la créance elle-même éligible comme élément couvert, mais constitue le traitement par défaut du dérivé dans cette situation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sans désignation de couverture qualifiante, la volatilité du dérivé passe en résultat.",
+      "references": [
+        {
+          "section": "4.2.1(a)",
+          "excerpt": "financial liabilities at fair value through profit or loss ... derivatives"
+        },
+        {
+          "section": "B3.1.1",
+          "excerpt": "an entity recognises all of its contractual rights and obligations under derivatives"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé en consolidation est de démontrer que l'écart de change sur la créance intragroupe n'est pas intégralement éliminé.",
+    "La situation visée est celle d'un poste monétaire intragroupe, typiquement entre entités ayant des monnaies fonctionnelles différentes.",
+    "Si la documentation de couverture n'est pas mise en place à l'origine, le dérivé reste comptabilisé à la juste valeur par résultat."
+  ]
+}

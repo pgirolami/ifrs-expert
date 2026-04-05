@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a recognised monetary item in the consolidated financial statements.",
+    "The question concerns foreign currency risk on that recognised balance in consolidated IFRS financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Financial asset accounting",
+      "normalized_label": "financial_asset_accounting",
+      "rationale_for_inclusion": "The question refers to a recognised receivable in the consolidated financial statements, and the provided IFRS 9 context includes recognition and classification of financial assets."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The provided IFRIC 16 context specifically addresses designation of foreign currency risk as a hedged item in consolidated financial statements for hedges of net investments in foreign operations."
+    }
+  ]
+}

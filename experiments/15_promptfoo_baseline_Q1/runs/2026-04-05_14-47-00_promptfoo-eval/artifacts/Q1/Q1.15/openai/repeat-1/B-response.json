@@ -1,0 +1,40 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe est bien comptabilisée dans les états financiers consolidés et génère une exposition de change reconnue.",
+    "L’analyse est limitée au modèle de comptabilité de couverture d’un investissement net dans une activité à l’étranger, seul traitement identifié."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "Dans cette situation, l’élément identifié est une créance de dividende intragroupe reconnue en consolidation, alors que l’approche fournie vise uniquement la couverture du risque de change d’un investissement net dans une activité étrangère. Sur la base du contexte fourni, cette créance ne correspond pas à l’élément couvert admissible dans ce modèle."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Le contexte IFRIC 16 fourni limite expressément cette comptabilité de couverture aux risques de change liés à un investissement net dans une activité à l’étranger. L’élément couvert doit être un montant de net assets de l’activité étrangère, égal ou inférieur à leur valeur comptable consolidée. Une créance de dividende intragroupe reconnue en consolidation n’est pas, dans ces faits, un montant de net assets constituant l’investissement net couvert.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance de dividende intragroupe ne doit pas être documentée comme élément couvert au titre d’une couverture d’investissement net sur la base des textes fournis.",
+      "references": [
+        {
+          "section": "ifric-16.7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "section": "ifric-16.10",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        },
+        {
+          "section": "ifric-16.10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La conclusion est restreinte au seul traitement identifié en entrée : la couverture d’un investissement net.",
+    "La documentation de couverture doit aligner précisément l’élément couvert avec un montant de net assets de l’activité étrangère, non avec une créance de dividende intragroupe reconnue.",
+    "En pratique, il faut distinguer l’exposition de change sur la créance de dividende de celle attachée à l’investissement net lui-même."
+  ]
+}

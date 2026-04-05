@@ -1,0 +1,98 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-05
+
+**Question**:
+>Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
+
+**Documentation consultée**
+   - `ifrs-9`
+   - `ifric-16`
+
+## Hypothèses
+   - L’analyse est faite au regard d’IFRS 9 sur la comptabilité de couverture dans des comptes consolidés.
+   - Le dividende intragroupe a donné lieu à la comptabilisation d’une créance intragroupe et crée une exposition au risque de change.
+   - Les entités concernées peuvent avoir des monnaies fonctionnelles différentes.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+En consolidé, une créance de dividende intragroupe n’est pas en principe un élément couvert, sauf exception pour le risque de change d’un élément monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés en consolidation. La documentation de couverture est donc possible seulement si cette exception est remplie et si les critères de désignation et d’efficacité d’IFRS 9 sont respectés.
+
+## Points Opérationnels
+
+   - Le point déterminant en consolidé est de vérifier si la créance de dividende intragroupe génère des écarts de change non totalement éliminés.
+   - La documentation doit être établie dès l’origine de la relation de couverture avec identification de l’instrument, de l’élément couvert et du risque couvert.
+   - Si les deux entités ont la même monnaie fonctionnelle ou si les écarts de change sont totalement éliminés, la désignation en consolidé n’est pas possible.
+   - Le choix entre juste valeur et flux de trésorerie doit être cohérent avec le risque effectivement géré sur cette créance reconnue.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture de juste valeur | OUI SOUS CONDITIONS | - La créance intragroupe constitue un élément monétaire exposé au change.<br>- Les gains ou pertes de change correspondants ne sont pas totalement éliminés en consolidation.<br>- La relation de couverture est formellement désignée et documentée selon IFRS 9. |
+| 2. Couverture de flux de trésorerie | OUI SOUS CONDITIONS | - Le risque couvert est la variabilité liée au change sur la créance comptabilisée.<br>- Les effets de change sur la créance affectent le résultat consolidé car ils ne sont pas totalement éliminés.<br>- La documentation initiale et les tests d’éligibilité de la relation de couverture sont en place. |
+| 3. Couverture d’investissement net | NON | - (non spécifiées) |
+
+### 1. Couverture de juste valeur
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance intragroupe constitue un élément monétaire exposé au change.
+   - Les gains ou pertes de change correspondants ne sont pas totalement éliminés en consolidation.
+   - La relation de couverture est formellement désignée et documentée selon IFRS 9.
+
+**Raisonnment**:
+La créance de dividende déjà comptabilisée est un actif reconnu, ce qui est compatible avec une couverture de juste valeur d’un risque particulier. Mais en consolidé, un élément intragroupe ne peut être désigné que si l’exception sur le risque de change d’un élément monétaire intragroupe s’applique, c’est-à-dire si les écarts de change ne sont pas totalement éliminés.
+
+**Implications pratiques**: Possible en consolidé uniquement si la créance de dividende laisse subsister un risque de change au niveau consolidé.
+
+**Référence**:
+ - 6.3.5
+    >only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements
+ - 6.5.2
+    >fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability
+
+### 2. Couverture de flux de trésorerie
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - Le risque couvert est la variabilité liée au change sur la créance comptabilisée.
+   - Les effets de change sur la créance affectent le résultat consolidé car ils ne sont pas totalement éliminés.
+   - La documentation initiale et les tests d’éligibilité de la relation de couverture sont en place.
+
+**Raisonnment**:
+IFRS 9 permet une couverture de flux de trésorerie d’un actif reconnu lorsqu’une variabilité de flux liée à un risque particulier peut affecter le résultat. Pour cette créance de dividende intragroupe en consolidé, cela n’est envisageable que si l’exposition de change sur l’élément monétaire intragroupe subsiste au niveau consolidé et satisfait aux critères de couverture.
+
+**Implications pratiques**: Approche possible si l’objectif est de couvrir la variabilité en monnaie fonctionnelle des encaissements liés à la créance.
+
+**Référence**:
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item
+ - 6.5.2
+    >cash flow hedge: a hedge of the exposure to variability in cash flows ... of ... a recognised asset or liability
+ - 6.4.1
+    >at the inception of the hedging relationship there is formal designation and documentation
+
+### 3. Couverture d’investissement net
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+La question porte sur une créance de dividende intragroupe déjà comptabilisée, pas sur la couverture du risque de change d’un investissement net dans une activité à l’étranger. IFRIC 16 limite cette approche aux expositions de change sur les net assets d’une foreign operation inclus dans les états financiers.
+
+**Implications pratiques**: Ce modèle ne convient pas pour couvrir une créance de dividende intragroupe.
+
+**Référence**:
+ - 6.5.2
+    >hedge of a net investment in a foreign operation
+ - ifric-16.7
+    >This Interpretation applies only to hedges of net investments in foreign operations
+ - ifric-16.10
+    >the hedged item can be an amount of net assets

@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable gives rise to a foreign currency exposure considered in consolidated financial statements.",
+    "The question is asking about IFRS accounting models that could be relevant to hedge documentation or, absent hedge accounting, to the accounting for the related foreign currency effects."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context from IFRIC 16 specifically addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation and its presentation in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Amortised cost measurement",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "The context states that financial assets and liabilities measured at amortised cost recognise gains or losses in profit or loss, including through the amortisation process and foreign exchange effects."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through other comprehensive income measurement",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "The context includes the FVOCI category for financial assets and explains that some changes in fair value are recognised in other comprehensive income."
+    },
+    {
+      "id": "approach_4",
+      "label": "Fair value through profit or loss measurement",
+      "normalized_label": "fair_value_pl",
+      "rationale_for_inclusion": "The context identifies FVTPL as the residual measurement category for financial assets unless amortised cost or FVOCI applies, with fair value changes recognised in profit or loss."
+    }
+  ]
+}

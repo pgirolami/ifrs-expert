@@ -1,0 +1,87 @@
+{
+  "assumptions_fr": [
+    "La question est analysée au niveau des états financiers consolidés.",
+    "Le dividende intragroupe a été déclaré et a créé un montant à recevoir et un montant à payer intragroupe déjà comptabilisés.",
+    "L’exposition visée est le risque de change sur cette créance/dette intragroupe monétaire."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement via la couverture du risque de change d’un élément monétaire intragroupe si ce risque n’est pas totalement éliminé en consolidation. En pratique, cela suppose typiquement des entités du groupe ayant des monnaies fonctionnelles différentes et un effet sur le résultat consolidé."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, l’exposition porte sur une créance intragroupe déjà comptabilisée, donc sur un élément monétaire reconnu. En consolidé, un élément intragroupe n’est normalement pas éligible, sauf pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas entièrement éliminés en consolidation; dans ce cas, une désignation est possible.",
+      "conditions_fr": [
+        "La créance/dette intragroupe est un élément monétaire entre entités ayant des monnaies fonctionnelles différentes.",
+        "Les gains ou pertes de change correspondants ne sont pas entièrement éliminés en consolidation et affectent le résultat consolidé."
+      ],
+      "practical_implication_fr": "La documentation peut être mise en place si l’exception intragroupe sur le risque de change est démontrée au niveau consolidé.",
+      "references": [
+        {
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated"
+        },
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "section": "6.5.2(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "La situation décrite ne concerne pas une transaction future hautement probable, mais une créance intragroupe déjà née du dividende déclaré. Le fait générateur est donc un montant reconnu, ce qui renvoie ici à une exposition existante sur un élément monétaire, et non au schéma visé en premier lieu par une couverture de flux de trésorerie dans ce cas précis.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette voie ne paraît pas adaptée à la créance de dividende déjà comptabilisée.",
+      "references": [
+        {
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net à l’étranger",
+      "applicability": "non",
+      "reasoning_fr": "La question vise le risque de change d’une créance de dividende intragroupe comptabilisée, non celui d’un investissement net dans une activité à l’étranger. Le modèle de couverture d’investissement net traite l’exposition de conversion sur les actifs nets d’une opération étrangère, ce qui ne correspond pas aux faits décrits.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle n’est pas le bon véhicule pour couvrir une créance de dividende intragroupe.",
+      "references": [
+        {
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be ... a net investment in a foreign operation"
+        },
+        {
+          "section": "6.5.2(c)",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "section": "ifric-16.1",
+          "excerpt": "foreign currency risk arising from a net investment in a foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est de vérifier si la créance de dividende et la dette correspondante sont entre entités ayant des monnaies fonctionnelles différentes.",
+    "Il faut démontrer que les écarts de change sur cet élément monétaire intragroupe ne sont pas totalement éliminés en consolidation et affectent le résultat consolidé.",
+    "La documentation de couverture doit être établie dès l’inception de la relation de couverture, avec identification de l’instrument, de l’élément couvert et du risque de change couvert.",
+    "Si cette condition d’effet en résultat consolidé n’est pas remplie, la réponse devient non en consolidé."
+  ]
+}
