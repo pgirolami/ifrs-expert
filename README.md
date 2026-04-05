@@ -153,77 +153,30 @@ Moving from free text to JSON made it possible to:
 
 ## Evaluation
 
-The project includes two complementary evaluation approaches:
+The project uses two evaluation modes:
 
 ### 1. Experimental analysis
 
-This is an ad-hoc implementation built incrementally from inception
+This is an ad-hoc implementation built incrementally from inception:
 - multiple question variants
 - repeated runs
-- qualitative analysis of failure modes and some automated quantitative analysis
+- qualitative analysis of failure modes
+- some automated quantitative analysis
 
-With PromptFoo setup, it is no longer going to be used going forward.
+With Promptfoo now in place, this path is mainly historical.
 
 ### 2. Promptfoo regression suite
 
-PromptFoo helps ensure the behavior is stable over phrasing variants, questions, LLM models and, of course, changes in the pipeline.
+Promptfoo is the ongoing regression harness for structured-answer quality.
 
-Run it with:
-
-```bash
-npx promptfoo eval
-```
-
-The root `promptfooconfig.yaml` is generated from:
-- `promptfoo_src/base.yaml`
-- `experiments/00_QUESTIONS/*/family.yaml`
-
-When you update Promptfoo families or assertions, rebuild it with:
-
-```bash
-npm run eval:build
-```
-
-The archived Promptfoo run entrypoint is:
+Typical usage:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression
 ```
 
-`EXPERIMENT_DIR` is required so each run is explicitly attached to an experiment folder.
-For relative values, the runner automatically prefixes `experiments/`.
-
-You can also use Make shortcuts for focused runs and alternate archive locations:
-
-```bash
-make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
-make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="Mistral Large 3"
-make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral smoke"
-make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
-```
-
-That command writes an HTML report plus per-test prompt/response artifacts under:
-
-```text
-experiments/<experiment_subdir>/runs/<timestamp>_<slug>/
-```
-
-Each generated test includes Promptfoo metadata for focused runs, for example:
-
-```bash
-npx promptfoo eval --filter-metadata family=Q1
-npx promptfoo eval --filter-metadata variant=Q1.0
-uv run python scripts/run_promptfoo_eval.py --description "Q1 mistral" -- --filter-metadata family=Q1
-```
-
-Checks include:
-- valid JSON schema
-- presence of expected approaches
-- consistency of recommendation
-- basic reasoning quality (LLM-graded rubric)
-
-
-![Example PromptFoo run comparing 2 models](./docs/PromptFoo-run.png)
+Promptfoo details, commands, storage layout, and archive conventions are documented in:
+- [`docs/PROMPTFOO.md`](./docs/PROMPTFOO.md)
 
 ---
 

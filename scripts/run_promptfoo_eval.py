@@ -1,4 +1,4 @@
-"""Run Promptfoo evals and archive each run under the experiment directory."""
+"""Run Promptfoo evals with one Promptfoo database per experiment."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 EXPERIMENTS_ROOT: Final[Path] = PROJECT_ROOT / "experiments"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
+PROMPTFOO_CONFIG_DIR_ENV: Final[str] = "PROMPTFOO_CONFIG_DIR"
 DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
 
 
@@ -29,39 +30,43 @@ class PromptfooRunLayout:
     """Paths associated with one archived Promptfoo run."""
 
     run_dir: Path
-    report_path: Path
     artifacts_dir: Path
     metadata_path: Path
+    promptfoo_config_dir: Path
     description: str
 
 
 class PromptfooEvalRunner:
-    """Build Promptfoo config, run the eval, and archive HTML and artifacts."""
+    """Build Promptfoo config, run the eval, and archive provider artifacts."""
 
     def __init__(
         self,
         project_root: Path,
         experiment_dir: Path,
+        promptfoo_config_dir: Path | None = None,
         now_fn: Callable[[], datetime] | None = None,
         command_runner: Callable[[list[str], dict[str, str], Path], subprocess.CompletedProcess[str]] | None = None,
     ) -> None:
         """Initialize the Promptfoo eval runner."""
         self._project_root = project_root
         self._experiment_dir = experiment_dir
+        self._promptfoo_config_dir = promptfoo_config_dir or experiment_dir / ".promptfoo"
         self._now_fn = now_fn or (lambda: datetime.now(tz=UTC))
         self._command_runner = command_runner or _run_command
 
     def run(self, promptfoo_args: Sequence[str], description: str | None) -> int:
-        """Run Promptfoo and archive the HTML report and answer artifacts."""
+        """Run Promptfoo and archive provider artifacts in the experiment directory."""
         run_layout = self._build_run_layout(description=description)
         run_layout.run_dir.mkdir(parents=True, exist_ok=False)
         run_layout.artifacts_dir.mkdir(parents=True, exist_ok=True)
+        run_layout.promptfoo_config_dir.mkdir(parents=True, exist_ok=True)
         self._write_run_metadata(run_layout=run_layout, promptfoo_args=list(promptfoo_args))
 
         env = os.environ.copy()
         env[PROMPTFOO_ARTIFACTS_DIR_ENV] = str(run_layout.artifacts_dir)
+        env[PROMPTFOO_CONFIG_DIR_ENV] = str(run_layout.promptfoo_config_dir)
 
-        logger.info(f"Building promptfooconfig.yaml before running Promptfoo into {run_layout.run_dir}")
+        logger.info(f"Building promptfooconfig.yaml before running Promptfoo into {run_layout.run_dir} with experiment database at {run_layout.promptfoo_config_dir}")
         build_result = self._command_runner(["npm", "run", "eval:build"], env, self._project_root)
         if build_result.returncode != 0:
             logger.error(f"Promptfoo config build failed with exit code {build_result.returncode}")
@@ -75,14 +80,12 @@ class PromptfooEvalRunner:
             "eval",
             "--description",
             run_layout.description,
-            "-o",
-            str(run_layout.report_path),
             *promptfoo_args,
         ]
-        logger.info(f"Running Promptfoo eval with archived HTML report at {run_layout.report_path}")
+        logger.info(f"Running Promptfoo eval with experiment database at {run_layout.promptfoo_config_dir}")
         completed_process = self._command_runner(eval_command, env, self._project_root)
         if completed_process.returncode != 0:
-            logger.warning(f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir}")
+            logger.warning(f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
         return completed_process.returncode
 
     def _build_run_layout(self, description: str | None) -> PromptfooRunLayout:
@@ -93,9 +96,9 @@ class PromptfooEvalRunner:
         run_dir = self._experiment_dir / "runs" / f"{timestamp}_{slug}"
         return PromptfooRunLayout(
             run_dir=run_dir,
-            report_path=run_dir / "report.html",
             artifacts_dir=run_dir / "artifacts",
             metadata_path=run_dir / "run.json",
+            promptfoo_config_dir=self._promptfoo_config_dir,
             description=resolved_description,
         )
 
@@ -103,8 +106,8 @@ class PromptfooEvalRunner:
         """Write run metadata for reproducibility."""
         metadata = {
             "description": run_layout.description,
-            "report_path": str(run_layout.report_path.relative_to(self._project_root)),
             "artifacts_path": str(run_layout.artifacts_dir.relative_to(self._project_root)),
+            "promptfoo_config_dir": str(run_layout.promptfoo_config_dir.relative_to(self._project_root)),
             "promptfoo_args": promptfoo_args,
             "created_at_utc": self._now_fn().astimezone(UTC).isoformat(),
         }
@@ -151,7 +154,7 @@ def resolve_experiment_dir(project_root: Path, experiment_dir: Path) -> Path:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments for the Promptfoo eval runner."""
-    parser = argparse.ArgumentParser(description="Run Promptfoo and archive the HTML report and provider artifacts")
+    parser = argparse.ArgumentParser(description="Run Promptfoo with an experiment-local database and archived provider artifacts")
     parser.add_argument(
         "--description",
         type=str,
@@ -199,7 +202,13 @@ def main() -> int:
         promptfoo_args = promptfoo_args[1:]
 
     experiment_dir = resolve_experiment_dir(project_root=PROJECT_ROOT, experiment_dir=args.experiment_dir)
-    runner = PromptfooEvalRunner(project_root=PROJECT_ROOT, experiment_dir=experiment_dir)
+    promptfoo_config_dir_env = os.environ.get(PROMPTFOO_CONFIG_DIR_ENV)
+    promptfoo_config_dir = Path(promptfoo_config_dir_env) if promptfoo_config_dir_env else None
+    runner = PromptfooEvalRunner(
+        project_root=PROJECT_ROOT,
+        experiment_dir=experiment_dir,
+        promptfoo_config_dir=promptfoo_config_dir,
+    )
     resolved_promptfoo_args = build_promptfoo_args(
         base_args=promptfoo_args,
         family=args.family,

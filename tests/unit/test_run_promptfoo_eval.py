@@ -67,8 +67,8 @@ def test_promptfoo_eval_runner_creates_timestamped_run_layout(tmp_path: Path) ->
     run_layout = runner._build_run_layout(description="Q1 live mistral")
 
     assert run_layout.run_dir == tmp_path / "experiments" / "promptfoo_regression" / "runs" / "2026-04-04_09-15-00_q1-live-mistral"
-    assert run_layout.report_path == run_layout.run_dir / "report.html"
     assert run_layout.artifacts_dir == run_layout.run_dir / "artifacts"
+    assert run_layout.promptfoo_config_dir == tmp_path / "experiments" / "promptfoo_regression" / ".promptfoo"
 
 
 def test_build_promptfoo_args_adds_family_variant_and_provider_filters() -> None:
@@ -117,8 +117,8 @@ def test_parse_args_requires_experiment_dir() -> None:
         raise AssertionError("Expected parse_args to require --experiment-dir")
 
 
-def test_promptfoo_eval_runner_sets_html_output_and_artifact_env(tmp_path: Path) -> None:
-    """The runner should request an HTML report and expose the artifact directory to Promptfoo providers."""
+def test_promptfoo_eval_runner_sets_experiment_config_dir_and_artifact_env(tmp_path: Path) -> None:
+    """The runner should expose the artifact directory and experiment-local Promptfoo config directory."""
     run_promptfoo_eval = _load_run_promptfoo_eval_module()
     command_runner = RecordingCommandRunner()
     runner = run_promptfoo_eval.PromptfooEvalRunner(
@@ -140,13 +140,31 @@ def test_promptfoo_eval_runner_sets_html_output_and_artifact_env(tmp_path: Path)
     assert build_command == ["npm", "run", "eval:build"]
     assert build_cwd == tmp_path
     assert build_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV].endswith("artifacts")
+    assert build_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV].endswith(".promptfoo")
 
     eval_command, eval_env, eval_cwd = command_runner.calls[1]
     assert eval_command[:5] == ["npm", "exec", "--", "promptfoo", "eval"]
     assert "--description" in eval_command
     assert "Q1 live mistral" in eval_command
-    assert "-o" in eval_command
-    assert any(item.endswith("report.html") for item in eval_command)
+    assert "-o" not in eval_command
     assert eval_command[-2:] == ["--filter-metadata", "family=Q1"]
     assert eval_cwd == tmp_path
     assert eval_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV] == build_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV]
+    assert eval_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV] == build_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV]
+
+
+def test_promptfoo_eval_runner_uses_explicit_config_dir_when_provided(tmp_path: Path) -> None:
+    """An explicit Promptfoo config dir should override the default experiment-local path."""
+    run_promptfoo_eval = _load_run_promptfoo_eval_module()
+    custom_promptfoo_config_dir = tmp_path / "custom-promptfoo"
+    runner = run_promptfoo_eval.PromptfooEvalRunner(
+        project_root=tmp_path,
+        experiment_dir=tmp_path / "experiments" / "promptfoo_regression",
+        promptfoo_config_dir=custom_promptfoo_config_dir,
+        now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
+        command_runner=RecordingCommandRunner(),
+    )
+
+    run_layout = runner._build_run_layout(description="Q1 live mistral")
+
+    assert run_layout.promptfoo_config_dir == custom_promptfoo_config_dir
