@@ -14,9 +14,6 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "Mistral API authentication failed. Please check your MISTRAL_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Mistral returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
-REASONING_EFFORT = "high"
-REASONING_PROMPT_MODE = "reasoning"
-REASONING_MODEL_PREFIXES = ("magistral",)
 
 
 class MistralClient(LLMClient):
@@ -87,25 +84,21 @@ class MistralClient(LLMClient):
 
     def _complete_text(self, messages: list[dict[str, str]]) -> ChatCompletionResponse:
         """Call Mistral text completion with optional reasoning enabled."""
-        logger.info(f"Using Mistral reasoning_effort={REASONING_EFFORT} for model {self._model}")
+        logger.info(f"Using Mistral with model {self._model}")
         return self._client.chat.complete(
             model=self._model,
-            messages=messages,
             temperature=0.0,
-            reasoning_effort=REASONING_EFFORT,
-            prompt_mode=REASONING_PROMPT_MODE,
+            messages=messages,
         )
 
     def _complete_json(self, messages: list[dict[str, str]]) -> ChatCompletionResponse:
         """Call Mistral JSON completion with optional reasoning enabled."""
-        logger.info(f"Using Mistral reasoning_effort={REASONING_EFFORT} for model {self._model}")
+        logger.info(f"Using Mistral with model {self._model}")
         return self._client.chat.complete(
             model=self._model,
             messages=messages,
             temperature=0.0,
             response_format={"type": "json_object"},
-            reasoning_effort=REASONING_EFFORT,
-            prompt_mode=REASONING_PROMPT_MODE,
         )
 
     def _extract_text_content(self, content: object) -> str:

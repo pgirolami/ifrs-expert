@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from src.commands.store import MAX_CHUNK_CHARS, StoreCommand
+from src.commands.store import MAX_CHUNK_CHARS, StoreCommand, StoreDependencies
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
@@ -62,13 +62,16 @@ class TestStoreCommand:
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
         vector_store = RecordingVectorStore()
-        command = StoreCommand(
-            source_path=source_path,
-            extractor=extractor,
+        dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
             init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
             explicit_doc_uid=None,
         )
 
@@ -136,13 +139,16 @@ class TestStoreCommand:
             skip_if_unchanged=True,
         )
 
-        command = StoreCommand(
-            source_path=source_path,
-            extractor=extractor,
+        dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
             init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
             explicit_doc_uid=None,
         )
 
@@ -183,13 +189,16 @@ class TestStoreCommand:
             )
         )
 
-        command = StoreCommand(
-            source_path=source_path,
-            extractor=extractor,
+        dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
             init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
             explicit_doc_uid=None,
         )
 
@@ -201,6 +210,15 @@ class TestStoreCommand:
 
     def test_store_command_file_not_found(self) -> None:
         """Missing source files should return an error result."""
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            init_db_fn=lambda: None,
+        )
         command = StoreCommand(
             source_path=Path("/nonexistent/file.pdf"),
             extractor=FakeExtractor(
@@ -216,10 +234,7 @@ class TestStoreCommand:
                     chunks=[],
                 )
             ),
-            chunk_store=InMemoryChunkStore(),
-            document_store=InMemoryDocumentStore(),
-            vector_store=RecordingVectorStore(),
-            init_db_fn=lambda: None,
+            dependencies=dependencies,
             explicit_doc_uid=None,
         )
 

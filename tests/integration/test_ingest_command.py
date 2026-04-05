@@ -11,9 +11,8 @@ import pytest
 from bs4 import BeautifulSoup
 
 from src.commands.ingest import IngestCommand
-from src.commands.store import create_store_command
-from src.db import ChunkStore, DocumentStore, init_db
-from tests.fakes import RecordingVectorStore
+from src.commands.store import StoreDependencies, create_store_command
+from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, RecordingVectorStore
 
 
 @pytest.fixture
@@ -69,12 +68,30 @@ def _extract_canonical_url(html_path: Path) -> str:
 
 
 def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None):
+    global chunk_store, document_store
+    _stores.setdefault("chunk_store", InMemoryChunkStore())
+    _stores.setdefault("document_store", InMemoryDocumentStore())
+    chunk_store = _stores["chunk_store"]
+    document_store = _stores["document_store"]
+    vector_store = RecordingVectorStore()
+    dependencies = StoreDependencies(
+        chunk_store=_stores["chunk_store"],
+        document_store=_stores["document_store"],
+        vector_store=vector_store,
+        init_db_fn=lambda: None,
+    )
     return create_store_command(
         source_path=source_path,
         extractor=extractor,
         doc_uid=explicit_doc_uid,
-        vector_store=RecordingVectorStore(),
+        dependencies=dependencies,
     )
+
+
+# Module-level mutable container for in-memory stores set by _store_factory
+_stores: dict[str, InMemoryChunkStore | InMemoryDocumentStore] = {}
+chunk_store: InMemoryChunkStore | None = None
+document_store: InMemoryDocumentStore | None = None
 
 
 def test_ingest_command_imports_pdf_from_inbox(temp_db_path: Path, capture_root: Path) -> None:
@@ -89,12 +106,12 @@ def test_ingest_command_imports_pdf_from_inbox(temp_db_path: Path, capture_root:
 
     assert "1 imported" in output
     assert (capture_root / "processed" / inbox_pdf.name).exists()
-    with DocumentStore() as document_store:
-        document = document_store.get_document("ifrs-16-leases_38-39")
+    with document_store as ds:
+        document = ds.get_document("ifrs-16-leases_38-39")
     assert document is not None, "Expected PDF ingestion to upsert a document record"
     assert document.source_type == "pdf"
-    with ChunkStore() as chunk_store:
-        chunks = chunk_store.get_chunks_by_doc("ifrs-16-leases_38-39")
+    with chunk_store as cs:
+        chunks = cs.get_chunks_by_doc("ifrs-16-leases_38-39")
     assert chunks, "Expected stored PDF chunks after ingestion"
 
 
@@ -117,13 +134,13 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
     assert "1 imported" in output
     assert (capture_root / "processed" / inbox_html.name).exists()
     assert (capture_root / "processed" / inbox_json.name).exists()
-    with DocumentStore() as document_store:
-        document = document_store.get_document("ifrs9")
+    with document_store as ds:
+        document = ds.get_document("ifrs9")
     assert document is not None, "Expected HTML ingestion to upsert a document record"
     assert document.source_type == "html"
     assert document.canonical_url == canonical_url
-    with ChunkStore() as chunk_store:
-        chunks = chunk_store.get_chunks_by_doc("ifrs9")
+    with chunk_store as cs:
+        chunks = cs.get_chunks_by_doc("ifrs9")
     assert any(chunk.section_path == "2.4" for chunk in chunks)
     assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
 
@@ -168,8 +185,8 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     replace_output = command.execute()
 
     assert "1 imported" in replace_output
-    with ChunkStore() as chunk_store:
-        chunks = chunk_store.get_chunks_by_doc("ifric16")
+    with chunk_store as cs:
+        chunks = cs.get_chunks_by_doc("ifric16")
     first_chunk = next(chunk for chunk in chunks if chunk.section_path == "1")
     assert "Additional integration test sentence." in first_chunk.text
 
