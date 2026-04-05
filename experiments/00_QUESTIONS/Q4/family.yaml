@@ -1,0 +1,44 @@
+family_id: Q4
+assert:
+  - type: is-json
+    value: file://./prompts/answer_prompt_B.json
+    description: Output matches expected JSON schema
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return Array.isArray(data.assumptions_fr) &&
+             data.assumptions_fr.length >= 1 &&
+             Array.isArray(data.approaches) &&
+             data.approaches.length >= 1 &&
+             Array.isArray(data.operational_points_fr) &&
+             data.operational_points_fr.length >= 1;
+    description: Core structured fields are present and non-empty
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+    description: Recommendation answer is one of the allowed values
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return typeof data.recommendation?.justification === 'string' &&
+             data.recommendation.justification.length > 50;
+    description: Recommendation includes a non-trivial justification
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return data.approaches.every(a =>
+        typeof a.applicability === 'string' &&
+        Array.isArray(a.references) &&
+        a.references.length >= 1
+      );
+    description: Each approach has applicability and at least one reference
+
+variants:
+  - id: Q4.0
+    file: Q4.0.txt
+    description: Cash flow hedge for grouped floating-rate items
