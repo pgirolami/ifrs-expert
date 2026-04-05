@@ -26,7 +26,7 @@ Promptfoo runs are always attached to an explicit experiment.
 
 `EXPERIMENT_DIR` is required so each run is explicitly attached to an experiment folder.
 For relative values, the runner automatically prefixes `experiments/`.
-In the Makefile workflow, `PROMPTFOO_CONFIG_DIR` is inferred from `EXPERIMENT_DIR`.
+In the Makefile workflow, you only provide `EXPERIMENT_DIR`; the Promptfoo config directory is derived internally as `<experiment>/.promptfoo`.
 
 Each experiment gets its own Promptfoo database under:
 

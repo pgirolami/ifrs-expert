@@ -18,7 +18,6 @@ else
 RESOLVED_EXPERIMENT_DIR := $(EXPERIMENT_DIR)
 endif
 
-PROMPTFOO_CONFIG_DIR := $(RESOLVED_EXPERIMENT_DIR)/.promptfoo
 
 dev:
 	uv sync --all-groups
@@ -48,7 +47,7 @@ guard-experiment-dir:
 	fi
 
 eval: guard-experiment-dir
-	PROMPTFOO_CONFIG_DIR="$(PROMPTFOO_CONFIG_DIR)" uv run python scripts/run_promptfoo_eval.py \
+	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" uv run python scripts/run_promptfoo_eval.py \
 		--experiment-dir "$(EXPERIMENT_DIR)" \
 		$(if $(DESCRIPTION),--description "$(DESCRIPTION)") \
 		$(if $(FAMILY),--family "$(FAMILY)") \
@@ -57,13 +56,13 @@ eval: guard-experiment-dir
 		-- $(EXTRA_ARGS)
 
 eval-view: guard-experiment-dir
-	npm exec -- promptfoo view "$(PROMPTFOO_CONFIG_DIR)"
+	npm exec -- promptfoo view "$(RESOLVED_EXPERIMENT_DIR)/.promptfoo"
 
 eval-list: guard-experiment-dir
-	PROMPTFOO_CONFIG_DIR="$(PROMPTFOO_CONFIG_DIR)" npm exec -- promptfoo list evals
+	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" npm exec -- promptfoo list evals
 
 eval-show: guard-experiment-dir
-	PROMPTFOO_CONFIG_DIR="$(PROMPTFOO_CONFIG_DIR)" npm exec -- promptfoo show eval $(EVAL_ID)
+	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" npm exec -- promptfoo show eval $(EVAL_ID)
 
 demo:
 	@bash scripts/demo.sh
