@@ -26,5 +26,5 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Run: npx promptfoo eval
-  View: npx promptfoo view
+  Run: make eval EXPERIMENT_DIR=promptfoo_regression
+  View: make eval-view EXPERIMENT_DIR=promptfoo_regression

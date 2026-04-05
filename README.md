@@ -168,10 +168,10 @@ With PromptFoo setup, it is no longer going to be used going forward.
 
 PromptFoo helps ensure the behavior is stable over phrasing variants, questions, LLM models and, of course, changes in the pipeline.
 
-Run it with:
+Run it with the experiment-aware wrapper:
 
 ```bash
-npx promptfoo eval
+make eval EXPERIMENT_DIR=promptfoo_regression
 ```
 
 The root `promptfooconfig.yaml` is generated from:
@@ -184,16 +184,30 @@ When you update Promptfoo families or assertions, rebuild it with:
 npm run eval:build
 ```
 
-The archived Promptfoo run entrypoint is:
+`EXPERIMENT_DIR` is required so each run is explicitly attached to an experiment folder.
+For relative values, the runner automatically prefixes `experiments/`.
+Each experiment gets its own Promptfoo database under:
+
+```text
+experiments/<experiment_subdir>/.promptfoo/promptfoo.db
+```
+
+Per-run provider artifacts are archived under:
+
+```text
+experiments/<experiment_subdir>/runs/<timestamp>_<slug>/
+```
+
+Use these commands to run and inspect an experiment history:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression
+make eval-view EXPERIMENT_DIR=promptfoo_regression
+make eval-list EXPERIMENT_DIR=promptfoo_regression
+make eval-show EXPERIMENT_DIR=promptfoo_regression EVAL_ID=<eval-id>
 ```
 
-`EXPERIMENT_DIR` is required so each run is explicitly attached to an experiment folder.
-For relative values, the runner automatically prefixes `experiments/`.
-
-You can also use Make shortcuts for focused runs and alternate archive locations:
+You can also run focused evals against the same experiment database:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
@@ -202,18 +216,13 @@ make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral 
 make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
 ```
 
-That command writes an HTML report plus per-test prompt/response artifacts under:
-
-```text
-experiments/<experiment_subdir>/runs/<timestamp>_<slug>/
-```
-
-Each generated test includes Promptfoo metadata for focused runs, for example:
+Direct runner usage remains available when you need to forward raw Promptfoo arguments:
 
 ```bash
-npx promptfoo eval --filter-metadata family=Q1
-npx promptfoo eval --filter-metadata variant=Q1.0
-uv run python scripts/run_promptfoo_eval.py --description "Q1 mistral" -- --filter-metadata family=Q1
+uv run python scripts/run_promptfoo_eval.py \
+  --experiment-dir promptfoo_regression \
+  --description "Q1 mistral" \
+  -- --filter-metadata family=Q1
 ```
 
 Checks include:

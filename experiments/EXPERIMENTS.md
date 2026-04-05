@@ -12,8 +12,13 @@ experiments/<experiment_subdir>/runs/<timestamp>_<slug>/
 
 When invoking the runner or Make target, you only need to pass the subfolder name such as `promptfoo_regression`. Relative values are resolved under `experiments/`.
 
+Each experiment maintains a Promptfoo database under `.promptfoo/`, for example:
+
+```text
+experiments/<experiment_subdir>/.promptfoo/promptfoo.db
+```
+
 Each archived Promptfoo run contains:
-- `report.html` — Promptfoo HTML report
 - `run.json` — run metadata and forwarded Promptfoo arguments
 - `artifacts/` — per-test prompt/response files written by `scripts/run_answer.py`
 
@@ -32,10 +37,18 @@ artifacts/<family>/<variant>/<provider>/
 
 `EXPERIMENT_DIR` is mandatory so every run is explicitly attached to an experiment folder.
 
-Examples:
+Run, browse, and inspect experiment-local Promptfoo history with:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression
+make eval-view EXPERIMENT_DIR=promptfoo_regression
+make eval-list EXPERIMENT_DIR=promptfoo_regression
+make eval-show EXPERIMENT_DIR=promptfoo_regression EVAL_ID=<eval-id>
+```
+
+Focused run examples:
+
+```bash
 make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
 make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="Mistral Large 3"
 make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral"

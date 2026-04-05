@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "eval": "npx promptfoo eval",
-    "eval:view": "npx promptfoo view",
     "eval:build": "uv run python scripts/build_promptfoo_config.py",
     "eval:archive": "uv run python scripts/run_promptfoo_eval.py"
   },
