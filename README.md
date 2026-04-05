@@ -175,9 +175,8 @@ Typical usage:
 make eval EXPERIMENT_DIR=promptfoo_regression
 ```
 
-Promptfoo details, commands, experiment-local database layout, and archive conventions are documented in:
+Promptfoo details, commands, storage layout, and archive conventions are documented in:
 - [`docs/PROMPTFOO.md`](./docs/PROMPTFOO.md)
-- [`experiments/EXPERIMENTS.md`](./experiments/EXPERIMENTS.md)
 
 ---
 

@@ -56,7 +56,7 @@ eval: guard-experiment-dir
 		-- $(EXTRA_ARGS)
 
 eval-view: guard-experiment-dir
-	npm exec -- promptfoo view "$(RESOLVED_EXPERIMENT_DIR)/.promptfoo"
+	npm exec -- promptfoo view -y "$(RESOLVED_EXPERIMENT_DIR)/.promptfoo"
 
 eval-list: guard-experiment-dir
 	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" npm exec -- promptfoo list evals
