@@ -105,6 +105,18 @@ def test_resolve_experiment_dir_prefixes_repo_experiments_root() -> None:
     assert resolved_path == Path("/repo") / "experiments" / "promptfoo_regression"
 
 
+def test_resolve_promptfoo_config_dir_prefixes_project_root() -> None:
+    """Relative Promptfoo config dirs should resolve under the repository root."""
+    run_promptfoo_eval = _load_run_promptfoo_eval_module()
+
+    resolved_path = run_promptfoo_eval.resolve_promptfoo_config_dir(
+        project_root=Path("/repo"),
+        promptfoo_config_dir=Path("experiments/promptfoo_regression/.promptfoo"),
+    )
+
+    assert resolved_path == Path("/repo") / "experiments" / "promptfoo_regression" / ".promptfoo"
+
+
 def test_parse_args_requires_experiment_dir() -> None:
     """The CLI should require an explicit experiment directory."""
     run_promptfoo_eval = _load_run_promptfoo_eval_module()

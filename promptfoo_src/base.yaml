@@ -1,7 +1,8 @@
 evaluateOptions:
   cache: false
-  maxConcurrency: 2
-  delay: 5000
+  maxConcurrency: 10
+  repeat: 3
+
 
 prompts:
   - '{{question}}'

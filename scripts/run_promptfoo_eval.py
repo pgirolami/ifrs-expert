@@ -152,6 +152,13 @@ def resolve_experiment_dir(project_root: Path, experiment_dir: Path) -> Path:
     return project_root / "experiments" / experiment_dir
 
 
+def resolve_promptfoo_config_dir(project_root: Path, promptfoo_config_dir: Path) -> Path:
+    """Resolve a Promptfoo config dir relative to the project root when needed."""
+    if promptfoo_config_dir.is_absolute():
+        return promptfoo_config_dir
+    return project_root / promptfoo_config_dir
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments for the Promptfoo eval runner."""
     parser = argparse.ArgumentParser(description="Run Promptfoo with an experiment-local database and archived provider artifacts")
@@ -203,7 +210,7 @@ def main() -> int:
 
     experiment_dir = resolve_experiment_dir(project_root=PROJECT_ROOT, experiment_dir=args.experiment_dir)
     promptfoo_config_dir_env = os.environ.get(PROMPTFOO_CONFIG_DIR_ENV)
-    promptfoo_config_dir = Path(promptfoo_config_dir_env) if promptfoo_config_dir_env else None
+    promptfoo_config_dir = resolve_promptfoo_config_dir(PROJECT_ROOT, Path(promptfoo_config_dir_env)) if promptfoo_config_dir_env else None
     runner = PromptfooEvalRunner(
         project_root=PROJECT_ROOT,
         experiment_dir=experiment_dir,
