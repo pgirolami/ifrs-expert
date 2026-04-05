@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
-HIGH_REASONING_EFFORT = "high"
-REASONING_MODEL_PREFIXES = ("gpt-5", "o1", "o3", "o4")
+REASONING_EFFORT = "xhigh"
 
 
 class OpenAIClient(LLMClient):
@@ -85,41 +84,22 @@ class OpenAIClient(LLMClient):
 
     def _create_text_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
         """Create a text completion with model-specific settings."""
-        if self._uses_reasoning():
-            logger.info(f"Using OpenAI reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
-            return self._client.chat.completions.create(
-                model=self._model,
-                messages=messages,
-                reasoning_effort=HIGH_REASONING_EFFORT,
-            )
-
+        logger.info(f"Using OpenAI reasoning_effort={REASONING_EFFORT} for model {self._model}")
         return self._client.chat.completions.create(
             model=self._model,
             messages=messages,
-            temperature=0.0,
+            reasoning_effort=REASONING_EFFORT,
         )
 
     def _create_json_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
         """Create a JSON completion with model-specific settings."""
-        if self._uses_reasoning():
-            logger.info(f"Using OpenAI reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
-            return self._client.chat.completions.create(
-                model=self._model,
-                messages=messages,
-                response_format={"type": "json_object"},
-                reasoning_effort=HIGH_REASONING_EFFORT,
-            )
-
+        logger.info(f"Using OpenAI reasoning_effort={REASONING_EFFORT} for model {self._model}")
         return self._client.chat.completions.create(
             model=self._model,
             messages=messages,
-            temperature=0.0,
             response_format={"type": "json_object"},
+            reasoning_effort=REASONING_EFFORT,
         )
-
-    def _uses_reasoning(self) -> bool:
-        """Return whether the current model supports OpenAI reasoning settings."""
-        return self._model.startswith(REASONING_MODEL_PREFIXES)
 
     def _parse_json_response(self, content: str) -> dict[str, Any]:
         """Parse JSON from the response content."""

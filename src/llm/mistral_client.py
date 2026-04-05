@@ -3,25 +3,18 @@
 import json
 import logging
 
+from mistralai.client import Mistral
 from mistralai.client.models.chatcompletionresponse import ChatCompletionResponse
 
 from src.llm.base import LLMClient
 
 logger = logging.getLogger(__name__)
 
-# Try to use the official Mistral client, fall back to HTTP
-try:
-    from mistralai.client import Mistral
 
-    MISTRAL_SDK_AVAILABLE = True
-except ImportError:
-    MISTRAL_SDK_AVAILABLE = False
-
-SDK_NOT_INSTALLED_MESSAGE = "mistralai package is not installed. Install it with: uv add mistralai"
 AUTH_FAILED_MESSAGE = "Mistral API authentication failed. Please check your MISTRAL_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Mistral returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
-HIGH_REASONING_EFFORT = "high"
+REASONING_EFFORT = "high"
 REASONING_PROMPT_MODE = "reasoning"
 REASONING_MODEL_PREFIXES = ("magistral",)
 
@@ -36,8 +29,6 @@ class MistralClient(LLMClient):
             api_key: Mistral API key
             model: Model identifier
         """
-        if not MISTRAL_SDK_AVAILABLE:
-            raise ImportError(SDK_NOT_INSTALLED_MESSAGE)
         self._client = Mistral(api_key=api_key)
         self._model = model
 
@@ -96,45 +87,26 @@ class MistralClient(LLMClient):
 
     def _complete_text(self, messages: list[dict[str, str]]) -> ChatCompletionResponse:
         """Call Mistral text completion with optional reasoning enabled."""
-        if self._uses_reasoning():
-            logger.info(f"Using Mistral reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
-            return self._client.chat.complete(
-                model=self._model,
-                messages=messages,
-                temperature=0.0,
-                reasoning_effort=HIGH_REASONING_EFFORT,
-                prompt_mode=REASONING_PROMPT_MODE,
-            )
-
+        logger.info(f"Using Mistral reasoning_effort={REASONING_EFFORT} for model {self._model}")
         return self._client.chat.complete(
             model=self._model,
             messages=messages,
             temperature=0.0,
+            reasoning_effort=REASONING_EFFORT,
+            prompt_mode=REASONING_PROMPT_MODE,
         )
 
     def _complete_json(self, messages: list[dict[str, str]]) -> ChatCompletionResponse:
         """Call Mistral JSON completion with optional reasoning enabled."""
-        if self._uses_reasoning():
-            logger.info(f"Using Mistral reasoning_effort={HIGH_REASONING_EFFORT} for model {self._model}")
-            return self._client.chat.complete(
-                model=self._model,
-                messages=messages,
-                temperature=0.0,
-                response_format={"type": "json_object"},
-                reasoning_effort=HIGH_REASONING_EFFORT,
-                prompt_mode=REASONING_PROMPT_MODE,
-            )
-
+        logger.info(f"Using Mistral reasoning_effort={REASONING_EFFORT} for model {self._model}")
         return self._client.chat.complete(
             model=self._model,
             messages=messages,
             temperature=0.0,
             response_format={"type": "json_object"},
+            reasoning_effort=REASONING_EFFORT,
+            prompt_mode=REASONING_PROMPT_MODE,
         )
-
-    def _uses_reasoning(self) -> bool:
-        """Return whether the current model supports Mistral reasoning."""
-        return self._model.startswith(REASONING_MODEL_PREFIXES)
 
     def _extract_text_content(self, content: object) -> str:
         """Normalize Mistral message content to plain text."""
