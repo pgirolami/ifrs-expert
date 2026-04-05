@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 from src.commands.ingest import IngestCommand
 from src.commands.store import StoreDependencies, create_store_command
-from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, RecordingVectorStore
+from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, InMemorySectionStore, RecordingTitleVectorStore, RecordingVectorStore
 
 
 @pytest.fixture
@@ -61,9 +61,9 @@ def _write_html_sidecar(sidecar_path: Path, canonical_url: str, title: str) -> N
 
 def _extract_canonical_url(html_path: Path) -> str:
     html_text = html_path.read_text(encoding="utf-8")
-    canonical_prefix = "<link rel=\"canonical\"\n    href=\""
+    canonical_prefix = '<link rel="canonical"\n    href="'
     start = html_text.index(canonical_prefix) + len(canonical_prefix)
-    end = html_text.index("\">", start)
+    end = html_text.index('">', start)
     return html_text[start:end]
 
 
@@ -71,13 +71,17 @@ def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str |
     global chunk_store, document_store
     _stores.setdefault("chunk_store", InMemoryChunkStore())
     _stores.setdefault("document_store", InMemoryDocumentStore())
+    _stores.setdefault("section_store", InMemorySectionStore())
     chunk_store = _stores["chunk_store"]
     document_store = _stores["document_store"]
     vector_store = RecordingVectorStore()
+    title_vector_store = RecordingTitleVectorStore()
     dependencies = StoreDependencies(
         chunk_store=_stores["chunk_store"],
         document_store=_stores["document_store"],
+        section_store=_stores["section_store"],
         vector_store=vector_store,
+        title_vector_store=title_vector_store,
         init_db_fn=lambda: None,
     )
     return create_store_command(
@@ -89,7 +93,7 @@ def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str |
 
 
 # Module-level mutable container for in-memory stores set by _store_factory
-_stores: dict[str, InMemoryChunkStore | InMemoryDocumentStore] = {}
+_stores: dict[str, InMemoryChunkStore | InMemoryDocumentStore | InMemorySectionStore] = {}
 chunk_store: InMemoryChunkStore | None = None
 document_store: InMemoryDocumentStore | None = None
 
@@ -118,9 +122,7 @@ def test_ingest_command_imports_pdf_from_inbox(temp_db_path: Path, capture_root:
 def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
     """Representative IFRS HTML captures should ingest into the database and processed/."""
     del temp_db_path
-    html_source = _example_file(
-        "www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html"
-    )
+    html_source = _example_file("www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html")
     inbox_html = capture_root / "inbox" / "20260404T142310Z--ifrs9.html"
     inbox_json = capture_root / "inbox" / "20260404T142310Z--ifrs9.json"
     shutil.copy(html_source, inbox_html)
@@ -148,9 +150,7 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
 def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_path: Path, capture_root: Path) -> None:
     """HTML captures should skip when unchanged and replace existing chunks when changed."""
     del temp_db_path
-    html_source = _example_file(
-        "www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html"
-    )
+    html_source = _example_file("www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html")
 
     first_html = capture_root / "inbox" / "20260404T142310Z--ifric16.html"
     first_json = capture_root / "inbox" / "20260404T142310Z--ifric16.json"

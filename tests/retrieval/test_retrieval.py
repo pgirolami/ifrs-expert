@@ -111,7 +111,7 @@ class TestIFRS16Retrieval:
         assert top["score"] > 0.5, f"Expected high score for 'lease definition', got {top['score']}"
 
         # Should be in the B43-B50 range (the leases paragraphs)
-        section = top["section_path"]
+        section = top["chunk_number"]
         assert section == "B44", (
             f"Expected section B44, got {section}"
         )

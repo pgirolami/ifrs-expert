@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from src.cli import _answer_stdout_text, _execute_answer_command, _save_answer_command_result
+from src.cli import _answer_stdout_text, _execute_answer_command, _execute_command, _save_answer_command_result
 from src.models.answer_command_result import AnswerCommandResult
 
 VALID_PROMPT_B_RESPONSE = """{
@@ -60,6 +60,16 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
+class FakeTextCommand:
+    """Fake text command for CLI testing."""
+
+    def __init__(self, output: str) -> None:
+        self._output = output
+
+    def execute(self) -> str:
+        return self._output
+
+
 def test_execute_answer_command_returns_raw_response_and_preserves_save_all(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Answer CLI should keep stdout behavior unchanged while saving artifacts."""
     result = AnswerCommandResult(
@@ -80,6 +90,7 @@ def test_execute_answer_command_returns_raw_response_and_preserves_save_all(monk
         full_doc_threshold=0,
         output_dir=tmp_path,
         save_all=True,
+        retrieval_mode="titles",
     )
 
     output = _execute_answer_command(args)
@@ -98,11 +109,29 @@ def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
         full_doc_threshold=0,
         output_dir=None,
         save_all=True,
+        retrieval_mode="text",
     )
 
     output = _execute_answer_command(args)
 
     assert output == "Error: --save-all requires --output-dir to be specified"
+
+
+def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should dispatch the query-titles subcommand."""
+    monkeypatch.setattr("src.cli.create_query_titles_command", lambda query, options: FakeTextCommand("title output"))
+    monkeypatch.setattr("sys.stdin", io.StringIO("Find initial recognition"))
+
+    args = argparse.Namespace(
+        command="query-titles",
+        k=5,
+        min_score=None,
+        json=True,
+    )
+
+    output = _execute_command(args)
+
+    assert output == "title output"
 
 
 def test_answer_stdout_text_prefers_raw_response() -> None:

@@ -1,4 +1,4 @@
-"""Tests for document storage and chunk schema updates."""
+"""Tests for document, chunk, and section schema updates."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import pytest
 from src.db.connection import init_db
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
+from src.models.section import SectionClosureRow, SectionRecord
 
 
 @pytest.fixture
@@ -27,8 +28,8 @@ def temp_db() -> Path:
         conn_module.DB_PATH = original_path
 
 
-def test_init_db_creates_documents_table_and_source_anchor_column(temp_db: Path) -> None:
-    """The new schema should support document metadata and HTML anchors."""
+def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: Path) -> None:
+    """The schema should support document metadata, section trees, and chunk references."""
     with sqlite3.connect(temp_db) as connection:
         document_columns = {
             row[1]
@@ -38,9 +39,19 @@ def test_init_db_creates_documents_table_and_source_anchor_column(temp_db: Path)
             row[1]
             for row in connection.execute("PRAGMA table_info(chunks)").fetchall()
         }
+        section_columns = {
+            row[1]
+            for row in connection.execute("PRAGMA table_info(sections)").fetchall()
+        }
+        closure_columns = {
+            row[1]
+            for row in connection.execute("PRAGMA table_info(section_closure)").fetchall()
+        }
 
     assert {"doc_uid", "source_type", "source_title", "source_url", "canonical_url", "captured_at"}.issubset(document_columns)
-    assert "source_anchor" in chunk_columns
+    assert {"chunk_number", "chunk_id", "containing_section_id"}.issubset(chunk_columns)
+    assert {"section_id", "doc_uid", "parent_section_id", "title", "section_lineage", "embedding_text", "position"}.issubset(section_columns)
+    assert {"ancestor_section_id", "descendant_section_id", "depth"}.issubset(closure_columns)
 
 
 def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> None:
@@ -66,21 +77,71 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
     assert fetched.canonical_url == "https://www.ifrs.org/ifrs9.html"
 
 
-def test_chunk_store_round_trips_source_anchor(temp_db: Path) -> None:
-    """Chunk rows should preserve the HTML source anchor."""
+def test_chunk_store_round_trips_chunk_metadata(temp_db: Path) -> None:
+    """Chunk rows should preserve chunk ids, numbers, and containing sections."""
     from src.db.chunks import ChunkStore
 
     chunk = Chunk(
         doc_uid="ifrs9",
-        section_path="3.1.1",
+        chunk_number="3.1.1",
         page_start="",
         page_end="",
-        source_anchor="IFRS09_3.1.1",
+        chunk_id="IFRS09_3.1.1",
+        containing_section_id="IFRS09_g3.1.1-3.1.2",
         text="Chunk text",
     )
 
     with ChunkStore() as store:
-        store.insert_chunks([chunk])
+        row_id = store.insert_chunk(chunk)
         fetched = store.get_chunks_by_doc("ifrs9")
 
-    assert fetched[0].source_anchor == "IFRS09_3.1.1"
+    assert row_id == 1
+    assert fetched[0].chunk_id == "IFRS09_3.1.1"
+    assert fetched[0].chunk_number == "3.1.1"
+    assert fetched[0].containing_section_id == "IFRS09_g3.1.1-3.1.2"
+
+
+def test_section_store_round_trips_sections_and_closure(temp_db: Path) -> None:
+    """Section rows and closure rows should round-trip through the database."""
+    from src.db.sections import SectionStore
+
+    sections = [
+        SectionRecord(
+            section_id="IFRS09_0054",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=2,
+            title="Recognition and derecognition",
+            section_lineage=["Recognition and derecognition"],
+            embedding_text="Recognition and derecognition",
+            position=10,
+        ),
+        SectionRecord(
+            section_id="IFRS09_g3.1.1-3.1.2",
+            doc_uid="ifrs9",
+            parent_section_id="IFRS09_0054",
+            level=3,
+            title="Initial recognition",
+            section_lineage=["Recognition and derecognition", "Initial recognition"],
+            embedding_text="Initial recognition",
+            position=11,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow(ancestor_section_id="IFRS09_0054", descendant_section_id="IFRS09_0054", depth=0),
+        SectionClosureRow(ancestor_section_id="IFRS09_0054", descendant_section_id="IFRS09_g3.1.1-3.1.2", depth=1),
+        SectionClosureRow(
+            ancestor_section_id="IFRS09_g3.1.1-3.1.2",
+            descendant_section_id="IFRS09_g3.1.1-3.1.2",
+            depth=0,
+        ),
+    ]
+
+    with SectionStore() as store:
+        store.insert_sections(sections)
+        store.insert_closure_rows(closure_rows)
+        fetched_sections = store.get_sections_by_doc("ifrs9")
+        descendant_ids = store.get_descendant_section_ids("IFRS09_0054")
+
+    assert [section.section_id for section in fetched_sections] == ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"]
+    assert descendant_ids == ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"]

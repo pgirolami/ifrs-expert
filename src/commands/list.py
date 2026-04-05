@@ -24,9 +24,11 @@ class ListCommand:
                     return json.dumps(
                         [
                             {
-                                "id": c.chunk_id,
+                                "id": c.id,
                                 "doc_uid": c.doc_uid,
-                                "section_path": c.section_path,
+                                "chunk_number": c.chunk_number,
+                                "chunk_id": c.chunk_id,
+                                "containing_section_id": c.containing_section_id,
                                 "page_start": c.page_start,
                                 "page_end": c.page_end,
                                 "text": c.text,

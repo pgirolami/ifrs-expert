@@ -69,8 +69,8 @@ class TestQueryCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test text 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="test text 2"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="test text 2"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -107,15 +107,15 @@ class TestQueryCommand:
         ]
 
         doc1_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="doc1 text 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="doc1 text 2"),
-            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="doc1 text 3"),
-            Chunk(chunk_id=4, doc_uid="doc1", section_path="1.4", page_start="A4", page_end="A4", text="doc1 text 4"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="doc1 text 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="doc1 text 2"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="doc1 text 3"),
+            Chunk(id=4, doc_uid="doc1", chunk_number="1.4", page_start="A4", page_end="A4", text="doc1 text 4"),
         ]
         doc2_chunks = [
-            Chunk(chunk_id=10, doc_uid="doc2", section_path="2.1", page_start="B1", page_end="B1", text="doc2 text 1"),
-            Chunk(chunk_id=11, doc_uid="doc2", section_path="2.2", page_start="B2", page_end="B2", text="doc2 text 2"),
-            Chunk(chunk_id=12, doc_uid="doc2", section_path="2.3", page_start="B3", page_end="B3", text="doc2 text 3"),
+            Chunk(id=10, doc_uid="doc2", chunk_number="2.1", page_start="B1", page_end="B1", text="doc2 text 1"),
+            Chunk(id=11, doc_uid="doc2", chunk_number="2.2", page_start="B2", page_end="B2", text="doc2 text 2"),
+            Chunk(id=12, doc_uid="doc2", chunk_number="2.3", page_start="B3", page_end="B3", text="doc2 text 3"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -203,8 +203,8 @@ class TestQueryCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test text 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="test text 2"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="test text 2"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -237,8 +237,8 @@ class TestQueryCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test text 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="test text 2"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="test text 2"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -270,9 +270,9 @@ class TestQueryCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="chunk 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="chunk 2"),
-            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="chunk 3"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="chunk 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="chunk 2"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="chunk 3"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -306,9 +306,9 @@ class TestQueryCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="aa"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="bbb"),
-            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="cccc"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="aa"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="bbb"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="cccc"),
         ]
 
         chunk_store = InMemoryChunkStore()

@@ -21,6 +21,11 @@ def _example_chunks_path(slug: str) -> Path:
     return next(examples_dir.glob(f"*{slug}__CHUNKS.json"))
 
 
+def _example_sections_path(slug: str) -> Path:
+    examples_dir = Path(__file__).parent.parent.parent / "examples"
+    return next(examples_dir.glob(f"*{slug}__SECTIONS.json"))
+
+
 def _write_sidecar(sidecar_path: Path, canonical_url: str, title: str) -> None:
     sidecar_path.write_text(
         json.dumps(
@@ -42,27 +47,28 @@ class TestHtmlExtractor:
     """Tests for HTML extraction from IFRS captures."""
 
     @pytest.mark.parametrize(
-        ("slug", "expected_doc_uid", "expected_anchor"),
+        ("slug", "expected_doc_uid", "expected_chunk_id"),
         [
             ("ifrs9", "ifrs9", "IFRS09_2.4"),
             ("ifric16", "ifric16", "IFRIC16_1"),
         ],
     )
-    def test_extract_returns_document_metadata_and_expected_chunks(
+    def test_extract_returns_document_metadata_expected_chunks_and_sections(
         self,
         slug: str,
         expected_doc_uid: str,
-        expected_anchor: str,
+        expected_chunk_id: str,
         tmp_path: Path,
     ) -> None:
-        """Representative IFRS HTML files should parse into stable paragraph chunks."""
+        """Representative IFRS HTML files should parse into stable chunks and sections."""
         html_path = _example_html_path(slug)
         expected_chunks = json.loads(_example_chunks_path(slug).read_text(encoding="utf-8"))
+        expected_sections = json.loads(_example_sections_path(slug).read_text(encoding="utf-8"))
         sidecar_path = tmp_path / f"{slug}.json"
         html_text = html_path.read_text(encoding="utf-8")
-        canonical_prefix = "<link rel=\"canonical\"\n    href=\""
+        canonical_prefix = '<link rel="canonical"\n    href="'
         start = html_text.index(canonical_prefix) + len(canonical_prefix)
-        end = html_text.index("\">", start)
+        end = html_text.index('">', start)
         html_canonical_url = html_text[start:end]
         _write_sidecar(sidecar_path=sidecar_path, canonical_url=html_canonical_url, title=f"Title for {slug}")
 
@@ -74,15 +80,47 @@ class TestHtmlExtractor:
         assert extracted_document.document.source_type == "html"
         assert extracted_document.document.canonical_url == html_canonical_url
         assert extracted_document.chunks, "Expected at least one extracted HTML chunk"
+        assert extracted_document.sections, "Expected at least one extracted HTML section"
+        assert extracted_document.section_closure_rows, "Expected ancestor/descendant section rows"
 
-        chunks_by_section = {chunk.section_path: chunk for chunk in extracted_document.chunks}
+        chunks_by_number = {chunk.chunk_number: chunk for chunk in extracted_document.chunks}
         for expected in expected_chunks:
-            chunk = chunks_by_section.get(expected["section_path"])
-            assert chunk is not None, f"Missing chunk for section {expected['section_path']}"
+            chunk = chunks_by_number.get(expected["section_path"])
+            assert chunk is not None, f"Missing chunk for number {expected['section_path']}"
             assert _normalize(chunk.text) == _normalize(expected["text"])
+            assert chunk.containing_section_id == expected["section_id"]
 
-        matching_chunk = chunks_by_section[expected_chunks[0]["section_path"]]
-        assert matching_chunk.source_anchor == expected_anchor
+        matching_chunk = chunks_by_number[expected_chunks[0]["section_path"]]
+        assert matching_chunk.chunk_id == expected_chunk_id
+
+        sections_by_id = {section.section_id: section for section in extracted_document.sections}
+        for expected in expected_sections:
+            section = sections_by_id.get(expected["section_id"])
+            assert section is not None, f"Missing section {expected['section_id']}"
+            assert expected["section_name"] in section.title
+            assert section.embedding_text == section.title
+            assert section.parent_section_id == expected.get("section_parent_id")
+
+    def test_extract_builds_recursive_section_closure_rows(self, tmp_path: Path) -> None:
+        """Section closure rows should include recursive descendants for subtree expansion."""
+        html_path = _example_html_path("ifrs9")
+        sidecar_path = tmp_path / "ifrs9.json"
+        html_text = html_path.read_text(encoding="utf-8")
+        canonical_prefix = '<link rel="canonical"\n    href="'
+        start = html_text.index(canonical_prefix) + len(canonical_prefix)
+        end = html_text.index('">', start)
+        html_canonical_url = html_text[start:end]
+        _write_sidecar(sidecar_path=sidecar_path, canonical_url=html_canonical_url, title="IFRS 9")
+
+        extractor = HtmlExtractor(sidecar_path=sidecar_path)
+
+        extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+        closure_pairs = {(row.ancestor_section_id, row.descendant_section_id, row.depth) for row in extracted_document.section_closure_rows}
+
+        assert ("IFRS09_0054", "IFRS09_0054", 0) in closure_pairs
+        assert ("IFRS09_0054", "IFRS09_g3.1.1-3.1.2", 1) in closure_pairs
+        assert ("IFRS09_g3.1.1-3.1.2", "IFRS09_g3.1.1-3.1.2", 0) in closure_pairs
 
     def test_extract_rejects_mismatched_canonical_urls(self, tmp_path: Path) -> None:
         """The sidecar canonical URL must match the saved HTML canonical URL."""

@@ -1,0 +1,259 @@
+"""Title vector store for IFRS section-title retrieval."""
+# ruff: noqa: PLW0603
+
+from __future__ import annotations
+
+import hashlib
+import json
+import logging
+import os
+import re
+from pathlib import Path
+from typing import TYPE_CHECKING, Self
+
+import faiss
+import numpy as np
+from sentence_transformers import SentenceTransformer
+
+if TYPE_CHECKING:
+    from src.interfaces import TitleSearchResult
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+logging.getLogger("transformers").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
+
+EMBEDDING_MODEL = "BAAI/bge-m3"
+QUERY_EMBEDDING_CACHE_VERSION = "v1"
+QUERY_EMBEDDING_NDIM = 2
+
+_title_index_path: Path | None = None
+_title_id_map_path: Path | None = None
+
+
+def _default_title_index_path() -> Path:
+    return Path(__file__).parent.parent.parent / "data" / "index" / "faiss_titles.index"
+
+
+def get_title_index_path() -> Path:
+    """Return the persisted FAISS index path for title embeddings."""
+    global _title_index_path
+    if _title_index_path is None:
+        _title_index_path = _default_title_index_path()
+    _title_index_path.parent.mkdir(parents=True, exist_ok=True)
+    return _title_index_path
+
+
+def get_title_id_map_path() -> Path:
+    """Return the persisted id-map path for title embeddings."""
+    global _title_id_map_path, _title_index_path
+    if _title_id_map_path is None:
+        if _title_index_path is None:
+            _title_index_path = _default_title_index_path()
+        _title_id_map_path = _title_index_path.parent / "id_map_titles.json"
+    _title_id_map_path.parent.mkdir(parents=True, exist_ok=True)
+    return _title_id_map_path
+
+
+def _default_query_cache_dir() -> Path:
+    return Path(__file__).parent.parent.parent / "data" / "cache" / "query_embeddings"
+
+
+def _normalize_query_for_cache(query: str) -> str:
+    return query.strip()
+
+
+def _slugify_path_component(value: str) -> str:
+    lowered = value.lower()
+    return re.sub(r"[^a-z0-9._-]+", "_", lowered)
+
+
+class TitleVectorStore:
+    """Manage section-title embeddings using FAISS and SentenceTransformers."""
+
+    def __init__(
+        self,
+        index_path: Path | None = None,
+        id_map_path: Path | None = None,
+        query_cache_dir: Path | None = None,
+    ) -> None:
+        """Initialize the title vector store."""
+        self._index: faiss.Index | None = None
+        self._model: SentenceTransformer | None = None
+        self._id_map: dict[int, tuple[str, str]] = {}
+        self._index_path = index_path
+        self._id_map_path = id_map_path
+        self._query_cache_dir = query_cache_dir
+        self._added_doc_uids: set[str] = set()
+        self._deleted_doc_uids: set[str] = set()
+
+    def _resolve_index_path(self) -> Path:
+        return self._index_path or get_title_index_path()
+
+    def _resolve_id_map_path(self) -> Path:
+        return self._id_map_path or get_title_id_map_path()
+
+    def __enter__(self) -> Self:
+        """Load or create the FAISS index when entering the context manager."""
+        self._added_doc_uids.clear()
+        self._deleted_doc_uids.clear()
+        self._load_or_create_index()
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        """Persist the FAISS index when changes occurred in the context manager."""
+        if not self._has_persisted_changes():
+            logger.info("Skipping title FAISS index save because no documents were added or deleted")
+            return
+        self._save_index()
+
+    def _resolve_query_cache_dir(self) -> Path:
+        cache_dir = self._query_cache_dir or _default_query_cache_dir()
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
+
+    def _get_model(self) -> SentenceTransformer:
+        if self._model is None:
+            logger.info(f"Loading embedding model: {EMBEDDING_MODEL}")
+            self._model = SentenceTransformer(EMBEDDING_MODEL)
+        return self._model
+
+    def _has_persisted_changes(self) -> bool:
+        return bool(self._added_doc_uids or self._deleted_doc_uids)
+
+    def _load_or_create_index(self) -> None:
+        index_path = self._resolve_index_path()
+        id_map_path = self._resolve_id_map_path()
+
+        if index_path.exists() and id_map_path.exists():
+            logger.info(f"Loading existing title FAISS index from {index_path}")
+            self._index = faiss.read_index(str(index_path))
+            with id_map_path.open() as file_handle:
+                raw_id_map = json.load(file_handle)
+            self._id_map = {int(key): (value[0], value[1]) for key, value in raw_id_map.items()}
+            logger.info(f"Loaded title index with {self._index.ntotal} vectors")
+            return
+
+        logger.info("Creating new title FAISS index")
+        model = self._get_model()
+        dummy = model.encode("test")
+        self._index = faiss.IndexFlatIP(len(dummy))
+        self._id_map = {}
+
+    def _save_index(self) -> None:
+        if self._index is None:
+            return
+        index_path = self._resolve_index_path()
+        id_map_path = self._resolve_id_map_path()
+        logger.info(f"Saving title FAISS index to {index_path}")
+        faiss.write_index(self._index, str(index_path))
+        with id_map_path.open("w") as file_handle:
+            json.dump({str(key): list(value) for key, value in self._id_map.items()}, file_handle)
+        self._added_doc_uids.clear()
+        self._deleted_doc_uids.clear()
+        logger.info(f"Saved title index with {self._index.ntotal} vectors")
+
+    def _get_query_cache_path(self, query: str) -> Path:
+        normalized_query = _normalize_query_for_cache(query)
+        cache_key = f"{QUERY_EMBEDDING_CACHE_VERSION}:{EMBEDDING_MODEL}:{normalized_query}"
+        cache_key_hash = hashlib.sha256(cache_key.encode("utf-8")).hexdigest()
+        model_slug = _slugify_path_component(EMBEDDING_MODEL)
+        return self._resolve_query_cache_dir() / f"{model_slug}--{cache_key_hash}.npy"
+
+    def _load_cached_query_embedding(self, query: str) -> np.ndarray | None:
+        cache_path = self._get_query_cache_path(query)
+        if not cache_path.exists():
+            return None
+        try:
+            cached_embedding = np.load(cache_path, allow_pickle=False)
+        except (OSError, ValueError) as error:
+            logger.warning(f"Could not load cached query embedding from {cache_path}: {error}")
+            return None
+        if cached_embedding.ndim != QUERY_EMBEDDING_NDIM:
+            logger.warning(f"Ignoring cached query embedding with invalid shape {cached_embedding.shape} at {cache_path}")
+            return None
+        logger.info(f"Loaded cached query embedding from {cache_path}")
+        return cached_embedding.astype("float32")
+
+    def _save_query_embedding(self, query: str, query_embedding: np.ndarray) -> None:
+        cache_path = self._get_query_cache_path(query)
+        try:
+            np.save(cache_path, query_embedding)
+        except OSError as error:
+            logger.warning(f"Could not save query embedding cache to {cache_path}: {error}")
+            return
+        logger.info(f"Saved query embedding cache to {cache_path}")
+
+    def _get_query_embedding(self, query: str) -> np.ndarray:
+        cached_embedding = self._load_cached_query_embedding(query)
+        if cached_embedding is not None:
+            return cached_embedding
+        model = self._get_model()
+        query_embedding = model.encode([query]).astype("float32")
+        query_embedding = query_embedding / np.linalg.norm(query_embedding, axis=1, keepdims=True)
+        self._save_query_embedding(query, query_embedding)
+        return query_embedding
+
+    def add_embeddings(self, doc_uid: str, section_ids: list[str], texts: list[str]) -> None:
+        """Add title embeddings for one document to the FAISS index."""
+        if not texts:
+            return
+        model = self._get_model()
+        logger.info(f"Computing embeddings for {len(texts)} section titles")
+        embeddings = model.encode(texts, batch_size=4, show_progress_bar=True)
+        embeddings = embeddings.astype("float32")
+        embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+        start_id = self._index.ntotal  # type: ignore[union-attr]
+        self._index.add(embeddings)  # type: ignore[union-attr]
+        for index_offset, section_id in enumerate(section_ids):
+            self._id_map[start_id + index_offset] = (doc_uid, section_id)
+        self._added_doc_uids.add(doc_uid)
+        logger.info(f"Added {len(texts)} title embeddings to index for doc_uid={doc_uid}")
+
+    def search_all(self, query: str) -> list[TitleSearchResult]:
+        """Search across the full title index and return ranked results."""
+        if self._index is None or self._index.ntotal == 0:
+            logger.warning("Title index is empty, no results to return")
+            return []
+        return self._search_with_k(query, self._index.ntotal)
+
+    def _search_with_k(self, query: str, k: int) -> list[TitleSearchResult]:
+        query_embedding = self._get_query_embedding(query)
+        scores, indices = self._index.search(query_embedding, k)  # type: ignore[union-attr]
+        results: list[TitleSearchResult] = []
+        for score, idx in zip(scores[0], indices[0], strict=True):
+            if idx >= 0 and idx in self._id_map:
+                doc_uid, section_id = self._id_map[idx]
+                results.append({"doc_uid": doc_uid, "section_id": section_id, "score": float(score)})
+        return results
+
+    def delete_by_doc(self, doc_uid: str) -> int:
+        """Delete all title embeddings for a document."""
+        if self._index is None:
+            return 0
+        ids_to_delete = [idx for idx, (uid, _) in self._id_map.items() if uid == doc_uid]
+        if not ids_to_delete:
+            return 0
+        count = len(ids_to_delete)
+        if self._index.ntotal == count:
+            dimension = self._index.d
+            self._index = faiss.IndexFlatIP(dimension)
+            self._id_map = {}
+        else:
+            all_vectors = self._index.reconstruct_n(0, self._index.ntotal)  # type: ignore[union-attr]
+            new_vectors = []
+            new_id_map: dict[int, tuple[str, str]] = {}
+            new_idx = 0
+            for old_idx in range(self._index.ntotal):
+                if old_idx not in ids_to_delete:
+                    new_vectors.append(all_vectors[old_idx])
+                    new_id_map[new_idx] = self._id_map[old_idx]
+                    new_idx += 1
+            dimension = self._index.d
+            self._index = faiss.IndexFlatIP(dimension)
+            self._index.add(np.array(new_vectors).astype("float32"))  # type: ignore[union-attr]
+            self._id_map = new_id_map
+        self._deleted_doc_uids.add(doc_uid)
+        logger.info(f"Deleted {count} title embeddings for doc_uid={doc_uid}")
+        return count

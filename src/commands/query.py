@@ -80,8 +80,8 @@ def _include_full_document(
         if full_doc_threshold > 0 and doc_text_size < full_doc_threshold:
             full_doc_docs.add(doc_uid)
             for document_chunk in chunks:
-                if document_chunk.chunk_id is not None:
-                    selected_ids_by_doc[doc_uid].add(document_chunk.chunk_id)
+                if document_chunk.id is not None:
+                    selected_ids_by_doc[doc_uid].add(document_chunk.id)
 
     return full_doc_docs
 
@@ -101,14 +101,14 @@ def _expand_with_neighbour_chunks(
         chunks = doc_chunks.get(doc_uid, [])
 
         for idx, chunk in enumerate(chunks):
-            if chunk.chunk_id == chunk_id:
+            if chunk.id == chunk_id:
                 start_idx = max(0, idx - expand)
                 end_idx = min(len(chunks), idx + expand + 1)
                 for surrounding_chunk in chunks[start_idx:end_idx]:
-                    if surrounding_chunk.chunk_id is not None:
-                        selected_ids_by_doc[doc_uid].add(surrounding_chunk.chunk_id)
-                        if surrounding_chunk.chunk_id != chunk_id:
-                            expanded_via_neighbours.add((doc_uid, surrounding_chunk.chunk_id))
+                    if surrounding_chunk.id is not None:
+                        selected_ids_by_doc[doc_uid].add(surrounding_chunk.id)
+                        if surrounding_chunk.id != chunk_id:
+                            expanded_via_neighbours.add((doc_uid, surrounding_chunk.id))
                 break
 
     return expanded_via_neighbours
@@ -124,7 +124,7 @@ def _build_expanded_results(
     expanded_results: list[SearchResult] = []
     for doc_uid in doc_order:
         for chunk in doc_chunks.get(doc_uid, []):
-            chunk_id = chunk.chunk_id
+            chunk_id = chunk.id
             if chunk_id is None:
                 continue
             if chunk_id not in selected_ids_by_doc.get(doc_uid, set()):
@@ -325,13 +325,15 @@ class QueryCommand:
             score = result["score"]
 
             for chunk in doc_chunks.get(doc_uid, []):
-                if chunk.chunk_id == chunk_id:
+                if chunk.id == chunk_id:
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     chunks_output.append(
                         {
-                            "id": chunk.chunk_id,
+                            "id": chunk.id,
                             "doc_uid": chunk.doc_uid,
-                            "section_path": chunk.section_path,
+                            "chunk_number": chunk.chunk_number,
+                            "chunk_id": chunk.chunk_id,
+                            "containing_section_id": chunk.containing_section_id,
                             "page_start": chunk.page_start,
                             "page_end": chunk.page_end,
                             "text": chunk.text,
@@ -351,11 +353,11 @@ class QueryCommand:
             score = result["score"]
 
             for chunk in doc_chunks.get(doc_uid, []):
-                if chunk.chunk_id == chunk_id:
+                if chunk.id == chunk_id:
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
                     output_lines.append(f"Document: {chunk.doc_uid}")
-                    output_lines.append(f"Section: {chunk.section_path}")
+                    output_lines.append(f"Chunk number: {chunk.chunk_number}")
                     output_lines.append(f"Page: {chunk.page_start}-{chunk.page_end}")
                     snippet = chunk.text[:200].replace("\n", " ")
                     output_lines.append(f"Snippet: {snippet}...")

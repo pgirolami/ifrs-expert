@@ -11,7 +11,8 @@ from src.commands.store import MAX_CHUNK_CHARS, StoreCommand, StoreDependencies
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
-from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, RecordingVectorStore
+from src.models.section import SectionClosureRow, SectionRecord
+from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, InMemorySectionStore, RecordingVectorStore, RecordingTitleVectorStore
 
 
 @dataclass
@@ -51,7 +52,7 @@ class TestStoreCommand:
                 chunks=[
                     Chunk(
                         doc_uid="ifrs9",
-                        section_path="1.1",
+                        chunk_number="1.1",
                         page_start="A1",
                         page_end="A1",
                         text="test content",
@@ -97,10 +98,10 @@ class TestStoreCommand:
 
         existing_chunk = Chunk(
             doc_uid="ifrs9",
-            section_path="2.4",
+            chunk_number="2.4",
             page_start="",
             page_end="",
-            source_anchor="IFRS09_2.4",
+            chunk_id="IFRS09_2.4",
             text="existing content",
         )
         chunk_store.insert_chunks([existing_chunk])
@@ -128,10 +129,10 @@ class TestStoreCommand:
                 chunks=[
                     Chunk(
                         doc_uid="ifrs9",
-                        section_path="2.4",
+                        chunk_number="2.4",
                         page_start="",
                         page_end="",
-                        source_anchor="IFRS09_2.4",
+                        chunk_id="IFRS09_2.4",
                         text="existing content",
                     )
                 ],
@@ -180,7 +181,7 @@ class TestStoreCommand:
                 chunks=[
                     Chunk(
                         doc_uid="ifrs16",
-                        section_path="B43",
+                        chunk_number="B43",
                         page_start="A856",
                         page_end="A856",
                         text="x" * (MAX_CHUNK_CHARS + 20),
@@ -242,6 +243,87 @@ class TestStoreCommand:
 
         assert result.startswith("Error:")
         assert "not found" in result
+
+    def test_store_command_stores_sections_and_title_embeddings(self, tmp_path: Path) -> None:
+        """Store command should persist sections and leaf-title embeddings."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/ifrs9.html",
+                    canonical_url="https://www.ifrs.org/ifrs9.html",
+                    captured_at="2026-04-04T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="3.1.1",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_3.1.1",
+                        containing_section_id="IFRS09_g3.1.1-3.1.2",
+                        text="test content",
+                    )
+                ],
+                sections=[
+                    SectionRecord(
+                        section_id="IFRS09_0054",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Recognition and derecognition",
+                        section_lineage=["Recognition and derecognition"],
+                        embedding_text="Recognition and derecognition",
+                        position=1,
+                    ),
+                    SectionRecord(
+                        section_id="IFRS09_g3.1.1-3.1.2",
+                        doc_uid="ifrs9",
+                        parent_section_id="IFRS09_0054",
+                        level=3,
+                        title="Initial recognition",
+                        section_lineage=["Recognition and derecognition", "Initial recognition"],
+                        embedding_text="Initial recognition",
+                        position=2,
+                    ),
+                ],
+                section_closure_rows=[
+                    SectionClosureRow("IFRS09_0054", "IFRS09_0054", 0),
+                    SectionClosureRow("IFRS09_0054", "IFRS09_g3.1.1-3.1.2", 1),
+                    SectionClosureRow("IFRS09_g3.1.1-3.1.2", "IFRS09_g3.1.1-3.1.2", 0),
+                ],
+            )
+        )
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        section_store = InMemorySectionStore()
+        vector_store = RecordingVectorStore()
+        title_vector_store = RecordingTitleVectorStore()
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            section_store=section_store,
+            vector_store=vector_store,
+            title_vector_store=title_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        assert [section.section_id for section in section_store.get_sections_by_doc("ifrs9")] == ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"]
+        assert title_vector_store.added_embeddings == [("ifrs9", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"], ["Recognition and derecognition", "Initial recognition"])]
 
     def test_store_command_requires_dependencies(self, tmp_path: Path) -> None:
         """The constructor should keep dependency injection explicit."""

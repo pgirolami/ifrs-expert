@@ -4,5 +4,14 @@ from src.models.answer_command_result import AnswerCommandResult, JSONValue
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
+from src.models.section import SectionClosureRow, SectionRecord
 
-__all__ = ["AnswerCommandResult", "Chunk", "DocumentRecord", "ExtractedDocument", "JSONValue"]
+__all__ = [
+    "AnswerCommandResult",
+    "Chunk",
+    "DocumentRecord",
+    "ExtractedDocument",
+    "JSONValue",
+    "SectionClosureRow",
+    "SectionRecord",
+]

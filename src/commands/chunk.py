@@ -24,7 +24,8 @@ class ChunkCommand:
             return json.dumps(
                 [
                     {
-                        "section_path": c.section_path,
+                        "chunk_number": c.chunk_number,
+                        "chunk_id": c.chunk_id,
                         "page_start": c.page_start,
                         "page_end": c.page_end,
                         "text": c.text,

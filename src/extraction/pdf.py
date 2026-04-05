@@ -543,9 +543,10 @@ def extract_chunks(pdf_path: Path) -> list[Chunk]:
 
         results.append(
             Chunk(
-                section_path=section["number"],
+                chunk_number=section["number"],
                 page_start=page_start,
                 page_end=page_end,
+                chunk_id="",
                 text=text,
             ),
         )

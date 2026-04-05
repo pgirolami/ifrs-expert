@@ -20,7 +20,7 @@ class TestChunkCommand:
         # Mock the extract_chunks function
         with patch("src.commands.chunk.extract_chunks") as mock_extract:
             mock_extract.return_value = [
-                Chunk(section_path="1.1", page_start="A1", page_end="A1", text="test content")
+                Chunk(chunk_number="1.1", page_start="A1", page_end="A1", text="test content")
             ]
 
             command = ChunkCommand(pdf_path=pdf_path)

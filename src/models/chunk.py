@@ -9,10 +9,29 @@ from dataclasses import dataclass
 class Chunk:
     """Represents a structure-aware document chunk."""
 
-    chunk_id: int | None = None
+    id: int | None = None
     doc_uid: str = ""
-    section_path: str = ""
+    chunk_number: str = ""
     page_start: str = ""
     page_end: str = ""
-    source_anchor: str = ""
+    chunk_id: str = ""
     text: str = ""
+    containing_section_id: str | None = None
+
+    @property
+    def section_path(self) -> str:
+        """Backward-compatible alias for chunk_number during migration."""
+        return self.chunk_number
+
+    @section_path.setter
+    def section_path(self, value: str) -> None:
+        self.chunk_number = value
+
+    @property
+    def source_anchor(self) -> str:
+        """Backward-compatible alias for chunk_id during migration."""
+        return self.chunk_id
+
+    @source_anchor.setter
+    def source_anchor(self, value: str) -> None:
+        self.chunk_id = value

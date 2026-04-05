@@ -9,7 +9,8 @@ from typing import cast
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
 from src.interfaces import SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
-from tests.fakes import InMemoryChunkStore
+from src.models.section import SectionRecord
+from tests.fakes import InMemoryChunkStore, InMemorySectionStore
 
 VALID_PROMPT_B_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
@@ -94,8 +95,8 @@ class TestAnswerCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="This is the introduction section."),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="This standard applies to all entities."),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="This is the introduction section."),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="This standard applies to all entities."),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -119,9 +120,12 @@ class TestAnswerCommand:
         )
         command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(k=5))
 
-        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), unittest.mock.patch(
-            "src.commands.answer._read_prompt_template",
-        ) as mock_read_template:
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch(
+                "src.commands.answer._read_prompt_template",
+            ) as mock_read_template,
+        ):
             mock_read_template.side_effect = lambda path: "You are an IFRS expert.\n\nContext:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
 
             result = command.execute()
@@ -162,8 +166,8 @@ class TestAnswerCommand:
         ]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="high relevance content"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="low relevance content"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="high relevance content"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="low relevance content"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -200,9 +204,9 @@ class TestAnswerCommand:
         search_results = [{"doc_uid": "doc1", "chunk_id": 2, "score": 0.9}]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="chunk 1"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="chunk 2"),
-            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="chunk 3"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="chunk 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="chunk 2"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="chunk 3"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -241,9 +245,9 @@ class TestAnswerCommand:
         search_results = [{"doc_uid": "doc1", "chunk_id": 2, "score": 0.9}]
 
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="aa"),
-            Chunk(chunk_id=2, doc_uid="doc1", section_path="1.2", page_start="A2", page_end="A2", text="bbb"),
-            Chunk(chunk_id=3, doc_uid="doc1", section_path="1.3", page_start="A3", page_end="A3", text="cccc"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="aa"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="bbb"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="cccc"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -267,9 +271,12 @@ class TestAnswerCommand:
         )
         command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, full_doc_threshold=10))
 
-        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True), unittest.mock.patch(
-            "src.commands.answer._read_prompt_template",
-        ) as mock_read_template:
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch(
+                "src.commands.answer._read_prompt_template",
+            ) as mock_read_template,
+        ):
             mock_read_template.side_effect = lambda path: "Context:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
 
             result = command.execute()
@@ -288,7 +295,7 @@ class TestAnswerCommand:
 
         unique_chunk_text = "UNIQUE_MARKER_12345_CONTEXT_CONTENT"
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -328,7 +335,7 @@ class TestAnswerCommand:
 
         unique_chunk_text = "UNIQUE_MARKER_67890_CONTEXT_FOR_PROMPT_B"
         mock_chunks = [
-            Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text=unique_chunk_text),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -359,3 +366,84 @@ class TestAnswerCommand:
         assert len(captured_prompts) == 2
         prompt_b = captured_prompts[1]
         assert unique_chunk_text in prompt_b, "Prompt B should contain the chunk context"
+
+    def test_answer_titles_mode_expands_matched_section_to_descendant_chunks(self) -> None:
+        """Title retrieval mode should include all descendant chunks of a matched section."""
+        search_results = [{"doc_uid": "ifrs9", "section_id": "IFRS09_0054", "score": 0.92}]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="3.0", chunk_id="IFRS09_3.0", containing_section_id="IFRS09_0054", text="chapter text"),
+                    Chunk(id=2, doc_uid="ifrs9", chunk_number="3.1.1", chunk_id="IFRS09_3.1.1", containing_section_id="IFRS09_g3.1.1-3.1.2", text="initial recognition text"),
+                ]
+            )
+
+        section_store = InMemorySectionStore()
+        with section_store as store:
+            store.insert_sections(
+                [
+                    SectionRecord(
+                        section_id="IFRS09_0054",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Recognition and derecognition",
+                        section_lineage=["Recognition and derecognition"],
+                        embedding_text="Recognition and derecognition",
+                        position=1,
+                    ),
+                    SectionRecord(
+                        section_id="IFRS09_g3.1.1-3.1.2",
+                        doc_uid="ifrs9",
+                        parent_section_id="IFRS09_0054",
+                        level=3,
+                        title="Initial recognition",
+                        section_lineage=["Recognition and derecognition", "Initial recognition"],
+                        embedding_text="Initial recognition",
+                        position=2,
+                    ),
+                ]
+            )
+            store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"])
+
+        captured_prompts: list[str] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=chunk_store,
+            section_store=section_store,
+            title_vector_store=MockVectorStore(search_results),
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            title_index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="initial recognition",
+            config=config,
+            options=AnswerOptions(k=5, retrieval_mode="titles"),
+        )
+
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch(
+                "src.commands.answer._read_prompt_template",
+            ) as mock_read_template,
+        ):
+            mock_read_template.side_effect = lambda path: "Context:\n{{CHUNKS}}\n\nQuestion: {{QUERY}}\n\nAnswer:"
+
+            result = command.execute()
+
+        assert result.success is True
+        assert captured_prompts
+        prompt_a = captured_prompts[0]
+        assert "chapter text" in prompt_a
+        assert "initial recognition text" in prompt_a

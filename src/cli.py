@@ -11,9 +11,10 @@ from typing import TYPE_CHECKING
 from dotenv import load_dotenv
 
 from src.answer_artifacts import save_answer_command_result
-from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryOptions
+from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryOptions, QueryTitlesOptions
 from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
+from src.commands.query_titles import create_query_titles_command
 from src.commands.store import create_store_command
 from src.logging_config import setup_logging
 
@@ -104,6 +105,29 @@ def main() -> int:
         help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
     )
 
+    query_titles_parser = subparsers.add_parser(
+        "query-titles",
+        help="Search for similar section titles (reads query from stdin)",
+    )
+    query_titles_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=5,
+        help="Number of results to return (default: 5)",
+    )
+    query_titles_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output results as JSON (default is verbose text)",
+    )
+    query_titles_parser.add_argument(
+        "--min-score",
+        type=float,
+        default=None,
+        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.6.",
+    )
+
     answer_parser = subparsers.add_parser(
         "answer",
         help="Search for chunks and embed them into a prompt template (reads query from stdin)",
@@ -134,6 +158,12 @@ def main() -> int:
         type=float,
         default=None,
         help="Minimum relevance score (-1 to 1). Results below this are excluded. Default: 0.6.",
+    )
+    answer_parser.add_argument(
+        "--retrieval-mode",
+        choices=["text", "titles"],
+        default="text",
+        help="Retrieval mode to use before prompting the LLM (default: text)",
     )
     answer_parser.add_argument(
         "--output-dir",
@@ -199,6 +229,18 @@ def _execute_command(args: argparse.Namespace) -> str:
             ),
         )
         result = command.execute()
+    elif args.command == "query-titles":
+        query = sys.stdin.read().strip()
+        verbose = not getattr(args, "json", False)
+        command = create_query_titles_command(
+            query=query,
+            options=QueryTitlesOptions(
+                k=args.k,
+                min_score=args.min_score,
+                verbose=verbose,
+            ),
+        )
+        result = command.execute()
     elif args.command == "answer":
         result = _execute_answer_command(args)
     else:
@@ -223,6 +265,7 @@ def _execute_answer_command(args: argparse.Namespace) -> str:
             full_doc_threshold=args.full_doc_threshold,
             output_dir=args.output_dir,
             save_all=args.save_all,
+            retrieval_mode=args.retrieval_mode,
         ),
     )
     result = command.execute()

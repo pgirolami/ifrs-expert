@@ -28,35 +28,36 @@ class ChunkStore:
         self._conn.close()
 
     def insert_chunk(self, chunk: Chunk) -> int:
-        """Insert a chunk into the database and return its database ID."""
+        """Insert a chunk into the database and return its database row id."""
         cursor = self._conn.execute(
             """
-            INSERT INTO chunks (doc_uid, section_path, page_start, page_end, source_anchor, text)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO chunks (doc_uid, chunk_number, page_start, page_end, chunk_id, text, containing_section_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 chunk.doc_uid,
-                chunk.section_path,
+                chunk.chunk_number,
                 chunk.page_start,
                 chunk.page_end,
-                chunk.source_anchor,
+                chunk.chunk_id,
                 chunk.text,
+                chunk.containing_section_id,
             ),
         )
         self._conn.commit()
-        chunk_id = cursor.lastrowid
-        if chunk_id is None:
+        row_id = cursor.lastrowid
+        if row_id is None:
             msg = "SQLite did not return a lastrowid for inserted chunk"
             raise sqlite3.OperationalError(msg)
-        return chunk_id
+        return row_id
 
     def insert_chunks(self, chunks: list[Chunk]) -> list[int]:
-        """Insert multiple chunks and update their chunk_id values."""
+        """Insert multiple chunks and update their row ids."""
         ids: list[int] = []
         for chunk in chunks:
-            chunk_id = self.insert_chunk(chunk)
-            chunk.chunk_id = chunk_id
-            ids.append(chunk_id)
+            row_id = self.insert_chunk(chunk)
+            chunk.id = row_id
+            ids.append(row_id)
         logger.info(f"Inserted {len(ids)} chunks into database")
         return ids
 
@@ -64,7 +65,7 @@ class ChunkStore:
         """Get all chunks for a document."""
         rows = self._conn.execute(
             """
-            SELECT id, doc_uid, section_path, page_start, page_end, source_anchor, text
+            SELECT id, doc_uid, chunk_number, page_start, page_end, chunk_id, text, containing_section_id
             FROM chunks
             WHERE doc_uid = ?
             ORDER BY id
@@ -74,13 +75,14 @@ class ChunkStore:
 
         return [
             Chunk(
-                chunk_id=row["id"],
+                id=row["id"],
                 doc_uid=row["doc_uid"],
-                section_path=row["section_path"],
+                chunk_number=row["chunk_number"],
                 page_start=row["page_start"],
                 page_end=row["page_end"],
-                source_anchor=row["source_anchor"],
+                chunk_id=row["chunk_id"],
                 text=row["text"],
+                containing_section_id=row["containing_section_id"],
             )
             for row in rows
         ]

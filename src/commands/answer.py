@@ -15,15 +15,17 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE,
     DEFAULT_RETRIEVAL_K,
 )
-from src.db import ChunkStore, init_db
+from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
+from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 from src.vector.store import VectorStore, get_index_path
+from src.vector.title_store import TitleVectorStore, get_title_index_path
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
+    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
@@ -42,6 +44,9 @@ class AnswerConfig:
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
     send_to_llm_fn: Callable[[str], str]
+    section_store: ReadSectionStoreProtocol | None = None
+    title_vector_store: SearchTitleVectorStoreProtocol | None = None
+    title_index_path_fn: Callable[[], Path] | None = None
 
 
 @dataclass
@@ -54,6 +59,7 @@ class AnswerOptions:
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     output_dir: Path | None = None
     save_all: bool = False
+    retrieval_mode: str = "text"
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
@@ -92,8 +98,8 @@ def _include_full_document(
         if full_doc_threshold > 0 and doc_text_size < full_doc_threshold:
             full_doc_docs.add(doc_uid)
             for document_chunk in chunks:
-                if document_chunk.chunk_id is not None:
-                    selected_ids_by_doc[doc_uid].add(document_chunk.chunk_id)
+                if document_chunk.id is not None:
+                    selected_ids_by_doc[doc_uid].add(document_chunk.id)
 
     return full_doc_docs
 
@@ -113,14 +119,14 @@ def _expand_with_neighbour_chunks(
         chunks = doc_chunks.get(doc_uid, [])
 
         for idx, chunk in enumerate(chunks):
-            if chunk.chunk_id == chunk_id:
+            if chunk.id == chunk_id:
                 start_idx = max(0, idx - expand)
                 end_idx = min(len(chunks), idx + expand + 1)
                 for surrounding_chunk in chunks[start_idx:end_idx]:
-                    if surrounding_chunk.chunk_id is not None:
-                        selected_ids_by_doc[doc_uid].add(surrounding_chunk.chunk_id)
-                        if surrounding_chunk.chunk_id != chunk_id:
-                            expanded_via_neighbours.add((doc_uid, surrounding_chunk.chunk_id))
+                    if surrounding_chunk.id is not None:
+                        selected_ids_by_doc[doc_uid].add(surrounding_chunk.id)
+                        if surrounding_chunk.id != chunk_id:
+                            expanded_via_neighbours.add((doc_uid, surrounding_chunk.id))
                 break
 
     return expanded_via_neighbours
@@ -136,7 +142,7 @@ def _build_expanded_results(
     expanded_results: list[SearchResult] = []
     for doc_uid in doc_order:
         for chunk in doc_chunks.get(doc_uid, []):
-            chunk_id = chunk.chunk_id
+            chunk_id = chunk.id
             if chunk_id is None:
                 continue
             if chunk_id not in selected_ids_by_doc.get(doc_uid, set()):
@@ -202,6 +208,7 @@ class AnswerCommand:
         self.min_score = options.min_score if options and options.min_score is not None else DEFAULT_MIN_SCORE
         self.expand = options.expand if options else DEFAULT_EXPAND
         self.full_doc_threshold = options.full_doc_threshold if options else DEFAULT_FULL_DOC_THRESHOLD
+        self.retrieval_mode = options.retrieval_mode if options else "text"
 
         self._retrieved_doc_uids: list[str] = []
         self._config = config
@@ -232,16 +239,18 @@ class AnswerCommand:
             return "Error: expand must be >= 0"
         if self.full_doc_threshold < 0:
             return "Error: full_doc_threshold must be >= 0"
+        if self.retrieval_mode not in {"text", "titles"}:
+            return "Error: retrieval_mode must be 'text' or 'titles'"
         return None
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
-        if not _prompt_file_exists(PROMPT_A_PATH):
-            logger.error(f"Missing Prompt A template at {PROMPT_A_PATH}")
-            return "Error: Prompt A template not found."
-        if not _prompt_file_exists(PROMPT_B_PATH):
-            logger.error(f"Missing Prompt B template at {PROMPT_B_PATH}")
-            return "Error: Prompt B template not found."
+        prompt_error = self._get_prompt_template_error()
+        if prompt_error is not None:
+            return prompt_error
+
+        if self.retrieval_mode == "titles":
+            return self._get_title_prerequisite_error()
 
         index_path = self._config.index_path_fn()
         if not index_path.exists():
@@ -249,8 +258,31 @@ class AnswerCommand:
             return "Error: No index found. Please run 'store' command first."
         return None
 
+    def _get_prompt_template_error(self) -> str | None:
+        """Validate that both prompt templates are available."""
+        if not _prompt_file_exists(PROMPT_A_PATH):
+            logger.error(f"Missing Prompt A template at {PROMPT_A_PATH}")
+            return "Error: Prompt A template not found."
+        if not _prompt_file_exists(PROMPT_B_PATH):
+            logger.error(f"Missing Prompt B template at {PROMPT_B_PATH}")
+            return "Error: Prompt B template not found."
+        return None
+
+    def _get_title_prerequisite_error(self) -> str | None:
+        """Validate the prerequisites for title retrieval mode."""
+        if self._config.title_index_path_fn is None:
+            return "Error: Title retrieval is not configured."
+        title_index_path = self._config.title_index_path_fn()
+        if not title_index_path.exists():
+            logger.error(f"Missing title vector index at {title_index_path}; corpus must be built before running the answer pipeline")
+            return "Error: No title index found. Please run 'store' command first."
+        return None
+
     def _execute_workflow(self) -> AnswerCommandResult:
         """Execute the main workflow."""
+        if self.retrieval_mode == "titles":
+            return self._execute_title_workflow()
+
         ranked_results = self._search_chunks()
         if not ranked_results:
             return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
@@ -267,6 +299,43 @@ class AnswerCommand:
 
         if self.expand > 0 or self.full_doc_threshold > 0:
             selected_results = self._expand_chunks(selected_results, doc_chunks)
+
+        result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
+        return self._process_prompts(result, selected_results, doc_chunks)
+
+    def _execute_title_workflow(self) -> AnswerCommandResult:
+        """Execute title retrieval and expand matched sections to descendant chunks."""
+        if self._config.section_store is None or self._config.title_vector_store is None or self._config.title_index_path_fn is None:
+            return AnswerCommandResult.failure(query=self.query, error="Error: Title retrieval is not configured.", error_stage="retrieval")
+
+        error, hits = retrieve_title_hits(
+            query=self.query,
+            config=TitleRetrievalConfig(
+                title_vector_store=self._config.title_vector_store,
+                section_store=self._config.section_store,
+                chunk_store=self._config.chunk_store,
+                init_db_fn=self._config.init_db_fn,
+                index_path_fn=self._config.title_index_path_fn,
+            ),
+            options=TitleRetrievalOptions(k=self.k, min_score=self.min_score),
+        )
+        if error is not None:
+            return AnswerCommandResult.failure(query=self.query, error=error, error_stage="retrieval")
+
+        selected_chunks = flatten_title_hits(hits)
+        if not selected_chunks:
+            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
+
+        self._retrieved_doc_uids = list(dict.fromkeys(chunk.doc_uid for chunk in selected_chunks))
+        doc_chunks: dict[str, list[Chunk]] = {}
+        selected_results: list[SearchResult] = []
+        for doc_uid in self._retrieved_doc_uids:
+            chunks_for_doc = sorted((chunk for chunk in selected_chunks if chunk.doc_uid == doc_uid), key=lambda chunk: chunk.id or 0)
+            doc_chunks[doc_uid] = chunks_for_doc
+            for chunk in chunks_for_doc:
+                if chunk.id is None:
+                    continue
+                selected_results.append({"doc_uid": doc_uid, "chunk_id": chunk.id, "score": 0.0})
 
         result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
         return self._process_prompts(result, selected_results, doc_chunks)
@@ -447,14 +516,14 @@ class AnswerCommand:
         for doc_uid in doc_order:
             formatted_chunks: list[str] = []
             for chunk in doc_chunks.get(doc_uid, []):
-                chunk_id = chunk.chunk_id
+                chunk_id = chunk.id
                 if chunk_id is None:
                     continue
                 if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
                     continue
 
                 score = score_by_chunk.get((doc_uid, chunk_id), 0.0)
-                chunk_xml = f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" section_path="{self._escape_xml(chunk.section_path)}" score="{score:.4f}">\n{chunk.text}\n</chunk>'
+                chunk_xml = f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" chunk_number="{self._escape_xml(chunk.chunk_number)}" score="{score:.4f}">\n{chunk.text}\n</chunk>'
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
@@ -487,12 +556,12 @@ class AnswerCommand:
             seen_sections: set[str] = set()
             ordered_sections: list[str] = []
             for chunk in doc_chunks.get(doc_uid, []):
-                chunk_id = chunk.chunk_id
+                chunk_id = chunk.id
                 if chunk_id is None:
                     continue
                 if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
                     continue
-                section_label = chunk.section_path or f"chunk {chunk_id}"
+                section_label = chunk.chunk_number or f"chunk {chunk_id}"
                 if section_label in seen_sections:
                     continue
                 seen_sections.add(section_label)
@@ -539,5 +608,8 @@ def create_answer_command(
         init_db_fn=init_db,
         index_path_fn=get_index_path,
         send_to_llm_fn=_default_send_to_llm,
+        section_store=SectionStore(),
+        title_vector_store=TitleVectorStore(),
+        title_index_path_fn=get_title_index_path,
     )
     return AnswerCommand(query=query, config=config, options=options)

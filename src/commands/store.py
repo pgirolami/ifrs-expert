@@ -7,15 +7,18 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.db import ChunkStore, DocumentStore, init_db
+from src.db import ChunkStore, DocumentStore, SectionStore, init_db
 from src.extraction import HtmlExtractor, PdfExtractor
-from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ExtractorProtocol, VectorStoreProtocol
+from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ExtractorProtocol, SectionStoreProtocol, TitleVectorStoreProtocol, VectorStoreProtocol
 from src.vector.store import VectorStore
+from src.vector.title_store import TitleVectorStore
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from src.models.chunk import Chunk
+    from src.models.extraction import ExtractedDocument
+    from src.models.section import SectionRecord
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +26,9 @@ MAX_CHUNK_CHARS = 8000
 
 StoreChunkStore = ChunkStoreProtocol
 StoreDocumentStore = DocumentStoreProtocol
+StoreSectionStore = SectionStoreProtocol
 StoreVectorStore = VectorStoreProtocol
+StoreTitleVectorStore = TitleVectorStoreProtocol
 StoreInitDb = Callable[[], None]
 
 
@@ -35,6 +40,8 @@ class StoreDependencies:
     document_store: StoreDocumentStore
     vector_store: StoreVectorStore
     init_db_fn: StoreInitDb
+    section_store: StoreSectionStore | None = None
+    title_vector_store: StoreTitleVectorStore | None = None
 
 
 @dataclass
@@ -100,41 +107,16 @@ class StoreCommand:
 
             self._truncate_oversized_chunks(chunks)
 
-            with self._dependencies.chunk_store as chunk_store:
-                existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
-                if self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks):
-                    logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
-                    return StoreCommandResult(
-                        status="skipped",
-                        doc_uid=doc_uid,
-                        chunk_count=len(chunks),
-                        embedding_count=0,
-                        reason="unchanged content",
-                    )
+            skip_result = self._store_chunks(doc_uid=doc_uid, chunks=chunks, sections=extracted_document.sections)
+            if skip_result is not None:
+                return skip_result
 
-                if existing_chunks:
-                    logger.info(f"Replacing {len(existing_chunks)} existing chunks for {doc_uid}")
-                    chunk_store.delete_chunks_by_doc(doc_uid)
-
-                chunk_store.insert_chunks(chunks)
-                logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
-
+            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
             with self._dependencies.document_store as document_store:
                 document_store.upsert_document(extracted_document.document)
 
-            embeddings_stored = 0
-            with self._dependencies.vector_store as vector_store:
-                deleted = vector_store.delete_by_doc(doc_uid)
-                if deleted > 0:
-                    logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
-
-                chunks_with_ids = [chunk for chunk in chunks if chunk.chunk_id is not None]
-                if chunks_with_ids:
-                    chunk_ids = [chunk.chunk_id for chunk in chunks_with_ids if chunk.chunk_id is not None]
-                    texts = [chunk.text for chunk in chunks_with_ids]
-                    vector_store.add_embeddings(doc_uid, chunk_ids, texts)
-                    embeddings_stored = len(texts)
-                    logger.info(f"Stored {embeddings_stored} embeddings for doc_uid={doc_uid}")
+            embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
+            self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
 
             return StoreCommandResult(
                 status="stored",
@@ -152,6 +134,71 @@ class StoreCommand:
                 reason=str(error),
             )
 
+    def _store_chunks(self, doc_uid: str, chunks: list[Chunk], sections: list[SectionRecord]) -> StoreCommandResult | None:
+        with self._dependencies.chunk_store as chunk_store:
+            existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
+            existing_sections = self._get_existing_sections(doc_uid)
+            should_skip = self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks) and self._section_payloads_match(existing_sections, sections)
+            if should_skip:
+                logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
+                return StoreCommandResult(
+                    status="skipped",
+                    doc_uid=doc_uid,
+                    chunk_count=len(chunks),
+                    embedding_count=0,
+                    reason="unchanged content",
+                )
+
+            if existing_chunks:
+                logger.info(f"Replacing {len(existing_chunks)} existing chunks for {doc_uid}")
+                chunk_store.delete_chunks_by_doc(doc_uid)
+
+            chunk_store.insert_chunks(chunks)
+            logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
+        return None
+
+    def _store_sections(self, doc_uid: str, extracted_document: ExtractedDocument) -> None:
+        if self._dependencies.section_store is None:
+            return
+        with self._dependencies.section_store as section_store:
+            deleted_sections = section_store.delete_sections_by_doc(doc_uid)
+            if deleted_sections > 0:
+                logger.info(f"Deleted {deleted_sections} existing sections for {doc_uid}")
+            section_store.insert_sections(extracted_document.sections)
+            section_store.insert_closure_rows(extracted_document.section_closure_rows)
+            logger.info(f"Stored {len(extracted_document.sections)} sections with doc_uid={doc_uid}")
+
+    def _store_chunk_embeddings(self, doc_uid: str, chunks: list[Chunk]) -> int:
+        embeddings_stored = 0
+        with self._dependencies.vector_store as vector_store:
+            deleted = vector_store.delete_by_doc(doc_uid)
+            if deleted > 0:
+                logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
+
+            chunks_with_ids = [chunk for chunk in chunks if chunk.id is not None]
+            if chunks_with_ids:
+                chunk_ids = [chunk.id for chunk in chunks_with_ids if chunk.id is not None]
+                texts = [chunk.text for chunk in chunks_with_ids]
+                vector_store.add_embeddings(doc_uid, chunk_ids, texts)
+                embeddings_stored = len(texts)
+                logger.info(f"Stored {embeddings_stored} embeddings for doc_uid={doc_uid}")
+        return embeddings_stored
+
+    def _store_title_embeddings(self, doc_uid: str, sections: list[SectionRecord]) -> None:
+        if self._dependencies.title_vector_store is None:
+            return
+        with self._dependencies.title_vector_store as title_vector_store:
+            deleted_titles = title_vector_store.delete_by_doc(doc_uid)
+            if deleted_titles > 0:
+                logger.info(f"Deleted {deleted_titles} existing title embeddings for {doc_uid}")
+            if sections:
+                title_vector_store.add_embeddings(
+                    doc_uid,
+                    [section.section_id for section in sections],
+                    [section.embedding_text for section in sections],
+                )
+                logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
+
     def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
         truncated_count = 0
         for chunk in chunks:
@@ -159,21 +206,34 @@ class StoreCommand:
                 original_len = len(chunk.text)
                 chunk.text = chunk.text[:MAX_CHUNK_CHARS]
                 truncated_count += 1
-                logger.warning(f"Truncated chunk {chunk.section_path} from {original_len} to {MAX_CHUNK_CHARS} chars")
+                logger.warning(f"Truncated chunk {chunk.chunk_number} from {original_len} to {MAX_CHUNK_CHARS} chars")
         if truncated_count > 0:
             logger.info(f"Truncated {truncated_count} oversized chunk(s)")
+
+    def _get_existing_sections(self, doc_uid: str) -> list[SectionRecord]:
+        if self._dependencies.section_store is None:
+            return []
+        with self._dependencies.section_store as section_store:
+            return list(section_store.get_sections_by_doc(doc_uid))
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
 
-    def _payload(self, chunk: Chunk) -> tuple[str, str, str, str, str]:
+    def _payload(self, chunk: Chunk) -> tuple[str, str, str, str, str, str | None]:
         return (
-            chunk.section_path,
+            chunk.chunk_number,
             chunk.page_start,
             chunk.page_end,
-            chunk.source_anchor,
+            chunk.chunk_id,
             chunk.text,
+            chunk.containing_section_id,
         )
+
+    def _section_payloads_match(self, existing_sections: list[SectionRecord], new_sections: list[SectionRecord]) -> bool:
+        return [self._section_payload(section) for section in existing_sections] == [self._section_payload(section) for section in new_sections]
+
+    def _section_payload(self, section: SectionRecord) -> tuple[str, str | None, str, str]:
+        return (section.section_id, section.parent_section_id, section.title, section.embedding_text)
 
 
 def _build_default_store_dependencies() -> StoreDependencies:
@@ -183,6 +243,8 @@ def _build_default_store_dependencies() -> StoreDependencies:
         document_store=DocumentStore(),
         vector_store=VectorStore(),
         init_db_fn=init_db,
+        section_store=SectionStore(),
+        title_vector_store=TitleVectorStore(),
     )
 
 

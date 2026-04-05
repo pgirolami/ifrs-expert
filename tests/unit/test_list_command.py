@@ -34,7 +34,7 @@ class TestListCommand:
         ) as mock_cs_class:
             mock_cs = MagicMock()
             mock_cs.get_chunks_by_doc.return_value = [
-                Chunk(chunk_id=1, doc_uid="doc1", section_path="1.1", page_start="A1", page_end="A1", text="test")
+                Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test")
             ]
             mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
             mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)

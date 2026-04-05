@@ -15,6 +15,7 @@ from bs4.element import Tag
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
+from src.models.section import SectionClosureRow, SectionRecord
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -28,10 +29,22 @@ REQUIRED_SIDECAR_FIELDS: Final[tuple[str, ...]] = (
     "canonical_url",
 )
 TABLE_ROW_WITH_LABEL_CELL_COUNT: Final[int] = 2
+HEADING_TAG_NAMES: Final[tuple[str, ...]] = ("h1", "h2", "h3", "h4", "h5", "h6")
+HEADING_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^(?:Chapter\s+[A-Za-z0-9.]+|[A-Z]?\d+(?:\.\d+)*)\s+")
+SUBSECTION_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^[A-Z]?\d+\.\d+")
 
 
 class HtmlValidationError(ValueError):
     """Raised when an HTML capture pair fails validation."""
+
+
+@dataclass
+class _SectionTraversalState:
+    """Mutable traversal state while extracting sections from HTML."""
+
+    active_sections_by_level: dict[int, SectionRecord]
+    chapter_sections_by_prefix: dict[str, SectionRecord]
+    position: int = 0
 
 
 @dataclass(frozen=True)
@@ -89,7 +102,7 @@ class HtmlExtractor:
         self._sidecar_path = sidecar_path
 
     def extract(self, source_path: Path, explicit_doc_uid: str | None) -> ExtractedDocument:
-        """Extract an HTML capture into document metadata and paragraph chunks."""
+        """Extract an HTML capture into document metadata, chunks, and sections."""
         del explicit_doc_uid
 
         if not source_path.exists():
@@ -115,7 +128,8 @@ class HtmlExtractor:
         if not isinstance(content_root, Tag):
             _fail_validation("HTML is missing the IFRS content root")
 
-        chunks = self._extract_chunks(doc_uid=doc_uid, content_root=content_root)
+        chunks, sections = self._extract_structure(doc_uid=doc_uid, content_root=content_root)
+        section_closure_rows = _build_section_closure_rows(sections)
 
         return ExtractedDocument(
             document=DocumentRecord(
@@ -127,6 +141,8 @@ class HtmlExtractor:
                 captured_at=sidecar.captured_at,
             ),
             chunks=chunks,
+            sections=sections,
+            section_closure_rows=section_closure_rows,
         )
 
     def _extract_canonical_url(self, soup: BeautifulSoup) -> str:
@@ -139,35 +155,126 @@ class HtmlExtractor:
         _validate_http_url(canonical_url, field_name="canonical URL")
         return canonical_url
 
-    def _extract_chunks(self, doc_uid: str, content_root: Tag) -> list[Chunk]:
+    def _extract_structure(self, doc_uid: str, content_root: Tag) -> tuple[list[Chunk], list[SectionRecord]]:
         chunks: list[Chunk] = []
-        paragraph_nodes = content_root.select("div.topic.paragraph[id]")
-        for paragraph in paragraph_nodes:
-            section_tag = paragraph.select_one("td.paragraph_col1 .paranum > p")
-            body_tag = paragraph.select_one("td.paragraph_col2 > .body")
-            if not isinstance(section_tag, Tag) or not isinstance(body_tag, Tag):
+        sections: list[SectionRecord] = []
+        traversal_state = _SectionTraversalState(active_sections_by_level={}, chapter_sections_by_prefix={})
+
+        for node in content_root.find_all("div"):
+            nested_level = _extract_nested_level(node)
+            if nested_level is None:
                 continue
 
-            section_path = _normalize_whitespace(section_tag.get_text(" ", strip=True))
-            if not section_path:
-                continue
-
-            text_lines = self._extract_body_lines(body_tag)
-            text = "\n".join(line for line in text_lines if line)
-            if not text:
-                continue
-
-            chunks.append(
-                Chunk(
+            classes = _tag_classes(node)
+            if "paragraph" in classes and "topic" in classes:
+                chunk = self._extract_chunk(
                     doc_uid=doc_uid,
-                    section_path=section_path,
-                    page_start="",
-                    page_end="",
-                    source_anchor=_tag_attribute_as_string(paragraph, "id"),
-                    text=text,
+                    paragraph=node,
+                    active_sections_by_level=traversal_state.active_sections_by_level,
                 )
+                if chunk is not None:
+                    chunks.append(chunk)
+                continue
+
+            if "topic" not in classes:
+                continue
+
+            section = self._extract_section(doc_uid=doc_uid, node=node, traversal_state=traversal_state)
+            if section is None:
+                continue
+
+            traversal_state.position += 1
+            sections.append(section)
+            chapter_key = _extract_chapter_key(_extract_raw_heading_text(_extract_direct_heading(node) or node))
+            if chapter_key is not None:
+                traversal_state.chapter_sections_by_prefix[chapter_key] = section
+            traversal_state.active_sections_by_level = {level: active_section for level, active_section in traversal_state.active_sections_by_level.items() if level < nested_level}
+            traversal_state.active_sections_by_level[nested_level] = section
+
+        return chunks, sections
+
+    def _extract_section(
+        self,
+        doc_uid: str,
+        node: Tag,
+        traversal_state: _SectionTraversalState,
+    ) -> SectionRecord | None:
+        heading = _extract_direct_heading(node)
+        if heading is None:
+            return None
+
+        nested_level = _extract_nested_level(node)
+        if nested_level is None:
+            return None
+
+        raw_heading_text = _extract_raw_heading_text(heading)
+        title = _extract_heading_title(heading)
+        if title is None:
+            return None
+
+        if nested_level == 1:
+            return None
+
+        section_id = _tag_attribute_as_string(node, "id")
+        if not section_id:
+            return None
+
+        parent_section = _get_parent_section(
+            active_sections_by_level=traversal_state.active_sections_by_level,
+            chapter_sections_by_prefix=traversal_state.chapter_sections_by_prefix,
+            nested_level=nested_level,
+            raw_heading_text=raw_heading_text,
+        )
+        section_lineage = [title] if parent_section is None else [*parent_section.section_lineage, title]
+
+        return SectionRecord(
+            section_id=section_id,
+            doc_uid=doc_uid,
+            parent_section_id=parent_section.section_id if parent_section is not None else None,
+            level=nested_level,
+            title=title,
+            section_lineage=section_lineage,
+            embedding_text=title,
+            position=traversal_state.position,
+        )
+
+    def _extract_chunk(
+        self,
+        doc_uid: str,
+        paragraph: Tag,
+        active_sections_by_level: dict[int, SectionRecord],
+    ) -> Chunk | None:
+        chunk_number_tag = paragraph.select_one("td.paragraph_col1 .paranum > p")
+        body_tag = paragraph.select_one("td.paragraph_col2 > .body")
+        if not isinstance(chunk_number_tag, Tag) or not isinstance(body_tag, Tag):
+            return None
+
+        chunk_number = _normalize_whitespace(chunk_number_tag.get_text(" ", strip=True))
+        if not chunk_number:
+            return None
+
+        text_lines = self._extract_body_lines(body_tag)
+        text = "\n".join(line for line in text_lines if line)
+        if not text:
+            return None
+
+        nested_level = _extract_nested_level(paragraph)
+        containing_section = None
+        if nested_level is not None:
+            containing_section = _get_nearest_ancestor_section(
+                active_sections_by_level=active_sections_by_level,
+                nested_level=nested_level,
             )
-        return chunks
+
+        return Chunk(
+            doc_uid=doc_uid,
+            chunk_number=chunk_number,
+            page_start="",
+            page_end="",
+            chunk_id=_tag_attribute_as_string(paragraph, "id"),
+            text=text,
+            containing_section_id=containing_section.section_id if containing_section is not None else None,
+        )
 
     def _extract_body_lines(self, node: Tag) -> list[str]:
         if _is_hidden(node):
@@ -236,6 +343,121 @@ class HtmlExtractor:
             if text:
                 lines.append(text)
         return lines
+
+
+def _build_section_closure_rows(sections: list[SectionRecord]) -> list[SectionClosureRow]:
+    section_by_id = {section.section_id: section for section in sections}
+    closure_rows: list[SectionClosureRow] = []
+
+    for section in sections:
+        current_section: SectionRecord | None = section
+        depth = 0
+        while current_section is not None:
+            closure_rows.append(
+                SectionClosureRow(
+                    ancestor_section_id=current_section.section_id,
+                    descendant_section_id=section.section_id,
+                    depth=depth,
+                )
+            )
+            parent_section_id = current_section.parent_section_id
+            current_section = section_by_id.get(parent_section_id) if parent_section_id is not None else None
+            depth += 1
+
+    return closure_rows
+
+
+def _extract_nested_level(node: Tag) -> int | None:
+    for css_class in _tag_classes(node):
+        match = re.fullmatch(r"nested(\d+)", css_class)
+        if match is not None:
+            return int(match.group(1))
+    return None
+
+
+def _tag_classes(node: Tag) -> list[str]:
+    class_value = node.get("class")
+    if class_value is None:
+        return []
+    if isinstance(class_value, str):
+        return class_value.split()
+    return [str(css_class) for css_class in class_value]
+
+
+def _extract_direct_heading(node: Tag) -> Tag | None:
+    for tag_name in HEADING_TAG_NAMES:
+        heading = node.find(tag_name, recursive=False)
+        if isinstance(heading, Tag):
+            return heading
+    return None
+
+
+def _extract_raw_heading_text(heading: Tag) -> str:
+    text_parts = [_normalize_whitespace(text) for text in heading.stripped_strings]
+    meaningful_parts = [part for part in text_parts if part and part != "+"]
+    return _normalize_whitespace(" ".join(meaningful_parts))
+
+
+def _extract_heading_title(heading: Tag) -> str | None:
+    raw_heading_text = _extract_raw_heading_text(heading)
+    if not raw_heading_text:
+        return None
+
+    if raw_heading_text.startswith("Appendix"):
+        return "Appendix"
+
+    heading_text = re.sub(r"\s*\+\s*$", "", raw_heading_text).strip()
+    heading_text = HEADING_PREFIX_PATTERN.sub("", heading_text)
+    return heading_text or None
+
+
+def _get_parent_section(
+    active_sections_by_level: dict[int, SectionRecord],
+    chapter_sections_by_prefix: dict[str, SectionRecord],
+    nested_level: int,
+    raw_heading_text: str,
+) -> SectionRecord | None:
+    nearest_ancestor = _get_nearest_ancestor_section(
+        active_sections_by_level=active_sections_by_level,
+        nested_level=nested_level,
+    )
+    if nearest_ancestor is not None:
+        return nearest_ancestor
+
+    chapter_prefix = _extract_major_prefix(raw_heading_text)
+    if chapter_prefix is not None and chapter_prefix in chapter_sections_by_prefix:
+        return chapter_sections_by_prefix[chapter_prefix]
+
+    same_level_section = active_sections_by_level.get(nested_level)
+    if same_level_section is not None and SUBSECTION_PREFIX_PATTERN.match(raw_heading_text):
+        return same_level_section
+
+    return None
+
+
+def _extract_chapter_key(raw_heading_text: str) -> str | None:
+    match = re.match(r"^Chapter\s+([A-Za-z0-9.]+)", raw_heading_text)
+    if match is None:
+        return None
+    return match.group(1)
+
+
+def _extract_major_prefix(raw_heading_text: str) -> str | None:
+    match = re.match(r"^([A-Z]?\d+)\.", raw_heading_text)
+    if match is None:
+        return None
+    return match.group(1)
+
+
+def _get_nearest_ancestor_section(
+    active_sections_by_level: dict[int, SectionRecord],
+    nested_level: int,
+) -> SectionRecord | None:
+    parent_levels = [level for level in active_sections_by_level if level < nested_level]
+    if not parent_levels:
+        return None
+    nearest_level = max(parent_levels)
+    return active_sections_by_level[nearest_level]
 
 
 def _fail_validation(message: str, *, cause: Exception | None = None) -> NoReturn:
