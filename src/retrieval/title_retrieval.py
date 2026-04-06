@@ -136,11 +136,7 @@ def _build_hits(
             continue
 
         descendant_ids = set(descendant_ids_by_section.get(section_id, [section_id]))
-        matched_chunks = [
-            chunk
-            for chunk in doc_chunks.get(result["doc_uid"], [])
-            if chunk.containing_section_id in descendant_ids
-        ]
+        matched_chunks = [chunk for chunk in doc_chunks.get(result["doc_uid"], []) if chunk.containing_section_id in descendant_ids]
 
         hits.append(TitleRetrievalHit(section=section, score=result["score"], chunks=matched_chunks))
 
