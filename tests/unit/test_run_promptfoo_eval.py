@@ -86,7 +86,7 @@ def test_build_promptfoo_args_adds_family_variant_and_provider_filters() -> None
         "--filter-metadata",
         "family=Q1",
         "--filter-metadata",
-        "variant=Q1.0",
+        "variant=Q1.0¤",
         "--filter-targets",
         "Mistral Large 3",
         "--no-cache",

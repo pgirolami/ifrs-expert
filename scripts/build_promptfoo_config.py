@@ -211,9 +211,11 @@ class PromptfooConfigBuilder:
     def _render_test_case(self, family: PromptfooFamily, variant: PromptfooVariant, variant_index: int) -> list[str]:
         """Render one Promptfoo test case."""
         question_path = (family.family_dir / variant.file_name).relative_to(self._project_root).as_posix()
+        # Suffix variant_id with '¤' so that promptfoo's `.includes()` filter
+        # can distinguish Q1.2¤ from Q1.20¤ without relying on regex.
         metadata: YamlObject = {
             "family": family.family_id,
-            "variant": variant.variant_id,
+            "variant": f"{variant.variant_id}¤",
             "question_path": question_path,
         }
         description = f"{variant.variant_id} - {variant.description}"
