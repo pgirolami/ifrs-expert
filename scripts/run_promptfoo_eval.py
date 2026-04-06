@@ -72,17 +72,20 @@ class PromptfooEvalRunner:
             logger.error(f"Promptfoo config build failed with exit code {build_result.returncode}")
             return build_result.returncode
 
+        promptfoo_config_path = run_layout.promptfoo_config_dir / "promptfooconfig.yaml"
         eval_command = [
             "npm",
             "exec",
             "--",
             "promptfoo",
             "eval",
+            "-c",
+            str(promptfoo_config_path),
             "--description",
             run_layout.description,
             *promptfoo_args,
         ]
-        logger.info(f"Running Promptfoo eval with experiment database at {run_layout.promptfoo_config_dir}")
+        logger.info(f"Running Promptfoo eval with config {promptfoo_config_path} and database at {run_layout.promptfoo_config_dir}")
         completed_process = self._command_runner(eval_command, env, self._project_root)
         if completed_process.returncode != 0:
             logger.warning(f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
