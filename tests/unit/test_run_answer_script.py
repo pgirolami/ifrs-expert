@@ -32,6 +32,10 @@ def _load_run_answer_module() -> ModuleType:
     assert spec.loader is not None
 
     module = importlib.util.module_from_spec(spec)
+    # Set __name__ so that dataclass decorators on classes in this module
+    # can resolve cls.__module__ in sys.modules (required by Python 3.11+).
+    module.__name__ = "tests_run_answer_script_module"
+    sys.modules["tests_run_answer_script_module"] = module
     spec.loader.exec_module(module)
     return module
 
@@ -88,20 +92,20 @@ def test_extract_llm_provider_falls_back_to_test_options() -> None:
     assert provider == "mistral"
 
 
-def test_promptfoo_artifact_output_dir_uses_family_variant_and_provider(
+def test_promptfoo_artifact_output_dir_uses_family_variant_and_config_kv(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    """Promptfoo artifact paths should group files by family, variant, and provider."""
+    """Artifact paths should group files by family, variant, and config key-value pairs."""
     run_answer = _load_run_answer_module()
     monkeypatch.setenv(run_answer.PROMPTFOO_ARTIFACTS_DIR_ENV, str(tmp_path))
 
     output_dir = run_answer._artifact_output_dir(
-        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0"}}},
-        llm_provider="Mistral Large 3",
+        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0¤"}}},
+        config_kv={"llm_provider": "openai", "k": "5", "min-score": "0.5"},
     )
 
-    assert output_dir == tmp_path / "Q1" / "Q1.0" / "mistral-large-3"
+    assert output_dir == tmp_path / "Q1" / "Q1.0" / "k=5__llm_provider=openai__min-score=0.5"
 
 
 def test_write_promptfoo_artifacts_persists_historical_answer_files(
@@ -124,11 +128,11 @@ def test_write_promptfoo_artifacts_persists_historical_answer_files(
 
     run_answer._write_promptfoo_artifacts(
         result=result,
-        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0"}}},
-        llm_provider="Mistral Large 3",
+        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0¤"}}},
+        config_kv={"llm_provider": "openai", "k": "5", "min-score": "0.5"},
     )
 
-    artifact_dir = tmp_path / "Q1" / "Q1.0" / "mistral-large-3"
+    artifact_dir = tmp_path / "Q1" / "Q1.0" / "k=5__llm_provider=openai__min-score=0.5"
     assert (artifact_dir / "A-prompt.txt").read_text(encoding="utf-8") == "Prompt A"
     assert (artifact_dir / "A-response.json").read_text(encoding="utf-8") == '{"status": "pass"}'
     assert (artifact_dir / "B-prompt.txt").read_text(encoding="utf-8") == "Prompt B"
@@ -144,3 +148,124 @@ def test_apply_llm_provider_override_updates_environment(monkeypatch: pytest.Mon
     run_answer._apply_llm_provider_override("anthropic")
 
     assert os.environ["LLM_PROVIDER"] == "anthropic"
+
+
+def test_extract_options_reads_k_min_score_expand_from_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """ExtractionOptions should pull k, min_score, and expand from provider config."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={"config": {"llm_provider": "openai", "k": 10, "min-score": 0.7, "expand": 3}},
+        context={},
+    )
+
+    assert options.k == 10
+    assert options.min_score == 0.7
+    assert options.expand == 3
+    assert "k" in options.config_kv
+    assert "min-score" in options.config_kv
+    assert "llm_provider" in options.config_kv
+
+
+def test_extract_options_supports_e_key_for_expand() -> None:
+    """The 'e' key should be accepted as an alias for expand."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={"config": {"e": 7}},
+        context={},
+    )
+
+    assert options.expand == 7
+
+
+def test_extract_options_prefers_e_over_expand_when_both_present() -> None:
+    """When both 'e' and 'expand' are present, 'e' should take precedence."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={"config": {"e": 7, "expand": 2}},
+        context={},
+    )
+
+    assert options.expand == 7
+
+
+def test_extract_options_merges_config_kv_from_multiple_mappings() -> None:
+    """Config key-values should accumulate across provider_options and context mappings."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={"config": {"llm_provider": "openai"}},
+        context={"test": {"options": {"k": 10}}},
+    )
+
+    assert options.config_kv.get("llm_provider") == "openai"
+    assert options.config_kv.get("k") == "10"
+
+
+def test_extract_options_defaults_when_no_overrides() -> None:
+    """ExtractionOptions should use defaults when no config overrides are provided."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(provider_options={}, context={})
+
+    assert options.k == run_answer.DEFAULT_K
+    assert options.min_score == run_answer.DEFAULT_MIN_SCORE
+    assert options.expand == run_answer.DEFAULT_EXPAND
+
+
+def test_build_config_dirname_from_kv_pairs() -> None:
+    """The config directory name should be key=value pairs joined by __."""
+    run_answer = _load_run_answer_module()
+
+    dirname = run_answer._build_config_dirname({"llm_provider": "openai", "k": "5", "min-score": "0.5"})
+
+    assert dirname == "k=5__llm_provider=openai__min-score=0.5"
+
+
+def test_build_config_dirname_falls_back_to_llm_provider_env_when_empty(monkeypatch: pytest.MonkeyPatch) -> None:
+    """When config_kv is empty, the directory should use the LLM_PROVIDER env var."""
+    run_answer = _load_run_answer_module()
+    monkeypatch.setenv("LLM_PROVIDER", "anthropic")
+
+    dirname = run_answer._build_config_dirname({})
+
+    assert dirname == "anthropic"
+
+
+def test_build_config_kv_excludes_nested_dicts() -> None:
+    """_build_config_kv should only include scalar and primitive values, not nested dicts."""
+    run_answer = _load_run_answer_module()
+
+    kv = run_answer._build_config_kv({"llm_provider": "openai", "nested": {"should": "skip"}})
+
+    assert "llm_provider" in kv
+    assert "nested" not in kv
+
+
+def test_merge_config_kv_overlay_wins() -> None:
+    """Later mappings should override earlier ones in _merge_config_kv."""
+    run_answer = _load_run_answer_module()
+
+    merged = run_answer._merge_config_kv({"k": "5"}, {"k": "10"})
+
+    assert merged["k"] == "10"
+
+
+def test_extract_int_from_mapping_accepts_float_values() -> None:
+    """Integer extraction should accept int or float and return int."""
+    run_answer = _load_run_answer_module()
+
+    assert run_answer._extract_int_from_mapping({"k": 5.0}, "k", 99) == 5
+    assert run_answer._extract_int_from_mapping({"k": 5}, "k", 99) == 5
+
+
+def test_extract_float_from_mapping_validates_range() -> None:
+    """Float extraction should only accept values between 0.0 and 1.0."""
+    run_answer = _load_run_answer_module()
+
+    assert run_answer._extract_float_from_mapping({"min-score": 0.75}, "min-score", 0.55) == 0.75
+    assert run_answer._extract_float_from_mapping({"min-score": 1.5}, "min-score", 0.55) == 0.55  # Out of range, uses fallback

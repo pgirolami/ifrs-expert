@@ -17,20 +17,24 @@ import logging
 import os
 import re
 import sys
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from pathlib import Path
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # noqa: E402
 
-from src.answer_artifacts import save_answer_command_result
-from src.commands import AnswerOptions
-from src.commands.answer import create_answer_command
-from src.logging_config import setup_logging
-from src.models.answer_command_result import AnswerCommandResult
+from src.answer_artifacts import save_answer_command_result  # noqa: E402
+from src.commands import AnswerOptions  # noqa: E402
+from src.commands.answer import create_answer_command  # noqa: E402
+from src.logging_config import setup_logging  # noqa: E402
+
+if TYPE_CHECKING:
+    from src.models.answer_command_result import AnswerCommandResult
 
 logger = logging.getLogger(__name__)
 
@@ -154,6 +158,72 @@ def _extract_question(prompt: str, mode: str) -> str:
     return stripped_prompt
 
 
+@dataclass
+class ExtractionOptions:
+    """Options extracted from Promptfoo provider options or context mappings."""
+
+    k: int = DEFAULT_K
+    min_score: float = DEFAULT_MIN_SCORE
+    expand: int = DEFAULT_EXPAND
+    # Key-value pairs for artifact directory naming
+    config_kv: dict[str, str] = dataclass_field(default_factory=dict)
+
+
+def _extract_int_from_mapping(mapping: dict[str, object], key: str, fallback: int) -> int:
+    """Extract an integer override from one mapping."""
+    value = mapping.get(key)
+    if isinstance(value, (int, float)) and value >= 0:
+        return int(value)
+    return fallback
+
+
+def _extract_float_from_mapping(mapping: dict[str, object], key: str, fallback: float) -> float:
+    """Extract a float override from one mapping."""
+    value = mapping.get(key)
+    if isinstance(value, (int, float)) and 0.0 <= value <= 1.0:
+        return float(value)
+    return fallback
+
+
+def _build_config_kv(mapping: dict[str, object]) -> dict[str, str]:
+    """Build a dict of string key-value pairs from a mapping, excluding nested dicts, id and basePath."""
+    result: dict[str, str] = {}
+    for key, value in mapping.items():
+        if key == "basePath" or key == "id":
+            continue
+        if isinstance(value, (str, int, float, bool)):
+            result[str(key)] = str(value)
+    return result
+
+
+def _merge_config_kv(base: dict[str, str], overlay: dict[str, str]) -> dict[str, str]:
+    """Merge overlay into base, overlay wins on key collision."""
+    merged = dict(base)
+    merged.update(overlay)
+    return merged
+
+
+def _extract_options(
+    provider_options: dict[str, object],
+    context: dict[str, object],
+) -> ExtractionOptions:
+    """Extract AnswerOptions overrides from Promptfoo provider options and context."""
+    k = DEFAULT_K
+    min_score = DEFAULT_MIN_SCORE
+    expand = DEFAULT_EXPAND
+    config_kv: dict[str, str] = {}
+
+    for mapping in _candidate_llm_provider_mappings(provider_options, context):
+        k = _extract_int_from_mapping(mapping, "k", k)
+        min_score = _extract_float_from_mapping(mapping, "min-score", min_score)
+        # Support both 'e' and 'expand' keys
+        expand = _extract_int_from_mapping(mapping, "e", _extract_int_from_mapping(mapping, "expand", expand))
+        # Merge config key-values for artifact directory naming
+        config_kv = _merge_config_kv(config_kv, _build_config_kv(mapping))
+
+    return ExtractionOptions(k=k, min_score=min_score, expand=expand, config_kv=config_kv)
+
+
 def _extract_llm_provider_from_mapping(mapping: dict[str, object]) -> str | None:
     """Extract an LLM provider override from one mapping."""
     for key in ("llm_provider", "llmProvider", "LLM_PROVIDER"):
@@ -221,8 +291,20 @@ def _slugify_component(value: str) -> str:
     return normalized or "default"
 
 
-def _artifact_output_dir(context: dict[str, object], llm_provider: str | None) -> Path | None:
-    """Build the Promptfoo artifact output directory from context metadata."""
+def _build_config_dirname(config_kv: dict[str, str]) -> str:
+    """Build the config portion of the artifact directory name from key-value pairs."""
+    if not config_kv:
+        return _slugify_component(os.environ.get("LLM_PROVIDER", "default"))
+
+    parts = [f"{key}={value}" for key, value in sorted(config_kv.items())]
+    return "__".join(parts)
+
+
+def _artifact_output_dir(
+    context: dict[str, object],
+    config_kv: dict[str, str],
+) -> Path | None:
+    """Build the Promptfoo artifact output directory from context metadata and config kv."""
     base_dir = os.environ.get(PROMPTFOO_ARTIFACTS_DIR_ENV)
     if base_dir is None or not base_dir.strip():
         return None
@@ -238,10 +320,11 @@ def _artifact_output_dir(context: dict[str, object], llm_provider: str | None) -
                 family = family_value.strip()
             variant_value = metadata.get("variant")
             if isinstance(variant_value, str) and variant_value.strip():
-                variant = variant_value.strip()
+                # Strip the '¤' delimiter used for exact promptfoo filtering
+                variant = variant_value.strip().rstrip("¤")
 
-    provider_component = _slugify_component(llm_provider or os.environ.get("LLM_PROVIDER", "default"))
-    output_dir = Path(base_dir) / family / variant / provider_component
+    config_component = _build_config_dirname(config_kv)
+    output_dir = Path(base_dir) / family / variant / config_component
 
     repeat_index = context.get("repeatIndex")
     if isinstance(repeat_index, int) and repeat_index > 0:
@@ -253,10 +336,10 @@ def _artifact_output_dir(context: dict[str, object], llm_provider: str | None) -
 def _write_promptfoo_artifacts(
     result: AnswerCommandResult,
     context: dict[str, object],
-    llm_provider: str | None,
+    config_kv: dict[str, str],
 ) -> None:
     """Persist answer artifacts when Promptfoo archiving is enabled."""
-    output_dir = _artifact_output_dir(context=context, llm_provider=llm_provider)
+    output_dir = _artifact_output_dir(context=context, config_kv=config_kv)
     if output_dir is None:
         return
 
@@ -264,7 +347,12 @@ def _write_promptfoo_artifacts(
     logger.info(f"Saved Promptfoo answer artifacts to {output_dir}")
 
 
-def _run_live(question: str, llm_provider: str | None, context: dict[str, object]) -> tuple[int, str]:
+def _run_live(
+    question: str,
+    llm_provider: str | None,
+    context: dict[str, object],
+    options: ExtractionOptions,
+) -> tuple[int, str]:
     """Run the real answer pipeline for one question."""
     load_dotenv()
     _apply_llm_provider_override(llm_provider)
@@ -272,10 +360,10 @@ def _run_live(question: str, llm_provider: str | None, context: dict[str, object
 
     command = create_answer_command(
         query=question,
-        options=AnswerOptions(k=DEFAULT_K, min_score=DEFAULT_MIN_SCORE, expand=DEFAULT_EXPAND),
+        options=AnswerOptions(k=options.k, min_score=options.min_score, expand=options.expand),
     )
     result = command.execute()
-    _write_promptfoo_artifacts(result=result, context=context, llm_provider=llm_provider)
+    _write_promptfoo_artifacts(result=result, context=context, config_kv=options.config_kv)
 
     if result.error is not None:
         logger.error(f"Answer pipeline failed during Promptfoo live run: {result.error}")
@@ -310,7 +398,8 @@ def main() -> int:
         return 0
 
     llm_provider = _extract_llm_provider(provider_options, context)
-    exit_code, payload = _run_live(question, llm_provider, context)
+    extraction_options = _extract_options(provider_options, context)
+    exit_code, payload = _run_live(question, llm_provider, context, extraction_options)
     _write_stdout(payload)
     return exit_code
 
