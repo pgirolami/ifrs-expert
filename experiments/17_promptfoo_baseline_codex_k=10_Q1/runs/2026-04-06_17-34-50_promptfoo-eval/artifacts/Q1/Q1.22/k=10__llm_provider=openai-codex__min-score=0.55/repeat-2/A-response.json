@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS 9.",
+    "The dividend receivable/payable gives rise to foreign currency exposure between group entities.",
+    "The issue is whether that exposure could be designated within an IFRS hedge accounting relationship."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a top-level hedge accounting model for exposures to changes in fair value of recognised assets or liabilities attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a top-level hedge accounting model for exposure to variability in cash flows attributable to a particular risk, including certain forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk in a group context."
+    }
+  ]
+}

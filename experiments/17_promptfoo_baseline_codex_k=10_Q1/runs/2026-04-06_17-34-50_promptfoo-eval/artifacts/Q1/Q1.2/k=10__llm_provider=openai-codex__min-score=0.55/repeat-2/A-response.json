@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is limited to IFRS 9 hedge accounting models that could be considered for foreign exchange risk in consolidated financial statements.",
+    "The intragroup dividend receivable creates or is associated with a foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to fair value hedge accounting in IFRS 9/IAS 39 cross-references and includes presentation guidance for hedging gains and losses."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to cash flow hedge accounting, including presentation of hedging gains and losses and foreign currency effects."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context explicitly identifies a hedge of a net investment as a distinct hedge accounting model for foreign currency exposures."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting with derivative at fair value through profit or loss",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context states that gains or losses on financial assets or liabilities measured at fair value are recognised in profit or loss unless hedge accounting or another specified exception applies."
+    }
+  ]
+}

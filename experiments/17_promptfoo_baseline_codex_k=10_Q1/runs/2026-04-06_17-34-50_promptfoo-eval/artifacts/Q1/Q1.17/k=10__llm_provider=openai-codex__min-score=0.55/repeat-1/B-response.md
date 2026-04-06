@@ -1,0 +1,90 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-06
+
+**Question**:
+>Des dividendes intragroupe ont été comptabilisés à recevoir, ce qui fait naître une variation potentielle liée au change dans les comptes consolidés. Est-il alors possible de mettre en place une relation de couverture sur cette seule composante de change ?
+
+**Documentation consultée**
+   - `ifric-16`
+   - `ifrs-9`
+
+## Hypothèses
+   - La créance de dividende est intragroupe, libellée dans une devise différente de la monnaie fonctionnelle d’au moins une entité du groupe, et la question est posée au niveau des comptes consolidés.
+   - Le dividende a déjà été comptabilisé à recevoir ; il ne s’agit donc pas d’une transaction future hautement probable mais d’un poste monétaire reconnu.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Oui, en principe via une couverture de juste valeur du seul risque de change, si la créance/dividende intragroupe crée bien une exposition de change non entièrement éliminée en consolidation. En revanche, la couverture de flux de trésorerie n’est pas adaptée à un dividende déjà comptabilisé à recevoir, et la couverture d’investissement net ne vise pas ce cas.
+
+## Points Opérationnels
+
+   - Vérifier d’abord que la créance de dividende est bien un poste monétaire intragroupe dont l’écart de change n’est pas totalement éliminé en consolidation.
+   - La désignation doit être faite dès l’origine de la relation de couverture avec documentation formelle de l’instrument, de l’item couvert et du risque de change couvert.
+   - Si l’exposition visée était seulement un dividende futur non encore comptabilisé, l’analyse pourrait être différente ; ici, le fait générateur décisif est la comptabilisation en créance.
+   - Au niveau consolidé, il faut démontrer que l’exposition affecte effectivement le résultat consolidé, conformément à l’exception IFRS 9 pour certains éléments intragroupe.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture de juste valeur | OUI SOUS CONDITIONS | - La créance de dividende doit constituer un poste monétaire intragroupe générant un risque de change qui affecte les comptes consolidés.<br>- La relation doit porter uniquement sur la composante de change, distinctement désignée et documentée. |
+| 2. Couverture de flux de trésorerie | NON | - (non spécifiées) |
+| 3. Couverture d’investissement net | NON | - (non spécifiées) |
+
+### 1. Couverture de juste valeur
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance de dividende doit constituer un poste monétaire intragroupe générant un risque de change qui affecte les comptes consolidés.
+   - La relation doit porter uniquement sur la composante de change, distinctement désignée et documentée.
+
+**Raisonnment**:
+Ici, le dividende est déjà comptabilisé à recevoir : il s’agit donc d’un actif reconnu. IFRS 9 permet de couvrir un actif reconnu ou une composante de risque d’un item, et la seule composante de change peut être désignée si elle est séparément identifiable et mesurable. En consolidation, cela n’est pertinent que si la variation de change sur le poste monétaire intragroupe n’est pas entièrement éliminée.
+
+**Implications pratiques**: La voie IFRS 9 pertinente est la désignation d’une couverture de juste valeur du risque de change sur la créance reconnue.
+
+**Référence**:
+ - 6.5.1
+    >fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability
+ - 6.3.7
+    >only changes in the cash flows or fair value of an item attributable to a specific risk or risks
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements
+
+### 2. Couverture de flux de trésorerie
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+Les faits indiquent que les dividendes sont déjà comptabilisés à recevoir. Ce n’est donc pas une transaction future hautement probable mais un poste reconnu. Dans cette situation précise, la question vise la variation de change sur une créance existante, ce qui ne correspond pas au modèle de couverture de flux de trésorerie décrit par IFRS 9.
+
+**Implications pratiques**: Cette approche ne doit pas être retenue pour une créance de dividende déjà enregistrée.
+
+**Référence**:
+ - 6.5.1
+    >cash flow hedge: a hedge of the exposure to variability in cash flows
+ - 6.3.3
+    >If a hedged item is a forecast transaction ... that transaction must be highly probable.
+
+### 3. Couverture d’investissement net
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+La question porte sur une créance de dividende intragroupe comptabilisée, pas sur le risque de change attaché à un investissement net dans une activité à l’étranger. Le modèle de couverture d’investissement net vise les écarts de conversion sur les net assets d’une foreign operation, ce qui est différent du dividende à recevoir.
+
+**Implications pratiques**: Ce modèle n’est pas approprié pour couvrir la seule créance de dividende intragroupe.
+
+**Référence**:
+ - 6.5.1
+    >hedge of a net investment in a foreign operation as defined in IAS 21
+ - ifric-16 7
+    >This Interpretation applies only to hedges of net investments in foreign operations

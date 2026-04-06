@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The foreign exchange exposure relates to an intragroup dividend receivable/payable that has been recognised as a monetary item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities and components of such items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a separate hedge accounting model for variability in cash flows of recognised items or highly probable forecast transactions, including relevant foreign currency exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The provided IFRS 9 and IFRIC 16 context includes hedge accounting for foreign currency risk arising from a net investment in a foreign operation as a distinct top-level hedge accounting model."
+    }
+  ]
+}

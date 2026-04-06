@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns hedge accounting in consolidated financial statements under IFRS 9.",
+    "The intragroup dividend gives rise either to a recognised intragroup monetary receivable or to a forecast intragroup cash flow exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes fair value hedge accounting for recognised assets or liabilities, and the context specifically addresses when intragroup monetary items may qualify as hedged items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes cash flow hedge accounting for variability in cash flows of recognised items or highly probable forecast transactions, and the context specifically addresses when forecast intragroup foreign currency transactions may qualify in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The item exposed to foreign currency risk is an intragroup dividend-related receivable that has been recognised.",
+    "The issue is whether a hedge relationship could be documented under IFRS 9 for that foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities exposed to changes in fair value attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model for exposure to variability in cash flows of recognised items or highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge accounting for a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk."
+    },
+    {
+      "id": "approach_4",
+      "label": "Accounting without hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context provides the default IFRS 9 accounting basis when a hedge relationship is not applied, with fair value changes on derivatives generally recognised in profit or loss and amortised cost items accounted for outside hedge accounting."
+    }
+  ]
+}

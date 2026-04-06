@@ -1,0 +1,95 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-06
+
+**Question**:
+>La composante de risque de change liée à des dividendes intragroupe reconnus sous forme de créance peut-elle être désignée comme élément couvert dans les comptes consolidés ?
+
+**Documentation consultée**
+   - `ifrs-9`
+   - `ifric-16`
+
+## Hypothèses
+   - La question porte sur la comptabilité de couverture dans des états financiers consolidés selon IFRS 9.
+   - Les dividendes intragroupe ont été comptabilisés en créance intragroupe, donc comme un élément monétaire reconnu.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Dans les comptes consolidés, un élément intragroupe ne peut en principe pas être désigné, sauf exception pour le risque de change d'un élément monétaire intragroupe. Donc la désignation n'est possible ici que si la créance de dividendes expose le groupe à des écarts de change non totalement éliminés en consolidation.
+
+## Points Opérationnels
+
+   - Le point décisif en consolidation est l'exception d'IFRS 9 pour le risque de change d'un élément monétaire intragroupe.
+   - Il faut vérifier si les sociétés concernées ont des monnaies fonctionnelles différentes et si les écarts de change sur la créance affectent le résultat consolidé.
+   - Si ces écarts sont totalement éliminés en consolidation, la désignation n'est pas possible.
+   - La documentation de couverture doit identifier explicitement la composante de risque de change visée et le modèle de couverture retenu.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture de juste valeur | OUI SOUS CONDITIONS | - La créance de dividendes est un élément monétaire intragroupe.<br>- Les entités concernées ont des monnaies fonctionnelles différentes.<br>- Le risque de change affecte le résultat consolidé car les écarts de change ne sont pas totalement éliminés en consolidation. |
+| 2. Couverture de flux de trésorerie | OUI SOUS CONDITIONS | - La désignation vise la composante de risque de change de la créance intragroupe.<br>- La créance est un élément monétaire entre entités à monnaies fonctionnelles différentes.<br>- Le risque de change affecte le résultat consolidé et n'est pas totalement éliminé en consolidation. |
+| 3. Couverture d'un investissement net à l'étranger | NON | - (non spécifiées) |
+
+### 1. Couverture de juste valeur
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance de dividendes est un élément monétaire intragroupe.
+   - Les entités concernées ont des monnaies fonctionnelles différentes.
+   - Le risque de change affecte le résultat consolidé car les écarts de change ne sont pas totalement éliminés en consolidation.
+
+**Raisonnment**:
+La créance de dividendes est, selon l'hypothèse retenue, un actif reconnu. IFRS 9 permet une couverture de juste valeur d'un actif reconnu ou d'une composante de risque, mais en consolidation un élément intragroupe n'est éligible que pour son risque de change s'il s'agit d'un élément monétaire dont les écarts ne sont pas totalement éliminés.
+
+**Implications pratiques**: Possible en consolidation uniquement pour la composante de change résiduelle au niveau du groupe, pas du seul fait qu'il existe une créance intragroupe.
+
+**Référence**:
+ - 6.5.1
+    >fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability
+ - 6.3.5
+    >only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item
+
+### 2. Couverture de flux de trésorerie
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La désignation vise la composante de risque de change de la créance intragroupe.
+   - La créance est un élément monétaire entre entités à monnaies fonctionnelles différentes.
+   - Le risque de change affecte le résultat consolidé et n'est pas totalement éliminé en consolidation.
+
+**Raisonnment**:
+IFRS 9 admet une couverture de flux de trésorerie sur la variabilité de flux d'un actif ou passif reconnu. Toutefois, dans cette situation intragroupe consolidée, l'éligibilité dépend de la même exception: seule la composante de change d'un élément monétaire intragroupe dont le risque affecte le résultat consolidé peut être désignée.
+
+**Implications pratiques**: La qualification en cash flow hedge n'est envisageable que si le risque couvert est bien la variabilité en monnaie fonctionnelle du groupe liée au change.
+
+**Référence**:
+ - 6.5.1
+    >cash flow hedge: a hedge of the exposure to variability in cash flows
+ - 6.3.5
+    >only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item
+
+### 3. Couverture d'un investissement net à l'étranger
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+La situation décrite concerne une créance de dividendes intragroupe reconnue, non un investissement net dans une activité à l'étranger. Le modèle de couverture d'investissement net vise le risque de change sur des net assets d'une activité étrangère, pas une créance intragroupe de dividendes.
+
+**Implications pratiques**: Ce modèle n'est pas la bonne base pour désigner la créance de dividendes comme élément couvert.
+
+**Référence**:
+ - 6.5.1
+    >hedge of a net investment in a foreign operation as defined in IAS 21
+ - ifric-16 2
+    >the item being hedged ... may be an amount of net assets

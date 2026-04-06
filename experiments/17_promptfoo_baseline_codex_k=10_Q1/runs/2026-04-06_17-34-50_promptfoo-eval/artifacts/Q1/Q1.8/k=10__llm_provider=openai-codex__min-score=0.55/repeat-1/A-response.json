@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The declared intragroup dividend has given rise to a recognised monetary receivable/payable before settlement.",
+    "The accounting issue is assessed in consolidated financial statements for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities and components of such items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model for exposure to variability in cash flows, including certain highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model relevant to foreign currency exposures in consolidation."
+    }
+  ]
+}

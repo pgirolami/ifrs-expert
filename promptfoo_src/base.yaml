@@ -10,39 +10,17 @@ prompts:
 
 providers:
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=5 min-score=0.5'
+    label: 'OpenAI GPT 5.4 k=10 min-score=0.55'
     config:
       llm_provider: 'openai-codex'
-      min-score: 0.5
-      k: 5
-  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=5 min-score=0.4'
-    config:
-      llm_provider: 'openai-codex'
-      min-score: 0.4
-      k: 5
-  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=10 min-score=0.5'
-    config:
-      llm_provider: 'openai-codex'
-      min-score: 0.5
-      k: 10
-  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=10 min-score=0.4'
-    config:
-      llm_provider: 'openai-codex'
-      min-score: 0.4
-      k: 10
-  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=10 min-score=0.3'
-    config:
-      llm_provider: 'openai-codex'
-      min-score: 0.3
+      min-score: 0.55
       k: 10
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-  #   label: 'Mistral Large 3'
+  #   label: 'Mistral Large 3 k=10 min-score=0.55'
   #   config:
   #     llm_provider: 'Mistral'
+      # min-score: 0.55
+      # k: 10
 
 readme: |
   IFRS Expert Evaluation Suite

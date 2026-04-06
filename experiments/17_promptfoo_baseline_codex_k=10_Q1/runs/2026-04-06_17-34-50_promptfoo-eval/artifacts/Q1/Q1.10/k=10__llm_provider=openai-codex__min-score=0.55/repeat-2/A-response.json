@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The contemplated hedging relationship relates to foreign exchange risk associated with an intragroup balance or intragroup cash flow."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a top-level hedge accounting model for recognised assets or liabilities exposed to changes in fair value attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a top-level hedge accounting model for exposure to variability in cash flows of recognised items or highly probable forecast transactions, including certain foreign currency risks."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency exposure in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context states that only qualifying hedging relationships can apply hedge accounting, so a non-qualifying arrangement remains outside hedge accounting with gains and losses recognised under the normal IFRS 9 measurement basis."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns hedge accounting under IFRS 9 in consolidated financial statements.",
+    "The intragroup dividend has been recognised as an intercompany receivable, giving rise to a foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a distinct hedge accounting model for recognised assets or liabilities exposed to changes in fair value attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a distinct hedge accounting model for exposure to variability in cash flows of recognised items or highly probable forecast transactions, including certain foreign currency exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

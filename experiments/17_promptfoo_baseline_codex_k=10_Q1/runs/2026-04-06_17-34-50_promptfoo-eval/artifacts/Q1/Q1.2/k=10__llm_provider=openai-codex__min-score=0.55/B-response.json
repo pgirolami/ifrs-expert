@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe génère bien une exposition de change dans les comptes consolidés.",
+    "L'analyse est limitée aux trois modèles de comptabilité de couverture déjà identifiés et aux extraits IFRS 9 fournis."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "Dans cette situation, la voie la plus cohérente est la couverture de juste valeur de la composante change de la créance déjà comptabilisée. La couverture de flux de trésorerie et la couverture d'investissement net ne ressortent pas comme adaptées aux faits décrits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui",
+      "reasoning_fr": "Ici, le dividende est déjà comptabilisé en créance, donc l'exposition visée porte sur un poste reconnu. Les variations de change d'un actif monétaire sont présentées en résultat, ce qui est cohérent avec une relation de couverture dont les effets sont aussi reconnus en résultat sur l'élément couvert et l'instrument de couverture.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation peut viser la composante change de la créance de dividende déjà reconnue, avec effets de couverture en résultat consolidé.",
+      "references": [
+        {
+          "section": "5.7.2",
+          "excerpt": "shall be recognised in profit or loss"
+        },
+        {
+          "section": "B5.7.2",
+          "excerpt": "changes in the foreign currency component of those financial instruments are presented in profit or loss"
+        },
+        {
+          "section": "5.7.3",
+          "excerpt": "hedged items in a hedging relationship shall be recognised"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Dans les faits décrits, l'élément n'est pas un flux futur simplement attendu mais une créance de dividende déjà comptabilisée. Les extraits fournis sur la couverture de flux de trésorerie décrivent surtout une réserve de couverture recyclée lorsque des flux futurs affectent le résultat, ce qui ne correspond pas naturellement à une créance déjà reconnue.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne paraît pas approprié pour documenter la partie change d'une créance de dividende déjà enregistrée en consolidation.",
+      "references": [
+        {
+          "section": "B6.6.14",
+          "excerpt": "reclassified from the cash flow hedge reserve to profit or loss"
+        },
+        {
+          "section": "B6.6.15",
+          "excerpt": "when the net position affects profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net dans une activité à l'étranger",
+      "applicability": "non",
+      "reasoning_fr": "La question vise la partie change d'un dividende intragroupe comptabilisé en créance, et non la couverture d'un investissement net dans une activité étrangère. Les extraits fournis ne rattachent pas une créance de dividende à ce modèle ; ils ne font qu'identifier le hedge of a net investment comme un cadre distinct au titre des écarts de change.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne doit pas être retenu pour couvrir la créance de dividende elle-même dans les faits présentés.",
+      "references": [
+        {
+          "section": "B5.7.2",
+          "excerpt": "a hedge of a net investment"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La documentation doit être mise en place sur la composante change de la créance déjà comptabilisée, dans les comptes consolidés.",
+    "La cohérence de présentation en résultat est un point clé, car les écarts de change sur un actif monétaire sont renvoyés en résultat dans les extraits fournis.",
+    "Au vu des extraits disponibles, il faut éviter de documenter cette créance en couverture de flux de trésorerie ou en couverture d'investissement net."
+  ]
+}

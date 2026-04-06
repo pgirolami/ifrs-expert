@@ -1006,26 +1006,19 @@ def print_retrieval_context_table(results: list[QuestionScore]) -> None:
 def _format_doc_chunks(
     retrieval_context: dict[str, list[tuple[str, float]]],
     doc: str,
-    max_chunks: int = 5,
 ) -> str:
-    """Format chunks for a single document, returning top chunks by score.
-    
-    Returns section numbers with scores, without § prefix.
-    """
+    """Format all non-zero retrieval chunks for a single document."""
     chunks = retrieval_context.get(doc, [])
     if not chunks:
         return ""
     
-    # Get retrieval chunks (score > 0), sorted by score descending
-    retrieval_chunks = [(s, sc) for s, sc in chunks if sc > 0]
-    retrieval_chunks.sort(key=lambda x: x[1], reverse=True)
-    top_chunks = retrieval_chunks[:max_chunks]
+    retrieval_chunks = [(section_path, score) for section_path, score in chunks if score > 0]
+    retrieval_chunks.sort(key=lambda item: item[1], reverse=True)
     
-    if not top_chunks:
+    if not retrieval_chunks:
         return ""
     
-    # Format as "13 (0.55), 5 (0.56), ..."
-    return ", ".join(f"{s} ({sc:.2f})" for s, sc in top_chunks)
+    return ", ".join(f"{section_path} ({score:.2f})" for section_path, score in retrieval_chunks)
 
 
 def print_results(

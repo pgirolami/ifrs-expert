@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting under IFRS for foreign exchange risk recognised in consolidated financial statements.",
+    "The intragroup dividend-related balance or exposure is being considered only from the perspective of hedge accounting models addressed in the provided IFRS 9 and IFRIC 16 extracts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a distinct hedge accounting model for exposure to changes in fair value of a recognised asset or liability attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a distinct hedge accounting model for exposure to variability in cash flows of a recognised item or highly probable forecast transaction attributable to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk recognised in consolidated financial statements."
+    }
+  ]
+}

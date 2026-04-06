@@ -1,0 +1,96 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a déjà été déclaré et comptabilisé en créance/dette intragroupe, donc comme élément monétaire.",
+    "L’analyse porte sur les états financiers consolidés et sur l’application d’IFRS 9.",
+    "Le risque visé est le risque de change sur cette créance/dette intragroupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidation, le risque de change d’un élément monétaire intragroupe peut être documenté dans une relation de couverture si les écarts de change ne sont pas entièrement éliminés en consolidation. En pratique, cela peut être documenté surtout en couverture de juste valeur ; une couverture de flux de trésorerie n’est envisageable que si l’entité démontre une véritable variabilité des flux en monnaie fonctionnelle et respecte IFRS 9."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, il existe déjà une créance intragroupe reconnue, donc un actif monétaire existant. IFRS 9 permet de désigner comme élément couvert un actif ou passif reconnu, et prévoit explicitement qu’en consolidation le risque de change d’un élément monétaire intragroupe peut être un élément couvert s’il génère des écarts non entièrement éliminés. Cette voie est cohérente avec un risque de change portant sur une créance déjà comptabilisée.",
+      "conditions_fr": [
+        "Les écarts de change sur la créance/dette intragroupe ne sont pas entièrement éliminés en consolidation.",
+        "La relation de couverture est formellement désignée et documentée dès l’origine conformément à IFRS 9.6.4.1.",
+        "Les critères d’efficacité de la couverture sont satisfaits."
+      ],
+      "practical_implication_fr": "Possible en consolidation, mais seulement si l’élément monétaire intragroupe crée bien une exposition de change résiduelle au niveau consolidé.",
+      "references": [
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "section": "6.5.2",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        },
+        {
+          "section": "6.4.1",
+          "excerpt": "at the inception ... there is formal designation and documentation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 admet une couverture de flux de trésorerie sur un actif ou passif reconnu lorsqu’il existe une variabilité de flux pouvant affecter le résultat. Dans ce cas précis, l’exposition porte sur une créance intragroupe déjà reconnue ; cette approche n’est recevable que si l’entité démontre que le risque de change crée une variabilité pertinente des flux en monnaie fonctionnelle au niveau consolidé. À défaut, cette qualification serait moins naturelle que la couverture de juste valeur.",
+      "conditions_fr": [
+        "Les écarts de change sur l’élément monétaire intragroupe affectent le résultat consolidé et ne sont pas entièrement éliminés.",
+        "L’entité peut démontrer une variabilité des flux de trésorerie attribuable au risque de change sur l’élément reconnu.",
+        "La documentation initiale et les critères d’efficacité d’IFRS 9.6.4.1 sont respectés."
+      ],
+      "practical_implication_fr": "Juridiquement possible sous IFRS 9, mais plus exigeant à justifier dans ce schéma qu’une couverture de juste valeur.",
+      "references": [
+        {
+          "section": "6.5.2",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "section": "6.4.1",
+          "excerpt": "the hedging relationship meets all of the following hedge effectiveness requirements"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net dans une activité à l’étranger",
+      "applicability": "non",
+      "reasoning_fr": "Le fait décrit est un dividende intragroupe déjà reconnu en créance à recevoir, donc une créance/dette monétaire distincte. Une couverture d’investissement net vise le risque de change sur les net assets d’une activité étrangère, non le risque de change sur un dividende déclaré et payable. Dans cette situation, ce modèle ne correspond pas à l’objet couvert.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce risque ne doit pas être documenté comme une couverture d’investissement net ; il faut analyser la créance monétaire elle-même.",
+      "references": [
+        {
+          "section": "6.5.2",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "section": "ifric-16 10",
+          "excerpt": "the hedged item can be an amount of net assets"
+        },
+        {
+          "section": "ifric-16 7",
+          "excerpt": "applies only to hedges of net investments in foreign operations"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif en consolidation est de vérifier si les écarts de change sur la créance/dette intragroupe sont ou non entièrement éliminés.",
+    "La documentation de couverture doit être formalisée dès l’origine de la relation et préciser l’instrument, l’élément couvert, le risque couvert et le test d’efficacité.",
+    "Dans ce schéma de dividende déjà déclaré et comptabilisé, la couverture de juste valeur est généralement l’angle le plus directement aligné avec l’existence d’une créance monétaire reconnue.",
+    "Une couverture d’investissement net ne convient pas au simple risque de change sur une créance de dividende intragroupe déjà née."
+  ]
+}

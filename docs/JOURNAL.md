@@ -82,8 +82,22 @@ It documents how the system evolved from a single prompt to a structured, evalua
 - Add PromptFoo for evals, added a few evals
 - Setup automated demo
 
-### 2026-04-04 : Prepare for more improvements & evaluations
+### 2026-04-04 - 2026-04-06 : Prepare for more improvements & evaluations
 
-- Setup PromptFoo to scale to many questions & to persist the HTML results 
-- Make standards ingestion more robust by ingesting straight from HTML, see [plan](../plans/2026-04-04--html-import.md). This paves the way for ingesting section titles and testing whether similarity on just the section titles would help retrieval
--
+- Scale PromptFoo setup & automation to support many questions & experiments
+    - persist Promptfoo in the experiment directory so we can add to git
+    - persist pipeline artifacts to a "run" directory
+    - move promptfooconfig.yaml to the "run" directory so it can be added to git too
+    - fix VARIANT selection which wasn't working properly (Q1.2 also include Q1.20, Q1.21 and Q1.22)
+    - Support using OpenAI codex as a provider
+- Fix regression since move to API which was due to thinking not being set & the wrong model being used because of a default fallback that's not warned about (removed it)
+    - [Experiment 15](../experiments/15_promptfoo_baseline_Q1/EXPERIMENTS.md)
+- Make ingestion more robust
+    - Created Chrome extension to download the DOM when on a standards page
+    - Ingest straight from HTML to better parse the structure, see [plan](../plans/2026-04-04--html-import.md).
+    - Add an `ingest` command to scan the directory to which the HTML is saved to.
+- Address Experiment 15 next steps
+    - Evaluate the impact of min_score and k on retrieval for worst-performing question Q1.2
+        - [Experiment 16](../experiments/16_impact_of_minscore_on_Q1.2/EXPERIMENTS.md)
+        - [Experiment 17](../experiments/17_promptfoo_baseline_codex_k=10_Q1/EXPERIMENTS.md) recomputes the baseline on Q1 and shows k=10 improves the approach stability and the overall results
+    - Ingest section titles and section tree. Query on section titles and expand to all chunks in section subtree to see if retrieval is improved to address issue found in experiment 15. Not merged & will evaluate later because Experiment 16 had positive results.
