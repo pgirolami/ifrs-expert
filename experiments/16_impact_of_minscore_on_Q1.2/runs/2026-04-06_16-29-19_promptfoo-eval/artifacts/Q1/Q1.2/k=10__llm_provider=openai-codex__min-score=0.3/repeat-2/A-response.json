@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns foreign exchange risk in consolidated financial statements.",
+    "A hedging instrument may be considered for that foreign exchange exposure.",
+    "The question asks for possible IFRS hedge accounting models and closely related accounting treatments, not for an applicability conclusion."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies hedging relationships under IFRS 9 and specifically refers to cash flow hedge accounting presentation and reclassification mechanics."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context refers to fair value hedge accounting, including recognition of hedging gains and losses and related IAS 39 portfolio hedge references."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 in the context provides a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation, with OCI treatment and recycling on disposal."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context states that fair value changes on financial instruments are recognised in profit or loss unless they are part of a hedging relationship, making non-hedge accounting a distinct relevant treatment."
+    }
+  ]
+}

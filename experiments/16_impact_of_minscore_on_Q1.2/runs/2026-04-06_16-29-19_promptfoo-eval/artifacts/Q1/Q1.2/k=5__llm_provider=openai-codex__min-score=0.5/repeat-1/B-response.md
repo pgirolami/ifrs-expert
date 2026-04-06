@@ -1,0 +1,74 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-06
+
+**Question**:
+>Un dividende intragroupe a été comptabilisé en créance.
+De quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?
+
+**Documentation consultée**
+   - `ifrs-9`
+   - `ifric-16`
+
+## Hypothèses
+   - La créance de dividende intragroupe constitue, dans les comptes consolidés, un élément monétaire comptabilisé exposé au risque de change.
+   - La question vise uniquement les modèles IFRS de haut niveau applicables à la couverture de la composante change de cette créance en consolidation.
+
+## Recommandation
+
+**NON**
+
+Dans cette situation, une documentation de couverture de type couverture d’investissement net ne vise pas la partie change d’une créance de dividende comptabilisée. Le traitement pertinent ressort donc de l’absence de comptabilité de couverture, avec comptabilisation normale des effets de change en résultat.
+
+## Points Opérationnels
+
+   - La conclusion doit être appréciée au niveau des comptes consolidés, puisque la question porte sur un dividende intragroupe.
+   - Sur les faits fournis, la piste de documentation à tester puis écarter est la couverture d’investissement net, car son champ est limité aux net assets d’une activité étrangère.
+   - En pratique, sans comptabilité de couverture applicable, les écarts de change sur la créance de dividende suivent le traitement normal en résultat.
+   - Toute documentation de couverture devrait être en place dès l’origine de la relation de couverture ; ici, le contexte fourni ne permet pas de rattacher la créance à un hedge de net investment.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture d’investissement net | NON | - (non spécifiées) |
+| 2. Absence de comptabilité de couverture | OUI | - (non spécifiées) |
+
+### 1. Couverture d’investissement net
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+Les extraits fournis limitent ce modèle au risque de change provenant d’un investissement net dans une activité étrangère et à un montant de net assets de cette activité. Ici, le fait décrit est une créance de dividende intragroupe déjà comptabilisée, donc ce n’est pas, sur ces faits, la partie change d’un investissement net à documenter en consolidation.
+
+**Implications pratiques**: Cette documentation ne peut pas être retenue, sur la base des faits donnés, pour la composante change de la créance de dividende.
+
+**Référence**:
+ - 6
+    >This Interpretation applies only to hedges of net investments in foreign operations
+ - 10
+    >the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets
+ - 10
+    >Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.
+
+### 2. Absence de comptabilité de couverture
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+Dans les faits décrits, la créance de dividende reste un actif financier comptabilisé sans relation de couverture admissible identifiée dans le contexte fourni. Les gains ou pertes d’un actif financier au coût amorti, y compris les effets de change visés par les extraits, sont alors reconnus en résultat selon les règles ordinaires.
+
+**Implications pratiques**: La composante change de la créance de dividende est comptabilisée en résultat, sans OCI de couverture.
+
+**Référence**:
+ - 5.7.2
+    >A gain or loss on a financial asset that is measured at amortised cost ... shall be recognised in profit or loss
+ - 5.7.1
+    >A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss unless
+ - 5.7.1A
+    >(See paragraph B5.7.2 for guidance on foreign exchange gains or losses.)

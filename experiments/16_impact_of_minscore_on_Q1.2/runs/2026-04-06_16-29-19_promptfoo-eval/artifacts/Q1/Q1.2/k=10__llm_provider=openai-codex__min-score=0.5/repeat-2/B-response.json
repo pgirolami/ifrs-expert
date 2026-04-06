@@ -1,0 +1,75 @@
+{
+  "assumptions_fr": [
+    "La question vise uniquement les comptes consolidés et la partie change d’un dividende intragroupe déjà comptabilisé en créance.",
+    "La créance de dividende est une position intragroupe et non un investissement net dans une activité étrangère.",
+    "L’analyse est limitée aux trois modèles de couverture identifiés en amont et aux extraits fournis."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "Au vu des extraits fournis, aucune des trois documentations ne ressort comme applicable en consolidation à la composante change d’une créance de dividende intragroupe. Le seul cas spécifiquement traité pour un risque de change en consolidation est la couverture d’un investissement net dans une activité étrangère, ce qui ne correspond pas à un dividende intragroupe."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "non",
+      "reasoning_fr": "Les extraits fournis mentionnent la couverture de juste valeur comme modèle IFRS 9, mais ils ne donnent aucune base spécifique permettant de documenter en consolidation la partie change d’une créance de dividende intragroupe. Dans cette situation précise, le poste visé est intragroupe et la documentation fournie ne traite pas ce cas.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sur la base du seul corpus fourni, cette voie ne peut pas être retenue pour ce dividende intragroupe en consolidation.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "B6.6.16",
+          "excerpt": "For some types of fair value hedges"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Les extraits fournis décrivent des mécanismes de présentation et de reclassement des couvertures de flux, mais sans traiter la couverture en consolidation d’un dividende intragroupe porté en créance. Dans ce cas précis, aucun passage fourni ne relie ce dividende intragroupe éliminé en consolidation à un schéma de cash flow hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le corpus fourni ne permet pas de soutenir une documentation de cash flow hedge sur cette créance de dividende intragroupe en consolidation.",
+      "references": [
+        {
+          "section": "B6.6.14",
+          "excerpt": "the reclassified hedging instrument gains or losses"
+        },
+        {
+          "section": "B6.6.15",
+          "excerpt": "present the hedging gains or losses"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "IFRIC 16 vise uniquement le risque de change provenant d’un investissement net dans une activité étrangère et précise que l’interprétation ne doit pas être appliquée par analogie à d’autres couvertures. Un dividende intragroupe comptabilisé en créance n’est pas, dans les faits décrits, un investissement net.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette documentation n’est pas disponible pour couvrir la partie change d’un dividende intragroupe en consolidation.",
+      "references": [
+        {
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "section": "10",
+          "excerpt": "the hedged item can be an amount of net assets"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "En consolidation, la documentation doit être appréciée au niveau du risque effectivement couvert dans les états financiers consolidés, et non seulement au niveau d’une écriture intragroupe.",
+    "Au vu des extraits fournis, le seul modèle change explicitement documenté pour un risque de change en consolidation est la couverture d’investissement net dans une activité étrangère.",
+    "Si une couverture existe économiquement, il faut éviter de la documenter en consolidation comme couverture du dividende intragroupe lui-même sur la seule base du corpus fourni."
+  ]
+}

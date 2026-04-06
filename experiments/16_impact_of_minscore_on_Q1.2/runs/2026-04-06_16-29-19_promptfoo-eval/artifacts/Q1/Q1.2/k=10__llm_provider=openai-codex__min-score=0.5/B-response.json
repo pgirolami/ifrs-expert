@@ -1,0 +1,81 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe est exposée à un risque de change pris en compte dans les comptes consolidés.",
+    "L’analyse est limitée aux trois modèles de comptabilité de couverture déjà identifiés et aux extraits fournis."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, une documentation de couverture peut être envisagée au titre d’une couverture de juste valeur ou d’une couverture de flux de trésorerie, sous réserve de satisfaire aux exigences de désignation, de documentation et d’efficacité d’IFRS 9. En revanche, la couverture d’un investissement net ne vise pas, sur ces faits, une créance de dividende comptabilisée."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, le dividende est déjà comptabilisé en créance : il existe donc un poste reconnu dont la composante change peut, en consolidation, faire l’objet d’une relation de couverture si la désignation et l’efficacité sont documentées. Le contexte confirme l’existence du modèle de fair value hedge en IFRS 9, mais ne fournit pas les critères détaillés d’éligibilité du poste ; l’application reste donc conditionnelle.",
+      "conditions_fr": [
+        "La relation de couverture doit être formellement désignée et documentée dès l’origine.",
+        "Les exigences d’efficacité de la couverture prévues par IFRS 9 doivent être satisfaites en comptes consolidés."
+      ],
+      "practical_implication_fr": "Cette voie permettrait de documenter la couverture de la variation liée au change sur une créance déjà reconnue.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "A gain or loss on financial assets or financial liabilities that are hedged items in a hedging relationship shall be recognised"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si l’objectif de la documentation est de couvrir la variabilité des encaissements futurs du dividende due au change, ce modèle peut être envisagé en consolidation. Le contexte montre bien que le cash flow hedge est un modèle IFRS 9 distinct, avec recyclage ultérieur depuis la réserve de couverture ; toutefois, les critères précis d’éligibilité ne figurent pas dans les extraits, d’où une applicabilité seulement sous conditions.",
+      "conditions_fr": [
+        "La documentation doit viser la variabilité des flux futurs du dividende liée au change.",
+        "La relation doit respecter les exigences IFRS 9 de désignation, de documentation et d’efficacité."
+      ],
+      "practical_implication_fr": "Cette voie viserait la composante change des encaissements futurs plutôt que la seule réévaluation de la créance.",
+      "references": [
+        {
+          "section": "B6.6.14",
+          "excerpt": "reclassified from the cash flow hedge reserve to profit or loss"
+        },
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net à l’étranger",
+      "applicability": "non",
+      "reasoning_fr": "Sur les faits donnés, l’élément visé est une créance de dividende intragroupe déjà comptabilisée, et non un investissement net dans une activité à l’étranger. Or IFRIC 16 limite ce modèle au risque de change provenant d’un net investment in a foreign operation ; ce n’est pas la qualification décrite ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette documentation ne paraît pas adaptée pour couvrir la partie change d’une créance de dividende intragroupe.",
+      "references": [
+        {
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le choix de la documentation doit être arrêté en fonction de ce que vous cherchez à couvrir en consolidation : la réévaluation de la créance ou la variabilité des encaissements futurs.",
+    "Pour les approches 1 et 2, la documentation doit être mise en place de manière formelle avec désignation claire du risque de change et du ou des instruments de couverture.",
+    "La couverture d’investissement net doit être écartée ici sauf si le fait couvert était requalifié en investissement net dans une activité étrangère, ce qui n’est pas le cas décrit.",
+    "Les extraits fournis confirment l’existence des trois modèles IFRS, mais pas l’ensemble des tests détaillés d’éligibilité ; une mise en œuvre pratique suppose donc de vérifier ces exigences avant comptabilisation."
+  ]
+}

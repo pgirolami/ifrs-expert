@@ -245,7 +245,7 @@ We ran the question in each language through the query command
 The retrieved documents are very different. Note that all IFRIC 16 documents are below 0.55 which is our current retrieval threshold, used to weed out non-sensical queries.
 
 | Language | IFRIC-16 | IFRS-9 |
-|----------|------|-------|-------------|-------|----------|--------|
+|----------|------|-------|
 | French | 3 (0.51), 4 (0.51), 5 (0.548), 13 (0.53), 14 (0.53), 17 (0.52), 18 (0.52), 18A (0.51), AG5 (0.51), AG8 (0.51) | 4.2.2 (0.59), 5.7.1A (0.57), B2.1 (0.56), B2.2 (0.57), B2.6 (0.60), B3.2.10 (0.56), B3.2.17 (0.56), B5.7.1 (0.56), B5.7.9 (0.56), B7.2.3 (0.56) |
 | English | 2 (0.68), 3 (0.69), 4 (0.67), 5 (0.70), 7 (0.66), 10 (0.66), 13 (0.69), 14 (0.69), AG4 (0.65), AG5 (0.65) | 6.3.5 (0.66), 6.3.6 (0.69), 6.5.16 (0.66), B6.3.1 (0.66), B6.3.4 (0.69), 6.5.13 (0.67), B6.3.2 (0.66), B6.3.5 (0.70), B6.3.6 (0.69), B6.5.39 (0.67) |
 

@@ -1,0 +1,78 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe génère bien un risque de change dans les comptes consolidés.",
+    "La question porte uniquement sur les grandes modalités IFRS de documentation de couverture de ce risque de change, et non sur une analyse détaillée d’éligibilité de l’instrument de couverture."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, la documentation de couverture paraît envisageable surtout comme couverture de juste valeur de la créance de dividende déjà comptabilisée. La couverture de flux de trésorerie n’est pas la lecture la plus adaptée à une créance déjà reconnue, et la couverture d’investissement net ne vise pas, sur ces faits, la créance de dividende."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, le dividende a déjà été comptabilisé en créance dans les comptes consolidés. Le risque de change porte donc sur un poste reconnu, ce qui correspond le plus naturellement à une logique de couverture de juste valeur de cette créance. L’approche est donc pertinente si la documentation de couverture vise explicitement la variation liée au change sur la créance reconnue.",
+      "conditions_fr": [
+        "La créance de dividende est bien reconnue dans les comptes consolidés au moment de la désignation.",
+        "La documentation identifie clairement le risque de change couvert sur cette créance."
+      ],
+      "practical_implication_fr": "Documenter la relation de couverture sur la créance comptabilisée et suivre les variations de change du poste couvert et de l’instrument de couverture.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "B5.7.2",
+          "excerpt": "foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Sur les faits donnés, le dividende n’est plus un flux futur seulement attendu : il a déjà été comptabilisé en créance. Le risque de change concerne donc un actif monétaire reconnu, et non principalement des flux futurs à venir au sens le plus naturel de ce modèle. Cette approche n’apparaît donc pas adaptée à cette situation précise.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette voie ne devrait pas être retenue pour documenter le change d’une créance de dividende déjà reconnue.",
+      "references": [
+        {
+          "section": "B6.6.14",
+          "excerpt": "reclassified from the cash flow hedge reserve to profit or loss"
+        },
+        {
+          "section": "B5.7.2",
+          "excerpt": "foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net dans une activité à l’étranger",
+      "applicability": "non",
+      "reasoning_fr": "La question vise la partie change d’un dividende intragroupe comptabilisé en créance. Sur ces faits, l’exposition décrite est celle d’une créance de dividende et non celle d’un investissement net dans une activité étrangère. Ce modèle de couverture ne correspond donc pas directement à l’élément couvert ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas documenter la créance de dividende comme un hedge de net investment sur la seule base des faits fournis.",
+      "references": [
+        {
+          "section": "B5.7.2",
+          "excerpt": "a hedge of a net investment"
+        },
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le moment clé est la date à laquelle la créance de dividende est reconnue dans les comptes consolidés, car cela oriente vers une couverture de juste valeur plutôt que de flux futurs.",
+    "La documentation doit viser explicitement le risque de change sur la créance intragroupe, et non le dividende comme notion générique.",
+    "Dans les comptes consolidés, l’analyse doit être faite sur l’exposition effectivement reconnue au niveau du groupe.",
+    "Les extraits fournis identifient les modèles de couverture, mais ne donnent pas ici les critères détaillés de qualification ; la mise en œuvre pratique doit donc rester strictement alignée sur le poste couvert décrit."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend creates a foreign currency exposure in the consolidated financial statements.",
+    "The question is asking about hedge accounting models that could be documented in consolidated financial statements for that foreign exchange exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context refers to IFRS 9 hedge accounting and presentation of gains and losses in other comprehensive income with later reclassification to profit or loss, which is a distinct top-level hedge accounting model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to fair value hedge accounting, including recognition of hedge-related gains or losses in profit or loss, making it a distinct top-level hedge accounting model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 in the context specifically addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation, with effective hedge results recognised in other comprehensive income."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context distinguishes hedge accounting from ordinary accounting outcomes, under which fair value or foreign exchange effects are recognised directly in profit or loss or other comprehensive income as otherwise required."
+    }
+  ]
+}

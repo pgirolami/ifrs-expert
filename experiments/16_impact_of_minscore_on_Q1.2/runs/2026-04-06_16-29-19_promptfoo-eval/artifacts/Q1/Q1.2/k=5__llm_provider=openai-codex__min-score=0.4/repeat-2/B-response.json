@@ -1,0 +1,41 @@
+{
+  "assumptions_fr": [
+    "La question porte uniquement sur les comptes consolidés et sur une couverture de change documentée au titre d’IFRS 9 / IFRIC 16.",
+    "Le fait décrit est un dividende intragroupe déjà comptabilisé en créance, et non une désignation explicite d’un montant de net assets d’une activité étrangère comme élément couvert.",
+    "L’analyse est limitée aux traitements explicitement ressortis en amont, sans introduire d’autre type de relation de couverture."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "Sur les extraits fournis, la seule voie identifiée est la couverture d’un investissement net dans une activité étrangère. Un dividende intragroupe comptabilisé en créance ne relève pas, en tant que tel, de ce mécanisme dans les comptes consolidés."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Dans cette situation, l’objet visé est la composante change d’une créance de dividende intragroupe déjà comptabilisée. Or IFRIC 16 limite son champ aux couvertures du risque de change provenant d’un investissement net dans une activité étrangère et précise qu’il ne faut pas l’appliquer par analogie à d’autres couvertures. Sur les faits donnés, la créance de dividende n’est pas présentée comme un montant de net assets d’une activité étrangère.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Vous ne pouvez pas fonder la documentation de couverture consolidée de cette créance de dividende sur le modèle de couverture d’investissement net au vu des extraits fournis.",
+      "references": [
+        {
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting."
+        },
+        {
+          "section": "10",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        },
+        {
+          "section": "2",
+          "excerpt": "the gain or loss on the hedging instrument that is determined to be an effective hedge of the net investment is recognised in other comprehensive income"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "En consolidation, la base documentaire disponible ici vise uniquement un risque de change attaché à un investissement net dans une activité étrangère.",
+    "Le fait que le dividende soit déjà comptabilisé en créance oriente le sujet vers un poste intragroupe distinct du net investment, sans fondement explicite de couverture dans les extraits fournis.",
+    "Si une stratégie de couverture existe au niveau groupe, sa documentation ne peut pas être rattachée à IFRIC 16 pour ce dividende sur la base du seul corpus fourni."
+  ]
+}

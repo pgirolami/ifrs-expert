@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is limited to hedge accounting possibilities in consolidated financial statements for the foreign currency component of an intragroup dividend receivable.",
+    "The dividend-related receivable creates a foreign currency exposure that could be considered for hedge accounting under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to fair value hedge accounting as a recognized IFRS 9 hedge accounting model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to cash flow hedges as a distinct IFRS 9 hedge accounting model with OCI and reclassification mechanics."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IFRIC 16 guidance specifically addressing hedge accounting for foreign currency risk arising from a net investment in a foreign operation."
+    }
+  ]
+}

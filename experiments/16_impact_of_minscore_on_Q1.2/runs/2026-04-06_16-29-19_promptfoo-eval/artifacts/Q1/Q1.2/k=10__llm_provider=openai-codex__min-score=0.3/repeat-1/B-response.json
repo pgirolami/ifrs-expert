@@ -1,0 +1,100 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe crée bien une exposition de change dans les comptes consolidés.",
+    "La question porte sur la possibilité de documenter une relation de couverture IFRS 9 sur cette composante de change dans les comptes consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, une documentation de couverture peut être envisagée surtout en couverture de flux de trésorerie ou en couverture de juste valeur si l’exposition de change subsiste réellement en consolidation. La couverture d’un investissement net ne vise pas, sur ces faits, un dividende intragroupe comptabilisé en créance."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si la partie change du dividende correspond, dans les comptes consolidés, à des flux de trésorerie futurs exposés au risque de change, ce modèle peut être documenté. Le contexte IFRS 9 prévoit une comptabilisation en OCI avec reclassement ultérieur en résultat, ce qui est cohérent avec une couverture d’un flux futur en devise. Cela suppose toutefois que l’exposition existe encore au niveau consolidé et ne soit pas neutralisée par l’élimination intragroupe.",
+      "conditions_fr": [
+        "L’exposition de change doit porter sur des flux futurs du dividende encore présents dans les comptes consolidés.",
+        "La relation de couverture doit être formellement documentée au niveau consolidé."
+      ],
+      "practical_implication_fr": "La partie efficace irait en OCI puis serait reclassée en résultat lorsque l’effet du change sur le dividende affecte le résultat consolidé.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "B6.6.14",
+          "excerpt": "reclassified hedging instrument gains or losses shall be apportioned"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Une créance déjà comptabilisée est, par nature, un poste reconnu; si sa composante de change demeure exposée dans les comptes consolidés, une documentation de couverture de juste valeur peut être envisagée. Le contexte mentionne explicitement la couverture de juste valeur et la reconnaissance en résultat. En revanche, cette voie n’est pertinente que si le risque couvert est bien celui d’un poste reconnu au niveau consolidé.",
+      "conditions_fr": [
+        "La créance de dividende et sa composante de change doivent rester pertinentes en consolidation comme poste reconnu exposé.",
+        "La relation de couverture doit être documentée et suivie dans les comptes consolidés."
+      ],
+      "practical_implication_fr": "Les effets de couverture et ceux du poste couvert sur le risque désigné seraient reflétés en résultat consolidé.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Le contexte IFRIC 16 vise le risque de change provenant d’un investissement net dans une activité étrangère, c’est-à-dire des net assets de l’opération étrangère. Ici, la question porte sur un dividende intragroupe comptabilisé en créance, pas sur la couverture de l’investissement net lui-même. Sur ces faits, ce modèle ne cible donc pas l’objet couvert décrit.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette documentation ne correspond pas à la créance de dividende telle que décrite.",
+      "references": [
+        {
+          "section": "6",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "section": "10",
+          "excerpt": "the hedged item can be an amount of net assets"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "no_hedge_accounting",
+      "label_fr": "Sans comptabilité de couverture",
+      "applicability": "oui",
+      "reasoning_fr": "À défaut de documentation de couverture admissible au niveau consolidé, l’entité reste dans le traitement ordinaire. Le contexte rappelle que, pour les éléments monétaires en devise, les écarts de change sont comptabilisés en résultat. Dans cette situation, c’est l’issue minimale et certaine si aucune relation de couverture n’est valablement mise en place.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La composante change de la créance est traitée selon les règles ordinaires, sans effet OCI de couverture.",
+      "references": [
+        {
+          "section": "B5.7.2",
+          "excerpt": "foreign exchange gains and losses on monetary assets and monetary liabilities to be recognised in profit or loss"
+        },
+        {
+          "section": "5.7.2",
+          "excerpt": "shall be recognised in profit or loss"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est de vérifier que l’exposition de change existe encore dans les comptes consolidés après éliminations intragroupe.",
+    "Si une couverture est retenue, la documentation doit être établie au niveau consolidé dès la désignation de la relation.",
+    "La couverture d’investissement net ne doit pas être utilisée par analogie pour un dividende intragroupe.",
+    "À défaut de relation de couverture documentée et maintenue, les écarts de change relèvent du traitement ordinaire en résultat."
+  ]
+}

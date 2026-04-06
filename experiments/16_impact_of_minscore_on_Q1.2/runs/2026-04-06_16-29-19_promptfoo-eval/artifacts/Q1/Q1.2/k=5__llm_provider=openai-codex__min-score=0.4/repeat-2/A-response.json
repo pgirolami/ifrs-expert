@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is limited to hedge accounting approaches that are explicitly grounded in the provided IFRS 9 and IFRIC 16 extracts.",
+    "The requested 'documentation de couverture' refers to hedge accounting in consolidated financial statements for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 specifically addresses hedge accounting in consolidated financial statements for foreign currency risk arising from a net investment in a foreign operation, with effective hedge results recognised in OCI and reclassified on disposal."
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe génère bien un risque de change dans les comptes consolidés.",
+    "La question vise uniquement les modèles de comptabilité de couverture IFRS pertinents pour ce risque de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, la documentation de couverture peut être envisagée principalement en couverture de juste valeur sur la partie change de la créance comptabilisée. La couverture de flux de trésorerie et la couverture d'investissement net ne paraissent pas adaptées ici, sauf si les faits économiques couverts sont en réalité différents de la créance de dividende elle-même."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui",
+      "reasoning_fr": "Ici, le poste exposé est une créance déjà comptabilisée au bilan consolidé. Le risque visé est la composante change de ce poste monétaire, dont les variations affectent le résultat ; un modèle de couverture de juste valeur est donc cohérent avec cette situation spécifique. Le contexte IFRS 9 reconnaît explicitement les gains et pertes dans le cadre d'une relation de couverture et renvoie au modèle de fair value hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation viserait la composante change de la créance de dividende comptabilisée en consolidation.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "5.7.1A",
+          "excerpt": "A gain or loss on financial assets or financial liabilities that are hedged items in a hedging relationship"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Dans les faits décrits, l'exposition porte sur une créance de dividende déjà reconnue, et non sur des flux futurs hautement probables non encore comptabilisés. Le risque de change se matérialise sur un actif existant en consolidation ; la situation décrite ne correspond donc pas au schéma naturel d'une cash flow hedge. Le contexte fourni mentionne ce modèle, mais ne le rattache pas à un poste déjà reconnu comme cette créance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne paraît pas approprié pour couvrir la partie change d'une créance de dividende déjà comptabilisée.",
+      "references": [
+        {
+          "section": "5.7.1",
+          "excerpt": "it is part of a hedging relationship"
+        },
+        {
+          "section": "B6.6.15",
+          "excerpt": "reclassified from the cash flow hedge reserve to profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'un investissement net à l'étranger",
+      "applicability": "non",
+      "reasoning_fr": "Le poste identifié dans la question est une créance de dividende intragroupe, pas l'investissement net dans une activité à l'étranger. La partie change de ce dividende ne correspond donc pas, dans cette situation, à l'objet d'une net investment hedge. Le contexte IFRS cite ce modèle pour les expositions de change liées à un investissement net, ce qui est distinct du fait décrit.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation ne devrait pas être construite comme une couverture d'investissement net pour cette créance de dividende.",
+      "references": [
+        {
+          "section": "B5.7.2",
+          "excerpt": "a hedge of a net investment"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La documentation doit être mise en place à la désignation de la relation de couverture et viser explicitement la composante change de la créance.",
+    "En consolidation, il faut s'assurer que l'exposition de change subsiste effectivement après les éliminations intragroupe.",
+    "Le choix recommandé ici repose sur le fait que le dividende est déjà comptabilisé en créance, donc sur un poste existant et non sur un flux futur non reconnu.",
+    "Si les faits réels diffèrent et que l'entité cherche en substance à couvrir un autre risque de change que celui de la créance reconnue, la conclusion pourrait changer."
+  ]
+}

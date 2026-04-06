@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is the foreign exchange risk, in consolidated financial statements, related to an intragroup dividend receivable involving different functional currencies within a group.",
+    "The requested 'documentation de couverture' refers to IFRS hedge accounting documentation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context expressly addresses hedge accounting for foreign currency risk arising from a net investment in a foreign operation, including where the hedging instrument may be held within the group and OCI recycling on disposal."
+    }
+  ]
+}

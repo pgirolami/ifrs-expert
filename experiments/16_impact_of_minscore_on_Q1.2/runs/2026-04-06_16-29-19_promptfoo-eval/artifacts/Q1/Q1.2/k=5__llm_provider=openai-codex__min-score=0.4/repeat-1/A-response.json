@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns foreign exchange risk in consolidated financial statements arising from an intragroup dividend receivable denominated in a currency different from the relevant functional currency.",
+    "The question is limited to hedge accounting approaches evidenced in the provided context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context explicitly discusses hedge accounting for foreign currency risk arising from a net investment in a foreign operation under IFRIC 16 and IFRS 9."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context explicitly refers to fair value hedge accounting in IFRS 9 when describing gains and losses of hedged items."
+    }
+  ]
+}
