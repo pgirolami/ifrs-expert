@@ -46,6 +46,7 @@ MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
 DEFAULT_K: Final[int] = 5
 DEFAULT_MIN_SCORE: Final[float] = 0.55
 DEFAULT_EXPAND: Final[int] = 5
+DEFAULT_RETRIEVAL_MODE: Final[str] = "text"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 
 CANNED_JUSTIFICATION: Final[str] = (
@@ -165,6 +166,7 @@ class ExtractionOptions:
     k: int = DEFAULT_K
     min_score: float = DEFAULT_MIN_SCORE
     expand: int = DEFAULT_EXPAND
+    retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
     # Key-value pairs for artifact directory naming
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
 
@@ -182,6 +184,15 @@ def _extract_float_from_mapping(mapping: dict[str, object], key: str, fallback: 
     value = mapping.get(key)
     if isinstance(value, (int, float)) and 0.0 <= value <= 1.0:
         return float(value)
+    return fallback
+
+
+def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: str) -> str:
+    """Extract a retrieval mode override from one mapping."""
+    for key in ("retrieval-mode", "retrieval_mode"):
+        value = mapping.get(key)
+        if isinstance(value, str) and value in {"text", "titles"}:
+            return value
     return fallback
 
 
@@ -211,6 +222,7 @@ def _extract_options(
     k = DEFAULT_K
     min_score = DEFAULT_MIN_SCORE
     expand = DEFAULT_EXPAND
+    retrieval_mode = DEFAULT_RETRIEVAL_MODE
     config_kv: dict[str, str] = {}
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
@@ -218,10 +230,17 @@ def _extract_options(
         min_score = _extract_float_from_mapping(mapping, "min-score", min_score)
         # Support both 'e' and 'expand' keys
         expand = _extract_int_from_mapping(mapping, "e", _extract_int_from_mapping(mapping, "expand", expand))
+        retrieval_mode = _extract_retrieval_mode_from_mapping(mapping, retrieval_mode)
         # Merge config key-values for artifact directory naming
         config_kv = _merge_config_kv(config_kv, _build_config_kv(mapping))
 
-    return ExtractionOptions(k=k, min_score=min_score, expand=expand, config_kv=config_kv)
+    return ExtractionOptions(
+        k=k,
+        min_score=min_score,
+        expand=expand,
+        retrieval_mode=retrieval_mode,
+        config_kv=config_kv,
+    )
 
 
 def _extract_llm_provider_from_mapping(mapping: dict[str, object]) -> str | None:
@@ -360,7 +379,12 @@ def _run_live(
 
     command = create_answer_command(
         query=question,
-        options=AnswerOptions(k=options.k, min_score=options.min_score, expand=options.expand),
+        options=AnswerOptions(
+            k=options.k,
+            min_score=options.min_score,
+            expand=options.expand,
+            retrieval_mode=options.retrieval_mode,
+        ),
     )
     result = command.execute()
     _write_promptfoo_artifacts(result=result, context=context, config_kv=options.config_kv)

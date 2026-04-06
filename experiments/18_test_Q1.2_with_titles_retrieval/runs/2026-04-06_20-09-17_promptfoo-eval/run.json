@@ -1,0 +1,10 @@
+{
+  "description": "promptfoo eval",
+  "artifacts_path": "experiments/18_test_Q1.2_with_titles_retrieval/runs/2026-04-06_20-09-17_promptfoo-eval/artifacts",
+  "promptfoo_config_dir": "experiments/18_test_Q1.2_with_titles_retrieval/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "variant=Q1.2\u00a4"
+  ],
+  "created_at_utc": "2026-04-06T20:09:17.036713+00:00"
+}

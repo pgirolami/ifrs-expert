@@ -150,23 +150,33 @@ def test_apply_llm_provider_override_updates_environment(monkeypatch: pytest.Mon
     assert os.environ["LLM_PROVIDER"] == "anthropic"
 
 
-def test_extract_options_reads_k_min_score_expand_from_config(
+def test_extract_options_reads_k_min_score_expand_and_retrieval_mode_from_config(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """ExtractionOptions should pull k, min_score, and expand from provider config."""
+    """ExtractionOptions should pull answer options from provider config."""
     run_answer = _load_run_answer_module()
 
     options = run_answer._extract_options(
-        provider_options={"config": {"llm_provider": "openai", "k": 10, "min-score": 0.7, "expand": 3}},
+        provider_options={
+            "config": {
+                "llm_provider": "openai",
+                "k": 10,
+                "min-score": 0.7,
+                "expand": 3,
+                "retrieval-mode": "titles",
+            }
+        },
         context={},
     )
 
     assert options.k == 10
     assert options.min_score == 0.7
     assert options.expand == 3
+    assert options.retrieval_mode == "titles"
     assert "k" in options.config_kv
     assert "min-score" in options.config_kv
     assert "llm_provider" in options.config_kv
+    assert options.config_kv["retrieval-mode"] == "titles"
 
 
 def test_extract_options_supports_e_key_for_expand() -> None:
@@ -215,6 +225,7 @@ def test_extract_options_defaults_when_no_overrides() -> None:
     assert options.k == run_answer.DEFAULT_K
     assert options.min_score == run_answer.DEFAULT_MIN_SCORE
     assert options.expand == run_answer.DEFAULT_EXPAND
+    assert options.retrieval_mode == run_answer.DEFAULT_RETRIEVAL_MODE
 
 
 def test_build_config_dirname_from_kv_pairs() -> None:
@@ -234,6 +245,18 @@ def test_build_config_dirname_falls_back_to_llm_provider_env_when_empty(monkeypa
     dirname = run_answer._build_config_dirname({})
 
     assert dirname == "anthropic"
+
+
+def test_extract_options_accepts_retrieval_mode_alias() -> None:
+    """The wrapper should accept retrieval_mode as well as retrieval-mode."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={"config": {"retrieval_mode": "titles"}},
+        context={},
+    )
+
+    assert options.retrieval_mode == "titles"
 
 
 def test_build_config_kv_excludes_nested_dicts() -> None:
@@ -269,3 +292,39 @@ def test_extract_float_from_mapping_validates_range() -> None:
 
     assert run_answer._extract_float_from_mapping({"min-score": 0.75}, "min-score", 0.55) == 0.75
     assert run_answer._extract_float_from_mapping({"min-score": 1.5}, "min-score", 0.55) == 0.55  # Out of range, uses fallback
+
+
+def test_run_live_passes_retrieval_mode_to_answer_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Promptfoo wrapper should forward retrieval mode into the answer pipeline."""
+    run_answer = _load_run_answer_module()
+    captured: dict[str, object] = {}
+
+    class _FakeCommand:
+        def execute(self) -> AnswerCommandResult:
+            return AnswerCommandResult(query="Question?", success=True, prompt_b_raw_response='{"ok": true}')
+
+    def _fake_create_answer_command(query: str, options: object) -> _FakeCommand:
+        captured["query"] = query
+        captured["options"] = options
+        return _FakeCommand()
+
+    monkeypatch.setattr(run_answer, "create_answer_command", _fake_create_answer_command)
+    monkeypatch.setattr(run_answer, "setup_logging", lambda: None)
+    monkeypatch.setattr(run_answer, "load_dotenv", lambda: None)
+
+    exit_code, payload = run_answer._run_live(
+        question="Question?",
+        llm_provider=None,
+        context={},
+        options=run_answer.ExtractionOptions(k=7, min_score=0.4, expand=2, retrieval_mode="titles"),
+    )
+
+    assert exit_code == 0
+    assert payload == '{"ok": true}'
+    assert captured["query"] == "Question?"
+    answer_options = captured["options"]
+    assert isinstance(answer_options, run_answer.AnswerOptions)
+    assert answer_options.k == 7
+    assert answer_options.min_score == 0.4
+    assert answer_options.expand == 2
+    assert answer_options.retrieval_mode == "titles"

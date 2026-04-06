@@ -10,11 +10,12 @@ prompts:
 
 providers:
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=10 min-score=0.55'
+    label: 'OpenAI GPT 5.4 k=10 min-score=0.4 retrieval-mode=titles'
     config:
       llm_provider: 'openai-codex'
-      min-score: 0.55
+      min-score: 0.4
       k: 10
+      retrieval-mode: 'titles'
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
   #   label: 'Mistral Large 3 k=10 min-score=0.55'
   #   config:

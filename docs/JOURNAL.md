@@ -100,4 +100,5 @@ It documents how the system evolved from a single prompt to a structured, evalua
     - Evaluate the impact of min_score and k on retrieval for worst-performing question Q1.2
         - [Experiment 16](../experiments/16_impact_of_minscore_on_Q1.2/EXPERIMENTS.md)
         - [Experiment 17](../experiments/17_promptfoo_baseline_codex_k=10_Q1/EXPERIMENTS.md) recomputes the baseline on Q1 and shows k=10 improves the approach stability and the overall results
-    - Ingest section titles and section tree. Query on section titles and expand to all chunks in section subtree to see if retrieval is improved to address issue found in experiment 15. Not merged & will evaluate later because Experiment 16 had positive results.
+    - Ingest section titles and section tree. Query on section titles and expand to all chunks in section subtree to see if retrieval is improved to address issue found in experiment 15.
+        - [Experiment 18](../experiments/18_test_Q1.2_with_titles_retrieval/EXPERIMENTS.md)
