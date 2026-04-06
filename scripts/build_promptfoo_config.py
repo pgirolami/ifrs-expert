@@ -94,9 +94,11 @@ class PromptfooConfigBuilder:
         self._project_root = project_root
         self._base_config_path = project_root / "promptfoo_src" / "base.yaml"
         self._questions_root = project_root / "experiments" / "00_QUESTIONS"
+        self._output_path: Path | None = None
 
-    def build_text(self) -> str:
+    def build_text(self, output_path: Path) -> str:
         """Build the full Promptfoo YAML text."""
+        self._output_path = output_path
         base_config = self._load_base_config()
         families = self._load_families()
         logger.info(f"Building Promptfoo config from {len(families)} family file(s)")
@@ -121,7 +123,7 @@ class PromptfooConfigBuilder:
 
     def write_output(self, output_path: Path) -> None:
         """Write the generated Promptfoo config to disk."""
-        output_text = self.build_text()
+        output_text = self.build_text(output_path)
         output_path.write_text(output_text, encoding="utf-8")
         logger.info(f"Wrote generated Promptfoo config to {output_path}")
 
@@ -229,17 +231,23 @@ class PromptfooConfigBuilder:
 
     def _render_test_case(self, family: PromptfooFamily, variant: PromptfooVariant, variant_index: int) -> list[str]:
         """Render one Promptfoo test case."""
-        question_path = (family.family_dir / variant.file_name).relative_to(self._project_root).as_posix()
+        if self._output_path is None:
+            raise RuntimeError("_output_path must be set before calling _render_test_case")
+
+        question_path = family.family_dir / variant.file_name
+        # Use absolute path for the question file, since the config may be in a different directory
+        question_uri = question_path.absolute().as_posix()
+        relative_question_path = question_path.relative_to(self._project_root).as_posix()
         # Suffix variant_id with '¤' so that promptfoo's `.includes()` filter
         # can distinguish Q1.2¤ from Q1.20¤ without relying on regex.
         metadata: YamlObject = {
             "family": family.family_id,
             "variant": f"{variant.variant_id}¤",
-            "question_path": question_path,
+            "question_path": relative_question_path,
         }
         description = f"{variant.variant_id} - {variant.description}"
 
-        lines = self._render_mapping_entry("vars", {"question": f"file://{question_path}"}, indent=2, is_list_item=True)
+        lines = self._render_mapping_entry("vars", {"question": f"file://{question_uri}"}, indent=2, is_list_item=True)
         if family.options is not None:
             lines.extend(self._render_mapping_entry("options", family.options, indent=4))
         lines.extend(self._render_mapping_entry("metadata", metadata, indent=4))
