@@ -195,6 +195,9 @@ The per question results table above shows the clear pattern:
 4. **Deep-dive into Q1.15** to understand why approach extraction is inconsistent
 
 # Analysis by human
+We clearly have a retrieval issue with some of the questions. 
+
+## Retrieval is insufficient
 
 If we compare the chunks retrieved by top performers and low performers, IFRIC-16.13 and IFRS-9.6.3.6 is always present in top performers and absent in low performers. Their contents are the following:
 
@@ -220,10 +223,39 @@ functional currency of the entity entering into that transaction and the
 foreign currency risk will affect consolidated profit or loss.
 
 It is clear that 6.3.6 contains the key provision to cite to be able to give the correct answer.
-IFRIC-6 13 applies only if a net investment is possible which it isn't so it doesn't really matter. However, the fact that a "net investment" is mentioned may help the model identify it as an approach to consider.
+IFRIC-6 13 mentions a "net investment" which may help the model identify it as an approach to consider.
 
 In the pipeline, we expand 10 chunks around each of these so 6.3.6 helps get a little more context from section 6 overall.
 
-We clearly have a retrieval issue with some of the questions. It would make sense if the context contained all of section 6 and perhaps sections 5.
+## Multilingual embeddings may be insufficient
 
-The next step should be to experiment on the retrieval query not to be on the chunks themselves but on the section titles, and then to retrieve all the chunks in that section.
+The variant of question 1 is Q1.2
+>Un dividende intragroupe a été comptabilisé en créance.
+>De quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?
+
+Its translation is
+>An intra-group dividend was recognized as a receivable.
+>How can we apply hedge documentation in the consolidated financial statements to the foreign exchange component of this dividend?
+
+We ran the question in each language through the query command
+- without expansion
+- with no minimum
+- with k=10
+
+The retrieved documents are very different. Note that all IFRIC 16 documents are below 0.55 which is our current retrieval threshold, used to weed out non-sensical queries.
+
+| Language | IFRIC-16 | IFRS-9 |
+|----------|------|-------|-------------|-------|----------|--------|
+| French | 3 (0.51), 4 (0.51), 5 (0.548), 13 (0.53), 14 (0.53), 17 (0.52), 18 (0.52), 18A (0.51), AG5 (0.51), AG8 (0.51) | 4.2.2 (0.59), 5.7.1A (0.57), B2.1 (0.56), B2.2 (0.57), B2.6 (0.60), B3.2.10 (0.56), B3.2.17 (0.56), B5.7.1 (0.56), B5.7.9 (0.56), B7.2.3 (0.56) |
+| English | 2 (0.68), 3 (0.69), 4 (0.67), 5 (0.70), 7 (0.66), 10 (0.66), 13 (0.69), 14 (0.69), AG4 (0.65), AG5 (0.65) | 6.3.5 (0.66), 6.3.6 (0.69), 6.5.16 (0.66), B6.3.1 (0.66), B6.3.4 (0.69), 6.5.13 (0.67), B6.3.2 (0.66), B6.3.5 (0.70), B6.3.6 (0.69), B6.5.39 (0.67) |
+
+In English, paragraphs from section 6 are retrieved which is what we need. Scores are higher so it might be that the threshold is too low for French:
+- this is true for IFRIC 16 were paragraph 13 is at 0.53. If the minimum score was lower it would be retrieved
+- but it is not the case for IFRS-9: even with k=10, we see that paragraph 6 is never retrieved
+Although it is not guaranteed to work, it is an easy thing to test
+
+## Next steps
+- experiment on different min-score thresholds on Q1.2
+- retrieval query matching on the section titles and then to retrieve all the chunks in that section.
+- translating the question to English and then running the pipeline.
+

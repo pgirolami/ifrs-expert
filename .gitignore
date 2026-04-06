@@ -5,10 +5,8 @@ package
 __pycache__
 logs
 data
-promptfooconfig.yaml
-
 .worktrees/
 examples/ifrs/
-experiments/**/.promptfoo/
+experiments/**/.promptfoo/logs
 .env
 .DS_Store
