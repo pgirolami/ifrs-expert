@@ -183,11 +183,23 @@ Promptfoo details, commands, storage layout, and archive conventions are documen
 ## Demo
 
 ### Set up
-The assistant uses direct API calls to OpenAI, Anthropic, or Mistral. Set the provider and its API key via an environment variable or in the `.env` file (see `.env.example`).
+The assistant supports `openai`, `openai-codex`, `anthropic`, and `mistral` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
+
+Example using Mistral:
 
 ```bash
 export LLM_PROVIDER=mistral
 export MISTRAL_API_KEY=xxx
+```
+
+Example using OpenAI Codex OAuth:
+
+```bash
+codex login
+export LLM_PROVIDER=openai-codex
+export OPENAI_CODEX_MODEL=gpt-5.4
+# optional override if you do not use ~/.codex/auth.json
+# export CODEX_AUTH_FILE=/path/to/auth.json
 ```
 
 Run the full demo flow end-to-end with the following
