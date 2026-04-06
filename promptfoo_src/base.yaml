@@ -2,43 +2,44 @@ evaluateOptions:
   cache: false
   maxConcurrency: 3
   repeat: 3
+  showProgressBar: true
 
 
 prompts:
   - '{{question}}'
 
 providers:
-  - id: 'exec:uv run python scripts/run_answer.py'
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
     label: 'OpenAI GPT 5.4 k=5 min-score=0.5'
     config:
       llm_provider: 'openai-codex'
       min-score: 0.5
       k: 5
-  - id: 'exec:uv run python scripts/run_answer.py'
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
     label: 'OpenAI GPT 5.4 k=5 min-score=0.4'
     config:
       llm_provider: 'openai-codex'
       min-score: 0.4
       k: 5
-  - id: 'exec:uv run python scripts/run_answer.py'
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
     label: 'OpenAI GPT 5.4 k=10 min-score=0.5'
     config:
       llm_provider: 'openai-codex'
       min-score: 0.5
       k: 10
-  - id: 'exec:uv run python scripts/run_answer.py'
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
     label: 'OpenAI GPT 5.4 k=10 min-score=0.4'
     config:
       llm_provider: 'openai-codex'
       min-score: 0.4
       k: 10
-  - id: 'exec:uv run python scripts/run_answer.py'
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
     label: 'OpenAI GPT 5.4 k=10 min-score=0.3'
     config:
       llm_provider: 'openai-codex'
       min-score: 0.3
       k: 10
-  # - id: 'exec:uv run python scripts/run_answer.py'
+  # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
   #   label: 'Mistral Large 3'
   #   config:
   #     llm_provider: 'Mistral'

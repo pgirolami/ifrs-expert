@@ -66,13 +66,18 @@ class PromptfooEvalRunner:
         env[PROMPTFOO_ARTIFACTS_DIR_ENV] = str(run_layout.artifacts_dir)
         env[PROMPTFOO_CONFIG_DIR_ENV] = str(run_layout.promptfoo_config_dir)
 
-        logger.info(f"Building promptfooconfig.yaml before running Promptfoo into {run_layout.run_dir} with experiment database at {run_layout.promptfoo_config_dir}")
-        build_result = self._command_runner(["npm", "run", "eval:build"], env, self._project_root)
+        promptfoo_config_path = run_layout.run_dir / "promptfooconfig.yaml"
+
+        logger.info(f"Building promptfooconfig.yaml to {promptfoo_config_path}")
+        build_result = self._command_runner(
+            ["npm", "run", "eval:build", "--", "--output", str(promptfoo_config_path)],
+            env,
+            self._project_root,
+        )
         if build_result.returncode != 0:
             logger.error(f"Promptfoo config build failed with exit code {build_result.returncode}")
             return build_result.returncode
 
-        promptfoo_config_path = run_layout.promptfoo_config_dir / "promptfooconfig.yaml"
         eval_command = [
             "npm",
             "exec",
@@ -86,10 +91,10 @@ class PromptfooEvalRunner:
             *promptfoo_args,
         ]
         logger.info(f"Running Promptfoo eval with config {promptfoo_config_path} and database at {run_layout.promptfoo_config_dir}")
-        completed_process = self._command_runner(eval_command, env, self._project_root)
-        if completed_process.returncode != 0:
-            logger.warning(f"Promptfoo eval finished with exit code {completed_process.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
-        return completed_process.returncode
+        eval_result = self._command_runner(eval_command, env, self._project_root)
+        if eval_result.returncode != 0:
+            logger.warning(f"Promptfoo eval finished with exit code {eval_result.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
+        return eval_result.returncode
 
     def _build_run_layout(self, description: str | None) -> PromptfooRunLayout:
         """Build the archive layout for one run."""

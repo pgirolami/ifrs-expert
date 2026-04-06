@@ -162,7 +162,7 @@ class PromptfooConfigBuilder:
         family = PromptfooFamily(
             family_id=family_id,
             options=options,
-            assertions=assertions,
+            assertions=self._rewrite_file_uris(assertions),
             variants=variants,
             family_dir=family_path.parent,
         )
@@ -235,19 +235,16 @@ class PromptfooConfigBuilder:
             raise RuntimeError("_output_path must be set before calling _render_test_case")
 
         question_path = family.family_dir / variant.file_name
-        # Use absolute path for the question file, since the config may be in a different directory
-        question_uri = question_path.absolute().as_posix()
-        relative_question_path = question_path.relative_to(self._project_root).as_posix()
-        # Suffix variant_id with '¤' so that promptfoo's `.includes()` filter
-        # can distinguish Q1.2¤ from Q1.20¤ without relying on regex.
+        project_relative = question_path.relative_to(self._project_root)
+        relative_question_path = Path(os.path.relpath(question_path, start=self._output_path.parent)).as_posix()
         metadata: YamlObject = {
             "family": family.family_id,
             "variant": f"{variant.variant_id}¤",
-            "question_path": relative_question_path,
+            "question_path": project_relative.as_posix(),
         }
         description = f"{variant.variant_id} - {variant.description}"
 
-        lines = self._render_mapping_entry("vars", {"question": f"file://{question_uri}"}, indent=2, is_list_item=True)
+        lines = self._render_mapping_entry("vars", {"question": f"file://{relative_question_path}"}, indent=2, is_list_item=True)
         if family.options is not None:
             lines.extend(self._render_mapping_entry("options", family.options, indent=4))
         lines.extend(self._render_mapping_entry("metadata", metadata, indent=4))
@@ -260,6 +257,28 @@ class PromptfooConfigBuilder:
             lines.append(f"    assert: *{family.assertion_anchor}")
 
         return lines
+
+    def _rewrite_file_uris(self, value: YamlValue) -> YamlValue:
+        """Rewrite relative file:// URIs so they resolve from the generated config directory."""
+        if self._output_path is None:
+            raise RuntimeError("_output_path must be set before rewriting file URIs")
+
+        if isinstance(value, dict):
+            return {key: self._rewrite_file_uris(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [self._rewrite_file_uris(item) for item in value]
+        if not isinstance(value, str) or not value.startswith("file://"):
+            return value
+
+        raw_path = value.removeprefix("file://")
+        candidate_path = Path(raw_path)
+        if candidate_path.is_absolute():
+            return value
+
+        normalized_raw_path = raw_path.removeprefix("./")
+        absolute_target_path = self._project_root / normalized_raw_path
+        relative_target_path = Path(os.path.relpath(absolute_target_path, start=self._output_path.parent)).as_posix()
+        return f"file://{relative_target_path}"
 
     def _render_mapping(self, mapping: YamlObject, indent: int) -> list[str]:
         """Render a YAML mapping."""
