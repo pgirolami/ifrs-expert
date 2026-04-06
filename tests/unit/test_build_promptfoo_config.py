@@ -79,7 +79,9 @@ variants:
     build_promptfoo_config = _load_build_promptfoo_module()
     builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=tmp_path)
 
-    output = builder.build_text()
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "latest" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+    output = builder.build_text(output_path=output_path)
 
     assert "assert: &q1_assertions" in output
     assert output.count("&q1_assertions") == 1, "Expected one Q1 assertion anchor"
@@ -131,18 +133,26 @@ variants:
     build_promptfoo_config = _load_build_promptfoo_module()
     builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=tmp_path)
 
-    output = builder.build_text()
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "latest" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+    output = builder.build_text(output_path=output_path)
 
     assert "options:" not in output
     assert "description: 'Q2.0 - Variant zero'" in output
 
 
-def test_promptfoo_config_builder_matches_checked_in_config() -> None:
-    """The checked-in Promptfoo config should match the generated output."""
+def test_promptfoo_config_builder_writes_requested_output_path(tmp_path: Path) -> None:
+    """The builder should render config relative to the requested output path."""
     build_promptfoo_config = _load_build_promptfoo_module()
     builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=_repo_root())
 
-    generated = builder.build_text()
-    checked_in = (_repo_root() / "promptfooconfig.yaml").read_text(encoding="utf-8")
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
 
-    assert generated == checked_in
+    generated = builder.build_text(output_path=output_path)
+    builder.write_output(output_path=output_path)
+    written = output_path.read_text(encoding="utf-8")
+
+    assert written == generated
+    assert "tests:" in generated
+    assert "file://" in generated

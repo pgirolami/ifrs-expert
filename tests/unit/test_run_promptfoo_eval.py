@@ -149,13 +149,17 @@ def test_promptfoo_eval_runner_sets_experiment_config_dir_and_artifact_env(tmp_p
     assert len(command_runner.calls) == 2
 
     build_command, build_env, build_cwd = command_runner.calls[0]
-    assert build_command == ["npm", "run", "eval:build"]
+    assert build_command[:3] == ["npm", "run", "eval:build"]
+    assert build_command[3:5] == ["--", "--output"]
+    assert build_command[5].endswith("promptfooconfig.yaml")
     assert build_cwd == tmp_path
     assert build_env[run_promptfoo_eval.PROMPTFOO_ARTIFACTS_DIR_ENV].endswith("artifacts")
     assert build_env[run_promptfoo_eval.PROMPTFOO_CONFIG_DIR_ENV].endswith(".promptfoo")
 
     eval_command, eval_env, eval_cwd = command_runner.calls[1]
     assert eval_command[:5] == ["npm", "exec", "--", "promptfoo", "eval"]
+    assert "-c" in eval_command
+    assert eval_command[eval_command.index("-c") + 1].endswith("promptfooconfig.yaml")
     assert "--description" in eval_command
     assert "Q1 live mistral" in eval_command
     assert "-o" not in eval_command
