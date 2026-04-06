@@ -128,7 +128,6 @@ def _build_hits(
     descendant_ids_by_section: dict[str, list[str]],
 ) -> list[TitleRetrievalHit]:
     hits: list[TitleRetrievalHit] = []
-    seen_chunk_ids: set[tuple[str, int]] = set()
 
     for result in selected_results:
         section_id = result["section_id"]
@@ -137,17 +136,11 @@ def _build_hits(
             continue
 
         descendant_ids = set(descendant_ids_by_section.get(section_id, [section_id]))
-        matched_chunks: list[Chunk] = []
-        for chunk in doc_chunks.get(result["doc_uid"], []):
-            if chunk.containing_section_id not in descendant_ids:
-                continue
-            if chunk.id is None:
-                continue
-            chunk_key = (chunk.doc_uid, chunk.id)
-            if chunk_key in seen_chunk_ids:
-                continue
-            seen_chunk_ids.add(chunk_key)
-            matched_chunks.append(chunk)
+        matched_chunks = [
+            chunk
+            for chunk in doc_chunks.get(result["doc_uid"], [])
+            if chunk.containing_section_id in descendant_ids
+        ]
 
         hits.append(TitleRetrievalHit(section=section, score=result["score"], chunks=matched_chunks))
 

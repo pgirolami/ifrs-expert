@@ -105,8 +105,8 @@ def test_query_titles_returns_all_chunks_in_matched_section_subtree() -> None:
     assert [chunk["id"] for chunk in data[0]["chunks"]] == [1, 2, 3]
 
 
-def test_query_titles_dedupes_overlapping_section_matches() -> None:
-    """Overlapping matched sections should not duplicate chunks in output."""
+def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None:
+    """Overlapping matched sections should each retain their resolved chunks."""
     from src.commands.query_titles import QueryTitlesCommand, QueryTitlesConfig, QueryTitlesOptions
 
     search_results = [
@@ -166,4 +166,8 @@ def test_query_titles_dedupes_overlapping_section_matches() -> None:
     result = command.execute()
 
     data = json.loads(result)
+    assert len(data) == 2
+    assert data[0]["section_id"] == "IFRS09_0054"
     assert [chunk["id"] for chunk in data[0]["chunks"]] == [1]
+    assert data[1]["section_id"] == "IFRS09_g3.1.1-3.1.2"
+    assert [chunk["id"] for chunk in data[1]["chunks"]] == [1]
