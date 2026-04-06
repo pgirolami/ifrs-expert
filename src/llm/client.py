@@ -24,7 +24,11 @@ def get_client() -> LLMClient:
     Raises:
         ValueError: If provider is unknown or required API key/model is missing
     """
-    provider = os.getenv("LLM_PROVIDER", "openai").lower()
+    provider = os.getenv("LLM_PROVIDER")
+    if not provider:
+        msg = "LLM_PROVIDER environment variable is required. Set it to: openai, openai-codex, anthropic, or mistral"
+        raise ValueError(msg)
+    provider = provider.lower()
 
     if provider == "openai":
         api_key = _require_env_var("OPENAI_API_KEY", MISSING_API_KEY_MESSAGE)
