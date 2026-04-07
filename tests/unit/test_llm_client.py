@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.llm.client import get_client
+from src.llm.minimax_client import MinimaxClient
 from src.llm.openai_codex_client import OpenAICodexClient
 
 
@@ -17,6 +18,7 @@ from src.llm.openai_codex_client import OpenAICodexClient
         ("openai", "OPENAI_API_KEY", "OPENAI_MODEL"),
         ("anthropic", "ANTHROPIC_API_KEY", "ANTHROPIC_MODEL"),
         ("mistral", "MISTRAL_API_KEY", "MISTRAL_MODEL"),
+        ("minimax", "MINIMAX_API_KEY", "MINIMAX_MODEL"),
     ],
 )
 def test_get_client_requires_model_env_var(
@@ -66,6 +68,17 @@ def test_get_client_openai_codex_does_not_require_openai_api_key(
     client = get_client()
 
     assert isinstance(client, OpenAICodexClient)
+
+
+def test_get_client_minimax_constructs_successfully(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Minimax provider should construct successfully with required env vars."""
+    monkeypatch.setenv("LLM_PROVIDER", "minimax")
+    monkeypatch.setenv("MINIMAX_API_KEY", "test-api-key")
+    monkeypatch.setenv("MINIMAX_MODEL", "abab6.5s-chat")
+
+    client = get_client()
+
+    assert isinstance(client, MinimaxClient)
 
 
 def test_get_client_unknown_provider_lists_openai_codex(monkeypatch: pytest.MonkeyPatch) -> None:
