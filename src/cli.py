@@ -16,6 +16,7 @@ from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
 from src.commands.query_titles import create_query_titles_command
 from src.commands.store import create_store_command
+from src.llm.client import get_client
 from src.logging_config import setup_logging
 
 if TYPE_CHECKING:
@@ -177,6 +178,11 @@ def main() -> int:
         help="Save all intermediate prompts and responses to output-dir",
     )
 
+    subparsers.add_parser(
+        "llm",
+        help="Send a raw prompt directly to the LLM (reads prompt from stdin)",
+    )
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -243,6 +249,14 @@ def _execute_command(args: argparse.Namespace) -> str:
         result = command.execute()
     elif args.command == "answer":
         result = _execute_answer_command(args)
+    elif args.command == "llm":
+        prompt = sys.stdin.read()
+        try:
+            client = get_client()
+            result = client.generate_text(prompt=prompt)
+        except Exception as e:
+            logger.exception("LLM command failed")
+            result = f"Error: {e}"
     else:
         result = f"Error: Unknown command: {args.command}"
 
