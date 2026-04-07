@@ -1,0 +1,10 @@
+{
+  "description": "promptfoo eval",
+  "artifacts_path": "experiments/19_check_results_are_still_good_with_mode_documents/runs/2026-04-07_10-10-18_promptfoo-eval/artifacts",
+  "promptfoo_config_dir": "experiments/19_check_results_are_still_good_with_mode_documents/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "variant=Q1.2\u00a4"
+  ],
+  "created_at_utc": "2026-04-07T10:10:18.178025+00:00"
+}

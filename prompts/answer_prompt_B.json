@@ -72,7 +72,7 @@
             "justification": {
               "type": "string",
               "description": "2-3 lines max justification",
-              "maxLength": 500
+              "maxLength": 1000
             }
           }
         },
@@ -130,7 +130,7 @@
         "reasoning_fr": {
           "type": "string",
           "description": "2-4 lines rationale explicitly tied to the situation",
-          "maxLength": 500
+          "maxLength": 1000
         },
         "conditions_fr": {
           "type": "array",

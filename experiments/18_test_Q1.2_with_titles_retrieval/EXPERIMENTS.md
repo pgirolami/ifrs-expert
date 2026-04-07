@@ -4,7 +4,7 @@
 Check whether matching the query to the section titles and retrieving all child chunks helps on question Q1.2
 
 # Analysis
-It does with k=10
+With k=10, it does help
 
 # Next steps
 1. run the same experiment with k=5 to see if it still works
