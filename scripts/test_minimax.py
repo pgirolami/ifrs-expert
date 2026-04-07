@@ -22,6 +22,8 @@ def main() -> None:
     client = MinimaxClient(api_key=api_key, model=model)
     response = client.generate_text("What is your name?")
     print(response)
+    response = client.generate_json("What is your name? <output_schema>{'name': 'your name'}</output>")
+    print(response)
 
 
 if __name__ == "__main__":

@@ -23,20 +23,7 @@ class MinimaxClient(OpenAIClient):
         self._model = model
         self._client = OpenAI(api_key=api_key, base_url=MINIMAX_BASE_URL)
 
-    def generate_text(self, prompt: str, system: str | None = None) -> str:
-        """Generate text from a prompt using Minimax API.
-
-        Args:
-            prompt: The user prompt
-            system: Optional system message
-
-        Returns:
-            Raw text response from the LLM, with thinking removed
-        """
-        content = super().generate_text(prompt, system)
-        return self._strip_thinking(content)
-
-    def _strip_thinking(self, content: str) -> str:
+    def _clean_response(self, content: str) -> str:
         """Remove thinking blocks from the response.
 
         Minimax returns thinking in <think>...</think> tags.

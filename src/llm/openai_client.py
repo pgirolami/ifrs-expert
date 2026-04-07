@@ -57,7 +57,7 @@ class OpenAIClient(LLMClient):
         content = response.choices[0].message.content
         if content is None:
             raise RuntimeError(EMPTY_RESPONSE_MESSAGE)
-        return content
+        return self._clean_response(content)
 
     def generate_json(self, prompt: str, system: str | None = None) -> dict[str, Any]:
         """Generate and parse JSON from a prompt.
@@ -80,7 +80,8 @@ class OpenAIClient(LLMClient):
         content = response.choices[0].message.content
         if content is None:
             raise RuntimeError(EMPTY_RESPONSE_MESSAGE)
-        return self._parse_json_response(content)
+        clean_response = self._clean_response(content)
+        return self._parse_json_response(clean_response)
 
     def _create_text_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
         """Create a text completion with model-specific settings."""
@@ -108,3 +109,7 @@ class OpenAIClient(LLMClient):
         except json.JSONDecodeError:
             logger.exception(JSON_PARSE_FAILED_MESSAGE)
             raise
+
+    def _clean_response(self, content: str) -> str:
+        """Clean the response content. Override in subclasses if needed."""
+        return content
