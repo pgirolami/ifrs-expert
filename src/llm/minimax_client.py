@@ -1,11 +1,13 @@
 """Minimax LLM client implementation."""
 
+import re
+
 from openai import OpenAI
-from openai.types.chat import ChatCompletion, ChatCompletionMessageParam
 
 from src.llm.openai_client import OpenAIClient
 
 MINIMAX_BASE_URL = "https://api.minimax.io/v1"
+THINKING_PATTERN = re.compile(r"<result>.*?</result>", re.DOTALL)
 
 
 class MinimaxClient(OpenAIClient):
@@ -21,19 +23,22 @@ class MinimaxClient(OpenAIClient):
         self._model = model
         self._client = OpenAI(api_key=api_key, base_url=MINIMAX_BASE_URL)
 
-    def _create_text_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
-        """Create a text completion with thinking disabled."""
-        return self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            extra_body={"thinking_type": "disabled"},
-        )
+    def generate_text(self, prompt: str, system: str | None = None) -> str:
+        """Generate text from a prompt using Minimax API.
 
-    def _create_json_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
-        """Create a JSON completion with thinking disabled."""
-        return self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            response_format={"type": "json_object"},
-            extra_body={"thinking_type": "disabled"},
-        )
+        Args:
+            prompt: The user prompt
+            system: Optional system message
+
+        Returns:
+            Raw text response from the LLM, with thinking removed
+        """
+        content = super().generate_text(prompt, system)
+        return self._strip_thinking(content)
+
+    def _strip_thinking(self, content: str) -> str:
+        """Remove thinking blocks from the response.
+
+        Minimax returns thinking in <result>...</result> tags.
+        """
+        return THINKING_PATTERN.sub("", content).strip()
