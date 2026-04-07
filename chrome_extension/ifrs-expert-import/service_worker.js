@@ -3,12 +3,18 @@ const INBOX_PREFIX = "ifrs-expert/inbox";
 const HTML_MIME_TYPE = "text/html;charset=utf-8";
 const JSON_MIME_TYPE = "application/json;charset=utf-8";
 const PAGE_TOAST_DURATION_MS = 4000;
-const SUPPORTED_ICON_COLOR = "#b30938";
-const UNSUPPORTED_ICON_COLOR = "#9ca3af";
-const ICON_SIZES = [16, 24, 32];
 const ACTION_TITLE = "Import to IFRS Expert";
 const UNSUPPORTED_ACTION_TITLE = "Import to IFRS Expert (available only on ifrs.org)";
-const ACTION_ICON_CACHE = new Map();
+const SUPPORTED_ACTION_ICON_PATHS = {
+  16: "icons/ifrs-red-16.png",
+  24: "icons/ifrs-red-24.png",
+  32: "icons/ifrs-red-32.png",
+};
+const UNSUPPORTED_ACTION_ICON_PATHS = {
+  16: "icons/ifrs-grey-16.png",
+  24: "icons/ifrs-grey-24.png",
+  32: "icons/ifrs-grey-32.png",
+};
 
 chrome.runtime.onInstalled.addListener(() => {
   runTask("runtime.onInstalled", () => initializeActionState("runtime.onInstalled"));
@@ -138,7 +144,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 async function initializeActionState(reason) {
   logInfo("Initializing action state.", { reason });
-  await chrome.action.setIcon({ imageData: getActionIconImageData(UNSUPPORTED_ICON_COLOR) });
+  await chrome.action.setIcon({ path: UNSUPPORTED_ACTION_ICON_PATHS });
   await chrome.action.setTitle({ title: UNSUPPORTED_ACTION_TITLE });
   await chrome.action.disable();
   await refreshActiveTabActionState(reason);
@@ -163,12 +169,12 @@ async function updateActionForTabId(tabId, reason) {
 
 async function syncActionStateForTab(tabId, tabUrl, reason) {
   const supported = isSupportedTabUrl(tabUrl);
-  const iconColor = supported ? SUPPORTED_ICON_COLOR : UNSUPPORTED_ICON_COLOR;
+  const iconPaths = supported ? SUPPORTED_ACTION_ICON_PATHS : UNSUPPORTED_ACTION_ICON_PATHS;
   const title = supported ? ACTION_TITLE : UNSUPPORTED_ACTION_TITLE;
 
   await chrome.action.setIcon({
     tabId,
-    imageData: getActionIconImageData(iconColor),
+    path: iconPaths,
   });
   await chrome.action.setTitle({ tabId, title });
 
@@ -372,66 +378,6 @@ function showPageToast(message, tone, durationMs) {
   window.setTimeout(() => {
     toast.remove();
   }, durationMs);
-}
-
-function getActionIconImageData(color) {
-  const cached = ACTION_ICON_CACHE.get(color);
-  if (cached !== undefined) {
-    return cached;
-  }
-
-  const imageData = {};
-  for (const size of ICON_SIZES) {
-    imageData[size] = createActionIconImageData(size, color);
-  }
-
-  ACTION_ICON_CACHE.set(color, imageData);
-  return imageData;
-}
-
-function createActionIconImageData(size, color) {
-  const canvas = new OffscreenCanvas(size, size);
-  const context = canvas.getContext("2d");
-  if (context === null) {
-    throw new Error("Unable to create icon drawing context.");
-  }
-
-  const scale = size / 16;
-  context.clearRect(0, 0, size, size);
-  context.fillStyle = color;
-  drawRoundedRect(context, 2 * scale, 2 * scale, 12 * scale, 12 * scale, 3 * scale);
-  context.fill();
-
-  context.strokeStyle = "#ffffff";
-  context.lineWidth = Math.max(1.5 * scale, 1);
-  context.lineCap = "round";
-  context.lineJoin = "round";
-
-  context.beginPath();
-  context.moveTo(8 * scale, 4.5 * scale);
-  context.lineTo(8 * scale, 9 * scale);
-  context.moveTo(6 * scale, 7.25 * scale);
-  context.lineTo(8 * scale, 9.5 * scale);
-  context.lineTo(10 * scale, 7.25 * scale);
-  context.moveTo(5 * scale, 11.25 * scale);
-  context.lineTo(11 * scale, 11.25 * scale);
-  context.stroke();
-
-  return context.getImageData(0, 0, size, size);
-}
-
-function drawRoundedRect(context, x, y, width, height, radius) {
-  context.beginPath();
-  context.moveTo(x + radius, y);
-  context.lineTo(x + width - radius, y);
-  context.quadraticCurveTo(x + width, y, x + width, y + radius);
-  context.lineTo(x + width, y + height - radius);
-  context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  context.lineTo(x + radius, y + height);
-  context.quadraticCurveTo(x, y + height, x, y + height - radius);
-  context.lineTo(x, y + radius);
-  context.quadraticCurveTo(x, y, x + radius, y);
-  context.closePath();
 }
 
 function formatErrorMessage(error) {
