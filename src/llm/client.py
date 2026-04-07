@@ -6,6 +6,7 @@ import os
 from src.llm.anthropic_client import AnthropicClient
 from src.llm.base import MISSING_API_KEY_MESSAGE, MISSING_MODEL_MESSAGE, LLMClient
 from src.llm.codex_auth import CodexAuthLoader
+from src.llm.minimax_client import MinimaxClient
 from src.llm.mistral_client import MistralClient
 from src.llm.openai_client import OpenAIClient
 from src.llm.openai_codex_client import OpenAICodexClient
@@ -50,7 +51,12 @@ def get_client() -> LLMClient:
         model = _require_env_var("MISTRAL_MODEL", MISSING_MODEL_MESSAGE)
         return MistralClient(api_key=api_key, model=model)
 
-    error_msg = f"Unknown LLM provider: {provider}. Supported providers: openai, openai-codex, anthropic, mistral"
+    if provider == "minimax":
+        api_key = _require_env_var("MINIMAX_API_KEY", MISSING_API_KEY_MESSAGE)
+        model = _require_env_var("MINIMAX_MODEL", MISSING_MODEL_MESSAGE)
+        return MinimaxClient(api_key=api_key, model=model)
+
+    error_msg = f"Unknown LLM provider: {provider}. Supported providers: openai, openai-codex, anthropic, mistral, minimax"
     raise ValueError(error_msg)
 
 
