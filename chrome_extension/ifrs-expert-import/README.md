@@ -4,7 +4,7 @@ This Chrome-only extension adds the toolbar action **Import to IFRS Expert**.
 
 By default, it is scoped to `https://*.ifrs.org/*` pages only.
 
-The toolbar icon is grey on unsupported pages and switches to blue on supported `ifrs.org` pages.
+The toolbar icon is grey and disabled on unsupported pages and switches to IFRS red on supported `ifrs.org` pages.
 
 ## What it does
 

@@ -147,6 +147,7 @@ async function initializeActionState(reason) {
   logInfo("Initializing action state.", { reason });
   await chrome.action.setIcon({ imageData: getActionIconImageData(UNSUPPORTED_ICON_COLOR) });
   await chrome.action.setTitle({ title: UNSUPPORTED_ACTION_TITLE });
+  await chrome.action.disable();
   await refreshActiveTabActionState(reason);
 }
 
@@ -178,10 +179,17 @@ async function syncActionStateForTab(tabId, tabUrl, reason) {
   });
   await chrome.action.setTitle({ tabId, title });
 
+  if (supported) {
+    await chrome.action.enable(tabId);
+  } else {
+    await chrome.action.disable(tabId);
+  }
+
   logInfo("Updated action presentation.", {
     tabId,
     tabUrl,
     supported,
+    enabled: supported,
     reason,
   });
 }
