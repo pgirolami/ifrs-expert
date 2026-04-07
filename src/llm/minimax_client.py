@@ -7,7 +7,7 @@ from openai import OpenAI
 from src.llm.openai_client import OpenAIClient
 
 MINIMAX_BASE_URL = "https://api.minimax.io/v1"
-THINKING_PATTERN = re.compile(r"<result>.*?</result>", re.DOTALL)
+THINKING_PATTERN = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
 class MinimaxClient(OpenAIClient):
@@ -39,6 +39,6 @@ class MinimaxClient(OpenAIClient):
     def _strip_thinking(self, content: str) -> str:
         """Remove thinking blocks from the response.
 
-        Minimax returns thinking in <result>...</result> tags.
+        Minimax returns thinking in <think>...</think> tags.
         """
         return THINKING_PATTERN.sub("", content).strip()
