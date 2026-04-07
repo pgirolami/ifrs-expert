@@ -11,9 +11,9 @@ from typing import Self
 
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 from src.interfaces import SearchResult
+from src.vector.model_cache import EmbeddingModelProtocol, get_embedding_model
 
 # Suppress sentence-transformers logging
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -97,7 +97,7 @@ class VectorStore:
 
         """
         self._index: faiss.Index | None = None
-        self._model: SentenceTransformer | None = None
+        self._model: EmbeddingModelProtocol | None = None
         self._id_map: dict[int, tuple[str, int]] = {}  # faiss_id -> (doc_uid, chunk_id)
         self._index_path = index_path
         self._id_map_path = id_map_path
@@ -137,11 +137,10 @@ class VectorStore:
             return
         self._save_index()
 
-    def _get_model(self) -> SentenceTransformer:
+    def _get_model(self) -> EmbeddingModelProtocol:
         """Get or create the embedding model (singleton)."""
         if self._model is None:
-            logger.info(f"Loading embedding model: {EMBEDDING_MODEL}")
-            self._model = SentenceTransformer(EMBEDDING_MODEL)
+            self._model = get_embedding_model(EMBEDDING_MODEL)
         return self._model
 
     def _has_persisted_changes(self) -> bool:
@@ -387,6 +386,6 @@ def compute_embeddings(texts: list[str]) -> np.ndarray:
         numpy array of embeddings.
 
     """
-    model = SentenceTransformer(EMBEDDING_MODEL)
+    model = get_embedding_model(EMBEDDING_MODEL)
     embeddings = model.encode(texts, show_progress_bar=True)
     return embeddings.astype("float32")

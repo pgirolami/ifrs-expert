@@ -6,8 +6,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.commands.ingest import IngestCommand
-from src.commands.store import StoreCommandResult
+from src.commands.ingest import IngestCommand, SharedDependenciesStoreCommandFactory
+from src.commands.store import StoreCommandResult, StoreDependencies
 
 
 @dataclass
@@ -33,8 +33,57 @@ class RecordingStoreFactory:
         return FakeStoreCommand(result=self._results_by_name[source_path.name])
 
 
+class FakeCreateStoreCommand:
+    """Record the dependencies passed by the shared ingest store factory."""
+
+    def __init__(self) -> None:
+        self.dependencies_by_source_name: list[tuple[str, StoreDependencies]] = []
+
+    def __call__(
+        self,
+        source_path: Path | None = None,
+        doc_uid: str | None = None,
+        extractor: object | None = None,
+        dependencies: StoreDependencies | None = None,
+        pdf_path: Path | None = None,
+    ) -> FakeStoreCommand:
+        del doc_uid, extractor, pdf_path
+        assert source_path is not None, "Expected a source path"
+        assert dependencies is not None, "Expected shared dependencies to be provided"
+        self.dependencies_by_source_name.append((source_path.name, dependencies))
+        return FakeStoreCommand(result=StoreCommandResult(status="stored", doc_uid=source_path.stem, chunk_count=1, embedding_count=1))
+
+
 class TestIngestCommand:
     """Tests for ingest discovery, validation, and archiving."""
+
+    def test_shared_dependencies_factory_reuses_one_dependency_bundle(self, tmp_path: Path) -> None:
+        """The default ingest factory should reuse the same store dependencies across files."""
+        source_one = tmp_path / "first.pdf"
+        source_two = tmp_path / "second.pdf"
+        source_one.write_text("pdf", encoding="utf-8")
+        source_two.write_text("pdf", encoding="utf-8")
+
+        dependencies = StoreDependencies(
+            chunk_store=object(),
+            document_store=object(),
+            section_store=None,
+            vector_store=object(),
+            title_vector_store=None,
+            init_db_fn=lambda: None,
+        )
+        fake_create_store_command = FakeCreateStoreCommand()
+        factory = SharedDependenciesStoreCommandFactory(
+            dependencies=dependencies,
+            create_store_command_fn=fake_create_store_command,
+        )
+
+        factory(source_one, extractor=object(), explicit_doc_uid=None)
+        factory(source_two, extractor=object(), explicit_doc_uid=None)
+
+        recorded_dependencies = [recorded_dependency for _source_name, recorded_dependency in fake_create_store_command.dependencies_by_source_name]
+        assert recorded_dependencies == [dependencies, dependencies]
+        assert recorded_dependencies[0] is recorded_dependencies[1]
 
     def test_ingest_discovers_html_pairs_and_pdfs_while_ignoring_part_files(self, tmp_path: Path) -> None:
         """Only complete final files should be ingested."""
@@ -49,7 +98,7 @@ class TestIngestCommand:
         json_path = inbox / "20260404T142310Z--ifrs-9.json"
         pdf_path = inbox / "ifrs-16.pdf"
         html_path.write_text(
-            "<html><head><link rel=\"canonical\" href=\"https://www.ifrs.org/ifrs9.html\"><meta name=\"DC.Identifier\" content=\"ifrs9\"></head><body><section class=\"ifrs-cmp-htmlviewer__section\"></section></body></html>",
+            '<html><head><link rel="canonical" href="https://www.ifrs.org/ifrs9.html"><meta name="DC.Identifier" content="ifrs9"></head><body><section class="ifrs-cmp-htmlviewer__section"></section></body></html>',
             encoding="utf-8",
         )
         json_path.write_text(
@@ -129,7 +178,7 @@ class TestIngestCommand:
         html_path = inbox / "20260404T142310Z--ifrs-9.html"
         json_path = inbox / "20260404T142310Z--ifrs-9.json"
         html_path.write_text(
-            "<html><head><link rel=\"canonical\" href=\"https://www.ifrs.org/ifrs9.html\"><meta name=\"DC.Identifier\" content=\"ifrs9\"></head><body><section class=\"ifrs-cmp-htmlviewer__section\"></section></body></html>",
+            '<html><head><link rel="canonical" href="https://www.ifrs.org/ifrs9.html"><meta name="DC.Identifier" content="ifrs9"></head><body><section class="ifrs-cmp-htmlviewer__section"></section></body></html>',
             encoding="utf-8",
         )
         json_path.write_text(

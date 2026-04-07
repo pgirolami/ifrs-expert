@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from src.commands.store import StoreCommand, StoreCommandResult, create_store_command
+from src.commands.store import StoreCommandResult, StoreDependencies, build_store_dependencies, create_store_command
 from src.extraction import HtmlExtractor, PdfExtractor
 from src.extraction.html import HtmlSidecar, HtmlValidationError
 from src.interfaces import ExtractorProtocol
@@ -16,6 +16,7 @@ from src.interfaces import ExtractorProtocol
 logger = logging.getLogger(__name__)
 
 StoreCommandFactory = Callable[[Path, ExtractorProtocol, str | None], "StoreCommandLike"]
+CreateStoreCommandFn = Callable[..., "StoreCommandLike"]
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,33 @@ class StoreCommandLike(Protocol):
         """Execute storage and return the structured result."""
 
 
+class SharedDependenciesStoreCommandFactory:
+    """Create store commands that reuse one dependency bundle across an ingest run."""
+
+    def __init__(
+        self,
+        dependencies: StoreDependencies | None = None,
+        create_store_command_fn: CreateStoreCommandFn = create_store_command,
+    ) -> None:
+        """Initialize the factory with shared dependencies and a command constructor."""
+        self._dependencies = dependencies or build_store_dependencies()
+        self._create_store_command_fn = create_store_command_fn
+
+    def __call__(
+        self,
+        source_path: Path,
+        extractor: ExtractorProtocol,
+        explicit_doc_uid: str | None,
+    ) -> StoreCommandLike:
+        """Create one StoreCommand while reusing the shared dependencies."""
+        return self._create_store_command_fn(
+            source_path=source_path,
+            extractor=extractor,
+            doc_uid=explicit_doc_uid,
+            dependencies=self._dependencies,
+        )
+
+
 class IngestCommand:
     """Scan the fixed inbox directory and ingest discovered sources."""
 
@@ -74,10 +102,11 @@ class IngestCommand:
         self,
         capture_root: Path | None = None,
         store_command_factory: StoreCommandFactory | None = None,
+        store_dependencies: StoreDependencies | None = None,
     ) -> None:
         """Initialize the ingest command with its capture root and store factory."""
         self._directories = CaptureDirectories.from_root(capture_root or (Path.home() / "Downloads" / "ifrs-expert"))
-        self._store_command_factory = store_command_factory or self._default_store_command_factory
+        self._store_command_factory = store_command_factory or SharedDependenciesStoreCommandFactory(dependencies=store_dependencies)
 
     def execute(self) -> str:
         """Run inbox discovery, storage, and archiving."""
@@ -246,18 +275,6 @@ class IngestCommand:
                 suffix_count += 1
             path.rename(destination)
             logger.info(f"Moved {path} to {destination}")
-
-    def _default_store_command_factory(
-        self,
-        source_path: Path,
-        extractor: ExtractorProtocol,
-        explicit_doc_uid: str | None,
-    ) -> StoreCommand:
-        return create_store_command(
-            source_path=source_path,
-            extractor=extractor,
-            doc_uid=explicit_doc_uid,
-        )
 
 
 @dataclass(frozen=True)

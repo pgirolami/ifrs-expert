@@ -13,7 +13,8 @@ from typing import TYPE_CHECKING, Self
 
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+
+from src.vector.model_cache import EmbeddingModelProtocol, get_embedding_model
 
 if TYPE_CHECKING:
     from src.interfaces import TitleSearchResult
@@ -80,7 +81,7 @@ class TitleVectorStore:
     ) -> None:
         """Initialize the title vector store."""
         self._index: faiss.Index | None = None
-        self._model: SentenceTransformer | None = None
+        self._model: EmbeddingModelProtocol | None = None
         self._id_map: dict[int, tuple[str, str]] = {}
         self._index_path = index_path
         self._id_map_path = id_map_path
@@ -113,10 +114,9 @@ class TitleVectorStore:
         cache_dir.mkdir(parents=True, exist_ok=True)
         return cache_dir
 
-    def _get_model(self) -> SentenceTransformer:
+    def _get_model(self) -> EmbeddingModelProtocol:
         if self._model is None:
-            logger.info(f"Loading embedding model: {EMBEDDING_MODEL}")
-            self._model = SentenceTransformer(EMBEDDING_MODEL)
+            self._model = get_embedding_model(EMBEDDING_MODEL)
         return self._model
 
     def _has_persisted_changes(self) -> bool:

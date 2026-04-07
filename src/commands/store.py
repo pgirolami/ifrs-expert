@@ -236,7 +236,7 @@ class StoreCommand:
         return (section.section_id, section.parent_section_id, section.title, section.embedding_text)
 
 
-def _build_default_store_dependencies() -> StoreDependencies:
+def build_store_dependencies() -> StoreDependencies:
     """Build the production dependencies for StoreCommand."""
     return StoreDependencies(
         chunk_store=ChunkStore(),
@@ -276,7 +276,7 @@ def create_store_command(
         message = "create_store_command() requires source_path or pdf_path"
         raise TypeError(message)
 
-    resolved_dependencies = dependencies or _build_default_store_dependencies()
+    resolved_dependencies = dependencies or build_store_dependencies()
     resolved_extractor = extractor or _default_extractor_for_source(resolved_source_path)
     return StoreCommand(
         source_path=resolved_source_path,
