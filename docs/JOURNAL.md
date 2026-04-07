@@ -105,6 +105,8 @@ It documents how the system evolved from a single prompt to a structured, evalua
 
 ### 2026-04-07
 - Fixed bug in Chrome extension for downloading IFRS standards
-- Ingest many more files related to the Q1 family of questions and check it doesn't degrade the response
-        - [Experiment 19](../experiments/19_check_results_are_still_good_with_more_documents/EXPERIMENTS.md)
+- Ingested many more files related to the Q1 family of questions and check it doesn't degrade the response
+        - [Experiment 19](../experiments/19_check_results_are_still_good_with_more_documents/EXPERIMENTS.md): a few more documents
+        - [Experiment 20](../experiments/20_check_results_are_still_good_with_all_public_ifrs_docs/EXPERIMENTS.md): all documents
+- Add Minimax API provider
 
