@@ -1,0 +1,91 @@
+{
+  "assumptions_fr": [
+    "La question porte sur les comptes consolidés.",
+    "Une créance/dividende intragroupe à recevoir et une dette correspondante ont été comptabilisées et sont libellées dans une devise étrangère.",
+    "Les entités concernées ont des monnaies fonctionnelles différentes, de sorte que la créance/dette intragroupe peut générer des écarts de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais uniquement sur la composante de risque de change de la créance intragroupe si cette exposition génère des écarts de change qui ne sont pas totalement éliminés en consolidation. Le dividende intragroupe lui-même et la créance/dette sont éliminés en consolidation ; la documentation de couverture ne peut donc viser que ce risque de change résiduel qualifiable."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, IFRS 9 n’autorise en consolidation un élément intragroupe couvert que par exception pour le risque de change d’un poste monétaire intragroupe. La couverture est donc possible seulement si la créance de dividende à recevoir génère des gains/pertes de change non totalement éliminés en consolidation. La documentation doit viser cette seule composante change.",
+      "conditions_fr": [
+        "La créance de dividende intragroupe doit constituer un poste monétaire intragroupe.",
+        "Le risque de change doit donner lieu à des gains ou pertes non totalement éliminés en consolidation.",
+        "Les conditions générales de la relation de couverture prévues par IFRS 9 doivent être remplies et documentées."
+      ],
+      "practical_implication_fr": "La désignation doit porter sur le risque de change du poste intragroupe, pas sur le dividende intragroupe en tant que tel.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.4.1",
+          "excerpt": "at the inception of the hedging relationship there is formal designation and documentation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "foreign_currency_translation",
+      "label_fr": "Comptabilisation du change",
+      "applicability": "oui",
+      "reasoning_fr": "À défaut de couverture qualifiante, la créance de dividende libellée en devise étrangère reste un poste monétaire à convertir au cours de clôture. Les écarts de change sur postes monétaires sont reconnus en résultat, sauf cas particuliers non pertinents ici. C’est donc le traitement de base de cette situation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sans relation de couverture qualifiante, les écarts de change sur la créance/dividende intragroupe suivent IAS 21 en résultat.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "23",
+          "excerpt": "foreign currency monetary items shall be translated using the closing rate"
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences arising on ... translating monetary items ... shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "consolidation_accounting",
+      "label_fr": "Comptabilisation de consolidation",
+      "applicability": "oui",
+      "reasoning_fr": "En comptes consolidés, le dividende intragroupe et la créance/dette correspondante sont des éléments intragroupe à éliminer. Cette élimination n’empêche pas, par exception IFRS 9, une couverture du seul risque de change non totalement éliminé. Le point clé est donc de distinguer l’élimination du dividende de l’exposition de change résiduelle.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il faut éliminer le dividende et la créance/dette intragroupe en consolidation, puis apprécier séparément l’existence d’un risque de change résiduel éligible.",
+      "references": [
+        {
+          "document": "ifrs10",
+          "section": "B86(c)",
+          "excerpt": "eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows relating to transactions between entities of the group"
+        },
+        {
+          "document": "ias24",
+          "section": "4",
+          "excerpt": "Intragroup related party transactions and outstanding balances are eliminated ... in the preparation of consolidated financial statements"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture dès l’origine en visant explicitement le risque de change du poste monétaire intragroupe.",
+    "Vérifier, en pratique de consolidation, que les écarts de change sur cette créance de dividende ne sont pas totalement éliminés ; sinon la désignation ne serait pas recevable.",
+    "Ne pas confondre l’élimination du dividende intragroupe avec le traitement du poste monétaire en devise : l’analyse de couverture porte sur le second.",
+    "À défaut de couverture qualifiante, convertir la créance au cours de clôture et constater les écarts de change selon IAS 21."
+  ]
+}

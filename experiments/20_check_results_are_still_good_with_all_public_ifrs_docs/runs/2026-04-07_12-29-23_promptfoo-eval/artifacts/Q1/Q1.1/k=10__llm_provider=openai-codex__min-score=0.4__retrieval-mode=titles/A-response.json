@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns foreign exchange risk on an intragroup dividend-related position in consolidated financial statements.",
+    "The relevant issue is the possible use of IFRS hedge accounting for that foreign exchange exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 in the context provide fair value hedge accounting as a distinct top-level hedge accounting model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 in the context provide cash flow hedge accounting as a separate top-level model, including for qualifying foreign currency exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9, IAS 21 and IFRIC 16 in the context identify net investment hedging as a distinct hedge accounting model for foreign exchange risk in consolidated financial statements."
+    }
+  ]
+}

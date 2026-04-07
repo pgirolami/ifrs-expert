@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns foreign currency risk in consolidated financial statements arising from an intragroup dividend receivable/payable.",
+    "A hedging instrument may be designated for the foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 identify fair value hedge accounting as a distinct hedge accounting model for exposures to changes in fair value attributable to a particular risk, including foreign currency risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 identify cash flow hedge accounting as a separate hedge accounting model for variability in cash flows attributable to a particular risk, including foreign currency risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9, IAS 39 and IFRIC 16 identify hedging a net investment in a foreign operation as a distinct hedge accounting model in consolidated financial statements."
+    }
+  ]
+}

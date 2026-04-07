@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns IFRS consolidated financial statements.",
+    "The intragroup dividend receivable/payable gives rise to a foreign-currency monetary item or foreign-currency exposure in the consolidated context.",
+    "The issue is whether that foreign-currency exposure can fall within an IFRS hedge accounting model in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "IFRS 9 hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting rules for eligible hedged items and specifically addresses intragroup foreign-currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "IAS 39 hedge accounting",
+      "normalized_label": "ias39_hedging",
+      "rationale_for_inclusion": "The context also includes IAS 39 hedge accounting requirements, which remain a distinct IFRS hedge accounting model referenced in the provided materials."
+    },
+    {
+      "id": "approach_3",
+      "label": "IAS 21 foreign currency accounting",
+      "normalized_label": "foreign_currency",
+      "rationale_for_inclusion": "The question is driven by exchange differences on an intragroup receivable, and the context includes IAS 21 accounting for foreign-currency monetary items and intragroup balances."
+    },
+    {
+      "id": "approach_4",
+      "label": "IFRS 10 consolidation accounting",
+      "normalized_label": "consolidation_accounting",
+      "rationale_for_inclusion": "Because the question is asked for consolidated accounts, the context-grounded consolidation model is relevant, including elimination principles for intragroup balances and transactions."
+    }
+  ]
+}
