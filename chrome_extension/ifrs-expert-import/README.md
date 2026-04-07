@@ -2,6 +2,8 @@
 
 This Chrome-only extension adds the toolbar action **Import to IFRS Expert**.
 
+By default, it is scoped to `https://*.ifrs.org/*` pages only.
+
 ## What it does
 
 When clicked on an authenticated IFRS page, it captures:
@@ -39,8 +41,10 @@ Chrome extensions do not expose a true filesystem rename primitive for arbitrary
 ## Workflow
 
 1. Sign in to the IFRS site in Chrome.
-2. Open the target standard page.
+2. Open the target `ifrs.org` standard page.
 3. Click **Import to IFRS Expert**.
+
+If you are not on an `ifrs.org` page, the extension does nothing.
 4. Run:
 
 ```bash

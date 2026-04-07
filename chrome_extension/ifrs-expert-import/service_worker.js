@@ -7,6 +7,11 @@ chrome.action.onClicked.addListener(async (tab) => {
     return;
   }
 
+  if (!isSupportedTabUrl(tab.url)) {
+    console.warn("IFRS Expert import is only available on https://*.ifrs.org/* pages.");
+    return;
+  }
+
   try {
     const [{ result }] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -128,5 +133,18 @@ async function removeDownloadedFile(downloadId) {
     await chrome.downloads.removeFile(downloadId);
   } catch (error) {
     console.warn(`Unable to remove temporary download ${downloadId}`, error);
+  }
+}
+
+function isSupportedTabUrl(tabUrl) {
+  if (tabUrl === undefined) {
+    return false;
+  }
+
+  try {
+    const url = new URL(tabUrl);
+    return url.protocol === "https:" && (url.hostname === "ifrs.org" || url.hostname.endsWith(".ifrs.org"));
+  } catch {
+    return false;
   }
 }
