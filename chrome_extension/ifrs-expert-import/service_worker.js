@@ -51,8 +51,6 @@ chrome.action.onClicked.addListener(async (tab) => {
     return;
   }
 
-  const blobUrls = [];
-
   try {
     logInfo("Starting rendered page capture.", { tabId: tab.id, url: tab.url });
     const [{ result }] = await chrome.scripting.executeScript({
@@ -81,11 +79,11 @@ chrome.action.onClicked.addListener(async (tab) => {
       jsonFilename,
     });
 
-    const htmlBlobUrl = createBlobUrl(blobUrls, result.html, HTML_MIME_TYPE);
-    const jsonBlobUrl = createBlobUrl(blobUrls, JSON.stringify(result.sidecar, null, 2), JSON_MIME_TYPE);
+    const htmlDownloadUrl = await createDownloadUrl(result.html, HTML_MIME_TYPE);
+    const jsonDownloadUrl = await createDownloadUrl(JSON.stringify(result.sidecar, null, 2), JSON_MIME_TYPE);
 
-    const htmlPartDownloadId = await downloadBlob(htmlBlobUrl, htmlPartFilename);
-    const jsonPartDownloadId = await downloadBlob(jsonBlobUrl, jsonPartFilename);
+    const htmlPartDownloadId = await downloadBlob(htmlDownloadUrl, htmlPartFilename);
+    const jsonPartDownloadId = await downloadBlob(jsonDownloadUrl, jsonPartFilename);
     await Promise.all([
       waitForDownload(htmlPartDownloadId, htmlPartFilename),
       waitForDownload(jsonPartDownloadId, jsonPartFilename),
@@ -97,15 +95,14 @@ chrome.action.onClicked.addListener(async (tab) => {
       basename,
     });
 
-    const finalHtmlBlobUrl = createBlobUrl(blobUrls, result.html, HTML_MIME_TYPE);
-    const finalJsonBlobUrl = createBlobUrl(
-      blobUrls,
+    const finalHtmlDownloadUrl = await createDownloadUrl(result.html, HTML_MIME_TYPE);
+    const finalJsonDownloadUrl = await createDownloadUrl(
       JSON.stringify(result.sidecar, null, 2),
       JSON_MIME_TYPE,
     );
 
-    const finalHtmlDownloadId = await downloadBlob(finalHtmlBlobUrl, htmlFilename);
-    const finalJsonDownloadId = await downloadBlob(finalJsonBlobUrl, jsonFilename);
+    const finalHtmlDownloadId = await downloadBlob(finalHtmlDownloadUrl, htmlFilename);
+    const finalJsonDownloadId = await downloadBlob(finalJsonDownloadUrl, jsonFilename);
     await Promise.all([
       waitForDownload(finalHtmlDownloadId, htmlFilename),
       waitForDownload(finalJsonDownloadId, jsonFilename),
@@ -135,11 +132,7 @@ chrome.action.onClicked.addListener(async (tab) => {
     });
     await showToastInTab(tab.id, `Import failed: ${errorMessage}`, "error");
   } finally {
-    for (const blobUrl of blobUrls) {
-      URL.revokeObjectURL(blobUrl);
-    }
-
-    logInfo("Revoked temporary blob URLs.", { count: blobUrls.length });
+    logInfo("Import attempt finished.");
   }
 });
 
@@ -243,11 +236,28 @@ function slugify(value) {
     .toLowerCase() || "ifrs-capture";
 }
 
-function createBlobUrl(blobUrls, content, mimeType) {
-  const blobUrl = URL.createObjectURL(new Blob([content], { type: mimeType }));
-  blobUrls.push(blobUrl);
-  logInfo("Created blob URL.", { mimeType, blobUrlCount: blobUrls.length });
-  return blobUrl;
+async function createDownloadUrl(content, mimeType) {
+  const bytes = new TextEncoder().encode(content);
+  const base64 = bytesToBase64(bytes);
+  const downloadUrl = `data:${mimeType};base64,${base64}`;
+  logInfo("Created download URL.", {
+    mimeType,
+    byteLength: bytes.byteLength,
+    urlLength: downloadUrl.length,
+  });
+  return downloadUrl;
+}
+
+function bytesToBase64(bytes) {
+  const chunkSize = 0x8000;
+  let binary = "";
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    const chunk = bytes.subarray(offset, offset + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return btoa(binary);
 }
 
 async function downloadBlob(blobUrl, filename) {
