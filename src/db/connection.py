@@ -8,7 +8,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-DB_PATH: Path = Path(__file__).parent.parent.parent / "data" / "db" / "ifrs.db"
+DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
 
 def get_db_path() -> Path:

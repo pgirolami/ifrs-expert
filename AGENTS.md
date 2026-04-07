@@ -15,6 +15,11 @@
 - ❌ **Must NOT read:** Any other file in the parent repository that is not symlinked into this directory
 - ❌ **Must NOT write:** Any file outside this directory
 
+The following directories are used:
+- `.cache/` - cache files (query embeddings)
+- `corpus/data/` - IFRS content (database in `db/`, FAISS indices in `index/`)
+- `data/` - legacy location, no longer used
+
 If you need information from the parent repo, check if it's symlinked first. If not, request the user to add a symlink rather than accessing the parent directly.
 
 ---
@@ -515,10 +520,10 @@ Stable configuration lives in a YAML file. Use environment variables only for se
 ```yaml
 # config.yaml - stable configuration
 database:
-  path: "./data/db/ifrs.db"
+  path: "./corpus/data/db/ifrs.db"
 
 retrieval:
-  index_path: "./data/index/faiss.index"
+  index_path: "./corpus/data/index/faiss.index"
   embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
   top_k: 10
 

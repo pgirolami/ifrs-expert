@@ -1,5 +1,4 @@
 """Vector store for IFRS Expert using FAISS and SentenceTransformers."""
-# ruff: noqa: PLW0603
 
 import hashlib
 import json
@@ -33,19 +32,19 @@ _id_map_path: Path | None = None
 
 def set_index_path(path: Path | None) -> None:
     """Set a custom index path (useful for testing)."""
-    global _index_path, _id_map_path
+    global _index_path, _id_map_path  # noqa: PLW0603
     _index_path = path
     _id_map_path = path.parent / "id_map.json" if path else None
 
 
 def _default_index_path() -> Path:
     """Get the default index path."""
-    return Path(__file__).parent.parent.parent / "data" / "index" / "faiss.index"
+    return Path(__file__).parent.parent.parent / "corpus" / "data" / "index" / "faiss.index"
 
 
 def get_index_path() -> Path:
     """Get the FAISS index path, creating directory if needed."""
-    global _index_path
+    global _index_path  # noqa: PLW0603
     if _index_path is None:
         _index_path = _default_index_path()
     _index_path.parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +53,7 @@ def get_index_path() -> Path:
 
 def get_id_map_path() -> Path:
     """Get the ID mapping file path."""
-    global _id_map_path, _index_path
+    global _id_map_path, _index_path  # noqa: PLW0603
     if _id_map_path is None:
         if _index_path is None:
             _index_path = _default_index_path()
@@ -65,7 +64,7 @@ def get_id_map_path() -> Path:
 
 def _default_query_cache_dir() -> Path:
     """Get the default directory for cached query embeddings."""
-    return Path(__file__).parent.parent.parent / "data" / "cache" / "query_embeddings"
+    return Path(__file__).parent.parent.parent / ".cache" / "query_embeddings"
 
 
 def _normalize_query_for_cache(query: str) -> str:
