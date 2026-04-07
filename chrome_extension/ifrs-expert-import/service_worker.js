@@ -3,7 +3,7 @@ const INBOX_PREFIX = "ifrs-expert/inbox";
 const HTML_MIME_TYPE = "text/html;charset=utf-8";
 const JSON_MIME_TYPE = "application/json;charset=utf-8";
 const PAGE_TOAST_DURATION_MS = 4000;
-const SUPPORTED_ICON_COLOR = "#2563eb";
+const SUPPORTED_ICON_COLOR = "#b30938";
 const UNSUPPORTED_ICON_COLOR = "#9ca3af";
 const ICON_SIZES = [16, 24, 32];
 const ACTION_TITLE = "Import to IFRS Expert";
