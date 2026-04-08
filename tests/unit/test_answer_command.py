@@ -7,7 +7,7 @@ import unittest.mock
 from typing import cast
 
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
-from src.interfaces import SearchResult, SearchVectorStoreProtocol
+from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
@@ -52,6 +52,23 @@ class MockVectorStore(SearchVectorStoreProtocol):
         return None
 
     def search_all(self, query: str) -> list[SearchResult]:
+        return self._search_results
+
+
+class MockDocumentVectorStore(SearchDocumentVectorStoreProtocol):
+    """Minimal mock for document vector store context manager."""
+
+    def __init__(self, search_results: list[dict[str, str | float]]) -> None:
+        self._search_results = cast(list[DocumentSearchResult], search_results)
+
+    def __enter__(self) -> "MockDocumentVectorStore":
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        return None
+
+    def search_all(self, query: str) -> list[DocumentSearchResult]:
+        del query
         return self._search_results
 
 
@@ -326,6 +343,65 @@ class TestAnswerCommand:
         assert len(captured_prompts) == 2
         prompt_a = captured_prompts[0]
         assert unique_chunk_text in prompt_a, "Prompt A should contain the chunk context"
+
+    def test_answer_documents_mode_filters_prompt_context_to_selected_documents(self) -> None:
+        """Document-first retrieval should only keep chunks from preselected documents."""
+        search_results = [
+            {"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.91},
+            {"doc_uid": "ias21", "chunk_id": 2, "score": 0.89},
+        ]
+        document_search_results = [
+            {"doc_uid": "ias21", "score": 0.95},
+            {"doc_uid": "ifrs9", "score": 0.80},
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs chunk text"),
+                    Chunk(id=2, doc_uid="ias21", chunk_number="2.1", page_start="B1", page_end="B1", text="ias chunk text"),
+                ]
+            )
+
+        captured_prompts: list[str] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            document_vector_store=MockDocumentVectorStore(document_search_results),
+            document_index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="foreign operation",
+            config=config,
+            options=AnswerOptions(
+                retrieval_mode="documents",
+                k=5,
+                d=1,
+                doc_min_score=0.5,
+                content_min_score=0.5,
+                expand=0,
+            ),
+        )
+
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
+            result = command.execute()
+
+        assert result.success is True
+        assert result.retrieved_doc_uids == ["ias21"]
+        assert captured_prompts
+        assert "ias chunk text" in captured_prompts[0]
+        assert "ifrs chunk text" not in captured_prompts[0]
 
     def test_answer_prompt_b_contains_context(self) -> None:
         """Test that prompt B contains the retrieved chunk content (the bug fix verification)."""

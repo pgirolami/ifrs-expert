@@ -7,6 +7,7 @@ from src.commands.list import ListCommand
 from src.commands.query import QueryCommand, QueryConfig, QueryOptions
 from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
 from src.commands.query_titles import QueryTitlesCommand, QueryTitlesConfig, QueryTitlesOptions
+from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
 from src.commands.store import StoreCommand, StoreCommandResult
 from src.models.answer_command_result import AnswerCommandResult
 
@@ -27,6 +28,9 @@ __all__ = [
     "QueryTitlesCommand",
     "QueryTitlesConfig",
     "QueryTitlesOptions",
+    "RetrieveCommand",
+    "RetrieveConfig",
+    "RetrieveOptions",
     "StoreCommand",
     "StoreCommandResult",
 ]

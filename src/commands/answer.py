@@ -10,22 +10,26 @@ from typing import TYPE_CHECKING
 
 from src.b_response_utils import convert_json_to_markdown
 from src.commands.constants import (
+    DEFAULT_D,
     DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
     DEFAULT_MIN_SCORE,
+    DEFAULT_MIN_SCORE_FOR_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
 )
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
-from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
+from src.retrieval.models import RetrievalRequest
+from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
+from src.vector.document_store import DocumentVectorStore, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
 from src.vector.title_store import TitleVectorStore, get_title_index_path
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
+    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)
@@ -47,6 +51,8 @@ class AnswerConfig:
     section_store: ReadSectionStoreProtocol | None = None
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
+    document_vector_store: SearchDocumentVectorStoreProtocol | None = None
+    document_index_path_fn: Callable[[], Path] | None = None
 
 
 @dataclass
@@ -55,6 +61,9 @@ class AnswerOptions:
 
     k: int = DEFAULT_RETRIEVAL_K
     min_score: float | None = DEFAULT_MIN_SCORE
+    d: int = DEFAULT_D
+    doc_min_score: float | None = None
+    content_min_score: float | None = None
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     output_dir: Path | None = None
@@ -203,12 +212,16 @@ class AnswerCommand:
         options: AnswerOptions | None = None,
     ) -> None:
         """Initialize the answer command."""
+        resolved_options = options or AnswerOptions()
         self.query = query
-        self.k = options.k if options else DEFAULT_RETRIEVAL_K
-        self.min_score = options.min_score if options and options.min_score is not None else DEFAULT_MIN_SCORE
-        self.expand = options.expand if options else DEFAULT_EXPAND
-        self.full_doc_threshold = options.full_doc_threshold if options else DEFAULT_FULL_DOC_THRESHOLD
-        self.retrieval_mode = options.retrieval_mode if options else "text"
+        self.k = resolved_options.k
+        self.d = resolved_options.d
+        self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_MIN_SCORE
+        self.doc_min_score = resolved_options.doc_min_score if resolved_options.doc_min_score is not None else DEFAULT_MIN_SCORE_FOR_DOCUMENTS
+        self.content_min_score = resolved_options.content_min_score if resolved_options.content_min_score is not None else self.min_score
+        self.expand = resolved_options.expand
+        self.full_doc_threshold = resolved_options.full_doc_threshold
+        self.retrieval_mode = resolved_options.retrieval_mode
 
         self._retrieved_doc_uids: list[str] = []
         self._config = config
@@ -233,15 +246,20 @@ class AnswerCommand:
 
     def _get_validation_error(self) -> str | None:
         """Get validation error or None."""
+        error: str | None = None
         if not self.query or not self.query.strip():
-            return "Error: Query cannot be empty"
-        if self.expand < 0:
-            return "Error: expand must be >= 0"
-        if self.full_doc_threshold < 0:
-            return "Error: full_doc_threshold must be >= 0"
-        if self.retrieval_mode not in {"text", "titles"}:
-            return "Error: retrieval_mode must be 'text' or 'titles'"
-        return None
+            error = "Error: Query cannot be empty"
+        elif self.expand < 0:
+            error = "Error: expand must be >= 0"
+        elif self.k <= 0:
+            error = "Error: k must be > 0"
+        elif self.d <= 0:
+            error = "Error: d must be > 0"
+        elif self.full_doc_threshold < 0:
+            error = "Error: full_doc_threshold must be >= 0"
+        elif self.retrieval_mode not in {"text", "titles", "documents"}:
+            error = "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
+        return error
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
@@ -251,6 +269,10 @@ class AnswerCommand:
 
         if self.retrieval_mode == "titles":
             return self._get_title_prerequisite_error()
+        if self.retrieval_mode == "documents":
+            document_prerequisite_error = self._get_document_prerequisite_error()
+            if document_prerequisite_error is not None:
+                return document_prerequisite_error
 
         index_path = self._config.index_path_fn()
         if not index_path.exists():
@@ -278,147 +300,53 @@ class AnswerCommand:
             return "Error: No title index found. Please run 'store' command first."
         return None
 
+    def _get_document_prerequisite_error(self) -> str | None:
+        """Validate the prerequisites for document-first retrieval mode."""
+        if self._config.document_index_path_fn is None:
+            return "Error: Document retrieval is not configured."
+        document_index_path = self._config.document_index_path_fn()
+        if not document_index_path.exists():
+            logger.error(f"Missing document vector index at {document_index_path}; corpus must be built before running the answer pipeline")
+            return "Error: No document index found. Please run 'store' command first."
+        return None
+
     def _execute_workflow(self) -> AnswerCommandResult:
         """Execute the main workflow."""
-        if self.retrieval_mode == "titles":
-            return self._execute_title_workflow()
-
-        ranked_results = self._search_chunks()
-        if not ranked_results:
-            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
-
-        selected_results = self._select_results(ranked_results)
-        if not selected_results:
-            return AnswerCommandResult.failure(
+        error, retrieval_result = execute_retrieval(
+            request=RetrievalRequest(
                 query=self.query,
-                error=f"Error: No chunks found with score >= {self.min_score}",
-                error_stage="retrieval",
-            )
-
-        doc_chunks = self._fetch_chunks(selected_results)
-
-        if self.expand > 0 or self.full_doc_threshold > 0:
-            selected_results = self._expand_chunks(selected_results, doc_chunks)
-
-        result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
-        return self._process_prompts(result, selected_results, doc_chunks)
-
-    def _execute_title_workflow(self) -> AnswerCommandResult:
-        """Execute title retrieval and expand matched sections to descendant chunks."""
-        if self._config.section_store is None or self._config.title_vector_store is None or self._config.title_index_path_fn is None:
-            return AnswerCommandResult.failure(query=self.query, error="Error: Title retrieval is not configured.", error_stage="retrieval")
-
-        error, hits = retrieve_title_hits(
-            query=self.query,
-            config=TitleRetrievalConfig(
-                title_vector_store=self._config.title_vector_store,
-                section_store=self._config.section_store,
+                retrieval_mode=self.retrieval_mode,
+                k=self.k,
+                d=self.d,
+                doc_min_score=self.doc_min_score,
+                content_min_score=self.content_min_score,
+                expand=self.expand,
+                full_doc_threshold=self.full_doc_threshold,
+            ),
+            config=RetrievalPipelineConfig(
+                vector_store=self._config.vector_store,
                 chunk_store=self._config.chunk_store,
                 init_db_fn=self._config.init_db_fn,
-                index_path_fn=self._config.title_index_path_fn,
+                index_path_fn=self._config.index_path_fn,
+                section_store=self._config.section_store,
+                title_vector_store=self._config.title_vector_store,
+                title_index_path_fn=self._config.title_index_path_fn,
+                document_vector_store=self._config.document_vector_store,
+                document_index_path_fn=self._config.document_index_path_fn,
             ),
-            options=TitleRetrievalOptions(k=self.k, min_score=self.min_score),
         )
         if error is not None:
             return AnswerCommandResult.failure(query=self.query, error=error, error_stage="retrieval")
+        if retrieval_result is None:
+            return AnswerCommandResult.failure(
+                query=self.query,
+                error="Error: Retrieval did not return a result",
+                error_stage="retrieval",
+            )
 
-        selected_chunks = flatten_title_hits(hits)
-        if not selected_chunks:
-            return AnswerCommandResult.failure(query=self.query, error="Error: No chunks retrieved", error_stage="retrieval")
-
-        self._retrieved_doc_uids = list(dict.fromkeys(chunk.doc_uid for chunk in selected_chunks))
-        doc_chunks: dict[str, list[Chunk]] = {}
-        selected_results: list[SearchResult] = []
-        for doc_uid in self._retrieved_doc_uids:
-            chunks_for_doc = sorted((chunk for chunk in selected_chunks if chunk.doc_uid == doc_uid), key=lambda chunk: chunk.id or 0)
-            doc_chunks[doc_uid] = chunks_for_doc
-            for chunk in chunks_for_doc:
-                if chunk.id is None:
-                    continue
-                selected_results.append({"doc_uid": doc_uid, "chunk_id": chunk.id, "score": 0.0})
-
+        self._retrieved_doc_uids = retrieval_result.retrieved_doc_uids
         result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
-        return self._process_prompts(result, selected_results, doc_chunks)
-
-    def _search_chunks(self) -> list[SearchResult]:
-        """Search for relevant chunks."""
-        with self._config.vector_store as vector_store:
-            ranked_results = vector_store.search_all(self.query)
-
-        logger.info(f"Search returned {len(ranked_results)} raw results")
-        if ranked_results:
-            top_result = ranked_results[0]
-            logger.info(f"Top retrieved chunk: doc_uid={top_result['doc_uid']}, chunk_id={top_result['chunk_id']}, score={top_result['score']:.4f}")
-        else:
-            logger.warning(f"What ?? {ranked_results}")
-
-        return ranked_results
-
-    def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
-        """Select top-k results per document."""
-        selected_results = self._select_top_k_per_document(ranked_results, self.k, self.min_score)
-        logger.info(f"{len(selected_results)} chunks with score≥{self.min_score} out of the original {len(ranked_results)}")
-
-        return selected_results
-
-    def _select_top_k_per_document(
-        self,
-        ranked_results: list[SearchResult],
-        k: int,
-        min_score: float,
-    ) -> list[SearchResult]:
-        """Select up to k chunks per document above the score threshold."""
-        selected_results: list[SearchResult] = []
-        counts_by_doc: dict[str, int] = {}
-
-        for result in ranked_results:
-            if result["score"] < min_score:
-                continue
-
-            doc_uid = result["doc_uid"]
-            if counts_by_doc.get(doc_uid, 0) >= k:
-                continue
-
-            selected_results.append(result)
-            counts_by_doc[doc_uid] = counts_by_doc.get(doc_uid, 0) + 1
-
-        return selected_results
-
-    def _fetch_chunks(self, selected_results: list[SearchResult]) -> dict[str, list[Chunk]]:
-        """Fetch chunk details from database."""
-        self._config.init_db_fn()
-
-        doc_uids = list({result["doc_uid"] for result in selected_results})
-        self._retrieved_doc_uids = doc_uids
-
-        doc_chunks: dict[str, list[Chunk]] = {}
-        with self._config.chunk_store as store:
-            for doc_uid in doc_uids:
-                doc_chunks[doc_uid] = store.get_chunks_by_doc(doc_uid)
-
-        return doc_chunks
-
-    def _expand_chunks(
-        self,
-        results: list[SearchResult],
-        doc_chunks: dict[str, list[Chunk]],
-    ) -> list[SearchResult]:
-        """Expand results by including surrounding chunks from each document."""
-        result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_data(results)
-
-        full_doc_docs = _include_full_document(doc_chunks, selected_ids_by_doc, self.full_doc_threshold)
-
-        if self.expand > 0:
-            _expand_with_neighbour_chunks(results, doc_chunks, selected_ids_by_doc, self.expand)
-
-        expanded_results = _build_expanded_results(doc_order, doc_chunks, selected_ids_by_doc, result_score_by_chunk)
-
-        if self.full_doc_threshold > 0:
-            for doc_uid in full_doc_docs:
-                doc_size = sum(len(chunk.text) for chunk in doc_chunks.get(doc_uid, []))
-                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={self.full_doc_threshold})")
-
-        return expanded_results
+        return self._process_prompts(result, retrieval_result.chunk_results, retrieval_result.doc_chunks)
 
     def _process_prompts(
         self,
@@ -611,5 +539,7 @@ def create_answer_command(
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
         title_index_path_fn=get_title_index_path,
+        document_vector_store=DocumentVectorStore(),
+        document_index_path_fn=get_document_index_path,
     )
     return AnswerCommand(query=query, config=config, options=options)

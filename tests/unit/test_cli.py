@@ -181,6 +181,36 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
     assert output == "title output"
 
 
+def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should dispatch the retrieve subcommand."""
+    captured_modes: list[str] = []
+
+    def _create_retrieve_command(query: str, options: object) -> FakeTextCommand:
+        del query
+        captured_modes.append(getattr(options, "retrieval_mode"))
+        return FakeTextCommand("retrieve output")
+
+    monkeypatch.setattr("src.cli.create_retrieve_command", _create_retrieve_command)
+    monkeypatch.setattr("sys.stdin", io.StringIO("Find lease guidance"))
+
+    args = argparse.Namespace(
+        command="retrieve",
+        k=3,
+        d=2,
+        doc_min_score=None,
+        content_min_score=None,
+        expand=0,
+        full_doc_threshold=0,
+        retrieval_mode="documents",
+        json=True,
+    )
+
+    output = _execute_command(args)
+
+    assert output == "retrieve output"
+    assert captured_modes == ["documents"]
+
+
 def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the query-documents subcommand."""
     captured_document_types: list[str] = []

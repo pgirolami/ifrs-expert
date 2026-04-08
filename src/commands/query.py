@@ -16,6 +16,8 @@ from src.commands.constants import (
 from src.db import ChunkStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
+from src.retrieval.models import RetrievalRequest
+from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.store import VectorStore, get_index_path
 
 logger = logging.getLogger(__name__)
@@ -199,20 +201,27 @@ class QueryCommand:
 
     def _execute_search(self) -> str:
         """Execute the search workflow."""
-        ranked_results = self._search_chunks()
-        if not ranked_results:
-            return "Error: No chunks retrieved"
-
-        selected_results = self._select_results(ranked_results)
-        if not selected_results:
-            return f"Error: No chunks found with score >= {self.min_score}"
-
-        doc_chunks = self._fetch_chunks(selected_results)
-
-        if self.expand > 0 or self.full_doc_threshold > 0:
-            selected_results = self._expand_chunks(selected_results, doc_chunks)
-
-        return self._format_output(selected_results, doc_chunks)
+        error, retrieval_result = execute_retrieval(
+            request=RetrievalRequest(
+                query=self.query,
+                retrieval_mode="text",
+                k=self.k,
+                content_min_score=self.min_score,
+                expand=self.expand,
+                full_doc_threshold=self.full_doc_threshold,
+            ),
+            config=RetrievalPipelineConfig(
+                vector_store=self._config.vector_store,
+                chunk_store=self._config.chunk_store,
+                init_db_fn=self._config.init_db_fn,
+                index_path_fn=self._config.index_path_fn,
+            ),
+        )
+        if error is not None:
+            return error
+        if retrieval_result is None:
+            return "Error: Retrieval did not return a result"
+        return self._format_output(retrieval_result.chunk_results, retrieval_result.doc_chunks)
 
     def _format_output(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Format and return the output."""
