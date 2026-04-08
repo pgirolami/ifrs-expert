@@ -7,7 +7,7 @@ import sqlite3
 from typing import Self
 
 from src.db.connection import get_connection
-from src.models.document import DocumentRecord
+from src.models.document import DocumentRecord, infer_document_type
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,7 @@ class DocumentStore:
 
     def upsert_document(self, document: DocumentRecord) -> None:
         """Insert or update a document record keyed by doc_uid."""
+        document_type = document.document_type or infer_document_type(document.doc_uid)
         self._conn.execute(
             """
             INSERT INTO documents (
@@ -38,19 +39,21 @@ class DocumentStore:
                 source_url,
                 canonical_url,
                 captured_at,
+                document_type,
                 background_text,
                 issue_text,
                 objective_text,
                 scope_text,
                 intro_text,
                 toc_text
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(doc_uid) DO UPDATE SET
                 source_type = excluded.source_type,
                 source_title = excluded.source_title,
                 source_url = excluded.source_url,
                 canonical_url = excluded.canonical_url,
                 captured_at = excluded.captured_at,
+                document_type = excluded.document_type,
                 background_text = excluded.background_text,
                 issue_text = excluded.issue_text,
                 objective_text = excluded.objective_text,
@@ -66,6 +69,7 @@ class DocumentStore:
                 document.source_url,
                 document.canonical_url,
                 document.captured_at,
+                document_type,
                 document.background_text,
                 document.issue_text,
                 document.objective_text,
@@ -88,6 +92,7 @@ class DocumentStore:
                 source_url,
                 canonical_url,
                 captured_at,
+                document_type,
                 background_text,
                 issue_text,
                 objective_text,
@@ -110,6 +115,7 @@ class DocumentStore:
             source_url=row["source_url"],
             canonical_url=row["canonical_url"],
             captured_at=row["captured_at"],
+            document_type=row["document_type"],
             background_text=row["background_text"],
             issue_text=row["issue_text"],
             objective_text=row["objective_text"],

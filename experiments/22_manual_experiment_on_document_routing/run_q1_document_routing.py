@@ -2,9 +2,10 @@
 
 This script:
 1. discovers every `Q1.*.txt` question under `experiments/00_QUESTIONS/Q1`
-2. runs `query-documents` for each question
-3. builds a markdown matrix with one row per question and one column per returned document
-4. writes markdown and JSON artifacts into this experiment directory
+2. runs `query-documents` once per supported document type for each question
+3. merges the per-type results for that question
+4. builds a markdown matrix with one row per question and one column per returned document
+5. writes markdown and JSON artifacts into this experiment directory
 
 Usage:
     uv run python experiments/22_manual_experiment_on_document_routing/run_q1_document_routing.py
@@ -23,7 +24,9 @@ from statistics import mean, median
 
 logger = logging.getLogger(__name__)
 
-QUERY_DOCUMENTS_COMMAND: tuple[str, ...] = (
+DOCUMENT_TYPES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS")
+
+QUERY_DOCUMENTS_BASE_COMMAND: tuple[str, ...] = (
     "uv",
     "run",
     "python",
@@ -127,33 +130,46 @@ class DocumentRoutingExperiment:
     def _run_question(self, question: QuestionCase) -> QuestionResult:
         """Run `query-documents` for one question."""
         logger.info(f"Running query-documents for {question.question_id}")
-        completed_process = subprocess.run(  # noqa: S603
-            QUERY_DOCUMENTS_COMMAND,
-            cwd=self._repo_root,
-            input=question.question_text,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        if completed_process.returncode != 0:
-            logger.error(
-                f"query-documents failed for {question.question_id} with return code "
-                f"{completed_process.returncode}: {completed_process.stderr.strip()}"
+        hits_by_doc_uid: dict[str, DocumentHit] = {}
+        for document_type in DOCUMENT_TYPES:
+            query_documents_command = [
+                *QUERY_DOCUMENTS_BASE_COMMAND,
+                "--document-type",
+                document_type,
+            ]
+            completed_process = subprocess.run(  # noqa: S603
+                query_documents_command,
+                cwd=self._repo_root,
+                input=question.question_text,
+                text=True,
+                capture_output=True,
+                check=False,
             )
-            error_message = (
-                f"query-documents failed for {question.question_id}: "
-                f"{completed_process.stderr.strip()}"
-            )
-            raise RuntimeError(error_message)
+            if completed_process.returncode != 0:
+                logger.error(
+                    f"query-documents failed for {question.question_id} and {document_type} "
+                    f"with return code {completed_process.returncode}: {completed_process.stderr.strip()}"
+                )
+                error_message = (
+                    f"query-documents failed for {question.question_id} and {document_type}: "
+                    f"{completed_process.stderr.strip()}"
+                )
+                raise RuntimeError(error_message)
 
-        try:
-            payload = json.loads(completed_process.stdout)
-        except json.JSONDecodeError as error:
-            logger.exception(f"Could not parse query-documents JSON for {question.question_id}")
-            error_message = f"Invalid JSON output for {question.question_id}"
-            raise RuntimeError(error_message) from error
+            try:
+                payload = json.loads(completed_process.stdout)
+            except json.JSONDecodeError as error:
+                logger.exception(
+                    f"Could not parse query-documents JSON for {question.question_id} and {document_type}"
+                )
+                error_message = f"Invalid JSON output for {question.question_id} and {document_type}"
+                raise RuntimeError(error_message) from error
 
-        hits = tuple(_parse_document_hit(item) for item in payload)
+            for item in payload:
+                hit = _parse_document_hit(item)
+                hits_by_doc_uid[hit.doc_uid] = hit
+
+        hits = tuple(sorted(hits_by_doc_uid.values(), key=lambda hit: (-hit.score, hit.doc_uid)))
         logger.info(f"Received {len(hits)} document hit(s) for {question.question_id}")
         return QuestionResult(
             question_id=question.question_id,
@@ -195,7 +211,9 @@ class DocumentRoutingExperiment:
             "",
             "Command:",
             "```bash",
-            "printf '<question>' | uv run python -m src.cli query-documents --min-score 0.3 -d 30 --json",
+            "for document_type in IFRS IAS IFRIC SIC PS; do",
+            "  printf '<question>' | uv run python -m src.cli query-documents --document-type \"${document_type}\" --min-score 0.3 -d 30 --json",
+            "done",
             "```",
             "",
             f"Generated at: `{generated_at}`",
@@ -309,7 +327,8 @@ class DocumentRoutingExperiment:
         """Write markdown and JSON artifacts."""
         self._artifacts.markdown_path.write_text(markdown, encoding="utf-8")
         payload = {
-            "command": list(QUERY_DOCUMENTS_COMMAND),
+            "command_template": list(QUERY_DOCUMENTS_BASE_COMMAND),
+            "document_types": list(DOCUMENT_TYPES),
             "results": [
                 {
                     "question_id": result.question_id,

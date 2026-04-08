@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 from src.commands.constants import DEFAULT_D, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_VERBOSE
 from src.db import DocumentStore, init_db
+from src.models.document import DOCUMENT_TYPES, infer_document_type
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-VERBOSE_TEXT_PREVIEW_CHARS = 140
+VERBOSE_TEXT_PREVIEW_CHARS = 160
 DOCUMENT_REPRESENTATION_FIELDS: tuple[tuple[str, str], ...] = (
     ("background_text", "Background"),
     ("issue_text", "Issue"),
@@ -45,6 +46,7 @@ class QueryDocumentsConfig:
 class QueryDocumentsOptions:
     """Options for the query-documents command."""
 
+    document_type: str
     d: int = DEFAULT_D
     min_score: float | None = DEFAULT_MIN_SCORE_FOR_DOCUMENTS
     verbose: bool = DEFAULT_VERBOSE
@@ -57,12 +59,12 @@ class QueryDocumentsCommand:
         self,
         query: str,
         config: QueryDocumentsConfig,
-        options: QueryDocumentsOptions | None = None,
+        options: QueryDocumentsOptions,
     ) -> None:
         """Initialize the query-documents command."""
         self.query = query
         self._config = config
-        self._options = options or QueryDocumentsOptions()
+        self._options = options
 
     def execute(self) -> str:
         """Execute the document-search workflow and return formatted results."""
@@ -78,9 +80,14 @@ class QueryDocumentsCommand:
         with self._config.document_vector_store as document_vector_store:
             ranked_results = document_vector_store.search_all(self.query)
 
-        selected_results = _select_top_documents(ranked_results=ranked_results, d=self._options.d, min_score=min_score)
+        selected_results = _select_top_documents(
+            ranked_results=ranked_results,
+            document_type=self._options.document_type,
+            d=self._options.d,
+            min_score=min_score,
+        )
         if not selected_results:
-            return f"Error: No documents found with score >= {min_score}"
+            return f"Error: No {self._options.document_type} documents found with score >= {min_score}"
 
         self._config.init_db_fn()
         documents = self._fetch_documents(selected_results)
@@ -91,6 +98,9 @@ class QueryDocumentsCommand:
     def _get_validation_error(self) -> str | None:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
+        if self._options.document_type not in DOCUMENT_TYPES:
+            supported_document_types = ", ".join(DOCUMENT_TYPES)
+            return f"Error: document_type must be one of {supported_document_types}"
         if self._options.d <= 0:
             return "Error: d must be > 0"
         return None
@@ -114,12 +124,15 @@ class QueryDocumentsCommand:
 
 def _select_top_documents(
     ranked_results: list[DocumentSearchResult],
+    document_type: str,
     d: int,
     min_score: float,
 ) -> list[DocumentSearchResult]:
     selected_results: list[DocumentSearchResult] = []
     for result in ranked_results:
         if result["score"] < min_score:
+            continue
+        if infer_document_type(result["doc_uid"]) != document_type:
             continue
         selected_results.append(result)
         if len(selected_results) >= d:
@@ -144,6 +157,7 @@ def _build_json_output(
                 "source_url": document.source_url,
                 "canonical_url": document.canonical_url,
                 "captured_at": document.captured_at,
+                "document_type": document.document_type,
                 "background_text": document.background_text,
                 "issue_text": document.issue_text,
                 "objective_text": document.objective_text,
@@ -172,6 +186,8 @@ def _build_verbose_output(
         snippet = _truncate_verbose_text(preview_text)
         output_lines.append(f"\n--- Score: {result['score']:.4f} ---")
         output_lines.append(f"Document: {document.doc_uid}")
+        if document.document_type is not None:
+            output_lines.append(f"Type: {document.document_type}")
         output_lines.append(f"Title: {document.source_title}")
         if snippet:
             output_lines.append(f"Snippet: {snippet}")
@@ -201,7 +217,7 @@ def _truncate_verbose_text(text: str) -> str:
 
 def create_query_documents_command(
     query: str,
-    options: QueryDocumentsOptions | None = None,
+    options: QueryDocumentsOptions,
 ) -> QueryDocumentsCommand:
     """Create QueryDocumentsCommand with real dependencies."""
     config = QueryDocumentsConfig(

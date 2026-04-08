@@ -94,6 +94,7 @@ class TestStoreCommand:
         stored_document = document_store.get_document("ifrs9")
         assert stored_document is not None, "Expected document metadata to be stored"
         assert stored_document.source_type == "pdf"
+        assert stored_document.document_type == "IFRS"
         assert stored_document.intro_text == "test content"
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "test content"
         assert vector_store.added_embeddings == [("ifrs9", [1], ["test content"])]
@@ -347,6 +348,7 @@ class TestStoreCommand:
         assert title_vector_store.added_embeddings == [("ifrs9", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"], ["Scope", "Initial recognition"])]
         stored_document = document_store.get_document("ifrs9")
         assert stored_document is not None
+        assert stored_document.document_type == "IFRS"
         assert stored_document.scope_text == "test content"
         assert stored_document.intro_text is None
         assert stored_document.toc_text is None

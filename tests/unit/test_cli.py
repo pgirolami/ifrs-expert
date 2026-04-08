@@ -136,11 +136,19 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
 
 def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the query-documents subcommand."""
-    monkeypatch.setattr("src.cli.create_query_documents_command", lambda query, options: FakeTextCommand("document output"))
+    captured_document_types: list[str] = []
+
+    def _create_query_documents_command(query: str, options: object) -> FakeTextCommand:
+        del query
+        captured_document_types.append(getattr(options, "document_type"))
+        return FakeTextCommand("document output")
+
+    monkeypatch.setattr("src.cli.create_query_documents_command", _create_query_documents_command)
     monkeypatch.setattr("sys.stdin", io.StringIO("Find hedge guidance"))
 
     args = argparse.Namespace(
         command="query-documents",
+        document_type="IFRIC",
         d=3,
         min_score=None,
         json=True,
@@ -149,6 +157,7 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
     output = _execute_command(args)
 
     assert output == "document output"
+    assert captured_document_types == ["IFRIC"]
 
 
 def test_answer_stdout_text_prefers_raw_response() -> None:

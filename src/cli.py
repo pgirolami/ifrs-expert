@@ -19,6 +19,7 @@ from src.commands.query_titles import create_query_titles_command
 from src.commands.store import create_store_command
 from src.llm.client import get_client
 from src.logging_config import setup_logging
+from src.models.document import DOCUMENT_TYPES
 
 if TYPE_CHECKING:
     from src.models.answer_command_result import AnswerCommandResult
@@ -112,11 +113,17 @@ def main() -> int:
         help="Search for similar documents using document-level embeddings (reads query from stdin)",
     )
     query_documents_parser.add_argument(
+        "--document-type",
+        choices=DOCUMENT_TYPES,
+        required=True,
+        help="Document type to search: IFRS, IAS, IFRIC, SIC, or PS.",
+    )
+    query_documents_parser.add_argument(
         "-d",
         "--d",
         type=int,
         default=5,
-        help="Number of documents to return (default: 5)",
+        help="Number of documents to return for the selected document type (default: 5)",
     )
     query_documents_parser.add_argument(
         "--json",
@@ -272,6 +279,7 @@ def _execute_query_documents_command(args: argparse.Namespace) -> str:
     command = create_query_documents_command(
         query=query,
         options=QueryDocumentsOptions(
+            document_type=args.document_type,
             d=args.d,
             min_score=args.min_score,
             verbose=verbose,

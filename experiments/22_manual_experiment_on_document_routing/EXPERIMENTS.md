@@ -6,9 +6,11 @@ This is a manual experiment made during the implementation of [document routing]
 
 A [script](./run_q1_document_routing.py) was used to automate capturing quantitative data across sub experiments. It runs
 ```bash
-printf '<question>' | uv run python -m src.cli query-documents --min-score 0.3 -d 30 --json
+for document_type in IFRS IAS IFRIC SIC PS; do
+  printf '<question>' | uv run python -m src.cli query-documents --document-type "${document_type}" --min-score 0.3 -d 30 --json
+done
 ```
-across all questions in [family Q1](../00_QUESTIONS/Q1/family.yaml) and produces the tables.
+across all questions in [family Q1](../00_QUESTIONS/Q1/family.yaml), merges the per-type results, and produces the tables.
 
 We expect IFRS 9 and IFRIC 16 to score high.
 
