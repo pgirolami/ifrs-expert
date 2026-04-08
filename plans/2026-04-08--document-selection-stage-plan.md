@@ -8,7 +8,7 @@
 
 Add a document-selection stage before chunk retrieval:
 
-1. build a document-level representation from document title plus high-signal sections such as objective, scope, and intro
+1. build a document-level representation from document title plus high-signal sections such as objective, scope, intro, and a TOC field containing top-level sections with their subsections
 2. embed and index that representation in FAISS
 3. query the document index first to get top-`d` documents
 4. run chunk retrieval only inside those documents
@@ -82,6 +82,7 @@ Recommended shape in `src/models/document.py` / `documents`:
 - `objective_text: str | None`
 - `scope_text: str | None`
 - `intro_text: str | None`
+- `toc_text: str | None` for the document-representation component labeled `TOC`
 - `created_at: str | None`
 - `updated_at: str | None`
 
@@ -118,7 +119,7 @@ For HTML documents, build the representation from:
 4. `Objective:` from chunks under a section whose normalized title is `objective`
 5. `Scope:` from chunks under a section whose normalized title is `scope`
 6. `Introduction:` from the first high-level introductory content when available
-7. any additional IFRIC/SIC-oriented components already added by the user
+7. `TOC:` containing the text for all top-level sections and their subsections
 
 Recommended heuristics:
 
@@ -131,6 +132,7 @@ Recommended heuristics:
   - `scope`
   - `introduction`
 - if a section exists, pull descendant chunks via `section_closure`
+- build `TOC` by iterating all top-level sections and concatenating each top-level section's title plus the text from that section and its subsection descendants
 - cap each extracted part by character budget so the final embedding input stays compact
 - build the transient embedding input as labeled text, for example:
   - `Title: ...`
@@ -139,6 +141,7 @@ Recommended heuristics:
   - `Objective: ...`
   - `Scope: ...`
   - `Introduction: ...`
+  - `TOC: ...`
 - if one of the target parts is missing, just omit it
 - if all targeted parts are missing, fail the ingestion
 
@@ -181,7 +184,7 @@ Today `store` skips when chunk payloads and section payloads are unchanged.
 
 Update that to also compare the document-representation payload persisted on the document row:
 
-- title/background/issue/objective/scope/intro parts
+- title/background/issue/objective/scope/intro/TOC parts
 - any additional IFRIC/SIC-oriented fields already added
 
 That way changes to the document representation alone will still rebuild the document index.
@@ -235,6 +238,7 @@ JSON output should include at least:
 - `objective_text`
 - `scope_text`
 - `intro_text`
+- `TOC`
 - the additional IFRIC/SIC-oriented document fields that are persisted
 - `score`
 
