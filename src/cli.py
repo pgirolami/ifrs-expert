@@ -13,6 +13,18 @@ from dotenv import load_dotenv
 from src.answer_artifacts import save_answer_command_result
 from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryDocumentsOptions, QueryOptions, QueryTitlesOptions, RetrieveOptions
 from src.commands.answer import create_answer_command
+from src.commands.constants import (
+    DEFAULT_D_FOR_IAS_DOCUMENTS,
+    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_PS_DOCUMENTS,
+    DEFAULT_D_FOR_SIC_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+)
 from src.commands.query import create_query_command
 from src.commands.query_documents import create_query_documents_command
 from src.commands.query_titles import create_query_titles_command
@@ -168,7 +180,67 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         "--doc-min-score",
         type=float,
         default=None,
-        help="Minimum document-stage score in documents mode. Default: 0.5.",
+        help="Legacy override for all document-stage score thresholds in documents mode.",
+    )
+    retrieve_parser.add_argument(
+        "--ifrs-d",
+        type=int,
+        default=DEFAULT_D_FOR_IFRS_DOCUMENTS,
+        help=f"Maximum IFRS documents to keep before overall capping (default: {DEFAULT_D_FOR_IFRS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ias-d",
+        type=int,
+        default=DEFAULT_D_FOR_IAS_DOCUMENTS,
+        help=f"Maximum IAS documents to keep before overall capping (default: {DEFAULT_D_FOR_IAS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ifric-d",
+        type=int,
+        default=DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+        help=f"Maximum IFRIC documents to keep before overall capping (default: {DEFAULT_D_FOR_IFRIC_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--sic-d",
+        type=int,
+        default=DEFAULT_D_FOR_SIC_DOCUMENTS,
+        help=f"Maximum SIC documents to keep before overall capping (default: {DEFAULT_D_FOR_SIC_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ps-d",
+        type=int,
+        default=DEFAULT_D_FOR_PS_DOCUMENTS,
+        help=f"Maximum PS documents to keep before overall capping (default: {DEFAULT_D_FOR_PS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ifrs-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+        help=f"Minimum IFRS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ias-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+        help=f"Minimum IAS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ifric-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+        help=f"Minimum IFRIC document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--sic-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+        help=f"Minimum SIC document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
+        "--ps-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+        help=f"Minimum PS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS})",
     )
     retrieve_parser.add_argument(
         "--content-min-score",
@@ -371,6 +443,16 @@ def _execute_retrieve_command(args: argparse.Namespace) -> str:
             k=args.k,
             d=args.d,
             doc_min_score=args.doc_min_score,
+            ifrs_d=args.ifrs_d,
+            ias_d=args.ias_d,
+            ifric_d=args.ifric_d,
+            sic_d=args.sic_d,
+            ps_d=args.ps_d,
+            ifrs_min_score=args.ifrs_min_score,
+            ias_min_score=args.ias_min_score,
+            ifric_min_score=args.ifric_min_score,
+            sic_min_score=args.sic_min_score,
+            ps_min_score=args.ps_min_score,
             content_min_score=args.content_min_score,
             verbose=verbose,
             expand=args.expand,

@@ -7,7 +7,24 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_D, DEFAULT_EXPAND, DEFAULT_FULL_DOC_THRESHOLD, DEFAULT_MIN_SCORE, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_RETRIEVAL_K, DEFAULT_VERBOSE
+from src.commands.constants import (
+    DEFAULT_D,
+    DEFAULT_D_FOR_IAS_DOCUMENTS,
+    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_PS_DOCUMENTS,
+    DEFAULT_D_FOR_SIC_DOCUMENTS,
+    DEFAULT_EXPAND,
+    DEFAULT_FULL_DOC_THRESHOLD,
+    DEFAULT_MIN_SCORE,
+    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+    DEFAULT_RETRIEVAL_K,
+    DEFAULT_VERBOSE,
+)
 from src.db import ChunkStore, SectionStore, init_db
 from src.retrieval.models import RetrievalRequest, RetrievalResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
@@ -48,7 +65,17 @@ class RetrieveOptions:
 
     k: int = DEFAULT_RETRIEVAL_K
     d: int = DEFAULT_D
-    doc_min_score: float | None = DEFAULT_MIN_SCORE_FOR_DOCUMENTS
+    doc_min_score: float | None = None
+    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
+    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
+    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
+    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
+    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
+    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
+    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
+    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
+    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
+    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
     content_min_score: float | None = DEFAULT_MIN_SCORE
     verbose: bool = DEFAULT_VERBOSE
     expand: int = DEFAULT_EXPAND
@@ -81,7 +108,21 @@ class RetrieveCommand:
             retrieval_mode=self._options.retrieval_mode,
             k=self._options.k,
             d=self._options.d,
-            doc_min_score=self._options.doc_min_score if self._options.doc_min_score is not None else DEFAULT_MIN_SCORE_FOR_DOCUMENTS,
+            doc_min_score=self._options.doc_min_score,
+            document_d_by_type={
+                "IFRS": self._options.ifrs_d,
+                "IAS": self._options.ias_d,
+                "IFRIC": self._options.ifric_d,
+                "SIC": self._options.sic_d,
+                "PS": self._options.ps_d,
+            },
+            document_min_score_by_type={
+                "IFRS": self._options.ifrs_min_score,
+                "IAS": self._options.ias_min_score,
+                "IFRIC": self._options.ifric_min_score,
+                "SIC": self._options.sic_min_score,
+                "PS": self._options.ps_min_score,
+            },
             content_min_score=self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_MIN_SCORE,
             expand=self._options.expand,
             full_doc_threshold=self._options.full_doc_threshold,
@@ -110,20 +151,55 @@ class RetrieveCommand:
         return json.dumps(self._build_json_output(retrieval_result), indent=2, ensure_ascii=False)
 
     def _get_validation_error(self) -> str | None:
-        error: str | None = None
-        if not self.query or not self.query.strip():
-            error = "Error: Query cannot be empty"
-        elif self._options.k <= 0:
-            error = "Error: k must be > 0"
-        elif self._options.d <= 0:
-            error = "Error: d must be > 0"
-        elif self._options.expand < 0:
-            error = "Error: expand must be >= 0"
-        elif self._options.full_doc_threshold < 0:
-            error = "Error: full_doc_threshold must be >= 0"
-        elif self._options.retrieval_mode not in {"text", "titles", "documents"}:
-            error = "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
-        return error
+        validators = (
+            self._get_query_validation_error,
+            self._get_core_numeric_validation_error,
+            self._get_per_type_d_validation_error,
+            self._get_range_validation_error,
+            self._get_retrieval_mode_validation_error,
+        )
+        for validator in validators:
+            error = validator()
+            if error is not None:
+                return error
+        return None
+
+    def _get_query_validation_error(self) -> str | None:
+        if self.query and self.query.strip():
+            return None
+        return "Error: Query cannot be empty"
+
+    def _get_core_numeric_validation_error(self) -> str | None:
+        if self._options.k <= 0:
+            return "Error: k must be > 0"
+        if self._options.d <= 0:
+            return "Error: d must be > 0"
+        return None
+
+    def _get_per_type_d_validation_error(self) -> str | None:
+        per_type_d_values = {
+            "ifrs_d": self._options.ifrs_d,
+            "ias_d": self._options.ias_d,
+            "ifric_d": self._options.ifric_d,
+            "sic_d": self._options.sic_d,
+            "ps_d": self._options.ps_d,
+        }
+        for option_name, option_value in per_type_d_values.items():
+            if option_value <= 0:
+                return f"Error: {option_name} must be > 0"
+        return None
+
+    def _get_range_validation_error(self) -> str | None:
+        if self._options.expand < 0:
+            return "Error: expand must be >= 0"
+        if self._options.full_doc_threshold < 0:
+            return "Error: full_doc_threshold must be >= 0"
+        return None
+
+    def _get_retrieval_mode_validation_error(self) -> str | None:
+        if self._options.retrieval_mode in {"text", "titles", "documents"}:
+            return None
+        return "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
 
     def _build_json_output(self, retrieval_result: RetrievalResult) -> dict[str, object]:
         return {

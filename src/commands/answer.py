@@ -14,7 +14,6 @@ from src.commands.constants import (
     DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
     DEFAULT_MIN_SCORE,
-    DEFAULT_MIN_SCORE_FOR_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
 )
 from src.db import ChunkStore, SectionStore, init_db
@@ -217,7 +216,7 @@ class AnswerCommand:
         self.k = resolved_options.k
         self.d = resolved_options.d
         self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_MIN_SCORE
-        self.doc_min_score = resolved_options.doc_min_score if resolved_options.doc_min_score is not None else DEFAULT_MIN_SCORE_FOR_DOCUMENTS
+        self.doc_min_score = resolved_options.doc_min_score
         self.content_min_score = resolved_options.content_min_score if resolved_options.content_min_score is not None else self.min_score
         self.expand = resolved_options.expand
         self.full_doc_threshold = resolved_options.full_doc_threshold

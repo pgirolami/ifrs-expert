@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from src.models.document import DOCUMENT_TYPES, infer_document_type
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 
@@ -155,10 +156,12 @@ def _execute_document_retrieval(
     document_hits = _select_top_d_documents(
         ranked_results=ranked_document_results,
         d=request.d,
-        min_score=request.doc_min_score,
+        global_min_score=request.doc_min_score,
+        document_d_by_type=request.document_d_by_type,
+        document_min_score_by_type=request.document_min_score_by_type,
     )
     if not document_hits:
-        return f"Error: No documents found with score >= {request.doc_min_score}", None
+        return "Error: No documents found with the configured per-type score thresholds", None
 
     allowed_doc_uids = {hit.doc_uid for hit in document_hits}
     ranked_chunk_results = _search_chunks(query=request.query, config=config)
@@ -262,17 +265,40 @@ def _select_top_k_per_document(
 def _select_top_d_documents(
     ranked_results: list[DocumentSearchResult],
     d: int,
-    min_score: float,
+    global_min_score: float | None,
+    document_d_by_type: dict[str, int],
+    document_min_score_by_type: dict[str, float],
 ) -> list[DocumentHit]:
     document_hits: list[DocumentHit] = []
+    selected_count_by_type = dict.fromkeys(DOCUMENT_TYPES, 0)
+    effective_min_score_by_type = _build_effective_document_min_score_by_type(
+        global_min_score=global_min_score,
+        document_min_score_by_type=document_min_score_by_type,
+    )
     for result in ranked_results:
+        doc_uid = str(result["doc_uid"])
         score = float(result["score"])
-        if score < min_score:
+        document_type = infer_document_type(doc_uid)
+        if document_type is None:
             continue
-        document_hits.append(DocumentHit(doc_uid=str(result["doc_uid"]), score=score))
+        if score < effective_min_score_by_type[document_type]:
+            continue
+        if selected_count_by_type[document_type] >= document_d_by_type.get(document_type, 0):
+            continue
+        document_hits.append(DocumentHit(doc_uid=doc_uid, score=score))
+        selected_count_by_type[document_type] += 1
         if len(document_hits) >= d:
             break
     return document_hits
+
+
+def _build_effective_document_min_score_by_type(
+    global_min_score: float | None,
+    document_min_score_by_type: dict[str, float],
+) -> dict[str, float]:
+    if global_min_score is not None:
+        return dict.fromkeys(DOCUMENT_TYPES, global_min_score)
+    return {document_type: document_min_score_by_type[document_type] for document_type in DOCUMENT_TYPES}
 
 
 def _init_expansion_state(

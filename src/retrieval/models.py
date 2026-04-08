@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_D, DEFAULT_EXPAND, DEFAULT_FULL_DOC_THRESHOLD, DEFAULT_MIN_SCORE, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_RETRIEVAL_K
+from src.commands.constants import DEFAULT_D, DEFAULT_EXPAND, DEFAULT_FULL_DOC_THRESHOLD, DEFAULT_MIN_SCORE, DEFAULT_RETRIEVAL_K, get_default_document_d_by_type, get_default_document_min_score_by_type
 
 if TYPE_CHECKING:
     from src.interfaces import SearchResult
@@ -20,7 +20,9 @@ class RetrievalRequest:
     retrieval_mode: str = "text"
     k: int = DEFAULT_RETRIEVAL_K
     d: int = DEFAULT_D
-    doc_min_score: float = DEFAULT_MIN_SCORE_FOR_DOCUMENTS
+    doc_min_score: float | None = None
+    document_d_by_type: dict[str, int] = field(default_factory=get_default_document_d_by_type)
+    document_min_score_by_type: dict[str, float] = field(default_factory=get_default_document_min_score_by_type)
     content_min_score: float = DEFAULT_MIN_SCORE
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD

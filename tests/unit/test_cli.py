@@ -184,10 +184,14 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
 def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the retrieve subcommand."""
     captured_modes: list[str] = []
+    captured_ifrs_ds: list[int] = []
+    captured_ifrs_min_scores: list[float] = []
 
     def _create_retrieve_command(query: str, options: object) -> FakeTextCommand:
         del query
         captured_modes.append(getattr(options, "retrieval_mode"))
+        captured_ifrs_ds.append(getattr(options, "ifrs_d"))
+        captured_ifrs_min_scores.append(getattr(options, "ifrs_min_score"))
         return FakeTextCommand("retrieve output")
 
     monkeypatch.setattr("src.cli.create_retrieve_command", _create_retrieve_command)
@@ -199,6 +203,16 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
         d=2,
         doc_min_score=None,
         content_min_score=None,
+        ifrs_d=7,
+        ias_d=5,
+        ifric_d=5,
+        sic_d=5,
+        ps_d=5,
+        ifrs_min_score=0.61,
+        ias_min_score=0.55,
+        ifric_min_score=0.51,
+        sic_min_score=0.51,
+        ps_min_score=0.50,
         expand=0,
         full_doc_threshold=0,
         retrieval_mode="documents",
@@ -209,6 +223,8 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
 
     assert output == "retrieve output"
     assert captured_modes == ["documents"]
+    assert captured_ifrs_ds == [7]
+    assert captured_ifrs_min_scores == [0.61]
 
 
 def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:
