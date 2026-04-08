@@ -171,3 +171,54 @@ def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None
     assert [chunk["id"] for chunk in data[0]["chunks"]] == [1]
     assert data[1]["section_id"] == "IFRS09_g3.1.1-3.1.2"
     assert [chunk["id"] for chunk in data[1]["chunks"]] == [1]
+
+
+def test_query_titles_verbose_output_starts_with_options() -> None:
+    """Verbose title-query output should start with the resolved options."""
+    from src.commands.query_titles import QueryTitlesCommand, QueryTitlesConfig, QueryTitlesOptions
+
+    search_results = [
+        {"doc_uid": "ifrs9", "section_id": "IFRS09_0054", "score": 0.95},
+    ]
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="3.1.1", chunk_id="IFRS09_3.1.1", containing_section_id="IFRS09_0054", text="initial recognition"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="IFRS09_0054",
+                    doc_uid="ifrs9",
+                    parent_section_id=None,
+                    level=2,
+                    title="Recognition and derecognition",
+                    section_lineage=["Recognition and derecognition"],
+                    embedding_text="Recognition and derecognition",
+                    position=1,
+                ),
+            ]
+        )
+        store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054"])
+
+    command = QueryTitlesCommand(
+        query="recognition",
+        config=QueryTitlesConfig(
+            title_vector_store=MockTitleVectorStore(search_results),
+            section_store=section_store,
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=QueryTitlesOptions(k=5, min_score=None, verbose=True),
+    )
+
+    result = command.execute()
+
+    assert result.startswith("QueryTitlesOptions(k=5, min_score=None, verbose=True)")

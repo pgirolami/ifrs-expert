@@ -150,11 +150,12 @@ class QueryCommand:
     ) -> None:
         """Initialize the query command."""
         self.query = query
-        self.k = options.k if options else DEFAULT_RETRIEVAL_K
-        self.min_score = options.min_score if options and options.min_score is not None else DEFAULT_MIN_SCORE
-        self.verbose = options.verbose if options else DEFAULT_VERBOSE
-        self.expand = options.expand if options else DEFAULT_EXPAND
-        self.full_doc_threshold = options.full_doc_threshold if options else DEFAULT_FULL_DOC_THRESHOLD
+        self._options = options or QueryOptions()
+        self.k = self._options.k
+        self.min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_MIN_SCORE
+        self.verbose = self._options.verbose
+        self.expand = self._options.expand
+        self.full_doc_threshold = self._options.full_doc_threshold
 
         self._config = config
 
@@ -219,7 +220,8 @@ class QueryCommand:
             chunks_output = self._build_json_output(results, doc_chunks)
             return json.dumps(chunks_output, indent=2, ensure_ascii=False)
 
-        return self._build_verbose_output(results, doc_chunks)
+        verbose_output = self._build_verbose_output(results, doc_chunks)
+        return f"{self._options}\n{verbose_output}"
 
     def _validate_inputs(self) -> str | None:
         """Validate input parameters."""

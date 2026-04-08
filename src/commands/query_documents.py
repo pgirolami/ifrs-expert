@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_MIN_SCORE, DEFAULT_VERBOSE
+from src.commands.constants import DEFAULT_D, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_VERBOSE
 from src.db import DocumentStore, init_db
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
 
@@ -35,8 +35,8 @@ class QueryDocumentsConfig:
 class QueryDocumentsOptions:
     """Options for the query-documents command."""
 
-    d: int = 5
-    min_score: float | None = DEFAULT_MIN_SCORE
+    d: int = DEFAULT_D
+    min_score: float | None = DEFAULT_MIN_SCORE_FOR_DOCUMENTS
     verbose: bool = DEFAULT_VERBOSE
 
 
@@ -64,7 +64,7 @@ class QueryDocumentsCommand:
         if prerequisite_error is not None:
             return prerequisite_error
 
-        min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_MIN_SCORE
+        min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_MIN_SCORE_FOR_DOCUMENTS
         with self._config.document_vector_store as document_vector_store:
             ranked_results = document_vector_store.search_all(self.query)
 
@@ -76,7 +76,7 @@ class QueryDocumentsCommand:
         documents = self._fetch_documents(selected_results)
         if not self._options.verbose:
             return json.dumps(_build_json_output(selected_results, documents), indent=2, ensure_ascii=False)
-        return _build_verbose_output(selected_results, documents)
+        return f"{self._options}\n{_build_verbose_output(selected_results, documents)}"
 
     def _get_validation_error(self) -> str | None:
         if not self.query or not self.query.strip():
@@ -168,7 +168,7 @@ def _build_verbose_output(
             ),
             "",
         )
-        snippet = preview_text[:200].replace("\n", " ")
+        snippet = preview_text[:800].replace("\n", " ")
         output_lines.append(f"\n--- Score: {result['score']:.4f} ---")
         output_lines.append(f"Document: {document.doc_uid}")
         output_lines.append(f"Title: {document.source_title}")

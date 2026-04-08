@@ -164,6 +164,7 @@ class TestQueryCommand:
 
     def test_query_exception_handling(self):
         """Test query command exception handling from search."""
+
         # Create a vector store that throws when search_all is called
         class FailingVectorStore(SearchVectorStoreProtocol):
             def __init__(self) -> None:
@@ -230,7 +231,7 @@ class TestQueryCommand:
         assert data[0]["id"] == 1
 
     def test_query_verbose_output(self):
-        """Test query verbose output includes relevance."""
+        """Test query verbose output includes options and relevance."""
         search_results = [
             {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},  # High
             {"doc_uid": "doc1", "chunk_id": 2, "score": 0.2},  # Low
@@ -259,6 +260,7 @@ class TestQueryCommand:
 
         result = command.execute()
 
+        assert result.startswith("QueryOptions(k=5, min_score=None, verbose=True, expand=0, full_doc_threshold=0)")
         # Both High-relevance chunks are in output; Low is filtered
         assert "(High)" in result
         assert "(Low)" not in result

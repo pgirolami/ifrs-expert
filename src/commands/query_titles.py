@@ -70,7 +70,7 @@ class QueryTitlesCommand:
             return error
 
         if self._options.verbose:
-            return self._build_verbose_output(hits)
+            return f"{self._options}\n{self._build_verbose_output(hits)}"
         return json.dumps(self._build_json_output(hits), indent=2, ensure_ascii=False)
 
     def _build_json_output(self, hits: list[TitleRetrievalHit]) -> list[dict[str, object]]:

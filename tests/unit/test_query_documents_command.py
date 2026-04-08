@@ -113,3 +113,37 @@ def test_query_documents_returns_error_when_index_missing() -> None:
     result = command.execute()
 
     assert result == "Error: No document index found. Please run 'store' command first."
+
+
+def test_query_documents_verbose_output_starts_with_options() -> None:
+    """Verbose document-query output should start with the resolved options."""
+    from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+
+    document_store = InMemoryDocumentStore()
+    with document_store as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifric16",
+                source_type="html",
+                source_title="IFRIC 16",
+                source_url="https://www.ifrs.org/ifric16.html",
+                canonical_url="https://www.ifrs.org/ifric16.html",
+                captured_at="2026-04-05T10:00:00Z",
+                background_text="Background text",
+            )
+        )
+
+    command = QueryDocumentsCommand(
+        query="hedges of a net investment",
+        config=QueryDocumentsConfig(
+            document_vector_store=MockDocumentVectorStore([{"doc_uid": "ifric16", "score": 0.97}]),
+            document_store=document_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=QueryDocumentsOptions(d=5, min_score=None, verbose=True),
+    )
+
+    result = command.execute()
+
+    assert result.startswith("QueryDocumentsOptions(d=5, min_score=None, verbose=True)")
