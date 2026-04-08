@@ -29,6 +29,13 @@ class TitleSearchResult(TypedDict):
     score: float
 
 
+class DocumentSearchResult(TypedDict):
+    """Vector-search result for document-level retrieval."""
+
+    doc_uid: str
+    score: float
+
+
 class ReadChunkStoreProtocol(Protocol):
     """Protocol for chunk-store reads used by query/answer flows."""
 
@@ -126,6 +133,19 @@ class SearchTitleVectorStoreProtocol(Protocol):
         """Search for similar section titles."""
 
 
+class SearchDocumentVectorStoreProtocol(Protocol):
+    """Protocol for vector-store searches used by document retrieval flows."""
+
+    def __enter__(self) -> Self:
+        """Enter context manager."""
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        """Exit context manager."""
+
+    def search_all(self, query: str) -> list[DocumentSearchResult]:
+        """Search for similar documents."""
+
+
 class VectorStoreProtocol(SearchVectorStoreProtocol, Protocol):
     """Protocol for full vector-store operations."""
 
@@ -144,6 +164,16 @@ class TitleVectorStoreProtocol(SearchTitleVectorStoreProtocol, Protocol):
 
     def add_embeddings(self, doc_uid: str, section_ids: list[str], texts: list[str]) -> None:
         """Add embeddings for section titles."""
+
+
+class DocumentVectorStoreProtocol(SearchDocumentVectorStoreProtocol, Protocol):
+    """Protocol for full document-vector-store operations."""
+
+    def delete_by_doc(self, doc_uid: str) -> int:
+        """Delete all embeddings for a document."""
+
+    def add_embeddings(self, doc_uids: list[str], texts: list[str]) -> None:
+        """Add embeddings for documents."""
 
 
 class ExtractorProtocol(Protocol):

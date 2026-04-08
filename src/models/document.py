@@ -15,5 +15,10 @@ class DocumentRecord:
     source_url: str | None
     canonical_url: str | None
     captured_at: str | None
+    background_text: str | None = None
+    issue_text: str | None = None
+    objective_text: str | None = None
+    scope_text: str | None = None
+    intro_text: str | None = None
     created_at: str | None = None
     updated_at: str | None = None

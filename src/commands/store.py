@@ -13,11 +13,15 @@ from src.extraction import HtmlExtractor, PdfExtractor
 from src.interfaces import (
     ChunkStoreProtocol,
     DocumentStoreProtocol,
+    DocumentVectorStoreProtocol,
     ExtractorProtocol,
     SectionStoreProtocol,
     TitleVectorStoreProtocol,
     VectorStoreProtocol,
 )
+from src.retrieval.document_profile_builder import DocumentProfileBuilder
+from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
+from src.vector.document_store import DocumentVectorStore
 from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
@@ -25,18 +29,18 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from src.models.chunk import Chunk
+    from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
     from src.models.section import SectionRecord
 
 logger = logging.getLogger(__name__)
-
-MAX_CHUNK_CHARS = 8000
 
 StoreChunkStore = ChunkStoreProtocol
 StoreDocumentStore = DocumentStoreProtocol
 StoreSectionStore = SectionStoreProtocol
 StoreVectorStore = VectorStoreProtocol
 StoreTitleVectorStore = TitleVectorStoreProtocol
+StoreDocumentVectorStore = DocumentVectorStoreProtocol
 StoreInitDb = Callable[[], None]
 
 
@@ -50,6 +54,7 @@ class StoreDependencies:
     init_db_fn: StoreInitDb
     section_store: StoreSectionStore | None = None
     title_vector_store: StoreTitleVectorStore | None = None
+    document_vector_store: StoreDocumentVectorStore | None = None
 
 
 @dataclass
@@ -88,6 +93,7 @@ class StoreCommand:
         self._extractor = extractor
         self._dependencies = dependencies
         self._explicit_doc_uid = explicit_doc_uid
+        self._document_profile_builder = DocumentProfileBuilder()
 
     def execute(self) -> str:
         """Execute the store command and return CLI-facing text."""
@@ -112,7 +118,19 @@ class StoreCommand:
             )
             doc_uid = extracted_document.document.doc_uid
 
-            # Apply section filtering to exclude unwanted sections and chunks
+            self._truncate_oversized_chunks(extracted_document.chunks)
+
+            built_document_profile = self._document_profile_builder.build(
+                document=extracted_document.document,
+                chunks=extracted_document.chunks,
+                sections=extracted_document.sections,
+                section_closure_rows=extracted_document.section_closure_rows,
+            )
+            extracted_document.document = built_document_profile.document
+
+            # Apply section filtering only after building the document representation.
+            # Some sections are useful for the document-level representation even when
+            # they should not be stored as chunks/sections for downstream retrieval.
             filter_result = filter_extraction(
                 chunks=extracted_document.chunks,
                 sections=extracted_document.sections,
@@ -130,22 +148,36 @@ class StoreCommand:
             sections = filter_result.sections
             closure_rows = filter_result.closure_rows
 
-            # Update the extracted document with filtered data
+            # Update the extracted document with filtered data for persistence.
             extracted_document.sections = sections
             extracted_document.section_closure_rows = closure_rows
+            logger.info(
+                f"Document representation ready for doc_uid={doc_uid}; "
+                f"background_chars={len(extracted_document.document.background_text or '')}, "
+                f"issue_chars={len(extracted_document.document.issue_text or '')}, "
+                f"objective_chars={len(extracted_document.document.objective_text or '')}, "
+                f"scope_chars={len(extracted_document.document.scope_text or '')}, "
+                f"intro_chars={len(extracted_document.document.intro_text or '')}, "
+                f"embedding_chars={len(built_document_profile.embedding_text)}"
+            )
 
-            self._truncate_oversized_chunks(chunks)
-
-            skip_result = self._store_chunks(doc_uid=doc_uid, chunks=chunks, sections=extracted_document.sections)
+            skip_result = self._store_chunks(
+                doc_uid=doc_uid,
+                chunks=chunks,
+                sections=extracted_document.sections,
+                document=extracted_document.document,
+            )
             if skip_result is not None:
                 return skip_result
 
             self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
             with self._dependencies.document_store as document_store:
+                logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
                 document_store.upsert_document(extracted_document.document)
 
             embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
             self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
+            self._store_document_embeddings(doc_uid=doc_uid, embedding_text=built_document_profile.embedding_text)
 
             return StoreCommandResult(
                 status="stored",
@@ -163,11 +195,18 @@ class StoreCommand:
                 reason=str(error),
             )
 
-    def _store_chunks(self, doc_uid: str, chunks: list[Chunk], sections: list[SectionRecord]) -> StoreCommandResult | None:
+    def _store_chunks(
+        self,
+        doc_uid: str,
+        chunks: list[Chunk],
+        sections: list[SectionRecord],
+        document: DocumentRecord,
+    ) -> StoreCommandResult | None:
         with self._dependencies.chunk_store as chunk_store:
             existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
             existing_sections = self._get_existing_sections(doc_uid)
-            should_skip = self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks) and self._section_payloads_match(existing_sections, sections)
+            existing_document = self._get_existing_document(doc_uid)
+            should_skip = self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks) and self._section_payloads_match(existing_sections, sections) and self._document_payloads_match(existing_document, document)
             if should_skip:
                 logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
                 return StoreCommandResult(
@@ -228,14 +267,29 @@ class StoreCommand:
                 )
                 logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
 
+    def _store_document_embeddings(self, doc_uid: str, embedding_text: str) -> None:
+        if self._dependencies.document_vector_store is None:
+            logger.info(f"Skipping document embeddings for doc_uid={doc_uid} because no document vector store is configured")
+            return
+        if not embedding_text:
+            logger.warning(f"Skipping document embedding for doc_uid={doc_uid} because the embedding text is empty")
+            return
+        with self._dependencies.document_vector_store as document_vector_store:
+            deleted_count = document_vector_store.delete_by_doc(doc_uid)
+            if deleted_count > 0:
+                logger.info(f"Deleted {deleted_count} existing document embeddings for {doc_uid}")
+            logger.info(f"Storing document embedding for doc_uid={doc_uid} with embedding_chars={len(embedding_text)}")
+            document_vector_store.add_embeddings([doc_uid], [embedding_text])
+            logger.info(f"Stored 1 document embedding for doc_uid={doc_uid}")
+
     def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
         truncated_count = 0
         for chunk in chunks:
-            if len(chunk.text) > MAX_CHUNK_CHARS:
+            if len(chunk.text) > MAX_EMBEDDING_TEXT_CHARS:
                 original_len = len(chunk.text)
-                chunk.text = chunk.text[:MAX_CHUNK_CHARS]
+                chunk.text = chunk.text[:MAX_EMBEDDING_TEXT_CHARS]
                 truncated_count += 1
-                logger.warning(f"Truncated chunk {chunk.chunk_number} from {original_len} to {MAX_CHUNK_CHARS} chars")
+                logger.warning(f"Truncated chunk {chunk.chunk_number} from {original_len} to {MAX_EMBEDDING_TEXT_CHARS} chars")
         if truncated_count > 0:
             logger.info(f"Truncated {truncated_count} oversized chunk(s)")
 
@@ -244,6 +298,10 @@ class StoreCommand:
             return []
         with self._dependencies.section_store as section_store:
             return list(section_store.get_sections_by_doc(doc_uid))
+
+    def _get_existing_document(self, doc_uid: str) -> DocumentRecord | None:
+        with self._dependencies.document_store as document_store:
+            return document_store.get_document(doc_uid)
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
@@ -264,6 +322,24 @@ class StoreCommand:
     def _section_payload(self, section: SectionRecord) -> tuple[str, str | None, str, str]:
         return (section.section_id, section.parent_section_id, section.title, section.embedding_text)
 
+    def _document_payloads_match(self, existing_document: DocumentRecord | None, new_document: DocumentRecord) -> bool:
+        if existing_document is None:
+            return False
+        return self._document_payload(existing_document) == self._document_payload(new_document)
+
+    def _document_payload(self, document: DocumentRecord) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
+        return (
+            document.source_type,
+            document.source_title,
+            document.source_url,
+            document.canonical_url,
+            document.background_text,
+            document.issue_text,
+            document.objective_text,
+            document.scope_text,
+            document.intro_text,
+        )
+
 
 def build_store_dependencies() -> StoreDependencies:
     """Build the production dependencies for StoreCommand."""
@@ -274,6 +350,7 @@ def build_store_dependencies() -> StoreDependencies:
         init_db_fn=init_db,
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
+        document_vector_store=DocumentVectorStore(),
     )
 
 

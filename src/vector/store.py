@@ -12,7 +12,7 @@ import faiss
 import numpy as np
 
 from src.interfaces import SearchResult
-from src.vector.model_cache import EmbeddingModelProtocol, get_embedding_model
+from src.vector.model_cache import EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
 
 # Suppress sentence-transformers logging
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -21,7 +21,6 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "BAAI/bge-m3"
 QUERY_EMBEDDING_CACHE_VERSION = "v1"
 QUERY_EMBEDDING_NDIM = 2
 

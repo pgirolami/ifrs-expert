@@ -11,9 +11,10 @@ from typing import TYPE_CHECKING
 from dotenv import load_dotenv
 
 from src.answer_artifacts import save_answer_command_result
-from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryOptions, QueryTitlesOptions
+from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryDocumentsOptions, QueryOptions, QueryTitlesOptions
 from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
+from src.commands.query_documents import create_query_documents_command
 from src.commands.query_titles import create_query_titles_command
 from src.commands.store import create_store_command
 from src.llm.client import get_client
@@ -104,6 +105,29 @@ def main() -> int:
         type=int,
         default=0,
         help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
+    )
+
+    query_documents_parser = subparsers.add_parser(
+        "query-documents",
+        help="Search for similar documents using document-level embeddings (reads query from stdin)",
+    )
+    query_documents_parser.add_argument(
+        "-d",
+        "--d",
+        type=int,
+        default=5,
+        help="Number of documents to return (default: 5)",
+    )
+    query_documents_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output results as JSON (default is verbose text)",
+    )
+    query_documents_parser.add_argument(
+        "--min-score",
+        type=float,
+        default=None,
+        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.55.",
     )
 
     query_titles_parser = subparsers.add_parser(
@@ -207,60 +231,79 @@ def main() -> int:
 
 def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
-    result: str
+    handlers = {
+        "chunk": lambda: ChunkCommand(pdf_path=Path(args.pdf)).execute(),
+        "store": lambda: create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid).execute(),
+        "ingest": lambda: IngestCommand().execute(),
+        "list": lambda: ListCommand(doc_uid=args.doc_uid).execute(),
+        "query": lambda: _execute_query_command(args),
+        "query-documents": lambda: _execute_query_documents_command(args),
+        "query-titles": lambda: _execute_query_titles_command(args),
+        "answer": lambda: _execute_answer_command(args),
+        "llm": _execute_llm_command,
+    }
+    handler = handlers.get(args.command)
+    if handler is None:
+        return f"Error: Unknown command: {args.command}"
+    return handler()
 
-    if args.command == "chunk":
-        command = ChunkCommand(pdf_path=Path(args.pdf))
-        result = command.execute()
-    elif args.command == "store":
-        command = create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid)
-        result = command.execute()
-    elif args.command == "ingest":
-        command = IngestCommand()
-        result = command.execute()
-    elif args.command == "list":
-        command = ListCommand(doc_uid=args.doc_uid)
-        result = command.execute()
-    elif args.command == "query":
-        query = sys.stdin.read().strip()
-        verbose = not getattr(args, "json", False)
-        command = create_query_command(
-            query=query,
-            options=QueryOptions(
-                k=args.k,
-                min_score=args.min_score,
-                verbose=verbose,
-                expand=args.expand,
-                full_doc_threshold=args.full_doc_threshold,
-            ),
-        )
-        result = command.execute()
-    elif args.command == "query-titles":
-        query = sys.stdin.read().strip()
-        verbose = not getattr(args, "json", False)
-        command = create_query_titles_command(
-            query=query,
-            options=QueryTitlesOptions(
-                k=args.k,
-                min_score=args.min_score,
-                verbose=verbose,
-            ),
-        )
-        result = command.execute()
-    elif args.command == "answer":
-        result = _execute_answer_command(args)
-    elif args.command == "llm":
-        prompt = sys.stdin.read()
-        try:
-            client = get_client()
-            result = client.generate_text(prompt=prompt)
-        except Exception as e:
-            logger.exception("LLM command failed")
-            result = f"Error: {e}"
-    else:
-        result = f"Error: Unknown command: {args.command}"
 
-    return result
+def _execute_query_command(args: argparse.Namespace) -> str:
+    """Execute the chunk-query command."""
+    query = sys.stdin.read().strip()
+    verbose = not getattr(args, "json", False)
+    command = create_query_command(
+        query=query,
+        options=QueryOptions(
+            k=args.k,
+            min_score=args.min_score,
+            verbose=verbose,
+            expand=args.expand,
+            full_doc_threshold=args.full_doc_threshold,
+        ),
+    )
+    return command.execute()
+
+
+def _execute_query_documents_command(args: argparse.Namespace) -> str:
+    """Execute the document-query command."""
+    query = sys.stdin.read().strip()
+    verbose = not getattr(args, "json", False)
+    command = create_query_documents_command(
+        query=query,
+        options=QueryDocumentsOptions(
+            d=args.d,
+            min_score=args.min_score,
+            verbose=verbose,
+        ),
+    )
+    return command.execute()
+
+
+def _execute_query_titles_command(args: argparse.Namespace) -> str:
+    """Execute the title-query command."""
+    query = sys.stdin.read().strip()
+    verbose = not getattr(args, "json", False)
+    command = create_query_titles_command(
+        query=query,
+        options=QueryTitlesOptions(
+            k=args.k,
+            min_score=args.min_score,
+            verbose=verbose,
+        ),
+    )
+    return command.execute()
+
+
+def _execute_llm_command() -> str:
+    """Execute the raw LLM command."""
+    prompt = sys.stdin.read()
+    try:
+        client = get_client()
+        return client.generate_text(prompt=prompt)
+    except Exception as e:
+        logger.exception("LLM command failed")
+        return f"Error: {e}"
 
 
 def _execute_answer_command(args: argparse.Namespace) -> str:

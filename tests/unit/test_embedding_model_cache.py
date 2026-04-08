@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from src.vector.model_cache import clear_embedding_model_cache, get_embedding_model, set_embedding_model_factory
+from src.vector.model_cache import EMBEDDING_MODEL, clear_embedding_model_cache, get_embedding_model, set_embedding_model_factory
 from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
@@ -59,11 +59,11 @@ class TestEmbeddingModelCache:
         factory = RecordingModelFactory()
         set_embedding_model_factory(factory)
 
-        first_model = get_embedding_model("BAAI/bge-m3")
-        second_model = get_embedding_model("BAAI/bge-m3")
+        first_model = get_embedding_model(EMBEDDING_MODEL)
+        second_model = get_embedding_model(EMBEDDING_MODEL)
 
         assert first_model is second_model
-        assert factory.calls == ["BAAI/bge-m3"]
+        assert factory.calls == [EMBEDDING_MODEL]
 
     def test_vector_store_and_title_store_share_one_cached_model_instance(self) -> None:
         """Chunk and title vector stores should share the same cached embedding model."""
@@ -77,4 +77,4 @@ class TestEmbeddingModelCache:
         second_model = title_store._get_model()
 
         assert first_model is second_model
-        assert factory.calls == ["BAAI/bge-m3"]
+        assert factory.calls == [EMBEDDING_MODEL]

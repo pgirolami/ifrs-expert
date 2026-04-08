@@ -7,12 +7,20 @@ from pathlib import Path
 
 import pytest
 
-from src.commands.store import MAX_CHUNK_CHARS, StoreCommand, StoreDependencies
+from src.commands.store import StoreCommand, StoreDependencies
+from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.extraction import ExtractedDocument
 from src.models.section import SectionClosureRow, SectionRecord
-from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, InMemorySectionStore, RecordingVectorStore, RecordingTitleVectorStore
+from tests.fakes import (
+    InMemoryChunkStore,
+    InMemoryDocumentStore,
+    InMemorySectionStore,
+    RecordingDocumentVectorStore,
+    RecordingTitleVectorStore,
+    RecordingVectorStore,
+)
 
 
 @dataclass
@@ -63,10 +71,12 @@ class TestStoreCommand:
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
         vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
         dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
+            document_vector_store=document_vector_store,
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
@@ -84,8 +94,10 @@ class TestStoreCommand:
         stored_document = document_store.get_document("ifrs9")
         assert stored_document is not None, "Expected document metadata to be stored"
         assert stored_document.source_type == "pdf"
+        assert stored_document.intro_text == "test content"
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "test content"
         assert vector_store.added_embeddings == [("ifrs9", [1], ["test content"])]
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nIntroduction: test content"])]
         assert command.execute().startswith("Stored 1 chunks")
 
     def test_store_command_skips_unchanged_html_chunks(self, tmp_path: Path) -> None:
@@ -95,6 +107,7 @@ class TestStoreCommand:
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
         vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
 
         existing_chunk = Chunk(
             doc_uid="ifrs9",
@@ -144,6 +157,7 @@ class TestStoreCommand:
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
+            document_vector_store=document_vector_store,
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
@@ -158,6 +172,7 @@ class TestStoreCommand:
         assert result.status == "skipped"
         assert result.chunk_count == 1
         assert vector_store.added_embeddings == []
+        assert document_vector_store.added_embeddings == []
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "existing content"
         assert command.execute().startswith("Skipped: doc_uid=ifrs9")
 
@@ -168,6 +183,7 @@ class TestStoreCommand:
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
         vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
         extractor = FakeExtractor(
             extracted_document=ExtractedDocument(
                 document=DocumentRecord(
@@ -184,7 +200,7 @@ class TestStoreCommand:
                         chunk_number="B43",
                         page_start="A856",
                         page_end="A856",
-                        text="x" * (MAX_CHUNK_CHARS + 20),
+                        text="x" * (MAX_EMBEDDING_TEXT_CHARS + 20),
                     )
                 ],
             )
@@ -194,6 +210,7 @@ class TestStoreCommand:
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
+            document_vector_store=document_vector_store,
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
@@ -207,17 +224,19 @@ class TestStoreCommand:
         stored_chunk = chunk_store.get_chunks_by_doc("ifrs16")[0]
 
         assert result.status == "stored"
-        assert len(stored_chunk.text) == MAX_CHUNK_CHARS
+        assert len(stored_chunk.text) == MAX_EMBEDDING_TEXT_CHARS
 
     def test_store_command_file_not_found(self) -> None:
         """Missing source files should return an error result."""
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
         vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
         dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             vector_store=vector_store,
+            document_vector_store=document_vector_store,
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
@@ -244,8 +263,8 @@ class TestStoreCommand:
         assert result.startswith("Error:")
         assert "not found" in result
 
-    def test_store_command_stores_sections_and_title_embeddings(self, tmp_path: Path) -> None:
-        """Store command should persist sections and leaf-title embeddings."""
+    def test_store_command_stores_sections_title_embeddings_and_document_representation(self, tmp_path: Path) -> None:
+        """Store command should persist sections, title embeddings, and document embeddings."""
         source_path = tmp_path / "test.html"
         source_path.write_text("dummy", encoding="utf-8")
 
@@ -276,9 +295,9 @@ class TestStoreCommand:
                         doc_uid="ifrs9",
                         parent_section_id=None,
                         level=2,
-                        title="Recognition and derecognition",
-                        section_lineage=["Recognition and derecognition"],
-                        embedding_text="Recognition and derecognition",
+                        title="Scope",
+                        section_lineage=["Scope"],
+                        embedding_text="Scope",
                         position=1,
                     ),
                     SectionRecord(
@@ -304,12 +323,14 @@ class TestStoreCommand:
         section_store = InMemorySectionStore()
         vector_store = RecordingVectorStore()
         title_vector_store = RecordingTitleVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
         dependencies = StoreDependencies(
             chunk_store=chunk_store,
             document_store=document_store,
             section_store=section_store,
             vector_store=vector_store,
             title_vector_store=title_vector_store,
+            document_vector_store=document_vector_store,
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
@@ -323,7 +344,88 @@ class TestStoreCommand:
 
         assert result.status == "stored"
         assert [section.section_id for section in section_store.get_sections_by_doc("ifrs9")] == ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"]
-        assert title_vector_store.added_embeddings == [("ifrs9", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"], ["Recognition and derecognition", "Initial recognition"])]
+        assert title_vector_store.added_embeddings == [("ifrs9", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"], ["Scope", "Initial recognition"])]
+        stored_document = document_store.get_document("ifrs9")
+        assert stored_document is not None
+        assert stored_document.scope_text == "test content"
+        assert stored_document.intro_text is None
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nScope: test content"])]
+
+    def test_store_command_rebuilds_when_document_representation_changes(self, tmp_path: Path) -> None:
+        """Changed document-representation fields should force a re-store even if chunks are unchanged."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
+
+        existing_chunk = Chunk(
+            doc_uid="ifrs9",
+            chunk_number="2.4",
+            page_start="",
+            page_end="",
+            chunk_id="IFRS09_2.4",
+            text="existing content",
+        )
+        chunk_store.insert_chunks([existing_chunk])
+        document_store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="Old IFRS 9 title",
+                source_url="https://www.ifrs.org/original.html",
+                canonical_url="https://www.ifrs.org/original.html",
+                captured_at="2026-04-04T14:23:10Z",
+            )
+        )
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/original.html",
+                    canonical_url="https://www.ifrs.org/original.html",
+                    captured_at="2026-04-05T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="2.4",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_2.4",
+                        text="existing content",
+                    )
+                ],
+            ),
+            skip_if_unchanged=True,
+        )
+
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            document_vector_store=document_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        stored_document = document_store.get_document("ifrs9")
+        assert stored_document is not None
+        assert stored_document.source_title == "IFRS 9"
+        assert stored_document.intro_text is None
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9"])]
 
     def test_store_command_requires_dependencies(self, tmp_path: Path) -> None:
         """The constructor should keep dependency injection explicit."""

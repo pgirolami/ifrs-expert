@@ -31,24 +31,24 @@ def temp_db() -> Path:
 def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: Path) -> None:
     """The schema should support document metadata, section trees, and chunk references."""
     with sqlite3.connect(temp_db) as connection:
-        document_columns = {
-            row[1]
-            for row in connection.execute("PRAGMA table_info(documents)").fetchall()
-        }
-        chunk_columns = {
-            row[1]
-            for row in connection.execute("PRAGMA table_info(chunks)").fetchall()
-        }
-        section_columns = {
-            row[1]
-            for row in connection.execute("PRAGMA table_info(sections)").fetchall()
-        }
-        closure_columns = {
-            row[1]
-            for row in connection.execute("PRAGMA table_info(section_closure)").fetchall()
-        }
+        document_columns = {row[1] for row in connection.execute("PRAGMA table_info(documents)").fetchall()}
+        chunk_columns = {row[1] for row in connection.execute("PRAGMA table_info(chunks)").fetchall()}
+        section_columns = {row[1] for row in connection.execute("PRAGMA table_info(sections)").fetchall()}
+        closure_columns = {row[1] for row in connection.execute("PRAGMA table_info(section_closure)").fetchall()}
 
-    assert {"doc_uid", "source_type", "source_title", "source_url", "canonical_url", "captured_at"}.issubset(document_columns)
+    assert {
+        "doc_uid",
+        "source_type",
+        "source_title",
+        "source_url",
+        "canonical_url",
+        "captured_at",
+        "background_text",
+        "issue_text",
+        "objective_text",
+        "scope_text",
+        "intro_text",
+    }.issubset(document_columns)
     assert {"chunk_number", "chunk_id", "containing_section_id"}.issubset(chunk_columns)
     assert {"section_id", "doc_uid", "parent_section_id", "title", "section_lineage", "embedding_text", "position"}.issubset(section_columns)
     assert {"ancestor_section_id", "descendant_section_id", "depth"}.issubset(closure_columns)
@@ -65,6 +65,11 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
         source_url="https://www.ifrs.org/ifrs9.html",
         canonical_url="https://www.ifrs.org/ifrs9.html",
         captured_at="2026-04-04T14:23:10Z",
+        background_text="Background text",
+        issue_text="Issue text",
+        objective_text="Objective text",
+        scope_text="Scope text",
+        intro_text="Intro text",
     )
 
     with DocumentStore() as store:
@@ -75,6 +80,11 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
     assert fetched.doc_uid == "ifrs9"
     assert fetched.source_type == "html"
     assert fetched.canonical_url == "https://www.ifrs.org/ifrs9.html"
+    assert fetched.background_text == "Background text"
+    assert fetched.issue_text == "Issue text"
+    assert fetched.objective_text == "Objective text"
+    assert fetched.scope_text == "Scope text"
+    assert fetched.intro_text == "Intro text"
 
 
 def test_chunk_store_round_trips_chunk_metadata(temp_db: Path) -> None:

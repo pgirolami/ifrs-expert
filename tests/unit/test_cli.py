@@ -134,6 +134,23 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
     assert output == "title output"
 
 
+def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should dispatch the query-documents subcommand."""
+    monkeypatch.setattr("src.cli.create_query_documents_command", lambda query, options: FakeTextCommand("document output"))
+    monkeypatch.setattr("sys.stdin", io.StringIO("Find hedge guidance"))
+
+    args = argparse.Namespace(
+        command="query-documents",
+        d=3,
+        min_score=None,
+        json=True,
+    )
+
+    output = _execute_command(args)
+
+    assert output == "document output"
+
+
 def test_answer_stdout_text_prefers_raw_response() -> None:
     """CLI stdout should use the raw response when available."""
     result = AnswerCommandResult(

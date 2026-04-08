@@ -37,14 +37,24 @@ class DocumentStore:
                 source_title,
                 source_url,
                 canonical_url,
-                captured_at
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                captured_at,
+                background_text,
+                issue_text,
+                objective_text,
+                scope_text,
+                intro_text
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(doc_uid) DO UPDATE SET
                 source_type = excluded.source_type,
                 source_title = excluded.source_title,
                 source_url = excluded.source_url,
                 canonical_url = excluded.canonical_url,
                 captured_at = excluded.captured_at,
+                background_text = excluded.background_text,
+                issue_text = excluded.issue_text,
+                objective_text = excluded.objective_text,
+                scope_text = excluded.scope_text,
+                intro_text = excluded.intro_text,
                 updated_at = CURRENT_TIMESTAMP
             """,
             (
@@ -54,6 +64,11 @@ class DocumentStore:
                 document.source_url,
                 document.canonical_url,
                 document.captured_at,
+                document.background_text,
+                document.issue_text,
+                document.objective_text,
+                document.scope_text,
+                document.intro_text,
             ),
         )
         self._conn.commit()
@@ -63,7 +78,20 @@ class DocumentStore:
         """Fetch one document by doc_uid."""
         row = self._conn.execute(
             """
-            SELECT doc_uid, source_type, source_title, source_url, canonical_url, captured_at, created_at, updated_at
+            SELECT
+                doc_uid,
+                source_type,
+                source_title,
+                source_url,
+                canonical_url,
+                captured_at,
+                background_text,
+                issue_text,
+                objective_text,
+                scope_text,
+                intro_text,
+                created_at,
+                updated_at
             FROM documents
             WHERE doc_uid = ?
             """,
@@ -78,6 +106,11 @@ class DocumentStore:
             source_url=row["source_url"],
             canonical_url=row["canonical_url"],
             captured_at=row["captured_at"],
+            background_text=row["background_text"],
+            issue_text=row["issue_text"],
+            objective_text=row["objective_text"],
+            scope_text=row["scope_text"],
+            intro_text=row["intro_text"],
             created_at=row["created_at"],
             updated_at=row["updated_at"],
         )

@@ -163,3 +163,28 @@ class RecordingTitleVectorStore:
 
     def add_embeddings(self, doc_uid: str, section_ids: list[str], texts: list[str]) -> None:
         self.added_embeddings.append((doc_uid, section_ids, texts))
+
+
+class RecordingDocumentVectorStore:
+    """Document vector store fake that records document embedding operations."""
+
+    def __init__(self) -> None:
+        self.deleted_doc_uids: list[str] = []
+        self.added_embeddings: list[tuple[list[str], list[str]]] = []
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        return None
+
+    def search_all(self, query: str) -> list[SearchResult]:
+        del query
+        return []
+
+    def delete_by_doc(self, doc_uid: str) -> int:
+        self.deleted_doc_uids.append(doc_uid)
+        return 0
+
+    def add_embeddings(self, doc_uids: list[str], texts: list[str]) -> None:
+        self.added_embeddings.append((doc_uids, texts))
