@@ -48,6 +48,7 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
         "objective_text",
         "scope_text",
         "intro_text",
+        "toc_text",
     }.issubset(document_columns)
     assert {"chunk_number", "chunk_id", "containing_section_id"}.issubset(chunk_columns)
     assert {"section_id", "doc_uid", "parent_section_id", "title", "section_lineage", "embedding_text", "position"}.issubset(section_columns)
@@ -70,6 +71,7 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
         objective_text="Objective text",
         scope_text="Scope text",
         intro_text="Intro text",
+        toc_text="TOC text",
     )
 
     with DocumentStore() as store:
@@ -85,6 +87,7 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
     assert fetched.objective_text == "Objective text"
     assert fetched.scope_text == "Scope text"
     assert fetched.intro_text == "Intro text"
+    assert fetched.toc_text == "TOC text"
 
 
 def test_chunk_store_round_trips_chunk_metadata(temp_db: Path) -> None:

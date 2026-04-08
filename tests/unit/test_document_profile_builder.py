@@ -72,9 +72,11 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
     assert built_profile.document.issue_text == "The issue is which entity may hold the hedging instrument."
     assert built_profile.document.scope_text == "This Interpretation applies to IFRS 9 hedges of net investments."
     assert built_profile.document.intro_text is None
+    assert built_profile.document.toc_text is None
     assert "Title: IFRIC 16 Hedges of a Net Investment in a Foreign Operation" in built_profile.embedding_text
     assert "Background: This Interpretation addresses hedges of net investments." in built_profile.embedding_text
     assert "Issue: The issue is which entity may hold the hedging instrument." in built_profile.embedding_text
+    assert "TOC:" not in built_profile.embedding_text
     assert "Introduction:" not in built_profile.embedding_text
 
 
@@ -156,8 +158,55 @@ def test_document_profile_builder_pulls_objective_subsections_into_document_repr
     )
 
     assert built_profile.document.objective_text == ("The objective is to require disclosure of interests.\nThese disclosures help users evaluate subsidiaries and related risks.")
+    assert built_profile.document.toc_text is None
     assert "Objective: The objective is to require disclosure of interests." in built_profile.embedding_text
     assert "These disclosures help users evaluate subsidiaries and related risks." in built_profile.embedding_text
+    assert "TOC:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided() -> None:
+    """TOC should be able to exclude sections that are filtered out for persistence."""
+    document = DocumentRecord(
+        doc_uid="ifrs9",
+        source_type="html",
+        source_title="IFRS 9",
+        source_url="https://www.ifrs.org/ifrs9.html",
+        canonical_url="https://www.ifrs.org/ifrs9.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-contents",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=2,
+            title="Contents",
+            section_lineage=["Contents"],
+            embedding_text="Contents",
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-scope",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=2,
+            title="Scope",
+            section_lineage=["Scope"],
+            embedding_text="Scope",
+            position=2,
+        ),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=[],
+        sections=sections,
+        section_closure_rows=[],
+        toc_sections=[sections[1]],
+    )
+
+    assert built_profile.document.toc_text is None
+    assert "TOC:" not in built_profile.embedding_text
 
 
 def test_document_profile_builder_truncates_embedding_text_proportionally() -> None:

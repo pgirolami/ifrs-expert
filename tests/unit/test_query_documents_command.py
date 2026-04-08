@@ -54,6 +54,7 @@ def test_query_documents_returns_top_d_documents_as_json() -> None:
                 background_text="Background text",
                 issue_text="Issue text",
                 scope_text="Scope text",
+                toc_text="Background\nIssue\nScope",
             )
         )
         store.upsert_document(
@@ -92,6 +93,7 @@ def test_query_documents_returns_top_d_documents_as_json() -> None:
     assert data[0]["doc_uid"] == "ifric16"
     assert data[0]["background_text"] == "Background text"
     assert data[0]["issue_text"] == "Issue text"
+    assert data[0]["TOC"] == "Background\nIssue\nScope"
     assert data[0]["score"] == 0.97
 
 
@@ -116,8 +118,11 @@ def test_query_documents_returns_error_when_index_missing() -> None:
 
 
 def test_query_documents_verbose_output_starts_with_options() -> None:
-    """Verbose document-query output should start with the resolved options."""
+    """Verbose document-query output should start with options and truncated representation details."""
     from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+
+    long_background_text = "B" * 70
+    long_scope_text = "S" * 75
 
     document_store = InMemoryDocumentStore()
     with document_store as store:
@@ -129,7 +134,9 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
                 source_url="https://www.ifrs.org/ifric16.html",
                 canonical_url="https://www.ifrs.org/ifric16.html",
                 captured_at="2026-04-05T10:00:00Z",
-                background_text="Background text",
+                background_text=long_background_text,
+                scope_text=long_scope_text,
+                toc_text="Background\nIssue\nScope",
             )
         )
 
@@ -147,3 +154,8 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
     result = command.execute()
 
     assert result.startswith("QueryDocumentsOptions(d=5, min_score=None, verbose=True)")
+    assert "Snippet: " + ("B" * 60) + "..." in result
+    assert "Document representation:" in result
+    assert "- Background: " + ("B" * 60) + "..." in result
+    assert "- Scope: " + ("S" * 60) + "..." in result
+    assert "- TOC: Background Issue Scope" in result

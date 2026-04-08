@@ -1,0 +1,3152 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-m",
+    "src.cli",
+    "query-documents",
+    "--min-score",
+    "0.3",
+    "-d",
+    "30",
+    "--json"
+  ],
+  "results": [
+    {
+      "question_id": "Q1.0",
+      "question_text": "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5931
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.592
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5878
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5705
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5673
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5638
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5582
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.557
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5546
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5453
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.541
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5372
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.534
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5332
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5307
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5306
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5285
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5272
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5216
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5216
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5182
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5176
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5175
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.5171
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5144
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.5142
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5137
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5123
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5102
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.1",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5909
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5838
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5771
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5565
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5548
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5536
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5531
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5511
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5473
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.546
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5414
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5343
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5255
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5227
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5175
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5157
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5157
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.515
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5134
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5133
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5117
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5117
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5092
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5088
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5082
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.507
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5056
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5016
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.5002
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.5001
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.2",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5941
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.579
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5648
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.549
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.548
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5474
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5458
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5417
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5416
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5374
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.536
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5303
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5188
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5138
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5126
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5114
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5108
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5077
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5064
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5042
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5036
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5031
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5018
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5016
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5008
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4972
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4963
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.4962
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4911
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.491
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.3",
+      "question_text": "Peut-on désigner, dans les comptes consolidés, le risque de change afférent à des dividendes intragroupe donnant lieu à la comptabilisation d’une créance à recevoir dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5829
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5645
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5624
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.555
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5498
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5459
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5398
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5386
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5362
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5341
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5338
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5269
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5248
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5196
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5174
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5174
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5172
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5151
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5108
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5103
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5037
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.5022
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5007
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4999
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4984
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.4976
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4961
+        },
+        {
+          "doc_uid": "ifric14",
+          "score": 0.4904
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4903
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.4",
+      "question_text": "En consolidation, est-il possible de mettre en place une documentation de couverture portant sur la composante change de dividendes intragroupe dès lors qu’une créance correspondante a été reconnue ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5889
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.575
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5732
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5585
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5561
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5556
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5484
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5456
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5451
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5436
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5358
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5319
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5297
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5244
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5157
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5134
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5122
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5042
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5036
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5015
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5005
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4989
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.4988
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4974
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.4969
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.4957
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4956
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4934
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.5",
+      "question_text": "Le risque de change attaché à des dividendes intragroupe comptabilisés en créance à recevoir peut-il faire l’objet d’une relation de couverture formellement documentée au niveau des états financiers consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5779
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5503
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5417
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5368
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.529
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5278
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5274
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5262
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5251
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5248
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5244
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5217
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.518
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5153
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5076
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5064
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5054
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5024
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4896
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4875
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4872
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.4866
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4847
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4815
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.4806
+        },
+        {
+          "doc_uid": "ifric14",
+          "score": 0.4764
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.4763
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.4757
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4748
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.4732
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.6",
+      "question_text": "Dans les comptes consolidés, la variation de change relative à des dividendes intragroupe pour lesquels un receivable a été constaté est-elle éligible à une désignation en comptabilité de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5719
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5464
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5285
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5274
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5214
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5162
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5152
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5141
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5128
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5114
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5111
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5088
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5034
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5015
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.4997
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4968
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.495
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.4943
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.4914
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.489
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4866
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4865
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.486
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.4847
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.4827
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4823
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.4814
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.4809
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.4765
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4751
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.7",
+      "question_text": "Est-il recevable, au regard des IFRS, de documenter une couverture du risque de change sur des dividendes intragroupe ayant donné lieu à la reconnaissance d’une créance dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6013
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5935
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5925
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5873
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5782
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5699
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.568
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5676
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5641
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5594
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5501
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5468
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5467
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.545
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5442
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5423
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5399
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5395
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5317
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5294
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5287
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5274
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5269
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.526
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.526
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5243
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5239
+        },
+        {
+          "doc_uid": "ifric14",
+          "score": 0.5191
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5188
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5177
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.8",
+      "question_text": "Peut-on appliquer la comptabilité de couverture en consolidation à l’exposition de change résultant de dividendes intragroupe dès lors que ceux-ci ont été comptabilisés en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5751
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5696
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.558
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5386
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5343
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5292
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5194
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5192
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5181
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5174
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5131
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5106
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5105
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5065
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5058
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5039
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5032
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5029
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5026
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5007
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5001
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4991
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4963
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.4931
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4917
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4913
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4901
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.4884
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.9",
+      "question_text": "La composante de risque de change liée à des dividendes intragroupe reconnus sous forme de créance peut-elle être désignée comme élément couvert dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5839
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5614
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5392
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.537
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5335
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5319
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5314
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5292
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5227
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5192
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5178
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5155
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.514
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5096
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5077
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5044
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5028
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5015
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.501
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.4992
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4971
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4941
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4941
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.494
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4933
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4927
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.4923
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.4906
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.4866
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.4847
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.10",
+      "question_text": "Dans un contexte de consolidation IFRS, une relation de couverture peut-elle être documentée au titre du risque de change sur des dividendes intragroupe comptabilisés à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.599
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5906
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5896
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.579
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5668
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.557
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5547
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5493
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5491
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5473
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5452
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.542
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5417
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5395
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5392
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5342
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5289
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5282
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5273
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5268
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.5259
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5252
+        },
+        {
+          "doc_uid": "ps1",
+          "score": 0.5245
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5225
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5219
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5182
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5114
+        },
+        {
+          "doc_uid": "ifric14",
+          "score": 0.5064
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5064
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.11",
+      "question_text": "L’exposition au change générée par des dividendes intragroupe, une fois la créance correspondante enregistrée, peut-elle être couverte et documentée en hedge accounting dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifric16",
+          "score": 0.6086
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6066
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5572
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5553
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5356
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5341
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.533
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.522
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.5142
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5129
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5103
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5078
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5078
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5052
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5033
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.4942
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.4941
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.4908
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4887
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.485
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4848
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.4818
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.4806
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.4802
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.4789
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4776
+        },
+        {
+          "doc_uid": "ias28",
+          "score": 0.475
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4743
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.4735
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.12",
+      "question_text": "Est-il possible, au niveau consolidé, de qualifier de manière formelle une couverture du risque de change sur des dividendes intragroupe ayant fait l’objet d’une comptabilisation en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5667
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5388
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5261
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5245
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5232
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5206
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5201
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.518
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5145
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5139
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5108
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5095
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5051
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5019
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5013
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.4997
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.4972
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.4924
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4917
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.4903
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.4877
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4838
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4811
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.479
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4786
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.475
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.4743
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.4736
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.4731
+        },
+        {
+          "doc_uid": "ifric14",
+          "score": 0.472
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.13",
+      "question_text": "Dans les comptes consolidés, des dividendes intragroupe ont été décidés et une créance à recevoir a été comptabilisée. Dans ce contexte, la composante de risque de change associée à cette créance peut-elle être intégrée dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5736
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.557
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5511
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5472
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5468
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5454
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5373
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5363
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.534
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5313
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5306
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5303
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5268
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5247
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5236
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5195
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5192
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5169
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5162
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5073
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.507
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.507
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.504
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5001
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5001
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.4995
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.496
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4959
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.4958
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.4935
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.14",
+      "question_text": "Un dividende intragroupe a donné lieu à la comptabilisation d’un montant à recevoir au sein du périmètre consolidé. Peut-on, dans ces circonstances, documenter une couverture portant sur le risque de change afférent à cette exposition ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5615
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5335
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5299
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5291
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5192
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5189
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5188
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5149
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5124
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5073
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5022
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.4977
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.496
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.4933
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4885
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.4846
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4823
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.4811
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4801
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.4794
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4787
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4779
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.4759
+        },
+        {
+          "doc_uid": "ias10",
+          "score": 0.4728
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.4727
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.4726
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.4724
+        },
+        {
+          "doc_uid": "sic29",
+          "score": 0.4723
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.4713
+        },
+        {
+          "doc_uid": "ifric5",
+          "score": 0.4705
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.15",
+      "question_text": "La distribution de dividendes intragroupe a été reconnue sous la forme d’une créance dans les états financiers consolidés. Cette exposition de change peut-elle, en IFRS, être désignée comme élément couvert dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.6052
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5979
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5974
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.585
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5839
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5729
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5699
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5674
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5665
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5659
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.56
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5579
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5453
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5392
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.5389
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.5377
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5376
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5286
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5278
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5261
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5259
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5255
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.525
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5209
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5208
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5206
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5198
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.519
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.5167
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.16",
+      "question_text": "Au niveau consolidé, l’entité constate une créance liée à des dividendes intragroupe et supporte, de ce fait, une exposition au risque de change. Cette exposition peut-elle faire l’objet d’une documentation de couverture conforme aux IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.6573
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.6564
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.6409
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6395
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.6217
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.615
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.6092
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.6045
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5984
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.598
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5972
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5948
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5898
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5882
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5797
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5792
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5781
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5769
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5748
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5681
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.5677
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5656
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5641
+        },
+        {
+          "doc_uid": "ps1",
+          "score": 0.5621
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5616
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.5597
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.5588
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.5565
+        },
+        {
+          "doc_uid": "ifrs6",
+          "score": 0.5559
+        },
+        {
+          "doc_uid": "ias34",
+          "score": 0.5554
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.17",
+      "question_text": "Des dividendes intragroupe ont été comptabilisés à recevoir, ce qui fait naître une variation potentielle liée au change dans les comptes consolidés. Est-il alors possible de mettre en place une relation de couverture sur cette seule composante de change ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5747
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5699
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5525
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5513
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5437
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.54
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5386
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5307
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5221
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5202
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5198
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5177
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5159
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5124
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5014
+        },
+        {
+          "doc_uid": "sic29",
+          "score": 0.5004
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5002
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.4994
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.498
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.496
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4948
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4928
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.4909
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.4905
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4902
+        },
+        {
+          "doc_uid": "ifric5",
+          "score": 0.4887
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.4869
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.486
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4858
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.4858
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.18",
+      "question_text": "La comptabilisation d’une créance sur dividendes intragroupe dans les comptes consolidés conduit à identifier une exposition de change distincte. Cette exposition est-elle éligible à la comptabilité de couverture au niveau consolidé ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5812
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5794
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5787
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5688
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5616
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5605
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5591
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5415
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5407
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5377
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5355
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5344
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5322
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5314
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5282
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5264
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5221
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5212
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5197
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5141
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.5137
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5134
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.5133
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5133
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.5128
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5101
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5099
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.5087
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5076
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.19",
+      "question_text": "Dans un schéma où des dividendes intragroupe ont déjà été reconnus en créance à recevoir, la question se pose du traitement du risque de change associé en consolidation. Ce risque peut-il être formellement documenté dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.568
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5587
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.544
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5346
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5322
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5241
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5237
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5214
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5199
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5189
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5167
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5156
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5058
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5058
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5029
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5027
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.502
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.4983
+        },
+        {
+          "doc_uid": "sic29",
+          "score": 0.4946
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.4944
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.494
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.4926
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.4898
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.4891
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.4871
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.4869
+        },
+        {
+          "doc_uid": "ifric12",
+          "score": 0.4858
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.4851
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.4843
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.4829
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.20",
+      "question_text": "Une créance relative à des dividendes intragroupe figure désormais dans les états financiers consolidés, avec une sensibilité corrélative aux fluctuations de change. Peut-on couvrir cette exposition dans le cadre d’une documentation de hedge accounting ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6057
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5844
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5689
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5648
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5604
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5598
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5569
+        },
+        {
+          "doc_uid": "ias29",
+          "score": 0.5424
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5374
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5371
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5324
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5304
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5292
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.529
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5279
+        },
+        {
+          "doc_uid": "ifrs8",
+          "score": 0.5265
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "ias20",
+          "score": 0.5124
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5086
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5039
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5037
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5016
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.4995
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.4945
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.4934
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.4897
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.489
+        },
+        {
+          "doc_uid": "ifrs5",
+          "score": 0.4868
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.4828
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.4822
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.21",
+      "question_text": "Le groupe a comptabilisé un receivable au titre de dividendes intragroupe, créant ainsi une exposition au risque de change dans les comptes consolidés. Cette exposition peut-elle être désignée comme élément couvert au sens des IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5902
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5782
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5729
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5726
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.569
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5655
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5614
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5614
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5568
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5507
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5495
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5469
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5458
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5457
+        },
+        {
+          "doc_uid": "ias33",
+          "score": 0.5448
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5441
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5431
+        },
+        {
+          "doc_uid": "ias38",
+          "score": 0.541
+        },
+        {
+          "doc_uid": "ias12",
+          "score": 0.5354
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5339
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5337
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5333
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5321
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.53
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5287
+        },
+        {
+          "doc_uid": "ifrs11",
+          "score": 0.5258
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5254
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5239
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.5216
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.5192
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.22",
+      "question_text": "À partir du moment où des dividendes intragroupe sont reconnus en créance dans les comptes consolidés, une problématique de change apparaît. Dans une telle situation, est-il permis de documenter une couverture sur cette composante de risque ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5921
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5753
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5721
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5691
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5688
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5669
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.564
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5621
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5548
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5483
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5479
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5442
+        },
+        {
+          "doc_uid": "ias21",
+          "score": 0.5399
+        },
+        {
+          "doc_uid": "ias26",
+          "score": 0.5383
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5341
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5272
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5261
+        },
+        {
+          "doc_uid": "ifrs14",
+          "score": 0.5255
+        },
+        {
+          "doc_uid": "ifrs1",
+          "score": 0.52
+        },
+        {
+          "doc_uid": "ifric22",
+          "score": 0.5188
+        },
+        {
+          "doc_uid": "ias10",
+          "score": 0.5185
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5137
+        },
+        {
+          "doc_uid": "ifrs2",
+          "score": 0.5088
+        },
+        {
+          "doc_uid": "ias23",
+          "score": 0.5078
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5061
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.5051
+        },
+        {
+          "doc_uid": "ifric1",
+          "score": 0.502
+        },
+        {
+          "doc_uid": "ifric21",
+          "score": 0.5012
+        },
+        {
+          "doc_uid": "ias19",
+          "score": 0.5011
+        },
+        {
+          "doc_uid": "ifrs3",
+          "score": 0.5004
+        }
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "doc_uid": "ifrs9",
+      "run_count": 23,
+      "average_score": 0.5824
+    },
+    {
+      "doc_uid": "ifrs19",
+      "run_count": 23,
+      "average_score": 0.5655913043478261
+    },
+    {
+      "doc_uid": "ifric17",
+      "run_count": 23,
+      "average_score": 0.5618434782608696
+    },
+    {
+      "doc_uid": "ifrs12",
+      "run_count": 23,
+      "average_score": 0.5605739130434783
+    },
+    {
+      "doc_uid": "ifrs7",
+      "run_count": 23,
+      "average_score": 0.5483695652173913
+    },
+    {
+      "doc_uid": "ifrs18",
+      "run_count": 23,
+      "average_score": 0.5396739130434782
+    },
+    {
+      "doc_uid": "ias7",
+      "run_count": 23,
+      "average_score": 0.5368391304347826
+    },
+    {
+      "doc_uid": "ias37",
+      "run_count": 23,
+      "average_score": 0.5345739130434782
+    },
+    {
+      "doc_uid": "ias32",
+      "run_count": 23,
+      "average_score": 0.5338391304347826
+    },
+    {
+      "doc_uid": "ias21",
+      "run_count": 23,
+      "average_score": 0.5258695652173914
+    },
+    {
+      "doc_uid": "ias24",
+      "run_count": 23,
+      "average_score": 0.5211347826086956
+    },
+    {
+      "doc_uid": "ias27",
+      "run_count": 23,
+      "average_score": 0.5158739130434783
+    },
+    {
+      "doc_uid": "ifrs2",
+      "run_count": 23,
+      "average_score": 0.5150782608695652
+    },
+    {
+      "doc_uid": "ifrs17",
+      "run_count": 22,
+      "average_score": 0.5355045454545454
+    },
+    {
+      "doc_uid": "sic25",
+      "run_count": 22,
+      "average_score": 0.5297863636363637
+    },
+    {
+      "doc_uid": "ifric19",
+      "run_count": 22,
+      "average_score": 0.5288136363636363
+    },
+    {
+      "doc_uid": "ias26",
+      "run_count": 22,
+      "average_score": 0.5256727272727273
+    },
+    {
+      "doc_uid": "ifric16",
+      "run_count": 21,
+      "average_score": 0.5357380952380952
+    },
+    {
+      "doc_uid": "ifrs14",
+      "run_count": 21,
+      "average_score": 0.5107857142857143
+    },
+    {
+      "doc_uid": "ias33",
+      "run_count": 19,
+      "average_score": 0.5105105263157895
+    },
+    {
+      "doc_uid": "ias39",
+      "run_count": 17,
+      "average_score": 0.5122294117647059
+    },
+    {
+      "doc_uid": "ifric22",
+      "run_count": 17,
+      "average_score": 0.5058294117647059
+    },
+    {
+      "doc_uid": "ifrs8",
+      "run_count": 16,
+      "average_score": 0.517725
+    },
+    {
+      "doc_uid": "ifrs3",
+      "run_count": 16,
+      "average_score": 0.50479375
+    },
+    {
+      "doc_uid": "ifric2",
+      "run_count": 16,
+      "average_score": 0.50215
+    },
+    {
+      "doc_uid": "ifrs10",
+      "run_count": 15,
+      "average_score": 0.50978
+    },
+    {
+      "doc_uid": "ias19",
+      "run_count": 15,
+      "average_score": 0.5046
+    },
+    {
+      "doc_uid": "ias12",
+      "run_count": 14,
+      "average_score": 0.5008571428571429
+    },
+    {
+      "doc_uid": "ifrs1",
+      "run_count": 13,
+      "average_score": 0.5180461538461538
+    },
+    {
+      "doc_uid": "ias23",
+      "run_count": 13,
+      "average_score": 0.514723076923077
+    },
+    {
+      "doc_uid": "ias38",
+      "run_count": 12,
+      "average_score": 0.49559166666666665
+    },
+    {
+      "doc_uid": "ifric21",
+      "run_count": 10,
+      "average_score": 0.50835
+    },
+    {
+      "doc_uid": "ias29",
+      "run_count": 10,
+      "average_score": 0.4999
+    },
+    {
+      "doc_uid": "ias20",
+      "run_count": 10,
+      "average_score": 0.49826
+    },
+    {
+      "doc_uid": "ifric23",
+      "run_count": 9,
+      "average_score": 0.5075666666666667
+    },
+    {
+      "doc_uid": "ifrs11",
+      "run_count": 8,
+      "average_score": 0.5154875
+    },
+    {
+      "doc_uid": "ifric1",
+      "run_count": 7,
+      "average_score": 0.5019142857142858
+    },
+    {
+      "doc_uid": "ias34",
+      "run_count": 6,
+      "average_score": 0.51425
+    },
+    {
+      "doc_uid": "ifric14",
+      "run_count": 5,
+      "average_score": 0.49285999999999996
+    },
+    {
+      "doc_uid": "sic29",
+      "run_count": 3,
+      "average_score": 0.4891
+    },
+    {
+      "doc_uid": "ps1",
+      "run_count": 2,
+      "average_score": 0.5433
+    },
+    {
+      "doc_uid": "ias10",
+      "run_count": 2,
+      "average_score": 0.49565
+    },
+    {
+      "doc_uid": "ifric5",
+      "run_count": 2,
+      "average_score": 0.4796
+    },
+    {
+      "doc_uid": "ifrs6",
+      "run_count": 1,
+      "average_score": 0.5559
+    },
+    {
+      "doc_uid": "ifrs5",
+      "run_count": 1,
+      "average_score": 0.4868
+    },
+    {
+      "doc_uid": "ifric12",
+      "run_count": 1,
+      "average_score": 0.4858
+    },
+    {
+      "doc_uid": "ias28",
+      "run_count": 1,
+      "average_score": 0.475
+    }
+  ]
+}

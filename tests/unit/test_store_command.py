@@ -349,7 +349,94 @@ class TestStoreCommand:
         assert stored_document is not None
         assert stored_document.scope_text == "test content"
         assert stored_document.intro_text is None
+        assert stored_document.toc_text is None
         assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nScope: test content"])]
+
+    def test_store_command_excludes_filtered_sections_from_toc(self, tmp_path: Path) -> None:
+        """TOC should omit sections excluded by section filtering."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/ifrs9.html",
+                    canonical_url="https://www.ifrs.org/ifrs9.html",
+                    captured_at="2026-04-04T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="1",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_contents",
+                        containing_section_id="sec-contents",
+                        text="contents chunk",
+                    ),
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="2",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_scope",
+                        containing_section_id="sec-scope",
+                        text="scope chunk",
+                    ),
+                ],
+                sections=[
+                    SectionRecord(
+                        section_id="sec-contents",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Contents",
+                        section_lineage=["Contents"],
+                        embedding_text="Contents",
+                        position=1,
+                    ),
+                    SectionRecord(
+                        section_id="sec-scope",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Scope",
+                        section_lineage=["Scope"],
+                        embedding_text="Scope",
+                        position=2,
+                    ),
+                ],
+                section_closure_rows=[
+                    SectionClosureRow("sec-contents", "sec-contents", 0),
+                    SectionClosureRow("sec-scope", "sec-scope", 0),
+                ],
+            )
+        )
+        dependencies = StoreDependencies(
+            chunk_store=InMemoryChunkStore(),
+            document_store=InMemoryDocumentStore(),
+            section_store=InMemorySectionStore(),
+            vector_store=RecordingVectorStore(),
+            title_vector_store=RecordingTitleVectorStore(),
+            document_vector_store=RecordingDocumentVectorStore(),
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+        stored_document = dependencies.document_store.get_document("ifrs9")
+
+        assert result.status == "stored"
+        assert stored_document is not None
+        assert stored_document.toc_text is None
 
     def test_store_command_rebuilds_when_document_representation_changes(self, tmp_path: Path) -> None:
         """Changed document-representation fields should force a re-store even if chunks are unchanged."""

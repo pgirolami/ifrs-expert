@@ -29,6 +29,7 @@ EMBEDDING_LABEL_BY_FIELD: dict[str, str] = {
     "objective_text": "Objective",
     "scope_text": "Scope",
     "intro_text": "Introduction",
+    "toc_text": "TOC",
 }
 
 
@@ -62,6 +63,7 @@ class DocumentProfileBuilder:
         chunks: list[Chunk],
         sections: list[SectionRecord],
         section_closure_rows: list[SectionClosureRow],
+        toc_sections: list[SectionRecord] | None = None,
     ) -> BuiltDocumentProfile:
         """Build one enriched document record and its embedding text."""
         logger.info(f"Building document representation for doc_uid={document.doc_uid}, source_type={document.source_type}, chunk_count={len(chunks)}, section_count={len(sections)}")
@@ -78,6 +80,13 @@ class DocumentProfileBuilder:
             if intro_text is not None:
                 field_values["intro_text"] = intro_text
 
+        toc_text = _build_toc_text(
+            doc_uid=document.doc_uid,
+            sections=toc_sections or sections,
+        )
+        if toc_text is not None:
+            field_values["toc_text"] = toc_text
+
         enriched_document = replace(
             document,
             background_text=field_values.get("background_text"),
@@ -85,12 +94,13 @@ class DocumentProfileBuilder:
             objective_text=field_values.get("objective_text"),
             scope_text=field_values.get("scope_text"),
             intro_text=field_values.get("intro_text"),
+            toc_text=field_values.get("toc_text"),
         )
         embedding_text = _build_embedding_text(
             document=enriched_document,
             max_embedding_chars=self._max_embedding_chars,
         )
-        populated_fields = [field_name for field_name in ("background_text", "issue_text", "objective_text", "scope_text", "intro_text") if getattr(enriched_document, field_name) is not None]
+        populated_fields = [field_name for field_name in ("background_text", "issue_text", "objective_text", "scope_text", "intro_text", "toc_text") if getattr(enriched_document, field_name) is not None]
         logger.info(f"Built document representation for doc_uid={document.doc_uid}; populated_fields={populated_fields}, embedding_chars={len(embedding_text)}")
         return BuiltDocumentProfile(document=enriched_document, embedding_text=embedding_text)
 
@@ -156,6 +166,63 @@ def _collect_section_text(
     section_text = "\n".join(matching_chunks)
     logger.info(f"Collected {len(matching_chunks)} chunk(s) for doc_uid={doc_uid}, field={field_name}, section_title={section_title!r}, raw_chars={len(section_text)}")
     return section_text
+
+
+def _build_toc_text(doc_uid: str, sections: list[SectionRecord]) -> str | None:
+    parent_ids_with_children = {section.parent_section_id for section in sections if section.parent_section_id is not None}
+    child_ids_by_parent: dict[str, list[str]] = {}
+    for section in sections:
+        if section.parent_section_id is None:
+            continue
+        child_ids_by_parent.setdefault(section.parent_section_id, []).append(section.section_id)
+
+    directly_excluded_section_ids = {section.section_id for section in sections if _normalize_section_title(section.title) in SECTION_FIELD_BY_NORMALIZED_TITLE}
+    toc_excluded_section_ids = _find_descendant_section_ids(
+        excluded_ids=directly_excluded_section_ids,
+        child_ids_by_parent=child_ids_by_parent,
+    )
+
+    ordered_titles: list[str] = []
+    skipped_top_level_count = 0
+    skipped_representation_section_count = len(toc_excluded_section_ids)
+    for section in sorted(sections, key=lambda section: section.position):
+        title = section.title.strip()
+        if not title:
+            continue
+        if section.section_id in toc_excluded_section_ids:
+            continue
+        if section.parent_section_id is None and section.section_id in parent_ids_with_children:
+            skipped_top_level_count += 1
+            continue
+        ordered_titles.append(title)
+
+    if not ordered_titles:
+        logger.info(f"Skipping TOC build for doc_uid={doc_uid} because no eligible section titles were found")
+        return None
+
+    toc_text = "\n".join(ordered_titles)
+    logger.info(
+        f"Built title-only TOC for doc_uid={doc_uid} with section_count={len(ordered_titles)}, "
+        f"skipped_top_level_count={skipped_top_level_count}, "
+        f"skipped_representation_section_count={skipped_representation_section_count}, chars={len(toc_text)}"
+    )
+    return toc_text
+
+
+def _find_descendant_section_ids(
+    excluded_ids: set[str],
+    child_ids_by_parent: dict[str, list[str]],
+) -> set[str]:
+    descendant_ids = set(excluded_ids)
+    to_process = list(excluded_ids)
+    while to_process:
+        current_section_id = to_process.pop()
+        for child_section_id in child_ids_by_parent.get(current_section_id, []):
+            if child_section_id in descendant_ids:
+                continue
+            descendant_ids.add(child_section_id)
+            to_process.append(child_section_id)
+    return descendant_ids
 
 
 def _build_intro_fallback(doc_uid: str, source_type: str, chunks: list[Chunk]) -> str | None:
@@ -237,6 +304,7 @@ def _build_embedding_parts(document: DocumentRecord) -> list[_EmbeddingPart]:
         "objective_text",
         "scope_text",
         "intro_text",
+        "toc_text",
     ):
         field_value = getattr(document, field_name)
         if field_value is None or not field_value.strip():

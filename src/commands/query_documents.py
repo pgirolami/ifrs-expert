@@ -20,6 +20,16 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+VERBOSE_TEXT_PREVIEW_CHARS = 140
+DOCUMENT_REPRESENTATION_FIELDS: tuple[tuple[str, str], ...] = (
+    ("background_text", "Background"),
+    ("issue_text", "Issue"),
+    ("objective_text", "Objective"),
+    ("scope_text", "Scope"),
+    ("intro_text", "Introduction"),
+    ("toc_text", "TOC"),
+)
+
 
 @dataclass(frozen=True)
 class QueryDocumentsConfig:
@@ -139,6 +149,7 @@ def _build_json_output(
                 "objective_text": document.objective_text,
                 "scope_text": document.scope_text,
                 "intro_text": document.intro_text,
+                "TOC": document.toc_text,
                 "score": round(result["score"], 4),
             }
         )
@@ -155,26 +166,37 @@ def _build_verbose_output(
         if document is None:
             continue
         preview_text = next(
-            (
-                value
-                for value in (
-                    document.background_text,
-                    document.issue_text,
-                    document.objective_text,
-                    document.scope_text,
-                    document.intro_text,
-                )
-                if value
-            ),
+            (getattr(document, field_name) for field_name, _ in DOCUMENT_REPRESENTATION_FIELDS if getattr(document, field_name)),
             "",
         )
-        snippet = preview_text[:800].replace("\n", " ")
+        snippet = _truncate_verbose_text(preview_text)
         output_lines.append(f"\n--- Score: {result['score']:.4f} ---")
         output_lines.append(f"Document: {document.doc_uid}")
         output_lines.append(f"Title: {document.source_title}")
         if snippet:
-            output_lines.append(f"Snippet: {snippet}...")
+            output_lines.append(f"Snippet: {snippet}")
+        representation_lines = _build_document_representation_lines(document)
+        if representation_lines:
+            output_lines.append("Document representation:")
+            output_lines.extend(representation_lines)
     return "\n".join(output_lines)
+
+
+def _build_document_representation_lines(document: DocumentRecord) -> list[str]:
+    lines: list[str] = []
+    for field_name, label in DOCUMENT_REPRESENTATION_FIELDS:
+        field_value = getattr(document, field_name)
+        if field_value is None or not field_value.strip():
+            continue
+        lines.append(f"- {label}: {_truncate_verbose_text(field_value)}")
+    return lines
+
+
+def _truncate_verbose_text(text: str) -> str:
+    normalized_text = " ".join(text.split())
+    if len(normalized_text) <= VERBOSE_TEXT_PREVIEW_CHARS:
+        return normalized_text
+    return f"{normalized_text[:VERBOSE_TEXT_PREVIEW_CHARS]}..."
 
 
 def create_query_documents_command(

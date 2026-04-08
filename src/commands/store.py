@@ -120,22 +120,24 @@ class StoreCommand:
 
             self._truncate_oversized_chunks(extracted_document.chunks)
 
-            built_document_profile = self._document_profile_builder.build(
-                document=extracted_document.document,
-                chunks=extracted_document.chunks,
-                sections=extracted_document.sections,
-                section_closure_rows=extracted_document.section_closure_rows,
-            )
-            extracted_document.document = built_document_profile.document
-
-            # Apply section filtering only after building the document representation.
-            # Some sections are useful for the document-level representation even when
-            # they should not be stored as chunks/sections for downstream retrieval.
             filter_result = filter_extraction(
                 chunks=extracted_document.chunks,
                 sections=extracted_document.sections,
                 closure_rows=extracted_document.section_closure_rows,
             )
+
+            built_document_profile = self._document_profile_builder.build(
+                document=extracted_document.document,
+                chunks=extracted_document.chunks,
+                sections=extracted_document.sections,
+                section_closure_rows=extracted_document.section_closure_rows,
+                toc_sections=filter_result.sections,
+            )
+            extracted_document.document = built_document_profile.document
+
+            # Build the document representation from the unfiltered extraction, except
+            # for the TOC field which should reflect the filtered section set used for
+            # persistence and downstream retrieval.
 
             if filter_result.excluded_section_count > 0:
                 sample_titles = filter_result.excluded_section_titles[:10]
@@ -158,6 +160,7 @@ class StoreCommand:
                 f"objective_chars={len(extracted_document.document.objective_text or '')}, "
                 f"scope_chars={len(extracted_document.document.scope_text or '')}, "
                 f"intro_chars={len(extracted_document.document.intro_text or '')}, "
+                f"toc_chars={len(extracted_document.document.toc_text or '')}, "
                 f"embedding_chars={len(built_document_profile.embedding_text)}"
             )
 
@@ -327,7 +330,10 @@ class StoreCommand:
             return False
         return self._document_payload(existing_document) == self._document_payload(new_document)
 
-    def _document_payload(self, document: DocumentRecord) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
+    def _document_payload(
+        self,
+        document: DocumentRecord,
+    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
         return (
             document.source_type,
             document.source_title,
@@ -338,6 +344,7 @@ class StoreCommand:
             document.objective_text,
             document.scope_text,
             document.intro_text,
+            document.toc_text,
         )
 
 

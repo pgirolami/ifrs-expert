@@ -8,7 +8,7 @@
 
 Add a document-selection stage before chunk retrieval:
 
-1. build a document-level representation from document title plus high-signal sections such as objective, scope, intro, and a TOC field containing top-level sections with their subsections
+1. build a document-level representation from document title plus high-signal sections such as objective, scope, intro, and a TOC field containing section titles only, where top-level section titles are included only if they have no subsections and any section matched into a dedicated representation field is excluded from TOC together with its descendants
 2. embed and index that representation in FAISS
 3. query the document index first to get top-`d` documents
 4. run chunk retrieval only inside those documents
@@ -119,7 +119,7 @@ For HTML documents, build the representation from:
 4. `Objective:` from chunks under a section whose normalized title is `objective`
 5. `Scope:` from chunks under a section whose normalized title is `scope`
 6. `Introduction:` from the first high-level introductory content when available
-7. `TOC:` containing the text for all top-level sections and their subsections
+7. `TOC:` containing section titles only, with subsection titles included and top-level section titles included only when they have no subsections
 
 Recommended heuristics:
 
@@ -132,7 +132,11 @@ Recommended heuristics:
   - `scope`
   - `introduction`
 - if a section exists, pull descendant chunks via `section_closure`
-- build `TOC` by iterating all top-level sections and concatenating each top-level section's title plus the text from that section and its subsection descendants
+- build `TOC` in document order from the filtered section set used for persistence so excluded sections do not appear in the TOC even though other document-representation fields are still built from the unfiltered extraction
+- `TOC` must contain section titles only; never include section body text
+- include subsection titles in `TOC`, except when they descend from a section matched into a dedicated representation field such as `objective` or `scope`
+- exclude from `TOC` any section whose normalized title maps through `SECTION_FIELD_BY_NORMALIZED_TITLE`, together with that section's descendants
+- include a top-level section title in `TOC` only when that top-level section has no subsections in the filtered section set
 - cap each extracted part by character budget so the final embedding input stays compact
 - build the transient embedding input as labeled text, for example:
   - `Title: ...`
@@ -238,7 +242,7 @@ JSON output should include at least:
 - `objective_text`
 - `scope_text`
 - `intro_text`
-- `TOC`
+- `TOC` as a filtered section-title list only, omitting top-level container titles that have subsections and omitting dedicated representation sections plus their descendants
 - the additional IFRIC/SIC-oriented document fields that are persisted
 - `score`
 

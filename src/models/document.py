@@ -20,5 +20,6 @@ class DocumentRecord:
     objective_text: str | None = None
     scope_text: str | None = None
     intro_text: str | None = None
+    toc_text: str | None = None
     created_at: str | None = None
     updated_at: str | None = None

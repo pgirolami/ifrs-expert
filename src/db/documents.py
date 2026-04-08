@@ -42,8 +42,9 @@ class DocumentStore:
                 issue_text,
                 objective_text,
                 scope_text,
-                intro_text
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                intro_text,
+                toc_text
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(doc_uid) DO UPDATE SET
                 source_type = excluded.source_type,
                 source_title = excluded.source_title,
@@ -55,6 +56,7 @@ class DocumentStore:
                 objective_text = excluded.objective_text,
                 scope_text = excluded.scope_text,
                 intro_text = excluded.intro_text,
+                toc_text = excluded.toc_text,
                 updated_at = CURRENT_TIMESTAMP
             """,
             (
@@ -69,6 +71,7 @@ class DocumentStore:
                 document.objective_text,
                 document.scope_text,
                 document.intro_text,
+                document.toc_text,
             ),
         )
         self._conn.commit()
@@ -90,6 +93,7 @@ class DocumentStore:
                 objective_text,
                 scope_text,
                 intro_text,
+                toc_text,
                 created_at,
                 updated_at
             FROM documents
@@ -111,6 +115,7 @@ class DocumentStore:
             objective_text=row["objective_text"],
             scope_text=row["scope_text"],
             intro_text=row["intro_text"],
+            toc_text=row["toc_text"],
             created_at=row["created_at"],
             updated_at=row["updated_at"],
         )
