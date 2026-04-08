@@ -7,9 +7,17 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from src.commands.section_filter import filter_extraction
 from src.db import ChunkStore, DocumentStore, SectionStore, init_db
 from src.extraction import HtmlExtractor, PdfExtractor
-from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ExtractorProtocol, SectionStoreProtocol, TitleVectorStoreProtocol, VectorStoreProtocol
+from src.interfaces import (
+    ChunkStoreProtocol,
+    DocumentStoreProtocol,
+    ExtractorProtocol,
+    SectionStoreProtocol,
+    TitleVectorStoreProtocol,
+    VectorStoreProtocol,
+)
 from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
@@ -103,7 +111,28 @@ class StoreCommand:
                 explicit_doc_uid=self._explicit_doc_uid,
             )
             doc_uid = extracted_document.document.doc_uid
-            chunks = extracted_document.chunks
+
+            # Apply section filtering to exclude unwanted sections and chunks
+            filter_result = filter_extraction(
+                chunks=extracted_document.chunks,
+                sections=extracted_document.sections,
+                closure_rows=extracted_document.section_closure_rows,
+            )
+
+            if filter_result.excluded_section_count > 0:
+                sample_titles = filter_result.excluded_section_titles[:10]
+                logger.info(f"Excluded {filter_result.excluded_section_count} section(s) based on title filters: {sample_titles}")
+            if filter_result.excluded_chunk_count > 0:
+                sample_ids = filter_result.excluded_chunk_ids[:10]
+                logger.info(f"Excluded {filter_result.excluded_chunk_count} chunk(s) based on content filters: {sample_ids}")
+
+            chunks = filter_result.chunks
+            sections = filter_result.sections
+            closure_rows = filter_result.closure_rows
+
+            # Update the extracted document with filtered data
+            extracted_document.sections = sections
+            extracted_document.section_closure_rows = closure_rows
 
             self._truncate_oversized_chunks(chunks)
 
