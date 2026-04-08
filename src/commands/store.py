@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.commands.section_filter import filter_extraction
@@ -27,14 +28,14 @@ from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
     from src.models.section import SectionRecord
 
 logger = logging.getLogger(__name__)
+
+STORE_SCOPES: tuple[str, ...] = ("all", "chunks", "documents", "sections")
 
 StoreChunkStore = ChunkStoreProtocol
 StoreDocumentStore = DocumentStoreProtocol
@@ -56,6 +57,15 @@ class StoreDependencies:
     section_store: StoreSectionStore | None = None
     title_vector_store: StoreTitleVectorStore | None = None
     document_vector_store: StoreDocumentVectorStore | None = None
+
+
+@dataclass(frozen=True)
+class StorePayloadSnapshot:
+    """Scoped payload snapshot used for skip-if-unchanged comparisons."""
+
+    chunks: list[Chunk]
+    sections: list[SectionRecord]
+    document: DocumentRecord | None
 
 
 @dataclass
@@ -88,12 +98,14 @@ class StoreCommand:
         extractor: ExtractorProtocol,
         dependencies: StoreDependencies,
         explicit_doc_uid: str | None = None,
+        scope: str = "all",
     ) -> None:
         """Initialize the store command with its source, extractor, and storage dependencies."""
         self.source_path = source_path
         self._extractor = extractor
         self._dependencies = dependencies
         self._explicit_doc_uid = explicit_doc_uid
+        self._scope = scope
         self._document_profile_builder = DocumentProfileBuilder()
 
     def execute(self) -> str:
@@ -102,6 +114,16 @@ class StoreCommand:
 
     def execute_result(self) -> StoreCommandResult:
         """Execute the store command and return a structured result."""
+        scope_error = self._get_scope_error()
+        if scope_error is not None:
+            return StoreCommandResult(
+                status="failed",
+                doc_uid=self._explicit_doc_uid or self.source_path.stem,
+                chunk_count=0,
+                embedding_count=0,
+                reason=scope_error,
+            )
+
         if not self.source_path.exists():
             return StoreCommandResult(
                 status="failed",
@@ -175,14 +197,12 @@ class StoreCommand:
             if skip_result is not None:
                 return skip_result
 
-            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
-            with self._dependencies.document_store as document_store:
-                logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
-                document_store.upsert_document(extracted_document.document)
-
-            embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
-            self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
-            self._store_document_embeddings(doc_uid=doc_uid, embedding_text=built_document_profile.embedding_text)
+            embeddings_stored = self._store_selected_outputs(
+                doc_uid=doc_uid,
+                extracted_document=extracted_document,
+                chunks=chunks,
+                document_embedding_text=built_document_profile.embedding_text,
+            )
 
             return StoreCommandResult(
                 status="stored",
@@ -207,21 +227,35 @@ class StoreCommand:
         sections: list[SectionRecord],
         document: DocumentRecord,
     ) -> StoreCommandResult | None:
-        with self._dependencies.chunk_store as chunk_store:
-            existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
-            existing_sections = self._get_existing_sections(doc_uid)
-            existing_document = self._get_existing_document(doc_uid)
-            should_skip = self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks) and self._section_payloads_match(existing_sections, sections) and self._document_payloads_match(existing_document, document)
-            if should_skip:
-                logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
-                return StoreCommandResult(
-                    status="skipped",
-                    doc_uid=doc_uid,
-                    chunk_count=len(chunks),
-                    embedding_count=0,
-                    reason="unchanged content",
-                )
+        existing_chunks = self._get_existing_chunks(doc_uid) if self._stores_chunks() else []
+        existing_sections = self._get_existing_sections(doc_uid) if self._stores_sections() else []
+        existing_document = self._get_existing_document(doc_uid) if self._stores_documents() else None
+        should_skip = self._should_skip(
+            existing_snapshot=StorePayloadSnapshot(
+                chunks=existing_chunks,
+                sections=existing_sections,
+                document=existing_document,
+            ),
+            new_snapshot=StorePayloadSnapshot(
+                chunks=chunks,
+                sections=sections,
+                document=document,
+            ),
+        )
+        if should_skip:
+            logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
+            return StoreCommandResult(
+                status="skipped",
+                doc_uid=doc_uid,
+                chunk_count=len(chunks),
+                embedding_count=0,
+                reason="unchanged content",
+            )
 
+        if not self._stores_chunks():
+            return None
+
+        with self._dependencies.chunk_store as chunk_store:
             if existing_chunks:
                 logger.info(f"Replacing {len(existing_chunks)} existing chunks for {doc_uid}")
                 chunk_store.delete_chunks_by_doc(doc_uid)
@@ -240,6 +274,29 @@ class StoreCommand:
             section_store.insert_sections(extracted_document.sections)
             section_store.insert_closure_rows(extracted_document.section_closure_rows)
             logger.info(f"Stored {len(extracted_document.sections)} sections with doc_uid={doc_uid}")
+
+    def _store_selected_outputs(
+        self,
+        doc_uid: str,
+        extracted_document: ExtractedDocument,
+        chunks: list[Chunk],
+        document_embedding_text: str,
+    ) -> int:
+        if self._stores_sections():
+            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
+        if self._stores_documents():
+            with self._dependencies.document_store as document_store:
+                logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
+                document_store.upsert_document(extracted_document.document)
+
+        embeddings_stored = 0
+        if self._stores_chunks():
+            embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
+        if self._stores_sections():
+            self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
+        if self._stores_documents():
+            self._store_document_embeddings(doc_uid=doc_uid, embedding_text=document_embedding_text)
+        return embeddings_stored
 
     def _store_chunk_embeddings(self, doc_uid: str, chunks: list[Chunk]) -> int:
         embeddings_stored = 0
@@ -298,6 +355,10 @@ class StoreCommand:
         if truncated_count > 0:
             logger.info(f"Truncated {truncated_count} oversized chunk(s)")
 
+    def _get_existing_chunks(self, doc_uid: str) -> list[Chunk]:
+        with self._dependencies.chunk_store as chunk_store:
+            return list(chunk_store.get_chunks_by_doc(doc_uid))
+
     def _get_existing_sections(self, doc_uid: str) -> list[SectionRecord]:
         if self._dependencies.section_store is None:
             return []
@@ -307,6 +368,24 @@ class StoreCommand:
     def _get_existing_document(self, doc_uid: str) -> DocumentRecord | None:
         with self._dependencies.document_store as document_store:
             return document_store.get_document(doc_uid)
+
+    def _should_skip(
+        self,
+        existing_snapshot: StorePayloadSnapshot,
+        new_snapshot: StorePayloadSnapshot,
+    ) -> bool:
+        if not self._extractor.skip_if_unchanged:
+            return False
+        if self._stores_chunks() and not self._payloads_match(existing_snapshot.chunks, new_snapshot.chunks):
+            return False
+        if self._stores_sections() and not self._section_payloads_match(existing_snapshot.sections, new_snapshot.sections):
+            return False
+        if not self._stores_documents():
+            return True
+        new_document = new_snapshot.document
+        if new_document is None:
+            return False
+        return self._document_payloads_match(existing_snapshot.document, new_document)
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
@@ -350,6 +429,21 @@ class StoreCommand:
             document.toc_text,
         )
 
+    def _get_scope_error(self) -> str | None:
+        if self._scope in STORE_SCOPES:
+            return None
+        supported_scopes = ", ".join(STORE_SCOPES)
+        return f"scope must be one of {supported_scopes}"
+
+    def _stores_chunks(self) -> bool:
+        return self._scope in {"all", "chunks"}
+
+    def _stores_sections(self) -> bool:
+        return self._scope in {"all", "sections"}
+
+    def _stores_documents(self) -> bool:
+        return self._scope in {"all", "documents"}
+
 
 def build_store_dependencies() -> StoreDependencies:
     """Build the production dependencies for StoreCommand."""
@@ -381,12 +475,22 @@ def create_store_command(
     doc_uid: str | None = None,
     extractor: ExtractorProtocol | None = None,
     dependencies: StoreDependencies | None = None,
-    pdf_path: Path | None = None,
+    scope: str = "all",
+    **legacy_kwargs: object,
 ) -> StoreCommand:
     """Create StoreCommand with real dependencies by default.
 
-    The pdf_path parameter is preserved for backward compatibility.
+    The pdf_path keyword parameter is preserved for backward compatibility.
     """
+    pdf_path = legacy_kwargs.pop("pdf_path", None)
+    if legacy_kwargs:
+        unexpected_keys = ", ".join(sorted(legacy_kwargs))
+        message = f"Unexpected keyword arguments: {unexpected_keys}"
+        raise TypeError(message)
+    if pdf_path is not None and not isinstance(pdf_path, Path):
+        message = f"pdf_path must be a Path, got {type(pdf_path).__name__}"
+        raise TypeError(message)
+
     resolved_source_path = source_path or pdf_path
     if resolved_source_path is None:
         message = "create_store_command() requires source_path or pdf_path"
@@ -399,4 +503,5 @@ def create_store_command(
         extractor=resolved_extractor,
         dependencies=resolved_dependencies,
         explicit_doc_uid=doc_uid,
+        scope=scope,
     )

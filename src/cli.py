@@ -16,7 +16,7 @@ from src.commands.answer import create_answer_command
 from src.commands.query import create_query_command
 from src.commands.query_documents import create_query_documents_command
 from src.commands.query_titles import create_query_titles_command
-from src.commands.store import create_store_command
+from src.commands.store import STORE_SCOPES, create_store_command
 from src.llm.client import get_client
 from src.logging_config import setup_logging
 from src.models.document import DOCUMENT_TYPES
@@ -56,10 +56,22 @@ def main() -> int:
         "--doc-uid",
         help="Document UID to use for PDF ingestion (default: filename stem)",
     )
+    store_parser.add_argument(
+        "--scope",
+        choices=STORE_SCOPES,
+        default="all",
+        help="Ingestion scope: all, chunks, sections, or documents (default: all)",
+    )
 
-    subparsers.add_parser(
+    ingest_parser = subparsers.add_parser(
         "ingest",
         help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs plus PDFs",
+    )
+    ingest_parser.add_argument(
+        "--scope",
+        choices=STORE_SCOPES,
+        default="all",
+        help="Ingestion scope: all, chunks, sections, or documents (default: all)",
     )
 
     list_parser = subparsers.add_parser(
@@ -240,8 +252,8 @@ def _execute_command(args: argparse.Namespace) -> str:
     """Execute the appropriate command based on args."""
     handlers = {
         "chunk": lambda: ChunkCommand(pdf_path=Path(args.pdf)).execute(),
-        "store": lambda: create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid).execute(),
-        "ingest": lambda: IngestCommand().execute(),
+        "store": lambda: create_store_command(source_path=Path(args.source), doc_uid=args.doc_uid, scope=args.scope).execute(),
+        "ingest": lambda: IngestCommand(scope=args.scope).execute(),
         "list": lambda: ListCommand(doc_uid=args.doc_uid).execute(),
         "query": lambda: _execute_query_command(args),
         "query-documents": lambda: _execute_query_documents_command(args),

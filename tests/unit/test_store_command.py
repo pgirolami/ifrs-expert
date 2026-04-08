@@ -354,6 +354,160 @@ class TestStoreCommand:
         assert stored_document.toc_text is None
         assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nScope: test content"])]
 
+    def test_store_command_with_documents_scope_stores_only_document_representation(self, tmp_path: Path) -> None:
+        """Document scope should skip chunk and section persistence while updating document embeddings."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/ifrs9.html",
+                    canonical_url="https://www.ifrs.org/ifrs9.html",
+                    captured_at="2026-04-04T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="3.1.1",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_3.1.1",
+                        containing_section_id="IFRS09_scope",
+                        text="test content",
+                    )
+                ],
+                sections=[
+                    SectionRecord(
+                        section_id="IFRS09_scope",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Scope",
+                        section_lineage=["Scope"],
+                        embedding_text="Scope",
+                        position=1,
+                    )
+                ],
+                section_closure_rows=[
+                    SectionClosureRow("IFRS09_scope", "IFRS09_scope", 0),
+                ],
+            )
+        )
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        section_store = InMemorySectionStore()
+        vector_store = RecordingVectorStore()
+        title_vector_store = RecordingTitleVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            section_store=section_store,
+            vector_store=vector_store,
+            title_vector_store=title_vector_store,
+            document_vector_store=document_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+            scope="documents",
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        assert chunk_store.get_chunks_by_doc("ifrs9") == []
+        assert section_store.get_sections_by_doc("ifrs9") == []
+        stored_document = document_store.get_document("ifrs9")
+        assert stored_document is not None
+        assert stored_document.scope_text == "test content"
+        assert vector_store.added_embeddings == []
+        assert title_vector_store.added_embeddings == []
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nScope: test content"])]
+
+    def test_store_command_with_sections_scope_stores_only_sections_and_title_embeddings(self, tmp_path: Path) -> None:
+        """Section scope should skip chunk and document persistence while updating section embeddings."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/ifrs9.html",
+                    canonical_url="https://www.ifrs.org/ifrs9.html",
+                    captured_at="2026-04-04T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="3.1.1",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_3.1.1",
+                        containing_section_id="IFRS09_scope",
+                        text="test content",
+                    )
+                ],
+                sections=[
+                    SectionRecord(
+                        section_id="IFRS09_scope",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Scope",
+                        section_lineage=["Scope"],
+                        embedding_text="Scope",
+                        position=1,
+                    )
+                ],
+                section_closure_rows=[
+                    SectionClosureRow("IFRS09_scope", "IFRS09_scope", 0),
+                ],
+            )
+        )
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        section_store = InMemorySectionStore()
+        vector_store = RecordingVectorStore()
+        title_vector_store = RecordingTitleVectorStore()
+        document_vector_store = RecordingDocumentVectorStore()
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            section_store=section_store,
+            vector_store=vector_store,
+            title_vector_store=title_vector_store,
+            document_vector_store=document_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+            scope="sections",
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        assert chunk_store.get_chunks_by_doc("ifrs9") == []
+        assert document_store.get_document("ifrs9") is None
+        assert [section.section_id for section in section_store.get_sections_by_doc("ifrs9")] == ["IFRS09_scope"]
+        assert vector_store.added_embeddings == []
+        assert title_vector_store.added_embeddings == [("ifrs9", ["IFRS09_scope"], ["Scope"])]
+        assert document_vector_store.added_embeddings == []
+
     def test_store_command_excludes_filtered_sections_from_toc(self, tmp_path: Path) -> None:
         """TOC should omit sections excluded by section filtering."""
         source_path = tmp_path / "test.html"

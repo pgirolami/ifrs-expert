@@ -2,7 +2,7 @@
 
 - Worktree: `.worktrees/document-selection-plan`
 - Branch: `feature/document-selection-plan`
-- Date: 2026-04-05
+- Date: 2026-04-08
 
 ## Goal
 
@@ -34,11 +34,19 @@ Add a document-selection stage before chunk retrieval:
 - `src/commands/answer.py`
   - still contains duplicated chunk retrieval and expansion logic already duplicated in `src/commands/query.py`
 
-### Gaps relative to the new requirement
+### Current branch state and remaining gaps
 
-- there is **no document-level retrieval representation** yet
-- there is **no document FAISS index** yet
-- there is **no `query-documents` CLI command** yet
+Already implemented on this branch:
+
+- there **is** a document-level retrieval representation persisted on `documents`
+- there **is** a document FAISS index
+- there **is** a `query-documents` CLI command
+- `documents.document_type` is now persisted and backfilled from `doc_uid`
+- `query-documents` now requires `--document-type`, and `-d/--d` plus `--min-score` apply within that selected document type
+- `store` and `ingest` now support `--scope {all,chunks,sections,documents}` so document-representation iteration can run with `--scope documents`
+
+Still missing relative to the full requirement:
+
 - there is **no `retrieve` CLI command** yet
 - `answer --retrieval-mode` only supports `text|titles`
 - current general retrieval expansion only does:
@@ -182,6 +190,15 @@ Extend `StoreDependencies` with a document vector store.
 5. build/update title embeddings
 6. build/update document embeddings from the transient embedding input built off the document row
 
+This branch now also adds a scoped ingestion mode:
+
+- `--scope all` = persist/update everything
+- `--scope chunks` = persist chunks and chunk embeddings only
+- `--scope sections` = persist sections and title embeddings only
+- `--scope documents` = persist document metadata/representation and document embeddings only
+
+The `documents` scope is specifically intended to speed up iteration on document-representation changes by skipping chunk and title embedding work.
+
 ### A5. Update skip-if-unchanged logic
 
 Today `store` skips when chunk payloads and section payloads are unchanged.
@@ -189,9 +206,17 @@ Today `store` skips when chunk payloads and section payloads are unchanged.
 Update that to also compare the document-representation payload persisted on the document row:
 
 - title/background/issue/objective/scope/intro/TOC parts
+- document type
 - any additional IFRIC/SIC-oriented fields already added
 
 That way changes to the document representation alone will still rebuild the document index.
+
+With scoped storage, skip-if-unchanged should respect the selected scope:
+
+- `chunks` compares chunk payloads only
+- `sections` compares section payloads only
+- `documents` compares document payloads only
+- `all` compares all relevant payloads
 
 ### A6. Update store output
 
@@ -212,15 +237,27 @@ Add a new CLI command:
 ### B1. CLI shape
 
 - reads query text from stdin
+- add mandatory `--document-type` matching the persisted `documents.document_type`
 - add `-d/--d`
 - add `--json`
 - add `--min-score`
 
+Supported document types are currently:
+
+- `IFRS`
+- `IAS`
+- `IFRIC`
+- `SIC`
+- `PS`
+
 ### B2. Behavior
 
 - query the document FAISS index
-- return the top `d` matching documents above threshold
+- filter hits to the selected `--document-type`
+- return the top `d` matching documents of that type above threshold
 - fetch the enriched `documents` rows for formatting
+
+This shape is important because the next retrieval stage will need separate `d` and score thresholds per document type rather than one global document-stage cutoff.
 
 ### B3. Output
 
@@ -570,6 +607,12 @@ Add at least one Promptfoo provider/example configuration using the new document
 
 ## Suggested implementation order
 
+Status on this branch today:
+
+- steps 1 to 3 below are implemented
+- scoped `store` / `ingest` support for `--scope documents` is also implemented as an iteration aid
+- the next major remaining step is extracting the shared retrieval pipeline and adding `retrieve`
+
 1. **Document representation + storage**
    - extend `documents`, add migration, update store, add builder
 2. **Document vector index**
@@ -629,7 +672,7 @@ This order lets you validate each layer independently before combining them.
 - `src/db/documents.py`
 - `src/interfaces.py`
 - `src/db/__init__.py`
-- new migration under `src/migrations/` to extend `documents`
+- new migrations under `src/migrations/` to extend `documents`, including persisted document-representation fields, `toc_text`, and `document_type`
 
 ### Vector stores
 
@@ -638,9 +681,10 @@ This order lets you validate each layer independently before combining them.
 - new `src/vector/document_store.py`
 - possibly a new shared FAISS utility module
 
-### Store command
+### Store / ingest commands
 
 - `src/commands/store.py`
+- `src/commands/ingest.py`
 
 ### Tests
 
@@ -671,13 +715,16 @@ This order lets you validate each layer independently before combining them.
 - stores enriched document rows and one document embedding per document
 - re-store deletes and replaces document embeddings
 - skip-if-unchanged checks document-representation payload too
+- scoped `--scope` modes store only the selected artifact family (`chunks`, `sections`, `documents`, or `all`)
 
 #### Query documents
 
-- returns top `d` document hits
+- requires `--document-type`
+- returns top `d` document hits within the selected type
 - respects document-stage `min_score`
 - supports verbose and JSON output
-- surfaces document representation fields in JSON
+- surfaces `document_type` and document representation fields in JSON
+- remains suitable as the inspection surface for later per-type retrieval tuning
 
 #### Shared retrieval pipeline
 
@@ -709,8 +756,10 @@ This order lets you validate each layer independently before combining them.
 
 ### Integration tests
 
-- `store` creates chunk, title, and document indexes
-- `query-documents` returns expected IFRS, IFRIC, and SIC docs for representative queries
+- `store --scope all` creates chunk, title, and document indexes
+- `store --scope documents` updates only document metadata/representation plus the document index
+- `ingest --scope documents` forwards the scope into each underlying store operation
+- `query-documents --document-type ...` returns expected docs for representative queries within the selected type
 - `retrieve --retrieval-mode documents` only returns chunks from the top `d` docs
 - section expansion and immediate-common-parent expansion produce stable output on sample HTML documents
 
@@ -749,6 +798,8 @@ Recommended CLI/API naming:
 - `--content-min-score`
 
 where `content-min-score` applies to chunk retrieval in text modes and title retrieval in title modes.
+
+Because `query-documents` is now type-scoped via `--document-type`, the follow-on retrieval pipeline should be designed so different document types can use different document-stage `d` and score thresholds without relying on one global document cutoff.
 
 ### 3. Common-parent expansion breadth
 
@@ -792,9 +843,10 @@ Implement this as a **document-first retrieval pipeline** layered on top of the 
 
 1. build and persist the document representation by extending `documents` during `store`
 2. embed one vector per document in a new document FAISS index
-3. add `query-documents` to inspect that stage directly
-4. extract retrieval into a shared pipeline and add `retrieve`
-5. add `retrieval-mode=documents` with separate document/content score thresholds so `answer` and `retrieve` can do:
+3. add `query-documents` with mandatory `--document-type` so that stage can be inspected and tuned per type
+4. keep `store` and `ingest` scoped so document-representation iteration can use `--scope documents`
+5. extract retrieval into a shared pipeline and add `retrieve`
+6. add `retrieval-mode=documents` with separate document/content score thresholds so `answer` and `retrieve` can do:
    - document preselection
    - restricted chunk retrieval
    - section-aware expansion

@@ -117,6 +117,53 @@ def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
     assert output == "Error: --save-all requires --output-dir to be specified"
 
 
+def test_execute_command_dispatches_store_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should pass the store scope through to the store command factory."""
+    captured_scopes: list[str] = []
+
+    def _create_store_command(**kwargs: object) -> FakeTextCommand:
+        captured_scopes.append(str(kwargs["scope"]))
+        return FakeTextCommand("store output")
+
+    monkeypatch.setattr("src.cli.create_store_command", _create_store_command)
+
+    args = argparse.Namespace(
+        command="store",
+        source="/tmp/test.html",
+        doc_uid=None,
+        scope="documents",
+    )
+
+    output = _execute_command(args)
+
+    assert output == "store output"
+    assert captured_scopes == ["documents"]
+
+
+def test_execute_command_dispatches_ingest_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should construct IngestCommand with the requested scope."""
+    captured_scopes: list[str] = []
+
+    class FakeIngestCommand:
+        def __init__(self, scope: str) -> None:
+            captured_scopes.append(scope)
+
+        def execute(self) -> str:
+            return "ingest output"
+
+    monkeypatch.setattr("src.cli.IngestCommand", FakeIngestCommand)
+
+    args = argparse.Namespace(
+        command="ingest",
+        scope="sections",
+    )
+
+    output = _execute_command(args)
+
+    assert output == "ingest output"
+    assert captured_scopes == ["sections"]
+
+
 def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the query-titles subcommand."""
     monkeypatch.setattr("src.cli.create_query_titles_command", lambda query, options: FakeTextCommand("title output"))
