@@ -1,4 +1,4 @@
-"""Integration tests for end-to-end inbox ingestion."""
+"""Integration tests for end-to-end ingestion."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def temp_db_path() -> Path:
 def capture_root(tmp_path: Path) -> Path:
     """Create the ingest directory layout."""
     root = tmp_path / "ifrs-expert"
-    (root / "inbox").mkdir(parents=True)
+    root.mkdir(parents=True)
     (root / "processed").mkdir()
     (root / "failed").mkdir()
     (root / "skipped").mkdir()
@@ -98,10 +98,10 @@ chunk_store: InMemoryChunkStore | None = None
 document_store: InMemoryDocumentStore | None = None
 
 
-def test_ingest_command_imports_pdf_from_inbox(temp_db_path: Path, capture_root: Path) -> None:
-    """PDF files dropped into inbox/ should be imported and archived to processed/."""
+def test_ingest_command_imports_pdf_from_capture_root(temp_db_path: Path, capture_root: Path) -> None:
+    """PDF files in the capture root should be imported and archived to processed/."""
     del temp_db_path
-    inbox_pdf = capture_root / "inbox" / "ifrs-16-leases_38-39.pdf"
+    inbox_pdf = capture_root / "ifrs-16-leases_38-39.pdf"
     shutil.copy(_example_file("ifrs-16-leases_38-39.pdf"), inbox_pdf)
 
     command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
@@ -123,8 +123,8 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
     """Representative IFRS HTML captures should ingest into the database and processed/."""
     del temp_db_path
     html_source = _example_file("www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html")
-    inbox_html = capture_root / "inbox" / "20260404T142310Z--ifrs9.html"
-    inbox_json = capture_root / "inbox" / "20260404T142310Z--ifrs9.json"
+    inbox_html = capture_root / "20260404T142310Z--ifrs9.html"
+    inbox_json = capture_root / "20260404T142310Z--ifrs9.json"
     shutil.copy(html_source, inbox_html)
     canonical_url = _extract_canonical_url(inbox_html)
     _write_html_sidecar(inbox_json, canonical_url=canonical_url, title="IFRS 9")
@@ -152,8 +152,8 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     del temp_db_path
     html_source = _example_file("www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html")
 
-    first_html = capture_root / "inbox" / "20260404T142310Z--ifric16.html"
-    first_json = capture_root / "inbox" / "20260404T142310Z--ifric16.json"
+    first_html = capture_root / "20260404T142310Z--ifric16.html"
+    first_json = capture_root / "20260404T142310Z--ifric16.json"
     shutil.copy(html_source, first_html)
     canonical_url = _extract_canonical_url(first_html)
     _write_html_sidecar(first_json, canonical_url=canonical_url, title="IFRIC 16")
@@ -162,8 +162,8 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     first_output = command.execute()
     assert "1 imported" in first_output
 
-    second_html = capture_root / "inbox" / "20260405T142310Z--ifric16.html"
-    second_json = capture_root / "inbox" / "20260405T142310Z--ifric16.json"
+    second_html = capture_root / "20260405T142310Z--ifric16.html"
+    second_json = capture_root / "20260405T142310Z--ifric16.json"
     shutil.copy(html_source, second_html)
     _write_html_sidecar(second_json, canonical_url=canonical_url, title="IFRIC 16")
 
@@ -173,8 +173,8 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     assert (capture_root / "skipped" / second_html.name).exists()
     assert (capture_root / "skipped" / second_json.name).exists()
 
-    third_html = capture_root / "inbox" / "20260406T142310Z--ifric16.html"
-    third_json = capture_root / "inbox" / "20260406T142310Z--ifric16.json"
+    third_html = capture_root / "20260406T142310Z--ifric16.html"
+    third_json = capture_root / "20260406T142310Z--ifric16.json"
     soup = BeautifulSoup(html_source.read_text(encoding="utf-8"), "html.parser")
     paragraph = soup.select_one("div.topic.paragraph#IFRIC16_1 td.paragraph_col2 > .body > p")
     assert paragraph is not None, "Expected to locate the first IFRIC 16 paragraph"
@@ -194,8 +194,8 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
 def test_ingest_command_moves_invalid_html_to_failed(temp_db_path: Path, capture_root: Path) -> None:
     """Invalid HTML sidecars should be archived under failed/."""
     del temp_db_path
-    bad_html = capture_root / "inbox" / "20260404T142310Z--broken.html"
-    bad_json = capture_root / "inbox" / "20260404T142310Z--broken.json"
+    bad_html = capture_root / "20260404T142310Z--broken.html"
+    bad_json = capture_root / "20260404T142310Z--broken.json"
     bad_html.write_text("<html></html>", encoding="utf-8")
     bad_json.write_text("{not valid json}", encoding="utf-8")
 

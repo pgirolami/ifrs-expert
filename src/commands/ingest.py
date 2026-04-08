@@ -1,4 +1,4 @@
-"""Ingest command - scan the inbox and route HTML/PDF sources through StoreCommand."""
+"""Ingest command - scan the capture root and route HTML/PDF sources through StoreCommand."""
 
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ class CaptureDirectories:
     """Capture directory layout rooted under Downloads."""
 
     root: Path
-    inbox: Path
     processed: Path
     failed: Path
     skipped: Path
@@ -34,7 +33,6 @@ class CaptureDirectories:
         """Build the standard capture directory layout from a root path."""
         return cls(
             root=root,
-            inbox=root / "inbox",
             processed=root / "processed",
             failed=root / "failed",
             skipped=root / "skipped",
@@ -43,7 +41,6 @@ class CaptureDirectories:
     def ensure_exists(self) -> None:
         """Create the capture directories when they do not already exist."""
         self.root.mkdir(parents=True, exist_ok=True)
-        self.inbox.mkdir(parents=True, exist_ok=True)
         self.processed.mkdir(parents=True, exist_ok=True)
         self.failed.mkdir(parents=True, exist_ok=True)
         self.skipped.mkdir(parents=True, exist_ok=True)
@@ -51,7 +48,7 @@ class CaptureDirectories:
 
 @dataclass(frozen=True)
 class IngestItem:
-    """One source item to process from the inbox."""
+    """One source item to process from the capture root."""
 
     kind: str
     source_path: Path
@@ -96,7 +93,7 @@ class SharedDependenciesStoreCommandFactory:
 
 
 class IngestCommand:
-    """Scan the fixed inbox directory and ingest discovered sources."""
+    """Scan the capture root directory and ingest discovered sources."""
 
     def __init__(
         self,
@@ -109,9 +106,9 @@ class IngestCommand:
         self._store_command_factory = store_command_factory or SharedDependenciesStoreCommandFactory(dependencies=store_dependencies)
 
     def execute(self) -> str:
-        """Run inbox discovery, storage, and archiving."""
+        """Run discovery, storage, and archiving."""
         self._directories.ensure_exists()
-        logger.info(f"Starting inbox scan in {self._directories.inbox}")
+        logger.info(f"Starting scan in {self._directories.root}")
 
         items, failures = self._discover_items()
         results: list[str] = []
@@ -170,9 +167,9 @@ class IngestCommand:
         return "\n".join(summary_lines)
 
     def _discover_items(self) -> tuple[list[IngestItem], list[_DiscoveryFailure]]:
-        html_paths = sorted(self._directories.inbox.glob("*.html"))
-        json_paths = sorted(self._directories.inbox.glob("*.json"))
-        pdf_paths = sorted(self._directories.inbox.glob("*.pdf"))
+        html_paths = sorted(self._directories.root.glob("*.html"))
+        json_paths = sorted(self._directories.root.glob("*.json"))
+        pdf_paths = sorted(self._directories.root.glob("*.pdf"))
 
         logger.info(f"Found {len(html_paths)} HTML file(s), {len(json_paths)} sidecar file(s), and {len(pdf_paths)} PDF file(s)")
 

@@ -1,5 +1,5 @@
 const LOG_PREFIX = "[IFRS Expert Import]";
-const INBOX_PREFIX = "ifrs-expert/inbox";
+const ROOT_PREFIX = "ifrs-expert";
 const HTML_MIME_TYPE = "text/html;charset=utf-8";
 const JSON_MIME_TYPE = "application/json;charset=utf-8";
 const PAGE_TOAST_DURATION_MS = 4000;
@@ -72,10 +72,10 @@ chrome.action.onClicked.addListener(async (tab) => {
     });
 
     const basename = buildCaptureBasename(result);
-    const htmlPartFilename = `${INBOX_PREFIX}/${basename}.html.part`;
-    const jsonPartFilename = `${INBOX_PREFIX}/${basename}.json.part`;
-    const htmlFilename = `${INBOX_PREFIX}/${basename}.html`;
-    const jsonFilename = `${INBOX_PREFIX}/${basename}.json`;
+    const htmlPartFilename = `${ROOT_PREFIX}/${basename}.html.part`;
+    const jsonPartFilename = `${ROOT_PREFIX}/${basename}.json.part`;
+    const htmlFilename = `${ROOT_PREFIX}/${basename}.html`;
+    const jsonFilename = `${ROOT_PREFIX}/${basename}.json`;
 
     logInfo("Prepared filenames.", {
       basename,
@@ -125,7 +125,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 
     logInfo("Import completed successfully.", {
       basename,
-      inboxPrefix: INBOX_PREFIX,
+      rootPrefix: ROOT_PREFIX,
     });
 
     await showToastInTab(tab.id, `Saved ${basename}.html and ${basename}.json`, "success");

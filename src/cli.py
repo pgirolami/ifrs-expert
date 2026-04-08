@@ -57,7 +57,7 @@ def main() -> int:
 
     subparsers.add_parser(
         "ingest",
-        help="Scan ~/Downloads/ifrs-expert/inbox and ingest HTML capture pairs plus PDFs",
+        help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs plus PDFs",
     )
 
     list_parser = subparsers.add_parser(
