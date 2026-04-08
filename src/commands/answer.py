@@ -11,9 +11,19 @@ from typing import TYPE_CHECKING
 from src.b_response_utils import convert_json_to_markdown
 from src.commands.constants import (
     DEFAULT_D,
+    DEFAULT_D_FOR_IAS_DOCUMENTS,
+    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_PS_DOCUMENTS,
+    DEFAULT_D_FOR_SIC_DOCUMENTS,
     DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
     DEFAULT_MIN_SCORE,
+    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
 )
 from src.db import ChunkStore, SectionStore, init_db
@@ -62,7 +72,18 @@ class AnswerOptions:
     min_score: float | None = DEFAULT_MIN_SCORE
     d: int = DEFAULT_D
     doc_min_score: float | None = None
+    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
+    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
+    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
+    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
+    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
+    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
+    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
+    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
+    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
+    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
     content_min_score: float | None = None
+    expand_to_section: bool = False
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     output_dir: Path | None = None
@@ -217,7 +238,18 @@ class AnswerCommand:
         self.d = resolved_options.d
         self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_MIN_SCORE
         self.doc_min_score = resolved_options.doc_min_score
+        self.ifrs_d = resolved_options.ifrs_d
+        self.ias_d = resolved_options.ias_d
+        self.ifric_d = resolved_options.ifric_d
+        self.sic_d = resolved_options.sic_d
+        self.ps_d = resolved_options.ps_d
+        self.ifrs_min_score = resolved_options.ifrs_min_score
+        self.ias_min_score = resolved_options.ias_min_score
+        self.ifric_min_score = resolved_options.ifric_min_score
+        self.sic_min_score = resolved_options.sic_min_score
+        self.ps_min_score = resolved_options.ps_min_score
         self.content_min_score = resolved_options.content_min_score if resolved_options.content_min_score is not None else self.min_score
+        self.expand_to_section = resolved_options.expand_to_section
         self.expand = resolved_options.expand
         self.full_doc_threshold = resolved_options.full_doc_threshold
         self.retrieval_mode = resolved_options.retrieval_mode
@@ -245,20 +277,60 @@ class AnswerCommand:
 
     def _get_validation_error(self) -> str | None:
         """Get validation error or None."""
-        error: str | None = None
-        if not self.query or not self.query.strip():
-            error = "Error: Query cannot be empty"
-        elif self.expand < 0:
-            error = "Error: expand must be >= 0"
-        elif self.k <= 0:
-            error = "Error: k must be > 0"
-        elif self.d <= 0:
-            error = "Error: d must be > 0"
-        elif self.full_doc_threshold < 0:
-            error = "Error: full_doc_threshold must be >= 0"
-        elif self.retrieval_mode not in {"text", "titles", "documents"}:
-            error = "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
-        return error
+        validators = (
+            self._get_query_validation_error,
+            self._get_range_validation_error,
+            self._get_core_numeric_validation_error,
+            self._get_per_type_d_validation_error,
+            self._get_retrieval_mode_validation_error,
+        )
+        for validator in validators:
+            error = validator()
+            if error is not None:
+                return error
+        return None
+
+    def _get_query_validation_error(self) -> str | None:
+        """Validate the query string."""
+        if self.query and self.query.strip():
+            return None
+        return "Error: Query cannot be empty"
+
+    def _get_range_validation_error(self) -> str | None:
+        """Validate numeric range options."""
+        if self.expand < 0:
+            return "Error: expand must be >= 0"
+        if self.full_doc_threshold < 0:
+            return "Error: full_doc_threshold must be >= 0"
+        return None
+
+    def _get_core_numeric_validation_error(self) -> str | None:
+        """Validate top-level numeric options."""
+        if self.k <= 0:
+            return "Error: k must be > 0"
+        if self.d <= 0:
+            return "Error: d must be > 0"
+        return None
+
+    def _get_per_type_d_validation_error(self) -> str | None:
+        """Validate per-document-type caps."""
+        per_type_d_values = {
+            "ifrs_d": self.ifrs_d,
+            "ias_d": self.ias_d,
+            "ifric_d": self.ifric_d,
+            "sic_d": self.sic_d,
+            "ps_d": self.ps_d,
+        }
+        for option_name, option_value in per_type_d_values.items():
+            if option_value <= 0:
+                return f"Error: {option_name} must be > 0"
+        return None
+
+    def _get_retrieval_mode_validation_error(self) -> str | None:
+        """Validate retrieval mode."""
+        if self.retrieval_mode in {"text", "titles", "documents"}:
+            return None
+        return "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
@@ -318,7 +390,22 @@ class AnswerCommand:
                 k=self.k,
                 d=self.d,
                 doc_min_score=self.doc_min_score,
+                document_d_by_type={
+                    "IFRS": self.ifrs_d,
+                    "IAS": self.ias_d,
+                    "IFRIC": self.ifric_d,
+                    "SIC": self.sic_d,
+                    "PS": self.ps_d,
+                },
+                document_min_score_by_type={
+                    "IFRS": self.ifrs_min_score,
+                    "IAS": self.ias_min_score,
+                    "IFRIC": self.ifric_min_score,
+                    "SIC": self.sic_min_score,
+                    "PS": self.ps_min_score,
+                },
                 content_min_score=self.content_min_score,
+                expand_to_section=self.expand_to_section,
                 expand=self.expand,
                 full_doc_threshold=self.full_doc_threshold,
             ),

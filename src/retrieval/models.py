@@ -24,6 +24,7 @@ class RetrievalRequest:
     document_d_by_type: dict[str, int] = field(default_factory=get_default_document_d_by_type)
     document_min_score_by_type: dict[str, float] = field(default_factory=get_default_document_min_score_by_type)
     content_min_score: float = DEFAULT_MIN_SCORE
+    expand_to_section: bool = False
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
 

@@ -70,8 +70,8 @@ class FakeTextCommand:
         return self._output
 
 
-def test_execute_answer_command_returns_raw_response_and_preserves_save_all(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Answer CLI should keep stdout behavior unchanged while saving artifacts."""
+def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Answer CLI should save artifacts whenever output_dir is provided."""
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
@@ -89,7 +89,7 @@ def test_execute_answer_command_returns_raw_response_and_preserves_save_all(monk
         expand=0,
         full_doc_threshold=0,
         output_dir=tmp_path,
-        save_all=True,
+        save_all=False,
         retrieval_mode="titles",
     )
 
@@ -97,6 +97,50 @@ def test_execute_answer_command_returns_raw_response_and_preserves_save_all(monk
 
     assert output == VALID_PROMPT_B_RESPONSE
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
+
+
+def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Answer CLI should create output directories when saving artifacts."""
+    result = AnswerCommandResult(
+        query="What is IFRS?",
+        success=True,
+        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
+        prompt_b_markdown="# Markdown answer",
+    )
+    output_dir = tmp_path / "new-output-dir"
+
+    monkeypatch.setattr("src.cli.create_answer_command", lambda query, options: FakeAnswerCommand(result))
+    monkeypatch.setattr("sys.stdin", io.StringIO("What is IFRS?"))
+
+    args = argparse.Namespace(
+        command="answer",
+        k=5,
+        d=5,
+        min_score=None,
+        doc_min_score=None,
+        content_min_score=None,
+        ifrs_d=5,
+        ias_d=5,
+        ifric_d=5,
+        sic_d=5,
+        ps_d=5,
+        ifrs_min_score=0.59,
+        ias_min_score=0.55,
+        ifric_min_score=0.51,
+        sic_min_score=0.51,
+        ps_min_score=0.50,
+        expand=0,
+        expand_to_section=False,
+        full_doc_threshold=0,
+        output_dir=output_dir,
+        save_all=False,
+        retrieval_mode="text",
+    )
+
+    output = _execute_answer_command(args)
+
+    assert output == VALID_PROMPT_B_RESPONSE
+    assert (output_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
 def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
@@ -115,6 +159,73 @@ def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
     output = _execute_answer_command(args)
 
     assert output == "Error: --save-all requires --output-dir to be specified"
+
+
+def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Answer CLI should pass retrieval options through to AnswerOptions."""
+    result = AnswerCommandResult(
+        query="What is IFRS?",
+        success=True,
+        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
+    )
+    captured_options: list[object] = []
+
+    def _create_answer_command(query: str, options: object) -> FakeAnswerCommand:
+        del query
+        captured_options.append(options)
+        return FakeAnswerCommand(result)
+
+    monkeypatch.setattr("src.cli.create_answer_command", _create_answer_command)
+    monkeypatch.setattr("sys.stdin", io.StringIO("What is IFRS?"))
+
+    args = argparse.Namespace(
+        command="answer",
+        k=3,
+        d=9,
+        min_score=0.4,
+        doc_min_score=0.2,
+        content_min_score=0.1,
+        ifrs_d=7,
+        ias_d=6,
+        ifric_d=4,
+        sic_d=3,
+        ps_d=2,
+        ifrs_min_score=0.61,
+        ias_min_score=0.54,
+        ifric_min_score=0.50,
+        sic_min_score=0.49,
+        ps_min_score=0.48,
+        expand=1,
+        expand_to_section=True,
+        full_doc_threshold=2000,
+        output_dir=None,
+        save_all=False,
+        retrieval_mode="documents",
+    )
+
+    output = _execute_answer_command(args)
+
+    assert output == VALID_PROMPT_B_RESPONSE
+    assert len(captured_options) == 1
+    options = captured_options[0]
+    assert getattr(options, "k") == 3
+    assert getattr(options, "d") == 9
+    assert getattr(options, "doc_min_score") == 0.2
+    assert getattr(options, "content_min_score") == 0.1
+    assert getattr(options, "ifrs_d") == 7
+    assert getattr(options, "ias_d") == 6
+    assert getattr(options, "ifric_d") == 4
+    assert getattr(options, "sic_d") == 3
+    assert getattr(options, "ps_d") == 2
+    assert getattr(options, "ifrs_min_score") == 0.61
+    assert getattr(options, "ias_min_score") == 0.54
+    assert getattr(options, "ifric_min_score") == 0.50
+    assert getattr(options, "sic_min_score") == 0.49
+    assert getattr(options, "ps_min_score") == 0.48
+    assert getattr(options, "expand_to_section") is True
+    assert getattr(options, "expand") == 1
+    assert getattr(options, "full_doc_threshold") == 2000
+    assert getattr(options, "retrieval_mode") == "documents"
 
 
 def test_execute_command_dispatches_store_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -186,12 +297,14 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
     captured_modes: list[str] = []
     captured_ifrs_ds: list[int] = []
     captured_ifrs_min_scores: list[float] = []
+    captured_expand_to_section: list[bool] = []
 
     def _create_retrieve_command(query: str, options: object) -> FakeTextCommand:
         del query
         captured_modes.append(getattr(options, "retrieval_mode"))
         captured_ifrs_ds.append(getattr(options, "ifrs_d"))
         captured_ifrs_min_scores.append(getattr(options, "ifrs_min_score"))
+        captured_expand_to_section.append(getattr(options, "expand_to_section"))
         return FakeTextCommand("retrieve output")
 
     monkeypatch.setattr("src.cli.create_retrieve_command", _create_retrieve_command)
@@ -213,6 +326,7 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
         ifric_min_score=0.51,
         sic_min_score=0.51,
         ps_min_score=0.50,
+        expand_to_section=True,
         expand=0,
         full_doc_threshold=0,
         retrieval_mode="documents",
@@ -225,6 +339,7 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
     assert captured_modes == ["documents"]
     assert captured_ifrs_ds == [7]
     assert captured_ifrs_min_scores == [0.61]
+    assert captured_expand_to_section == [True]
 
 
 def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:

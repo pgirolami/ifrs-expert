@@ -35,6 +35,16 @@ class RetrievalPipelineConfig:
     document_index_path_fn: Callable[[], Path] | None = None
 
 
+@dataclass(frozen=True)
+class ExpansionConfig:
+    """Options for post-retrieval chunk expansion."""
+
+    section_store: ReadSectionStoreProtocol | None
+    expand_to_section: bool
+    expand: int
+    full_doc_threshold: int
+
+
 def execute_retrieval(
     request: RetrievalRequest,
     config: RetrievalPipelineConfig,
@@ -71,8 +81,12 @@ def _execute_text_retrieval(
     expanded_results = _expand_chunks(
         results=selected_results,
         doc_chunks=doc_chunks,
-        expand=request.expand,
-        full_doc_threshold=request.full_doc_threshold,
+        expansion_config=ExpansionConfig(
+            section_store=config.section_store,
+            expand_to_section=request.expand_to_section,
+            expand=request.expand,
+            full_doc_threshold=request.full_doc_threshold,
+        ),
     )
     return (
         None,
@@ -184,8 +198,12 @@ def _execute_document_retrieval(
     expanded_results = _expand_chunks(
         results=selected_results,
         doc_chunks=doc_chunks,
-        expand=request.expand,
-        full_doc_threshold=request.full_doc_threshold,
+        expansion_config=ExpansionConfig(
+            section_store=config.section_store,
+            expand_to_section=request.expand_to_section,
+            expand=request.expand,
+            full_doc_threshold=request.full_doc_threshold,
+        ),
     )
     return (
         None,
@@ -335,6 +353,42 @@ def _include_full_documents(
     return full_doc_docs
 
 
+def _expand_to_section_subtrees(
+    results: list[SearchResult],
+    doc_chunks: dict[str, list[Chunk]],
+    section_store: ReadSectionStoreProtocol | None,
+    selected_ids_by_doc: dict[str, set[int]],
+) -> None:
+    if section_store is None:
+        logger.info("Skipping section expansion because no section store is configured")
+        return
+
+    descendant_section_ids_by_section_id: dict[str, set[str]] = {}
+    with section_store as active_section_store:
+        for result in results:
+            matching_chunk = _find_chunk_by_id(
+                chunks=doc_chunks.get(result["doc_uid"], []),
+                chunk_id=result["chunk_id"],
+            )
+            if matching_chunk is None or matching_chunk.containing_section_id is None:
+                continue
+            containing_section_id = matching_chunk.containing_section_id
+            if containing_section_id not in descendant_section_ids_by_section_id:
+                descendant_section_ids_by_section_id[containing_section_id] = set(active_section_store.get_descendant_section_ids(containing_section_id))
+            descendant_section_ids = descendant_section_ids_by_section_id[containing_section_id]
+            for chunk in doc_chunks.get(result["doc_uid"], []):
+                if chunk.id is None or chunk.containing_section_id not in descendant_section_ids:
+                    continue
+                selected_ids_by_doc[result["doc_uid"]].add(chunk.id)
+
+
+def _find_chunk_by_id(chunks: list[Chunk], chunk_id: int) -> Chunk | None:
+    for chunk in chunks:
+        if chunk.id == chunk_id:
+            return chunk
+    return None
+
+
 def _expand_with_neighbour_chunks(
     results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
@@ -383,24 +437,30 @@ def _build_expanded_chunk_results(
 def _expand_chunks(
     results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
-    expand: int,
-    full_doc_threshold: int,
+    expansion_config: ExpansionConfig,
 ) -> list[SearchResult]:
-    if expand <= 0 and full_doc_threshold <= 0:
+    if not expansion_config.expand_to_section and expansion_config.expand <= 0 and expansion_config.full_doc_threshold <= 0:
         return results
 
     result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_state(results)
+    if expansion_config.expand_to_section:
+        _expand_to_section_subtrees(
+            results=results,
+            doc_chunks=doc_chunks,
+            section_store=expansion_config.section_store,
+            selected_ids_by_doc=selected_ids_by_doc,
+        )
     full_doc_docs = _include_full_documents(
         doc_chunks=doc_chunks,
         selected_ids_by_doc=selected_ids_by_doc,
-        full_doc_threshold=full_doc_threshold,
+        full_doc_threshold=expansion_config.full_doc_threshold,
     )
-    if expand > 0:
+    if expansion_config.expand > 0:
         _expand_with_neighbour_chunks(
             results=results,
             doc_chunks=doc_chunks,
             selected_ids_by_doc=selected_ids_by_doc,
-            expand=expand,
+            expand=expansion_config.expand,
         )
     expanded_results = _build_expanded_chunk_results(
         doc_order=doc_order,
@@ -410,5 +470,5 @@ def _expand_chunks(
     )
     for doc_uid in full_doc_docs:
         doc_size = sum(len(chunk.text) for chunk in doc_chunks.get(doc_uid, []))
-        logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={full_doc_threshold})")
+        logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={expansion_config.full_doc_threshold})")
     return expanded_results

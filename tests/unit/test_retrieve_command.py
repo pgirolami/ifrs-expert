@@ -178,6 +178,43 @@ def test_retrieve_documents_mode_respects_per_type_document_caps() -> None:
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifric16", "ifrs9"]
 
 
+def test_retrieve_expand_to_section_includes_descendant_section_chunks() -> None:
+    """Section expansion should include all chunks in the matched section subtree."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="3.0", page_start="A1", page_end="A1", chunk_id="IFRS09_3.0", containing_section_id="IFRS09_0054", text="chapter text"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="3.1.1", page_start="A2", page_end="A2", chunk_id="IFRS09_3.1.1", containing_section_id="IFRS09_g3.1.1-3.1.2", text="initial recognition text"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"])
+
+    command = RetrieveCommand(
+        query="recognition",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.96}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            section_store=section_store,
+        ),
+        options=RetrieveOptions(retrieval_mode="text", k=5, content_min_score=0.5, expand_to_section=True, verbose=False, expand=0),
+    )
+
+    result = command.execute()
+
+    data = json.loads(result)
+    assert [chunk["id"] for chunk in data["chunks"]] == [1, 2]
+    assert data["chunks"][0]["score"] == 0.96
+    assert data["chunks"][1]["score"] == 0.0
+
+
 def test_retrieve_verbose_output_starts_with_options() -> None:
     """Verbose retrieve output should start with the options object."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions

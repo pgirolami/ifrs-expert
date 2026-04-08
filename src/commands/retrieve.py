@@ -77,6 +77,7 @@ class RetrieveOptions:
     sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
     ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
     content_min_score: float | None = DEFAULT_MIN_SCORE
+    expand_to_section: bool = False
     verbose: bool = DEFAULT_VERBOSE
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
@@ -124,6 +125,7 @@ class RetrieveCommand:
                 "PS": self._options.ps_min_score,
             },
             content_min_score=self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_MIN_SCORE,
+            expand_to_section=self._options.expand_to_section,
             expand=self._options.expand,
             full_doc_threshold=self._options.full_doc_threshold,
         )

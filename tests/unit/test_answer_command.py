@@ -10,6 +10,7 @@ from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
+from src.retrieval.models import RetrievalResult
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
 
 VALID_PROMPT_B_RESPONSE = """{
@@ -344,6 +345,53 @@ class TestAnswerCommand:
         prompt_a = captured_prompts[0]
         assert unique_chunk_text in prompt_a, "Prompt A should contain the chunk context"
 
+    def test_answer_expand_to_section_includes_descendant_section_chunks(self) -> None:
+        """Section expansion should include all chunks in the matched section subtree."""
+        search_results = [{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.91}]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="3.0", page_start="A1", page_end="A1", chunk_id="IFRS09_3.0", containing_section_id="IFRS09_0054", text="chapter text"),
+                    Chunk(id=2, doc_uid="ifrs9", chunk_number="3.1.1", page_start="A2", page_end="A2", chunk_id="IFRS09_3.1.1", containing_section_id="IFRS09_g3.1.1-3.1.2", text="initial recognition text"),
+                ]
+            )
+
+        section_store = InMemorySectionStore()
+        with section_store as store:
+            store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"])
+
+        captured_prompts: list[str] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            section_store=section_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="recognition",
+            config=config,
+            options=AnswerOptions(k=5, content_min_score=0.5, expand_to_section=True, expand=0),
+        )
+
+        with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
+            result = command.execute()
+
+        assert result.success is True
+        assert captured_prompts
+        assert "chapter text" in captured_prompts[0]
+        assert "initial recognition text" in captured_prompts[0]
+
     def test_answer_documents_mode_filters_prompt_context_to_selected_documents(self) -> None:
         """Document-first retrieval should only keep chunks from preselected documents."""
         search_results = [
@@ -402,6 +450,115 @@ class TestAnswerCommand:
         assert captured_prompts
         assert "ias chunk text" in captured_prompts[0]
         assert "ifrs chunk text" not in captured_prompts[0]
+
+    def test_answer_documents_mode_passes_per_type_thresholds_to_retrieval(self) -> None:
+        """Answer command should pass per-type document controls into the shared retrieval request."""
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs chunk text"),
+                ]
+            )
+
+        captured_prompts: list[str] = []
+        captured_requests: list[object] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return '{"status": "pass", "approaches": []}'
+            return VALID_PROMPT_B_RESPONSE
+
+        def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
+            del config
+            captured_requests.append(request)
+            return (
+                None,
+                RetrievalResult(
+                    retrieval_mode="documents",
+                    document_hits=[],
+                    chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
+                    doc_chunks={
+                        "ifrs9": [
+                            Chunk(
+                                id=1,
+                                doc_uid="ifrs9",
+                                chunk_number="1.1",
+                                page_start="A1",
+                                page_end="A1",
+                                text="ifrs chunk text",
+                            )
+                        ]
+                    },
+                ),
+            )
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            document_vector_store=MockDocumentVectorStore([]),
+            document_index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="foreign operation",
+            config=config,
+            options=AnswerOptions(
+                retrieval_mode="documents",
+                k=3,
+                d=9,
+                doc_min_score=0.2,
+                ifrs_d=7,
+                ias_d=6,
+                ifric_d=4,
+                sic_d=3,
+                ps_d=2,
+                ifrs_min_score=0.61,
+                ias_min_score=0.54,
+                ifric_min_score=0.50,
+                sic_min_score=0.49,
+                ps_min_score=0.48,
+                content_min_score=0.1,
+                expand_to_section=True,
+                expand=1,
+                full_doc_threshold=2000,
+            ),
+        )
+
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch("src.commands.answer.execute_retrieval", side_effect=mock_execute_retrieval),
+        ):
+            result = command.execute()
+
+        assert result.success is True
+        assert len(captured_requests) == 1
+        request = captured_requests[0]
+        assert getattr(request, "retrieval_mode") == "documents"
+        assert getattr(request, "k") == 3
+        assert getattr(request, "d") == 9
+        assert getattr(request, "doc_min_score") == 0.2
+        assert getattr(request, "document_d_by_type") == {
+            "IFRS": 7,
+            "IAS": 6,
+            "IFRIC": 4,
+            "SIC": 3,
+            "PS": 2,
+        }
+        assert getattr(request, "document_min_score_by_type") == {
+            "IFRS": 0.61,
+            "IAS": 0.54,
+            "IFRIC": 0.50,
+            "SIC": 0.49,
+            "PS": 0.48,
+        }
+        assert getattr(request, "content_min_score") == 0.1
+        assert getattr(request, "expand_to_section") is True
+        assert getattr(request, "expand") == 1
+        assert getattr(request, "full_doc_threshold") == 2000
 
     def test_answer_prompt_b_contains_context(self) -> None:
         """Test that prompt B contains the retrieved chunk content (the bug fix verification)."""

@@ -249,6 +249,11 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         help="Minimum chunk/title-stage score. Default: 0.55.",
     )
     retrieve_parser.add_argument(
+        "--expand-to-section",
+        action="store_true",
+        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion.",
+    )
+    retrieve_parser.add_argument(
         "-e",
         "--expand",
         type=int,
@@ -323,13 +328,78 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         "--doc-min-score",
         type=float,
         default=None,
-        help="Minimum document-stage score in documents mode. Default: 0.5.",
+        help="Legacy override for all document-stage score thresholds in documents mode.",
+    )
+    answer_parser.add_argument(
+        "--ifrs-d",
+        type=int,
+        default=DEFAULT_D_FOR_IFRS_DOCUMENTS,
+        help=f"Maximum IFRS documents to keep before overall capping (default: {DEFAULT_D_FOR_IFRS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ias-d",
+        type=int,
+        default=DEFAULT_D_FOR_IAS_DOCUMENTS,
+        help=f"Maximum IAS documents to keep before overall capping (default: {DEFAULT_D_FOR_IAS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ifric-d",
+        type=int,
+        default=DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+        help=f"Maximum IFRIC documents to keep before overall capping (default: {DEFAULT_D_FOR_IFRIC_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--sic-d",
+        type=int,
+        default=DEFAULT_D_FOR_SIC_DOCUMENTS,
+        help=f"Maximum SIC documents to keep before overall capping (default: {DEFAULT_D_FOR_SIC_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ps-d",
+        type=int,
+        default=DEFAULT_D_FOR_PS_DOCUMENTS,
+        help=f"Maximum PS documents to keep before overall capping (default: {DEFAULT_D_FOR_PS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ifrs-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+        help=f"Minimum IFRS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ias-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+        help=f"Minimum IAS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ifric-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+        help=f"Minimum IFRIC document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--sic-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+        help=f"Minimum SIC document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
+        "--ps-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+        help=f"Minimum PS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS})",
     )
     answer_parser.add_argument(
         "--content-min-score",
         type=float,
         default=None,
         help="Minimum chunk/title-stage score. Default: 0.55.",
+    )
+    answer_parser.add_argument(
+        "--expand-to-section",
+        action="store_true",
+        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion.",
     )
     answer_parser.add_argument(
         "--retrieval-mode",
@@ -454,6 +524,7 @@ def _execute_retrieve_command(args: argparse.Namespace) -> str:
             sic_min_score=args.sic_min_score,
             ps_min_score=args.ps_min_score,
             content_min_score=args.content_min_score,
+            expand_to_section=args.expand_to_section,
             verbose=verbose,
             expand=args.expand,
             full_doc_threshold=args.full_doc_threshold,
@@ -503,7 +574,18 @@ def _execute_answer_command(args: argparse.Namespace) -> str:
             min_score=args.min_score,
             d=getattr(args, "d", 5),
             doc_min_score=getattr(args, "doc_min_score", None),
+            ifrs_d=getattr(args, "ifrs_d", DEFAULT_D_FOR_IFRS_DOCUMENTS),
+            ias_d=getattr(args, "ias_d", DEFAULT_D_FOR_IAS_DOCUMENTS),
+            ifric_d=getattr(args, "ifric_d", DEFAULT_D_FOR_IFRIC_DOCUMENTS),
+            sic_d=getattr(args, "sic_d", DEFAULT_D_FOR_SIC_DOCUMENTS),
+            ps_d=getattr(args, "ps_d", DEFAULT_D_FOR_PS_DOCUMENTS),
+            ifrs_min_score=getattr(args, "ifrs_min_score", DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS),
+            ias_min_score=getattr(args, "ias_min_score", DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS),
+            ifric_min_score=getattr(args, "ifric_min_score", DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS),
+            sic_min_score=getattr(args, "sic_min_score", DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS),
+            ps_min_score=getattr(args, "ps_min_score", DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS),
             content_min_score=getattr(args, "content_min_score", None),
+            expand_to_section=getattr(args, "expand_to_section", False),
             expand=args.expand,
             full_doc_threshold=args.full_doc_threshold,
             output_dir=args.output_dir,
@@ -513,7 +595,7 @@ def _execute_answer_command(args: argparse.Namespace) -> str:
     )
     result = command.execute()
 
-    if args.save_all and args.output_dir is not None:
+    if args.output_dir is not None:
         _save_answer_command_result(result, args.output_dir)
 
     if result.error:
@@ -526,10 +608,6 @@ def _get_answer_option_error(args: argparse.Namespace) -> str | None:
     """Validate CLI-only answer options."""
     if getattr(args, "save_all", False) and getattr(args, "output_dir", None) is None:
         return "Error: --save-all requires --output-dir to be specified"
-
-    output_dir = getattr(args, "output_dir", None)
-    if output_dir is not None and not output_dir.exists():
-        return f"Error: Output directory does not exist: {output_dir}"
 
     return None
 
