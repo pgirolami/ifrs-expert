@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns consolidated financial statements.",
+    "The item in question is an intragroup dividend receivable/payable denominated in a foreign currency.",
+    "The question is about IFRS accounting models potentially relevant to hedging the foreign exchange exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 in the context include cash flow hedge accounting and specifically address when foreign currency risk on intragroup transactions may qualify in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 in the context identify fair value hedge accounting as a distinct hedge accounting model for exposures affecting profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies hedge of a net investment in a foreign operation as a separate hedge accounting model relevant to foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_translation",
+      "rationale_for_inclusion": "IAS 21 in the context provides the non-hedge accounting model for foreign currency monetary items and explains when intragroup monetary-item exchange differences remain in consolidated profit or loss or OCI."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns the consolidated financial statements.",
+    "The intragroup dividend gives rise to a recognised intragroup receivable/payable denominated in a foreign currency.",
+    "The question is about the accounting model for the foreign exchange exposure, not about local law or tax effects."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "IFRS 9 hedge accounting",
+      "normalized_label": "ifrs9_hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting, including rules on hedged items in consolidated financial statements and the limited treatment of intragroup foreign currency exposures."
+    },
+    {
+      "id": "approach_2",
+      "label": "IAS 39 hedge accounting",
+      "normalized_label": "ias39_hedge_accounting",
+      "rationale_for_inclusion": "The context includes IAS 39 hedge accounting, which remains relevant where an entity applies IAS 39 hedge accounting instead of IFRS 9 in the permitted cases."
+    },
+    {
+      "id": "approach_3",
+      "label": "IAS 21 foreign currency accounting",
+      "normalized_label": "ias21_fx_accounting",
+      "rationale_for_inclusion": "The context includes IAS 21 as the baseline accounting model for foreign currency monetary items and exchange differences when hedge accounting is not applied."
+    }
+  ]
+}

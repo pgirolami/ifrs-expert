@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is a foreign-currency-denominated monetary item between group entities.",
+    "The question concerns hedge accounting in consolidated financial statements for the foreign exchange exposure arising from that item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context includes the IFRS hedge accounting framework and specifically contemplates foreign currency risk hedging, which can be documented under the fair value hedge model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context includes the IFRS hedge accounting framework and specifically addresses foreign currency risk on intragroup transactions in consolidated financial statements under the cash flow hedge model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IAS 21 and IFRIC 16 guidance for hedging foreign currency risk arising from a net investment in a foreign operation, which is a distinct hedge accounting model."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context also supports accounting for the foreign exchange effects directly under IAS 21 without applying hedge accounting, which is a distinct top-level accounting treatment relevant to the issue."
+    }
+  ]
+}

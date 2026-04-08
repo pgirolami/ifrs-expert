@@ -1,0 +1,105 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été comptabilisé en créance monétaire intragroupe.",
+    "Cette créance est libellée dans une devise différente de la devise fonctionnelle d’au moins une entité concernée.",
+    "L’analyse est faite dans les comptes consolidés du groupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La voie pertinente dans cette situation est la couverture de juste valeur sur le risque de change de la créance intragroupe, mais seulement si ce risque de change génère un effet qui n’est pas totalement éliminé en consolidation. La couverture de flux de trésorerie ne vise pas une créance déjà reconnue, et la couverture d’investissement net ne convient que si la créance fait en substance partie de l’investissement net dans l’activité étrangère."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, le dividende intragroupe déjà comptabilisé en créance est un poste monétaire intragroupe. En consolidation, le risque de change d’un poste monétaire intragroupe peut être désigné en couverture s’il crée des écarts de change qui ne sont pas entièrement éliminés. C’est donc la manière la plus directement adaptée au cas décrit.",
+      "conditions_fr": [
+        "la créance intragroupe doit être un poste monétaire",
+        "le risque de change doit affecter le résultat consolidé parce qu’il n’est pas totalement éliminé en consolidation",
+        "la relation de couverture doit satisfaire aux conditions de désignation et de documentation d’IFRS 9"
+      ],
+      "practical_implication_fr": "Documenter la créance intragroupe comme élément couvert de change en couverture de juste valeur dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.4.1",
+          "excerpt": "at the inception of the hedging relationship there is formal designation and documentation"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "La question porte sur un dividende intragroupe déjà comptabilisé en créance. Or la couverture de flux de trésorerie vise surtout la variabilité de flux futurs, notamment une transaction intragroupe hautement probable. Ce n’est pas le bon modèle pour une créance déjà reconnue.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Non adapté à la partie change d’une créance intragroupe déjà enregistrée.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        },
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net dans une activité étrangère",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette approche n’est pertinente que si la créance de dividende, malgré sa forme de créance, constitue en substance une partie de l’investissement net dans l’activité étrangère. Pour un dividende à recevoir classique, destiné à être réglé, ce n’est normalement pas le cas. Elle ne s’applique donc qu’exceptionnellement.",
+      "conditions_fr": [
+        "la créance doit former en substance une partie de l’investissement net dans l’activité étrangère",
+        "le règlement ne doit être ni planifié ni probable dans un avenir prévisible",
+        "la relation doit être documentée comme couverture d’investissement net"
+      ],
+      "practical_implication_fr": "À envisager seulement si la créance est assimilable à un financement quasi permanent de l’activité étrangère.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity’s net investment in a foreign operation"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(c)",
+          "excerpt": "hedge of a net investment in a foreign operation as defined in IAS 21"
+        },
+        {
+          "document": "ifric16",
+          "section": "7",
+          "excerpt": "This Interpretation applies to an entity that hedges the foreign currency risk arising from its net investments in foreign operations"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d’abord si la créance de dividende crée bien un écart de change non totalement éliminé en consolidation ; sans cela, pas d’élément couvert éligible dans ce cas.",
+    "La documentation de couverture doit être formalisée dès l’origine de la relation de couverture et identifier clairement l’élément couvert, l’instrument de couverture et le risque de change couvert.",
+    "Si la créance est destinée à être réglée à court terme, l’option investissement net est en pratique écartée ; la piste à privilégier reste la couverture de juste valeur.",
+    "En consolidation, la classification et la présentation des écarts de change et des effets de couverture doivent rester cohérentes avec IAS 21, IFRS 9 et IFRS 18."
+  ]
+}
