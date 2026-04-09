@@ -1,0 +1,4247 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-m",
+    "src.cli",
+    "retrieve",
+    "--retrieval-mode",
+    "documents",
+    "-d",
+    "25",
+    "--ifrs-d",
+    "4",
+    "--ias-d",
+    "4",
+    "--ifric-d",
+    "6",
+    "--sic-d",
+    "6",
+    "--ps-d",
+    "1",
+    "--ifrs-min-score",
+    "0.53",
+    "--ias-min-score",
+    "0.4",
+    "--ifric-min-score",
+    "0.48",
+    "--sic-min-score",
+    "0.4",
+    "--ps-min-score",
+    "0.4",
+    "--json",
+    "--content-min-score",
+    "0.53"
+  ],
+  "results": [
+    {
+      "question_id": "Q1.0",
+      "question_text": "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.592,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5894,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5888,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5685,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5649,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.5604,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5536,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5498,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5426,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5395,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5178,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5123,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.5102,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5047,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric14",
+          "document_type": "IFRIC",
+          "score": 0.5045,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4781,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4711,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4569,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4355,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.412,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.1",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5909,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5803,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5787,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5566,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.554,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5537,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5521,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.5463,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5445,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5372,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5092,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.5044,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5025,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.4991,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.4926,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4799,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4738,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.464,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4232,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4095,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.2",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5907,
+          "global_rank": 1,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.579,
+          "global_rank": 2,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5664,
+          "global_rank": 3,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5499,
+          "global_rank": 4,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5495,
+          "global_rank": 5,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5472,
+          "global_rank": 6,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs17",
+          "document_type": "IFRS",
+          "score": 0.5415,
+          "global_rank": 7,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5408,
+          "global_rank": 8,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5345,
+          "global_rank": 9,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5331,
+          "global_rank": 10,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5096,
+          "global_rank": 11,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.4926,
+          "global_rank": 12,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.4911,
+          "global_rank": 13,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.4893,
+          "global_rank": 14,
+          "global_total": 19,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.489,
+          "global_rank": 15,
+          "global_total": 19,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4693,
+          "global_rank": 16,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4629,
+          "global_rank": 17,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4538,
+          "global_rank": 18,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.418,
+          "global_rank": 19,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.3",
+      "question_text": "Peut-on désigner, dans les comptes consolidés, le risque de change afférent à des dividendes intragroupe donnant lieu à la comptabilisation d’une créance à recevoir dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5829,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5647,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5601,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5525,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5459,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5443,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5394,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5384,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5346,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5245,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5221,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.516,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5058,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric14",
+          "document_type": "IFRIC",
+          "score": 0.491,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4883,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4882,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.46,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4583,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4411,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4121,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.4",
+      "question_text": "En consolidation, est-il possible de mettre en place une documentation de couverture portant sur la composante change de dividendes intragroupe dès lors qu’une créance correspondante a été reconnue ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5889,
+          "global_rank": 1,
+          "global_total": 18,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5736,
+          "global_rank": 2,
+          "global_total": 18,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5704,
+          "global_rank": 3,
+          "global_total": 18,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5553,
+          "global_rank": 4,
+          "global_total": 18,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5552,
+          "global_rank": 5,
+          "global_total": 18,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs10",
+          "document_type": "IFRS",
+          "score": 0.5526,
+          "global_rank": 6,
+          "global_total": 18,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5379,
+          "global_rank": 7,
+          "global_total": 18,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5378,
+          "global_rank": 8,
+          "global_total": 18,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5309,
+          "global_rank": 9,
+          "global_total": 18,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias27",
+          "document_type": "IAS",
+          "score": 0.5287,
+          "global_rank": 10,
+          "global_total": 18,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5227,
+          "global_rank": 11,
+          "global_total": 18,
+          "type_rank": 1,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5042,
+          "global_rank": 12,
+          "global_total": 18,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.496,
+          "global_rank": 13,
+          "global_total": 18,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4913,
+          "global_rank": 14,
+          "global_total": 18,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4881,
+          "global_rank": 15,
+          "global_total": 18,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric10",
+          "document_type": "IFRIC",
+          "score": 0.4862,
+          "global_rank": 16,
+          "global_total": 18,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4656,
+          "global_rank": 17,
+          "global_total": 18,
+          "type_rank": 2,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4505,
+          "global_rank": 18,
+          "global_total": 18,
+          "type_rank": 3,
+          "type_total": 3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.5",
+      "question_text": "Le risque de change attaché à des dividendes intragroupe comptabilisés en créance à recevoir peut-il faire l’objet d’une relation de couverture formellement documentée au niveau des états financiers consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5779,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5493,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.537,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5318,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5298,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5278,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5277,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5257,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5253,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5244,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5206,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5148,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.4873,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.4821,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4813,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4576,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4461,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4431,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4369,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4328,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.6",
+      "question_text": "Dans les comptes consolidés, la variation de change relative à des dividendes intragroupe pour lesquels un receivable a été constaté est-elle éligible à une désignation en comptabilité de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5673,
+          "global_rank": 1,
+          "global_total": 17,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5464,
+          "global_rank": 2,
+          "global_total": 17,
+          "type_rank": 1,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5313,
+          "global_rank": 3,
+          "global_total": 17,
+          "type_rank": 2,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5307,
+          "global_rank": 4,
+          "global_total": 17,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5182,
+          "global_rank": 5,
+          "global_total": 17,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.512,
+          "global_rank": 6,
+          "global_total": 17,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5118,
+          "global_rank": 7,
+          "global_total": 17,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5115,
+          "global_rank": 8,
+          "global_total": 17,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.489,
+          "global_rank": 9,
+          "global_total": 17,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.4871,
+          "global_rank": 10,
+          "global_total": 17,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.482,
+          "global_rank": 11,
+          "global_total": 17,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4806,
+          "global_rank": 12,
+          "global_total": 17,
+          "type_rank": 5,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4508,
+          "global_rank": 13,
+          "global_total": 17,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4136,
+          "global_rank": 14,
+          "global_total": 17,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4127,
+          "global_rank": 15,
+          "global_total": 17,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4046,
+          "global_rank": 16,
+          "global_total": 17,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4037,
+          "global_rank": 17,
+          "global_total": 17,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.7",
+      "question_text": "Est-il recevable, au regard des IFRS, de documenter une couverture du risque de change sur des dividendes intragroupe ayant donné lieu à la reconnaissance d’une créance dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.6013,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5946,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5869,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5848,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5742,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5675,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.564,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5589,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5523,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5485,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5468,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5302,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5249,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric14",
+          "document_type": "IFRIC",
+          "score": 0.5204,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.5199,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.507,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.455,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4473,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4426,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4137,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.8",
+      "question_text": "Peut-on appliquer la comptabilité de couverture en consolidation à l’exposition de change résultant de dividendes intragroupe dès lors que ceux-ci ont été comptabilisés en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5751,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5685,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5591,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.5392,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5329,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5254,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5195,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5172,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.516,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5129,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5106,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5071,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.4915,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.4896,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.4876,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.458,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.451,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4396,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4214,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4016,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.9",
+      "question_text": "La composante de risque de change liée à des dividendes intragroupe reconnus sous forme de créance peut-elle être désignée comme élément couvert dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5839,
+          "global_rank": 1,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5597,
+          "global_rank": 2,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5392,
+          "global_rank": 3,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5346,
+          "global_rank": 4,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5337,
+          "global_rank": 5,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5276,
+          "global_rank": 6,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5252,
+          "global_rank": 7,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5204,
+          "global_rank": 8,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5152,
+          "global_rank": 9,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias23",
+          "document_type": "IAS",
+          "score": 0.5085,
+          "global_rank": 10,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.4897,
+          "global_rank": 11,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4867,
+          "global_rank": 12,
+          "global_total": 16,
+          "type_rank": 5,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4537,
+          "global_rank": 13,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4528,
+          "global_rank": 14,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4387,
+          "global_rank": 15,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4384,
+          "global_rank": 16,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.10",
+      "question_text": "Dans un contexte de consolidation IFRS, une relation de couverture peut-elle être documentée au titre du risque de change sur des dividendes intragroupe comptabilisés à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5958,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5906,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5905,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs17",
+          "document_type": "IFRS",
+          "score": 0.5708,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5521,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5505,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5464,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.544,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5424,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5395,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5363,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.5267,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5265,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric14",
+          "document_type": "IFRIC",
+          "score": 0.5078,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric10",
+          "document_type": "IFRIC",
+          "score": 0.4975,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4785,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4386,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4249,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4175,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.11",
+      "question_text": "L’exposition au change générée par des dividendes intragroupe, une fois la créance correspondante enregistrée, peut-elle être couverte et documentée en hedge accounting dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.6086,
+          "global_rank": 1,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.6066,
+          "global_rank": 2,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5559,
+          "global_rank": 3,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias39",
+          "document_type": "IAS",
+          "score": 0.5556,
+          "global_rank": 4,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.5369,
+          "global_rank": 5,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5345,
+          "global_rank": 6,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5342,
+          "global_rank": 7,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5203,
+          "global_rank": 8,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ias29",
+          "document_type": "IAS",
+          "score": 0.5136,
+          "global_rank": 9,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5135,
+          "global_rank": 10,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5059,
+          "global_rank": 11,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.4874,
+          "global_rank": 12,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4575,
+          "global_rank": 13,
+          "global_total": 16,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4488,
+          "global_rank": 14,
+          "global_total": 16,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4262,
+          "global_rank": 15,
+          "global_total": 16,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4156,
+          "global_rank": 16,
+          "global_total": 16,
+          "type_rank": 4,
+          "type_total": 4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.12",
+      "question_text": "Est-il possible, au niveau consolidé, de qualifier de manière formelle une couverture du risque de change sur des dividendes intragroupe ayant fait l’objet d’une comptabilisation en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5667,
+          "global_rank": 1,
+          "global_total": 15,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5366,
+          "global_rank": 2,
+          "global_total": 15,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5276,
+          "global_rank": 3,
+          "global_total": 15,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.519,
+          "global_rank": 4,
+          "global_total": 15,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5145,
+          "global_rank": 5,
+          "global_total": 15,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5137,
+          "global_rank": 6,
+          "global_total": 15,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5122,
+          "global_rank": 7,
+          "global_total": 15,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias23",
+          "document_type": "IAS",
+          "score": 0.5063,
+          "global_rank": 8,
+          "global_total": 15,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5039,
+          "global_rank": 9,
+          "global_total": 15,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5019,
+          "global_rank": 10,
+          "global_total": 15,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4373,
+          "global_rank": 11,
+          "global_total": 15,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4324,
+          "global_rank": 12,
+          "global_total": 15,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4324,
+          "global_rank": 13,
+          "global_total": 15,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4308,
+          "global_rank": 14,
+          "global_total": 15,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4248,
+          "global_rank": 15,
+          "global_total": 15,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.13",
+      "question_text": "Dans les comptes consolidés, des dividendes intragroupe ont été décidés et une créance à recevoir a été comptabilisée. Dans ce contexte, la composante de risque de change associée à cette créance peut-elle être intégrée dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5736,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.555,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5545,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs17",
+          "document_type": "IFRS",
+          "score": 0.552,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5468,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.536,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5339,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias23",
+          "document_type": "IAS",
+          "score": 0.5329,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5316,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5307,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5306,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5266,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5017,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.5012,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.4992,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4879,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4829,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4686,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4498,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.427,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.14",
+      "question_text": "Un dividende intragroupe a donné lieu à la comptabilisation d’un montant à recevoir au sein du périmètre consolidé. Peut-on, dans ces circonstances, documenter une couverture portant sur le risque de change afférent à cette exposition ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5572,
+          "global_rank": 1,
+          "global_total": 13,
+          "type_rank": 1,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5335,
+          "global_rank": 2,
+          "global_total": 13,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5205,
+          "global_rank": 3,
+          "global_total": 13,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5189,
+          "global_rank": 4,
+          "global_total": 13,
+          "type_rank": 2,
+          "type_total": 2
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5125,
+          "global_rank": 5,
+          "global_total": 13,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5116,
+          "global_rank": 6,
+          "global_total": 13,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.51,
+          "global_rank": 7,
+          "global_total": 13,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.4933,
+          "global_rank": 8,
+          "global_total": 13,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4729,
+          "global_rank": 9,
+          "global_total": 13,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4546,
+          "global_rank": 10,
+          "global_total": 13,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4511,
+          "global_rank": 11,
+          "global_total": 13,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.426,
+          "global_rank": 12,
+          "global_total": 13,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4217,
+          "global_rank": 13,
+          "global_total": 13,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.15",
+      "question_text": "La distribution de dividendes intragroupe a été reconnue sous la forme d’une créance dans les états financiers consolidés. Cette exposition de change peut-elle, en IFRS, être désignée comme élément couvert dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.6026,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5976,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5974,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5857,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5796,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5718,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.567,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5657,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5596,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5589,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5447,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.5352,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5261,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.526,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5168,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.5152,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4994,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4659,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4597,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.445,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.16",
+      "question_text": "Au niveau consolidé, l’entité constate une créance liée à des dividendes intragroupe et supporte, de ce fait, une exposition au risque de change. Cette exposition peut-elle faire l’objet d’une documentation de couverture conforme aux IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.6561,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.6548,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.6395,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.6395,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.6084,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.6061,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.6008,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5948,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5945,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5923,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5809,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5781,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5689,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.5602,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.5569,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric1",
+          "document_type": "IFRIC",
+          "score": 0.5555,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.5236,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.5205,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4782,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.462,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.17",
+      "question_text": "Des dividendes intragroupe ont été comptabilisés à recevoir, ce qui fait naître une variation potentielle liée au change dans les comptes consolidés. Est-il alors possible de mettre en place une relation de couverture sur cette seule composante de change ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5739,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5728,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5525,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5495,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.545,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5425,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs2",
+          "document_type": "IFRS",
+          "score": 0.536,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5221,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5192,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5184,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5184,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5169,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.5016,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.492,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4893,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric1",
+          "document_type": "IFRIC",
+          "score": 0.4884,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4529,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4506,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4487,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4369,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.18",
+      "question_text": "La comptabilisation d’une créance sur dividendes intragroupe dans les comptes consolidés conduit à identifier une exposition de change distincte. Cette exposition est-elle éligible à la comptabilité de couverture au niveau consolidé ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5794,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5792,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.574,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5643,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5605,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5592,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias27",
+          "document_type": "IAS",
+          "score": 0.5579,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5443,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.538,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.538,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5264,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.523,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric1",
+          "document_type": "IFRIC",
+          "score": 0.5089,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.5051,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5028,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.47,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4649,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4505,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4234,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4129,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.19",
+      "question_text": "Dans un schéma où des dividendes intragroupe ont déjà été reconnus en créance à recevoir, la question se pose du traitement du risque de change associé en consolidation. Ce risque peut-il être formellement documenté dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.568,
+          "global_rank": 1,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5524,
+          "global_rank": 2,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5415,
+          "global_rank": 3,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 3
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5322,
+          "global_rank": 4,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5269,
+          "global_rank": 5,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5255,
+          "global_rank": 6,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5214,
+          "global_rank": 7,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5197,
+          "global_rank": 8,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.516,
+          "global_rank": 9,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5156,
+          "global_rank": 10,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5057,
+          "global_rank": 11,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4947,
+          "global_rank": 12,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.4932,
+          "global_rank": 13,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric12",
+          "document_type": "IFRIC",
+          "score": 0.4883,
+          "global_rank": 14,
+          "global_total": 19,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.4854,
+          "global_rank": 15,
+          "global_total": 19,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4717,
+          "global_rank": 16,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4567,
+          "global_rank": 17,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4392,
+          "global_rank": 18,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.429,
+          "global_rank": 19,
+          "global_total": 19,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.20",
+      "question_text": "Une créance relative à des dividendes intragroupe figure désormais dans les états financiers consolidés, avec une sensibilité corrélative aux fluctuations de change. Peut-on couvrir cette exposition dans le cadre d’une documentation de hedge accounting ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.6057,
+          "global_rank": 1,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5844,
+          "global_rank": 2,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5679,
+          "global_rank": 3,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "document_type": "IFRS",
+          "score": 0.5635,
+          "global_rank": 4,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.5591,
+          "global_rank": 5,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias39",
+          "document_type": "IAS",
+          "score": 0.5575,
+          "global_rank": 6,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias29",
+          "document_type": "IAS",
+          "score": 0.5425,
+          "global_rank": 7,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5393,
+          "global_rank": 8,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5348,
+          "global_rank": 9,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ias24",
+          "document_type": "IAS",
+          "score": 0.5338,
+          "global_rank": 10,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5227,
+          "global_rank": 11,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5119,
+          "global_rank": 12,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.5006,
+          "global_rank": 13,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric7",
+          "document_type": "IFRIC",
+          "score": 0.4827,
+          "global_rank": 14,
+          "global_total": 19,
+          "type_rank": 5,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4788,
+          "global_rank": 15,
+          "global_total": 19,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4695,
+          "global_rank": 16,
+          "global_total": 19,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4605,
+          "global_rank": 17,
+          "global_total": 19,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.434,
+          "global_rank": 18,
+          "global_total": 19,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4261,
+          "global_rank": 19,
+          "global_total": 19,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.21",
+      "question_text": "Le groupe a comptabilisé un receivable au titre de dividendes intragroupe, créant ainsi une exposition au risque de change dans les comptes consolidés. Cette exposition peut-elle être désignée comme élément couvert au sens des IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5902,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.5781,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5756,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs12",
+          "document_type": "IFRS",
+          "score": 0.571,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.567,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.5635,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5614,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias32",
+          "document_type": "IAS",
+          "score": 0.5569,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5514,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.5468,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5463,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5303,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5302,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5254,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric21",
+          "document_type": "IFRIC",
+          "score": 0.5188,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.5124,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.5002,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4992,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4639,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4333,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.22",
+      "question_text": "À partir du moment où des dividendes intragroupe sont reconnus en créance dans les comptes consolidés, une problématique de change apparaît. Dans une telle situation, est-il permis de documenter une couverture sur cette composante de risque ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "document_type": "IFRS",
+          "score": 0.5921,
+          "global_rank": 1,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "document_type": "IFRS",
+          "score": 0.576,
+          "global_rank": 2,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "sic25",
+          "document_type": "SIC",
+          "score": 0.5691,
+          "global_rank": 3,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ifric17",
+          "document_type": "IFRIC",
+          "score": 0.5685,
+          "global_rank": 4,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifrs17",
+          "document_type": "IFRS",
+          "score": 0.5671,
+          "global_rank": 5,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifrs7",
+          "document_type": "IFRS",
+          "score": 0.566,
+          "global_rank": 6,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias7",
+          "document_type": "IAS",
+          "score": 0.5635,
+          "global_rank": 7,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias37",
+          "document_type": "IAS",
+          "score": 0.5556,
+          "global_rank": 8,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric19",
+          "document_type": "IFRIC",
+          "score": 0.5484,
+          "global_rank": 9,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric16",
+          "document_type": "IFRIC",
+          "score": 0.5479,
+          "global_rank": 10,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ias21",
+          "document_type": "IAS",
+          "score": 0.542,
+          "global_rank": 11,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ias26",
+          "document_type": "IAS",
+          "score": 0.5391,
+          "global_rank": 12,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 4
+        },
+        {
+          "doc_uid": "ifric2",
+          "document_type": "IFRIC",
+          "score": 0.5133,
+          "global_rank": 13,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric22",
+          "document_type": "IFRIC",
+          "score": 0.51,
+          "global_rank": 14,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "ifric23",
+          "document_type": "IFRIC",
+          "score": 0.5069,
+          "global_rank": 15,
+          "global_total": 20,
+          "type_rank": 6,
+          "type_total": 6
+        },
+        {
+          "doc_uid": "sic7",
+          "document_type": "SIC",
+          "score": 0.4812,
+          "global_rank": 16,
+          "global_total": 20,
+          "type_rank": 2,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "ps1",
+          "document_type": "PS",
+          "score": 0.4809,
+          "global_rank": 17,
+          "global_total": 20,
+          "type_rank": 1,
+          "type_total": 1
+        },
+        {
+          "doc_uid": "sic29",
+          "document_type": "SIC",
+          "score": 0.4713,
+          "global_rank": 18,
+          "global_total": 20,
+          "type_rank": 3,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic32",
+          "document_type": "SIC",
+          "score": 0.4684,
+          "global_rank": 19,
+          "global_total": 20,
+          "type_rank": 4,
+          "type_total": 5
+        },
+        {
+          "doc_uid": "sic10",
+          "document_type": "SIC",
+          "score": 0.4245,
+          "global_rank": 20,
+          "global_total": 20,
+          "type_rank": 5,
+          "type_total": 5
+        }
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "doc_uid": "ifrs9",
+      "run_count": 23,
+      "average_score": 0.5824
+    },
+    {
+      "doc_uid": "ifric17",
+      "run_count": 23,
+      "average_score": 0.559
+    },
+    {
+      "doc_uid": "ifric16",
+      "run_count": 23,
+      "average_score": 0.5321260869565217
+    },
+    {
+      "doc_uid": "sic25",
+      "run_count": 23,
+      "average_score": 0.5309130434782608
+    },
+    {
+      "doc_uid": "ps1",
+      "run_count": 23,
+      "average_score": 0.4748826086956522
+    },
+    {
+      "doc_uid": "sic29",
+      "run_count": 23,
+      "average_score": 0.4714
+    },
+    {
+      "doc_uid": "sic32",
+      "run_count": 23,
+      "average_score": 0.45598260869565216
+    },
+    {
+      "doc_uid": "ifric19",
+      "run_count": 22,
+      "average_score": 0.5303727272727272
+    },
+    {
+      "doc_uid": "ifrs19",
+      "run_count": 21,
+      "average_score": 0.5705476190476191
+    },
+    {
+      "doc_uid": "sic7",
+      "run_count": 21,
+      "average_score": 0.4353714285714286
+    },
+    {
+      "doc_uid": "sic10",
+      "run_count": 20,
+      "average_score": 0.42875
+    },
+    {
+      "doc_uid": "ias37",
+      "run_count": 18,
+      "average_score": 0.5408222222222222
+    },
+    {
+      "doc_uid": "ifrs12",
+      "run_count": 17,
+      "average_score": 0.5682588235294118
+    },
+    {
+      "doc_uid": "ias26",
+      "run_count": 16,
+      "average_score": 0.53104375
+    },
+    {
+      "doc_uid": "ias7",
+      "run_count": 15,
+      "average_score": 0.54462
+    },
+    {
+      "doc_uid": "ifric2",
+      "run_count": 14,
+      "average_score": 0.5068642857142858
+    },
+    {
+      "doc_uid": "ias21",
+      "run_count": 13,
+      "average_score": 0.5379384615384616
+    },
+    {
+      "doc_uid": "ifric22",
+      "run_count": 13,
+      "average_score": 0.4955538461538462
+    },
+    {
+      "doc_uid": "ias32",
+      "run_count": 12,
+      "average_score": 0.5478583333333333
+    },
+    {
+      "doc_uid": "ifric23",
+      "run_count": 12,
+      "average_score": 0.5061833333333333
+    },
+    {
+      "doc_uid": "ias24",
+      "run_count": 9,
+      "average_score": 0.5303333333333333
+    },
+    {
+      "doc_uid": "ifrs7",
+      "run_count": 8,
+      "average_score": 0.5680625
+    },
+    {
+      "doc_uid": "ifric21",
+      "run_count": 8,
+      "average_score": 0.5109375
+    },
+    {
+      "doc_uid": "ifrs18",
+      "run_count": 6,
+      "average_score": 0.5533833333333333
+    },
+    {
+      "doc_uid": "ifrs17",
+      "run_count": 4,
+      "average_score": 0.55785
+    },
+    {
+      "doc_uid": "ifric14",
+      "run_count": 4,
+      "average_score": 0.505925
+    },
+    {
+      "doc_uid": "ifric1",
+      "run_count": 3,
+      "average_score": 0.5176000000000001
+    },
+    {
+      "doc_uid": "ias23",
+      "run_count": 3,
+      "average_score": 0.5159
+    },
+    {
+      "doc_uid": "ias39",
+      "run_count": 2,
+      "average_score": 0.55655
+    },
+    {
+      "doc_uid": "ias27",
+      "run_count": 2,
+      "average_score": 0.5432999999999999
+    },
+    {
+      "doc_uid": "ias29",
+      "run_count": 2,
+      "average_score": 0.5280499999999999
+    },
+    {
+      "doc_uid": "ifric10",
+      "run_count": 2,
+      "average_score": 0.49185
+    },
+    {
+      "doc_uid": "ifrs10",
+      "run_count": 1,
+      "average_score": 0.5526
+    },
+    {
+      "doc_uid": "ifrs2",
+      "run_count": 1,
+      "average_score": 0.536
+    },
+    {
+      "doc_uid": "ifric12",
+      "run_count": 1,
+      "average_score": 0.4883
+    },
+    {
+      "doc_uid": "ifric7",
+      "run_count": 1,
+      "average_score": 0.4827
+    }
+  ]
+}

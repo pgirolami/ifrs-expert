@@ -24,6 +24,8 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
+    DEFAULT_RETRIEVE_DOCUMENT_D,
 )
 from src.commands.query import create_query_command
 from src.commands.query_documents import create_query_documents_command
@@ -173,8 +175,8 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         "-d",
         "--d",
         type=int,
-        default=5,
-        help="Number of documents to preselect in documents mode (default: 5)",
+        default=DEFAULT_RETRIEVE_DOCUMENT_D,
+        help=(f"Number of documents to preselect in documents mode (default: {DEFAULT_RETRIEVE_DOCUMENT_D})"),
     )
     retrieve_parser.add_argument(
         "--doc-min-score",
@@ -246,7 +248,7 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         "--content-min-score",
         type=float,
         default=None,
-        help="Minimum chunk/title-stage score. Default: 0.55.",
+        help=f"Minimum chunk/title-stage score. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}.",
     )
     retrieve_parser.add_argument(
         "--expand-to-section",
@@ -315,14 +317,14 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         "--min-score",
         type=float,
         default=None,
-        help="Legacy alias for the content-stage minimum score. Results below this are excluded. Default: 0.55.",
+        help=(f"Legacy alias for the content-stage minimum score. Results below this are excluded. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}."),
     )
     answer_parser.add_argument(
         "-d",
         "--d",
         type=int,
-        default=5,
-        help="Number of documents to preselect in documents mode (default: 5)",
+        default=DEFAULT_RETRIEVE_DOCUMENT_D,
+        help=(f"Number of documents to preselect in documents mode (default: {DEFAULT_RETRIEVE_DOCUMENT_D})"),
     )
     answer_parser.add_argument(
         "--doc-min-score",
@@ -394,7 +396,7 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         "--content-min-score",
         type=float,
         default=None,
-        help="Minimum chunk/title-stage score. Default: 0.55.",
+        help=f"Minimum chunk/title-stage score. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}.",
     )
     answer_parser.add_argument(
         "--expand-to-section",
@@ -572,7 +574,7 @@ def _execute_answer_command(args: argparse.Namespace) -> str:
         options=AnswerOptions(
             k=args.k,
             min_score=args.min_score,
-            d=getattr(args, "d", 5),
+            d=getattr(args, "d", DEFAULT_RETRIEVE_DOCUMENT_D),
             doc_min_score=getattr(args, "doc_min_score", None),
             ifrs_d=getattr(args, "ifrs_d", DEFAULT_D_FOR_IFRS_DOCUMENTS),
             ias_d=getattr(args, "ias_d", DEFAULT_D_FOR_IAS_DOCUMENTS),

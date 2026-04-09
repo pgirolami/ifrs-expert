@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from src.cli import _answer_stdout_text, _execute_answer_command, _execute_command, _save_answer_command_result
+from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result
 from src.models.answer_command_result import AnswerCommandResult
 
 VALID_PROMPT_B_RESPONSE = """{
@@ -115,20 +115,20 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
     args = argparse.Namespace(
         command="answer",
         k=5,
-        d=5,
+        d=25,
         min_score=None,
         doc_min_score=None,
         content_min_score=None,
-        ifrs_d=5,
-        ias_d=5,
-        ifric_d=5,
-        sic_d=5,
-        ps_d=5,
-        ifrs_min_score=0.59,
-        ias_min_score=0.55,
-        ifric_min_score=0.51,
-        sic_min_score=0.51,
-        ps_min_score=0.50,
+        ifrs_d=4,
+        ias_d=100,
+        ifric_d=6,
+        sic_d=100,
+        ps_d=100,
+        ifrs_min_score=0.53,
+        ias_min_score=0.0,
+        ifric_min_score=0.48,
+        sic_min_score=0.0,
+        ps_min_score=0.0,
         expand=0,
         expand_to_section=False,
         full_doc_threshold=0,
@@ -378,3 +378,43 @@ def test_answer_stdout_text_prefers_raw_response() -> None:
     )
 
     assert _answer_stdout_text(result) == "raw response"
+
+
+def test_retrieve_parser_uses_tuned_document_retrieval_defaults() -> None:
+    """Retrieve parser should expose the tuned document-retrieval defaults."""
+    parser = _build_parser()
+
+    args = parser.parse_args(["retrieve"])
+
+    assert args.d == 25
+    assert args.ifrs_d == 4
+    assert args.ias_d == 4
+    assert args.ifric_d == 6
+    assert args.sic_d == 6
+    assert args.ps_d == 1
+    assert args.ifrs_min_score == 0.53
+    assert args.ias_min_score == 0.4
+    assert args.ifric_min_score == 0.48
+    assert args.sic_min_score == 0.4
+    assert args.ps_min_score == 0.4
+    assert args.content_min_score is None
+
+
+def test_answer_parser_uses_tuned_document_retrieval_defaults() -> None:
+    """Answer parser should expose the tuned document-retrieval defaults."""
+    parser = _build_parser()
+
+    args = parser.parse_args(["answer"])
+
+    assert args.d == 25
+    assert args.ifrs_d == 4
+    assert args.ias_d == 4
+    assert args.ifric_d == 6
+    assert args.sic_d == 6
+    assert args.ps_d == 1
+    assert args.ifrs_min_score == 0.53
+    assert args.ias_min_score == 0.4
+    assert args.ifric_min_score == 0.48
+    assert args.sic_min_score == 0.4
+    assert args.ps_min_score == 0.4
+    assert args.content_min_score is None

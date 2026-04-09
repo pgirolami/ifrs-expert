@@ -87,9 +87,7 @@ def filter_extraction(
     excluded_section_count = len(directly_excluded_section_ids)
 
     # Track excluded section titles for logging
-    excluded_section_titles = tuple(
-        section.title for section in sections if section.section_id in directly_excluded_section_ids
-    )
+    excluded_section_titles = tuple(section.title for section in sections if section.section_id in directly_excluded_section_ids)
 
     # Find all descendant section IDs of excluded sections
     descendant_ids = _find_descendant_section_ids(directly_excluded_section_ids, closure_rows)
@@ -99,11 +97,7 @@ def filter_extraction(
     filtered_sections = [s for s in sections if s.section_id not in excluded_section_ids]
 
     # Filter closure rows (only keep rows where both ends are non-excluded)
-    filtered_closure_rows = [
-        row
-        for row in closure_rows
-        if row.ancestor_section_id not in excluded_section_ids and row.descendant_section_id not in excluded_section_ids
-    ]
+    filtered_closure_rows = [row for row in closure_rows if row.ancestor_section_id not in excluded_section_ids and row.descendant_section_id not in excluded_section_ids]
 
     # Filter chunks - count and track those that directly match a chunk filter (by text)
     text_matched_chunk_ids: list[str] = []

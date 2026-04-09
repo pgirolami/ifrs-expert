@@ -21,43 +21,93 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.592
+          "document_type": "IFRS",
+          "score": 0.592,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5894
+          "document_type": "IFRS",
+          "score": 0.5894,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5888
+          "document_type": "IFRIC",
+          "score": 0.5888,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5685
+          "document_type": "IAS",
+          "score": 0.5685,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5649
+          "document_type": "IFRS",
+          "score": 0.5649,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.5604
+          "document_type": "IFRS",
+          "score": 0.5604,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5536
+          "document_type": "IAS",
+          "score": 0.5536,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5534
+          "document_type": "IFRS",
+          "score": 0.5534,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5395
+          "document_type": "IFRIC",
+          "score": 0.5395,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric23",
-          "score": 0.5178
+          "document_type": "IFRIC",
+          "score": 0.5178,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -67,31 +117,66 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5909
+          "document_type": "IFRS",
+          "score": 0.5909,
+          "global_rank": 1,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5803
+          "document_type": "IFRIC",
+          "score": 0.5803,
+          "global_rank": 2,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5787
+          "document_type": "IFRS",
+          "score": 0.5787,
+          "global_rank": 3,
+          "global_total": 7,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5566
+          "document_type": "IFRIC",
+          "score": 0.5566,
+          "global_rank": 4,
+          "global_total": 7,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.554
+          "document_type": "IFRS",
+          "score": 0.554,
+          "global_rank": 5,
+          "global_total": 7,
+          "type_rank": 3,
+          "type_total": 3
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5537
+          "document_type": "IAS",
+          "score": 0.5537,
+          "global_rank": 6,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ias32",
-          "score": 0.5521
+          "document_type": "IAS",
+          "score": 0.5521,
+          "global_rank": 7,
+          "global_total": 7,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -101,19 +186,39 @@
       "hits": [
         {
           "doc_uid": "ifric17",
-          "score": 0.5907
+          "document_type": "IFRIC",
+          "score": 0.5907,
+          "global_rank": 1,
+          "global_total": 4,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.579
+          "document_type": "IFRS",
+          "score": 0.579,
+          "global_rank": 2,
+          "global_total": 4,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5664
+          "document_type": "IFRS",
+          "score": 0.5664,
+          "global_rank": 3,
+          "global_total": 4,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5499
+          "document_type": "IFRIC",
+          "score": 0.5499,
+          "global_rank": 4,
+          "global_total": 4,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -123,31 +228,66 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5829
+          "document_type": "IFRS",
+          "score": 0.5829,
+          "global_rank": 1,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5647
+          "document_type": "IFRS",
+          "score": 0.5647,
+          "global_rank": 2,
+          "global_total": 7,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5601
+          "document_type": "IFRS",
+          "score": 0.5601,
+          "global_rank": 3,
+          "global_total": 7,
+          "type_rank": 3,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5525
+          "document_type": "IFRIC",
+          "score": 0.5525,
+          "global_rank": 4,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5459
+          "document_type": "IFRIC",
+          "score": 0.5459,
+          "global_rank": 5,
+          "global_total": 7,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5221
+          "document_type": "SIC",
+          "score": 0.5221,
+          "global_rank": 6,
+          "global_total": 7,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.516
+          "document_type": "IFRIC",
+          "score": 0.516,
+          "global_rank": 7,
+          "global_total": 7,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -157,39 +297,84 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5889
+          "document_type": "IFRS",
+          "score": 0.5889,
+          "global_rank": 1,
+          "global_total": 9,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5736
+          "document_type": "IFRS",
+          "score": 0.5736,
+          "global_rank": 2,
+          "global_total": 9,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5704
+          "document_type": "IFRS",
+          "score": 0.5704,
+          "global_rank": 3,
+          "global_total": 9,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5553
+          "document_type": "IFRIC",
+          "score": 0.5553,
+          "global_rank": 4,
+          "global_total": 9,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5552
+          "document_type": "IAS",
+          "score": 0.5552,
+          "global_rank": 5,
+          "global_total": 9,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifrs10",
-          "score": 0.5526
+          "document_type": "IFRS",
+          "score": 0.5526,
+          "global_rank": 6,
+          "global_total": 9,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5505
+          "document_type": "IFRS",
+          "score": 0.5505,
+          "global_rank": 7,
+          "global_total": 9,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5378
+          "document_type": "IFRIC",
+          "score": 0.5378,
+          "global_rank": 8,
+          "global_total": 9,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5227
+          "document_type": "SIC",
+          "score": 0.5227,
+          "global_rank": 9,
+          "global_total": 9,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -199,23 +384,48 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5779
+          "document_type": "IFRS",
+          "score": 0.5779,
+          "global_rank": 1,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5298
+          "document_type": "IFRIC",
+          "score": 0.5298,
+          "global_rank": 2,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5277
+          "document_type": "SIC",
+          "score": 0.5277,
+          "global_rank": 3,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5257
+          "document_type": "IFRIC",
+          "score": 0.5257,
+          "global_rank": 4,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5244
+          "document_type": "IFRIC",
+          "score": 0.5244,
+          "global_rank": 5,
+          "global_total": 5,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -225,11 +435,21 @@
       "hits": [
         {
           "doc_uid": "ifric17",
-          "score": 0.5673
+          "document_type": "IFRIC",
+          "score": 0.5673,
+          "global_rank": 1,
+          "global_total": 2,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5115
+          "document_type": "SIC",
+          "score": 0.5115,
+          "global_rank": 2,
+          "global_total": 2,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -239,43 +459,93 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.6013
+          "document_type": "IFRS",
+          "score": 0.6013,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5946
+          "document_type": "IFRS",
+          "score": 0.5946,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5869
+          "document_type": "IFRS",
+          "score": 0.5869,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5848
+          "document_type": "IFRS",
+          "score": 0.5848,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5742
+          "document_type": "IFRIC",
+          "score": 0.5742,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.5683
+          "document_type": "IFRS",
+          "score": 0.5683,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5675
+          "document_type": "IAS",
+          "score": 0.5675,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ias32",
-          "score": 0.564
+          "document_type": "IAS",
+          "score": 0.564,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5589
+          "document_type": "IAS",
+          "score": 0.5589,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5523
+          "document_type": "IFRIC",
+          "score": 0.5523,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -285,23 +555,48 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5751
+          "document_type": "IFRS",
+          "score": 0.5751,
+          "global_rank": 1,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5685
+          "document_type": "IFRIC",
+          "score": 0.5685,
+          "global_rank": 2,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5591
+          "document_type": "IFRS",
+          "score": 0.5591,
+          "global_rank": 3,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5129
+          "document_type": "IFRIC",
+          "score": 0.5129,
+          "global_rank": 4,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5106
+          "document_type": "IFRIC",
+          "score": 0.5106,
+          "global_rank": 5,
+          "global_total": 5,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -311,27 +606,57 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5839
+          "document_type": "IFRS",
+          "score": 0.5839,
+          "global_rank": 1,
+          "global_total": 6,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5597
+          "document_type": "IAS",
+          "score": 0.5597,
+          "global_rank": 2,
+          "global_total": 6,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5392
+          "document_type": "IFRIC",
+          "score": 0.5392,
+          "global_rank": 3,
+          "global_total": 6,
+          "type_rank": 1,
+          "type_total": 4
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5337
+          "document_type": "IFRIC",
+          "score": 0.5337,
+          "global_rank": 4,
+          "global_total": 6,
+          "type_rank": 2,
+          "type_total": 4
         },
         {
           "doc_uid": "ifric2",
-          "score": 0.5252
+          "document_type": "IFRIC",
+          "score": 0.5252,
+          "global_rank": 5,
+          "global_total": 6,
+          "type_rank": 3,
+          "type_total": 4
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5152
+          "document_type": "IFRIC",
+          "score": 0.5152,
+          "global_rank": 6,
+          "global_total": 6,
+          "type_rank": 4,
+          "type_total": 4
         }
       ]
     },
@@ -341,43 +666,93 @@
       "hits": [
         {
           "doc_uid": "ifrs12",
-          "score": 0.5958
+          "document_type": "IFRS",
+          "score": 0.5958,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.5906
+          "document_type": "IFRS",
+          "score": 0.5906,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5905
+          "document_type": "IFRS",
+          "score": 0.5905,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs17",
-          "score": 0.5708
+          "document_type": "IFRS",
+          "score": 0.5708,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5705
+          "document_type": "IFRS",
+          "score": 0.5705,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5521
+          "document_type": "IFRIC",
+          "score": 0.5521,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5505
+          "document_type": "SIC",
+          "score": 0.5505,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5395
+          "document_type": "IFRIC",
+          "score": 0.5395,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ps1",
-          "score": 0.5267
+          "document_type": "PS",
+          "score": 0.5267,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5265
+          "document_type": "IFRIC",
+          "score": 0.5265,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -387,23 +762,48 @@
       "hits": [
         {
           "doc_uid": "ifric16",
-          "score": 0.6086
+          "document_type": "IFRIC",
+          "score": 0.6086,
+          "global_rank": 1,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.6066
+          "document_type": "IFRS",
+          "score": 0.6066,
+          "global_rank": 2,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5559
+          "document_type": "IFRS",
+          "score": 0.5559,
+          "global_rank": 3,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ias39",
-          "score": 0.5556
+          "document_type": "IAS",
+          "score": 0.5556,
+          "global_rank": 4,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5203
+          "document_type": "IFRIC",
+          "score": 0.5203,
+          "global_rank": 5,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -413,19 +813,39 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5667
+          "document_type": "IFRS",
+          "score": 0.5667,
+          "global_rank": 1,
+          "global_total": 4,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5366
+          "document_type": "IFRIC",
+          "score": 0.5366,
+          "global_rank": 2,
+          "global_total": 4,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5276
+          "document_type": "IFRIC",
+          "score": 0.5276,
+          "global_rank": 3,
+          "global_total": 4,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5122
+          "document_type": "SIC",
+          "score": 0.5122,
+          "global_rank": 4,
+          "global_total": 4,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -435,35 +855,75 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5736
+          "document_type": "IFRS",
+          "score": 0.5736,
+          "global_rank": 1,
+          "global_total": 8,
+          "type_rank": 1,
+          "type_total": 4
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.555
+          "document_type": "IFRS",
+          "score": 0.555,
+          "global_rank": 2,
+          "global_total": 8,
+          "type_rank": 2,
+          "type_total": 4
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5545
+          "document_type": "IFRS",
+          "score": 0.5545,
+          "global_rank": 3,
+          "global_total": 8,
+          "type_rank": 3,
+          "type_total": 4
         },
         {
           "doc_uid": "ifrs17",
-          "score": 0.552
+          "document_type": "IFRS",
+          "score": 0.552,
+          "global_rank": 4,
+          "global_total": 8,
+          "type_rank": 4,
+          "type_total": 4
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5339
+          "document_type": "IFRIC",
+          "score": 0.5339,
+          "global_rank": 5,
+          "global_total": 8,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5316
+          "document_type": "IFRIC",
+          "score": 0.5316,
+          "global_rank": 6,
+          "global_total": 8,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5306
+          "document_type": "IFRIC",
+          "score": 0.5306,
+          "global_rank": 7,
+          "global_total": 8,
+          "type_rank": 3,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5266
+          "document_type": "SIC",
+          "score": 0.5266,
+          "global_rank": 8,
+          "global_total": 8,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -473,15 +933,30 @@
       "hits": [
         {
           "doc_uid": "ifric17",
-          "score": 0.5572
+          "document_type": "IFRIC",
+          "score": 0.5572,
+          "global_rank": 1,
+          "global_total": 3,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5205
+          "document_type": "SIC",
+          "score": 0.5205,
+          "global_rank": 2,
+          "global_total": 3,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5189
+          "document_type": "IFRIC",
+          "score": 0.5189,
+          "global_rank": 3,
+          "global_total": 3,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -491,43 +966,93 @@
       "hits": [
         {
           "doc_uid": "ifric17",
-          "score": 0.6026
+          "document_type": "IFRIC",
+          "score": 0.6026,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5976
+          "document_type": "IFRS",
+          "score": 0.5976,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.5974
+          "document_type": "IFRS",
+          "score": 0.5974,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5857
+          "document_type": "IFRS",
+          "score": 0.5857,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5796
+          "document_type": "IFRS",
+          "score": 0.5796,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs17",
-          "score": 0.5761
+          "document_type": "IFRS",
+          "score": 0.5761,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ias32",
-          "score": 0.5718
+          "document_type": "IAS",
+          "score": 0.5718,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.567
+          "document_type": "IFRIC",
+          "score": 0.567,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5657
+          "document_type": "IAS",
+          "score": 0.5657,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5596
+          "document_type": "SIC",
+          "score": 0.5596,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -537,43 +1062,93 @@
       "hits": [
         {
           "doc_uid": "ifrs19",
-          "score": 0.6561
+          "document_type": "IFRS",
+          "score": 0.6561,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.6548
+          "document_type": "IFRS",
+          "score": 0.6548,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.6395
+          "document_type": "IFRS",
+          "score": 0.6395,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.6395
+          "document_type": "IFRS",
+          "score": 0.6395,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.6174
+          "document_type": "IFRS",
+          "score": 0.6174,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ias32",
-          "score": 0.6084
+          "document_type": "IAS",
+          "score": 0.6084,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.6061
+          "document_type": "SIC",
+          "score": 0.6061,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ias7",
-          "score": 0.6008
+          "document_type": "IAS",
+          "score": 0.6008,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5948
+          "document_type": "IAS",
+          "score": 0.5948,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5945
+          "document_type": "IFRIC",
+          "score": 0.5945,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         }
       ]
     },
@@ -583,23 +1158,48 @@
       "hits": [
         {
           "doc_uid": "ifric17",
-          "score": 0.5739
+          "document_type": "IFRIC",
+          "score": 0.5739,
+          "global_rank": 1,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5728
+          "document_type": "SIC",
+          "score": 0.5728,
+          "global_rank": 2,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.5525
+          "document_type": "IFRS",
+          "score": 0.5525,
+          "global_rank": 3,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5221
+          "document_type": "IFRIC",
+          "score": 0.5221,
+          "global_rank": 4,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5169
+          "document_type": "IFRIC",
+          "score": 0.5169,
+          "global_rank": 5,
+          "global_total": 5,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -609,43 +1209,93 @@
       "hits": [
         {
           "doc_uid": "ifrs19",
-          "score": 0.5794
+          "document_type": "IFRS",
+          "score": 0.5794,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 4
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5792
+          "document_type": "IFRS",
+          "score": 0.5792,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 4
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.574
+          "document_type": "IFRS",
+          "score": 0.574,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 4
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5643
+          "document_type": "IFRIC",
+          "score": 0.5643,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifrs9",
-          "score": 0.5605
+          "document_type": "IFRS",
+          "score": 0.5605,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 4
         },
         {
           "doc_uid": "ias24",
-          "score": 0.5592
+          "document_type": "IAS",
+          "score": 0.5592,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ias27",
-          "score": 0.5579
+          "document_type": "IAS",
+          "score": 0.5579,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.538
+          "document_type": "SIC",
+          "score": 0.538,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5264
+          "document_type": "IFRIC",
+          "score": 0.5264,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.523
+          "document_type": "IFRIC",
+          "score": 0.523,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -655,23 +1305,48 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.568
+          "document_type": "IFRS",
+          "score": 0.568,
+          "global_rank": 1,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5524
+          "document_type": "IFRS",
+          "score": 0.5524,
+          "global_rank": 2,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5322
+          "document_type": "IFRIC",
+          "score": 0.5322,
+          "global_rank": 3,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5255
+          "document_type": "SIC",
+          "score": 0.5255,
+          "global_rank": 4,
+          "global_total": 5,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5197
+          "document_type": "IFRIC",
+          "score": 0.5197,
+          "global_rank": 5,
+          "global_total": 5,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -681,43 +1356,93 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.6057
+          "document_type": "IFRS",
+          "score": 0.6057,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5844
+          "document_type": "IFRIC",
+          "score": 0.5844,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 3
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5679
+          "document_type": "IFRS",
+          "score": 0.5679,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.5635
+          "document_type": "IFRS",
+          "score": 0.5635,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5591
+          "document_type": "IFRS",
+          "score": 0.5591,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ias39",
-          "score": 0.5575
+          "document_type": "IAS",
+          "score": 0.5575,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5568
+          "document_type": "IFRS",
+          "score": 0.5568,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5348
+          "document_type": "IFRIC",
+          "score": 0.5348,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 3
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5227
+          "document_type": "SIC",
+          "score": 0.5227,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5119
+          "document_type": "IFRIC",
+          "score": 0.5119,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 3
         }
       ]
     },
@@ -727,43 +1452,93 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5902
+          "document_type": "IFRS",
+          "score": 0.5902,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.5781
+          "document_type": "IFRS",
+          "score": 0.5781,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5756
+          "document_type": "IFRIC",
+          "score": 0.5756,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.571
+          "document_type": "IFRS",
+          "score": 0.571,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "sic25",
-          "score": 0.567
+          "document_type": "SIC",
+          "score": 0.567,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.5635
+          "document_type": "IFRS",
+          "score": 0.5635,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifric16",
-          "score": 0.5614
+          "document_type": "IFRIC",
+          "score": 0.5614,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs18",
-          "score": 0.5613
+          "document_type": "IFRS",
+          "score": 0.5613,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ias32",
-          "score": 0.5569
+          "document_type": "IAS",
+          "score": 0.5569,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5514
+          "document_type": "IAS",
+          "score": 0.5514,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     },
@@ -773,43 +1548,93 @@
       "hits": [
         {
           "doc_uid": "ifrs9",
-          "score": 0.5921
+          "document_type": "IFRS",
+          "score": 0.5921,
+          "global_rank": 1,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs19",
-          "score": 0.576
+          "document_type": "IFRS",
+          "score": 0.576,
+          "global_rank": 2,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 5
         },
         {
           "doc_uid": "sic25",
-          "score": 0.5691
+          "document_type": "SIC",
+          "score": 0.5691,
+          "global_rank": 3,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 1
         },
         {
           "doc_uid": "ifric17",
-          "score": 0.5685
+          "document_type": "IFRIC",
+          "score": 0.5685,
+          "global_rank": 4,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ifrs17",
-          "score": 0.5671
+          "document_type": "IFRS",
+          "score": 0.5671,
+          "global_rank": 5,
+          "global_total": 10,
+          "type_rank": 3,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs7",
-          "score": 0.566
+          "document_type": "IFRS",
+          "score": 0.566,
+          "global_rank": 6,
+          "global_total": 10,
+          "type_rank": 4,
+          "type_total": 5
         },
         {
           "doc_uid": "ifrs12",
-          "score": 0.5638
+          "document_type": "IFRS",
+          "score": 0.5638,
+          "global_rank": 7,
+          "global_total": 10,
+          "type_rank": 5,
+          "type_total": 5
         },
         {
           "doc_uid": "ias7",
-          "score": 0.5635
+          "document_type": "IAS",
+          "score": 0.5635,
+          "global_rank": 8,
+          "global_total": 10,
+          "type_rank": 1,
+          "type_total": 2
         },
         {
           "doc_uid": "ias37",
-          "score": 0.5556
+          "document_type": "IAS",
+          "score": 0.5556,
+          "global_rank": 9,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         },
         {
           "doc_uid": "ifric19",
-          "score": 0.5484
+          "document_type": "IFRIC",
+          "score": 0.5484,
+          "global_rank": 10,
+          "global_total": 10,
+          "type_rank": 2,
+          "type_total": 2
         }
       ]
     }

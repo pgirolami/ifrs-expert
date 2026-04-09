@@ -240,6 +240,6 @@ def test_retrieve_verbose_output_starts_with_options() -> None:
 
     result = command.execute()
 
-    assert result.startswith("RetrieveOptions(k=5, d=5, doc_min_score=None, ifrs_d=5")
+    assert result.startswith("RetrieveOptions(k=5, d=25, doc_min_score=None, ifrs_d=4")
     assert "Retrieved chunks:" in result
     assert "Document: ifrs9" in result

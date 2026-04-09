@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.commands.constants import (
-    DEFAULT_D,
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
     DEFAULT_D_FOR_IFRS_DOCUMENTS,
@@ -16,13 +15,14 @@ from src.commands.constants import (
     DEFAULT_D_FOR_SIC_DOCUMENTS,
     DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE,
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
+    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
+    DEFAULT_RETRIEVE_DOCUMENT_D,
     DEFAULT_VERBOSE,
 )
 from src.db import ChunkStore, SectionStore, init_db
@@ -64,7 +64,7 @@ class RetrieveOptions:
     """Options for the retrieve command."""
 
     k: int = DEFAULT_RETRIEVAL_K
-    d: int = DEFAULT_D
+    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
     doc_min_score: float | None = None
     ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
     ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
@@ -76,7 +76,7 @@ class RetrieveOptions:
     ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
     sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
     ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
-    content_min_score: float | None = DEFAULT_MIN_SCORE
+    content_min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
     expand_to_section: bool = False
     verbose: bool = DEFAULT_VERBOSE
     expand: int = DEFAULT_EXPAND
@@ -124,7 +124,7 @@ class RetrieveCommand:
                 "SIC": self._options.sic_min_score,
                 "PS": self._options.ps_min_score,
             },
-            content_min_score=self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_MIN_SCORE,
+            content_min_score=(self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_RETRIEVE_CONTENT_MIN_SCORE),
             expand_to_section=self._options.expand_to_section,
             expand=self._options.expand,
             full_doc_threshold=self._options.full_doc_threshold,

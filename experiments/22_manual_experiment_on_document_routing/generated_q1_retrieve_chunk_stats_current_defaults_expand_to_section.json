@@ -1,0 +1,3208 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-m",
+    "src.cli",
+    "retrieve",
+    "--retrieval-mode",
+    "documents",
+    "-d",
+    "25",
+    "--ifrs-d",
+    "4",
+    "--ias-d",
+    "4",
+    "--ifric-d",
+    "6",
+    "--sic-d",
+    "6",
+    "--ps-d",
+    "1",
+    "--ifrs-min-score",
+    "0.53",
+    "--ias-min-score",
+    "0.4",
+    "--ifric-min-score",
+    "0.48",
+    "--sic-min-score",
+    "0.4",
+    "--ps-min-score",
+    "0.4",
+    "--json",
+    "--content-min-score",
+    "0.53",
+    "--expand-to-section"
+  ],
+  "results": [
+    {
+      "question_id": "Q1.0",
+      "question_text": "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?",
+      "context_size_kb": 100.658,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 44,
+          "score_sum": 2.8479,
+          "score_min": 0.0,
+          "score_max": 0.6028,
+          "score_avg": 0.0647,
+          "score_median": 0.0,
+          "avg_char_count": 561.3
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 7,
+          "score_sum": 1.0977,
+          "score_min": 0.0,
+          "score_max": 0.5638,
+          "score_avg": 0.1568,
+          "score_median": 0.0,
+          "avg_char_count": 378
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.8387,
+          "score_min": 0.0,
+          "score_max": 0.5729,
+          "score_avg": 0.2366,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 8,
+          "score_sum": 1.6136,
+          "score_min": 0.0,
+          "score_max": 0.5435,
+          "score_avg": 0.2017,
+          "score_median": 0.0,
+          "avg_char_count": 691.4
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 15,
+          "score_sum": 2.8657,
+          "score_min": 0.0,
+          "score_max": 0.5863,
+          "score_avg": 0.191,
+          "score_median": 0.0,
+          "avg_char_count": 346.6
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 1,
+          "score_sum": 0.5362,
+          "score_min": 0.5362,
+          "score_max": 0.5362,
+          "score_avg": 0.5362,
+          "score_median": 0.5362,
+          "avg_char_count": 516
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 25,
+          "score_sum": 2.8359,
+          "score_min": 0.0,
+          "score_max": 0.5779,
+          "score_avg": 0.1134,
+          "score_median": 0.0,
+          "avg_char_count": 500.4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 24,
+          "score_sum": 2.8544,
+          "score_min": 0.0,
+          "score_max": 0.5825,
+          "score_avg": 0.1189,
+          "score_median": 0.0,
+          "avg_char_count": 558.5
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 11,
+          "score_sum": 2.9072,
+          "score_min": 0.0,
+          "score_max": 0.5962,
+          "score_avg": 0.2643,
+          "score_median": 0.0,
+          "avg_char_count": 426
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 33,
+          "score_sum": 2.8591,
+          "score_min": 0.0,
+          "score_max": 0.5831,
+          "score_avg": 0.0866,
+          "score_median": 0.0,
+          "avg_char_count": 696.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5492,
+          "score_min": 0.0,
+          "score_max": 0.5492,
+          "score_avg": 0.1831,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5388,
+          "score_min": 0.0,
+          "score_max": 0.5388,
+          "score_avg": 0.1078,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.1",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change ?",
+      "context_size_kb": 92.417,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 35,
+          "score_sum": 2.8563,
+          "score_min": 0.0,
+          "score_max": 0.6139,
+          "score_avg": 0.0816,
+          "score_median": 0.0,
+          "avg_char_count": 504.5
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 16,
+          "score_sum": 1.0743,
+          "score_min": 0.0,
+          "score_max": 0.5396,
+          "score_avg": 0.0671,
+          "score_median": 0.0,
+          "avg_char_count": 377.5
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.894,
+          "score_min": 0.0,
+          "score_max": 0.5825,
+          "score_avg": 0.2412,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 2,
+          "score_sum": 0.536,
+          "score_min": 0.0,
+          "score_max": 0.536,
+          "score_avg": 0.268,
+          "score_median": 0.268,
+          "avg_char_count": 793.5
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 10,
+          "score_sum": 2.8924,
+          "score_min": 0.0,
+          "score_max": 0.5993,
+          "score_avg": 0.2892,
+          "score_median": 0.2833,
+          "avg_char_count": 317.6
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 4,
+          "score_sum": 1.6086,
+          "score_min": 0.0,
+          "score_max": 0.5392,
+          "score_avg": 0.4022,
+          "score_median": 0.5347,
+          "avg_char_count": 434.2
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.1314,
+          "score_min": 0.0,
+          "score_max": 0.5829,
+          "score_avg": 0.1257,
+          "score_median": 0.0,
+          "avg_char_count": 416.3
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 25,
+          "score_sum": 2.7796,
+          "score_min": 0.0,
+          "score_max": 0.5627,
+          "score_avg": 0.1112,
+          "score_median": 0.0,
+          "avg_char_count": 500.4
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 19,
+          "score_sum": 2.8722,
+          "score_min": 0.0,
+          "score_max": 0.5997,
+          "score_avg": 0.1512,
+          "score_median": 0.0,
+          "avg_char_count": 686.6
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 13,
+          "score_sum": 2.9344,
+          "score_min": 0.0,
+          "score_max": 0.6096,
+          "score_avg": 0.2257,
+          "score_median": 0.0,
+          "avg_char_count": 410.5
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 28,
+          "score_sum": 2.7965,
+          "score_min": 0.0,
+          "score_max": 0.5631,
+          "score_avg": 0.0999,
+          "score_median": 0.0,
+          "avg_char_count": 733.0
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 1.1021,
+          "score_min": 0.0,
+          "score_max": 0.5715,
+          "score_avg": 0.2755,
+          "score_median": 0.2653,
+          "avg_char_count": 482.8
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.2",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?",
+      "context_size_kb": 97.948,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 12,
+          "score_sum": 2.8458,
+          "score_min": 0.0,
+          "score_max": 0.6164,
+          "score_avg": 0.2371,
+          "score_median": 0.0,
+          "avg_char_count": 825.4
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 16,
+          "score_sum": 1.0628,
+          "score_min": 0.0,
+          "score_max": 0.5323,
+          "score_avg": 0.0664,
+          "score_median": 0.0,
+          "avg_char_count": 377.5
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.8929,
+          "score_min": 0.0,
+          "score_max": 0.5864,
+          "score_avg": 0.2411,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 2,
+          "score_sum": 0.5315,
+          "score_min": 0.0,
+          "score_max": 0.5315,
+          "score_avg": 0.2657,
+          "score_median": 0.2657,
+          "avg_char_count": 793.5
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 10,
+          "score_sum": 2.9497,
+          "score_min": 0.0,
+          "score_max": 0.612,
+          "score_avg": 0.295,
+          "score_median": 0.2879,
+          "avg_char_count": 317.6
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 4,
+          "score_sum": 1.6039,
+          "score_min": 0.0,
+          "score_max": 0.5375,
+          "score_avg": 0.401,
+          "score_median": 0.5332,
+          "avg_char_count": 434.2
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 10,
+          "score_sum": 1.6686,
+          "score_min": 0.0,
+          "score_max": 0.5884,
+          "score_avg": 0.1669,
+          "score_median": 0.0,
+          "avg_char_count": 426
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 25,
+          "score_sum": 2.7924,
+          "score_min": 0.0,
+          "score_max": 0.5659,
+          "score_avg": 0.1117,
+          "score_median": 0.0,
+          "avg_char_count": 500.4
+        },
+        {
+          "doc_uid": "ifrs17",
+          "chunk_count": 32,
+          "score_sum": 2.9995,
+          "score_min": 0.0,
+          "score_max": 0.6041,
+          "score_avg": 0.0937,
+          "score_median": 0.0,
+          "avg_char_count": 814.4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 14,
+          "score_sum": 2.9486,
+          "score_min": 0.0,
+          "score_max": 0.6223,
+          "score_avg": 0.2106,
+          "score_median": 0.0,
+          "avg_char_count": 426.8
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 28,
+          "score_sum": 2.7667,
+          "score_min": 0.0,
+          "score_max": 0.5575,
+          "score_avg": 0.0988,
+          "score_median": 0.0,
+          "avg_char_count": 733.0
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.572,
+          "score_min": 0.0,
+          "score_max": 0.572,
+          "score_avg": 0.1907,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.3",
+      "question_text": "Peut-on désigner, dans les comptes consolidés, le risque de change afférent à des dividendes intragroupe donnant lieu à la comptabilisation d’une créance à recevoir dans une relation de couverture documentée ?",
+      "context_size_kb": 94.486,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 24,
+          "score_sum": 2.2331,
+          "score_min": 0.0,
+          "score_max": 0.6238,
+          "score_avg": 0.093,
+          "score_median": 0.0,
+          "avg_char_count": 524.0
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 16,
+          "score_sum": 1.6159,
+          "score_min": 0.0,
+          "score_max": 0.546,
+          "score_avg": 0.101,
+          "score_median": 0.0,
+          "avg_char_count": 344.9
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.7794,
+          "score_min": 0.0,
+          "score_max": 0.5628,
+          "score_avg": 0.2316,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.8359,
+          "score_min": 0.0,
+          "score_max": 0.5778,
+          "score_avg": 0.1891,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 7,
+          "score_sum": 2.8335,
+          "score_min": 0.0,
+          "score_max": 0.5843,
+          "score_avg": 0.4048,
+          "score_median": 0.5468,
+          "avg_char_count": 305
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.107,
+          "score_min": 0.0,
+          "score_max": 0.5726,
+          "score_avg": 0.123,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 19,
+          "score_sum": 2.8579,
+          "score_min": 0.0,
+          "score_max": 0.5896,
+          "score_avg": 0.1504,
+          "score_median": 0.0,
+          "avg_char_count": 555.7
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 13,
+          "score_sum": 2.8848,
+          "score_min": 0.0,
+          "score_max": 0.5892,
+          "score_avg": 0.2219,
+          "score_median": 0.0,
+          "avg_char_count": 388.9
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 38,
+          "score_sum": 2.8225,
+          "score_min": 0.0,
+          "score_max": 0.5892,
+          "score_avg": 0.0743,
+          "score_median": 0.0,
+          "avg_char_count": 709.2
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 19,
+          "score_sum": 2.9498,
+          "score_min": 0.0,
+          "score_max": 0.6537,
+          "score_avg": 0.1553,
+          "score_median": 0.0,
+          "avg_char_count": 550.4
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5554,
+          "score_min": 0.0,
+          "score_max": 0.5554,
+          "score_avg": 0.1851,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5427,
+          "score_min": 0.0,
+          "score_max": 0.5427,
+          "score_avg": 0.2713,
+          "score_median": 0.2713,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.4",
+      "question_text": "En consolidation, est-il possible de mettre en place une documentation de couverture portant sur la composante change de dividendes intragroupe dès lors qu’une créance correspondante a été reconnue ?",
+      "context_size_kb": 118.997,
+      "documents": [
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 1.7182,
+          "score_min": 0.0,
+          "score_max": 0.582,
+          "score_avg": 0.1011,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias27",
+          "chunk_count": 18,
+          "score_sum": 2.2386,
+          "score_min": 0.0,
+          "score_max": 0.571,
+          "score_avg": 0.1244,
+          "score_median": 0.0,
+          "avg_char_count": 508.4
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 46,
+          "score_sum": 2.7259,
+          "score_min": 0.0,
+          "score_max": 0.5583,
+          "score_avg": 0.0593,
+          "score_median": 0.0,
+          "avg_char_count": 556.9
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.7996,
+          "score_min": 0.0,
+          "score_max": 0.577,
+          "score_avg": 0.2333,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 11,
+          "score_sum": 2.7186,
+          "score_min": 0.0,
+          "score_max": 0.5596,
+          "score_avg": 0.2471,
+          "score_median": 0.0,
+          "avg_char_count": 789
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 14,
+          "score_sum": 2.749,
+          "score_min": 0.0,
+          "score_max": 0.5765,
+          "score_avg": 0.1964,
+          "score_median": 0.0,
+          "avg_char_count": 336.4
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.0765,
+          "score_min": 0.0,
+          "score_max": 0.5404,
+          "score_avg": 0.1196,
+          "score_median": 0.0,
+          "avg_char_count": 416.3
+        },
+        {
+          "doc_uid": "ifrs10",
+          "chunk_count": 12,
+          "score_sum": 2.8913,
+          "score_min": 0.0,
+          "score_max": 0.6199,
+          "score_avg": 0.2409,
+          "score_median": 0.0,
+          "avg_char_count": 522.3
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 17,
+          "score_sum": 2.9136,
+          "score_min": 0.0,
+          "score_max": 0.606,
+          "score_avg": 0.1714,
+          "score_median": 0.0,
+          "avg_char_count": 486.1
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 18,
+          "score_sum": 2.9121,
+          "score_min": 0.0,
+          "score_max": 0.5865,
+          "score_avg": 0.1618,
+          "score_median": 0.0,
+          "avg_char_count": 388.1
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 40,
+          "score_sum": 2.8091,
+          "score_min": 0.0,
+          "score_max": 0.5807,
+          "score_avg": 0.0702,
+          "score_median": 0.0,
+          "avg_char_count": 828.3
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5542,
+          "score_min": 0.0,
+          "score_max": 0.5542,
+          "score_avg": 0.1847,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.5",
+      "question_text": "Le risque de change attaché à des dividendes intragroupe comptabilisés en créance à recevoir peut-il faire l’objet d’une relation de couverture formellement documentée au niveau des états financiers consolidés ?",
+      "context_size_kb": 100.98,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 10,
+          "score_sum": 1.1367,
+          "score_min": 0.0,
+          "score_max": 0.6053,
+          "score_avg": 0.1137,
+          "score_median": 0.0,
+          "avg_char_count": 527.5
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 15,
+          "score_sum": 2.7677,
+          "score_min": 0.0,
+          "score_max": 0.575,
+          "score_avg": 0.1845,
+          "score_median": 0.0,
+          "avg_char_count": 809.9
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 4,
+          "score_sum": 0.5392,
+          "score_min": 0.0,
+          "score_max": 0.5392,
+          "score_avg": 0.1348,
+          "score_median": 0.0,
+          "avg_char_count": 286.8
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 12,
+          "score_sum": 2.7311,
+          "score_min": 0.0,
+          "score_max": 0.5549,
+          "score_avg": 0.2276,
+          "score_median": 0.0,
+          "avg_char_count": 378.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7812,
+          "score_min": 0.0,
+          "score_max": 0.5774,
+          "score_avg": 0.1854,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 7,
+          "score_sum": 2.7537,
+          "score_min": 0.0,
+          "score_max": 0.5646,
+          "score_avg": 0.3934,
+          "score_median": 0.5382,
+          "avg_char_count": 305
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.6327,
+          "score_min": 0.0,
+          "score_max": 0.5644,
+          "score_avg": 0.1814,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 17,
+          "score_sum": 2.7528,
+          "score_min": 0.0,
+          "score_max": 0.5607,
+          "score_avg": 0.1619,
+          "score_median": 0.0,
+          "avg_char_count": 486.1
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 24,
+          "score_sum": 2.8079,
+          "score_min": 0.0,
+          "score_max": 0.5828,
+          "score_avg": 0.117,
+          "score_median": 0.0,
+          "avg_char_count": 407.6
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 21,
+          "score_sum": 2.74,
+          "score_min": 0.0,
+          "score_max": 0.5828,
+          "score_avg": 0.1305,
+          "score_median": 0.0,
+          "avg_char_count": 855.3
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 33,
+          "score_sum": 2.8658,
+          "score_min": 0.0,
+          "score_max": 0.6318,
+          "score_avg": 0.0868,
+          "score_median": 0.0,
+          "avg_char_count": 696.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5714,
+          "score_min": 0.0,
+          "score_max": 0.5714,
+          "score_avg": 0.1905,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5348,
+          "score_min": 0.0,
+          "score_max": 0.5348,
+          "score_avg": 0.2674,
+          "score_median": 0.2674,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.6",
+      "question_text": "Dans les comptes consolidés, la variation de change relative à des dividendes intragroupe pour lesquels un receivable a été constaté est-elle éligible à une désignation en comptabilité de couverture ?",
+      "context_size_kb": 45.871,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 24,
+          "score_sum": 2.7938,
+          "score_min": 0.0,
+          "score_max": 0.5858,
+          "score_avg": 0.1164,
+          "score_median": 0.0,
+          "avg_char_count": 524.0
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 7,
+          "score_sum": 0.5347,
+          "score_min": 0.0,
+          "score_max": 0.5347,
+          "score_avg": 0.0764,
+          "score_median": 0.0,
+          "avg_char_count": 378
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 14,
+          "score_sum": 2.7473,
+          "score_min": 0.0,
+          "score_max": 0.5666,
+          "score_avg": 0.1962,
+          "score_median": 0.0,
+          "avg_char_count": 370.5
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 2,
+          "score_sum": 0.5398,
+          "score_min": 0.0,
+          "score_max": 0.5398,
+          "score_avg": 0.2699,
+          "score_median": 0.2699,
+          "avg_char_count": 793.5
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 14,
+          "score_sum": 2.8545,
+          "score_min": 0.0,
+          "score_max": 0.5946,
+          "score_avg": 0.2039,
+          "score_median": 0.0,
+          "avg_char_count": 336.4
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 11,
+          "score_sum": 2.847,
+          "score_min": 0.0,
+          "score_max": 0.5898,
+          "score_avg": 0.2588,
+          "score_median": 0.0,
+          "avg_char_count": 396.7
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 25,
+          "score_sum": 2.8242,
+          "score_min": 0.0,
+          "score_max": 0.5912,
+          "score_avg": 0.113,
+          "score_median": 0.0,
+          "avg_char_count": 505.6
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 1.0927,
+          "score_min": 0.0,
+          "score_max": 0.5464,
+          "score_avg": 0.2732,
+          "score_median": 0.2732,
+          "avg_char_count": 482.8
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.7",
+      "question_text": "Est-il recevable, au regard des IFRS, de documenter une couverture du risque de change sur des dividendes intragroupe ayant donné lieu à la reconnaissance d’une créance dans les comptes consolidés ?",
+      "context_size_kb": 106.246,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 17,
+          "score_sum": 1.152,
+          "score_min": 0.0,
+          "score_max": 0.6214,
+          "score_avg": 0.0678,
+          "score_median": 0.0,
+          "avg_char_count": 481.6
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 21,
+          "score_sum": 2.8561,
+          "score_min": 0.0,
+          "score_max": 0.6049,
+          "score_avg": 0.136,
+          "score_median": 0.0,
+          "avg_char_count": 807
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 19,
+          "score_sum": 2.7185,
+          "score_min": 0.0,
+          "score_max": 0.5544,
+          "score_avg": 0.1431,
+          "score_median": 0.0,
+          "avg_char_count": 374.3
+        },
+        {
+          "doc_uid": "ifric14",
+          "chunk_count": 11,
+          "score_sum": 0.5327,
+          "score_min": 0.0,
+          "score_max": 0.5327,
+          "score_avg": 0.0484,
+          "score_median": 0.0,
+          "avg_char_count": 413.9
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 12,
+          "score_sum": 1.6374,
+          "score_min": 0.0,
+          "score_max": 0.5636,
+          "score_avg": 0.1364,
+          "score_median": 0.0,
+          "avg_char_count": 553.4
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 12,
+          "score_sum": 2.2021,
+          "score_min": 0.0,
+          "score_max": 0.5848,
+          "score_avg": 0.1835,
+          "score_median": 0.0,
+          "avg_char_count": 346.5
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.0958,
+          "score_min": 0.0,
+          "score_max": 0.5655,
+          "score_avg": 0.1218,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 21,
+          "score_sum": 2.7201,
+          "score_min": 0.0,
+          "score_max": 0.5674,
+          "score_avg": 0.1295,
+          "score_median": 0.0,
+          "avg_char_count": 517.0
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 13,
+          "score_sum": 2.8544,
+          "score_min": 0.0,
+          "score_max": 0.5812,
+          "score_avg": 0.2196,
+          "score_median": 0.0,
+          "avg_char_count": 543.8
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 12,
+          "score_sum": 2.8575,
+          "score_min": 0.0,
+          "score_max": 0.5812,
+          "score_avg": 0.2381,
+          "score_median": 0.0,
+          "avg_char_count": 809.3
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 34,
+          "score_sum": 2.898,
+          "score_min": 0.0,
+          "score_max": 0.6182,
+          "score_avg": 0.0852,
+          "score_median": 0.0,
+          "avg_char_count": 721.2
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 1,
+          "score_sum": 0.5444,
+          "score_min": 0.5444,
+          "score_max": 0.5444,
+          "score_avg": 0.5444,
+          "score_median": 0.5444,
+          "avg_char_count": 673
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5514,
+          "score_min": 0.0,
+          "score_max": 0.5514,
+          "score_avg": 0.1838,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.8",
+      "question_text": "Peut-on appliquer la comptabilité de couverture en consolidation à l’exposition de change résultant de dividendes intragroupe dès lors que ceux-ci ont été comptabilisés en créance à recevoir ?",
+      "context_size_kb": 87.013,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 12,
+          "score_sum": 2.7716,
+          "score_min": 0.0,
+          "score_max": 0.5859,
+          "score_avg": 0.231,
+          "score_median": 0.0,
+          "avg_char_count": 825.4
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 7,
+          "score_sum": 0.5422,
+          "score_min": 0.0,
+          "score_max": 0.5422,
+          "score_avg": 0.0775,
+          "score_median": 0.0,
+          "avg_char_count": 378
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 14,
+          "score_sum": 2.8238,
+          "score_min": 0.0,
+          "score_max": 0.581,
+          "score_avg": 0.2017,
+          "score_median": 0.0,
+          "avg_char_count": 370.5
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7637,
+          "score_min": 0.0,
+          "score_max": 0.5645,
+          "score_avg": 0.1842,
+          "score_median": 0.0,
+          "avg_char_count": 720.9
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 10,
+          "score_sum": 2.8554,
+          "score_min": 0.0,
+          "score_max": 0.5878,
+          "score_avg": 0.2855,
+          "score_median": 0.2806,
+          "avg_char_count": 346.1
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 8,
+          "score_sum": 0.5764,
+          "score_min": 0.0,
+          "score_max": 0.5764,
+          "score_avg": 0.0721,
+          "score_median": 0.0,
+          "avg_char_count": 444.6
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 15,
+          "score_sum": 2.8274,
+          "score_min": 0.0,
+          "score_max": 0.5841,
+          "score_avg": 0.1885,
+          "score_median": 0.0,
+          "avg_char_count": 592.7
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 13,
+          "score_sum": 2.8367,
+          "score_min": 0.0,
+          "score_max": 0.575,
+          "score_avg": 0.2182,
+          "score_median": 0.0,
+          "avg_char_count": 365.8
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 22,
+          "score_sum": 2.7151,
+          "score_min": 0.0,
+          "score_max": 0.5558,
+          "score_avg": 0.1234,
+          "score_median": 0.0,
+          "avg_char_count": 709.1
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 28,
+          "score_sum": 2.8656,
+          "score_min": 0.0,
+          "score_max": 0.6083,
+          "score_avg": 0.1023,
+          "score_median": 0.0,
+          "avg_char_count": 733.0
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5392,
+          "score_min": 0.0,
+          "score_max": 0.5392,
+          "score_avg": 0.1797,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.9",
+      "question_text": "La composante de risque de change liée à des dividendes intragroupe reconnus sous forme de créance peut-elle être désignée comme élément couvert dans les comptes consolidés ?",
+      "context_size_kb": 55.341,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 14,
+          "score_sum": 2.798,
+          "score_min": 0.0,
+          "score_max": 0.5708,
+          "score_avg": 0.1999,
+          "score_median": 0.0,
+          "avg_char_count": 773.1
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 7,
+          "score_sum": 0.531,
+          "score_min": 0.0,
+          "score_max": 0.531,
+          "score_avg": 0.0759,
+          "score_median": 0.0,
+          "avg_char_count": 378
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7886,
+          "score_min": 0.0,
+          "score_max": 0.5714,
+          "score_avg": 0.1859,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 5,
+          "score_sum": 2.1451,
+          "score_min": 0.0,
+          "score_max": 0.5459,
+          "score_avg": 0.429,
+          "score_median": 0.5313,
+          "avg_char_count": 287.6
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.1251,
+          "score_min": 0.0,
+          "score_max": 0.5731,
+          "score_avg": 0.125,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 16,
+          "score_sum": 2.7365,
+          "score_min": 0.0,
+          "score_max": 0.5875,
+          "score_avg": 0.171,
+          "score_median": 0.0,
+          "avg_char_count": 565.8
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 20,
+          "score_sum": 2.9227,
+          "score_min": 0.0,
+          "score_max": 0.6542,
+          "score_avg": 0.1461,
+          "score_median": 0.0,
+          "avg_char_count": 800.5
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5329,
+          "score_min": 0.0,
+          "score_max": 0.5329,
+          "score_avg": 0.2665,
+          "score_median": 0.2665,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.10",
+      "question_text": "Dans un contexte de consolidation IFRS, une relation de couverture peut-elle être documentée au titre du risque de change sur des dividendes intragroupe comptabilisés à recevoir ?",
+      "context_size_kb": 124.592,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 5,
+          "score_sum": 0.6339,
+          "score_min": 0.0,
+          "score_max": 0.6339,
+          "score_avg": 0.1268,
+          "score_median": 0.0,
+          "avg_char_count": 698.6
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 2.2658,
+          "score_min": 0.0,
+          "score_max": 0.5909,
+          "score_avg": 0.1333,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 19,
+          "score_sum": 2.7083,
+          "score_min": 0.0,
+          "score_max": 0.5484,
+          "score_avg": 0.1425,
+          "score_median": 0.0,
+          "avg_char_count": 374.3
+        },
+        {
+          "doc_uid": "ifric14",
+          "chunk_count": 11,
+          "score_sum": 0.544,
+          "score_min": 0.0,
+          "score_max": 0.544,
+          "score_avg": 0.0495,
+          "score_median": 0.0,
+          "avg_char_count": 413.9
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7936,
+          "score_min": 0.0,
+          "score_max": 0.5734,
+          "score_avg": 0.1862,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 11,
+          "score_sum": 1.6797,
+          "score_min": 0.0,
+          "score_max": 0.5791,
+          "score_avg": 0.1527,
+          "score_median": 0.0,
+          "avg_char_count": 329.3
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 8,
+          "score_sum": 0.5375,
+          "score_min": 0.0,
+          "score_max": 0.5375,
+          "score_avg": 0.0672,
+          "score_median": 0.0,
+          "avg_char_count": 444.6
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 33,
+          "score_sum": 2.8571,
+          "score_min": 0.0,
+          "score_max": 0.5874,
+          "score_avg": 0.0866,
+          "score_median": 0.0,
+          "avg_char_count": 490.2
+        },
+        {
+          "doc_uid": "ifrs17",
+          "chunk_count": 42,
+          "score_sum": 2.928,
+          "score_min": 0.0,
+          "score_max": 0.5951,
+          "score_avg": 0.0697,
+          "score_median": 0.0,
+          "avg_char_count": 706.9
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 34,
+          "score_sum": 2.8854,
+          "score_min": 0.0,
+          "score_max": 0.5874,
+          "score_avg": 0.0849,
+          "score_median": 0.0,
+          "avg_char_count": 514.9
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 28,
+          "score_sum": 2.9105,
+          "score_min": 0.0,
+          "score_max": 0.6475,
+          "score_avg": 0.1039,
+          "score_median": 0.0,
+          "avg_char_count": 733.0
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 1,
+          "score_sum": 0.5343,
+          "score_min": 0.5343,
+          "score_max": 0.5343,
+          "score_avg": 0.5343,
+          "score_median": 0.5343,
+          "avg_char_count": 673
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5583,
+          "score_min": 0.0,
+          "score_max": 0.5583,
+          "score_avg": 0.1861,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.11",
+      "question_text": "L’exposition au change générée par des dividendes intragroupe, une fois la créance correspondante enregistrée, peut-elle être couverte et documentée en hedge accounting dans les comptes consolidés ?",
+      "context_size_kb": 89.319,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 18,
+          "score_sum": 2.3307,
+          "score_min": 0.0,
+          "score_max": 0.6362,
+          "score_avg": 0.1295,
+          "score_median": 0.0,
+          "avg_char_count": 555.7
+        },
+        {
+          "doc_uid": "ias29",
+          "chunk_count": 32,
+          "score_sum": 1.076,
+          "score_min": 0.0,
+          "score_max": 0.545,
+          "score_avg": 0.0336,
+          "score_median": 0.0,
+          "avg_char_count": 393.7
+        },
+        {
+          "doc_uid": "ias39",
+          "chunk_count": 29,
+          "score_sum": 3.174,
+          "score_min": 0.0,
+          "score_max": 0.7193,
+          "score_avg": 0.1094,
+          "score_median": 0.0,
+          "avg_char_count": 852.5
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 13,
+          "score_sum": 3.0831,
+          "score_min": 0.0,
+          "score_max": 0.6582,
+          "score_avg": 0.2372,
+          "score_median": 0.0,
+          "avg_char_count": 696.9
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 3,
+          "score_sum": 0.5496,
+          "score_min": 0.0,
+          "score_max": 0.5496,
+          "score_avg": 0.1832,
+          "score_median": 0.0,
+          "avg_char_count": 231.3
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 18,
+          "score_sum": 1.6046,
+          "score_min": 0.0,
+          "score_max": 0.5374,
+          "score_avg": 0.0891,
+          "score_median": 0.0,
+          "avg_char_count": 493.6
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 13,
+          "score_sum": 2.7993,
+          "score_min": 0.0,
+          "score_max": 0.5795,
+          "score_avg": 0.2153,
+          "score_median": 0.0,
+          "avg_char_count": 792.8
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 7,
+          "score_sum": 2.9045,
+          "score_min": 0.0,
+          "score_max": 0.603,
+          "score_avg": 0.4149,
+          "score_median": 0.5749,
+          "avg_char_count": 706.1
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 14,
+          "score_sum": 3.1228,
+          "score_min": 0.0,
+          "score_max": 0.6746,
+          "score_avg": 0.2231,
+          "score_median": 0.0,
+          "avg_char_count": 463.9
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5353,
+          "score_min": 0.0,
+          "score_max": 0.5353,
+          "score_avg": 0.2676,
+          "score_median": 0.2676,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.12",
+      "question_text": "Est-il possible, au niveau consolidé, de qualifier de manière formelle une couverture du risque de change sur des dividendes intragroupe ayant fait l’objet d’une comptabilisation en créance à recevoir ?",
+      "context_size_kb": 32.73,
+      "documents": [
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 10,
+          "score_sum": 2.7687,
+          "score_min": 0.0,
+          "score_max": 0.5741,
+          "score_avg": 0.2769,
+          "score_median": 0.2684,
+          "avg_char_count": 493.2
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 9,
+          "score_sum": 1.6609,
+          "score_min": 0.0,
+          "score_max": 0.5578,
+          "score_avg": 0.1845,
+          "score_median": 0.0,
+          "avg_char_count": 763.2
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 7,
+          "score_sum": 2.7973,
+          "score_min": 0.0,
+          "score_max": 0.5781,
+          "score_avg": 0.3996,
+          "score_median": 0.553,
+          "avg_char_count": 305
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.6746,
+          "score_min": 0.0,
+          "score_max": 0.5778,
+          "score_avg": 0.1861,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 24,
+          "score_sum": 2.8289,
+          "score_min": 0.0,
+          "score_max": 0.6166,
+          "score_avg": 0.1179,
+          "score_median": 0.0,
+          "avg_char_count": 559.3
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5546,
+          "score_min": 0.0,
+          "score_max": 0.5546,
+          "score_avg": 0.1849,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.13",
+      "question_text": "Dans les comptes consolidés, des dividendes intragroupe ont été décidés et une créance à recevoir a été comptabilisée. Dans ce contexte, la composante de risque de change associée à cette créance peut-elle être intégrée dans une relation de couverture documentée ?",
+      "context_size_kb": 115.368,
+      "documents": [
+        {
+          "doc_uid": "ias23",
+          "chunk_count": 18,
+          "score_sum": 1.0889,
+          "score_min": 0.0,
+          "score_max": 0.5527,
+          "score_avg": 0.0605,
+          "score_median": 0.0,
+          "avg_char_count": 481.5
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 21,
+          "score_sum": 2.8252,
+          "score_min": 0.0,
+          "score_max": 0.581,
+          "score_avg": 0.1345,
+          "score_median": 0.0,
+          "avg_char_count": 375.6
+        },
+        {
+          "doc_uid": "ias26",
+          "chunk_count": 7,
+          "score_sum": 0.5448,
+          "score_min": 0.0,
+          "score_max": 0.5448,
+          "score_avg": 0.0778,
+          "score_median": 0.0,
+          "avg_char_count": 305.3
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 23,
+          "score_sum": 2.7762,
+          "score_min": 0.0,
+          "score_max": 0.5718,
+          "score_avg": 0.1207,
+          "score_median": 0.0,
+          "avg_char_count": 384.9
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7883,
+          "score_min": 0.0,
+          "score_max": 0.5685,
+          "score_avg": 0.1859,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 9,
+          "score_sum": 2.8236,
+          "score_min": 0.0,
+          "score_max": 0.5885,
+          "score_avg": 0.3137,
+          "score_median": 0.531,
+          "avg_char_count": 329.6
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 3,
+          "score_sum": 1.0677,
+          "score_min": 0.0,
+          "score_max": 0.5375,
+          "score_avg": 0.3559,
+          "score_median": 0.5302,
+          "avg_char_count": 407
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 9,
+          "score_sum": 1.1248,
+          "score_min": 0.0,
+          "score_max": 0.5883,
+          "score_avg": 0.125,
+          "score_median": 0.0,
+          "avg_char_count": 452.2
+        },
+        {
+          "doc_uid": "ifric21",
+          "chunk_count": 1,
+          "score_sum": 0.5363,
+          "score_min": 0.5363,
+          "score_max": 0.5363,
+          "score_avg": 0.5363,
+          "score_median": 0.5363,
+          "avg_char_count": 380
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 20,
+          "score_sum": 2.8912,
+          "score_min": 0.0,
+          "score_max": 0.5885,
+          "score_avg": 0.1446,
+          "score_median": 0.0,
+          "avg_char_count": 559
+        },
+        {
+          "doc_uid": "ifrs17",
+          "chunk_count": 34,
+          "score_sum": 3.0167,
+          "score_min": 0.0,
+          "score_max": 0.6136,
+          "score_avg": 0.0887,
+          "score_median": 0.0,
+          "avg_char_count": 590.8
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 19,
+          "score_sum": 2.9092,
+          "score_min": 0.0,
+          "score_max": 0.6162,
+          "score_avg": 0.1531,
+          "score_median": 0.0,
+          "avg_char_count": 400.7
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 33,
+          "score_sum": 2.9311,
+          "score_min": 0.0,
+          "score_max": 0.6477,
+          "score_avg": 0.0888,
+          "score_median": 0.0,
+          "avg_char_count": 696.2
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 3,
+          "score_sum": 0.542,
+          "score_min": 0.0,
+          "score_max": 0.542,
+          "score_avg": 0.1807,
+          "score_median": 0.0,
+          "avg_char_count": 518.3
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 1.0927,
+          "score_min": 0.0,
+          "score_max": 0.5542,
+          "score_avg": 0.2732,
+          "score_median": 0.2692,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5312,
+          "score_min": 0.0,
+          "score_max": 0.5312,
+          "score_avg": 0.1062,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5599,
+          "score_min": 0.0,
+          "score_max": 0.5599,
+          "score_avg": 0.2799,
+          "score_median": 0.2799,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.14",
+      "question_text": "Un dividende intragroupe a donné lieu à la comptabilisation d’un montant à recevoir au sein du périmètre consolidé. Peut-on, dans ces circonstances, documenter une couverture portant sur le risque de change afférent à cette exposition ?",
+      "context_size_kb": 55.221,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 19,
+          "score_sum": 2.2258,
+          "score_min": 0.0,
+          "score_max": 0.6175,
+          "score_avg": 0.1171,
+          "score_median": 0.0,
+          "avg_char_count": 568.2
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 2.2057,
+          "score_min": 0.0,
+          "score_max": 0.5593,
+          "score_avg": 0.1297,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 24,
+          "score_sum": 2.787,
+          "score_min": 0.0,
+          "score_max": 0.5656,
+          "score_avg": 0.1161,
+          "score_median": 0.0,
+          "avg_char_count": 502.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 13,
+          "score_sum": 2.7633,
+          "score_min": 0.0,
+          "score_max": 0.5648,
+          "score_avg": 0.2126,
+          "score_median": 0.0,
+          "avg_char_count": 696.9
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 14,
+          "score_sum": 2.8952,
+          "score_min": 0.0,
+          "score_max": 0.6013,
+          "score_avg": 0.2068,
+          "score_median": 0.0,
+          "avg_char_count": 336.4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 21,
+          "score_sum": 2.8582,
+          "score_min": 0.0,
+          "score_max": 0.636,
+          "score_avg": 0.1361,
+          "score_median": 0.0,
+          "avg_char_count": 525.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5494,
+          "score_min": 0.0,
+          "score_max": 0.5494,
+          "score_avg": 0.1831,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.15",
+      "question_text": "La distribution de dividendes intragroupe a été reconnue sous la forme d’une créance dans les états financiers consolidés. Cette exposition de change peut-elle, en IFRS, être désignée comme élément couvert dans une relation de couverture ?",
+      "context_size_kb": 107.047,
+      "documents": [
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 2.8227,
+          "score_min": 0.0,
+          "score_max": 0.5748,
+          "score_avg": 0.166,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 21,
+          "score_sum": 2.9341,
+          "score_min": 0.0,
+          "score_max": 0.6292,
+          "score_avg": 0.1397,
+          "score_median": 0.0,
+          "avg_char_count": 807
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 11,
+          "score_sum": 1.0674,
+          "score_min": 0.0,
+          "score_max": 0.5338,
+          "score_avg": 0.097,
+          "score_median": 0.0,
+          "avg_char_count": 344.8
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 19,
+          "score_sum": 2.8742,
+          "score_min": 0.0,
+          "score_max": 0.589,
+          "score_avg": 0.1513,
+          "score_median": 0.0,
+          "avg_char_count": 374.3
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 10,
+          "score_sum": 1.6583,
+          "score_min": 0.0,
+          "score_max": 0.565,
+          "score_avg": 0.1658,
+          "score_median": 0.0,
+          "avg_char_count": 517.9
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 8,
+          "score_sum": 2.959,
+          "score_min": 0.0,
+          "score_max": 0.6088,
+          "score_avg": 0.3699,
+          "score_median": 0.5807,
+          "avg_char_count": 366
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 9,
+          "score_sum": 2.1982,
+          "score_min": 0.0,
+          "score_max": 0.5618,
+          "score_avg": 0.2442,
+          "score_median": 0.0,
+          "avg_char_count": 393.4
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 10,
+          "score_sum": 1.6858,
+          "score_min": 0.0,
+          "score_max": 0.6243,
+          "score_avg": 0.1686,
+          "score_median": 0.0,
+          "avg_char_count": 426
+        },
+        {
+          "doc_uid": "ifric21",
+          "chunk_count": 1,
+          "score_sum": 0.5448,
+          "score_min": 0.5448,
+          "score_max": 0.5448,
+          "score_avg": 0.5448,
+          "score_median": 0.5448,
+          "avg_char_count": 380
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 21,
+          "score_sum": 2.8535,
+          "score_min": 0.0,
+          "score_max": 0.576,
+          "score_avg": 0.1359,
+          "score_median": 0.0,
+          "avg_char_count": 496.1
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 9,
+          "score_sum": 2.9711,
+          "score_min": 0.0,
+          "score_max": 0.6097,
+          "score_avg": 0.3301,
+          "score_median": 0.5836,
+          "avg_char_count": 376.8
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 16,
+          "score_sum": 2.954,
+          "score_min": 0.0,
+          "score_max": 0.6097,
+          "score_avg": 0.1846,
+          "score_median": 0.0,
+          "avg_char_count": 842.1
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 35,
+          "score_sum": 2.9157,
+          "score_min": 0.0,
+          "score_max": 0.6029,
+          "score_avg": 0.0833,
+          "score_median": 0.0,
+          "avg_char_count": 694.7
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 4,
+          "score_sum": 0.5381,
+          "score_min": 0.0,
+          "score_max": 0.5381,
+          "score_avg": 0.1345,
+          "score_median": 0.0,
+          "avg_char_count": 307
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5764,
+          "score_min": 0.0,
+          "score_max": 0.5764,
+          "score_avg": 0.1921,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5486,
+          "score_min": 0.0,
+          "score_max": 0.5486,
+          "score_avg": 0.1097,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.16",
+      "question_text": "Au niveau consolidé, l’entité constate une créance liée à des dividendes intragroupe et supporte, de ce fait, une exposition au risque de change. Cette exposition peut-elle faire l’objet d’une documentation de couverture conforme aux IFRS ?",
+      "context_size_kb": 131.573,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 39,
+          "score_sum": 3.0132,
+          "score_min": 0.0,
+          "score_max": 0.6446,
+          "score_avg": 0.0773,
+          "score_median": 0.0,
+          "avg_char_count": 447.9
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 21,
+          "score_sum": 3.1398,
+          "score_min": 0.0,
+          "score_max": 0.6637,
+          "score_avg": 0.1495,
+          "score_median": 0.0,
+          "avg_char_count": 807
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 21,
+          "score_sum": 2.8109,
+          "score_min": 0.0,
+          "score_max": 0.5657,
+          "score_avg": 0.1339,
+          "score_median": 0.0,
+          "avg_char_count": 342.5
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 15,
+          "score_sum": 3.0354,
+          "score_min": 0.0,
+          "score_max": 0.6231,
+          "score_avg": 0.2024,
+          "score_median": 0.0,
+          "avg_char_count": 495.5
+        },
+        {
+          "doc_uid": "ifric1",
+          "chunk_count": 7,
+          "score_sum": 2.7489,
+          "score_min": 0.0,
+          "score_max": 0.5724,
+          "score_avg": 0.3927,
+          "score_median": 0.5383,
+          "avg_char_count": 680.6
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.8638,
+          "score_min": 0.0,
+          "score_max": 0.5901,
+          "score_avg": 0.1909,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 9,
+          "score_sum": 2.9818,
+          "score_min": 0.0,
+          "score_max": 0.6176,
+          "score_avg": 0.3313,
+          "score_median": 0.5703,
+          "avg_char_count": 329.8
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 13,
+          "score_sum": 2.8199,
+          "score_min": 0.0,
+          "score_max": 0.5885,
+          "score_avg": 0.2169,
+          "score_median": 0.0,
+          "avg_char_count": 308.3
+        },
+        {
+          "doc_uid": "ifric21",
+          "chunk_count": 1,
+          "score_sum": 0.5838,
+          "score_min": 0.5838,
+          "score_max": 0.5838,
+          "score_avg": 0.5838,
+          "score_median": 0.5838,
+          "avg_char_count": 380
+        },
+        {
+          "doc_uid": "ifric23",
+          "chunk_count": 9,
+          "score_sum": 2.7828,
+          "score_min": 0.0,
+          "score_max": 0.5781,
+          "score_avg": 0.3092,
+          "score_median": 0.5433,
+          "avg_char_count": 415
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 19,
+          "score_sum": 3.133,
+          "score_min": 0.0,
+          "score_max": 0.6353,
+          "score_avg": 0.1649,
+          "score_median": 0.0,
+          "avg_char_count": 555.7
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 12,
+          "score_sum": 3.1949,
+          "score_min": 0.0,
+          "score_max": 0.6588,
+          "score_avg": 0.2662,
+          "score_median": 0.0,
+          "avg_char_count": 504.7
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 12,
+          "score_sum": 3.1659,
+          "score_min": 0.0,
+          "score_max": 0.6588,
+          "score_avg": 0.2638,
+          "score_median": 0.0,
+          "avg_char_count": 809.3
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 26,
+          "score_sum": 3.0765,
+          "score_min": 0.0,
+          "score_max": 0.6413,
+          "score_avg": 0.1183,
+          "score_median": 0.0,
+          "avg_char_count": 718.8
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 8,
+          "score_sum": 2.8083,
+          "score_min": 0.0,
+          "score_max": 0.5648,
+          "score_avg": 0.351,
+          "score_median": 0.5595,
+          "avg_char_count": 717.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 2.2695,
+          "score_min": 0.5506,
+          "score_max": 0.606,
+          "score_avg": 0.5674,
+          "score_median": 0.5565,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5522,
+          "score_min": 0.0,
+          "score_max": 0.5522,
+          "score_avg": 0.1104,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5312,
+          "score_min": 0.0,
+          "score_max": 0.5312,
+          "score_avg": 0.2656,
+          "score_median": 0.2656,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.17",
+      "question_text": "Des dividendes intragroupe ont été comptabilisés à recevoir, ce qui fait naître une variation potentielle liée au change dans les comptes consolidés. Est-il alors possible de mettre en place une relation de couverture sur cette seule composante de change ?",
+      "context_size_kb": 90.976,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 19,
+          "score_sum": 2.9386,
+          "score_min": 0.0,
+          "score_max": 0.6282,
+          "score_avg": 0.1547,
+          "score_median": 0.0,
+          "avg_char_count": 568.2
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 21,
+          "score_sum": 2.902,
+          "score_min": 0.0,
+          "score_max": 0.6061,
+          "score_avg": 0.1382,
+          "score_median": 0.0,
+          "avg_char_count": 375.6
+        },
+        {
+          "doc_uid": "ias26",
+          "chunk_count": 7,
+          "score_sum": 0.5323,
+          "score_min": 0.0,
+          "score_max": 0.5323,
+          "score_avg": 0.076,
+          "score_median": 0.0,
+          "avg_char_count": 305.3
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 22,
+          "score_sum": 2.7241,
+          "score_min": 0.0,
+          "score_max": 0.5585,
+          "score_avg": 0.1238,
+          "score_median": 0.0,
+          "avg_char_count": 302.9
+        },
+        {
+          "doc_uid": "ifric1",
+          "chunk_count": 6,
+          "score_sum": 1.6803,
+          "score_min": 0.0,
+          "score_max": 0.5622,
+          "score_avg": 0.2801,
+          "score_median": 0.2795,
+          "avg_char_count": 699.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 11,
+          "score_sum": 2.839,
+          "score_min": 0.0,
+          "score_max": 0.5926,
+          "score_avg": 0.2581,
+          "score_median": 0.0,
+          "avg_char_count": 789
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 11,
+          "score_sum": 2.9959,
+          "score_min": 0.0,
+          "score_max": 0.6233,
+          "score_avg": 0.2724,
+          "score_median": 0.0,
+          "avg_char_count": 333.5
+        },
+        {
+          "doc_uid": "ifric22",
+          "chunk_count": 3,
+          "score_sum": 0.5321,
+          "score_min": 0.0,
+          "score_max": 0.5321,
+          "score_avg": 0.1774,
+          "score_median": 0.0,
+          "avg_char_count": 301.7
+        },
+        {
+          "doc_uid": "ifric23",
+          "chunk_count": 2,
+          "score_sum": 0.5381,
+          "score_min": 0.0,
+          "score_max": 0.5381,
+          "score_avg": 0.2691,
+          "score_median": 0.2691,
+          "avg_char_count": 403.5
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 19,
+          "score_sum": 2.8664,
+          "score_min": 0.0,
+          "score_max": 0.5817,
+          "score_avg": 0.1509,
+          "score_median": 0.0,
+          "avg_char_count": 555.7
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 18,
+          "score_sum": 2.9859,
+          "score_min": 0.0,
+          "score_max": 0.618,
+          "score_avg": 0.1659,
+          "score_median": 0.0,
+          "avg_char_count": 381
+        },
+        {
+          "doc_uid": "ifrs2",
+          "chunk_count": 18,
+          "score_sum": 2.9578,
+          "score_min": 0.0,
+          "score_max": 0.6069,
+          "score_avg": 0.1643,
+          "score_median": 0.0,
+          "avg_char_count": 603.4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 21,
+          "score_sum": 2.989,
+          "score_min": 0.0,
+          "score_max": 0.6486,
+          "score_avg": 0.1423,
+          "score_median": 0.0,
+          "avg_char_count": 525.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 2.2847,
+          "score_min": 0.5566,
+          "score_max": 0.5993,
+          "score_avg": 0.5712,
+          "score_median": 0.5644,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5334,
+          "score_min": 0.0,
+          "score_max": 0.5334,
+          "score_avg": 0.1067,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5563,
+          "score_min": 0.0,
+          "score_max": 0.5563,
+          "score_avg": 0.2782,
+          "score_median": 0.2782,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.18",
+      "question_text": "La comptabilisation d’une créance sur dividendes intragroupe dans les comptes consolidés conduit à identifier une exposition de change distincte. Cette exposition est-elle éligible à la comptabilité de couverture au niveau consolidé ?",
+      "context_size_kb": 95.805,
+      "documents": [
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 2.8982,
+          "score_min": 0.0,
+          "score_max": 0.6029,
+          "score_avg": 0.1705,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias26",
+          "chunk_count": 7,
+          "score_sum": 0.5315,
+          "score_min": 0.0,
+          "score_max": 0.5315,
+          "score_avg": 0.0759,
+          "score_median": 0.0,
+          "avg_char_count": 305.3
+        },
+        {
+          "doc_uid": "ias27",
+          "chunk_count": 17,
+          "score_sum": 2.759,
+          "score_min": 0.0,
+          "score_max": 0.5614,
+          "score_avg": 0.1623,
+          "score_median": 0.0,
+          "avg_char_count": 419.1
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 22,
+          "score_sum": 2.1769,
+          "score_min": 0.0,
+          "score_max": 0.555,
+          "score_avg": 0.099,
+          "score_median": 0.0,
+          "avg_char_count": 302.9
+        },
+        {
+          "doc_uid": "ifric1",
+          "chunk_count": 6,
+          "score_sum": 1.6705,
+          "score_min": 0.0,
+          "score_max": 0.5752,
+          "score_avg": 0.2784,
+          "score_median": 0.2659,
+          "avg_char_count": 699.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7421,
+          "score_min": 0.0,
+          "score_max": 0.5851,
+          "score_avg": 0.1828,
+          "score_median": 0.0,
+          "avg_char_count": 663.7
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 14,
+          "score_sum": 2.8841,
+          "score_min": 0.0,
+          "score_max": 0.601,
+          "score_avg": 0.206,
+          "score_median": 0.0,
+          "avg_char_count": 336.4
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 2,
+          "score_sum": 0.5449,
+          "score_min": 0.0,
+          "score_max": 0.5449,
+          "score_avg": 0.2725,
+          "score_median": 0.2725,
+          "avg_char_count": 431.5
+        },
+        {
+          "doc_uid": "ifric21",
+          "chunk_count": 1,
+          "score_sum": 0.534,
+          "score_min": 0.534,
+          "score_max": 0.534,
+          "score_avg": 0.534,
+          "score_median": 0.534,
+          "avg_char_count": 380
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 22,
+          "score_sum": 2.8714,
+          "score_min": 0.0,
+          "score_max": 0.581,
+          "score_avg": 0.1305,
+          "score_median": 0.0,
+          "avg_char_count": 556.0
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 29,
+          "score_sum": 2.8329,
+          "score_min": 0.0,
+          "score_max": 0.578,
+          "score_avg": 0.0977,
+          "score_median": 0.0,
+          "avg_char_count": 600.9
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 26,
+          "score_sum": 2.9238,
+          "score_min": 0.0,
+          "score_max": 0.5975,
+          "score_avg": 0.1125,
+          "score_median": 0.0,
+          "avg_char_count": 446.3
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 16,
+          "score_sum": 2.8892,
+          "score_min": 0.0,
+          "score_max": 0.6027,
+          "score_avg": 0.1806,
+          "score_median": 0.0,
+          "avg_char_count": 484.8
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 1.6549,
+          "score_min": 0.0,
+          "score_max": 0.5603,
+          "score_avg": 0.4137,
+          "score_median": 0.5473,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5335,
+          "score_min": 0.0,
+          "score_max": 0.5335,
+          "score_avg": 0.1067,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.19",
+      "question_text": "Dans un schéma où des dividendes intragroupe ont déjà été reconnus en créance à recevoir, la question se pose du traitement du risque de change associé en consolidation. Ce risque peut-il être formellement documenté dans une relation de couverture ?",
+      "context_size_kb": 76.198,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 18,
+          "score_sum": 1.7145,
+          "score_min": 0.0,
+          "score_max": 0.6488,
+          "score_avg": 0.0953,
+          "score_median": 0.0,
+          "avg_char_count": 555.7
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 1.7258,
+          "score_min": 0.0,
+          "score_max": 0.5784,
+          "score_avg": 0.1015,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias26",
+          "chunk_count": 7,
+          "score_sum": 0.5314,
+          "score_min": 0.0,
+          "score_max": 0.5314,
+          "score_avg": 0.0759,
+          "score_median": 0.0,
+          "avg_char_count": 305.3
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 5,
+          "score_sum": 1.0755,
+          "score_min": 0.0,
+          "score_max": 0.5441,
+          "score_avg": 0.2151,
+          "score_median": 0.0,
+          "avg_char_count": 384.8
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 11,
+          "score_sum": 2.8814,
+          "score_min": 0.0,
+          "score_max": 0.6076,
+          "score_avg": 0.2619,
+          "score_median": 0.0,
+          "avg_char_count": 789
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 11,
+          "score_sum": 2.1972,
+          "score_min": 0.0,
+          "score_max": 0.5607,
+          "score_avg": 0.1997,
+          "score_median": 0.0,
+          "avg_char_count": 333.5
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 1,
+          "score_sum": 0.5328,
+          "score_min": 0.5328,
+          "score_max": 0.5328,
+          "score_avg": 0.5328,
+          "score_median": 0.5328,
+          "avg_char_count": 358
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 22,
+          "score_sum": 2.8769,
+          "score_min": 0.0,
+          "score_max": 0.5873,
+          "score_avg": 0.1308,
+          "score_median": 0.0,
+          "avg_char_count": 604.1
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 24,
+          "score_sum": 2.8689,
+          "score_min": 0.0,
+          "score_max": 0.5876,
+          "score_avg": 0.1195,
+          "score_median": 0.0,
+          "avg_char_count": 407.6
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 22,
+          "score_sum": 2.8827,
+          "score_min": 0.0,
+          "score_max": 0.6491,
+          "score_avg": 0.131,
+          "score_median": 0.0,
+          "avg_char_count": 796.4
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5669,
+          "score_min": 0.0,
+          "score_max": 0.5669,
+          "score_avg": 0.189,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.543,
+          "score_min": 0.0,
+          "score_max": 0.543,
+          "score_avg": 0.2715,
+          "score_median": 0.2715,
+          "avg_char_count": 619.5
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.20",
+      "question_text": "Une créance relative à des dividendes intragroupe figure désormais dans les états financiers consolidés, avec une sensibilité corrélative aux fluctuations de change. Peut-on couvrir cette exposition dans le cadre d’une documentation de hedge accounting ?",
+      "context_size_kb": 114.993,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 21,
+          "score_sum": 2.883,
+          "score_min": 0.0,
+          "score_max": 0.6495,
+          "score_avg": 0.1373,
+          "score_median": 0.0,
+          "avg_char_count": 556.9
+        },
+        {
+          "doc_uid": "ias24",
+          "chunk_count": 17,
+          "score_sum": 1.6918,
+          "score_min": 0.0,
+          "score_max": 0.588,
+          "score_avg": 0.0995,
+          "score_median": 0.0,
+          "avg_char_count": 362.2
+        },
+        {
+          "doc_uid": "ias29",
+          "chunk_count": 36,
+          "score_sum": 2.7687,
+          "score_min": 0.0,
+          "score_max": 0.5725,
+          "score_avg": 0.0769,
+          "score_median": 0.0,
+          "avg_char_count": 404.4
+        },
+        {
+          "doc_uid": "ias39",
+          "chunk_count": 48,
+          "score_sum": 3.078,
+          "score_min": 0.0,
+          "score_max": 0.6815,
+          "score_avg": 0.0641,
+          "score_median": 0.0,
+          "avg_char_count": 671.3
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 14,
+          "score_sum": 2.9983,
+          "score_min": 0.0,
+          "score_max": 0.6288,
+          "score_avg": 0.2142,
+          "score_median": 0.0,
+          "avg_char_count": 526.4
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 9,
+          "score_sum": 2.148,
+          "score_min": 0.0,
+          "score_max": 0.5457,
+          "score_avg": 0.2387,
+          "score_median": 0.0,
+          "avg_char_count": 329.8
+        },
+        {
+          "doc_uid": "ifric21",
+          "chunk_count": 1,
+          "score_sum": 0.5385,
+          "score_min": 0.5385,
+          "score_max": 0.5385,
+          "score_avg": 0.5385,
+          "score_median": 0.5385,
+          "avg_char_count": 380
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 26,
+          "score_sum": 2.7529,
+          "score_min": 0.0,
+          "score_max": 0.5602,
+          "score_avg": 0.1059,
+          "score_median": 0.0,
+          "avg_char_count": 505.1
+        },
+        {
+          "doc_uid": "ifrs18",
+          "chunk_count": 17,
+          "score_sum": 2.7872,
+          "score_min": 0.0,
+          "score_max": 0.5742,
+          "score_avg": 0.164,
+          "score_median": 0.0,
+          "avg_char_count": 677.2
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 8,
+          "score_sum": 2.955,
+          "score_min": 0.0,
+          "score_max": 0.6023,
+          "score_avg": 0.3694,
+          "score_median": 0.5836,
+          "avg_char_count": 669.2
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 13,
+          "score_sum": 3.1197,
+          "score_min": 0.0,
+          "score_max": 0.6545,
+          "score_avg": 0.24,
+          "score_median": 0.0,
+          "avg_char_count": 438.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 3,
+          "score_sum": 0.5353,
+          "score_min": 0.0,
+          "score_max": 0.5353,
+          "score_avg": 0.1784,
+          "score_median": 0.0,
+          "avg_char_count": 365.3
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5304,
+          "score_min": 0.0,
+          "score_max": 0.5304,
+          "score_avg": 0.1061,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.21",
+      "question_text": "Le groupe a comptabilisé un receivable au titre de dividendes intragroupe, créant ainsi une exposition au risque de change dans les comptes consolidés. Cette exposition peut-elle être désignée comme élément couvert au sens des IFRS ?",
+      "context_size_kb": 99.351,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 30,
+          "score_sum": 2.8014,
+          "score_min": 0.0,
+          "score_max": 0.6072,
+          "score_avg": 0.0934,
+          "score_median": 0.0,
+          "avg_char_count": 451.8
+        },
+        {
+          "doc_uid": "ias32",
+          "chunk_count": 12,
+          "score_sum": 2.904,
+          "score_min": 0.0,
+          "score_max": 0.6189,
+          "score_avg": 0.242,
+          "score_median": 0.0,
+          "avg_char_count": 825.4
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 20,
+          "score_sum": 2.1548,
+          "score_min": 0.0,
+          "score_max": 0.5524,
+          "score_avg": 0.1077,
+          "score_median": 0.0,
+          "avg_char_count": 313.2
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 11,
+          "score_sum": 2.8383,
+          "score_min": 0.0,
+          "score_max": 0.5951,
+          "score_avg": 0.258,
+          "score_median": 0.0,
+          "avg_char_count": 690.7
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 12,
+          "score_sum": 2.816,
+          "score_min": 0.0,
+          "score_max": 0.5751,
+          "score_avg": 0.2347,
+          "score_median": 0.0,
+          "avg_char_count": 319.2
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 8,
+          "score_sum": 0.581,
+          "score_min": 0.0,
+          "score_max": 0.581,
+          "score_avg": 0.0726,
+          "score_median": 0.0,
+          "avg_char_count": 444.6
+        },
+        {
+          "doc_uid": "ifric23",
+          "chunk_count": 8,
+          "score_sum": 1.6092,
+          "score_min": 0.0,
+          "score_max": 0.5432,
+          "score_avg": 0.2011,
+          "score_median": 0.0,
+          "avg_char_count": 404.8
+        },
+        {
+          "doc_uid": "ifrs12",
+          "chunk_count": 20,
+          "score_sum": 2.7658,
+          "score_min": 0.0,
+          "score_max": 0.5597,
+          "score_avg": 0.1383,
+          "score_median": 0.0,
+          "avg_char_count": 511.8
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 31,
+          "score_sum": 2.888,
+          "score_min": 0.0,
+          "score_max": 0.5997,
+          "score_avg": 0.0932,
+          "score_median": 0.0,
+          "avg_char_count": 516.1
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 11,
+          "score_sum": 2.8662,
+          "score_min": 0.0,
+          "score_max": 0.5997,
+          "score_avg": 0.2606,
+          "score_median": 0.0,
+          "avg_char_count": 749.4
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 21,
+          "score_sum": 2.9916,
+          "score_min": 0.0,
+          "score_max": 0.6673,
+          "score_avg": 0.1425,
+          "score_median": 0.0,
+          "avg_char_count": 525.2
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 4,
+          "score_sum": 0.5542,
+          "score_min": 0.0,
+          "score_max": 0.5542,
+          "score_avg": 0.1386,
+          "score_median": 0.0,
+          "avg_char_count": 307
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 1.1002,
+          "score_min": 0.0,
+          "score_max": 0.5652,
+          "score_avg": 0.2751,
+          "score_median": 0.2675,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic29",
+          "chunk_count": 5,
+          "score_sum": 0.5335,
+          "score_min": 0.0,
+          "score_max": 0.5335,
+          "score_avg": 0.1067,
+          "score_median": 0.0,
+          "avg_char_count": 450.4
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.22",
+      "question_text": "À partir du moment où des dividendes intragroupe sont reconnus en créance dans les comptes consolidés, une problématique de change apparaît. Dans une telle situation, est-il permis de documenter une couverture sur cette composante de risque ?",
+      "context_size_kb": 127.753,
+      "documents": [
+        {
+          "doc_uid": "ias21",
+          "chunk_count": 44,
+          "score_sum": 2.7984,
+          "score_min": 0.0,
+          "score_max": 0.6155,
+          "score_avg": 0.0636,
+          "score_median": 0.0,
+          "avg_char_count": 477.4
+        },
+        {
+          "doc_uid": "ias26",
+          "chunk_count": 7,
+          "score_sum": 0.5403,
+          "score_min": 0.0,
+          "score_max": 0.5403,
+          "score_avg": 0.0772,
+          "score_median": 0.0,
+          "avg_char_count": 305.3
+        },
+        {
+          "doc_uid": "ias37",
+          "chunk_count": 23,
+          "score_sum": 2.7886,
+          "score_min": 0.0,
+          "score_max": 0.5789,
+          "score_avg": 0.1212,
+          "score_median": 0.0,
+          "avg_char_count": 349
+        },
+        {
+          "doc_uid": "ias7",
+          "chunk_count": 8,
+          "score_sum": 2.8368,
+          "score_min": 0.0,
+          "score_max": 0.5902,
+          "score_avg": 0.3546,
+          "score_median": 0.5491,
+          "avg_char_count": 337.6
+        },
+        {
+          "doc_uid": "ifric16",
+          "chunk_count": 15,
+          "score_sum": 2.7748,
+          "score_min": 0.0,
+          "score_max": 0.5707,
+          "score_avg": 0.185,
+          "score_median": 0.0,
+          "avg_char_count": 652.6
+        },
+        {
+          "doc_uid": "ifric17",
+          "chunk_count": 10,
+          "score_sum": 2.9103,
+          "score_min": 0.0,
+          "score_max": 0.6143,
+          "score_avg": 0.291,
+          "score_median": 0.2803,
+          "avg_char_count": 317.6
+        },
+        {
+          "doc_uid": "ifric19",
+          "chunk_count": 4,
+          "score_sum": 1.6027,
+          "score_min": 0.0,
+          "score_max": 0.5396,
+          "score_avg": 0.4007,
+          "score_median": 0.5315,
+          "avg_char_count": 434.2
+        },
+        {
+          "doc_uid": "ifric2",
+          "chunk_count": 10,
+          "score_sum": 2.2063,
+          "score_min": 0.0,
+          "score_max": 0.5671,
+          "score_avg": 0.2206,
+          "score_median": 0.0,
+          "avg_char_count": 426
+        },
+        {
+          "doc_uid": "ifrs17",
+          "chunk_count": 36,
+          "score_sum": 3.0976,
+          "score_min": 0.0,
+          "score_max": 0.6226,
+          "score_avg": 0.086,
+          "score_median": 0.0,
+          "avg_char_count": 713.6
+        },
+        {
+          "doc_uid": "ifrs19",
+          "chunk_count": 13,
+          "score_sum": 2.9492,
+          "score_min": 0.0,
+          "score_max": 0.6137,
+          "score_avg": 0.2269,
+          "score_median": 0.0,
+          "avg_char_count": 431.5
+        },
+        {
+          "doc_uid": "ifrs7",
+          "chunk_count": 31,
+          "score_sum": 2.9183,
+          "score_min": 0.0,
+          "score_max": 0.6137,
+          "score_avg": 0.0941,
+          "score_median": 0.0,
+          "avg_char_count": 713.8
+        },
+        {
+          "doc_uid": "ifrs9",
+          "chunk_count": 23,
+          "score_sum": 2.9419,
+          "score_min": 0.0,
+          "score_max": 0.6288,
+          "score_avg": 0.1279,
+          "score_median": 0.0,
+          "avg_char_count": 536.1
+        },
+        {
+          "doc_uid": "ps1",
+          "chunk_count": 9,
+          "score_sum": 1.598,
+          "score_min": 0.0,
+          "score_max": 0.5338,
+          "score_avg": 0.1776,
+          "score_median": 0.0,
+          "avg_char_count": 594.2
+        },
+        {
+          "doc_uid": "sic25",
+          "chunk_count": 4,
+          "score_sum": 2.2271,
+          "score_min": 0.5307,
+          "score_max": 0.6177,
+          "score_avg": 0.5568,
+          "score_median": 0.5393,
+          "avg_char_count": 482.8
+        },
+        {
+          "doc_uid": "sic7",
+          "chunk_count": 2,
+          "score_sum": 0.5313,
+          "score_min": 0.0,
+          "score_max": 0.5313,
+          "score_avg": 0.2656,
+          "score_median": 0.2656,
+          "avg_char_count": 619.5
+        }
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "doc_uid": "ifrs9",
+      "run_count": 23,
+      "average_sum_score_per_question": 2.9137
+    },
+    {
+      "doc_uid": "ifrs19",
+      "run_count": 21,
+      "average_sum_score_per_question": 2.6568
+    },
+    {
+      "doc_uid": "ifric17",
+      "run_count": 23,
+      "average_sum_score_per_question": 2.5973
+    },
+    {
+      "doc_uid": "ifric16",
+      "run_count": 23,
+      "average_sum_score_per_question": 2.3231
+    },
+    {
+      "doc_uid": "ifrs12",
+      "run_count": 17,
+      "average_sum_score_per_question": 2.0489
+    },
+    {
+      "doc_uid": "ias7",
+      "run_count": 15,
+      "average_sum_score_per_question": 1.7627
+    },
+    {
+      "doc_uid": "ias32",
+      "run_count": 12,
+      "average_sum_score_per_question": 1.4876
+    },
+    {
+      "doc_uid": "ias21",
+      "run_count": 13,
+      "average_sum_score_per_question": 1.2459
+    },
+    {
+      "doc_uid": "ias37",
+      "run_count": 15,
+      "average_sum_score_per_question": 1.0216
+    },
+    {
+      "doc_uid": "ifrs7",
+      "run_count": 8,
+      "average_sum_score_per_question": 1.0017
+    },
+    {
+      "doc_uid": "ias24",
+      "run_count": 9,
+      "average_sum_score_per_question": 0.9155
+    },
+    {
+      "doc_uid": "sic25",
+      "run_count": 21,
+      "average_sum_score_per_question": 0.8721
+    },
+    {
+      "doc_uid": "ifric2",
+      "run_count": 14,
+      "average_sum_score_per_question": 0.7488
+    },
+    {
+      "doc_uid": "ifrs18",
+      "run_count": 6,
+      "average_sum_score_per_question": 0.738
+    },
+    {
+      "doc_uid": "ifric19",
+      "run_count": 9,
+      "average_sum_score_per_question": 0.5441
+    },
+    {
+      "doc_uid": "ifrs17",
+      "run_count": 4,
+      "average_sum_score_per_question": 0.5236
+    },
+    {
+      "doc_uid": "ps1",
+      "run_count": 7,
+      "average_sum_score_per_question": 0.3095
+    },
+    {
+      "doc_uid": "ias39",
+      "run_count": 2,
+      "average_sum_score_per_question": 0.2718
+    },
+    {
+      "doc_uid": "ifric1",
+      "run_count": 3,
+      "average_sum_score_per_question": 0.2652
+    },
+    {
+      "doc_uid": "ias27",
+      "run_count": 2,
+      "average_sum_score_per_question": 0.2173
+    },
+    {
+      "doc_uid": "ifric23",
+      "run_count": 3,
+      "average_sum_score_per_question": 0.2144
+    },
+    {
+      "doc_uid": "sic7",
+      "run_count": 9,
+      "average_sum_score_per_question": 0.2116
+    },
+    {
+      "doc_uid": "sic29",
+      "run_count": 8,
+      "average_sum_score_per_question": 0.187
+    },
+    {
+      "doc_uid": "ias29",
+      "run_count": 2,
+      "average_sum_score_per_question": 0.1672
+    },
+    {
+      "doc_uid": "ifrs2",
+      "run_count": 1,
+      "average_sum_score_per_question": 0.1286
+    },
+    {
+      "doc_uid": "ifrs10",
+      "run_count": 1,
+      "average_sum_score_per_question": 0.1257
+    },
+    {
+      "doc_uid": "ifric21",
+      "run_count": 5,
+      "average_sum_score_per_question": 0.119
+    },
+    {
+      "doc_uid": "ias26",
+      "run_count": 5,
+      "average_sum_score_per_question": 0.1165
+    },
+    {
+      "doc_uid": "ias23",
+      "run_count": 1,
+      "average_sum_score_per_question": 0.0473
+    },
+    {
+      "doc_uid": "ifric14",
+      "run_count": 2,
+      "average_sum_score_per_question": 0.0468
+    },
+    {
+      "doc_uid": "ifric22",
+      "run_count": 1,
+      "average_sum_score_per_question": 0.0231
+    }
+  ]
+}

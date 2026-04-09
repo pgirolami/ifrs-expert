@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 
 from src.b_response_utils import convert_json_to_markdown
 from src.commands.constants import (
-    DEFAULT_D,
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
     DEFAULT_D_FOR_IFRS_DOCUMENTS,
@@ -18,13 +17,14 @@ from src.commands.constants import (
     DEFAULT_D_FOR_SIC_DOCUMENTS,
     DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE,
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
+    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
+    DEFAULT_RETRIEVE_DOCUMENT_D,
 )
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
@@ -69,8 +69,8 @@ class AnswerOptions:
     """Options for answer command."""
 
     k: int = DEFAULT_RETRIEVAL_K
-    min_score: float | None = DEFAULT_MIN_SCORE
-    d: int = DEFAULT_D
+    min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
+    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
     doc_min_score: float | None = None
     ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
     ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
@@ -236,7 +236,7 @@ class AnswerCommand:
         self.query = query
         self.k = resolved_options.k
         self.d = resolved_options.d
-        self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_MIN_SCORE
+        self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
         self.doc_min_score = resolved_options.doc_min_score
         self.ifrs_d = resolved_options.ifrs_d
         self.ias_d = resolved_options.ias_d
