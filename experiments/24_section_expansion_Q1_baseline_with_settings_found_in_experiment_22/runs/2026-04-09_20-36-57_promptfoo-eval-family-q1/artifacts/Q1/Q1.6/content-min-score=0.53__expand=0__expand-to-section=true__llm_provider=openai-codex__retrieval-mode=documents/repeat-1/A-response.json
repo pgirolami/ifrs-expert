@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been recognised as a receivable and gives rise to a foreign-currency-denominated monetary item.",
+    "The question concerns the accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting under IFRS 9",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The question explicitly asks about eligibility for designation in hedge accounting, and the context includes IFRS 9 requirements for hedged items and foreign currency risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The issue concerns exchange differences on an intragroup receivable in consolidated accounts, and IAS 21 in the context addresses recognition of exchange differences on monetary items and intragroup balances."
+    },
+    {
+      "id": "approach_3",
+      "label": "Dividend recognition accounting",
+      "normalized_label": "dividend_recognition",
+      "rationale_for_inclusion": "Because the fact pattern refers to a dividend receivable already recognised, the accounting model for when dividends are recognised is directly relevant to the existence of the underlying item."
+    }
+  ]
+}

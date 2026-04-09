@@ -101,7 +101,7 @@ def test_promptfoo_artifact_output_dir_uses_family_variant_and_config_kv(
     monkeypatch.setenv(run_answer.PROMPTFOO_ARTIFACTS_DIR_ENV, str(tmp_path))
 
     output_dir = run_answer._artifact_output_dir(
-        context={"test": {"metadata": {"family": "Q1", "variant": "Q1.0¤"}}},
+        context={"test": {"metadata": {"family": "Q1¤", "variant": "Q1.0¤"}}},
         config_kv={"llm_provider": "openai", "k": "5", "min-score": "0.5"},
     )
 
@@ -259,15 +259,17 @@ def test_extract_options_accepts_retrieval_mode_alias() -> None:
     assert options.retrieval_mode == "documents"
 
 
-def test_extract_options_reads_document_retrieval_overrides_from_config() -> None:
-    """The wrapper should extract document-mode retrieval overrides from Promptfoo config."""
+def test_extract_options_reads_all_answer_command_overrides_from_config() -> None:
+    """The wrapper should extract the full AnswerOptions surface from Promptfoo config."""
     run_answer = _load_run_answer_module()
 
     options = run_answer._extract_options(
         provider_options={
             "config": {
-                "retrieval-mode": "documents",
+                "k": 5,
+                "min-score": 0.53,
                 "d": 25,
+                "doc-min-score": 0.41,
                 "ifrs-d": 4,
                 "ias-d": 4,
                 "ifric-d": 6,
@@ -279,13 +281,21 @@ def test_extract_options_reads_document_retrieval_overrides_from_config() -> Non
                 "sic-min-score": 0.4,
                 "ps-min-score": 0.4,
                 "content-min-score": 0.53,
+                "expand-to-section": False,
+                "expand": 0,
+                "full-doc-threshold": 0,
+                "retrieval-mode": "documents",
+                "output-dir": "artifacts/promptfoo",
+                "save-all": False,
             }
         },
         context={},
     )
 
-    assert options.retrieval_mode == "documents"
+    assert options.k == 5
+    assert options.min_score == 0.53
     assert options.d == 25
+    assert options.doc_min_score == 0.41
     assert options.ifrs_d == 4
     assert options.ias_d == 4
     assert options.ifric_d == 6
@@ -297,8 +307,14 @@ def test_extract_options_reads_document_retrieval_overrides_from_config() -> Non
     assert options.sic_min_score == 0.4
     assert options.ps_min_score == 0.4
     assert options.content_min_score == 0.53
+    assert options.expand_to_section is False
+    assert options.expand == 0
+    assert options.full_doc_threshold == 0
+    assert options.retrieval_mode == "documents"
+    assert options.output_dir == "artifacts/promptfoo"
+    assert options.save_all is False
     assert options.config_kv["retrieval-mode"] == "documents"
-    assert options.config_kv["ifric-min-score"] == "0.48"
+    assert options.config_kv["content-min-score"] == "0.53"
 
 
 def test_build_config_kv_excludes_nested_dicts() -> None:
@@ -336,8 +352,8 @@ def test_extract_float_from_mapping_validates_range() -> None:
     assert run_answer._extract_float_from_mapping({"min-score": 1.5}, "min-score", 0.55) == 0.55  # Out of range, uses fallback
 
 
-def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The Promptfoo wrapper should forward document-mode retrieval options into the answer pipeline."""
+def test_run_live_passes_all_answer_options_to_answer_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Promptfoo wrapper should forward the full AnswerOptions surface into the answer pipeline."""
     run_answer = _load_run_answer_module()
     captured: dict[str, object] = {}
 
@@ -362,6 +378,7 @@ def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatc
             k=7,
             min_score=0.4,
             d=25,
+            doc_min_score=0.2,
             ifrs_d=4,
             ias_d=4,
             ifric_d=6,
@@ -373,8 +390,12 @@ def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatc
             sic_min_score=0.4,
             ps_min_score=0.4,
             content_min_score=0.53,
+            expand_to_section=True,
             expand=2,
+            full_doc_threshold=1500,
             retrieval_mode="documents",
+            output_dir="tmp/promptfoo",
+            save_all=True,
         ),
     )
 
@@ -386,6 +407,7 @@ def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatc
     assert answer_options.k == 7
     assert answer_options.min_score == 0.4
     assert answer_options.d == 25
+    assert answer_options.doc_min_score == 0.2
     assert answer_options.ifrs_d == 4
     assert answer_options.ias_d == 4
     assert answer_options.ifric_d == 6
@@ -397,5 +419,9 @@ def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatc
     assert answer_options.sic_min_score == 0.4
     assert answer_options.ps_min_score == 0.4
     assert answer_options.content_min_score == 0.53
+    assert answer_options.expand_to_section is True
     assert answer_options.expand == 2
+    assert answer_options.full_doc_threshold == 1500
     assert answer_options.retrieval_mode == "documents"
+    assert answer_options.output_dir == Path("tmp/promptfoo")
+    assert answer_options.save_all is True

@@ -1,0 +1,87 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des états financiers consolidés établis selon les IFRS.",
+    "Le dividende intragroupe déclaré a donné lieu à la comptabilisation d’une créance et d’une dette intragroupe libellées en devise étrangère."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, une relation de couverture peut viser le risque de change d’une créance de dividende intragroupe reconnue si cette créance constitue un élément monétaire intragroupe générant un risque de change non totalement éliminé en consolidation. À défaut d’une telle exposition résiduelle en consolidation, la documentation de couverture n’est pas recevable."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En consolidation, les éléments couverts doivent en principe être avec une partie externe au groupe. Toutefois, une exception existe pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation. Si la créance de dividende reconnue est un tel élément monétaire, une documentation de couverture est possible dans cette situation.",
+      "conditions_fr": [
+        "La créance de dividende intragroupe doit être un élément monétaire reconnu.",
+        "Le risque de change doit générer des gains ou pertes de change non totalement éliminés en consolidation, typiquement entre entités ayant des monnaies fonctionnelles différentes."
+      ],
+      "practical_implication_fr": "La désignation doit viser uniquement la composante change de la créance intragroupe reconnue qui crée une exposition résiduelle au niveau consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "consolidation_accounting",
+      "label_fr": "Comptabilisation en consolidation",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance et la dette de dividende intragroupe sont éliminées en consolidation comme éléments intragroupe. Néanmoins, cette élimination n’empêche pas, à elle seule, une couverture si le seul risque visé est un risque de change sur un élément monétaire intragroupe dont les effets ne sont pas intégralement éliminés. L’analyse doit donc être faite au niveau du risque résiduel en consolidation, pas au seul niveau des soldes bruts.",
+      "conditions_fr": [
+        "Les soldes intragroupe doivent être éliminés en consolidation.",
+        "Malgré cette élimination, il doit subsister une exposition de change admissible au niveau consolidé."
+      ],
+      "practical_implication_fr": "Il faut distinguer l’élimination des soldes intragroupe de la persistance éventuelle d’écarts de change en résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs10",
+          "section": "B86",
+          "excerpt": "eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "separate_financials",
+      "label_fr": "États financiers séparés",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche ne répond pas à la question posée, qui vise explicitement la consolidation. Les IFRS distinguent les transactions intragroupe en états individuels ou séparés, où la couverture peut être appréciée différemment, mais ce n’est pas le référentiel demandé ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas fonder la conclusion sur les règles des états séparés pour documenter une couverture dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements"
+        },
+        {
+          "document": "ias27",
+          "section": "4",
+          "excerpt": "Separate financial statements are those presented by an entity"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La documentation de couverture ne doit être mise en place qu’après reconnaissance de la créance de dividende si c’est cette créance reconnue qui est désignée comme élément couvert.",
+    "Vérifier que la créance de dividende est bien un élément monétaire intragroupe et que les entités concernées ont des monnaies fonctionnelles différentes.",
+    "Documenter que l’exposition couverte est la composante change qui affecte le résultat consolidé, et non le dividende intragroupe lui-même en tant que flux éliminé.",
+    "L’élimination des créances/dettes intragroupe en consolidation n’écarte pas automatiquement la couverture; le point décisif est l’existence d’un risque de change non totalement éliminé."
+  ]
+}

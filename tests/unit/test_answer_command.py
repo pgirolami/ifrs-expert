@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import unittest.mock
+from pathlib import Path
 from typing import cast
 
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
@@ -85,6 +86,26 @@ class MockIndexPath:
 
 class TestAnswerCommand:
     """Tests for answer command using dependency injection."""
+
+    def test_answer_options_are_stored_on_command(self) -> None:
+        """AnswerCommand should retain all option values passed by the caller."""
+        config = AnswerConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=InMemoryChunkStore(),
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=lambda prompt: "result",
+        )
+        output_dir = Path("artifacts/test-output")
+        command = AnswerCommand(
+            query="test",
+            config=config,
+            options=AnswerOptions(expand=0, output_dir=output_dir, save_all=True),
+        )
+
+        assert command.expand == 0
+        assert command.output_dir == output_dir
+        assert command.save_all is True
 
     def test_answer_no_index(self, caplog) -> None:
         """Test answer command logs and fails clearly when no index exists."""

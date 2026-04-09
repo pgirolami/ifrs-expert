@@ -208,6 +208,8 @@ class ExtractionOptions:
     expand: int = DEFAULT_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
+    output_dir: str | None = None
+    save_all: bool = False
     # Key-value pairs for artifact directory naming
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
 
@@ -262,6 +264,20 @@ def _extract_bool_from_mapping(mapping: dict[str, object], key: AliasKey, *, fal
     return fallback
 
 
+def _extract_optional_string_from_mapping(
+    mapping: dict[str, object],
+    key: AliasKey,
+    fallback: str | None,
+) -> str | None:
+    """Extract an optional non-empty string override from one mapping."""
+    value = _extract_raw_value_from_mapping(mapping, key)
+    if isinstance(value, str):
+        stripped_value = value.strip()
+        if stripped_value:
+            return stripped_value
+    return fallback
+
+
 def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: str) -> str:
     """Extract a retrieval mode override from one mapping."""
     value = _extract_raw_value_from_mapping(mapping, ("retrieval-mode", "retrieval_mode"))
@@ -276,7 +292,10 @@ def _build_config_kv(mapping: dict[str, object]) -> dict[str, str]:
     for key, value in mapping.items():
         if key in {"basePath", "id"}:
             continue
-        if isinstance(value, (str, int, float, bool)):
+        if isinstance(value, bool):
+            result[str(key)] = "true" if value else "false"
+            continue
+        if isinstance(value, (str, int, float)):
             result[str(key)] = str(value)
     return result
 
@@ -286,6 +305,50 @@ def _merge_config_kv(base: dict[str, str], overlay: dict[str, str]) -> dict[str,
     merged = dict(base)
     merged.update(overlay)
     return merged
+
+
+def _build_effective_config_kv(
+    options: ExtractionOptions,
+    llm_provider: str | None,
+) -> dict[str, str]:
+    """Build concise artifact config metadata from effective non-default options."""
+    default_options = ExtractionOptions()
+    result: dict[str, str] = {}
+    if llm_provider is not None:
+        result["llm_provider"] = llm_provider
+
+    option_pairs: tuple[tuple[str, object | None, object | None], ...] = (
+        ("k", options.k, default_options.k),
+        ("min-score", options.min_score, default_options.min_score),
+        ("d", options.d, default_options.d),
+        ("doc-min-score", options.doc_min_score, default_options.doc_min_score),
+        ("ifrs-d", options.ifrs_d, default_options.ifrs_d),
+        ("ias-d", options.ias_d, default_options.ias_d),
+        ("ifric-d", options.ifric_d, default_options.ifric_d),
+        ("sic-d", options.sic_d, default_options.sic_d),
+        ("ps-d", options.ps_d, default_options.ps_d),
+        ("ifrs-min-score", options.ifrs_min_score, default_options.ifrs_min_score),
+        ("ias-min-score", options.ias_min_score, default_options.ias_min_score),
+        ("ifric-min-score", options.ifric_min_score, default_options.ifric_min_score),
+        ("sic-min-score", options.sic_min_score, default_options.sic_min_score),
+        ("ps-min-score", options.ps_min_score, default_options.ps_min_score),
+        ("content-min-score", options.content_min_score, default_options.content_min_score),
+        ("expand-to-section", options.expand_to_section, default_options.expand_to_section),
+        ("expand", options.expand, default_options.expand),
+        ("full-doc-threshold", options.full_doc_threshold, default_options.full_doc_threshold),
+        ("retrieval-mode", options.retrieval_mode, default_options.retrieval_mode),
+        ("save-all", options.save_all, default_options.save_all),
+    )
+
+    for key, value, default_value in option_pairs:
+        if value is None or value == default_value:
+            continue
+        if isinstance(value, bool):
+            result[key] = "true" if value else "false"
+            continue
+        result[key] = str(value)
+
+    return result
 
 
 def _extract_options(
@@ -312,7 +375,8 @@ def _extract_options(
     expand = DEFAULT_EXPAND
     full_doc_threshold = DEFAULT_FULL_DOC_THRESHOLD
     retrieval_mode = DEFAULT_RETRIEVAL_MODE
-    config_kv: dict[str, str] = {}
+    output_dir: str | None = None
+    save_all = False
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
         k = _extract_int_from_mapping(mapping, "k", k)
@@ -347,9 +411,10 @@ def _extract_options(
             full_doc_threshold,
         )
         retrieval_mode = _extract_retrieval_mode_from_mapping(mapping, retrieval_mode)
-        config_kv = _merge_config_kv(config_kv, _build_config_kv(mapping))
+        output_dir = _extract_optional_string_from_mapping(mapping, ("output-dir", "output_dir"), output_dir)
+        save_all = _extract_bool_from_mapping(mapping, ("save-all", "save_all"), fallback=save_all)
 
-    return ExtractionOptions(
+    options = ExtractionOptions(
         k=k,
         min_score=min_score,
         d=d,
@@ -369,8 +434,14 @@ def _extract_options(
         expand=expand,
         full_doc_threshold=full_doc_threshold,
         retrieval_mode=retrieval_mode,
-        config_kv=config_kv,
+        output_dir=output_dir,
+        save_all=save_all,
     )
+    options.config_kv = _build_effective_config_kv(
+        options=options,
+        llm_provider=_extract_llm_provider(provider_options, context),
+    )
+    return options
 
 
 def _extract_llm_provider_from_mapping(mapping: dict[str, object]) -> str | None:
@@ -467,7 +538,8 @@ def _artifact_output_dir(
         if metadata is not None:
             family_value = metadata.get("family")
             if isinstance(family_value, str) and family_value.strip():
-                family = family_value.strip()
+                # Strip the '¤' delimiter used for exact promptfoo filtering
+                family = family_value.strip().rstrip("¤")
             variant_value = metadata.get("variant")
             if isinstance(variant_value, str) and variant_value.strip():
                 # Strip the '¤' delimiter used for exact promptfoo filtering
@@ -530,6 +602,8 @@ def _run_live(
             expand=options.expand,
             full_doc_threshold=options.full_doc_threshold,
             retrieval_mode=options.retrieval_mode,
+            output_dir=(Path(options.output_dir) if options.output_dir is not None else None),
+            save_all=options.save_all,
         ),
     )
     result = command.execute()

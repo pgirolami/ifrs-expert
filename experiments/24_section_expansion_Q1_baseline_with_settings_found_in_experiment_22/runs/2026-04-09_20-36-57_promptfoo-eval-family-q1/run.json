@@ -1,0 +1,10 @@
+{
+  "description": "promptfoo eval family=Q1",
+  "artifacts_path": "experiments/24_section_expansion_Q1_baseline_with_settings_found_in_experiment_22/runs/2026-04-09_20-36-57_promptfoo-eval-family-q1/artifacts",
+  "promptfoo_config_dir": "experiments/24_section_expansion_Q1_baseline_with_settings_found_in_experiment_22/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q1\u00a4"
+  ],
+  "created_at_utc": "2026-04-09T20:36:57.410678+00:00"
+}

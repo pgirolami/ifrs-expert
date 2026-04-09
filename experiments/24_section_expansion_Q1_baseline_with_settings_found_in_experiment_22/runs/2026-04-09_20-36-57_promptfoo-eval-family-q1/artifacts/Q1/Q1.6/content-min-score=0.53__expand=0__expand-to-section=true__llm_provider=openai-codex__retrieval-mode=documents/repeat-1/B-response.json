@@ -1,0 +1,89 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été comptabilisé en créance et constitue un élément monétaire libellé en devise.",
+    "La question porte sur les états financiers consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidé, un dividende intragroupe n’est en principe pas éligible comme élément couvert car il est intragroupe. Il ne peut l’être que si la créance monétaire intragroupe crée un risque de change qui n’est pas totalement éliminé en consolidation, typiquement entre entités de monnaies fonctionnelles différentes."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture selon IFRS 9",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la règle générale interdit de désigner en couverture un élément intragroupe dans les comptes consolidés. Toutefois, IFRS 9 prévoit une exception pour le risque de change d’un élément monétaire intragroupe lorsqu’il génère des écarts de change non totalement éliminés en consolidation. Une créance de dividende constatée peut entrer dans cette exception si ce critère est rempli.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe.",
+        "Le dividende est libellé dans une devise créant des écarts de change non totalement éliminés en consolidation.",
+        "Le risque couvert est uniquement le risque de change en comptes consolidés."
+      ],
+      "practical_implication_fr": "Sans exposition de change résiduelle au niveau consolidé, la désignation en couverture n’est pas permise.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "foreign_currency_accounting",
+      "label_fr": "Comptabilisation du change selon IAS 21",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IAS 21 confirme que les écarts de change sur des éléments monétaires sont comptabilisés en résultat, et que des soldes monétaires intragroupe ne peuvent pas être éliminés sans faire apparaître l’effet des fluctuations de change en consolidé. Donc, si la créance de dividende intragroupe est monétaire et entre entités de monnaies fonctionnelles différentes, il existe bien une exposition de change consolidée susceptible de sous-tendre une couverture.",
+      "conditions_fr": [
+        "La créance et la dette de dividende sont des éléments monétaires intragroupe.",
+        "Les entités concernées ont des monnaies fonctionnelles différentes.",
+        "Les écarts de change affectent le résultat consolidé ou, si l’élément fait partie d’un investissement net, l’OCI selon IAS 21."
+      ],
+      "practical_implication_fr": "Il faut vérifier si l’écart de change subsiste réellement en consolidation avant d’envisager une désignation de couverture.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences arising on the settlement of monetary items ... shall be recognised in profit or loss"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "exchange differences shall be recognised initially in other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "dividend_recognition",
+      "label_fr": "Comptabilisation de la créance de dividende",
+      "applicability": "oui",
+      "reasoning_fr": "Dans les faits donnés, une créance de dividende a déjà été constatée. Cette approche est donc pertinente pour confirmer l’existence de l’élément sous-jacent, mais elle ne détermine pas à elle seule l’éligibilité en comptabilité de couverture. Elle sert seulement de point d’appui au fait qu’il existe un poste monétaire reconnu.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La reconnaissance préalable du dividende ne suffit pas, à elle seule, à rendre le poste éligible en couverture en consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "5.7.1A",
+          "excerpt": "Dividends are recognised in profit or loss only when: (a) the entity’s right to receive payment of the dividend is established"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d’abord si la créance de dividende intragroupe est bien un élément monétaire libellé en devise.",
+    "En consolidé, documenter si les entités concernées ont des monnaies fonctionnelles différentes et si l’écart de change n’est pas totalement éliminé.",
+    "Si l’exposition relève d’un investissement net dans une activité à l’étranger, tenir compte du traitement IAS 21 en OCI.",
+    "La simple existence d’un dividende intragroupe reconnu ne suffit pas : l’éligibilité dépend de l’exposition de change résiduelle au niveau consolidé."
+  ]
+}

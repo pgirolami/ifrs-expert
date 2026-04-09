@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements prepared under IFRS.",
+    "The intragroup dividend has resulted in a recognised intragroup receivable denominated in a foreign currency or otherwise exposing the group to foreign exchange risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting requirements for hedged items and specifically addresses when exposures can be designated in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IFRIC 16 guidance on hedge accounting for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Ordinary accounting without hedge accounting",
+      "normalized_label": "ordinary_accounting",
+      "rationale_for_inclusion": "The context distinguishes hedge accounting from normal IFRS 9 accounting, under which gains and losses on financial instruments are recognised in profit or loss unless special hedge or OCI rules apply."
+    }
+  ]
+}

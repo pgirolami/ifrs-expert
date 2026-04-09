@@ -5,9 +5,11 @@ evaluateOptions:
   showProgressBar: true
 
 
-document_retrieval_defaults: &document_retrieval_defaults
-  retrieval-mode: 'documents'
+answer_command_defaults: &answer_command_defaults
+  k: 5
+  min-score: 0.53
   d: 25
+  doc-min-score: null
   ifrs-d: 4
   ias-d: 4
   ifric-d: 6
@@ -19,20 +21,24 @@ document_retrieval_defaults: &document_retrieval_defaults
   sic-min-score: 0.4
   ps-min-score: 0.4
   content-min-score: 0.53
+  expand-to-section: true
+  expand: 0
+  full-doc-threshold: 0
+  retrieval-mode: 'documents'
 
 prompts:
   - '{{question}}'
 
 providers:
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 current document defaults'
+    label: 'OpenAI GPT 5.4 current answer defaults'
     config:
-      <<: *document_retrieval_defaults
+      <<: *answer_command_defaults
       llm_provider: 'openai-codex'
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-  #   label: 'Mistral Large 3 current document defaults'
+  #   label: 'Mistral Large 3 current answer defaults'
   #   config:
-  #     <<: *document_retrieval_defaults
+  #     <<: *answer_command_defaults
   #     llm_provider: 'Mistral'
 
 readme: |
@@ -45,9 +51,9 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Promptfoo providers now use the current tuned document-retrieval defaults
-  from experiment 22 across families. The retrieval settings are defined once
-  in promptfoo_src/base.yaml and can be reused by every model.
+  Promptfoo providers now use one shared answer-command config block for the
+  retrieval and prompting options that should be fixed across eval runs.
+  Artifact/output handling is controlled separately by scripts/run_promptfoo_eval.py.
 
   Run Q1: make eval EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1
   View: make eval-view EXPERIMENT_DIR=promptfoo_q1_current_defaults

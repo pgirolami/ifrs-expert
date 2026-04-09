@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9 for foreign exchange risk related to an intragroup dividend arrangement.",
+    "The intragroup dividend exposure could be viewed either as a recognised balance or as a forecast transaction for purposes of identifying relevant hedge accounting models."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context states that a hedged item can be a recognised asset or liability, which is a core basis for fair value hedge accounting."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context states that a highly probable forecast transaction can be a hedged item, which is the core basis for cash flow hedge accounting."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context expressly includes hedge accounting for a net investment in a foreign operation and notes that such hedging instruments may be designated within the group."
+    }
+  ]
+}

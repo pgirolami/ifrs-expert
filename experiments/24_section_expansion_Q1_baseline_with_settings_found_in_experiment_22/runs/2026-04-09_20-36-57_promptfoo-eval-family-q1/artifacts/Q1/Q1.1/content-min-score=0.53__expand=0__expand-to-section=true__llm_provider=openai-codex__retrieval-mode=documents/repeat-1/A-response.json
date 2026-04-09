@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable creates foreign exchange exposure between group entities with different functional currencies.",
+    "The question is about hedge accounting possibilities in consolidated financial statements for the foreign exchange component."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary item can fall within hedge accounting in consolidated financial statements for foreign currency risk under the IFRS 9 hedge accounting model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 allows hedge accounting for highly probable forecast intragroup foreign currency transactions in consolidated financial statements, making cash flow hedge accounting a distinct relevant model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately recognises hedges of a net investment in a foreign operation as a distinct hedge accounting model for foreign exchange risk."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context distinguishes instruments accounted for under general IFRS 9 measurement without hedge accounting from instruments designated in a hedging relationship."
+    }
+  ]
+}

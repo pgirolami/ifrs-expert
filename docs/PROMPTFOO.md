@@ -63,13 +63,17 @@ experiments/<experiment_subdir>/
     └── <timestamp>_<slug>/
         ├── run.json
         └── artifacts/
-            └── <family>/<variant>/<provider>/
+            └── <family>/<variant>/<config>/
                 ├── A-prompt.txt
                 ├── A-response.json
                 ├── B-prompt.txt
                 ├── B-response.json
                 └── B-response.md
 ```
+
+The `<config>` path component is derived from the effective Promptfoo provider
+configuration. In practice this usually includes `llm_provider` and any
+non-default answer-command settings that were overridden for that run.
 
 Each archived run contains:
 - `run.json` — run metadata and forwarded Promptfoo arguments
@@ -81,7 +85,26 @@ The root `promptfooconfig.yaml` is generated from:
 - `promptfoo_src/base.yaml`
 - `experiments/00_QUESTIONS/*/family.yaml`
 
-When you update Promptfoo families or assertions, rebuild it with:
+`promptfoo_src/base.yaml` is the shared home for Promptfoo provider defaults.
+It now carries the fixed `answer` command settings that should be explicit and
+stable across eval runs, such as:
+- `k`
+- `min-score`
+- `d`
+- `doc-min-score`
+- per-document-type caps and min scores
+- `content-min-score`
+- `expand-to-section`
+- `expand`
+- `full-doc-threshold`
+- `retrieval-mode`
+
+Artifact-output settings such as `output-dir` and `save-all` are not stored in
+`promptfoo_src/base.yaml`; they are managed by `scripts/run_promptfoo_eval.py`
+through the run archive layout and `PROMPTFOO_ARTIFACTS_DIR`.
+
+When you update Promptfoo families, assertions, or shared provider defaults,
+rebuild it with:
 
 ```bash
 npm run eval:build

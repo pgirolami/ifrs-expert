@@ -1,0 +1,86 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des états financiers consolidés IFRS.",
+    "Une créance de dividende intragroupe a été comptabilisée avant les écritures de consolidation.",
+    "La documentation de couverture visée porte sur le risque de change attaché à la créance intragroupe reconnue, et non sur le dividende intragroupe en tant que produit/charge consolidé."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, une couverture ne peut pas viser le dividende intragroupe éliminé en tant que tel. En revanche, elle peut être documentée sur la créance intragroupe reconnue si celle-ci constitue un élément monétaire intragroupe dont le risque de change n’est pas entièrement éliminé en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans les comptes consolidés, IFRS 9 exclut en principe les transactions intragroupe comme éléments couverts. L’exception vise les éléments monétaires intragroupe, par exemple une créance/dette entre entités du groupe, lorsque les écarts de change ne sont pas totalement éliminés en consolidation. Ici, cela ne peut fonctionner que si la créance de dividende reconnue entre dans cette exception ; le dividende intragroupe lui-même, éliminé en consolidation, ne peut pas être l’élément couvert.",
+      "conditions_fr": [
+        "La créance de dividende intragroupe reconnue doit être traitée comme un élément monétaire intragroupe.",
+        "Les écarts de change sur cette créance doivent affecter le résultat consolidé et ne pas être entièrement éliminés en consolidation.",
+        "La désignation doit porter sur la créance intragroupe reconnue, pas sur le dividende intragroupe éliminé."
+      ],
+      "practical_implication_fr": "La documentation de couverture doit viser le receivable intragroupe et démontrer que son risque de change subsiste au niveau consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "consolidation_accounting",
+      "label_fr": "Comptabilisation en consolidation",
+      "applicability": "oui",
+      "reasoning_fr": "La consolidation impose l’élimination intégrale des actifs, passifs, produits, charges et flux intragroupe. Donc la créance de dividende, la dette correspondante et le dividende intragroupe sont éliminés dans les comptes consolidés. Cette mécanique limite la couverture possible au seul risque de change résiduel admis par IFRS 9 sur un élément monétaire intragroupe.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Avant toute documentation de couverture, il faut identifier ce qui est éliminé en consolidation et ce qui peut encore créer un effet de change au niveau consolidé.",
+      "references": [
+        {
+          "document": "ifrs10",
+          "section": "B86",
+          "excerpt": "eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows"
+        },
+        {
+          "document": "ias24",
+          "section": "4",
+          "excerpt": "Intragroup related party transactions and outstanding balances are eliminated"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "separate_financials",
+      "label_fr": "Comptes séparés",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche ne répond pas à la situation posée, qui vise explicitement la consolidation. IFRS 9 précise que les transactions intragroupe peuvent être couvertes dans les états individuels ou séparés, mais pas dans les états consolidés, sauf exceptions limitées. Elle ne permet donc pas de fonder la réponse recherchée en consolidation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le fait qu’une couverture puisse exister en comptes séparés ne suffit pas à la transposer en comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements"
+        },
+        {
+          "document": "ias27",
+          "section": "4",
+          "excerpt": "Separate financial statements are those presented by an entity"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier la date de reconnaissance de la créance de dividende : la documentation ne peut viser qu’un élément existant et identifié.",
+    "Tester si les entités concernées ont des monnaies fonctionnelles différentes et si les écarts de change sur la créance affectent le résultat consolidé.",
+    "Éviter de désigner le dividende intragroupe éliminé comme élément couvert ; viser uniquement la créance intragroupe reconnue si l’exception IFRS 9 est satisfaite.",
+    "Conserver la démonstration de l’articulation entre éliminations de consolidation et risque de change résiduel au niveau du groupe."
+  ]
+}

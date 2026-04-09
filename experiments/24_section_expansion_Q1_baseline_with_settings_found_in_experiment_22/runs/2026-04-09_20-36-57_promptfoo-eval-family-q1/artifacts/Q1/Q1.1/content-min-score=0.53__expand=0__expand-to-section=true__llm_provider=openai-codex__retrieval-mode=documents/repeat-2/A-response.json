@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable creates foreign exchange exposure because the related entities have different functional currencies.",
+    "The question is asking about IFRS accounting models for hedging that foreign exchange exposure in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies a recognised asset or liability as a possible hedged item, which captures a receivable exposure and points to the fair value hedge accounting model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies a forecast transaction as a possible hedged item and refers to cash flow hedge accounting effects in OCI, making this a distinct IFRS hedge accounting model relevant to foreign exchange risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context expressly recognises a net investment in a foreign operation as a hedged item and includes guidance on net investment hedges, which is a separate hedge accounting model for foreign exchange risk in consolidation."
+    },
+    {
+      "id": "approach_4",
+      "label": "No hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "The context distinguishes derivatives designated in hedge accounting from derivatives not designated as hedging instruments, so accounting without hedge designation is a separate top-level IFRS model relevant to the issue."
+    }
+  ]
+}

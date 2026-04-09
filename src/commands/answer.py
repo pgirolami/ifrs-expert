@@ -253,6 +253,8 @@ class AnswerCommand:
         self.expand = resolved_options.expand
         self.full_doc_threshold = resolved_options.full_doc_threshold
         self.retrieval_mode = resolved_options.retrieval_mode
+        self.output_dir = resolved_options.output_dir
+        self.save_all = resolved_options.save_all
 
         self._retrieved_doc_uids: list[str] = []
         self._config = config

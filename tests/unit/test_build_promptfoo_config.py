@@ -158,8 +158,8 @@ def test_promptfoo_config_builder_writes_requested_output_path(tmp_path: Path) -
     assert "file://" in generated
 
 
-def test_promptfoo_config_builder_includes_q1_document_retrieval_defaults(tmp_path: Path) -> None:
-    """The checked-in Q1 family should emit the tuned document-retrieval defaults."""
+def test_promptfoo_config_builder_includes_q1_answer_command_defaults(tmp_path: Path) -> None:
+    """The checked-in Q1 family should emit the tuned answer-command defaults."""
     build_promptfoo_config = _load_build_promptfoo_module()
     builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=_repo_root())
 
@@ -168,8 +168,24 @@ def test_promptfoo_config_builder_includes_q1_document_retrieval_defaults(tmp_pa
 
     generated = builder.build_text(output_path=output_path)
 
-    assert "retrieval-mode: 'documents'" in generated
+    assert "k: 5" in generated
+    assert "min-score: 0.53" in generated
     assert "d: 25" in generated
+    assert "doc-min-score: null" in generated
     assert "ifrs-d: 4" in generated
+    assert "ias-d: 4" in generated
+    assert "ifric-d: 6" in generated
+    assert "sic-d: 6" in generated
+    assert "ps-d: 1" in generated
+    assert "ifrs-min-score: 0.53" in generated
+    assert "ias-min-score: 0.4" in generated
     assert "ifric-min-score: 0.48" in generated
+    assert "sic-min-score: 0.4" in generated
+    assert "ps-min-score: 0.4" in generated
     assert "content-min-score: 0.53" in generated
+    assert "expand-to-section: true" in generated
+    assert "expand: 0" in generated
+    assert "full-doc-threshold: 0" in generated
+    assert "retrieval-mode: 'documents'" in generated
+    assert "output-dir: null" not in generated
+    assert "save-all: false" not in generated

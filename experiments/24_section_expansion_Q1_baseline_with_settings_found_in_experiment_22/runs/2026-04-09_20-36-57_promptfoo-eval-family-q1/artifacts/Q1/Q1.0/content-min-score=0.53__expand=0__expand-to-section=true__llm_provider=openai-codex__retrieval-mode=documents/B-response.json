@@ -1,0 +1,96 @@
+{
+  "assumptions_fr": [
+    "La question vise les comptes consolidés IFRS et une créance de dividende intragroupe déjà comptabilisée.",
+    "La créance de dividende est libellée dans une devise différente de la monnaie fonctionnelle d’au moins une entité du groupe, de sorte qu’un risque de change existe.",
+    "Le dividende intragroupe ne constitue pas ici une couverture de l’investissement net dans une activité à l’étranger."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement via une relation de couverture de juste valeur sur la créance intragroupe déjà reconnue, si le risque de change sur cet élément monétaire n’est pas entièrement éliminé en consolidation. La couverture de flux de trésorerie n’est pas adaptée ici car l’exposition n’est plus une transaction future, et la couverture d’investissement net ne vise pas cette situation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende est un actif reconnu, donc un type d’élément pouvant relever de la comptabilité de couverture. En comptes consolidés, seuls les éléments avec des tiers externes sont normalement éligibles, sauf exception pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas entièrement éliminés à la consolidation. Une créance de dividende intragroupe peut entrer dans cette exception si elle est monétaire et exposée à ce risque résiduel.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe.",
+        "Le risque de change sur cette créance génère des écarts de change non entièrement éliminés en consolidation.",
+        "La documentation de couverture est mise en place au niveau consolidé sur ce risque de change."
+      ],
+      "practical_implication_fr": "Vous pouvez documenter une couverture au niveau consolidé sur le change de la créance, uniquement si l’exception intragroupe sur le risque de change est remplie.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise une transaction future hautement probable. Or, dans votre cas, une créance à recevoir a déjà été comptabilisée au titre du dividende intragroupe : l’exposition n’est donc plus une transaction future mais un poste reconnu. La logique de couverture pertinente n’est pas celle des flux futurs sur dividende attendu.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Une fois la créance de dividende constatée, il ne faut pas documenter ce risque comme une couverture de flux de trésorerie.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "The hedged item can be ... a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Votre question porte sur le change d’une créance de dividende intragroupe déjà comptabilisée, pas sur l’exposition de conversion liée à un investissement net dans une activité à l’étranger. La couverture d’investissement net traite le risque de change sur les net assets d’une activité étrangère, ce qui est d’une nature différente d’un dividende intragroupe à recevoir.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne documentez pas cette relation comme une couverture d’investissement net ; ce n’est pas l’objet du poste couvert décrit.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "12",
+          "excerpt": "The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity"
+        },
+        {
+          "document": "ifric16",
+          "section": "13",
+          "excerpt": "An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé est le moment : avant comptabilisation du dividende, on discute d’une transaction future ; après comptabilisation, on est sur une créance reconnue.",
+    "En consolidation, il faut démontrer que la créance de dividende est bien un élément monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés.",
+    "La documentation doit être établie au niveau consolidé en visant explicitement le risque de change de la créance, pas le dividende comme distribution intra-groupe en tant que telle.",
+    "Si la créance et la dette de dividende sont intégralement éliminées sans résidu de change en consolidation, la base IFRS pour la couverture en consolidé disparaît."
+  ]
+}

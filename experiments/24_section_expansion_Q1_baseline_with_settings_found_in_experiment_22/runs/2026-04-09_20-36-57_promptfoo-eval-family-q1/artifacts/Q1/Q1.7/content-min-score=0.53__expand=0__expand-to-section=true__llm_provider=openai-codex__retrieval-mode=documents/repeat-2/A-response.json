@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has resulted in a recognised monetary receivable in the consolidated financial statements.",
+    "The issue is assessed in the consolidated financial statements rather than only in separate financial statements.",
+    "The hedge being considered is a hedge of foreign currency risk under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "IAS 21 specifically addresses intragroup monetary assets and liabilities in consolidation and requires exchange differences to be recognised in profit or loss or, in specified cases, in OCI."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets and liabilities as eligible hedged items, making fair value hedge accounting a distinct hedge accounting model potentially relevant to a recognised foreign-currency receivable."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies forecast transactions and aggregated exposures as possible hedged items, so cash flow hedge accounting is a separate IFRS hedge model relevant to foreign currency exposures including certain intragroup transactions."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 establish net investment hedging as a distinct hedge accounting model for foreign currency risk relating to foreign operations, with OCI treatment and recycling on disposal."
+    }
+  ]
+}
