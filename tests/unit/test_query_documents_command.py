@@ -193,10 +193,15 @@ def test_query_documents_returns_error_when_index_missing() -> None:
 
 def test_query_documents_verbose_output_starts_with_options() -> None:
     """Verbose document-query output should start with options and truncated representation details."""
-    from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+    from src.commands.query_documents import (
+        QueryDocumentsCommand,
+        QueryDocumentsConfig,
+        QueryDocumentsOptions,
+        VERBOSE_TEXT_PREVIEW_CHARS,
+    )
 
-    long_background_text = "B" * 70
-    long_scope_text = "S" * 75
+    long_background_text = "B" * (VERBOSE_TEXT_PREVIEW_CHARS + 10)
+    long_scope_text = "S" * (VERBOSE_TEXT_PREVIEW_CHARS + 15)
 
     document_store = InMemoryDocumentStore()
     with document_store as store:
@@ -228,10 +233,13 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
 
     result = command.execute()
 
+    expected_background_preview = ("B" * VERBOSE_TEXT_PREVIEW_CHARS) + "..."
+    expected_scope_preview = ("S" * VERBOSE_TEXT_PREVIEW_CHARS) + "..."
+
     assert result.startswith("QueryDocumentsOptions(document_type='IFRIC', d=5, min_score=None, verbose=True)")
-    assert "Snippet: " + ("B" * 60) + "..." in result
+    assert f"Snippet: {expected_background_preview}" in result
     assert "Type: IFRIC" in result
     assert "Document representation:" in result
-    assert "- Background: " + ("B" * 60) + "..." in result
-    assert "- Scope: " + ("S" * 60) + "..." in result
+    assert f"- Background: {expected_background_preview}" in result
+    assert f"- Scope: {expected_scope_preview}" in result
     assert "- TOC: Background Issue Scope" in result

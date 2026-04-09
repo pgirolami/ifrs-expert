@@ -28,7 +28,7 @@ def test_excluded_section_titles_constant_contains_expected_values() -> None:
 
 def test_excluded_section_prefixes_constant_contains_expected_values() -> None:
     """The excluded section title prefixes contain the expected values."""
-    expected_prefixes = {"Withdrawal of", "Amendments to"}
+    expected_prefixes = {"Withdrawal of", "Amendments to", "Amendment to"}
     assert EXCLUDED_SECTION_TITLE_PREFIXES == expected_prefixes
 
 
