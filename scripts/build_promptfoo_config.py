@@ -238,7 +238,7 @@ class PromptfooConfigBuilder:
         project_relative = question_path.relative_to(self._project_root)
         relative_question_path = Path(os.path.relpath(question_path, start=self._output_path.parent)).as_posix()
         metadata: YamlObject = {
-            "family": family.family_id,
+            "family": f"{family.family_id}¤",
             "variant": f"{variant.variant_id}¤",
             "question_path": project_relative.as_posix(),
         }

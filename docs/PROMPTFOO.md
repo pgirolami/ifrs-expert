@@ -95,7 +95,7 @@ The direct runner remains available when raw Promptfoo arguments need to be forw
 uv run python scripts/run_promptfoo_eval.py \
   --experiment-dir promptfoo_regression \
   --description "Q1 mistral" \
-  -- --filter-metadata family=Q1 --filter-targets Mistral
+  -- --filter-metadata family=Q1¤ --filter-targets Mistral
 ```
 
 In normal project usage, prefer the `make` targets.
