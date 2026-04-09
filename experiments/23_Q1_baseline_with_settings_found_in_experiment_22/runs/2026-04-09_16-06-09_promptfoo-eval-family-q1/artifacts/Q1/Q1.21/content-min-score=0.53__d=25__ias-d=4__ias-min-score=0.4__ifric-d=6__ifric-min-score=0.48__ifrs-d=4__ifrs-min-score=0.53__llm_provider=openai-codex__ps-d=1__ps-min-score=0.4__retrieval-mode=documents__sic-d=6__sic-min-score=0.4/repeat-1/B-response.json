@@ -1,0 +1,103 @@
+{
+  "assumptions_fr": [
+    "La créance de dividendes est un élément monétaire comptabilisé, libellé en devise étrangère.",
+    "La question est appréciée au niveau des états financiers consolidés.",
+    "L’exposition visée est le risque de change sur une créance intragroupe existante."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidation, le risque de change d’un élément monétaire intragroupe peut être désigné comme élément couvert si les écarts de change ne sont pas totalement éliminés à la consolidation. En pratique, cela suppose typiquement des entités du groupe ayant des monnaies fonctionnelles différentes."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividendes est, selon l’hypothèse retenue, un actif reconnu. IFRS 9 permet qu’un élément monétaire intragroupe soit un élément couvert en consolidation pour le seul risque de change si ce risque génère des écarts de change non totalement éliminés. Dans ce cas, une désignation en fair value hedge est envisageable pour ce risque particulier.",
+      "conditions_fr": [
+        "La créance intragroupe doit générer des écarts de change non totalement éliminés en consolidation.",
+        "Le risque couvert doit être le seul risque de change sur la créance reconnue."
+      ],
+      "practical_implication_fr": "Vérifier d’abord que la créance de dividendes produit bien un effet de change résiduel en résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 permet une cash flow hedge sur la variabilité des flux de trésorerie d’un actif reconnu attribuable à un risque particulier. Comme la question vise une créance de dividendes existante en devise, cette voie n’est recevable que si l’entité documente que l’exposition couverte est bien la variabilité des flux en monnaie fonctionnelle résultant du change, et que l’élément intragroupe remplit l’exception de consolidation.",
+      "conditions_fr": [
+        "La créance intragroupe doit générer des écarts de change non totalement éliminés en consolidation.",
+        "La relation de couverture doit viser la variabilité des flux de trésorerie due au risque de change sur la créance reconnue."
+      ],
+      "practical_implication_fr": "La documentation de couverture doit être particulièrement précise sur la nature ‘cash flow’ de l’exposition de change couverte.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "the monetary item represents a commitment to convert one currency into another"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’un investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Une créance de dividendes intragroupe ne correspond pas, dans les faits décrits, à un investissement net dans une activité étrangère. IAS 21 réserve cette notion à un élément monétaire dont le règlement n’est ni planifié ni probable dans un avenir prévisible, ce qui ne cadre pas avec une créance de dividendes à encaisser. Cette approche ne s’applique donc pas à la situation décrite.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas traiter la créance de dividendes comme un élément d’investissement net sauf faits très différents de ceux posés.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "15",
+          "excerpt": "settlement is neither planned nor likely to occur in the foreseeable future"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(c)",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est la condition d’IFRS 9.6.3.6 : les écarts de change sur la créance intragroupe doivent ne pas être totalement éliminés en consolidation.",
+    "IAS 21.45 confirme qu’un élément monétaire intragroupe entre entités à monnaies fonctionnelles différentes peut laisser subsister un effet de change en consolidation.",
+    "Si cette condition n’est pas remplie, la créance de dividendes intragroupe ne peut pas être désignée comme élément couvert dans les comptes consolidés.",
+    "La couverture d’investissement net n’est pas adaptée à une créance de dividendes normale, car son règlement est en principe attendu."
+  ]
+}

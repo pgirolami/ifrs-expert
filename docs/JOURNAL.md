@@ -110,3 +110,15 @@ It documents how the system evolved from a single prompt to a structured, evalua
         - [Experiment 20](../experiments/20_check_results_are_still_good_with_all_public_ifrs_docs/EXPERIMENTS.md): all documents
 - Add Minimax API provider
 
+### 2026-04-08 - 2026-04-09
+- Worked on making retrieval much more focused so the tool still works with all public IFRS documents
+    - create a representation of the document based on key sections (background, scope, ...) and the table of contents to increase chances of surfacing very abstract documents like IFRS 9.
+        - filtered out sections with little information for the task at hand (Board of Approvals, References, Contents...)
+    - added a `query-documents` command to test document retrieval based on this & manually fine-tuned parameters so it surfaces IFRS 9 (easy) and IFRIC 16 (not as easy)
+    - extracted the retrieval pipeline and added a `retrieve` command that first retrieves documents and then only the chunks within those documents and did a quick test:
+        - Q1.0 (one of the best retrieval for IFRS 9 and worst for IFRIC 16) returns the right response
+        - Q1.18 (one of the worst retrieval for IFRS 9 and mid-performance for IFRIC 16) 
+    - run some manual experiments to get a sense of the parameters to use to consistently retrieve IFRS 9 and IFRIC 16, as well as the impact on the size of the context generated
+        - [Experiment 22](../experiments/2) (multiple sub experiments)
+
+

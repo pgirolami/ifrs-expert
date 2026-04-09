@@ -1,0 +1,129 @@
+{
+  "assumptions_fr": [
+    "L’exposition visée est un risque de change sur une créance intragroupe monétaire reconnue dans les états financiers consolidés.",
+    "L’entité envisage de documenter une relation de couverture selon IFRS 9 ou, si permis, selon IAS 39.",
+    "La créance relative à des dividendes est supposée être libellée dans une devise autre que la devise fonctionnelle de l’entité qui la comptabilise."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement si, dans les comptes consolidés, cette créance intragroupe peut être désignée comme élément couvert parce que son risque de change n’est pas entièrement éliminé à la consolidation, ou parce qu’elle reste présentée en consolidation. À défaut, une transaction intragroupe ne peut pas être couverte en hedge accounting au niveau consolidé."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance est un actif reconnu exposé au risque de change, ce qui peut correspondre à une exposition aux variations de juste valeur attribuables à un risque particulier. Toutefois, au niveau consolidé, un élément intragroupe n’est éligible que s’il entre dans l’exception visant le risque de change d’un élément monétaire intragroupe non totalement éliminé, ou s’il reste présenté en consolidation.",
+      "conditions_fr": [
+        "Le risque de change sur la créance intragroupe affecte le résultat consolidé et n’est pas entièrement éliminé à la consolidation, ou la créance reste présentée en consolidation.",
+        "La relation satisfait aux critères de qualification et de documentation du hedge accounting."
+      ],
+      "practical_implication_fr": "Possible en consolidation seulement si l’éligibilité spécifique de l’élément intragroupe est démontrée et documentée dès l’origine.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le modèle de cash flow hedge peut viser une exposition à la variabilité des flux de trésorerie d’un actif reconnu attribuable à un risque particulier. Pour cette créance intragroupe, cela n’est envisageable en consolidation que si le risque de change sur l’élément reste économiquement présent dans le résultat consolidé ou si l’élément n’est pas éliminé en consolidation.",
+      "conditions_fr": [
+        "Le risque de change sur la créance intragroupe peut être désigné comme élément couvert en consolidation selon l’exception applicable aux éléments monétaires intragroupe, ou parce que l’élément reste reconnu en consolidation.",
+        "La relation remplit les critères de documentation, de mesurabilité et d’efficacité requis."
+      ],
+      "practical_implication_fr": "Alternative possible, mais la justification de l’éligibilité en consolidation doit être explicite dans la documentation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question vise une créance de dividendes intragroupe reconnue, non un investissement net dans une activité étrangère. Le modèle de net investment hedge concerne le risque de change attaché à l’investissement net dans une opération étrangère; une créance de dividende ne correspond pas, dans ce schéma de faits, à cet objet de couverture.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle n’est pas le bon véhicule de couverture pour la créance de dividendes décrite.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "The item being hedged ... may be an amount of net assets"
+        },
+        {
+          "document": "ias21",
+          "section": "15",
+          "excerpt": "settlement is neither planned nor likely to occur in the foreseeable future"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "foreign_currency_accounting",
+      "label_fr": "Comptabilisation du change selon IAS 21",
+      "applicability": "oui",
+      "reasoning_fr": "Indépendamment du hedge accounting, une créance en devise est un élément monétaire et ses écarts de change sont comptabilisés selon IAS 21. C’est donc le traitement de base certain dans cette situation; le hedge accounting ne s’y ajoute que si les conditions d’éligibilité de l’élément intragroupe sont remplies en consolidation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "À défaut de qualification en couverture, les écarts de change restent comptabilisés selon IAS 21.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "23",
+          "excerpt": "foreign currency monetary items shall be translated using the closing rate"
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences ... shall be recognised in profit or loss"
+        },
+        {
+          "document": "ias21",
+          "section": "5",
+          "excerpt": "This Standard does not apply to hedge accounting for foreign currency items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d’abord pourquoi la créance intragroupe figure encore en consolidation : exception de non-élimination du risque de change sur élément monétaire intragroupe, ou cas d’investissement entity.",
+    "La documentation de couverture doit identifier précisément l’instrument de couverture, la créance couverte, le risque de change couvert et la méthode d’évaluation de l’efficacité dès l’origine.",
+    "Si la créance est éliminée en consolidation sans exposition résiduelle au résultat consolidé, elle ne peut pas être désignée comme élément couvert au niveau consolidé.",
+    "En l’absence de qualification en hedge accounting, appliquer IAS 21 et comptabiliser les écarts de change selon le traitement normal."
+  ]
+}

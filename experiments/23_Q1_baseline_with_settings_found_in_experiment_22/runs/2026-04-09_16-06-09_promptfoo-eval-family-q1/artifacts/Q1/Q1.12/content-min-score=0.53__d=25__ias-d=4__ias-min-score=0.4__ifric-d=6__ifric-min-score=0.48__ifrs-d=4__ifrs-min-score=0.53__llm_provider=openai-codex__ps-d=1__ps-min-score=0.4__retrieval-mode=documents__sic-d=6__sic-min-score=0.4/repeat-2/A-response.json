@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The intragroup dividend has already been recognised as an intercompany receivable, creating a monetary item exposed to foreign exchange risk.",
+    "The issue is the possible formal designation of that foreign exchange exposure within IFRS 9 hedge accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a separate hedge accounting model for exposures to variability in cash flows of recognised items or highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the dedicated IFRS model for hedging foreign currency risk arising from a net investment in a foreign operation, which is a distinct hedge accounting model relevant to consolidated foreign exchange exposures."
+    },
+    {
+      "id": "approach_4",
+      "label": "General accounting without hedge accounting",
+      "normalized_label": "general_accounting",
+      "rationale_for_inclusion": "The context also supports accounting for the derivative and the receivable outside a designated hedge relationship, with fair value changes on derivatives and gains or losses on financial instruments recognised under the normal IFRS 9 and IAS 32 rules."
+    }
+  ]
+}

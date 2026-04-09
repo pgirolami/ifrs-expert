@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has given rise to a recognised foreign-currency receivable before settlement.",
+    "The question concerns the accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model, including for foreign currency risk on highly probable forecast transactions and certain recognised items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a separate hedge accounting model for exposure to changes in fair value of recognised assets or liabilities attributable to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 treat a hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency exposure in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "IAS 21 provides the non-hedge accounting model for exchange differences on foreign-currency monetary items, including intragroup monetary balances in consolidated financial statements."
+    }
+  ]
+}

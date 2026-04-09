@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The intragroup dividend gives rise to an intragroup receivable and payable before consolidation eliminations.",
+    "The issue raised is the accounting model for foreign currency hedging of an intragroup item in consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model and addresses highly probable forecast transactions, including certain intragroup foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a separate hedge accounting model for recognised assets or liabilities, which is relevant where a receivable has been recognised."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge accounting for the foreign currency risk of a net investment in a foreign operation as a distinct top-level hedge accounting model relevant to intragroup foreign currency exposures in consolidation."
+    },
+    {
+      "id": "approach_4",
+      "label": "Consolidation elimination accounting",
+      "normalized_label": "consolidation_elimination",
+      "rationale_for_inclusion": "IFRS 10 requires full elimination of intragroup assets, liabilities, income, expenses and cash flows in consolidated financial statements, making this a distinct accounting model directly relevant to an intragroup dividend receivable."
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "A foreign-currency intragroup dividend gives rise or may give rise to a recognised intragroup receivable/payable and related foreign exchange effects."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a distinct hedge accounting model for recognised assets or liabilities exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a distinct hedge accounting model for variability in cash flows of recognised items or highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "Consolidation elimination accounting",
+      "normalized_label": "consolidation_elimination",
+      "rationale_for_inclusion": "IFRS 10 requires full elimination of intragroup assets, liabilities, income, expenses and cash flows in consolidated financial statements, making this a distinct accounting basis relevant to intragroup dividends and receivables."
+    },
+    {
+      "id": "approach_5",
+      "label": "Foreign currency accounting",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context includes IFRS guidance that some intragroup foreign currency effects may remain relevant in consolidated financial statements, making ordinary foreign currency accounting a distinct non-hedge model within the issue."
+    }
+  ]
+}

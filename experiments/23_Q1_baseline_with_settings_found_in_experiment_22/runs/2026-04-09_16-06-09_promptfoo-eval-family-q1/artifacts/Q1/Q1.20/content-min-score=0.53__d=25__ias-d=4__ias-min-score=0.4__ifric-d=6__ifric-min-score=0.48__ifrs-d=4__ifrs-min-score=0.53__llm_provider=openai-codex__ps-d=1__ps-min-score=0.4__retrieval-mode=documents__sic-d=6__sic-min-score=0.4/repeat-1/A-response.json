@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The exposure discussed is a foreign currency exposure arising on a recognised intragroup monetary receivable presented in consolidated financial statements.",
+    "The entity is considering hedge accounting under IFRS 9 or, where permitted, IAS 39."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge as a distinct hedge accounting model for exposures to changes in fair value of recognised assets or liabilities attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge as a distinct hedge accounting model for exposures to variability in cash flows attributable to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context identifies hedge of a net investment in a foreign operation as a separate hedge accounting model for foreign currency risk."
+    },
+    {
+      "id": "approach_4",
+      "label": "IAS 21 foreign currency accounting",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context includes the baseline accounting for foreign currency monetary items and exchange differences under IAS 21, which is relevant to the underlying exposure even apart from hedge accounting."
+    }
+  ]
+}

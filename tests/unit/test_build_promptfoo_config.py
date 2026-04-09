@@ -156,3 +156,20 @@ def test_promptfoo_config_builder_writes_requested_output_path(tmp_path: Path) -
     assert written == generated
     assert "tests:" in generated
     assert "file://" in generated
+
+
+def test_promptfoo_config_builder_includes_q1_document_retrieval_defaults(tmp_path: Path) -> None:
+    """The checked-in Q1 family should emit the tuned document-retrieval defaults."""
+    build_promptfoo_config = _load_build_promptfoo_module()
+    builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=_repo_root())
+
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+
+    generated = builder.build_text(output_path=output_path)
+
+    assert "retrieval-mode: 'documents'" in generated
+    assert "d: 25" in generated
+    assert "ifrs-d: 4" in generated
+    assert "ifric-min-score: 0.48" in generated
+    assert "content-min-score: 0.53" in generated

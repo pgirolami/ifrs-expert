@@ -20,7 +20,7 @@ import sys
 from dataclasses import dataclass
 from dataclasses import field as dataclass_field
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -31,6 +31,23 @@ from dotenv import load_dotenv  # noqa: E402
 from src.answer_artifacts import save_answer_command_result  # noqa: E402
 from src.commands import AnswerOptions  # noqa: E402
 from src.commands.answer import create_answer_command  # noqa: E402
+from src.commands.constants import (  # noqa: E402
+    DEFAULT_D_FOR_IAS_DOCUMENTS,
+    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_PS_DOCUMENTS,
+    DEFAULT_D_FOR_SIC_DOCUMENTS,
+    DEFAULT_EXPAND,
+    DEFAULT_FULL_DOC_THRESHOLD,
+    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+    DEFAULT_RETRIEVAL_K,
+    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
+    DEFAULT_RETRIEVE_DOCUMENT_D,
+)
 from src.logging_config import setup_logging  # noqa: E402
 
 if TYPE_CHECKING:
@@ -43,9 +60,8 @@ PROVIDER_OPTIONS_ARG_INDEX: Final[int] = 2
 CONTEXT_ARG_INDEX: Final[int] = 3
 MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS: Final[int] = 3
 MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
-DEFAULT_K: Final[int] = 5
-DEFAULT_MIN_SCORE: Final[float] = 0.55
-DEFAULT_EXPAND: Final[int] = 5
+DEFAULT_K: Final[int] = DEFAULT_RETRIEVAL_K
+DEFAULT_MIN_SCORE: Final[float] = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
 DEFAULT_RETRIEVAL_MODE: Final[str] = "text"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 
@@ -128,20 +144,30 @@ def _load_context() -> dict[str, object]:
     return raw_context if isinstance(raw_context, dict) else {}
 
 
+def _as_object_mapping(value: object) -> dict[str, object] | None:
+    """Return a dict[str, object] view when the value is a string-keyed dict."""
+    if not isinstance(value, dict):
+        return None
+    for key in value:
+        if not isinstance(key, str):
+            return None
+    return cast("dict[str, object]", value)
+
+
 def _extract_mode(context: dict[str, object]) -> str:
     """Extract the eval mode from Promptfoo context, defaulting to live."""
-    test_data = context.get("test")
-    if isinstance(test_data, dict):
-        options = test_data.get("options")
-        if isinstance(options, dict):
+    test_data = _as_object_mapping(context.get("test"))
+    if test_data is not None:
+        options = _as_object_mapping(test_data.get("options"))
+        if options is not None:
             mode = options.get("mode")
             if isinstance(mode, str) and mode in {"canned", "live"}:
                 return mode
 
-    prompt_data = context.get("prompt")
-    if isinstance(prompt_data, dict):
-        prompt_config = prompt_data.get("config")
-        if isinstance(prompt_config, dict):
+    prompt_data = _as_object_mapping(context.get("prompt"))
+    if prompt_data is not None:
+        prompt_config = _as_object_mapping(prompt_data.get("config"))
+        if prompt_config is not None:
             mode = prompt_config.get("mode")
             if isinstance(mode, str) and mode in {"canned", "live"}:
                 return mode
@@ -165,34 +191,82 @@ class ExtractionOptions:
 
     k: int = DEFAULT_K
     min_score: float = DEFAULT_MIN_SCORE
+    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
+    doc_min_score: float | None = None
+    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
+    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
+    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
+    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
+    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
+    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
+    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
+    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
+    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
+    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
+    content_min_score: float | None = None
+    expand_to_section: bool = False
     expand: int = DEFAULT_EXPAND
+    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
     retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
     # Key-value pairs for artifact directory naming
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
 
 
-def _extract_int_from_mapping(mapping: dict[str, object], key: str, fallback: int) -> int:
+AliasKey = str | tuple[str, ...]
+
+
+def _iter_alias_keys(keys: AliasKey) -> tuple[str, ...]:
+    """Normalize one key or tuple of keys into a tuple for lookup."""
+    if isinstance(keys, str):
+        return (keys,)
+    return keys
+
+
+def _extract_raw_value_from_mapping(mapping: dict[str, object], keys: AliasKey) -> object | None:
+    """Extract the first matching raw value from a mapping using alias keys."""
+    for key in _iter_alias_keys(keys):
+        if key in mapping:
+            return mapping[key]
+    return None
+
+
+def _extract_int_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: int) -> int:
     """Extract an integer override from one mapping."""
-    value = mapping.get(key)
-    if isinstance(value, (int, float)) and value >= 0:
+    value = _extract_raw_value_from_mapping(mapping, key)
+    if isinstance(value, int | float) and value >= 0:
         return int(value)
     return fallback
 
 
-def _extract_float_from_mapping(mapping: dict[str, object], key: str, fallback: float) -> float:
+def _extract_float_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: float) -> float:
     """Extract a float override from one mapping."""
-    value = mapping.get(key)
-    if isinstance(value, (int, float)) and 0.0 <= value <= 1.0:
+    value = _extract_raw_value_from_mapping(mapping, key)
+    if isinstance(value, int | float) and 0.0 <= value <= 1.0:
         return float(value)
+    return fallback
+
+
+def _extract_optional_float_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: float | None) -> float | None:
+    """Extract an optional float override from one mapping."""
+    value = _extract_raw_value_from_mapping(mapping, key)
+    if isinstance(value, int | float) and 0.0 <= value <= 1.0:
+        return float(value)
+    return fallback
+
+
+def _extract_bool_from_mapping(mapping: dict[str, object], key: AliasKey, *, fallback: bool) -> bool:
+    """Extract a boolean override from one mapping."""
+    value = _extract_raw_value_from_mapping(mapping, key)
+    if isinstance(value, bool):
+        return value
     return fallback
 
 
 def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: str) -> str:
     """Extract a retrieval mode override from one mapping."""
-    for key in ("retrieval-mode", "retrieval_mode"):
-        value = mapping.get(key)
-        if isinstance(value, str) and value in {"text", "titles"}:
-            return value
+    value = _extract_raw_value_from_mapping(mapping, ("retrieval-mode", "retrieval_mode"))
+    if isinstance(value, str) and value in {"text", "titles", "documents"}:
+        return value
     return fallback
 
 
@@ -200,7 +274,7 @@ def _build_config_kv(mapping: dict[str, object]) -> dict[str, str]:
     """Build a dict of string key-value pairs from a mapping, excluding nested dicts, id and basePath."""
     result: dict[str, str] = {}
     for key, value in mapping.items():
-        if key == "basePath" or key == "id":
+        if key in {"basePath", "id"}:
             continue
         if isinstance(value, (str, int, float, bool)):
             result[str(key)] = str(value)
@@ -221,23 +295,79 @@ def _extract_options(
     """Extract AnswerOptions overrides from Promptfoo provider options and context."""
     k = DEFAULT_K
     min_score = DEFAULT_MIN_SCORE
+    d = DEFAULT_RETRIEVE_DOCUMENT_D
+    doc_min_score: float | None = None
+    ifrs_d = DEFAULT_D_FOR_IFRS_DOCUMENTS
+    ias_d = DEFAULT_D_FOR_IAS_DOCUMENTS
+    ifric_d = DEFAULT_D_FOR_IFRIC_DOCUMENTS
+    sic_d = DEFAULT_D_FOR_SIC_DOCUMENTS
+    ps_d = DEFAULT_D_FOR_PS_DOCUMENTS
+    ifrs_min_score = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
+    ias_min_score = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
+    ifric_min_score = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
+    sic_min_score = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
+    ps_min_score = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
+    content_min_score: float | None = None
+    expand_to_section = False
     expand = DEFAULT_EXPAND
+    full_doc_threshold = DEFAULT_FULL_DOC_THRESHOLD
     retrieval_mode = DEFAULT_RETRIEVAL_MODE
     config_kv: dict[str, str] = {}
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
         k = _extract_int_from_mapping(mapping, "k", k)
-        min_score = _extract_float_from_mapping(mapping, "min-score", min_score)
-        # Support both 'e' and 'expand' keys
+        min_score = _extract_float_from_mapping(mapping, ("min-score", "min_score"), min_score)
+        d = _extract_int_from_mapping(mapping, "d", d)
+        doc_min_score = _extract_optional_float_from_mapping(mapping, ("doc-min-score", "doc_min_score"), doc_min_score)
+        ifrs_d = _extract_int_from_mapping(mapping, ("ifrs-d", "ifrs_d"), ifrs_d)
+        ias_d = _extract_int_from_mapping(mapping, ("ias-d", "ias_d"), ias_d)
+        ifric_d = _extract_int_from_mapping(mapping, ("ifric-d", "ifric_d"), ifric_d)
+        sic_d = _extract_int_from_mapping(mapping, ("sic-d", "sic_d"), sic_d)
+        ps_d = _extract_int_from_mapping(mapping, ("ps-d", "ps_d"), ps_d)
+        ifrs_min_score = _extract_float_from_mapping(mapping, ("ifrs-min-score", "ifrs_min_score"), ifrs_min_score)
+        ias_min_score = _extract_float_from_mapping(mapping, ("ias-min-score", "ias_min_score"), ias_min_score)
+        ifric_min_score = _extract_float_from_mapping(mapping, ("ifric-min-score", "ifric_min_score"), ifric_min_score)
+        sic_min_score = _extract_float_from_mapping(mapping, ("sic-min-score", "sic_min_score"), sic_min_score)
+        ps_min_score = _extract_float_from_mapping(mapping, ("ps-min-score", "ps_min_score"), ps_min_score)
+        content_min_score = _extract_optional_float_from_mapping(
+            mapping,
+            ("content-min-score", "content_min_score"),
+            content_min_score,
+        )
+        expand_to_section = _extract_bool_from_mapping(
+            mapping,
+            ("expand-to-section", "expand_to_section"),
+            fallback=expand_to_section,
+        )
+        # Support both 'e' and 'expand' keys.
         expand = _extract_int_from_mapping(mapping, "e", _extract_int_from_mapping(mapping, "expand", expand))
+        full_doc_threshold = _extract_int_from_mapping(
+            mapping,
+            ("f", "full-doc-threshold", "full_doc_threshold"),
+            full_doc_threshold,
+        )
         retrieval_mode = _extract_retrieval_mode_from_mapping(mapping, retrieval_mode)
-        # Merge config key-values for artifact directory naming
         config_kv = _merge_config_kv(config_kv, _build_config_kv(mapping))
 
     return ExtractionOptions(
         k=k,
         min_score=min_score,
+        d=d,
+        doc_min_score=doc_min_score,
+        ifrs_d=ifrs_d,
+        ias_d=ias_d,
+        ifric_d=ifric_d,
+        sic_d=sic_d,
+        ps_d=ps_d,
+        ifrs_min_score=ifrs_min_score,
+        ias_min_score=ias_min_score,
+        ifric_min_score=ifric_min_score,
+        sic_min_score=sic_min_score,
+        ps_min_score=ps_min_score,
+        content_min_score=content_min_score,
+        expand_to_section=expand_to_section,
         expand=expand,
+        full_doc_threshold=full_doc_threshold,
         retrieval_mode=retrieval_mode,
         config_kv=config_kv,
     )
@@ -259,8 +389,9 @@ def _append_mapping_if_dict(
     value: object,
 ) -> None:
     """Append a value when it is a dict[str, object]."""
-    if isinstance(value, dict):
-        mappings.append(value)
+    mapping = _as_object_mapping(value)
+    if mapping is not None:
+        mappings.append(mapping)
 
 
 def _candidate_llm_provider_mappings(
@@ -272,12 +403,12 @@ def _candidate_llm_provider_mappings(
     _append_mapping_if_dict(mappings, provider_options.get("config"))
     _append_mapping_if_dict(mappings, provider_options.get("env"))
 
-    test_data = context.get("test")
-    if isinstance(test_data, dict):
+    test_data = _as_object_mapping(context.get("test"))
+    if test_data is not None:
         _append_mapping_if_dict(mappings, test_data.get("options"))
 
-    prompt_data = context.get("prompt")
-    if isinstance(prompt_data, dict):
+    prompt_data = _as_object_mapping(context.get("prompt"))
+    if prompt_data is not None:
         _append_mapping_if_dict(mappings, prompt_data.get("config"))
 
     return mappings
@@ -330,10 +461,10 @@ def _artifact_output_dir(
 
     family = "unknown-family"
     variant = "unknown-variant"
-    test_data = context.get("test")
-    if isinstance(test_data, dict):
-        metadata = test_data.get("metadata")
-        if isinstance(metadata, dict):
+    test_data = _as_object_mapping(context.get("test"))
+    if test_data is not None:
+        metadata = _as_object_mapping(test_data.get("metadata"))
+        if metadata is not None:
             family_value = metadata.get("family")
             if isinstance(family_value, str) and family_value.strip():
                 family = family_value.strip()
@@ -382,7 +513,22 @@ def _run_live(
         options=AnswerOptions(
             k=options.k,
             min_score=options.min_score,
+            d=options.d,
+            doc_min_score=options.doc_min_score,
+            ifrs_d=options.ifrs_d,
+            ias_d=options.ias_d,
+            ifric_d=options.ifric_d,
+            sic_d=options.sic_d,
+            ps_d=options.ps_d,
+            ifrs_min_score=options.ifrs_min_score,
+            ias_min_score=options.ias_min_score,
+            ifric_min_score=options.ifric_min_score,
+            sic_min_score=options.sic_min_score,
+            ps_min_score=options.ps_min_score,
+            content_min_score=options.content_min_score,
+            expand_to_section=options.expand_to_section,
             expand=options.expand,
+            full_doc_threshold=options.full_doc_threshold,
             retrieval_mode=options.retrieval_mode,
         ),
     )

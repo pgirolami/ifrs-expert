@@ -93,6 +93,19 @@ def test_build_promptfoo_args_adds_family_variant_and_provider_filters() -> None
     ]
 
 
+def test_build_default_description_includes_active_filters() -> None:
+    """The default description should summarize the active Promptfoo filters."""
+    run_promptfoo_eval = _load_run_promptfoo_eval_module()
+
+    description = run_promptfoo_eval.build_default_description(
+        family="Q1",
+        variant="Q1.0",
+        provider="OpenAI GPT 5.4",
+    )
+
+    assert description == "promptfoo eval family=Q1 variant=Q1.0 provider=OpenAI GPT 5.4"
+
+
 def test_resolve_experiment_dir_prefixes_repo_experiments_root() -> None:
     """Bare experiment names should resolve under the repository experiments directory."""
     run_promptfoo_eval = _load_run_promptfoo_eval_module()

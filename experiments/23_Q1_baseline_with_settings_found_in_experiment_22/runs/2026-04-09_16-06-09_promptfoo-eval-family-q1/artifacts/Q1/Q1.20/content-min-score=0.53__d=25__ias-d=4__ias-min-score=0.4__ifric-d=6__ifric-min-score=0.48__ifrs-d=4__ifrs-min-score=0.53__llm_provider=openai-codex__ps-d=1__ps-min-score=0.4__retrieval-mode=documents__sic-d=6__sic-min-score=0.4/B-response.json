@@ -1,0 +1,132 @@
+{
+  "assumptions_fr": [
+    "L’exposition visée est un risque de change sur une créance de dividendes intragroupe reconnue dans les états financiers consolidés.",
+    "La question porte sur la possibilité de désigner cette exposition comme élément couvert en hedge accounting dans les comptes consolidés.",
+    "La créance est traitée comme un élément monétaire générant des écarts de change en résultat selon IAS 21, sauf si elle fait en substance partie d’un investissement net dans une activité à l’étranger."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, seulement si la créance de dividendes intragroupe constitue un élément monétaire dont le risque de change n’est pas totalement éliminé en consolidation. Dans ce cas, une documentation de hedge accounting peut être envisagée ; sinon, la règle générale d’exclusion des éléments intragroupe s’applique."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans les comptes consolidés, un élément intragroupe ne peut en principe pas être désigné comme élément couvert. Toutefois, IAS 39 et IFRS 9 prévoient une exception pour le risque de change d’un élément monétaire intragroupe lorsqu’il crée des gains ou pertes de change non totalement éliminés en consolidation. Si la créance de dividendes répond à ce cas, une couverture de juste valeur est envisageable car le risque couvert affecte le résultat.",
+      "conditions_fr": [
+        "La créance de dividendes doit être un élément monétaire intragroupe.",
+        "Les écarts de change correspondants doivent ne pas être totalement éliminés en consolidation.",
+        "La relation de couverture doit satisfaire aux critères formels de désignation et d’efficacité applicables."
+      ],
+      "practical_implication_fr": "Possible en consolidation uniquement si l’exposition de change subsiste réellement après éliminations ; sinon, pas de fair value hedge documentable.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias39",
+          "section": "86(a)",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value"
+        },
+        {
+          "document": "ias39",
+          "section": "88",
+          "excerpt": "At the inception of the hedge there is formal designation and documentation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "La situation décrite vise une créance déjà reconnue, dont la sensibilité provient d’écarts de change sur un montant monétaire existant. Le contexte fourni rattache l’exception intragroupe à un élément monétaire exposé à des gains ou pertes de change non éliminés, ce qui correspond ici à une exposition sur poste reconnu, pas à une transaction future hautement probable à documenter en cash flow hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Dans ce cas précis, la piste opérationnelle n’est pas la cash flow hedge mais, le cas échéant, une hedge documentation de type juste valeur.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "86(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ias39",
+          "section": "88(c)",
+          "excerpt": "For cash flow hedges, a forecast transaction ... must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2(b)",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Une créance de dividendes intragroupe n’est pas, en elle-même, le risque de change d’un investissement net dans une activité à l’étranger. IFRIC 16 et IAS 21 visent le montant de l’intérêt dans les actifs nets d’une activité étrangère, ou un élément monétaire dont le règlement n’est ni planifié ni probable à court terme ; une créance de dividendes n’est pas décrite ainsi ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation de net investment hedge ne paraît pas adaptée à une créance de dividendes exigible figurant en consolidation.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "The item being hedged ... may be an amount of net assets"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency"
+        },
+        {
+          "document": "ias21",
+          "section": "15",
+          "excerpt": "An item for which settlement is neither planned nor likely to occur in the foreseeable future is, in substance, a part of the entity’s net investment"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "foreign_currency_accounting",
+      "label_fr": "Comptabilisation du change sans hedge accounting",
+      "applicability": "oui",
+      "reasoning_fr": "À défaut d’une désignation admissible en couverture, IAS 21 constitue le traitement de base. Les écarts de change sur un élément monétaire en devise sont reconnus en résultat, sauf cas particuliers comme l’investissement net. Cette approche s’applique nécessairement si les conditions de l’exception intragroupe pour hedge accounting ne sont pas remplies.",
+      "conditions_fr": [],
+      "practical_implication_fr": "En l’absence de couverture qualifiante, la volatilité de change de la créance reste comptabilisée selon IAS 21.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "23(a)",
+          "excerpt": "foreign currency monetary items shall be translated using the closing rate"
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences ... shall be recognised in profit or loss"
+        },
+        {
+          "document": "ias21",
+          "section": "5",
+          "excerpt": "This Standard does not apply to hedge accounting for foreign currency items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif en consolidation est de démontrer que la créance de dividendes est bien un élément monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés.",
+    "Si cette démonstration n’est pas possible, aucune hedge documentation IFRS ne peut viser cette créance dans les comptes consolidés.",
+    "Si elle est possible, la documentation doit être mise en place dès l’origine de la relation de couverture avec désignation formelle, risque couvert et méthode d’évaluation de l’efficacité.",
+    "En l’absence de hedge accounting qualifiant, les écarts de change suivent IAS 21 et passent en résultat."
+  ]
+}

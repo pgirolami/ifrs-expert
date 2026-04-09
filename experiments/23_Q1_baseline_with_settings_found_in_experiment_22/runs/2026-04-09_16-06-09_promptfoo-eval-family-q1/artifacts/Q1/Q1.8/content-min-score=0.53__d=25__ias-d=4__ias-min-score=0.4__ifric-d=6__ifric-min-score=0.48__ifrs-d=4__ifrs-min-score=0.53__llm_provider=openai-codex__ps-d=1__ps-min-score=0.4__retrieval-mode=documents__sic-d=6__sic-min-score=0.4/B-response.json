@@ -1,0 +1,68 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe déclaré a donné lieu à une créance et à une dette comptabilisées, libellées en devise étrangère, constituant un élément monétaire.",
+    "La question vise le traitement dans les états financiers consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, la comptabilité de couverture peut viser le risque de change d’un élément monétaire intragroupe, y compris une créance de dividende, si ce risque génère des écarts de change non intégralement éliminés en consolidation. Il faut en plus satisfaire aux critères formels d’IFRS 9 pour la relation de couverture."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende intragroupe déjà comptabilisée est supposée être un élément monétaire en devise. IFRS 9 interdit en principe les éléments intragroupe en consolidation, mais prévoit une exception pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation. La relation ne peut toutefois être retenue que si les critères de désignation, documentation et efficacité sont remplis.",
+      "conditions_fr": [
+        "La créance/dette de dividende intragroupe doit créer des écarts de change non totalement éliminés en consolidation, notamment entre entités ayant des monnaies fonctionnelles différentes.",
+        "La relation de couverture doit satisfaire aux critères d’IFRS 9, y compris la désignation formelle, la documentation initiale et les exigences d’efficacité."
+      ],
+      "practical_implication_fr": "Si ces conditions sont remplies, l’exposition de change sur la créance de dividende peut être désignée comme élément couvert en consolidation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.4.1",
+          "excerpt": "At the inception of the hedging relationship there is formal designation and documentation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "financial_instrument_accounting",
+      "label_fr": "Comptabilisation ordinaire des instruments financiers",
+      "applicability": "oui",
+      "reasoning_fr": "À défaut de désignation en couverture, la créance financière reste comptabilisée selon les règles ordinaires d’IFRS 9. Les gains ou pertes sur un actif financier mesuré au coût amorti, y compris les écarts de change visés par le guide d’application, sont comptabilisés en résultat. Cette approche demeure donc applicable dans cette situation comme traitement par défaut hors couverture.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sans relation de couverture qualifiante, les effets de change sur la créance sont traités en résultat selon la comptabilisation ordinaire.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "5.7.2",
+          "excerpt": "A gain or loss on a financial asset that is measured at amortised cost ... shall be recognised in profit or loss"
+        },
+        {
+          "document": "ias32",
+          "section": "11",
+          "excerpt": "A financial asset is any asset that is: ... a contractual right: to receive cash or another financial asset"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point déterminant en consolidation est de vérifier si la créance de dividende intragroupe produit des écarts de change non intégralement éliminés.",
+    "La désignation en couverture doit intervenir avec documentation formelle de l’instrument de couverture, de l’élément couvert, du risque couvert et du test d’efficacité.",
+    "Si les critères de couverture ne sont pas réunis, le traitement de repli est la comptabilisation ordinaire IFRS 9 en résultat.",
+    "La question porte sur la consolidation : la conclusion découle de l’exception spécifique d’IFRS 9 pour les éléments monétaires intragroupe."
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des états financiers consolidés établis selon les IFRS.",
+    "Le dividende intragroupe a fait naître une créance et une dette monétaires avant les éliminations de consolidation.",
+    "Les entités concernées ont des monnaies fonctionnelles différentes, de sorte qu’un risque de change peut subsister en consolidation.",
+    "La question vise l’éligibilité à la comptabilité de couverture du risque de change, et non la simple couverture économique."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, cela peut être recevable en consolidation si la créance/dette intragroupe est un élément monétaire exposé à des écarts de change non totalement éliminés en consolidation. En pratique, cela oriente vers une couverture de juste valeur du risque de change, et non vers une couverture de flux de trésorerie ou de net investment sur ces faits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende est un poste monétaire reconnu, exposé au risque de change. En consolidation, IAS 21 précise qu’un actif/passif monétaire intragroupe ne peut pas être éliminé sans faire apparaître les effets de change, et IFRS 9 admet, par exception, la couverture du risque de change d’un poste monétaire intragroupe lorsque ces écarts ne sont pas totalement éliminés.",
+      "conditions_fr": [
+        "La créance/dette de dividende constitue un poste monétaire intragroupe entre entités de monnaies fonctionnelles différentes.",
+        "Les écarts de change sur ce poste affectent le résultat consolidé et ne sont pas totalement éliminés en consolidation.",
+        "La relation de couverture satisfait aux exigences formelles de désignation, documentation et efficacité d’IFRS 9."
+      ],
+      "practical_implication_fr": "La documentation de couverture peut être recevable si elle vise le risque de change du poste monétaire intragroupe reconnu et démontré en résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "cannot be eliminated ... without showing the results of currency fluctuations"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Les faits décrits portent sur un dividende déjà déclaré ayant donné lieu à la reconnaissance d’une créance. À ce stade, le sujet n’est plus une transaction future hautement probable ni une variabilité de flux futurs au sens principal d’IFRS 9, mais un poste monétaire reconnu exposé au change.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La base IFRS la plus cohérente n’est pas la couverture de flux de trésorerie pour un dividende déjà comptabilisé en créance.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "a highly probable forecast intragroup transaction may qualify"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question vise une créance de dividende intragroupe reconnue, non un montant de net assets d’une opération étrangère. IFRIC 16 encadre la couverture du risque de change d’un investissement net dans une activité à l’étranger ; ce n’est pas la qualification naturelle d’un dividende intragroupe devenu recevable.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il ne faut pas documenter ce cas comme une couverture d’investissement net sur la seule base de la créance de dividende.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.5.2",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "foreign_currency_accounting",
+      "label_fr": "Comptabilisation IAS 21 du change",
+      "applicability": "oui",
+      "reasoning_fr": "Indépendamment de la comptabilité de couverture, IAS 21 s’applique nécessairement au poste monétaire intragroupe. En consolidation, les écarts de change sur un actif/passif monétaire intragroupe entre entités de monnaies fonctionnelles différentes ne disparaissent pas mécaniquement et sont reconnus en résultat, sauf cas particulier de l’investissement net.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Même sans hedge accounting, les écarts de change sur la créance de dividende doivent être traités selon IAS 21 dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "such an exchange difference is recognised in profit or loss"
+        },
+        {
+          "document": "ias21",
+          "section": "52",
+          "excerpt": "the amount of exchange differences recognised in profit or loss"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d’abord si la créance de dividende subsiste comme poste monétaire exposé au change entre entités de monnaies fonctionnelles différentes.",
+    "Démontrer que les écarts de change sur ce poste ne sont pas totalement éliminés en consolidation et affectent bien le résultat consolidé.",
+    "Si une couverture est documentée, la désignation doit viser le risque de change du poste monétaire intragroupe reconnu, avec documentation et test d’efficacité conformes à IFRS 9.",
+    "Ne pas retenir une couverture de flux de trésorerie lorsque le dividende a déjà donné lieu à une créance reconnue.",
+    "Ne pas assimiler automatiquement ce cas à une couverture d’investissement net ; cette logique vise les net assets d’une opération étrangère, pas une créance de dividende intragroupe."
+  ]
+}

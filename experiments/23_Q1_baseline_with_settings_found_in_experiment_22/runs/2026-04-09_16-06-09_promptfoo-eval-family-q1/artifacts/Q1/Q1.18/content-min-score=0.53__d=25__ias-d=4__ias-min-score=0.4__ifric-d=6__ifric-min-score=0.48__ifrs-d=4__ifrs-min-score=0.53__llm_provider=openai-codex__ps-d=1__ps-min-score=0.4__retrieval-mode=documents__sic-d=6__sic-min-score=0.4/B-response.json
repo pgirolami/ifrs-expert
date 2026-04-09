@@ -1,0 +1,60 @@
+{
+  "assumptions_fr": [
+    "La question concerne des états financiers consolidés.",
+    "La créance sur dividendes intragroupe est un solde intragroupe entre entités du groupe.",
+    "L’exposition de change alléguée n’affecte les états financiers consolidés que dans la mesure prévue par les règles IFRS citées sur les éléments couverts intragroupe."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "Dans cette situation, la créance sur dividendes intragroupe est éliminée en consolidation et ne constitue pas, en elle-même, un élément couvert distinct éligible au niveau consolidé. Les exceptions IFRS 9 pour les éléments intragroupe visent des cas précis, notamment certains postes monétaires ou transactions prévues affectant le résultat consolidé."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Au niveau consolidé, seuls des actifs, passifs, engagements fermes ou transactions prévues avec une partie externe peuvent en principe être désignés comme éléments couverts. L’exception intragroupe ne vise que le risque de change sur certains postes monétaires ou transactions prévues affectant le résultat consolidé. Une créance sur dividendes intragroupe, éliminée en consolidation, ne constitue donc pas ici une exposition distincte éligible.",
+      "conditions_fr": [],
+      "practical_implication_fr": "L’exposition de change liée à cette créance de dividendes intragroupe ne doit pas être désignée comme élément couvert dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item ... if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "consolidation_accounting",
+      "label_fr": "comptabilisation de consolidation",
+      "applicability": "oui",
+      "reasoning_fr": "Les soldes et transactions intragroupe sont divulgués dans les comptes individuels mais éliminés lors de l’établissement des comptes consolidés. Une créance sur dividendes intragroupe ne subsiste donc pas comme poste distinct du groupe. En conséquence, la consolidation ne fait pas naître, à elle seule, une exposition de change autonome sur cette créance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il faut d’abord éliminer la créance et le dividende intragroupe en consolidation avant d’apprécier toute exposition de change résiduelle au niveau du groupe.",
+      "references": [
+        {
+          "document": "ias24",
+          "section": "4",
+          "excerpt": "Intragroup related party transactions and outstanding balances are eliminated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements ... and not in the consolidated financial statements"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Au niveau consolidé, commencer par l’élimination complète du dividende et de la créance intragroupe.",
+    "Ne retenir une exception IFRS 9 pour un élément intragroupe qu’en présence d’un risque de change non pleinement éliminé en consolidation et affectant le résultat consolidé.",
+    "Si une couverture existe, vérifier si elle se rattache plutôt à une exposition de net investment qu’à la créance sur dividendes elle-même."
+  ]
+}

@@ -252,11 +252,53 @@ def test_extract_options_accepts_retrieval_mode_alias() -> None:
     run_answer = _load_run_answer_module()
 
     options = run_answer._extract_options(
-        provider_options={"config": {"retrieval_mode": "titles"}},
+        provider_options={"config": {"retrieval_mode": "documents"}},
         context={},
     )
 
-    assert options.retrieval_mode == "titles"
+    assert options.retrieval_mode == "documents"
+
+
+def test_extract_options_reads_document_retrieval_overrides_from_config() -> None:
+    """The wrapper should extract document-mode retrieval overrides from Promptfoo config."""
+    run_answer = _load_run_answer_module()
+
+    options = run_answer._extract_options(
+        provider_options={
+            "config": {
+                "retrieval-mode": "documents",
+                "d": 25,
+                "ifrs-d": 4,
+                "ias-d": 4,
+                "ifric-d": 6,
+                "sic-d": 6,
+                "ps-d": 1,
+                "ifrs-min-score": 0.53,
+                "ias-min-score": 0.4,
+                "ifric-min-score": 0.48,
+                "sic-min-score": 0.4,
+                "ps-min-score": 0.4,
+                "content-min-score": 0.53,
+            }
+        },
+        context={},
+    )
+
+    assert options.retrieval_mode == "documents"
+    assert options.d == 25
+    assert options.ifrs_d == 4
+    assert options.ias_d == 4
+    assert options.ifric_d == 6
+    assert options.sic_d == 6
+    assert options.ps_d == 1
+    assert options.ifrs_min_score == 0.53
+    assert options.ias_min_score == 0.4
+    assert options.ifric_min_score == 0.48
+    assert options.sic_min_score == 0.4
+    assert options.ps_min_score == 0.4
+    assert options.content_min_score == 0.53
+    assert options.config_kv["retrieval-mode"] == "documents"
+    assert options.config_kv["ifric-min-score"] == "0.48"
 
 
 def test_build_config_kv_excludes_nested_dicts() -> None:
@@ -294,8 +336,8 @@ def test_extract_float_from_mapping_validates_range() -> None:
     assert run_answer._extract_float_from_mapping({"min-score": 1.5}, "min-score", 0.55) == 0.55  # Out of range, uses fallback
 
 
-def test_run_live_passes_retrieval_mode_to_answer_command(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The Promptfoo wrapper should forward retrieval mode into the answer pipeline."""
+def test_run_live_passes_document_retrieval_options_to_answer_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Promptfoo wrapper should forward document-mode retrieval options into the answer pipeline."""
     run_answer = _load_run_answer_module()
     captured: dict[str, object] = {}
 
@@ -316,7 +358,24 @@ def test_run_live_passes_retrieval_mode_to_answer_command(monkeypatch: pytest.Mo
         question="Question?",
         llm_provider=None,
         context={},
-        options=run_answer.ExtractionOptions(k=7, min_score=0.4, expand=2, retrieval_mode="titles"),
+        options=run_answer.ExtractionOptions(
+            k=7,
+            min_score=0.4,
+            d=25,
+            ifrs_d=4,
+            ias_d=4,
+            ifric_d=6,
+            sic_d=6,
+            ps_d=1,
+            ifrs_min_score=0.53,
+            ias_min_score=0.4,
+            ifric_min_score=0.48,
+            sic_min_score=0.4,
+            ps_min_score=0.4,
+            content_min_score=0.53,
+            expand=2,
+            retrieval_mode="documents",
+        ),
     )
 
     assert exit_code == 0
@@ -326,5 +385,17 @@ def test_run_live_passes_retrieval_mode_to_answer_command(monkeypatch: pytest.Mo
     assert isinstance(answer_options, run_answer.AnswerOptions)
     assert answer_options.k == 7
     assert answer_options.min_score == 0.4
+    assert answer_options.d == 25
+    assert answer_options.ifrs_d == 4
+    assert answer_options.ias_d == 4
+    assert answer_options.ifric_d == 6
+    assert answer_options.sic_d == 6
+    assert answer_options.ps_d == 1
+    assert answer_options.ifrs_min_score == 0.53
+    assert answer_options.ias_min_score == 0.4
+    assert answer_options.ifric_min_score == 0.48
+    assert answer_options.sic_min_score == 0.4
+    assert answer_options.ps_min_score == 0.4
+    assert answer_options.content_min_score == 0.53
     assert answer_options.expand == 2
-    assert answer_options.retrieval_mode == "titles"
+    assert answer_options.retrieval_mode == "documents"

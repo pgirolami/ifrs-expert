@@ -5,23 +5,35 @@ evaluateOptions:
   showProgressBar: true
 
 
+document_retrieval_defaults: &document_retrieval_defaults
+  retrieval-mode: 'documents'
+  d: 25
+  ifrs-d: 4
+  ias-d: 4
+  ifric-d: 6
+  sic-d: 6
+  ps-d: 1
+  ifrs-min-score: 0.53
+  ias-min-score: 0.4
+  ifric-min-score: 0.48
+  sic-min-score: 0.4
+  ps-min-score: 0.4
+  content-min-score: 0.53
+
 prompts:
   - '{{question}}'
 
 providers:
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 k=10 min-score=0.4 retrieval-mode=titles'
+    label: 'OpenAI GPT 5.4 current document defaults'
     config:
+      <<: *document_retrieval_defaults
       llm_provider: 'openai-codex'
-      min-score: 0.4
-      k: 10
-      retrieval-mode: 'titles'
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-  #   label: 'Mistral Large 3 k=10 min-score=0.55'
+  #   label: 'Mistral Large 3 current document defaults'
   #   config:
+  #     <<: *document_retrieval_defaults
   #     llm_provider: 'Mistral'
-      # min-score: 0.55
-      # k: 10
 
 readme: |
   IFRS Expert Evaluation Suite
@@ -33,5 +45,9 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Run: make eval EXPERIMENT_DIR=promptfoo_regression
-  View: make eval-view EXPERIMENT_DIR=promptfoo_regression
+  Promptfoo providers now use the current tuned document-retrieval defaults
+  from experiment 22 across families. The retrieval settings are defined once
+  in promptfoo_src/base.yaml and can be reused by every model.
+
+  Run Q1: make eval EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1
+  View: make eval-view EXPERIMENT_DIR=promptfoo_q1_current_defaults

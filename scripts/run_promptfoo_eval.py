@@ -133,6 +133,22 @@ def _run_command(command: list[str], env: dict[str, str], cwd: Path) -> subproce
     return subprocess.run(command, cwd=cwd, env=env, check=False, text=True)  # noqa: S603
 
 
+def build_default_description(
+    family: str | None,
+    variant: str | None,
+    provider: str | None,
+) -> str:
+    """Build a useful default run description from the active filters."""
+    description_parts: list[str] = [DEFAULT_DESCRIPTION]
+    if family is not None and family.strip():
+        description_parts.append(f"family={family.strip()}")
+    if variant is not None and variant.strip():
+        description_parts.append(f"variant={variant.strip()}")
+    if provider is not None and provider.strip():
+        description_parts.append(f"provider={provider.strip()}")
+    return " ".join(description_parts)
+
+
 def build_promptfoo_args(
     base_args: Sequence[str],
     family: str | None,
@@ -231,7 +247,12 @@ def main() -> int:
         variant=args.variant,
         provider=args.provider,
     )
-    return runner.run(promptfoo_args=resolved_promptfoo_args, description=args.description)
+    description = args.description or build_default_description(
+        family=args.family,
+        variant=args.variant,
+        provider=args.provider,
+    )
+    return runner.run(promptfoo_args=resolved_promptfoo_args, description=description)
 
 
 if __name__ == "__main__":
