@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.commands.section_filter import filter_extraction
@@ -13,30 +14,35 @@ from src.extraction import HtmlExtractor, PdfExtractor
 from src.interfaces import (
     ChunkStoreProtocol,
     DocumentStoreProtocol,
+    DocumentVectorStoreProtocol,
     ExtractorProtocol,
     SectionStoreProtocol,
     TitleVectorStoreProtocol,
     VectorStoreProtocol,
 )
+from src.models.document import infer_document_type
+from src.retrieval.document_profile_builder import DocumentProfileBuilder
+from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
+from src.vector.document_store import DocumentVectorStore
 from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from src.models.chunk import Chunk
+    from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
     from src.models.section import SectionRecord
 
 logger = logging.getLogger(__name__)
 
-MAX_CHUNK_CHARS = 8000
+STORE_SCOPES: tuple[str, ...] = ("all", "chunks", "documents", "sections")
 
 StoreChunkStore = ChunkStoreProtocol
 StoreDocumentStore = DocumentStoreProtocol
 StoreSectionStore = SectionStoreProtocol
 StoreVectorStore = VectorStoreProtocol
 StoreTitleVectorStore = TitleVectorStoreProtocol
+StoreDocumentVectorStore = DocumentVectorStoreProtocol
 StoreInitDb = Callable[[], None]
 
 
@@ -50,6 +56,16 @@ class StoreDependencies:
     init_db_fn: StoreInitDb
     section_store: StoreSectionStore | None = None
     title_vector_store: StoreTitleVectorStore | None = None
+    document_vector_store: StoreDocumentVectorStore | None = None
+
+
+@dataclass(frozen=True)
+class StorePayloadSnapshot:
+    """Scoped payload snapshot used for skip-if-unchanged comparisons."""
+
+    chunks: list[Chunk]
+    sections: list[SectionRecord]
+    document: DocumentRecord | None
 
 
 @dataclass
@@ -82,12 +98,15 @@ class StoreCommand:
         extractor: ExtractorProtocol,
         dependencies: StoreDependencies,
         explicit_doc_uid: str | None = None,
+        scope: str = "all",
     ) -> None:
         """Initialize the store command with its source, extractor, and storage dependencies."""
         self.source_path = source_path
         self._extractor = extractor
         self._dependencies = dependencies
         self._explicit_doc_uid = explicit_doc_uid
+        self._scope = scope
+        self._document_profile_builder = DocumentProfileBuilder()
 
     def execute(self) -> str:
         """Execute the store command and return CLI-facing text."""
@@ -95,6 +114,16 @@ class StoreCommand:
 
     def execute_result(self) -> StoreCommandResult:
         """Execute the store command and return a structured result."""
+        scope_error = self._get_scope_error()
+        if scope_error is not None:
+            return StoreCommandResult(
+                status="failed",
+                doc_uid=self._explicit_doc_uid or self.source_path.stem,
+                chunk_count=0,
+                embedding_count=0,
+                reason=scope_error,
+            )
+
         if not self.source_path.exists():
             return StoreCommandResult(
                 status="failed",
@@ -111,13 +140,28 @@ class StoreCommand:
                 explicit_doc_uid=self._explicit_doc_uid,
             )
             doc_uid = extracted_document.document.doc_uid
+            extracted_document.document.document_type = infer_document_type(doc_uid)
 
-            # Apply section filtering to exclude unwanted sections and chunks
+            self._truncate_oversized_chunks(extracted_document.chunks)
+
             filter_result = filter_extraction(
                 chunks=extracted_document.chunks,
                 sections=extracted_document.sections,
                 closure_rows=extracted_document.section_closure_rows,
             )
+
+            built_document_profile = self._document_profile_builder.build(
+                document=extracted_document.document,
+                chunks=extracted_document.chunks,
+                sections=extracted_document.sections,
+                section_closure_rows=extracted_document.section_closure_rows,
+                toc_sections=filter_result.sections,
+            )
+            extracted_document.document = built_document_profile.document
+
+            # Build the document representation from the unfiltered extraction, except
+            # for the TOC field which should reflect the filtered section set used for
+            # persistence and downstream retrieval.
 
             if filter_result.excluded_section_count > 0:
                 sample_titles = filter_result.excluded_section_titles[:10]
@@ -130,22 +174,35 @@ class StoreCommand:
             sections = filter_result.sections
             closure_rows = filter_result.closure_rows
 
-            # Update the extracted document with filtered data
+            # Update the extracted document with filtered data for persistence.
             extracted_document.sections = sections
             extracted_document.section_closure_rows = closure_rows
+            logger.info(
+                f"Document representation ready for doc_uid={doc_uid}; "
+                f"background_chars={len(extracted_document.document.background_text or '')}, "
+                f"issue_chars={len(extracted_document.document.issue_text or '')}, "
+                f"objective_chars={len(extracted_document.document.objective_text or '')}, "
+                f"scope_chars={len(extracted_document.document.scope_text or '')}, "
+                f"intro_chars={len(extracted_document.document.intro_text or '')}, "
+                f"toc_chars={len(extracted_document.document.toc_text or '')}, "
+                f"embedding_chars={len(built_document_profile.embedding_text)}"
+            )
 
-            self._truncate_oversized_chunks(chunks)
-
-            skip_result = self._store_chunks(doc_uid=doc_uid, chunks=chunks, sections=extracted_document.sections)
+            skip_result = self._store_chunks(
+                doc_uid=doc_uid,
+                chunks=chunks,
+                sections=extracted_document.sections,
+                document=extracted_document.document,
+            )
             if skip_result is not None:
                 return skip_result
 
-            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
-            with self._dependencies.document_store as document_store:
-                document_store.upsert_document(extracted_document.document)
-
-            embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
-            self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
+            embeddings_stored = self._store_selected_outputs(
+                doc_uid=doc_uid,
+                extracted_document=extracted_document,
+                chunks=chunks,
+                document_embedding_text=built_document_profile.embedding_text,
+            )
 
             return StoreCommandResult(
                 status="stored",
@@ -163,21 +220,42 @@ class StoreCommand:
                 reason=str(error),
             )
 
-    def _store_chunks(self, doc_uid: str, chunks: list[Chunk], sections: list[SectionRecord]) -> StoreCommandResult | None:
-        with self._dependencies.chunk_store as chunk_store:
-            existing_chunks = chunk_store.get_chunks_by_doc(doc_uid)
-            existing_sections = self._get_existing_sections(doc_uid)
-            should_skip = self._extractor.skip_if_unchanged and self._payloads_match(existing_chunks, chunks) and self._section_payloads_match(existing_sections, sections)
-            if should_skip:
-                logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
-                return StoreCommandResult(
-                    status="skipped",
-                    doc_uid=doc_uid,
-                    chunk_count=len(chunks),
-                    embedding_count=0,
-                    reason="unchanged content",
-                )
+    def _store_chunks(
+        self,
+        doc_uid: str,
+        chunks: list[Chunk],
+        sections: list[SectionRecord],
+        document: DocumentRecord,
+    ) -> StoreCommandResult | None:
+        existing_chunks = self._get_existing_chunks(doc_uid) if self._stores_chunks() else []
+        existing_sections = self._get_existing_sections(doc_uid) if self._stores_sections() else []
+        existing_document = self._get_existing_document(doc_uid) if self._stores_documents() else None
+        should_skip = self._should_skip(
+            existing_snapshot=StorePayloadSnapshot(
+                chunks=existing_chunks,
+                sections=existing_sections,
+                document=existing_document,
+            ),
+            new_snapshot=StorePayloadSnapshot(
+                chunks=chunks,
+                sections=sections,
+                document=document,
+            ),
+        )
+        if should_skip:
+            logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
+            return StoreCommandResult(
+                status="skipped",
+                doc_uid=doc_uid,
+                chunk_count=len(chunks),
+                embedding_count=0,
+                reason="unchanged content",
+            )
 
+        if not self._stores_chunks():
+            return None
+
+        with self._dependencies.chunk_store as chunk_store:
             if existing_chunks:
                 logger.info(f"Replacing {len(existing_chunks)} existing chunks for {doc_uid}")
                 chunk_store.delete_chunks_by_doc(doc_uid)
@@ -196,6 +274,29 @@ class StoreCommand:
             section_store.insert_sections(extracted_document.sections)
             section_store.insert_closure_rows(extracted_document.section_closure_rows)
             logger.info(f"Stored {len(extracted_document.sections)} sections with doc_uid={doc_uid}")
+
+    def _store_selected_outputs(
+        self,
+        doc_uid: str,
+        extracted_document: ExtractedDocument,
+        chunks: list[Chunk],
+        document_embedding_text: str,
+    ) -> int:
+        if self._stores_sections():
+            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
+        if self._stores_documents():
+            with self._dependencies.document_store as document_store:
+                logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
+                document_store.upsert_document(extracted_document.document)
+
+        embeddings_stored = 0
+        if self._stores_chunks():
+            embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
+        if self._stores_sections():
+            self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
+        if self._stores_documents():
+            self._store_document_embeddings(doc_uid=doc_uid, embedding_text=document_embedding_text)
+        return embeddings_stored
 
     def _store_chunk_embeddings(self, doc_uid: str, chunks: list[Chunk]) -> int:
         embeddings_stored = 0
@@ -228,22 +329,63 @@ class StoreCommand:
                 )
                 logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
 
+    def _store_document_embeddings(self, doc_uid: str, embedding_text: str) -> None:
+        if self._dependencies.document_vector_store is None:
+            logger.info(f"Skipping document embeddings for doc_uid={doc_uid} because no document vector store is configured")
+            return
+        if not embedding_text:
+            logger.warning(f"Skipping document embedding for doc_uid={doc_uid} because the embedding text is empty")
+            return
+        with self._dependencies.document_vector_store as document_vector_store:
+            deleted_count = document_vector_store.delete_by_doc(doc_uid)
+            if deleted_count > 0:
+                logger.info(f"Deleted {deleted_count} existing document embeddings for {doc_uid}")
+            logger.info(f"Storing document embedding for doc_uid={doc_uid} with embedding_chars={len(embedding_text)}")
+            document_vector_store.add_embeddings([doc_uid], [embedding_text])
+            logger.info(f"Stored 1 document embedding for doc_uid={doc_uid}")
+
     def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
         truncated_count = 0
         for chunk in chunks:
-            if len(chunk.text) > MAX_CHUNK_CHARS:
+            if len(chunk.text) > MAX_EMBEDDING_TEXT_CHARS:
                 original_len = len(chunk.text)
-                chunk.text = chunk.text[:MAX_CHUNK_CHARS]
+                chunk.text = chunk.text[:MAX_EMBEDDING_TEXT_CHARS]
                 truncated_count += 1
-                logger.warning(f"Truncated chunk {chunk.chunk_number} from {original_len} to {MAX_CHUNK_CHARS} chars")
+                logger.warning(f"Truncated chunk {chunk.chunk_number} from {original_len} to {MAX_EMBEDDING_TEXT_CHARS} chars")
         if truncated_count > 0:
             logger.info(f"Truncated {truncated_count} oversized chunk(s)")
+
+    def _get_existing_chunks(self, doc_uid: str) -> list[Chunk]:
+        with self._dependencies.chunk_store as chunk_store:
+            return list(chunk_store.get_chunks_by_doc(doc_uid))
 
     def _get_existing_sections(self, doc_uid: str) -> list[SectionRecord]:
         if self._dependencies.section_store is None:
             return []
         with self._dependencies.section_store as section_store:
             return list(section_store.get_sections_by_doc(doc_uid))
+
+    def _get_existing_document(self, doc_uid: str) -> DocumentRecord | None:
+        with self._dependencies.document_store as document_store:
+            return document_store.get_document(doc_uid)
+
+    def _should_skip(
+        self,
+        existing_snapshot: StorePayloadSnapshot,
+        new_snapshot: StorePayloadSnapshot,
+    ) -> bool:
+        if not self._extractor.skip_if_unchanged:
+            return False
+        if self._stores_chunks() and not self._payloads_match(existing_snapshot.chunks, new_snapshot.chunks):
+            return False
+        if self._stores_sections() and not self._section_payloads_match(existing_snapshot.sections, new_snapshot.sections):
+            return False
+        if not self._stores_documents():
+            return True
+        new_document = new_snapshot.document
+        if new_document is None:
+            return False
+        return self._document_payloads_match(existing_snapshot.document, new_document)
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
@@ -264,6 +406,44 @@ class StoreCommand:
     def _section_payload(self, section: SectionRecord) -> tuple[str, str | None, str, str]:
         return (section.section_id, section.parent_section_id, section.title, section.embedding_text)
 
+    def _document_payloads_match(self, existing_document: DocumentRecord | None, new_document: DocumentRecord) -> bool:
+        if existing_document is None:
+            return False
+        return self._document_payload(existing_document) == self._document_payload(new_document)
+
+    def _document_payload(
+        self,
+        document: DocumentRecord,
+    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
+        return (
+            document.source_type,
+            document.source_title,
+            document.source_url,
+            document.canonical_url,
+            document.document_type,
+            document.background_text,
+            document.issue_text,
+            document.objective_text,
+            document.scope_text,
+            document.intro_text,
+            document.toc_text,
+        )
+
+    def _get_scope_error(self) -> str | None:
+        if self._scope in STORE_SCOPES:
+            return None
+        supported_scopes = ", ".join(STORE_SCOPES)
+        return f"scope must be one of {supported_scopes}"
+
+    def _stores_chunks(self) -> bool:
+        return self._scope in {"all", "chunks"}
+
+    def _stores_sections(self) -> bool:
+        return self._scope in {"all", "sections"}
+
+    def _stores_documents(self) -> bool:
+        return self._scope in {"all", "documents"}
+
 
 def build_store_dependencies() -> StoreDependencies:
     """Build the production dependencies for StoreCommand."""
@@ -274,6 +454,7 @@ def build_store_dependencies() -> StoreDependencies:
         init_db_fn=init_db,
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
+        document_vector_store=DocumentVectorStore(),
     )
 
 
@@ -294,12 +475,22 @@ def create_store_command(
     doc_uid: str | None = None,
     extractor: ExtractorProtocol | None = None,
     dependencies: StoreDependencies | None = None,
-    pdf_path: Path | None = None,
+    scope: str = "all",
+    **legacy_kwargs: object,
 ) -> StoreCommand:
     """Create StoreCommand with real dependencies by default.
 
-    The pdf_path parameter is preserved for backward compatibility.
+    The pdf_path keyword parameter is preserved for backward compatibility.
     """
+    pdf_path = legacy_kwargs.pop("pdf_path", None)
+    if legacy_kwargs:
+        unexpected_keys = ", ".join(sorted(legacy_kwargs))
+        message = f"Unexpected keyword arguments: {unexpected_keys}"
+        raise TypeError(message)
+    if pdf_path is not None and not isinstance(pdf_path, Path):
+        message = f"pdf_path must be a Path, got {type(pdf_path).__name__}"
+        raise TypeError(message)
+
     resolved_source_path = source_path or pdf_path
     if resolved_source_path is None:
         message = "create_store_command() requires source_path or pdf_path"
@@ -312,4 +503,5 @@ def create_store_command(
         extractor=resolved_extractor,
         dependencies=resolved_dependencies,
         explicit_doc_uid=doc_uid,
+        scope=scope,
     )

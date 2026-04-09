@@ -8,14 +8,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from src.commands.store import StoreCommandResult, StoreDependencies, build_store_dependencies, create_store_command
+from src.commands.store import STORE_SCOPES, StoreCommandResult, StoreDependencies, build_store_dependencies, create_store_command
 from src.extraction import HtmlExtractor, PdfExtractor
 from src.extraction.html import HtmlSidecar, HtmlValidationError
 from src.interfaces import ExtractorProtocol
 
 logger = logging.getLogger(__name__)
 
-StoreCommandFactory = Callable[[Path, ExtractorProtocol, str | None], "StoreCommandLike"]
+StoreCommandFactory = Callable[[Path, ExtractorProtocol, str | None, str], "StoreCommandLike"]
 CreateStoreCommandFn = Callable[..., "StoreCommandLike"]
 
 
@@ -82,6 +82,7 @@ class SharedDependenciesStoreCommandFactory:
         source_path: Path,
         extractor: ExtractorProtocol,
         explicit_doc_uid: str | None,
+        scope: str,
     ) -> StoreCommandLike:
         """Create one StoreCommand while reusing the shared dependencies."""
         return self._create_store_command_fn(
@@ -89,6 +90,7 @@ class SharedDependenciesStoreCommandFactory:
             extractor=extractor,
             doc_uid=explicit_doc_uid,
             dependencies=self._dependencies,
+            scope=scope,
         )
 
 
@@ -100,15 +102,21 @@ class IngestCommand:
         capture_root: Path | None = None,
         store_command_factory: StoreCommandFactory | None = None,
         store_dependencies: StoreDependencies | None = None,
+        scope: str = "all",
     ) -> None:
         """Initialize the ingest command with its capture root and store factory."""
         self._directories = CaptureDirectories.from_root(capture_root or (Path.home() / "Downloads" / "ifrs-expert"))
+        self._scope = scope
         self._store_command_factory = store_command_factory or SharedDependenciesStoreCommandFactory(dependencies=store_dependencies)
 
     def execute(self) -> str:
         """Run discovery, storage, and archiving."""
+        scope_error = self._get_scope_error()
+        if scope_error is not None:
+            return f"Error: {scope_error}"
+
         self._directories.ensure_exists()
-        logger.info(f"Starting scan in {self._directories.root}")
+        logger.info(f"Starting scan in {self._directories.root} with scope={self._scope}")
 
         items, failures = self._discover_items()
         results: list[str] = []
@@ -132,6 +140,7 @@ class IngestCommand:
                     item.source_path,
                     item.extractor,
                     item.explicit_doc_uid,
+                    self._scope,
                 )
                 store_result = store_command.execute_result()
             except (OSError, RuntimeError, ValueError) as error:
@@ -260,6 +269,12 @@ class IngestCommand:
 
         items.sort(key=lambda item: item.source_path.name)
         return items, failures
+
+    def _get_scope_error(self) -> str | None:
+        if self._scope in STORE_SCOPES:
+            return None
+        supported_scopes = ", ".join(STORE_SCOPES)
+        return f"scope must be one of {supported_scopes}"
 
     def _archive_paths(self, paths: tuple[Path, ...], destination_dir: Path) -> None:
         for path in paths:

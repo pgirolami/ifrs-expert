@@ -1,0 +1,162 @@
+family_id: Q1en
+assert:
+  - type: is-json
+    value: file://./prompts/answer_prompt_B.json
+    description: Output matches expected JSON schema
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return Array.isArray(data.assumptions_en) &&
+             data.assumptions_en.length >= 1 &&
+             Array.isArray(data.approaches) &&
+             data.approaches.length >= 3 &&
+             Array.isArray(data.operational_points_en) &&
+             data.operational_points_en.length >= 1;
+    description: Core structured fields are present and non-empty
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      const labels = data.approaches.map(a => a.normalized_label);
+      return labels.includes('cash_flow_hedge') &&
+             labels.includes('fair_value_hedge') &&
+             labels.includes('net_investment_hedge');
+    description: All expected hedge approaches are identified
+
+  # - type: javascript
+  #   value: |
+  #     const data = JSON.parse(output);
+  #     const byLabel = Object.fromEntries(
+  #       data.approaches.map(a => [a.normalized_label, a.applicability])
+  #     );
+  #     return ['yes', 'yes_under_conditions'].includes(byLabel.fair_value_hedge) &&
+  #            byLabel.cash_flow_hedge === 'no' &&
+  #            byLabel.net_investment_hedge === 'no';
+  #   description: Expected applicability is assigned to each hedge approach
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return ['yes', 'no', 'yes_under_conditions'].includes(data.recommendation?.answer);
+    description: Recommendation answer is one of the allowed values
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return typeof data.recommendation?.justification === 'string' &&
+             data.recommendation.justification.length > 80;
+    description: Recommendation includes a non-trivial justification
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      return data.approaches.every(a =>
+        typeof a.applicability === 'string' &&
+        Array.isArray(a.references) &&
+        a.references.length >= 1
+      );
+    description: Each approach has applicability and at least one reference
+
+  - type: llm-rubric
+    value: |
+      The answer should:
+      - clearly state whether the requested hedge treatment is applicable
+      - distinguish between the main hedge approaches
+      - provide reasoning that would be useful to an IFRS expert
+      - include practical next steps or operational implications
+    threshold: 0.8
+    description: LLM-as-judge considers the answer is coherent, useful, and practically actionable
+
+variants:
+  - id: Q1.0
+    file: Q1.0.txt
+    description: Intragroup FX hedge on recognized dividend receivable
+
+  - id: Q1.1
+    file: Q1.1.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.2
+    file: Q1.2.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.3
+    file: Q1.3.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.4
+    file: Q1.4.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.5
+    file: Q1.5.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.6
+    file: Q1.6.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.7
+    file: Q1.7.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.8
+    file: Q1.8.txt
+    description: Intragroup FX hedge wording variant
+
+  - id: Q1.9
+    file: Q1.9.txt
+    description: Intragroup FX hedge wording variant
+
+  # - id: Q1.10
+  #   file: Q1.10.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.11
+  #   file: Q1.11.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.12
+  #   file: Q1.12.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.13
+  #   file: Q1.13.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.14
+  #   file: Q1.14.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.15
+  #   file: Q1.15.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.16
+  #   file: Q1.16.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.17
+  #   file: Q1.17.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.18
+  #   file: Q1.18.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.19
+  #   file: Q1.19.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.20
+  #   file: Q1.20.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.21
+  #   file: Q1.21.txt
+  #   description: Intragroup FX hedge wording variant
+
+  # - id: Q1.22
+  #   file: Q1.22.txt
+  #   description: Intragroup FX hedge wording variant

@@ -86,7 +86,7 @@ variants:
     assert "assert: &q1_assertions" in output
     assert output.count("&q1_assertions") == 1, "Expected one Q1 assertion anchor"
     assert "assert: *q1_assertions" in output
-    assert "family: 'Q1'" in output
+    assert "family: 'Q1¤'" in output
     assert "variant: 'Q1.0¤'" in output
     assert "description: 'Q1.0 - Variant zero'" in output
 

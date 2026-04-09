@@ -67,7 +67,7 @@ def _extract_canonical_url(html_path: Path) -> str:
     return html_text[start:end]
 
 
-def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None):
+def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None, scope: str):
     global chunk_store, document_store
     _stores.setdefault("chunk_store", InMemoryChunkStore())
     _stores.setdefault("document_store", InMemoryDocumentStore())
@@ -89,6 +89,7 @@ def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str |
         extractor=extractor,
         doc_uid=explicit_doc_uid,
         dependencies=dependencies,
+        scope=scope,
     )
 
 

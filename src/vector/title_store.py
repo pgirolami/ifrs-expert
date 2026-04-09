@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Self
 import faiss
 import numpy as np
 
-from src.vector.model_cache import EmbeddingModelProtocol, get_embedding_model
+from src.vector.model_cache import EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
 
 if TYPE_CHECKING:
     from src.interfaces import TitleSearchResult
@@ -25,7 +25,6 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "BAAI/bge-m3"
 QUERY_EMBEDDING_CACHE_VERSION = "v1"
 QUERY_EMBEDDING_NDIM = 2
 

@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+EMBEDDING_MODEL = "BAAI/bge-m3"
+
 
 class EmbeddingModelProtocol(Protocol):
     """Minimal protocol shared by vector-store embedding models."""

@@ -31,6 +31,7 @@ EXCLUDED_SECTION_TITLE_PREFIXES: frozenset[str] = frozenset(
     {
         "Withdrawal of",
         "Amendments to",
+        "Amendment to",
     }
 )
 

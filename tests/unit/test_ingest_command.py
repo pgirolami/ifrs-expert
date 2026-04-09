@@ -25,11 +25,11 @@ class RecordingStoreFactory:
 
     def __init__(self, results_by_name: dict[str, StoreCommandResult]) -> None:
         self._results_by_name = results_by_name
-        self.calls: list[tuple[str, str]] = []
+        self.calls: list[tuple[str, str, str]] = []
 
-    def __call__(self, source_path: Path, extractor: object, explicit_doc_uid: str | None) -> FakeStoreCommand:
+    def __call__(self, source_path: Path, extractor: object, explicit_doc_uid: str | None, scope: str) -> FakeStoreCommand:
         del explicit_doc_uid
-        self.calls.append((source_path.name, type(extractor).__name__))
+        self.calls.append((source_path.name, type(extractor).__name__, scope))
         return FakeStoreCommand(result=self._results_by_name[source_path.name])
 
 
@@ -37,7 +37,7 @@ class FakeCreateStoreCommand:
     """Record the dependencies passed by the shared ingest store factory."""
 
     def __init__(self) -> None:
-        self.dependencies_by_source_name: list[tuple[str, StoreDependencies]] = []
+        self.dependencies_by_source_name: list[tuple[str, StoreDependencies, str]] = []
 
     def __call__(
         self,
@@ -46,11 +46,13 @@ class FakeCreateStoreCommand:
         extractor: object | None = None,
         dependencies: StoreDependencies | None = None,
         pdf_path: Path | None = None,
+        scope: str = "all",
     ) -> FakeStoreCommand:
         del doc_uid, extractor, pdf_path
+        assert scope in {"all", "chunks", "sections", "documents"}
         assert source_path is not None, "Expected a source path"
         assert dependencies is not None, "Expected shared dependencies to be provided"
-        self.dependencies_by_source_name.append((source_path.name, dependencies))
+        self.dependencies_by_source_name.append((source_path.name, dependencies, scope))
         return FakeStoreCommand(result=StoreCommandResult(status="stored", doc_uid=source_path.stem, chunk_count=1, embedding_count=1))
 
 
@@ -78,12 +80,16 @@ class TestIngestCommand:
             create_store_command_fn=fake_create_store_command,
         )
 
-        factory(source_one, extractor=object(), explicit_doc_uid=None)
-        factory(source_two, extractor=object(), explicit_doc_uid=None)
+        factory(source_one, extractor=object(), explicit_doc_uid=None, scope="documents")
+        factory(source_two, extractor=object(), explicit_doc_uid=None, scope="documents")
 
-        recorded_dependencies = [recorded_dependency for _source_name, recorded_dependency in fake_create_store_command.dependencies_by_source_name]
+        recorded_dependencies = [recorded_dependency for _source_name, recorded_dependency, _scope in fake_create_store_command.dependencies_by_source_name]
         assert recorded_dependencies == [dependencies, dependencies]
         assert recorded_dependencies[0] is recorded_dependencies[1]
+        assert [scope for _source_name, _recorded_dependency, scope in fake_create_store_command.dependencies_by_source_name] == [
+            "documents",
+            "documents",
+        ]
 
     def test_ingest_discovers_html_pairs_and_pdfs_while_ignoring_part_files(self, tmp_path: Path) -> None:
         """Only complete final files should be ingested."""
@@ -129,8 +135,8 @@ class TestIngestCommand:
 
         assert "Processed 2 item(s): 2 imported, 0 skipped, 0 failed" in output
         assert store_factory.calls == [
-            (html_path.name, "HtmlExtractor"),
-            (pdf_path.name, "PdfExtractor"),
+            (html_path.name, "HtmlExtractor", "all"),
+            (pdf_path.name, "PdfExtractor", "all"),
         ]
         assert (capture_root / "ignore-me.html.part").exists(), "The command must not move .part files"
         assert (capture_root / "processed" / html_path.name).exists()
@@ -202,11 +208,12 @@ class TestIngestCommand:
                 )
             }
         )
-        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory)
+        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, scope="documents")
 
         output = command.execute()
 
         assert "Processed 1 item(s): 0 imported, 1 skipped, 0 failed" in output
         assert "Skipped: https://www.ifrs.org/ifrs9.html (unchanged content)" in output
+        assert store_factory.calls == [(html_path.name, "HtmlExtractor", "documents")]
         assert (capture_root / "skipped" / html_path.name).exists()
         assert (capture_root / "skipped" / json_path.name).exists()

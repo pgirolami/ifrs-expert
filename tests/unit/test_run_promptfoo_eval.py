@@ -84,7 +84,7 @@ def test_build_promptfoo_args_adds_family_variant_and_provider_filters() -> None
 
     assert promptfoo_args == [
         "--filter-metadata",
-        "family=Q1",
+        "family=Q1¤",
         "--filter-metadata",
         "variant=Q1.0¤",
         "--filter-targets",

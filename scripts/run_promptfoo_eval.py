@@ -141,9 +141,9 @@ def build_promptfoo_args(
 ) -> list[str]:
     """Build Promptfoo CLI args from shortcut filters plus passthrough args."""
     promptfoo_args: list[str] = []
-    # Append '¤' suffix to match the delimiter-suffixed variant values in metadata.
+    # Append '¤' suffix to match the delimiter-suffixed family and variant values in metadata.
     if family is not None and family.strip():
-        promptfoo_args.extend(["--filter-metadata", f"family={family.strip()}"])
+        promptfoo_args.extend(["--filter-metadata", f"family={family.strip()}¤"])
     if variant is not None and variant.strip():
         promptfoo_args.extend(["--filter-metadata", f"variant={variant.strip()}¤"])
     if provider is not None and provider.strip():

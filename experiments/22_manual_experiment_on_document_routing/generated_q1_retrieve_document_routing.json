@@ -1,0 +1,919 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-m",
+    "src.cli",
+    "retrieve",
+    "--retrieval-mode",
+    "documents",
+    "-d",
+    "10",
+    "--json",
+    "--content-min-score",
+    "0.5"
+  ],
+  "results": [
+    {
+      "question_id": "Q1.0",
+      "question_text": "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.592
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5894
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5888
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5685
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5649
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5604
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5536
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5534
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5395
+        },
+        {
+          "doc_uid": "ifric23",
+          "score": 0.5178
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.1",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5909
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5803
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5787
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5566
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.554
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5537
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5521
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.2",
+      "question_text": "Un dividende intragroupe a été comptabilisé en créance.\nDe quelles manières pouvons-nous appliquer une documentation de couverture dans les comptes consolidés sur la partie change de ce dividende ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5907
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.579
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5664
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5499
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.3",
+      "question_text": "Peut-on désigner, dans les comptes consolidés, le risque de change afférent à des dividendes intragroupe donnant lieu à la comptabilisation d’une créance à recevoir dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5829
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5647
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5601
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5525
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5459
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5221
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.516
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.4",
+      "question_text": "En consolidation, est-il possible de mettre en place une documentation de couverture portant sur la composante change de dividendes intragroupe dès lors qu’une créance correspondante a été reconnue ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5889
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5736
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5704
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5553
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5552
+        },
+        {
+          "doc_uid": "ifrs10",
+          "score": 0.5526
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5505
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5378
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5227
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.5",
+      "question_text": "Le risque de change attaché à des dividendes intragroupe comptabilisés en créance à recevoir peut-il faire l’objet d’une relation de couverture formellement documentée au niveau des états financiers consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5779
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5298
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5277
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5257
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5244
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.6",
+      "question_text": "Dans les comptes consolidés, la variation de change relative à des dividendes intragroupe pour lesquels un receivable a été constaté est-elle éligible à une désignation en comptabilité de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5673
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5115
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.7",
+      "question_text": "Est-il recevable, au regard des IFRS, de documenter une couverture du risque de change sur des dividendes intragroupe ayant donné lieu à la reconnaissance d’une créance dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6013
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5946
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5869
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5848
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5742
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5683
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5675
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.564
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5589
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5523
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.8",
+      "question_text": "Peut-on appliquer la comptabilité de couverture en consolidation à l’exposition de change résultant de dividendes intragroupe dès lors que ceux-ci ont été comptabilisés en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5751
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5685
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5591
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5129
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5106
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.9",
+      "question_text": "La composante de risque de change liée à des dividendes intragroupe reconnus sous forme de créance peut-elle être désignée comme élément couvert dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5839
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5597
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5392
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5337
+        },
+        {
+          "doc_uid": "ifric2",
+          "score": 0.5252
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5152
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.10",
+      "question_text": "Dans un contexte de consolidation IFRS, une relation de couverture peut-elle être documentée au titre du risque de change sur des dividendes intragroupe comptabilisés à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5958
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5906
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5905
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5708
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5705
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5521
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5505
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5395
+        },
+        {
+          "doc_uid": "ps1",
+          "score": 0.5267
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5265
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.11",
+      "question_text": "L’exposition au change générée par des dividendes intragroupe, une fois la créance correspondante enregistrée, peut-elle être couverte et documentée en hedge accounting dans les comptes consolidés ?",
+      "hits": [
+        {
+          "doc_uid": "ifric16",
+          "score": 0.6086
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6066
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5559
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5556
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5203
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.12",
+      "question_text": "Est-il possible, au niveau consolidé, de qualifier de manière formelle une couverture du risque de change sur des dividendes intragroupe ayant fait l’objet d’une comptabilisation en créance à recevoir ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5667
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5366
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5276
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5122
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.13",
+      "question_text": "Dans les comptes consolidés, des dividendes intragroupe ont été décidés et une créance à recevoir a été comptabilisée. Dans ce contexte, la composante de risque de change associée à cette créance peut-elle être intégrée dans une relation de couverture documentée ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5736
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.555
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5545
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.552
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5339
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5316
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5306
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5266
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.14",
+      "question_text": "Un dividende intragroupe a donné lieu à la comptabilisation d’un montant à recevoir au sein du périmètre consolidé. Peut-on, dans ces circonstances, documenter une couverture portant sur le risque de change afférent à cette exposition ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5572
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5205
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5189
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.15",
+      "question_text": "La distribution de dividendes intragroupe a été reconnue sous la forme d’une créance dans les états financiers consolidés. Cette exposition de change peut-elle, en IFRS, être désignée comme élément couvert dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.6026
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5976
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5974
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5857
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5796
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5761
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5718
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.567
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5657
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5596
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.16",
+      "question_text": "Au niveau consolidé, l’entité constate une créance liée à des dividendes intragroupe et supporte, de ce fait, une exposition au risque de change. Cette exposition peut-elle faire l’objet d’une documentation de couverture conforme aux IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.6561
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.6548
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6395
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.6395
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.6174
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.6084
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.6061
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.6008
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5948
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5945
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.17",
+      "question_text": "Des dividendes intragroupe ont été comptabilisés à recevoir, ce qui fait naître une variation potentielle liée au change dans les comptes consolidés. Est-il alors possible de mettre en place une relation de couverture sur cette seule composante de change ?",
+      "hits": [
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5739
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5728
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5525
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5221
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5169
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.18",
+      "question_text": "La comptabilisation d’une créance sur dividendes intragroupe dans les comptes consolidés conduit à identifier une exposition de change distincte. Cette exposition est-elle éligible à la comptabilité de couverture au niveau consolidé ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5794
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5792
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.574
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5643
+        },
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5605
+        },
+        {
+          "doc_uid": "ias24",
+          "score": 0.5592
+        },
+        {
+          "doc_uid": "ias27",
+          "score": 0.5579
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.538
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5264
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.523
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.19",
+      "question_text": "Dans un schéma où des dividendes intragroupe ont déjà été reconnus en créance à recevoir, la question se pose du traitement du risque de change associé en consolidation. Ce risque peut-il être formellement documenté dans une relation de couverture ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.568
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5524
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5322
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5255
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5197
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.20",
+      "question_text": "Une créance relative à des dividendes intragroupe figure désormais dans les états financiers consolidés, avec une sensibilité corrélative aux fluctuations de change. Peut-on couvrir cette exposition dans le cadre d’une documentation de hedge accounting ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.6057
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5844
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5679
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5635
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5591
+        },
+        {
+          "doc_uid": "ias39",
+          "score": 0.5575
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5568
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5348
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5227
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5119
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.21",
+      "question_text": "Le groupe a comptabilisé un receivable au titre de dividendes intragroupe, créant ainsi une exposition au risque de change dans les comptes consolidés. Cette exposition peut-elle être désignée comme élément couvert au sens des IFRS ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5902
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.5781
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5756
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.571
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.567
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.5635
+        },
+        {
+          "doc_uid": "ifric16",
+          "score": 0.5614
+        },
+        {
+          "doc_uid": "ifrs18",
+          "score": 0.5613
+        },
+        {
+          "doc_uid": "ias32",
+          "score": 0.5569
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5514
+        }
+      ]
+    },
+    {
+      "question_id": "Q1.22",
+      "question_text": "À partir du moment où des dividendes intragroupe sont reconnus en créance dans les comptes consolidés, une problématique de change apparaît. Dans une telle situation, est-il permis de documenter une couverture sur cette composante de risque ?",
+      "hits": [
+        {
+          "doc_uid": "ifrs9",
+          "score": 0.5921
+        },
+        {
+          "doc_uid": "ifrs19",
+          "score": 0.576
+        },
+        {
+          "doc_uid": "sic25",
+          "score": 0.5691
+        },
+        {
+          "doc_uid": "ifric17",
+          "score": 0.5685
+        },
+        {
+          "doc_uid": "ifrs17",
+          "score": 0.5671
+        },
+        {
+          "doc_uid": "ifrs7",
+          "score": 0.566
+        },
+        {
+          "doc_uid": "ifrs12",
+          "score": 0.5638
+        },
+        {
+          "doc_uid": "ias7",
+          "score": 0.5635
+        },
+        {
+          "doc_uid": "ias37",
+          "score": 0.5556
+        },
+        {
+          "doc_uid": "ifric19",
+          "score": 0.5484
+        }
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "doc_uid": "ifric17",
+      "run_count": 22,
+      "average_score": 0.5614227272727272
+    },
+    {
+      "doc_uid": "ifrs9",
+      "run_count": 21,
+      "average_score": 0.5864428571428572
+    },
+    {
+      "doc_uid": "ifric19",
+      "run_count": 18,
+      "average_score": 0.5323666666666667
+    },
+    {
+      "doc_uid": "ifrs19",
+      "run_count": 16,
+      "average_score": 0.5799875
+    },
+    {
+      "doc_uid": "sic25",
+      "run_count": 16,
+      "average_score": 0.5409125
+    },
+    {
+      "doc_uid": "ifrs12",
+      "run_count": 14,
+      "average_score": 0.5752642857142857
+    },
+    {
+      "doc_uid": "ifric16",
+      "run_count": 13,
+      "average_score": 0.5418615384615385
+    },
+    {
+      "doc_uid": "ifrs7",
+      "run_count": 9,
+      "average_score": 0.5740777777777778
+    },
+    {
+      "doc_uid": "ias7",
+      "run_count": 7,
+      "average_score": 0.5678428571428571
+    },
+    {
+      "doc_uid": "ifrs18",
+      "run_count": 6,
+      "average_score": 0.5741499999999999
+    },
+    {
+      "doc_uid": "ias37",
+      "run_count": 6,
+      "average_score": 0.5623333333333334
+    },
+    {
+      "doc_uid": "ias32",
+      "run_count": 5,
+      "average_score": 0.57064
+    },
+    {
+      "doc_uid": "ifrs17",
+      "run_count": 4,
+      "average_score": 0.5665
+    },
+    {
+      "doc_uid": "ias39",
+      "run_count": 2,
+      "average_score": 0.55655
+    },
+    {
+      "doc_uid": "ias24",
+      "run_count": 1,
+      "average_score": 0.5592
+    },
+    {
+      "doc_uid": "ias27",
+      "run_count": 1,
+      "average_score": 0.5579
+    },
+    {
+      "doc_uid": "ifrs10",
+      "run_count": 1,
+      "average_score": 0.5526
+    },
+    {
+      "doc_uid": "ps1",
+      "run_count": 1,
+      "average_score": 0.5267
+    },
+    {
+      "doc_uid": "ifric2",
+      "run_count": 1,
+      "average_score": 0.5252
+    },
+    {
+      "doc_uid": "ifric23",
+      "run_count": 1,
+      "average_score": 0.5178
+    }
+  ]
+}
