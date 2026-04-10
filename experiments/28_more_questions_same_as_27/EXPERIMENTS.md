@@ -123,19 +123,19 @@ Zero approach stability. Experiment 26 had 0.37 stability on this question — s
 
 | Label | Exp. 26 (Q1.0-Q1.7) | Exp. 28 (Q1.0-Q1.7) | Delta |
 |-------|----------------------|----------------------|-------|
-| net_investment_hedge | 17 | 18 | +1 |
-| fair_value_hedge | 14 | 19 | +5 |
-| cash_flow_hedge | 13 | 18 | +5 |
-| hedge_accounting | 4 | 0 | **-4** |
-| foreign_currency_accounting | 3 | 0 | **-3** |
-| foreign_currency_translation | 5 | 0 | **-5** |
-| consolidation_elimination | 2 | 0 | -2 |
-| forecast_transaction_hedge | 2 | 0 | -2 |
-| intragroup_monetary_hedge | 2 | 2 | 0 |
-| consolidation_accounting | 1 | 0 | -1 |
-| separate_financial_statements | 0 | 1 | +1 |
-| fx_hedge_accounting | 0 | 1 | +1 |
-| forecast_intragroup_hedge | 0 | 1 | +1 |
+| net_investment_hedge | 17/21 = 81% | 18/21 = 86% | +1 |
+| fair_value_hedge | 14/21 = 67% | 19/21 = 90% | +5 |
+| cash_flow_hedge | 13/21 = 62% | 18/21 = 86% | +5 |
+| hedge_accounting | 4/21 = 19% | 0/21 = 0% | **-4** |
+| foreign_currency_accounting | 3/21 = 14% | 0/21 = 0% | **-3** |
+| foreign_currency_translation | 5/21 = 24% | 0/21 = 0% | **-5** |
+| consolidation_elimination | 2/21 = 10% | 0/21 = 0% | -2 |
+| forecast_transaction_hedge | 2/21 = 10% | 0/21 = 0% | -2 |
+| intragroup_monetary_hedge | 2/21 = 10% | 2/21 = 10% | 0 |
+| consolidation_accounting | 1/21 = 5% | 0/21 = 0% | -1 |
+| separate_financial_statements | 0/21 = 0% | 1/21 = 5% | +1 |
+| fx_hedge_accounting | 0/21 = 0% | 1/21 = 5% | +1 |
+| forecast_intragroup_hedge | 0/21 = 0% | 1/21 = 5% | +1 |
 
 **Key observations:**
 - The three core hedge labels are now more dominant (55 vs 44 total)
@@ -169,3 +169,43 @@ The structured prompt is **not a clear win** over experiment 26. It helps some q
 2. **Add guidance against `needs_clarification`** — if the question is answerable with available context, the model should provide an answer.
 
 3. **Consider reverting to experiment 26's prompt** for Q1.4-type questions, or investigate what's different about these questions.
+
+## Human analysis
+
+### Better coverage of the expected core approaches
+The coverage of the 3 core approaches continues to increase: it is now 86-90%
+
+### The spurious approach labels are now inside the "hedging" universe
+
+The following list shows the approach labels that have disappeared. Apart from the first one, these were labels that described the standard non-hedged accounting approach from IAS 21. So it's good that these have disappeared
+- forecast_transaction_hedge
+- foreign_currency_accounting
+- foreign_currency_translation
+- consolidation_elimination
+- consolidation_accounting
+
+We also no longer see approaches labeled no_hedge_accounting, hedge_accounting. All these belonged to general accounting and not hedge accounting.
+
+The following list shows the approach labels that have changed in frequency. There's only one and it's an alias for the fair-value hedge. The naming is that of the *treatment family* rather than the *top level accounting approach* though: the new prompt wasn't strong enough to steer the model in this case
+- intragroup_monetary_hedge
+
+The following list shows the approach labels that have appeared in experiment 28. Note that they appear together in the same runs
+- fx_hedge_accounting (2 run) cites IFRS 9.6.3.5-6 and is an alias for the fair-value hedge
+- forecast_intragroup_hedge (2 runs) is an alias for the cash-flow hedge
+
+**Conclusion**:
+- The model now succesfully identifies the hedging approaches rather than generic accounting labels but produces over-specific labels instead of the top-level approach labels we expect. 
+- But it still sometimes outputting treatment families instead of the canonical peer approach labels. For example in Q1.2 we find the approach labels `forecast_intragroup_hedge` and `intragroup_monetary_hedge`; this leads us to hypothesis the model doing the intermediate reasoning step very literally and then failing to find the canonical approach labels.
+
+### Where to spend time now
+
+The question is whether we should try to 
+1. narrow retrieval to eliminate IAS 21/IFRS 10 and hope the model gets less distracted by the generic account
+2. improve the prompt again
+
+Looking at the [data](./28_spurious_approaches_vs_sections_matrix.html), we see many runs that behave differently yet have very similar visible context patterns: heavy IFRS 9 scope / gains-and-losses / 6.3.5–6.3.6, plus some IFRIC 16, and occasionally other peripheral material. Since some of these runs do generate the expected result, we are hopeful that prompt behavior, not retrieval, is the lever that improved things.
+
+The new prompt removed general accounting succesfully but preserves the “treatment family” wording rather than mapping it to the final top-level approach labels: the LLM is reasoning better, but has yet to normalize the approaches.
+
+### Next steps
+Change the prompt to constrain the LLM to map th approaches it finds on the 3 approaches we expecte and verify that works on the 8 questions from this experiment. This will help us make sure that the context given to the LLM is enough to map correctly and encourage us to continue fine-tuning the prompt with generic instructions that will transfer to other questions.
