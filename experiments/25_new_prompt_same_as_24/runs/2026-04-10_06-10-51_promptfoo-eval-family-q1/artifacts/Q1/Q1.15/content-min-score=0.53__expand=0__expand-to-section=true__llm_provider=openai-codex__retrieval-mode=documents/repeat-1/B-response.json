@@ -1,0 +1,81 @@
+{
+  "assumptions_fr": [
+    "La question porte sur les états financiers consolidés et sur l’application de la comptabilité de couverture selon IFRS 9.",
+    "La créance de dividende intragroupe génère une exposition au risque de change entre des entités du groupe.",
+    "Aucun fait ne suggère que cette créance représente un investissement net dans une activité à l’étranger."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "Dans cette situation, la créance de dividende intragroupe ne peut pas être désignée comme élément couvert en consolidation. IFRS 9 n’admet en principe comme élément couvert que des expositions avec des tiers, avec des exceptions limitées qui ne correspondent pas ici à une créance de dividende intragroupe reconnue."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "non",
+      "reasoning_fr": "Même si une créance reconnue peut en général être un élément couvert, en états financiers consolidés IFRS 9 exige normalement que l’élément couvert soit avec une partie externe au groupe. Ici, l’exposition provient d’une créance de dividende intragroupe ; le fait décisif est donc son caractère intragroupe, qui empêche sa désignation dans cette situation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance de dividende intragroupe ne doit pas être documentée comme élément couvert d’une couverture de juste valeur en consolidation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Ce modèle vise notamment une transaction prévue hautement probable. Or la question vise une créance déjà reconnue issue d’un dividende intragroupe, et non une transaction future. En outre, l’exception IFRS 9 pour certaines transactions intragroupe prévues concerne le risque de change affectant le résultat consolidé ; ce n’est pas le cas décrit ici.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La situation ne relève pas d’une couverture de flux de trésorerie sur dividende intragroupe en consolidation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La couverture d’investissement net vise le risque de change provenant des actifs nets d’une activité à l’étranger inclus dans les comptes consolidés. Ici, la question porte sur une créance de dividende intragroupe reconnue, donc sur un droit à encaissement spécifique, et non sur l’investissement net dans l’activité étrangère elle-même.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance de dividende ne doit pas être assimilée à l’élément couvert d’une couverture d’investissement net.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "7",
+          "excerpt": "This Interpretation applies to an entity that hedges the foreign currency risk arising from its net investments in foreign operations"
+        },
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "Hedge accounting of the foreign currency risk arising from a net investment in a foreign operation will apply only when the net assets of that foreign operation are included in the financial statements"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "En consolidation, partir du principe IFRS 9 que les éléments couverts doivent être avec des tiers, sauf exceptions expressément prévues.",
+    "Ne pas confondre une créance de dividende intragroupe déjà comptabilisée avec une transaction intragroupe future hautement probable ou avec un investissement net dans une activité à l’étranger.",
+    "Si une stratégie de couverture existe, elle doit être réévaluée au niveau consolidé pour identifier un éventuel élément couvert admissible vis-à-vis d’un tiers."
+  ]
+}

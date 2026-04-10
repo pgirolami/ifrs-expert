@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements prepared under IFRS.",
+    "The dividend receivable is an intragroup balance denominated in a foreign currency or otherwise gives rise to foreign exchange risk.",
+    "The issue is whether the foreign exchange exposure could fall within an IFRS hedge accounting model."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for eligible hedged items and hedging instruments."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model, including for highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify hedge accounting for the foreign currency risk of a net investment in a foreign operation as a separate hedge accounting model."
+    }
+  ]
+}

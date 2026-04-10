@@ -1,0 +1,69 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe est un élément monétaire libellé en devise.",
+    "La question vise les états financiers consolidés et non les états séparés.",
+    "Le dividende a déjà été comptabilisé en créance/dette intragroupe avant consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement si la créance de dividende intragroupe crée en consolidation une exposition de change dont les écarts ne sont pas entièrement éliminés. Dans ce cas, IFRS 9 permet de documenter formellement une relation de couverture sur ce risque de change."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "foreign_currency_translation",
+      "label_fr": "Conversion des devises selon IAS 21",
+      "applicability": "oui",
+      "reasoning_fr": "Dans cette situation, la créance de dividende intragroupe en devise est un élément monétaire. IAS 21 indique qu’en consolidation, un actif et un passif monétaires intragroupe ne peuvent pas être éliminés sans faire apparaître les effets des fluctuations de change ; ces écarts vont en résultat, sauf cas particulier de net investment.",
+      "conditions_fr": [],
+      "practical_implication_fr": "À défaut d’un traitement de couverture qualifiant, le risque de change sur la créance de dividende apparaît en consolidation selon IAS 21.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "shall be recognised in profit or loss in the period in which they arise"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "cannot be eliminated against the corresponding intragroup liability"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture selon IFRS 9",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En consolidation, IFRS 9 interdit en principe de désigner des postes intragroupe comme éléments couverts, sauf exception pour le risque de change d’un élément monétaire intragroupe lorsque les gains/pertes de change ne sont pas totalement éliminés à la consolidation. Si la créance de dividende répond à ce cas, son risque de change peut être formellement documenté dans une relation de couverture.",
+      "conditions_fr": [
+        "La créance de dividende doit être un élément monétaire intragroupe.",
+        "Les écarts de change correspondants ne doivent pas être entièrement éliminés en consolidation.",
+        "La relation de couverture doit être documentée conformément aux exigences d’IFRS 9."
+      ],
+      "practical_implication_fr": "La documentation de couverture est possible en consolidation seulement si l’exposition de change subsiste réellement après éliminations intragroupe.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "cannot be eliminated against the corresponding intragroup liability"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d’abord si la créance de dividende est bien un élément monétaire en devise entre entités à monnaies fonctionnelles différentes.",
+    "Documenter la relation de couverture au niveau consolidé en démontrant que le risque de change n’est pas totalement éliminé à la consolidation.",
+    "Ne pas confondre le traitement de base IAS 21 des écarts de change et la surcouche optionnelle de comptabilité de couverture IFRS 9."
+  ]
+}

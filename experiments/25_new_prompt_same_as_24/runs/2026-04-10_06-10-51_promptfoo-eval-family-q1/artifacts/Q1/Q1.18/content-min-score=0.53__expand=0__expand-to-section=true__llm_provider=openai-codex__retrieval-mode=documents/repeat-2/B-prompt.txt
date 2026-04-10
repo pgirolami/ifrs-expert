@@ -1,0 +1,1258 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ias24">
+<chunk id="3215" doc_uid="ias24" chunk_number="2" score="0.5378">
+This Standard shall be applied in:
+(a)identifying related party relationships and transactions;
+(b)identifying outstanding balances, including commitments, between an entity and its related parties;
+(c)identifying the circumstances in which disclosure of the items in (a) and (b) is required; and
+(d)determining the disclosures to be made about those items.
+</chunk>
+
+<chunk id="3216" doc_uid="ias24" chunk_number="3" score="0.6029">
+This Standard requires disclosure of related party relationships, transactions and outstanding balances, including commitments, in the consolidated and separate financial statements of a parent or investors with joint control of, or significant influence over, an investee presented in accordance with IFRS 10 Consolidated Financial Statements or IAS 27 Separate Financial Statements. This Standard also applies to individual financial statements.
+</chunk>
+
+<chunk id="3217" doc_uid="ias24" chunk_number="4" score="0.5966">
+Related party transactions and outstanding balances with other entities in a group are disclosed in an entity’s financial statements. Intragroup related party transactions and outstanding balances are eliminated, except for those between an investment entity and its subsidiaries measured at fair value through profit or loss, in the preparation of consolidated financial statements of the group.
+</chunk>
+
+<chunk id="3226" doc_uid="ias24" chunk_number="13" score="0.0000">
+Relationships between a parent and its subsidiaries shall be disclosed irrespective of whether there have been transactions between them. An entity shall disclose the name of its parent and, if different, the ultimate controlling party. If neither the entity’s parent nor the ultimate controlling party produces consolidated financial statements available for public use, the name of the next most senior parent that does so shall also be disclosed.
+</chunk>
+
+<chunk id="3227" doc_uid="ias24" chunk_number="14" score="0.0000">
+To enable users of financial statements to form a view about the effects of related party relationships on an entity, it is appropriate to disclose the related party relationship when control exists, irrespective of whether there have been transactions between the related parties.
+</chunk>
+
+<chunk id="3228" doc_uid="ias24" chunk_number="15" score="0.0000">
+The requirement to disclose related party relationships between a parent and its subsidiaries is in addition to the disclosure requirements in IAS 27 and IFRS 12 Disclosure of Interests in Other Entities.
+</chunk>
+
+<chunk id="3229" doc_uid="ias24" chunk_number="16" score="0.0000">
+Paragraph 13 refers to the next most senior parent. This is the first parent in the group above the immediate parent that produces consolidated financial statements available for public use.
+</chunk>
+
+<chunk id="3230" doc_uid="ias24" chunk_number="17" score="0.0000">
+An entity shall disclose key management personnel compensation in total and for each of the following categories:
+(a)short‑term employee benefits;
+(b)post‑employment benefits;
+(c)other long‑term benefits;
+(d)termination benefits; and
+(e)share‑based payment.
+</chunk>
+
+<chunk id="3231" doc_uid="ias24" chunk_number="17A" score="0.0000">
+If an entity obtains key management personnel services from another entity (the ‘management entity’), the entity is not required to apply the requirements in paragraph 17 to the compensation paid or payable by the management entity to the management entity’s employees or directors.
+</chunk>
+
+<chunk id="3232" doc_uid="ias24" chunk_number="18" score="0.0000">
+If an entity has had related party transactions during the periods covered by the financial statements, it shall disclose the nature of the related party relationship as well as information about those transactions and outstanding balances, including commitments, necessary for users to understand the potential effect of the relationship on the financial statements. These disclosure requirements are in addition to those in paragraph 17. At a minimum, disclosures shall include:
+(a)the amount of the transactions;
+(b)the amount of outstanding balances, including commitments, and:
+(i)their terms and conditions, including whether they are secured, and the nature of the consideration to be provided in settlement; and
+(ii)details of any guarantees given or received;
+(c)provisions for doubtful debts related to the amount of outstanding balances; and
+(d)the expense recognised during the period in respect of bad or doubtful debts due from related parties.
+</chunk>
+
+<chunk id="3233" doc_uid="ias24" chunk_number="18A" score="0.0000">
+Amounts incurred by the entity for the provision of key management personnel services that are provided by a separate management entity shall be disclosed.
+</chunk>
+
+<chunk id="3234" doc_uid="ias24" chunk_number="19" score="0.0000">
+The disclosures required by paragraph 18 shall be made separately for each of the following categories:
+(a)the parent;
+(b)entities with joint control of, or significant influence over, the entity;
+(c)subsidiaries;
+(d)associates;
+(e)joint ventures in which the entity is a joint venturer;
+(f)key management personnel of the entity or its parent; and
+(g)other related parties.
+</chunk>
+
+<chunk id="3235" doc_uid="ias24" chunk_number="20" score="0.5707">
+The classification of amounts payable to, and receivable from, related parties in the different categories as required in paragraph 19 is an extension of the disclosure requirement in IFRS 18 Presentation and Disclosure in Financial Statements for information to be either presented in the statement of financial position or disclosed in the notes. The categories are extended to provide a more comprehensive analysis of related party balances and apply to related party transactions.
+</chunk>
+
+<chunk id="3236" doc_uid="ias24" chunk_number="21" score="0.0000">
+The following are examples of transactions that are disclosed if they are with a related party:
+(a)purchases or sales of goods (finished or unfinished);
+(b)purchases or sales of property and other assets;
+(c)rendering or receiving of services;
+(d)leases;
+(e)transfers of research and development;
+(f)transfers under licence agreements;
+(g)transfers under finance arrangements (including loans and equity contributions in cash or in kind);
+(h)provision of guarantees or collateral;
+(i)commitments to do something if a particular event occurs or does not occur in the future, including executory contracts 1 (recognised and unrecognised); and
+(j)settlement of liabilities on behalf of the entity or by the entity on behalf of that related party.
+</chunk>
+
+<chunk id="3237" doc_uid="ias24" chunk_number="22" score="0.0000">
+Participation by a parent or subsidiary in a defined benefit plan that shares risks between group entities is a transaction between related parties (see paragraph 42 of IAS 19 (as amended in 2011)).
+</chunk>
+
+<chunk id="3238" doc_uid="ias24" chunk_number="23" score="0.0000">
+Disclosures that related party transactions were made on terms equivalent to those that prevail in arm’s length transactions are made only if such terms can be substantiated.
+</chunk>
+
+<chunk id="3239" doc_uid="ias24" chunk_number="24" score="0.5902">
+Items of a similar nature may be disclosed in aggregate except when separate disclosure is necessary for an understanding of the effects of related party transactions on the financial statements of the entity.
+</chunk>
+</Document>
+
+<Document name="ifrs9">
+<chunk id="510" doc_uid="ifrs9" chunk_number="4.3.3" score="0.0000">
+If a hybrid contract contains a host that is not an asset within the scope of this Standard, an embedded derivative shall be separated from the host and accounted for as a derivative under this Standard if, and only if:
+(a)the economic characteristics and risks of the embedded derivative are not closely related to the economic characteristics and risks of the host (see paragraphs B4.3.5 and B4.3.8);
+(b)a separate instrument with the same terms as the embedded derivative would meet the definition of a derivative; and
+(c)the hybrid contract is not measured at fair value with changes in fair value recognised in profit or loss (ie a derivative that is embedded in a financial liability at fair value through profit or loss is not separated).
+</chunk>
+
+<chunk id="511" doc_uid="ifrs9" chunk_number="4.3.4" score="0.5647">
+If an embedded derivative is separated, the host contract shall be accounted for in accordance with the appropriate Standards. This Standard does not address whether an embedded derivative shall be presented separately in the statement of financial position.
+</chunk>
+
+<chunk id="512" doc_uid="ifrs9" chunk_number="4.3.5" score="0.0000">
+Despite paragraphs 4.3.3 and 4.3.4, if a contract contains one or more embedded derivatives and the host is not an asset within the scope of this Standard, an entity may designate the entire hybrid contract as at fair value through profit or loss unless:
+(a)the embedded derivative(s) do(es) not significantly modify the cash flows that otherwise would be required by the contract; or
+(b)it is clear with little or no analysis when a similar hybrid instrument is first considered that separation of the embedded derivative(s) is prohibited, such as a prepayment option embedded in a loan that permits the holder to prepay the loan for approximately its amortised cost.
+</chunk>
+
+<chunk id="513" doc_uid="ifrs9" chunk_number="4.3.6" score="0.0000">
+If an entity is required by this Standard to separate an embedded derivative from its host, but is unable to measure the embedded derivative separately either at acquisition or at the end of a subsequent financial reporting period, it shall designate the entire hybrid contract as at fair value through profit or loss.
+</chunk>
+
+<chunk id="514" doc_uid="ifrs9" chunk_number="4.3.7" score="0.0000">
+If an entity is unable to measure reliably the fair value of an embedded derivative on the basis of its terms and conditions, the fair value of the embedded derivative is the difference between the fair value of the hybrid contract and the fair value of the host. If the entity is unable to measure the fair value of the embedded derivative using this method, paragraph 4.3.6 applies and the hybrid contract is designated as at fair value through profit or loss.
+</chunk>
+
+<chunk id="570" doc_uid="ifrs9" chunk_number="5.7.7" score="0.5638">
+An entity shall present a gain or loss on a financial liability that is designated as at fair value through profit or loss in accordance with paragraph 4.2.2 or paragraph 4.3.5 as follows:
+(a)The amount of change in the fair value of the financial liability that is attributable to changes in the credit risk of that liability shall be presented in other comprehensive income (see paragraphs B5.7.13⁠–⁠B5.7.20), and
+(b)the remaining amount of change in the fair value of the liability shall be presented in profit or loss
+unless the treatment of the effects of changes in the liability’s credit risk described in (a) would create or enlarge an accounting mismatch in profit or loss (in which case paragraph 5.7.8 applies). Paragraphs B5.7.5⁠–⁠B5.7.7 and B5.7.10⁠–⁠B5.7.12 provide guidance on determining whether an accounting mismatch would be created or enlarged.
+</chunk>
+
+<chunk id="571" doc_uid="ifrs9" chunk_number="5.7.8" score="0.0000">
+If the requirements in paragraph 5.7.7 would create or enlarge an accounting mismatch in profit or loss, an entity shall present all gains or losses on that liability (including the effects of changes in the credit risk of that liability) in profit or loss.
+</chunk>
+
+<chunk id="572" doc_uid="ifrs9" chunk_number="5.7.9" score="0.0000">
+Despite the requirements in paragraphs 5.7.7 and 5.7.8, an entity shall present in profit or loss all gains and losses on loan commitments and financial guarantee contracts that are designated as at fair value through profit or loss.
+</chunk>
+
+<chunk id="584" doc_uid="ifrs9" chunk_number="6.3.1" score="0.0000">
+A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction or a net investment in a foreign operation. The hedged item can be:
+(a)a single item; or
+(b)a group of items (subject to paragraphs 6.6.1⁠–⁠6.6.6 and B6.6.1⁠–⁠B6.6.16).
+A hedged item can also be a component of such an item or group of items (see paragraphs 6.3.7 and B6.3.7⁠–⁠B6.3.25).
+</chunk>
+
+<chunk id="585" doc_uid="ifrs9" chunk_number="6.3.2" score="0.0000">
+The hedged item must be reliably measurable.
+</chunk>
+
+<chunk id="586" doc_uid="ifrs9" chunk_number="6.3.3" score="0.0000">
+If a hedged item is a forecast transaction (or a component thereof), that transaction must be highly probable.
+</chunk>
+
+<chunk id="587" doc_uid="ifrs9" chunk_number="6.3.4" score="0.0000">
+An aggregated exposure that is a combination of an exposure that could qualify as a hedged item in accordance with paragraph 6.3.1 and a derivative may be designated as a hedged item (see paragraphs B6.3.3⁠–⁠B6.3.4). This includes a forecast transaction of an aggregated exposure (ie uncommitted but anticipated future transactions that would give rise to an exposure and a derivative) if that aggregated exposure is highly probable and, once it has occurred and is therefore no longer forecast, is eligible as a hedged item.
+</chunk>
+
+<chunk id="588" doc_uid="ifrs9" chunk_number="6.3.5" score="0.6027">
+For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group, except for the consolidated financial statements of an investment entity, as defined in IFRS 10, where transactions between an investment entity and its subsidiaries measured at fair value through profit or loss will not be eliminated in the consolidated financial statements.
+</chunk>
+
+<chunk id="589" doc_uid="ifrs9" chunk_number="6.3.6" score="0.5884">
+However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates. In accordance with IAS 21, foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies. In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.
+</chunk>
+
+<chunk id="609" doc_uid="ifrs9" chunk_number="6.6.2" score="0.0000">
+A component that is a proportion of an eligible group of items is an eligible hedged item provided that designation is consistent with the entity’s risk management objective.
+</chunk>
+
+<chunk id="610" doc_uid="ifrs9" chunk_number="6.6.3" score="0.5696">
+A layer component of an overall group of items (for example, a bottom layer) is eligible for hedge accounting only if:
+(a)it is separately identifiable and reliably measurable;
+(b)the risk management objective is to hedge a layer component;
+(c)the items in the overall group from which the layer is identified are exposed to the same hedged risk (so that the measurement of the hedged layer is not significantly affected by which particular items from the overall group form part of the hedged layer);
+(d)for a hedge of existing items (for example, an unrecognised firm commitment or a recognised asset) an entity can identify and track the overall group of items from which the hedged layer is defined (so that the entity is able to comply with the requirements for the accounting for qualifying hedging relationships); and
+(e)any items in the group that contain prepayment options meet the requirements for components of a nominal amount (see paragraph B6.3.20).
+</chunk>
+</Document>
+
+<Document name="ifric17">
+<chunk id="4355" doc_uid="ifric17" chunk_number="3" score="0.0000">
+This Interpretation applies to the following types of non‑reciprocal distributions of assets by an entity to its owners acting in their capacity as owners:
+(a)distributions of non‑cash assets (eg items of property, plant and equipment, businesses as defined in IFRS 3, ownership interests in another entity or disposal groups as defined in IFRS 5); and
+(b)distributions that give owners a choice of receiving either non‑cash assets or a cash alternative.
+</chunk>
+
+<chunk id="4356" doc_uid="ifric17" chunk_number="4" score="0.0000">
+This Interpretation applies only to distributions in which all owners of the same class of equity instruments are treated equally.
+</chunk>
+
+<chunk id="4357" doc_uid="ifric17" chunk_number="5" score="0.5604">
+This Interpretation does not apply to a distribution of a non‑cash asset that is ultimately controlled by the same party or parties before and after the distribution. This exclusion applies to the separate, individual and consolidated financial statements of an entity that makes the distribution.
+</chunk>
+
+<chunk id="4358" doc_uid="ifric17" chunk_number="6" score="0.0000">
+In accordance with paragraph 5, this Interpretation does not apply when the non‑cash asset is ultimately controlled by the same parties both before and after the distribution. Paragraph B2 of IFRS 3 states that ‘A group of individuals shall be regarded as controlling an entity when, as a result of contractual arrangements, they collectively have the power to govern its financial and operating policies so as to obtain benefits from its activities.’ Therefore, for a distribution to be outside the scope of this Interpretation on the basis that the same parties control the asset both before and after the distribution, a group of individual shareholders receiving the distribution must have, as a result of contractual arrangements, such ultimate collective power over the entity making the distribution.
+</chunk>
+
+<chunk id="4359" doc_uid="ifric17" chunk_number="7" score="0.0000">
+In accordance with paragraph 5, this Interpretation does not apply when an entity distributes some of its ownership interests in a subsidiary but retains control of the subsidiary. The entity making a distribution that results in the entity recognising a non‑controlling interest in its subsidiary accounts for the distribution in accordance with IFRS 10.
+</chunk>
+
+<chunk id="4360" doc_uid="ifric17" chunk_number="8" score="0.0000">
+This Interpretation addresses only the accounting by an entity that makes a non‑cash asset distribution. It does not address the accounting by shareholders who receive such a distribution.
+</chunk>
+
+<chunk id="4361" doc_uid="ifric17" chunk_number="9" score="0.6010">
+When an entity declares a distribution and has an obligation to distribute the assets concerned to its owners, it must recognise a liability for the dividend payable. Consequently, this Interpretation addresses the following issues:
+(a)When should the entity recognise the dividend payable?
+(b)How should an entity measure the dividend payable?
+(c)When an entity settles the dividend payable, how should it account for any difference between the carrying amount of the assets distributed and the carrying amount of the dividend payable?
+</chunk>
+
+<chunk id="4363" doc_uid="ifric17" chunk_number="11" score="0.0000">
+An entity shall measure a liability to distribute non‑cash assets as a dividend to its owners at the fair value of the assets to be distributed.
+</chunk>
+
+<chunk id="4364" doc_uid="ifric17" chunk_number="12" score="0.0000">
+If an entity gives its owners a choice of receiving either a non‑cash asset or a cash alternative, the entity shall estimate the dividend payable by considering both the fair value of each alternative and the associated probability of owners selecting each alternative.
+</chunk>
+
+<chunk id="4365" doc_uid="ifric17" chunk_number="13" score="0.5810">
+At the end of each reporting period and at the date of settlement, the entity shall review and adjust the carrying amount of the dividend payable, with any changes in the carrying amount of the dividend payable recognised in equity as adjustments to the amount of the distribution.
+</chunk>
+
+<chunk id="4366" doc_uid="ifric17" chunk_number="14" score="0.5847">
+When an entity settles the dividend payable, it shall recognise the difference, if any, between the carrying amount of the assets distributed and the carrying amount of the dividend payable in profit or loss.
+</chunk>
+
+<chunk id="4367" doc_uid="ifric17" chunk_number="15" score="0.0000">
+An entity shall present the difference described in paragraph 14 as a separate line item in profit or loss.
+</chunk>
+
+<chunk id="4368" doc_uid="ifric17" chunk_number="16" score="0.5570">
+An entity shall disclose the following information, if applicable:
+(a)the carrying amount of the dividend payable at the beginning and end of the period; and
+(b)the increase or decrease in the carrying amount recognised in the period in accordance with paragraph 13 as result of a change in the fair value of the assets to be distributed.
+</chunk>
+
+<chunk id="4369" doc_uid="ifric17" chunk_number="17" score="0.0000">
+If, after the end of a reporting period but before the financial statements are authorised for issue, an entity declares a dividend to distribute a non‑cash asset, it shall disclose:
+(a)the nature of the asset to be distributed;
+(b)the carrying amount of the asset to be distributed as of the end of the reporting period; and
+(c)the fair value of the asset to be distributed as of the end of the reporting period, if it is different from its carrying amount, and the information about the method(s) used to measure that fair value required by paragraphs 93(b), (d), (g) and (i) and 99 of IFRS 13.
+</chunk>
+</Document>
+
+<Document name="ifrs19">
+<chunk id="2145" doc_uid="ifrs19" chunk_number="2" score="0.0000">
+An entity electing to apply this Standard applies the requirements in other IFRS Accounting Standards, except for the disclosure requirements. Instead, the entity applies the requirements in this Standard.
+</chunk>
+
+<chunk id="2146" doc_uid="ifrs19" chunk_number="3" score="0.0000">
+Therefore, unless specified otherwise (see paragraph 4), an entity applying this Standard need not apply the disclosure requirements in other IFRS Accounting Standards nor apply any statements about, or references to, those disclosure requirements. For example, paragraph 35 of IAS 12 Income Taxes contains requirements about the criteria for recognising a deferred tax asset arising from the carryforward of unused tax losses and tax credits. The paragraph ends with ‘in such circumstances, paragraph 82 requires disclosure of the amount of the deferred tax asset and the nature of the evidence supporting its recognition’. An entity that applies this Standard would not apply paragraph 82 of IAS 12. Such an entity need not apply the statement at the end of paragraph 35 of IAS 12 about paragraph 82.
+</chunk>
+
+<chunk id="2147" doc_uid="ifrs19" chunk_number="4" score="0.5838">
+Notwithstanding paragraphs 2⁠–⁠3:
+(a)disclosure requirements in other IFRS Accounting Standards that remain applicable to an entity applying this Standard are specified in this Standard.
+(b)if an entity applying this Standard applies IFRS 8 Operating Segments, IFRS 17 Insurance Contracts or IAS 33 Earnings per Share, it shall apply all the disclosure requirements in those Standards.
+(c)a new or amended IFRS Accounting Standard may include disclosure requirements about an entity’s transition to that Standard. Any relief available to an entity applying this Standard from disclosure requirements about the entity’s transition to that new or amended Standard will be set out in the new or amended IFRS Accounting Standard.
+</chunk>
+
+<chunk id="2148" doc_uid="ifrs19" chunk_number="5" score="0.0000">
+In accordance with paragraph 19 of IFRS 18 Presentation and Disclosure in Financial Statements, an entity applying this Standard need not provide a specific disclosure required by this Standard if the information resulting from that disclosure would not be material.
+</chunk>
+
+<chunk id="2149" doc_uid="ifrs19" chunk_number="6" score="0.0000">
+An entity shall consider whether to provide additional disclosures when compliance with the specific requirements in this Standard is insufficient to enable users of financial statements to understand the effect of transactions and other events and conditions on the entity’s financial position and financial performance.
+</chunk>
+
+<chunk id="2196" doc_uid="ifrs19" chunk_number="53" score="0.5975">
+If an entity has issued an instrument that contains both a liability and an equity component (see paragraph 28 of IAS 32) and the instrument has multiple embedded derivatives whose values are interdependent (such as a callable convertible debt instrument), it shall disclose the existence of those features.
+</chunk>
+
+<chunk id="2321" doc_uid="ifrs19" chunk_number="192" score="0.0000">
+An entity shall disclose separately the major components of tax expense (income).
+</chunk>
+
+<chunk id="2322" doc_uid="ifrs19" chunk_number="193" score="0.0000">
+Components of tax expense (income) may include:
+(a)current tax expense (income);
+(b)any adjustments recognised in the period for current tax of prior periods;
+(c)the amount of deferred tax expense (income) relating to the origination and reversal of temporary differences;
+(d)the amount of deferred tax expense (income) relating to changes in tax rates or the imposition of new taxes;
+(e)the amount of the benefit arising from a previously unrecognised tax loss, tax credit or temporary difference of a prior period that is used to reduce current tax expense;
+(f)the amount of the benefit from a previously unrecognised tax loss, tax credit or temporary difference of a prior period that is used to reduce deferred tax expense;
+(g)deferred tax expense arising from the write‑down, or reversal of a previous write‑down, of a deferred tax asset in accordance with paragraph 56 of IAS 12; and
+(h)the amount of tax expense (income) relating to those changes in accounting policies and errors that are included in profit or loss in accordance with IAS 8, because they cannot be accounted for retrospectively.
+</chunk>
+
+<chunk id="2323" doc_uid="ifrs19" chunk_number="194" score="0.5733">
+An entity shall also disclose separately:
+(a)the aggregate current and deferred tax relating to items that are charged or credited directly to equity (see paragraph 62A of IAS 12);
+(b)the aggregate amount of income tax relating to components of other comprehensive income (see paragraph 62 of IAS 12 and paragraph 93 of IFRS 18);
+(c)an explanation of the relationship between tax expense (income) and accounting profit in either or both of these forms:
+(i)a numerical reconciliation between tax expense (income) and the product of accounting profit multiplied by the applicable tax rate(s), disclosing also the basis on which the applicable tax rate(s) is (are) computed; or
+(ii)a numerical reconciliation between the average effective tax rate and the applicable tax rate, disclosing also the basis on which the applicable tax rate is computed;
+(d)an explanation of changes in the applicable tax rate(s) compared to the previous reporting period;
+(e)the amount (and expiry date, if any) of deductible temporary differences, unused tax losses and unused tax credits for which no deferred tax asset is recognised in the statement of financial position; and
+(f)in respect of each type of temporary difference, and in respect of each type of unused tax losses and unused tax credits:
+(i)the amount of the deferred tax assets and liabilities recognised in the statement of financial position for each period presented; and
+(ii)the amount of the deferred tax income or expense recognised in profit or loss, if this is not apparent from the changes in the amounts recognised in the statement of financial position.
+</chunk>
+
+<chunk id="2324" doc_uid="ifrs19" chunk_number="195" score="0.0000">
+In the circumstances described in paragraph 52A of IAS 12, an entity shall disclose the nature of the potential income tax consequences that would result from the payment of dividends to its shareholders.
+</chunk>
+
+<chunk id="2325" doc_uid="ifrs19" chunk_number="196" score="0.0000">
+An entity shall disclose that it has applied the exception to recognising and disclosing information about deferred tax assets and liabilities related to Pillar Two income taxes (see paragraph 4A of IAS 12).
+</chunk>
+
+<chunk id="2326" doc_uid="ifrs19" chunk_number="197" score="0.0000">
+An entity shall disclose separately its current tax expense (income) related to Pillar Two income taxes.
+</chunk>
+
+<chunk id="2327" doc_uid="ifrs19" chunk_number="199" score="0.0000">
+In periods in which Pillar Two legislation is enacted or substantively enacted but not yet in effect, an entity shall disclose known or reasonably estimable qualitative and quantitative information about its exposure to Pillar Two income taxes at the end of the reporting period. This information does not have to reflect all the specific requirements of the Pillar Two legislation and can be provided in the form of an indicative range. To the extent information is not known or reasonably estimable, an entity shall instead disclose a statement to that effect and disclose information about the entity’s progress in assessing its exposure.
+</chunk>
+
+<chunk id="2356" doc_uid="ifrs19" chunk_number="226" score="0.0000">
+Relationships between a parent and its subsidiaries shall be disclosed irrespective of whether there have been transactions between them. An entity shall disclose:
+(a)the name of its parent and, if different, the ultimate controlling party; and
+(b)the name of the ultimate or intermediate parent that produces consolidated financial statements available for public use that comply with IFRS Accounting Standards, as required by paragraph 7(c) and which results in the entity being eligible to apply this Standard.
+</chunk>
+
+<chunk id="2357" doc_uid="ifrs19" chunk_number="227" score="0.0000">
+An entity shall disclose key management personnel compensation in total.
+</chunk>
+
+<chunk id="2358" doc_uid="ifrs19" chunk_number="228" score="0.0000">
+If an entity obtains key management personnel services from another entity (the management entity), the entity is not required to apply the requirements in paragraph 227 to the compensation paid or payable by the management entity to the management entity’s employees or directors.
+</chunk>
+
+<chunk id="2359" doc_uid="ifrs19" chunk_number="229" score="0.0000">
+Amounts incurred by the entity for the provision of key management personnel services that are provided by a separate management entity shall be disclosed.
+</chunk>
+
+<chunk id="2360" doc_uid="ifrs19" chunk_number="230" score="0.0000">
+If an entity has had related party transactions during the reporting periods covered by the financial statements, it shall disclose the nature of the related party relationship as well as information about those transactions and outstanding balances, including commitments, necessary for users to understand the potential effect of the relationship on the financial statements. These disclosure requirements are in addition to paragraph 227. At a minimum, disclosures shall include:
+(a)the amount of the transactions;
+(b)the amount of outstanding balances, including commitments, and:
+(i)their terms and conditions, including whether they are secured and the nature of the consideration to be provided in settlement; and
+(ii)details of any guarantees given or received;
+(c)provisions for doubtful debts related to the amount of outstanding balances; and
+(d)the expense recognised during the period in respect of bad or doubtful debts due from related parties.
+</chunk>
+
+<chunk id="2361" doc_uid="ifrs19" chunk_number="231" score="0.0000">
+The disclosures required by paragraph 230 shall be made separately for:
+(a)the parent;
+(b)entities with joint control of, or significant influence over, the entity;
+(c)subsidiaries;
+(d)associates;
+(e)joint ventures in which the entity is a joint venturer;
+(f)key management personnel of the entity or its parent; and
+(g)other related parties.
+</chunk>
+
+<chunk id="2362" doc_uid="ifrs19" chunk_number="232" score="0.0000">
+A reporting entity is exempt from the disclosure requirements in paragraph 230 in relation to related party transactions and outstanding balances, including commitments, with:
+(a)a government that has control or joint control of, or significant influence over, the reporting entity; and
+(b)another entity that is a related party because the same government has control or joint control of, or significant influence over, both the reporting entity and the other entity.
+</chunk>
+
+<chunk id="2363" doc_uid="ifrs19" chunk_number="233" score="0.0000">
+If an entity applies the exemption in paragraph 232, it shall disclose the following about the transactions and related outstanding balances referred to in paragraph 232:
+(a)the name of the government and the nature of its relationship with the reporting entity (control, joint control or significant influence).
+(b)the following information in sufficient detail to enable users of the entity’s financial statements to understand the effect of related party transactions on its financial statements:
+(i)the nature and amount of each individually significant transaction.
+(ii)for other transactions that are collectively, but not individually, significant, a qualitative or quantitative indication of their extent. Types of transactions include those listed in paragraph 234.
+</chunk>
+
+<chunk id="2364" doc_uid="ifrs19" chunk_number="234" score="0.0000">
+Examples of transactions that are disclosed if they are with a related party include:
+(a)purchases or sales of goods (finished or unfinished);
+(b)purchases or sales of property and other assets;
+(c)the rendering or receiving of services;
+(d)leases;
+(e)transfers of research and development;
+(f)transfers under licence agreements;
+(g)transfers under finance arrangements (including loans and equity contributions in cash or in kind);
+(h)provision of guarantees or collateral; and
+(i)settlement of liabilities on behalf of the entity or by the entity on behalf of that related party.
+</chunk>
+
+<chunk id="2365" doc_uid="ifrs19" chunk_number="235" score="0.0000">
+Participation by a parent or subsidiary in a defined benefit plan that shares risks between group entities is a transaction between related parties (see paragraph 42 of IAS 19, which requires an entity to disclose the information required by paragraph 213).
+</chunk>
+
+<chunk id="2366" doc_uid="ifrs19" chunk_number="236" score="0.0000">
+An entity shall disclose that related party transactions were made on terms equivalent to those that prevail in arm’s length transactions only if such terms can be substantiated.
+</chunk>
+
+<chunk id="2367" doc_uid="ifrs19" chunk_number="237" score="0.5902">
+Items of a similar nature may be disclosed in aggregate except when separate disclosure is necessary for an understanding of the effects of related party transactions on the financial statements of the entity.
+</chunk>
+
+<chunk id="2421" doc_uid="ifrs19" chunk_number="B12" score="0.5790">
+An entity shall either present in the statement of changes in equity or in the notes the amount of dividends recognised as distributions to owners during the period (in aggregate or per share), separately for ordinary shares and other shares.
+</chunk>
+</Document>
+
+<Document name="ifric16">
+<chunk id="4336" doc_uid="ifric16" chunk_number="1" score="0.0000">
+Many reporting entities have investments in foreign operations (as defined in IAS 21 paragraph 8). Such foreign operations may be subsidiaries, associates, joint ventures or branches. IAS 21 requires an entity to determine the functional currency of each of its foreign operations as the currency of the primary economic environment of that operation. When translating the results and financial position of a foreign operation into a presentation currency, the entity is required to recognise foreign exchange differences in other comprehensive income until it disposes of the foreign operation.
+</chunk>
+
+<chunk id="4337" doc_uid="ifric16" chunk_number="2" score="0.0000">
+Hedge accounting of the foreign currency risk arising from a net investment in a foreign operation will apply only when the net assets of that foreign operation are included in the financial statements. 1 The item being hedged with respect to the foreign currency risk arising from the net investment in a foreign operation may be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation.
+</chunk>
+
+<chunk id="4338" doc_uid="ifric16" chunk_number="3" score="0.0000">
+IFRS 9 requires the designation of an eligible hedged item and eligible hedging instruments in a hedge accounting relationship. If there is a designated hedging relationship, in the case of a net investment hedge, the gain or loss on the hedging instrument that is determined to be an effective hedge of the net investment is recognised in other comprehensive income and is included with the foreign exchange differences arising on translation of the results and financial position of the foreign operation.
+</chunk>
+
+<chunk id="4339" doc_uid="ifric16" chunk_number="4" score="0.0000">
+An entity with many foreign operations may be exposed to a number of foreign currency risks. This Interpretation provides guidance on identifying the foreign currency risks that qualify as a hedged risk in the hedge of a net investment in a foreign operation.
+</chunk>
+
+<chunk id="4340" doc_uid="ifric16" chunk_number="5" score="0.5357">
+IFRS 9 allows an entity to designate either a derivative or a non-derivative financial instrument (or a combination of derivative and non-derivative financial instruments) as hedging instruments for foreign currency risk. This Interpretation provides guidance on where, within a group, hedging instruments that are hedges of a net investment in a foreign operation can be held to qualify for hedge accounting.
+</chunk>
+
+<chunk id="4341" doc_uid="ifric16" chunk_number="6" score="0.0000">
+IAS 21 and IFRS 9 require cumulative amounts recognised in other comprehensive income relating to both the foreign exchange differences arising on translation of the results and financial position of the foreign operation and the gain or loss on the hedging instrument that is determined to be an effective hedge of the net investment to be reclassified from equity to profit or loss as a reclassification adjustment when the parent disposes of the foreign operation. This Interpretation provides guidance on how an entity should determine the amounts to be reclassified from equity to profit or loss for both the hedging instrument and the hedged item.
+</chunk>
+
+<chunk id="4342" doc_uid="ifric16" chunk_number="7" score="0.5363">
+This Interpretation applies to an entity that hedges the foreign currency risk arising from its net investments in foreign operations and wishes to qualify for hedge accounting in accordance with IFRS 9. For convenience this Interpretation refers to such an entity as a parent entity and to the financial statements in which the net assets of foreign operations are included as consolidated financial statements. All references to a parent entity apply equally to an entity that has a net investment in a foreign operation that is a joint venture, an associate or a branch.
+</chunk>
+
+<chunk id="4343" doc_uid="ifric16" chunk_number="8" score="0.0000">
+This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting.
+</chunk>
+
+<chunk id="4344" doc_uid="ifric16" chunk_number="9" score="0.5501">
+Investments in foreign operations may be held directly by a parent entity or indirectly by its subsidiary or subsidiaries. The issues addressed in this Interpretation are:
+(a)the nature of the hedged risk and the amount of the hedged item for which a hedging relationship may be designated:
+(i)whether the parent entity may designate as a hedged risk only the foreign exchange differences arising from a difference between the functional currencies of the parent entity and its foreign operation, or whether it may also designate as the hedged risk the foreign exchange differences arising from the difference between the presentation currency of the parent entity’s consolidated financial statements and the functional currency of the foreign operation;
+(ii)if the parent entity holds the foreign operation indirectly, whether the hedged risk may include only the foreign exchange differences arising from differences in functional currencies between the foreign operation and its immediate parent entity, or whether the hedged risk may also include any foreign exchange differences between the functional currency of the foreign operation and any intermediate or ultimate parent entity (ie whether the fact that the net investment in the foreign operation is held through an intermediate parent affects the economic risk to the ultimate parent).
+(b)where in a group the hedging instrument can be held:
+(i)whether a qualifying hedge accounting relationship can be established only if the entity hedging its net investment is a party to the hedging instrument or whether any entity in the group, regardless of its functional currency, can hold the hedging instrument;
+(ii)whether the nature of the hedging instrument (derivative or non‑derivative) or the method of consolidation affects the assessment of hedge effectiveness.
+(c)what amounts should be reclassified from equity to profit or loss as reclassification adjustments on disposal of the foreign operation:
+(i)when a foreign operation that was hedged is disposed of, what amounts from the parent entity’s foreign currency translation reserve in respect of the hedging instrument and in respect of that foreign operation should be reclassified from equity to profit or loss in the parent entity’s consolidated financial statements;
+(ii)whether the method of consolidation affects the determination of the amounts to be reclassified from equity to profit or loss.
+</chunk>
+
+<chunk id="4345" doc_uid="ifric16" chunk_number="10" score="0.0000">
+Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.
+</chunk>
+
+<chunk id="4346" doc_uid="ifric16" chunk_number="11" score="0.0000">
+In a hedge of the foreign currency risks arising from a net investment in a foreign operation, the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation in the consolidated financial statements of the parent entity. The carrying amount of the net assets of a foreign operation that may be designated as the hedged item in the consolidated financial statements of a parent depends on whether any lower level parent of the foreign operation has applied hedge accounting for all or part of the net assets of that foreign operation and that accounting has been maintained in the parent’s consolidated financial statements.
+</chunk>
+
+<chunk id="4347" doc_uid="ifric16" chunk_number="12" score="0.0000">
+The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity (the immediate, intermediate or ultimate parent entity) of that foreign operation. The fact that the net investment is held through an intermediate parent does not affect the nature of the economic risk arising from the foreign currency exposure to the ultimate parent entity.
+</chunk>
+
+<chunk id="4348" doc_uid="ifric16" chunk_number="13" score="0.5851">
+An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once in the consolidated financial statements. Therefore, if the same net assets of a foreign operation are hedged by more than one parent entity within the group (for example, both a direct and an indirect parent entity) for the same risk, only one hedging relationship will qualify for hedge accounting in the consolidated financial statements of the ultimate parent. A hedging relationship designated by one parent entity in its consolidated financial statements need not be maintained by another higher level parent entity. However, if it is not maintained by the higher level parent entity, the hedge accounting applied by the lower level parent must be reversed before the higher level parent’s hedge accounting is recognised.
+</chunk>
+
+<chunk id="4351" doc_uid="ifric16" chunk_number="16" score="0.0000">
+When a foreign operation that was hedged is disposed of, the amount reclassified to profit or loss as a reclassification adjustment from the foreign currency translation reserve in the consolidated financial statements of the parent in respect of the hedging instrument is the amount that IFRS 9 paragraph 6.5.14 requires to be identified. That amount is the cumulative gain or loss on the hedging instrument that was determined to be an effective hedge.
+</chunk>
+
+<chunk id="4352" doc_uid="ifric16" chunk_number="17" score="0.5349">
+The amount reclassified to profit or loss from the foreign currency translation reserve in the consolidated financial statements of a parent in respect of the net investment in that foreign operation in accordance with IAS 21 paragraph 48 is the amount included in that parent’s foreign currency translation reserve in respect of that foreign operation. In the ultimate parent’s consolidated financial statements, the aggregate net amount recognised in the foreign currency translation reserve in respect of all foreign operations is not affected by the consolidation method. However, whether the ultimate parent uses the direct or the step‑by‑step method of consolidation 2 may affect the amount included in its foreign currency translation reserve in respect of an individual foreign operation. The use of the step‑by‑step method of consolidation may result in the reclassification to profit or loss of an amount different from that used to determine hedge effectiveness. This difference may be eliminated by determining the amount relating to that foreign operation that would have arisen if the direct method of consolidation had been used. Making this adjustment is not required by IAS 21. However, it is an accounting policy choice that should be followed consistently for all net investments.
+</chunk>
+</Document>
+
+<Document name="ifrs12">
+<chunk id="891" doc_uid="ifrs12" chunk_number="10" score="0.5777">
+An entity shall disclose information that enables users of its consolidated financial statements
+(a)to understand:
+(i)the composition of the group; and
+(ii)the interest that non‑controlling interests have in the group’s activities and cash flows (paragraph 12); and
+(b)to evaluate:
+(i)the nature and extent of significant restrictions on its ability to access or use assets, and settle liabilities, of the group (paragraph 13);
+(ii)the nature of, and changes in, the risks associated with its interests in consolidated structured entities (paragraphs 14⁠–⁠17);
+(iii)the consequences of changes in its ownership interest in a subsidiary that do not result in a loss of control (paragraph 18); and
+(iv)the consequences of losing control of a subsidiary during the reporting period (paragraph 19).
+</chunk>
+
+<chunk id="892" doc_uid="ifrs12" chunk_number="11" score="0.0000">
+When the financial statements of a subsidiary used in the preparation of consolidated financial statements are as of a date or for a period that is different from that of the consolidated financial statements (see paragraphs B92 and B93 of IFRS 10), an entity shall disclose:
+(a)the date of the end of the reporting period of the financial statements of that subsidiary; and
+(b)the reason for using a different date or period.
+</chunk>
+
+<chunk id="893" doc_uid="ifrs12" chunk_number="12" score="0.0000">
+An entity shall disclose for each of its subsidiaries that have non‑controlling interests that are material to the reporting entity:
+(a)the name of the subsidiary.
+(b)the principal place of business (and country of incorporation if different from the principal place of business) of the subsidiary.
+(c)the proportion of ownership interests held by non‑controlling interests.
+(d)the proportion of voting rights held by non‑controlling interests, if different from the proportion of ownership interests held.
+(e)the profit or loss allocated to non‑controlling interests of the subsidiary during the reporting period.
+(f)accumulated non‑controlling interests of the subsidiary at the end of the reporting period.
+(g)summarised financial information about the subsidiary (see paragraph B10).
+</chunk>
+
+<chunk id="894" doc_uid="ifrs12" chunk_number="13" score="0.5736">
+An entity shall disclose:
+(a)significant restrictions (eg statutory, contractual and regulatory restrictions) on its ability to access or use the assets and settle the liabilities of the group, such as:
+(i)those that restrict the ability of a parent or its subsidiaries to transfer cash or other assets to (or from) other entities within the group.
+(ii)guarantees or other requirements that may restrict dividends and other capital distributions being paid, or loans and advances being made or repaid, to (or from) other entities within the group.
+(b)the nature and extent to which protective rights of non‑controlling interests can significantly restrict the entity’s ability to access or use the assets and settle the liabilities of the group (such as when a parent is obliged to settle liabilities of a subsidiary before settling its own liabilities, or approval of non‑controlling interests is required either to access the assets or to settle the liabilities of a subsidiary).
+(c)the carrying amounts in the consolidated financial statements of the assets and liabilities to which those restrictions apply.
+</chunk>
+
+<chunk id="895" doc_uid="ifrs12" chunk_number="14" score="0.0000">
+An entity shall disclose the terms of any contractual arrangements that could require the parent or its subsidiaries to provide financial support to a consolidated structured entity, including events or circumstances that could expose the reporting entity to a loss (eg liquidity arrangements or credit rating triggers associated with obligations to purchase assets of the structured entity or provide financial support).
+</chunk>
+
+<chunk id="896" doc_uid="ifrs12" chunk_number="15" score="0.0000">
+If during the reporting period a parent or any of its subsidiaries has, without having a contractual obligation to do so, provided financial or other support to a consolidated structured entity (eg purchasing assets of or instruments issued by the structured entity), the entity shall disclose:
+(a)the type and amount of support provided, including situations in which the parent or its subsidiaries assisted the structured entity in obtaining financial support; and
+(b)the reasons for providing the support.
+</chunk>
+
+<chunk id="897" doc_uid="ifrs12" chunk_number="16" score="0.0000">
+If during the reporting period a parent or any of its subsidiaries has, without having a contractual obligation to do so, provided financial or other support to a previously unconsolidated structured entity and that provision of support resulted in the entity controlling the structured entity, the entity shall disclose an explanation of the relevant factors in reaching that decision.
+</chunk>
+
+<chunk id="898" doc_uid="ifrs12" chunk_number="17" score="0.0000">
+An entity shall disclose any current intentions to provide financial or other support to a consolidated structured entity, including intentions to assist the structured entity in obtaining financial support.
+</chunk>
+
+<chunk id="899" doc_uid="ifrs12" chunk_number="18" score="0.0000">
+An entity shall present a schedule that shows the effects on the equity attributable to owners of the parent of any changes in its ownership interest in a subsidiary that do not result in a loss of control.
+</chunk>
+
+<chunk id="900" doc_uid="ifrs12" chunk_number="19" score="0.0000">
+An entity shall disclose the gain or loss, if any, calculated in accordance with paragraph 25 of IFRS 10, and:
+(a)the portion of that gain or loss attributable to measuring any investment retained in the former subsidiary at its fair value at the date when control is lost; and
+(b)the line item(s) in profit or loss in which the gain or loss is recognised (if not presented separately).
+</chunk>
+
+<chunk id="901" doc_uid="ifrs12" chunk_number="19A" score="0.0000">
+An investment entity that, in accordance with IFRS 10, is required to apply the exception to consolidation and instead account for its investment in a subsidiary at fair value through profit or loss shall disclose that fact.
+</chunk>
+
+<chunk id="902" doc_uid="ifrs12" chunk_number="19B" score="0.0000">
+For each unconsolidated subsidiary, an investment entity shall disclose:
+(a)the subsidiary’s name;
+(b)the principal place of business (and country of incorporation if different from the principal place of business) of the subsidiary; and
+(c)the proportion of ownership interest held by the investment entity and, if different, the proportion of voting rights held.
+</chunk>
+
+<chunk id="903" doc_uid="ifrs12" chunk_number="19C" score="0.0000">
+If an investment entity is the parent of another investment entity, the parent shall also provide the disclosures in 19B(a)⁠–⁠(c) for investments that are controlled by its investment entity subsidiary. The disclosure may be provided by including, in the financial statements of the parent, the financial statements of the subsidiary (or subsidiaries) that contain the above information.
+</chunk>
+
+<chunk id="904" doc_uid="ifrs12" chunk_number="19D" score="0.5723">
+An investment entity shall disclose:
+(a)the nature and extent of any significant restrictions (eg resulting from borrowing arrangements, regulatory requirements or contractual arrangements) on the ability of an unconsolidated subsidiary to transfer funds to the investment entity in the form of cash dividends or to repay loans or advances made to the unconsolidated subsidiary by the investment entity; and
+(b)any current commitments or intentions to provide financial or other support to an unconsolidated subsidiary, including commitments or intentions to assist the subsidiary in obtaining financial support.
+</chunk>
+
+<chunk id="905" doc_uid="ifrs12" chunk_number="19E" score="0.0000">
+If, during the reporting period, an investment entity or any of its subsidiaries has, without having a contractual obligation to do so, provided financial or other support to an unconsolidated subsidiary (eg purchasing assets of, or instruments issued by, the subsidiary or assisting the subsidiary in obtaining financial support), the entity shall disclose:
+(a)the type and amount of support provided to each unconsolidated subsidiary; and
+(b)the reasons for providing the support.
+</chunk>
+
+<chunk id="906" doc_uid="ifrs12" chunk_number="19F" score="0.0000">
+An investment entity shall disclose the terms of any contractual arrangements that could require the entity or its unconsolidated subsidiaries to provide financial support to an unconsolidated, controlled, structured entity, including events or circumstances that could expose the reporting entity to a loss (eg liquidity arrangements or credit rating triggers associated with obligations to purchase assets of the structured entity or to provide financial support).
+</chunk>
+
+<chunk id="907" doc_uid="ifrs12" chunk_number="19G" score="0.0000">
+If during the reporting period an investment entity or any of its unconsolidated subsidiaries has, without having a contractual obligation to do so, provided financial or other support to an unconsolidated, structured entity that the investment entity did not control, and if that provision of support resulted in the investment entity controlling the structured entity, the investment entity shall disclose an explanation of the relevant factors in reaching the decision to provide that support.
+</chunk>
+
+<chunk id="919" doc_uid="ifrs12" chunk_number="29" score="0.5810">
+An entity shall disclose in tabular format, unless another format is more appropriate, a summary of:
+(a)the carrying amounts of the assets and liabilities recognised in its financial statements relating to its interests in unconsolidated structured entities.
+(b)the line items in the statement of financial position in which those assets and liabilities are recognised.
+(c)the amount that best represents the entity’s maximum exposure to loss from its interests in unconsolidated structured entities, including how the maximum exposure to loss is determined. If an entity cannot quantify its maximum exposure to loss from its interests in unconsolidated structured entities it shall disclose that fact and the reasons.
+(d)a comparison of the carrying amounts of the assets and liabilities of the entity that relate to its interests in unconsolidated structured entities and the entity’s maximum exposure to loss from those entities.
+</chunk>
+
+<chunk id="920" doc_uid="ifrs12" chunk_number="30" score="0.0000">
+If during the reporting period an entity has, without having a contractual obligation to do so, provided financial or other support to an unconsolidated structured entity in which it previously had or currently has an interest (for example, purchasing assets of or instruments issued by the structured entity), the entity shall disclose:
+(a)the type and amount of support provided, including situations in which the entity assisted the structured entity in obtaining financial support; and
+(b)the reasons for providing the support.
+</chunk>
+
+<chunk id="921" doc_uid="ifrs12" chunk_number="31" score="0.0000">
+An entity shall disclose any current intentions to provide financial or other support to an unconsolidated structured entity, including intentions to assist the structured entity in obtaining financial support.
+</chunk>
+
+<chunk id="946" doc_uid="ifrs12" chunk_number="B25" score="0.0000">
+In addition to the information required by paragraphs 29⁠–⁠31, an entity shall disclose additional information that is necessary to meet the disclosure objective in paragraph 24(b).
+</chunk>
+
+<chunk id="947" doc_uid="ifrs12" chunk_number="B26" score="0.5668">
+Examples of additional information that, depending on the circumstances, might be relevant to an assessment of the risks to which an entity is exposed when it has an interest in an unconsolidated structured entity are:
+(a)the terms of an arrangement that could require the entity to provide financial support to an unconsolidated structured entity (eg liquidity arrangements or credit rating triggers associated with obligations to purchase assets of the structured entity or provide financial support), including:
+(i)a description of events or circumstances that could expose the reporting entity to a loss.
+(ii)whether there are any terms that would limit the obligation.
+(iii)whether there are any other parties that provide financial support and, if so, how the reporting entity’s obligation ranks with those of other parties.
+(b)losses incurred by the entity during the reporting period relating to its interests in unconsolidated structured entities.
+(c)the types of income the entity received during the reporting period from its interests in unconsolidated structured entities.
+(d)whether the entity is required to absorb losses of an unconsolidated structured entity before other parties, the maximum limit of such losses for the entity, and (if relevant) the ranking and amounts of potential losses borne by parties whose interests rank lower than the entity’s interest in the unconsolidated structured entity.
+(e)information about any liquidity arrangements, guarantees or other commitments with third parties that may affect the fair value or risk of the entity’s interests in unconsolidated structured entities.
+(f)any difficulties an unconsolidated structured entity has experienced in financing its activities during the reporting period.
+(g)in relation to the funding of an unconsolidated structured entity, the forms of funding (eg commercial paper or medium‑term notes) and their weighted‑average life. That information might include maturity analyses of the assets and funding of an unconsolidated structured entity if the structured entity has longer‑term assets funded by shorter‑term funding.
+</chunk>
+</Document>
+
+<Document name="ifrs18">
+<chunk id="1978" doc_uid="ifrs18" chunk_number="109" score="0.0000">
+For each component of equity an entity shall either present in the statement of changes in equity or disclose in the notes an analysis of other comprehensive income by item (see paragraph 107(c)(ii)).
+</chunk>
+
+<chunk id="1979" doc_uid="ifrs18" chunk_number="110" score="0.5630">
+An entity shall either present in the statement of changes in equity or disclose in the notes the amount of dividends recognised as distributions to owners during the reporting period, and the related amount of dividends per share.
+</chunk>
+
+<chunk id="1980" doc_uid="ifrs18" chunk_number="111" score="0.0000">
+In paragraph 107, the components of equity include, for example, each class of contributed equity, the accumulated balance of each class of other comprehensive income and retained earnings.
+</chunk>
+
+<chunk id="1981" doc_uid="ifrs18" chunk_number="112" score="0.0000">
+Changes in an entity’s equity between the beginning and the end of the reporting period reflect the increase or decrease in its net assets during the period. Except for changes resulting from transactions with owners in their capacity as owners (such as equity contributions, reacquisitions of the entity’s own equity instruments and dividends) and transaction costs directly related to such transactions, the overall change in equity during a period represents the total amount of income and expenses, including gains and losses, generated by the entity’s activities during that period.
+</chunk>
+
+<chunk id="2044" doc_uid="ifrs18" chunk_number="B43" score="0.0000">
+Paragraphs 53 and 55 set out requirements for the classification of income and expenses from investments in associates and joint ventures. These investments comprise:
+(a)investments in associates and joint ventures accounted for using the equity method in accordance with paragraph 16 of IAS 28 Investments in Associates and Joint Ventures and paragraph 10(c) of IAS 27;
+(b)investments in associates and joint ventures (or a portion thereof) that an entity elects to measure at fair value through profit or loss in accordance with IFRS 9 applying paragraphs 18⁠–⁠19 of IAS 28 and paragraph 11 of IAS 27; and
+(c)investments in associates and joint ventures in separate financial statements that are accounted for at cost applying paragraph 10(a) of IAS 27 or in accordance with IFRS 9 applying paragraph 10(b) of IAS 27.
+</chunk>
+
+<chunk id="2045" doc_uid="ifrs18" chunk_number="B44" score="0.5780">
+Paragraphs 53 and 55 also set out requirements for the classification of income and expenses from unconsolidated subsidiaries. Investments in unconsolidated subsidiaries comprise:
+(a)investments in subsidiaries in separate financial statements accounted for using the equity method in accordance with paragraph 10(c) of IAS 27;
+(b)investments in subsidiaries held by an investment entity that are measured at fair value through profit or loss in accordance with paragraph 31 of IFRS 10 and paragraph 11A of IAS 27; and
+(c)investments in subsidiaries in separate financial statements that are accounted for at cost applying paragraph 10(a) of IAS 27 or in accordance with IFRS 9 applying paragraph 10(b) of IAS 27.
+</chunk>
+
+<chunk id="2057" doc_uid="ifrs18" chunk_number="B56" score="0.5646">
+How an entity classifies income and expenses from a hybrid contract with a host that is a liability depends on whether the embedded derivative is separated from the host contract. If the embedded derivative:
+(a)is separated from the host liability:
+(i)for the separated host liability—an entity applies the requirements for income and expenses from liabilities, as specified in paragraphs 52, 59⁠–⁠61, 64(b) and 65⁠–⁠66; and
+(ii)for the separated embedded derivative—an entity applies the requirements for income and expenses from derivatives, as specified in paragraphs B70⁠–⁠B76;
+(b)is not separated from the host liability and if the hybrid contract arises from a transaction that involves only the raising of finance—an entity applies the requirements for liabilities that arise from such transactions, as specified in paragraphs 52, 60 and 65⁠–⁠66;
+(c)is not separated from the host liability and if the hybrid contract does not arise from a transaction that involves only the raising of finance:
+(i)if the host liability is a financial liability within the scope of IFRS 9 that is measured at amortised cost—an entity classifies in the financing category income and expenses specified in paragraph 60 from the contract after initial recognition (instead of the income and expenses specified in paragraph 61) (see paragraph B59);
+(ii)if the hybrid contract is an insurance contract within the scope of IFRS 17 —an entity applies the requirements in paragraphs 52 and 64(b); and
+(iii)otherwise—an entity applies the requirements for income and expenses from liabilities that arise from such transactions, as specified in paragraphs 52 and 61.
+</chunk>
+
+<chunk id="2058" doc_uid="ifrs18" chunk_number="B57" score="0.0000">
+An entity shall apply paragraphs B56(b) and B56(c) to all hybrid contracts containing a host liability for which the embedded derivative is not separated, regardless of whether the embedded derivative is not separated by the entity applying paragraph 4.3.3 of IFRS 9 or applying paragraph 4.3.5 of IFRS 9.
+</chunk>
+
+<chunk id="2064" doc_uid="ifrs18" chunk_number="B63" score="0.0000">
+Paragraphs B60⁠–⁠B62 set out requirements for income and expenses from an asset or liability from its derecognition, classification and subsequent measurement while held for sale, or from its change in use. A transaction or other event might result in these outcomes for a group of assets (or a group of assets and liabilities) that generated income and expenses that an entity classified in different categories immediately before the transaction or other event. An entity shall classify income or expenses from such a transaction or other event:
+(a)in the investing category if, other than any income tax assets, all the assets in the group generated income and expenses that the entity classified in the investing category immediately before the transaction or other event; and
+(b)in the operating category otherwise.
+</chunk>
+
+<chunk id="2065" doc_uid="ifrs18" chunk_number="B64" score="0.5638">
+For example, an entity classifies:
+(a)in the operating category—gains and losses on the disposal of a consolidated subsidiary, if the subsidiary included assets that generated income and expenses that the entity classified in the operating category immediately before the disposal. The gains and losses include the reclassification from equity to profit or loss of foreign exchange differences required by paragraph 48 of IAS 21.
+(b)in the operating category—an impairment loss arising on the classification of a disposal group as held for sale by the entity applying IFRS 5, if the disposal group included assets that generated income and expenses that the entity classified in the operating category immediately before its classification as held for sale.
+(c)in the investing category—gains and losses on disposal of a consolidated subsidiary, if the only assets of the subsidiary were investment property that the consolidated reporting entity did not invest in as a main business activity and related income tax assets. The gains and losses include the reclassification from equity to profit or loss of foreign exchange differences required by paragraph 48 of IAS 21.
+</chunk>
+
+<chunk id="2091" doc_uid="ifrs18" chunk_number="B90" score="0.0000">
+In applying paragraph 96, when an entity supplies goods or services within a clearly identifiable operating cycle, separate classification of current and non-current assets and liabilities in the statement of financial position provides useful information by distinguishing the net assets that are continuously circulating as working capital from those used in the entity’s long-term operations. Such separate classification also highlights assets that an entity expects to realise within the current operating cycle and liabilities that are due for settlement within the same period.
+</chunk>
+
+<chunk id="2092" doc_uid="ifrs18" chunk_number="B91" score="0.0000">
+For some entities, such as financial institutions, a presentation of assets and liabilities in increasing or decreasing order of liquidity provides a more useful structured summary than a current/non-current presentation because the entity does not supply goods or services within a clearly identifiable operating cycle.
+</chunk>
+
+<chunk id="2093" doc_uid="ifrs18" chunk_number="B92" score="0.5635">
+In applying paragraph 96, an entity is permitted to present some of its assets and liabilities using a current/non-current classification and others in order of liquidity when doing so provides a more useful structured summary. The need for a mixed basis of presentation might arise when an entity has diverse operations.
+</chunk>
+
+<chunk id="2094" doc_uid="ifrs18" chunk_number="B93" score="0.0000">
+Information about expected dates of realisation of assets and liabilities is useful in assessing the liquidity and solvency of an entity. IFRS 7 requires disclosure of the maturity analysis of financial assets and financial liabilities. Financial assets include trade and other receivables, and financial liabilities include trade and other payables. Information on the expected date of recovery of non-monetary assets, such as inventories, and the expected date of settlement for liabilities, such as provisions, is also useful, whether assets and liabilities are classified as current or as non-current. For example, an entity discloses in the notes the amount of inventories that it expects to recover more than 12 months after the reporting period.
+</chunk>
+
+<chunk id="2095" doc_uid="ifrs18" chunk_number="B94" score="0.0000">
+Paragraph 100 requires an entity to classify as non-current all assets not classified as current. This Standard uses the term ‘non-current’ to include tangible, intangible and financial assets of a long-term nature. It does not prohibit the use of alternative descriptions as long as the meaning is clear.
+</chunk>
+
+<chunk id="2096" doc_uid="ifrs18" chunk_number="B95" score="0.0000">
+The operating cycle of an entity is the time between the acquisition of assets for processing and their realisation in cash or cash equivalents. When an entity’s normal operating cycle is not clearly identifiable, it is assumed to be 12 months. Current assets include assets (such as inventories and trade receivables) that are sold, consumed or realised as part of the normal operating cycle even when they are not expected to be realised within 12 months after the reporting period. Current assets also include assets held primarily for the purpose of trading (examples include some financial assets that meet the definition of held for trading in IFRS 9) and the current portion of non-current financial assets.
+</chunk>
+
+<chunk id="2097" doc_uid="ifrs18" chunk_number="B96" score="0.0000">
+Some current liabilities, such as trade payables and some accruals for employee and other operating costs, are part of the working capital used in an entity’s normal operating cycle. An entity classifies such items as current liabilities even if they are due to be settled more than 12 months after the reporting period. The same normal operating cycle applies to the classification of the entity’s assets and liabilities. When the entity’s normal operating cycle is not clearly identifiable, it is assumed to be 12 months.
+</chunk>
+
+<chunk id="2098" doc_uid="ifrs18" chunk_number="B97" score="0.0000">
+Other current liabilities are not settled as part of the normal operating cycle, but are due for settlement within 12 months after the reporting period or held primarily for the purpose of trading. Examples are some financial liabilities that meet the definition of held for trading in IFRS 9, bank overdrafts, and the current portion of non-current financial liabilities, dividends payable, income taxes and other non-trade payables. Financial liabilities that provide financing on a long-term basis (that is, are not part of the working capital used in the entity’s normal operating cycle) and are not due for settlement within 12 months after the reporting period are non-current liabilities, subject to paragraphs B99⁠–⁠B103.
+</chunk>
+
+<chunk id="2099" doc_uid="ifrs18" chunk_number="B98" score="0.0000">
+An entity classifies its financial liabilities as current when they are due to be settled within 12 months after the reporting period, even if:
+(a)the original term was for a period longer than 12 months; and
+(b)an agreement to refinance, or to reschedule payments, on a long-term basis is completed after the reporting period and before the financial statements are authorised for issue.
+</chunk>
+
+<chunk id="2100" doc_uid="ifrs18" chunk_number="B99" score="0.0000">
+An entity’s right to defer settlement of a liability for at least 12 months after the reporting period must have substance and, as illustrated in paragraphs B100⁠–⁠B103, must exist at the end of the reporting period.
+</chunk>
+
+<chunk id="2101" doc_uid="ifrs18" chunk_number="B100" score="0.0000">
+An entity’s right to defer settlement of a liability arising from a loan arrangement for at least 12 months after the reporting period may be subject to the entity complying with conditions specified in that loan arrangement (hereafter referred to as ‘covenants’). For the purposes of applying paragraph 101(d), such covenants:
+(a)affect whether that right exists at the end of the reporting period—as illustrated in paragraphs B102⁠–⁠B103 —if an entity is required to comply with the covenant on or before the end of the reporting period. Such a covenant affects whether the right exists at the end of the reporting period even if compliance with the covenant is assessed only after the reporting period (for example, a covenant based on the entity’s financial position at the end of the reporting period but assessed for compliance only after the reporting period).
+(b)do not affect whether that right exists at the end of the reporting period if an entity is required to comply with the covenant only after the reporting period (for example, a covenant based on the entity’s financial position six months after the end of the reporting period).
+</chunk>
+
+<chunk id="2102" doc_uid="ifrs18" chunk_number="B101" score="0.0000">
+If an entity has the right, at the end of the reporting period, to roll over an obligation for at least 12 months after the reporting period under an existing loan facility, it classifies the obligation as non-current, even if it would otherwise be due within a shorter period. If the entity has no such right, the entity does not consider the potential to refinance the obligation and classifies the obligation as current.
+</chunk>
+
+<chunk id="2103" doc_uid="ifrs18" chunk_number="B102" score="0.0000">
+When an entity breaches a covenant of a long-term loan arrangement on or before the end of the reporting period with the effect that the liability becomes payable on demand, it classifies the liability as current, even if the lender agreed, after the reporting period and before the authorisation of the financial statements for issue, not to demand payment as a consequence of the breach. The entity classifies the liability as current because, at the end of the reporting period, it does not have the right to defer its settlement for at least 12 months after that date.
+</chunk>
+
+<chunk id="2104" doc_uid="ifrs18" chunk_number="B103" score="0.0000">
+However, an entity classifies the liability as non-current if the lender agreed by the end of the reporting period to provide a period of grace ending at least 12 months after the reporting period, within which the entity can rectify the breach and during which the lender cannot demand immediate repayment.
+</chunk>
+
+<chunk id="2105" doc_uid="ifrs18" chunk_number="B104" score="0.0000">
+Classification of a liability is unaffected by the likelihood that the entity will exercise its right to defer settlement of the liability for at least 12 months after the reporting period. If a liability meets the criteria in paragraphs 101⁠–⁠102 for classification as non-current, it is classified as non-current even if management intends or expects the entity to settle the liability within 12 months after the reporting period, or even if the entity settles the liability between the end of the reporting period and the date the financial statements are authorised for issue. However, in either of those circumstances, the entity may need to disclose information about the timing of settlement to enable users of financial statements to understand the impact of the liability on the entity’s financial position (see paragraphs 6C(c) of IAS 8 and B105(d)).
+</chunk>
+
+<chunk id="2106" doc_uid="ifrs18" chunk_number="B105" score="0.0000">
+If the following events occur between the end of the reporting period and the date the financial statements are authorised for issue, those events are disclosed as non-adjusting events in accordance with IAS 10 Events after the Reporting Period:
+(a)refinancing on a long-term basis of a liability classified as current (see paragraph B98);
+(b)rectification of a breach of a long-term loan arrangement classified as current (see paragraph B102);
+(c)the granting by the lender of a period of grace to rectify a breach of a long-term loan arrangement classified as current (see paragraph B103); and
+(d)settlement of a liability classified as non-current (see paragraph B104).
+</chunk>
+
+<chunk id="2107" doc_uid="ifrs18" chunk_number="B106" score="0.0000">
+In applying paragraphs 101⁠–⁠102 and B96⁠–⁠B103 an entity might classify liabilities arising from loan arrangements as non-current when the entity’s right to defer settlement of those liabilities is subject to the entity complying with covenants within 12 months after the reporting period (see paragraph B100(b)). In such situations, the entity shall disclose information in the notes that enables users of financial statements to understand the risk that the liabilities could become repayable within 12 months after the reporting period, including:
+(a)information about the covenants (including the nature of the covenants and when the entity is required to comply with them) and the carrying amount of related liabilities.
+(b)facts and circumstances, if any, that indicate the entity may have difficulty complying with the covenants—for example, the entity having acted during or after the reporting period to avoid or mitigate a potential breach. Such facts and circumstances could also include the fact that the entity would not have complied with the covenants if they were to be assessed for compliance based on the entity’s circumstances at the end of the reporting period.
+</chunk>
+
+<chunk id="2108" doc_uid="ifrs18" chunk_number="B107" score="0.0000">
+For the purpose of classifying a liability as current or non-current, settlement refers to a transfer to the counterparty that results in the extinguishment of the liability. The transfer could be of:
+(a)cash or other economic resources—for example, goods or services; or
+(b)the entity’s own equity instruments, unless paragraph B108 applies.
+</chunk>
+
+<chunk id="2109" doc_uid="ifrs18" chunk_number="B108" score="0.0000">
+Terms of a liability that could, at the option of the counterparty, result in its settlement by the transfer of the entity’s own equity instruments do not affect its classification as current or non-current if, applying IAS 32, the entity classifies the option as an equity instrument, recognising it separately from the liability as an equity component of a compound financial instrument.
+</chunk>
+</Document>
+
+<Document name="ifric1">
+<chunk id="4229" doc_uid="ifric1" chunk_number="3" score="0.5318">
+This Interpretation addresses how the effect of the following events that change the measurement of an existing decommissioning, restoration or similar liability should be accounted for:
+(a)a change in the estimated outflow of resources embodying economic benefits (eg cash flows) required to settle the obligation;
+(b)a change in the current market‑based discount rate as defined in paragraph 47 of IAS 37 (this includes changes in the time value of money and the risks specific to the liability); and
+(c)an increase that reflects the passage of time (also referred to as the unwinding of the discount).
+</chunk>
+
+<chunk id="4230" doc_uid="ifric1" chunk_number="4" score="0.0000">
+Changes in the measurement of an existing decommissioning, restoration and similar liability that result from changes in the estimated timing or amount of the outflow of resources embodying economic benefits required to settle the obligation, or a change in the discount rate, shall be accounted for in accordance with paragraphs 5⁠–⁠7 below.
+</chunk>
+
+<chunk id="4231" doc_uid="ifric1" chunk_number="5" score="0.0000">
+If the related asset is measured using the cost model:
+(a)subject to (b), changes in the liability shall be added to, or deducted from, the cost of the related asset in the current period.
+(b)the amount deducted from the cost of the asset shall not exceed its carrying amount. If a decrease in the liability exceeds the carrying amount of the asset, the excess shall be recognised immediately in profit or loss.
+(c)if the adjustment results in an addition to the cost of an asset, the entity shall consider whether this is an indication that the new carrying amount of the asset may not be fully recoverable. If it is such an indication, the entity shall test the asset for impairment by estimating its recoverable amount, and shall account for any impairment loss, in accordance with IAS 36.
+</chunk>
+
+<chunk id="4232" doc_uid="ifric1" chunk_number="6" score="0.5752">
+If the related asset is measured using the revaluation model:
+(a)changes in the liability alter the revaluation surplus or deficit previously recognised on that asset, so that:
+(i)a decrease in the liability shall (subject to (b)) be recognised in other comprehensive income and increase the revaluation surplus within equity, except that it shall be recognised in profit or loss to the extent that it reverses a revaluation deficit on the asset that was previously recognised in profit or loss;
+(ii)an increase in the liability shall be recognised in profit or loss, except that it shall be recognised in other comprehensive income and reduce the revaluation surplus within equity to the extent of any credit balance existing in the revaluation surplus in respect of that asset.
+(b)in the event that a decrease in the liability exceeds the carrying amount that would have been recognised had the asset been carried under the cost model, the excess shall be recognised immediately in profit or loss.
+(c)a change in the liability is an indication that the asset may have to be revalued in order to ensure that the carrying amount does not differ materially from that which would be determined using fair value at the end of the reporting period. Any such revaluation shall be taken into account in determining the amounts to be recognised in profit or loss or in other comprehensive income under (a). If a revaluation is necessary, all assets of that class shall be revalued.
+(d)IFRS 18 requires items of other comprehensive income to be presented as line items in the statement presenting comprehensive income. In complying with this requirement, the change in the revaluation surplus arising from a change in the liability shall be separately identified and presented as such.
+</chunk>
+
+<chunk id="4233" doc_uid="ifric1" chunk_number="7" score="0.0000">
+The adjusted depreciable amount of the asset is depreciated over its useful life. Therefore, once the related asset has reached the end of its useful life, all subsequent changes in the liability shall be recognised in profit or loss as they occur. This applies under both the cost model and the revaluation model.
+</chunk>
+
+<chunk id="4234" doc_uid="ifric1" chunk_number="8" score="0.5635">
+The periodic unwinding of the discount shall be recognised in profit or loss as interest expense from liabilities other than those that arise from transactions that involve only the raising of finance as it occurs and classified—applying paragraph 61 of IFRS 18 —in the financing category of the statement of profit or loss. Capitalisation under IAS 23 is not permitted.
+</chunk>
+</Document>
+
+<Document name="ias27">
+<chunk id="3284" doc_uid="ias27" chunk_number="1" score="0.5363">
+The objective of this Standard is to prescribe the accounting and disclosure requirements for investments in subsidiaries, joint ventures and associates when an entity prepares separate financial statements.
+</chunk>
+
+<chunk id="3285" doc_uid="ias27" chunk_number="2" score="0.5546">
+This Standard shall be applied in accounting for investments in subsidiaries, joint ventures and associates when an entity elects, or is required by local regulations, to present separate financial statements.
+</chunk>
+
+<chunk id="3286" doc_uid="ias27" chunk_number="3" score="0.0000">
+This Standard does not mandate which entities produce separate financial statements. It applies when an entity prepares separate financial statements that comply with International Financial Reporting Standards.
+</chunk>
+
+<chunk id="3287" doc_uid="ias27" chunk_number="4" score="0.5562">
+The following terms are used in this Standard with the meanings specified:
+Consolidated financial statements are the financial statements of a group in which the assets, liabilities, equity, income, expenses and cash flows of the parent and its subsidiaries are presented as those of a single economic entity.
+Separate financial statements are those presented by an entity in which the entity could elect, subject to the requirements in this Standard, to account for its investments in subsidiaries, joint ventures and associates either at cost, in accordance with IFRS 9 Financial Instruments, or using the equity method as described in IAS 28 Investments in Associates and Joint Ventures.
+</chunk>
+
+<chunk id="3288" doc_uid="ias27" chunk_number="5" score="0.0000">
+The following terms are defined in Appendix A of IFRS 10 Consolidated Financial Statements, Appendix A of IFRS 11 Joint Arrangements and paragraph 3 of IAS 28:
+associate
+control of an investee
+equity method
+group
+investment entity
+joint control
+joint venture
+joint venturer
+parent
+significant influence
+subsidiary.
+</chunk>
+
+<chunk id="3289" doc_uid="ias27" chunk_number="6" score="0.0000">
+Separate financial statements are those presented in addition to consolidated financial statements or in addition to the financial statements of an investor that does not have investments in subsidiaries but has investments in associates or joint ventures in which the investments in associates or joint ventures are required by IAS 28 to be accounted for using the equity method, other than in the circumstances set out in paragraphs 8⁠–⁠8A.
+</chunk>
+
+<chunk id="3290" doc_uid="ias27" chunk_number="7" score="0.0000">
+The financial statements of an entity that does not have a subsidiary, associate or joint venturer’s interest in a joint venture are not separate financial statements.
+</chunk>
+
+<chunk id="3291" doc_uid="ias27" chunk_number="8" score="0.0000">
+An entity that is exempted in accordance with paragraph 4(a) of IFRS 10 from consolidation or paragraph 17 of IAS 28 (as amended in 2011) from applying the equity method may present separate financial statements as its only financial statements.
+</chunk>
+
+<chunk id="3292" doc_uid="ias27" chunk_number="8A" score="0.5505">
+An investment entity that is required, throughout the current period and all comparative periods presented, to apply the exception to consolidation for all of its subsidiaries in accordance with paragraph 31 of IFRS 10 presents separate financial statements as its only financial statements.
+</chunk>
+
+<chunk id="3293" doc_uid="ias27" chunk_number="9" score="0.0000">
+Separate financial statements shall be prepared in accordance with all applicable IFRSs, except as provided in paragraph 10.
+</chunk>
+
+<chunk id="3294" doc_uid="ias27" chunk_number="10" score="0.0000">
+When an entity prepares separate financial statements, it shall account for investments in subsidiaries, joint ventures and associates either:
+(a)at cost;
+(b)in accordance with IFRS 9; or
+(c)using the equity method as described in IAS 28.
+The entity shall apply the same accounting for each category of investments. Investments accounted for at cost or using the equity method shall be accounted for in accordance with IFRS 5 Non‑current Assets Held for Sale and Discontinued Operations when they are classified as held for sale or for distribution (or included in a disposal group that is classified as held for sale or for distribution). The measurement of investments accounted for in accordance with IFRS 9 is not changed in such circumstances.
+</chunk>
+
+<chunk id="3295" doc_uid="ias27" chunk_number="11" score="0.0000">
+If an entity elects, in accordance with paragraph 18 of IAS 28 (as amended in 2011), to measure its investments in associates or joint ventures at fair value through profit or loss in accordance with IFRS 9, it shall also account for those investments in the same way in its separate financial statements.
+</chunk>
+
+<chunk id="3296" doc_uid="ias27" chunk_number="11A" score="0.0000">
+If a parent is required, in accordance with paragraph 31 of IFRS 10, to measure its investment in a subsidiary at fair value through profit or loss in accordance with IFRS 9, it shall also account for its investment in a subsidiary in the same way in its separate financial statements.
+</chunk>
+
+<chunk id="3297" doc_uid="ias27" chunk_number="11B" score="0.0000">
+When a parent ceases to be an investment entity, or becomes an investment entity, it shall account for the change from the date when the change in status occurred, as follows:
+(a)when an entity ceases to be an investment entity, the entity shall account for an investment in a subsidiary in accordance with paragraph 10. The date of the change of status shall be the deemed acquisition date. The fair value of the subsidiary at the deemed acquisition date shall represent the transferred deemed consideration when accounting for the investment in accordance with paragraph 10.
+(i)[deleted]
+(ii)[deleted]
+(b)when an entity becomes an investment entity, it shall account for an investment in a subsidiary at fair value through profit or loss in accordance with IFRS 9. The difference between the previous carrying amount of the subsidiary and its fair value at the date of the change of status of the investor shall be recognised as a gain or loss in profit or loss. The cumulative amount of any gain or loss previously recognised in other comprehensive income in respect of those subsidiaries shall be treated as if the investment entity had disposed of those subsidiaries at the date of change in status.
+</chunk>
+
+<chunk id="3298" doc_uid="ias27" chunk_number="12" score="0.5614">
+Dividends from a subsidiary, a joint venture or an associate are recognised in the separate financial statements of an entity when the entity’s right to receive the dividend is established. The dividend is recognised in profit or loss unless the entity elects to use the equity method, in which case the dividend is recognised as a reduction from the carrying amount of the investment.
+</chunk>
+
+<chunk id="3299" doc_uid="ias27" chunk_number="13" score="0.0000">
+When a parent reorganises the structure of its group by establishing a new entity as its parent in a manner that satisfies the following criteria:
+(a)the new parent obtains control of the original parent by issuing equity instruments in exchange for existing equity instruments of the original parent;
+(b)the assets and liabilities of the new group and the original group are the same immediately before and after the reorganisation; and
+(c)the owners of the original parent before the reorganisation have the same absolute and relative interests in the net assets of the original group and the new group immediately before and after the reorganisation,
+and the new parent accounts for its investment in the original parent in accordance with paragraph 10(a) in its separate financial statements, the new parent shall measure cost at the carrying amount of its share of the equity items shown in the separate financial statements of the original parent at the date of the reorganisation.
+</chunk>
+
+<chunk id="3300" doc_uid="ias27" chunk_number="14" score="0.0000">
+Similarly, an entity that is not a parent might establish a new entity as its parent in a manner that satisfies the criteria in paragraph 13. The requirements in paragraph 13 apply equally to such reorganisations. In such cases, references to ‘original parent’ and ‘original group’ are to the ‘original entity’.
+</chunk>
+</Document>
+
+<Document name="sic25">
+<chunk id="4457" doc_uid="sic25" chunk_number="1" score="0.0000">
+A change in the tax status of an entity or of its shareholders may have consequences for an entity by increasing or decreasing its tax liabilities or assets. This may, for example, occur upon the public listing of an entity’s equity instruments or upon the restructuring of an entity’s equity. It may also occur upon a controlling shareholder’s move to a foreign country. As a result of such an event, an entity may be taxed differently; it may for example gain or lose tax incentives or become subject to a different rate of tax in the future.
+</chunk>
+
+<chunk id="4458" doc_uid="sic25" chunk_number="2" score="0.5369">
+A change in the tax status of an entity or its shareholders may have an immediate effect on the entity’s current tax liabilities or assets. The change may also increase or decrease the deferred tax liabilities and assets recognised by the entity, depending on the effect the change in tax status has on the tax consequences that will arise from recovering or settling the carrying amount of the entity’s assets and liabilities.
+</chunk>
+
+<chunk id="4459" doc_uid="sic25" chunk_number="3" score="0.5603">
+The issue is how an entity should account for the tax consequences of a change in its tax status or that of its shareholders.
+</chunk>
+
+<chunk id="4460" doc_uid="sic25" chunk_number="4" score="0.5577">
+A change in the tax status of an entity or its shareholders does not give rise to increases or decreases in amounts recognised outside profit or loss. The current and deferred tax consequences of a change in tax status shall be included in profit or loss for the period, unless those consequences relate to transactions and events that result, in the same or a different period, in a direct credit or charge to the recognised amount of equity or in amounts recognised in other comprehensive income. Those tax consequences that relate to changes in the recognised amount of equity, in the same or a different period (not included in profit or loss), shall be charged or credited directly to equity. Those tax consequences that relate to amounts recognised in other comprehensive income shall be recognised in other comprehensive income.
+</chunk>
+</Document>
+
+<Document name="ias37">
+<chunk id="3765" doc_uid="ias37" chunk_number="1" score="0.5550">
+This Standard shall be applied by all entities in accounting for provisions, contingent liabilities and contingent assets, except:
+(a)those resulting from executory contracts, except where the contract is onerous; and
+(b)[deleted]
+(c)those covered by another Standard.
+</chunk>
+
+<chunk id="3766" doc_uid="ias37" chunk_number="2" score="0.0000">
+This Standard does not apply to financial instruments (including guarantees) that are within the scope of IFRS 9 Financial Instruments.
+</chunk>
+
+<chunk id="3767" doc_uid="ias37" chunk_number="3" score="0.0000">
+Executory contracts are contracts under which neither party has performed any of its obligations or both parties have partially performed their obligations to an equal extent. This Standard does not apply to executory contracts unless they are onerous.
+</chunk>
+
+<chunk id="3768" doc_uid="ias37" chunk_number="5" score="0.0000">
+When another Standard deals with a specific type of provision, contingent liability or contingent asset, an entity applies that Standard instead of this Standard. For example, some types of provisions are addressed in Standards on:
+(a)[deleted]
+(b)income taxes (see IAS 12 Income Taxes);
+(c)leases (see IFRS 16 Leases). However, this Standard applies to any lease that becomes onerous before the commencement date of the lease as defined in IFRS 16. This Standard also applies to short-term leases and leases for which the underlying asset is of low value accounted for in accordance with paragraph 6 of IFRS 16 and that have become onerous;
+(d)employee benefits (see IAS 19 Employee Benefits);
+(e)insurance contracts and other contracts within the scope of IFRS 17 Insurance Contracts;
+(f)contingent consideration of an acquirer in a business combination (see IFRS 3 Business Combinations); and
+(g)revenue from contracts with customers (see IFRS 15 Revenue from Contracts with Customers). However, as IFRS 15 contains no specific requirements to address contracts with customers that are, or have become, onerous, this Standard applies to such cases.
+</chunk>
+
+<chunk id="3769" doc_uid="ias37" chunk_number="7" score="0.0000">
+This Standard defines provisions as liabilities of uncertain timing or amount. In some countries the term ‘provision’ is also used in the context of items such as depreciation, impairment of assets and doubtful debts: these are adjustments to the carrying amounts of assets and are not addressed in this Standard.
+</chunk>
+
+<chunk id="3770" doc_uid="ias37" chunk_number="8" score="0.0000">
+Other Standards specify whether expenditures are treated as assets or as expenses. These issues are not addressed in this Standard. Accordingly, this Standard neither prohibits nor requires capitalisation of the costs recognised when a provision is made.
+</chunk>
+
+<chunk id="3771" doc_uid="ias37" chunk_number="9" score="0.0000">
+This Standard applies to provisions for restructurings (including discontinued operations). When a restructuring meets the definition of a discontinued operation, additional disclosures may be required by IFRS 5 Non‑current Assets Held for Sale and Discontinued Operations.
+</chunk>
+
+<chunk id="3789" doc_uid="ias37" chunk_number="27" score="0.0000">
+An entity shall not recognise a contingent liability.
+</chunk>
+
+<chunk id="3790" doc_uid="ias37" chunk_number="28" score="0.0000">
+A contingent liability is disclosed, as required by paragraph 86, unless the possibility of an outflow of resources embodying economic benefits is remote.
+</chunk>
+
+<chunk id="3791" doc_uid="ias37" chunk_number="29" score="0.0000">
+Where an entity is jointly and severally liable for an obligation, the part of the obligation that is expected to be met by other parties is treated as a contingent liability. The entity recognises a provision for the part of the obligation for which an outflow of resources embodying economic benefits is probable, except in the extremely rare circumstances where no reliable estimate can be made.
+</chunk>
+
+<chunk id="3792" doc_uid="ias37" chunk_number="30" score="0.5389">
+Contingent liabilities may develop in a way not initially expected. Therefore, they are assessed continually to determine whether an outflow of resources embodying economic benefits has become probable. If it becomes probable that an outflow of future economic benefits will be required for an item previously dealt with as a contingent liability, a provision is recognised in the financial statements of the period in which the change in probability occurs (except in the extremely rare circumstances where no reliable estimate can be made).
+</chunk>
+
+<chunk id="3793" doc_uid="ias37" chunk_number="31" score="0.0000">
+An entity shall not recognise a contingent asset.
+</chunk>
+
+<chunk id="3794" doc_uid="ias37" chunk_number="32" score="0.0000">
+Contingent assets usually arise from unplanned or other unexpected events that give rise to the possibility of an inflow of economic benefits to the entity. An example is a claim that an entity is pursuing through legal processes, where the outcome is uncertain.
+</chunk>
+
+<chunk id="3795" doc_uid="ias37" chunk_number="33" score="0.0000">
+Contingent assets are not recognised in financial statements since this may result in the recognition of income that may never be realised. However, when the realisation of income is virtually certain, then the related asset is not a contingent asset and its recognition is appropriate.
+</chunk>
+
+<chunk id="3796" doc_uid="ias37" chunk_number="34" score="0.0000">
+A contingent asset is disclosed, as required by paragraph 89, where an inflow of economic benefits is probable.
+</chunk>
+
+<chunk id="3797" doc_uid="ias37" chunk_number="35" score="0.5429">
+Contingent assets are assessed continually to ensure that developments are appropriately reflected in the financial statements. If it has become virtually certain that an inflow of economic benefits will arise, the asset and the related income are recognised in the financial statements of the period in which the change occurs. If an inflow of economic benefits has become probable, an entity discloses the contingent asset (see paragraph 89).
+</chunk>
+
+<chunk id="3815" doc_uid="ias37" chunk_number="53" score="0.0000">
+Where some or all of the expenditure required to settle a provision is expected to be reimbursed by another party, the reimbursement shall be recognised when, and only when, it is virtually certain that reimbursement will be received if the entity settles the obligation. The reimbursement shall be treated as a separate asset. The amount recognised for the reimbursement shall not exceed the amount of the provision.
+</chunk>
+
+<chunk id="3816" doc_uid="ias37" chunk_number="54" score="0.5401">
+In the statement of comprehensive income, the expense relating to a provision may be presented net of the amount recognised for a reimbursement.
+</chunk>
+
+<chunk id="3817" doc_uid="ias37" chunk_number="55" score="0.0000">
+Sometimes, an entity is able to look to another party to pay part or all of the expenditure required to settle a provision (for example, through insurance contracts, indemnity clauses or suppliers’ warranties). The other party may either reimburse amounts paid by the entity or pay the amounts directly.
+</chunk>
+
+<chunk id="3818" doc_uid="ias37" chunk_number="56" score="0.0000">
+In most cases the entity will remain liable for the whole of the amount in question so that the entity would have to settle the full amount if the third party failed to pay for any reason. In this situation, a provision is recognised for the full amount of the liability, and a separate asset for the expected reimbursement is recognised when it is virtually certain that reimbursement will be received if the entity settles the liability.
+</chunk>
+
+<chunk id="3819" doc_uid="ias37" chunk_number="57" score="0.0000">
+In some cases, the entity will not be liable for the costs in question if the third party fails to pay. In such a case the entity has no liability for those costs and they are not included in the provision.
+</chunk>
+
+<chunk id="3820" doc_uid="ias37" chunk_number="58" score="0.0000">
+As noted in paragraph 29, an obligation for which an entity is jointly and severally liable is a contingent liability to the extent that it is expected that the obligation will be settled by the other parties.
+</chunk>
+</Document>
+
+<Document name="ifric19">
+<chunk id="4371" doc_uid="ifric19" chunk_number="2" score="0.5449">
+This Interpretation addresses the accounting by an entity when the terms of a financial liability are renegotiated and result in the entity issuing equity instruments to a creditor of the entity to extinguish all or part of the financial liability. It does not address the accounting by the creditor.
+</chunk>
+
+<chunk id="4372" doc_uid="ifric19" chunk_number="3" score="0.0000">
+An entity shall not apply this Interpretation to transactions in situations where:
+(a)the creditor is also a direct or indirect shareholder and is acting in its capacity as a direct or indirect existing shareholder.
+(b)the creditor and the entity are controlled by the same party or parties before and after the transaction and the substance of the transaction includes an equity distribution by, or contribution to, the entity.
+(c)extinguishing the financial liability by issuing equity shares is in accordance with the original terms of the financial liability.
+</chunk>
+</Document>
+
+<Document name="ifric21">
+<chunk id="4406" doc_uid="ifric21" chunk_number="1" score="0.5340">
+A government may impose a levy on an entity. The IFRS Interpretations Committee received requests for guidance on the accounting for levies in the financial statements of the entity that is paying the levy. The question relates to when to recognise a liability to pay a levy that is accounted for in accordance with IAS 37 Provisions, Contingent Liabilities and Contingent Assets.
+</chunk>
+</Document>
+
+<Document name="sic29">
+<chunk id="4461" doc_uid="sic29" chunk_number="1" score="0.0000">
+An entity (the operator) may enter into an arrangement with another entity (the grantor) to provide services that give the public access to major economic and social facilities. The grantor may be a public or private sector entity, including a governmental body. Examples of service concession arrangements involve water treatment and supply facilities, motorways, car parks, tunnels, bridges, airports and telecommunication networks. Examples of arrangements that are not service concession arrangements include an entity outsourcing the operation of its internal services (eg employee cafeteria, building maintenance, and accounting or information technology functions).
+</chunk>
+
+<chunk id="4462" doc_uid="sic29" chunk_number="2" score="0.0000">
+A service concession arrangement generally involves the grantor conveying for the period of the concession to the operator:
+(a)the right to provide services that give the public access to major economic and social facilities, and
+(b)in some cases, the right to use specified tangible assets, intangible assets, or financial assets,
+in exchange for the operator:
+(c)committing to provide the services according to certain terms and conditions during the concession period, and
+(d)when applicable, committing to return at the end of the concession period the rights received at the beginning of the concession period and/or acquired during the concession period.
+</chunk>
+
+<chunk id="4463" doc_uid="sic29" chunk_number="3" score="0.0000">
+The common characteristic of all service concession arrangements is that the operator both receives a right and incurs an obligation to provide public services.
+</chunk>
+
+<chunk id="4464" doc_uid="sic29" chunk_number="4" score="0.0000">
+The issue is what information should be disclosed in the notes in the financial statements of an operator and a grantor.
+</chunk>
+
+<chunk id="4465" doc_uid="sic29" chunk_number="5" score="0.5335">
+Certain aspects and disclosures relating to some service concession arrangements are already addressed by existing International Financial Reporting Standards (eg IAS 16 applies to acquisitions of items of property, plant and equipment, IFRS 16 applies to leases of assets, and IAS 38 applies to acquisitions of intangible assets). However, a service concession arrangement may involve executory contracts that are not addressed in International Financial Reporting Standards, unless the contracts are onerous, in which case IAS 37 applies. Therefore, this Interpretation addresses additional disclosures of service concession arrangements.
+</chunk>
+</Document>
+
+<Document name="ias26">
+<chunk id="3248" doc_uid="ias26" chunk_number="1" score="0.0000">
+This Standard shall be applied in the financial statements of retirement benefit plans where such financial statements are prepared.
+</chunk>
+
+<chunk id="3249" doc_uid="ias26" chunk_number="2" score="0.0000">
+Retirement benefit plans are sometimes referred to by various other names, such as ‘pension schemes’, ‘superannuation schemes’ or ‘retirement benefit schemes’. This Standard regards a retirement benefit plan as a reporting entity separate from the employers of the participants in the plan. All other Standards apply to the financial statements of retirement benefit plans to the extent that they are not superseded by this Standard.
+</chunk>
+
+<chunk id="3250" doc_uid="ias26" chunk_number="3" score="0.0000">
+This Standard deals with accounting and reporting by the plan to all participants as a group. It does not deal with reports to individual participants about their retirement benefit rights.
+</chunk>
+
+<chunk id="3251" doc_uid="ias26" chunk_number="4" score="0.0000">
+IAS 19 Employee Benefits is concerned with the determination of the cost of retirement benefits in the financial statements of employers having plans. Hence this Standard complements IAS 19.
+</chunk>
+
+<chunk id="3252" doc_uid="ias26" chunk_number="5" score="0.0000">
+Retirement benefit plans may be defined contribution plans or defined benefit plans. Many require the creation of separate funds, which may or may not have separate legal identity and may or may not have trustees, to which contributions are made and from which retirement benefits are paid. This Standard applies regardless of whether such a fund is created and regardless of whether there are trustees.
+</chunk>
+
+<chunk id="3253" doc_uid="ias26" chunk_number="6" score="0.5315">
+Retirement benefit plans with assets invested with insurance companies are subject to the same accounting and funding requirements as privately invested arrangements. Accordingly, they are within the scope of this Standard unless the contract with the insurance company is in the name of a specified participant or a group of participants and the retirement benefit obligation is solely the responsibility of the insurance company.
+</chunk>
+
+<chunk id="3254" doc_uid="ias26" chunk_number="7" score="0.0000">
+This Standard does not deal with other forms of employment benefits such as employment termination indemnities, deferred compensation arrangements, long‑service leave benefits, special early retirement or redundancy plans, health and welfare plans or bonus plans. Government social security type arrangements are also excluded from the scope of this Standard.
+</chunk>
+</Document>
+</context>
+
+<question>
+La comptabilisation d’une créance sur dividendes intragroupe dans les comptes consolidés conduit à identifier une exposition de change distincte. Cette exposition est-elle éligible à la comptabilité de couverture au niveau consolidé ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "assumptions": [
+    "The identified exposure is a foreign currency exposure arising from an intragroup balance connected with a dividend receivable or payable.",
+    "The question concerns accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "general_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 provides the general hedge accounting model for designated hedged items, including recognised assets or liabilities, firm commitments and highly probable forecast transactions, with specific consolidation-level rules for intragroup items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 establish a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, references, or operational points
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation
+- references.excerpt must be short and verbatim
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "chunk section number",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "short point including timing, constraints or effort when relevant"
+  ]
+}

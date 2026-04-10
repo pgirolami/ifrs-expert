@@ -776,13 +776,11 @@ def analyze_question_for_provider(
 
 
 def print_label_frequency_table(results: list[QuestionScore]) -> None:
-    """Print label frequency by question table."""
-    print(f"\n{'=' * 80}")
-    print("LABEL FREQUENCY BY QUESTION")
-    print(f"{'=' * 80}\n")
+    """Print label frequency by question table in markdown format."""
+    print("\n## Label Frequency by Question\n")
     
     if not results:
-        print("No data available.")
+        print("No data available.\n")
         return
     
     sorted_results = sorted(results, key=lambda x: question_sort_key(x.question_id))
@@ -794,7 +792,7 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
         all_labels.update(r.label_counts.keys())
     
     if not all_labels:
-        print("No labels found.")
+        print("No labels found.\n")
         return
     
     # Separate core labels (>= 10% of runs) from spurious (< 10%)
@@ -814,19 +812,15 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
     
     question_ids = [r.question_id for r in sorted_results]
     
-    def format_count(count: int) -> str:
-        """Format count as just the number."""
-        return str(count)
-    
     # Core labels table
     print("### Core Labels (>= 10% of runs)\n")
     
     # Build header cells
     header_cells = ["Label"] + list(question_ids) + ["Total"]
     
-    # Use uniform 3-char separators for all columns
+    # Simple markdown table without space padding
     print("| " + " | ".join(header_cells) + " |")
-    print("|" + "|".join(["---"] * len(header_cells)) + "|")
+    print("|" + "|".join("---" for _ in header_cells) + "|")
     
     # Data rows for core labels
     for label, _ in core_labels:
@@ -834,7 +828,7 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
         total = 0
         for r in sorted_results:
             count = r.label_counts.get(label, 0)
-            row.append(format_count(count))
+            row.append(str(count))
             total += count
         row.append(str(total))
         print("| " + " | ".join(row) + " |")
@@ -846,26 +840,24 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
         # For spurious labels, put Total first, then questions, then Label at end
         spurious_header = ["Total"] + list(question_ids) + ["Label"]
         print("| " + " | ".join(spurious_header) + " |")
-        print("|" + "|".join(["---"] * len(spurious_header)) + "|")
+        print("|" + "|".join("---" for _ in spurious_header) + "|")
         
         for label, _ in spurious_labels_list:
             total = sum(r.label_counts.get(label, 0) for r in sorted_results)
             row = [str(total)]
             for r in sorted_results:
                 count = r.label_counts.get(label, 0)
-                row.append(format_count(count))
+                row.append(str(count))
             row.append(label)
             print("| " + " | ".join(row) + " |")
 
 
 def print_top_vs_low_performers(results: list[QuestionScore]) -> None:
-    """Print comparison of top vs low performers."""
-    print(f"\n{'=' * 80}")
-    print("COMPARISON: TOP VS LOW PERFORMERS")
-    print(f"{'=' * 80}")
+    """Print comparison of top vs low performers in markdown format."""
+    print("\n## Comparison: Top vs Low Performers\n")
     
     if not results:
-        print("No data available.")
+        print("No data available.\n")
         return
     
     sorted_results = sorted(results, key=lambda x: question_sort_key(x.question_id))
@@ -881,30 +873,32 @@ def print_top_vs_low_performers(results: list[QuestionScore]) -> None:
     low_performers = [r for r in by_loose_score if r.stability_score_loose < low_threshold]
     
     # Top performers table
-    print(f"\n### Top Performers (loose score >= {top_threshold})\n")
-    print(f"| Question | Runs | Score | Score (loose) | Approach | Applic | Rec |")
-    print(f"|----------|------|-------|---------------|----------|--------|-----|")
+    print(f"### Top Performers (loose score >= {top_threshold})\n")
+    print("| Question | Runs | Score | Score (loose) | Approach | Applic | Rec |")
+    print("|----------|------|-------|---------------|----------|--------|-----|")
     
     # Sort by score descending
     for r in sorted(top_performers, key=lambda x: x.stability_score_loose, reverse=True):
         print(f"| {r.question_id} | {r.runs} | {r.stability_score:.1f} | {r.stability_score_loose:.1f} | {r.approach_stability:.2f} | {r.applicability_stability_loose:.2f} | {r.recommendation_stability_loose:.2f} |")
     
-    print(f"\n**{len(top_performers)}/{len(results)} questions ({100*len(top_performers)/len(results):.0f}%) are top performers**")
+    pct_top = 100 * len(top_performers) / len(results)
+    print(f"\n**{len(top_performers)}/{len(results)} questions ({pct_top:.0f}%) are top performers**\n")
     
     # Low performers table
-    print(f"\n### Low Performers (loose score < {low_threshold})\n")
-    print(f"| Question | Runs | Score | Score (loose) | Approach | Applic | Rec |")
-    print(f"|----------|------|-------|---------------|----------|--------|-----|")
+    print(f"### Low Performers (loose score < {low_threshold})\n")
+    print("| Question | Runs | Score | Score (loose) | Approach | Applic | Rec |")
+    print("|----------|------|-------|---------------|----------|--------|-----|")
     
     # Sort by score ascending
     for r in sorted(low_performers, key=lambda x: x.stability_score_loose):
         print(f"| {r.question_id} | {r.runs} | {r.stability_score:.1f} | {r.stability_score_loose:.1f} | {r.approach_stability:.2f} | {r.applicability_stability_loose:.2f} | {r.recommendation_stability_loose:.2f} |")
     
-    print(f"\n**{len(low_performers)}/{len(results)} questions ({100*len(low_performers)/len(results):.0f}%) are low performers**")
+    pct_low = 100 * len(low_performers) / len(results)
+    print(f"\n**{len(low_performers)}/{len(results)} questions ({pct_low:.0f}%) are low performers**\n")
     
     # Key observations
     if top_performers and low_performers:
-        print(f"\n### Key Observations")
+        print("### Key Observations\n")
         
         # Compute averages for comparison
         avg_approach_top = sum(r.approach_stability for r in top_performers) / len(top_performers) if top_performers else 0
@@ -927,7 +921,7 @@ def print_top_vs_low_performers(results: list[QuestionScore]) -> None:
         # Label diversity comparison
         avg_labels_top = sum(len(r.label_counts) for r in top_performers) / len(top_performers) if top_performers else 0
         avg_labels_low = sum(len(r.label_counts) for r in low_performers) / len(low_performers) if low_performers else 0
-        print(f"- **Avg unique labels per run**: Top={avg_labels_top:.1f}, Low={avg_labels_low:.1f}")
+        print(f"- **Avg unique labels per run**: Top={avg_labels_top:.1f}, Low={avg_labels_low:.1f}\n")
 
 
 def print_retrieval_context_table(results: list[QuestionScore]) -> None:
@@ -936,13 +930,11 @@ def print_retrieval_context_table(results: list[QuestionScore]) -> None:
     NOTE: This function is deprecated. Retrieval context is now merged into
     the per-question scores table in print_results().
     """
-    print(f"\n{'=' * 80}")
-    print("RETRIEVAL CONTEXT BY QUESTION (DEPRECATED - see merged table above)")
-    print("(Chunks with score > 0 are retrieval; score = 0 are expansion)")
-    print(f"{'=' * 80}\n")
+    print("\n## Retrieval Context by Question (Deprecated)\n")
+    print("*Chunks with score > 0 are retrieval; score = 0 are expansion*\n")
     
     if not results:
-        print("No data available.")
+        print("No data available.\n")
         return
     
     sorted_results = sorted(results, key=lambda x: question_sort_key(x.question_id))
@@ -953,7 +945,7 @@ def print_retrieval_context_table(results: list[QuestionScore]) -> None:
         all_docs.update(r.retrieval_context.keys())
     
     if not all_docs:
-        print("No retrieval context found.")
+        print("No retrieval context found.\n")
         return
     
     # Sort docs for consistent ordering
@@ -963,28 +955,19 @@ def print_retrieval_context_table(results: list[QuestionScore]) -> None:
     # Columns: Question | runs | [Doc1] | [Doc2] | ...
     
     # Header
-    print(f"| Question | Runs |", end="")
-    for doc in sorted_docs:
-        # Shorten doc names for display
-        short_doc = doc.upper() if len(doc) <= 20 else doc[:17] + "..."
-        print(f" {short_doc} |", end="")
-    print()
-    
-    # Separator
-    print(f"|----------|------|", end="")
-    for _ in sorted_docs:
-        print("---------|", end="")
-    print()
+    header_parts = ["Question", "Runs"] + sorted_docs
+    print("| " + " | ".join(header_parts) + " |")
+    print("|" + "|".join("---" for _ in header_parts) + "|")
     
     # Data rows
     for r in sorted_results:
-        print(f"| {r.question_id} | {r.runs} |", end="")
+        row = [r.question_id, str(r.runs)]
         
         for doc in sorted_docs:
             chunks = r.retrieval_context.get(doc, [])
             
             if not chunks:
-                print(" |", end="")
+                row.append("")
                 continue
             
             # Format chunks: section_path (score)
@@ -995,12 +978,11 @@ def print_retrieval_context_table(results: list[QuestionScore]) -> None:
             
             if chunk_lines:
                 # Join with <br> for markdown
-                cell_content = "<br>".join(chunk_lines)
-                print(f" {cell_content} |", end="")
+                row.append("<br>".join(chunk_lines))
             else:
-                print(" |", end="")
+                row.append("")
         
-        print()
+        print("| " + " | ".join(row) + " |")
 
 
 def _format_doc_chunks(
@@ -1027,15 +1009,14 @@ def print_results(
     experiment: str,
     run_dir: Path,
 ) -> None:
-    """Print analysis results in a formatted table."""
-    print(f"\n{'=' * 80}")
-    print(f"PROVIDER: {provider}")
-    print(f"EXPERIMENT: {experiment}")
-    print(f"RUN: {run_dir.name}")
-    print(f"{'=' * 80}\n")
+    """Print analysis results in proper markdown format."""
+    print("\n---\n")
+    print(f"**Provider:** `{provider}`")
+    print(f"**Experiment:** `{experiment}`")
+    print(f"**Run:** `{run_dir.name}`\n")
     
     if not results:
-        print("No questions with sufficient data for stability analysis.")
+        print("No questions with sufficient data for stability analysis.\n")
         return
     
     # Sort results by question ID
@@ -1054,21 +1035,12 @@ def print_results(
         doc_headers[doc] = short
     
     # Per question results table
-    print(f"\n{'=' * 80}")
-    print("PER QUESTION RESULTS")
-    print(f"{'=' * 80}\n")
+    print("## Per-Question Results\n")
     
     # Build header
-    header_parts = ["Question", "Runs", "Score", "Score(loose)", "Valid"]
-    for doc in sorted_docs:
-        header_parts.append(doc_headers[doc])
-    print("| " + " | ".join(f"{h:>10}" if i > 0 else h for i, h in enumerate(header_parts)) + " |")
-    
-    # Separator
-    sep_parts = ["-" * 8, "-" * 5, "-" * 7, "-" * 12, "-" * 5]
-    for _ in sorted_docs:
-        sep_parts.append("-" * 40)
-    print("|" + "|".join(f" {s} " for s in sep_parts) + "|")
+    header_parts = ["Question", "Runs", "Score", "Score (loose)", "Valid"] + [doc_headers[doc] for doc in sorted_docs]
+    print("| " + " | ".join(header_parts) + " |")
+    print("|" + "|".join("---" for _ in header_parts) + "|")
     
     total_score = 0.0
     total_score_loose = 0.0
@@ -1076,15 +1048,15 @@ def print_results(
     
     for r in sorted_results:
         row_parts = [
-            f"{r.question_id:<8}",
-            f"{r.runs:>5}",
-            f"{r.stability_score:>7.1f}",
-            f"{r.stability_score_loose:>12.1f}",
-            f"{r.structural_valid!s:>5}",
+            r.question_id,
+            str(r.runs),
+            f"{r.stability_score:.1f}",
+            f"{r.stability_score_loose:.1f}",
+            str(r.structural_valid),
         ]
         for doc in sorted_docs:
             chunks_str = _format_doc_chunks(r.retrieval_context, doc)
-            row_parts.append(f"{chunks_str:<40}")
+            row_parts.append(chunks_str if chunks_str else "")
         
         print("| " + " | ".join(row_parts) + " |")
         
@@ -1093,33 +1065,27 @@ def print_results(
         count += 1
     
     if count > 0:
-        print("|" + "|".join(" " * (len(s) + 2) for s in sep_parts) + "|")
         avg_parts = [
-            f"{'AVERAGE':<8}",
-            f"{'':>5}",
-            f"{total_score / count:>7.1f}",
-            f"{total_score_loose / count:>12.1f}",
-            f"{'':>5}",
+            "**AVERAGE**",
+            "",
+            f"**{total_score / count:.1f}**",
+            f"**{total_score_loose / count:.1f}**",
+            "",
         ]
         for _ in sorted_docs:
-            avg_parts.append(f"{'':>40}")
+            avg_parts.append("")
         print("| " + " | ".join(avg_parts) + " |")
     
     # Detailed breakdown
-    print(f"\n{'=' * 80}")
-    print("DETAILED BREAKDOWN")
-    print(f"{'=' * 80}")
-    print(f"{'Question':<35} {'Approach':>8} {'Approach':>8} {'Applic':>8} {'Applic':>13} {'Rec':>8} {'Rec':>12}")
-    print(f"{'':35} {'(strict)':>8} {'(mapped)':>8} {'(strict)':>8} {'(loose)':>13} {'(strict)':>8} {'(loose)':>12}")
-    print(f"{'-' * 35} {'-' * 8} {'-' * 8} {'-' * 8} {'-' * 13} {'-' * 8} {'-' * 12}")
+    print("\n## Detailed Breakdown\n")
+    print("| Question | Approach (strict) | Approach (mapped) | Applic (strict) | Applic (loose) | Rec (strict) | Rec (loose) |")
+    print("|----------|------------------:|-----------------:|----------------:|---------------:|-------------:|------------:|")
     
     for r in sorted_results:
-        print(f"{r.question_id:<35} {r.approach_stability:>8.4f} {r.approach_stability_canonical:>8.4f} {r.applicability_stability:>8.4f} {r.applicability_stability_loose:>13.4f} {r.recommendation_stability:>8.4f} {r.recommendation_stability_loose:>12.4f}")
+        print(f"| {r.question_id} | {r.approach_stability:.4f} | {r.approach_stability_canonical:.4f} | {r.applicability_stability:.4f} | {r.applicability_stability_loose:.4f} | {r.recommendation_stability:.4f} | {r.recommendation_stability_loose:.4f} |")
     
     # Aggregate metrics
-    print(f"\n{'=' * 80}")
-    print("AGGREGATE METRICS")
-    print(f"{'=' * 80}")
+    print("\n## Aggregate Metrics\n")
     
     total_runs = sum(r.runs for r in results)
     avg_approach = sum(r.approach_stability for r in results) / count if count else 0
@@ -1129,18 +1095,17 @@ def print_results(
     avg_recommendation = sum(r.recommendation_stability for r in results) / count if count else 0
     avg_recommendation_loose = sum(r.recommendation_stability_loose for r in results) / count if count else 0
     
-    print(f"\n| Component | Strict | Loose |")
-    print(f"|-----------|:------:|:-----:|")
+    print("| Component | Strict | Loose |")
+    print("|-----------|-------:|------:|")
     print(f"| **Score** | **{total_score / count:.1f}** | **{total_score_loose / count:.1f}** |")
-    print(f"|")
     print(f"| Approach (Jaccard, exact labels) | {avg_approach:.4f} | {avg_approach_canonical:.4f} |")
     print(f"| Applicability (exact values) | {avg_applicability:.4f} | {avg_applicability_loose:.4f} |")
     print(f"| Recommendation (exact values) | {avg_recommendation:.4f} | {avg_recommendation_loose:.4f} |")
-    print(f"|")
-    print(f"| Total Questions | {count} |")
-    print(f"| Total Runs | {total_runs} |")
-    print(f"|")
-    print(f"_Strict_: exact label/value matching | _Loose_: maps `oui` ↔ `oui_sous_conditions` |")
+    print(f"| | | |")
+    print(f"| Total Questions | {count} | |")
+    print(f"| Total Runs | {total_runs} | |")
+    print(f"| | | |")
+    print("*Strict*: exact label/value matching | *Loose*: maps `oui` ↔ `oui_sous_conditions`\n")
     
     # Label Frequency by Question
     print_label_frequency_table(results)

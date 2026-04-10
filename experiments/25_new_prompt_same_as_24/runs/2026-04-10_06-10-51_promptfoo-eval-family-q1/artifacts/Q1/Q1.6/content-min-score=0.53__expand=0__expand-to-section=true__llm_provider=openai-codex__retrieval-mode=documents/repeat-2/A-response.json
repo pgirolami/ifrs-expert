@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has resulted in a recognised intercompany receivable that is a monetary item.",
+    "The question concerns the accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as a possible hedged item, making fair value hedge accounting a relevant top-level hedge accounting model for a recognised dividend receivable exposure."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes forecast transactions and foreign currency risk exposures in hedge accounting, so cash flow hedge accounting is a distinct hedge model relevant to foreign-currency-related exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IAS 21 and IFRIC 16 guidance on monetary items forming part of a net investment and on net investment hedges, which is a separate top-level IFRS hedge accounting model for foreign exchange risk."
+    },
+    {
+      "id": "approach_4",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "IAS 21 provides the primary accounting model for exchange differences on monetary intragroup balances in consolidated financial statements, including when such differences are recognised in profit or loss or in OCI."
+    }
+  ]
+}

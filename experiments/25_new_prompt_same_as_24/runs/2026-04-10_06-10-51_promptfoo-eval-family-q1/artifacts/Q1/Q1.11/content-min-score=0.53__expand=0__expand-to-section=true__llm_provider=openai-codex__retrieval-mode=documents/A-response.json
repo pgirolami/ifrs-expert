@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The dividend has already been declared and a corresponding intragroup receivable/payable has been recognised.",
+    "The issue is limited to hedge accounting models relevant to foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IAS 39 and IFRS 9 identify fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies cash flow hedge accounting as a separate hedge accounting model for exposures to variability in cash flows attributable to a particular risk on recognised items or highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 39, IFRS 9 and IFRIC 16 identify hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk."
+    }
+  ]
+}

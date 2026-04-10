@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements.",
+    "The intragroup dividends have been recognised as an intragroup receivable and corresponding payable.",
+    "The accounting issue is whether the foreign exchange risk on that recognised intragroup balance can fall within a formal IFRS hedge accounting model."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context provides IFRS 9’s formal hedge accounting model, including the eligible hedged items framework and the specific intragroup foreign currency exception relevant to foreign exchange risk in consolidated financial statements."
+    }
+  ]
+}

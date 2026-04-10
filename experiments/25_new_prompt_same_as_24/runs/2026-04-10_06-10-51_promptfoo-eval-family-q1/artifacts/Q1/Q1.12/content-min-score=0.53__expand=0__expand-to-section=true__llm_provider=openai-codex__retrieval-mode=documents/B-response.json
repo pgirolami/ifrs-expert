@@ -1,0 +1,51 @@
+{
+  "assumptions_fr": [
+    "La question vise les états financiers consolidés.",
+    "Les dividendes intragroupe ont été comptabilisés en créance et dette intragroupe.",
+    "La créance/dividende à recevoir constitue un poste monétaire intragroupe exposé au risque de change.",
+    "Les entités concernées ont des monnaies fonctionnelles différentes, de sorte que les écarts de change sur ce poste ne sont pas intégralement éliminés en consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Au consolidé, la règle générale exclut les éléments intragroupe comme éléments couverts. Toutefois, une exception existe pour le risque de change d’un poste monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la règle générale IFRS 9 exclut les transactions intragroupe comme éléments couverts au niveau consolidé. Mais l’exception vise précisément le risque de change d’un poste monétaire intragroupe, tel qu’une créance/dette de dividende comptabilisée, si ce risque génère des écarts de change non intégralement éliminés en consolidation entre entités à monnaies fonctionnelles différentes.",
+      "conditions_fr": [
+        "la créance de dividende intragroupe est un poste monétaire",
+        "elle est libellée dans une devise créant un risque de change au niveau consolidé",
+        "les écarts de change correspondants ne sont pas totalement éliminés en consolidation",
+        "la relation satisfait aux exigences formelles de désignation et de documentation de la comptabilité de couverture"
+      ],
+      "practical_implication_fr": "Une désignation formelle est possible au consolidé uniquement si la créance de dividende intragroupe entre dans l’exception IFRS 9 sur les postes monétaires intragroupe en devise.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "when the intragroup monetary item is transacted between two group entities that have different functional currencies"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Au niveau consolidé, partir de l’exception IFRS 9.6.3.6 et non de la règle générale des transactions intragroupe.",
+    "La qualification dépend du caractère monétaire de la créance de dividende et de l’existence d’un effet de change résiduel en consolidation.",
+    "La documentation de couverture doit être établie formellement au moment de la désignation.",
+    "Si les écarts de change sont totalement éliminés en consolidation, la désignation formelle ne serait pas recevable dans ce cas."
+  ]
+}

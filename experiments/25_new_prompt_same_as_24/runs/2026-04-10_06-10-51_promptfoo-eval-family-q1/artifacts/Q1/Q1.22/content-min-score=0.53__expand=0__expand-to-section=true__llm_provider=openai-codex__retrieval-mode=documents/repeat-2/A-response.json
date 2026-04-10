@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is a recognised monetary item in the consolidated financial statements.",
+    "The foreign exchange risk arises because the entities involved have different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context includes the general IAS 21 model for exchange differences on monetary items and the consolidation treatment of intragroup monetary balances."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies hedge accounting in IFRS 9 as a distinct accounting model for recognised assets or liabilities, which can include a recognised monetary item exposed to foreign currency risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting for forecast transactions and foreign currency items, which is a distinct top-level hedge accounting model relevant to foreign exchange risk discussions."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the IFRS 9 and IFRIC 16 model for hedging foreign currency risk arising from a net investment in a foreign operation, which is a separate hedge accounting model from fair value and cash flow hedges."
+    }
+  ]
+}

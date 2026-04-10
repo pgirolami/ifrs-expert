@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is denominated in a foreign currency and gives rise to foreign exchange exposure in consolidation.",
+    "The question is about accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency translation under IAS 21",
+      "normalized_label": "foreign_currency_translation",
+      "rationale_for_inclusion": "The context includes IAS 21 requirements for exchange differences on monetary items and their treatment in separate and consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting under IFRS 9",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 rules on eligible hedged items, including the treatment of intragroup exposures and formal hedging relationships for foreign currency risk."
+    }
+  ]
+}

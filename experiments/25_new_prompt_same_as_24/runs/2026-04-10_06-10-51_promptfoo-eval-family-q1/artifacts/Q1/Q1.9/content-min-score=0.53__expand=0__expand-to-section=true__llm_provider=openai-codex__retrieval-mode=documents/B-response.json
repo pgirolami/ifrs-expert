@@ -1,0 +1,104 @@
+{
+  "assumptions_fr": [
+    "La question vise des comptes consolidés et une créance de dividende intragroupe déjà comptabilisée, libellée en devise étrangère.",
+    "La créance de dividende constitue un élément monétaire intragroupe entre des entités du groupe ayant des monnaies fonctionnelles différentes."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en comptes consolidés, la composante de risque de change d’une créance de dividende intragroupe peut être désignée comme élément couvert si elle correspond à un élément monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés en consolidation. En pratique, cela pointe vers l’exception d’IFRS 9 pour le risque de change sur éléments monétaires intragroupe."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende est, dans les faits supposés, un actif reconnu. IFRS 9 permet qu’un actif reconnu soit un élément couvert, et prévoit une exception en consolidation pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés. Dans cette situation, la désignation est donc possible sous cette exception.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe.",
+        "Les entités concernées ont des monnaies fonctionnelles différentes.",
+        "Les écarts de change sur cette créance ne sont pas totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "La documentation de couverture doit viser spécifiquement le risque de change de la créance intragroupe dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 traite la couverture de flux de trésorerie comme un modèle distinct et un élément couvert peut être un actif ou passif reconnu. Pour cette créance intragroupe, la recevabilité en consolidation dépend toutefois de la même exception spécifique sur le risque de change des éléments monétaires intragroupe. L’applicabilité n’existe donc que si cette exception est satisfaite.",
+      "conditions_fr": [
+        "La désignation porte sur le risque de change de la créance intragroupe reconnue.",
+        "La créance est un élément monétaire intragroupe entre entités à monnaies fonctionnelles différentes.",
+        "Le risque de change affecte un montant non totalement éliminé en consolidation."
+      ],
+      "practical_implication_fr": "Il faut démontrer que le modèle de couverture retenu reflète bien l’exposition de change portée en résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Une créance de dividende intragroupe reconnue n’est pas un montant de net assets d’une activité étrangère ; c’est un poste monétaire distinct. Les textes sur la couverture d’investissement net visent le risque de change lié à l’investissement net dans une activité étrangère, non un dividende intragroupe à recevoir. Cette voie ne correspond donc pas à la situation décrite.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il ne faut pas documenter cette créance de dividende comme un hedge de net investment.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "Hedge accounting of the foreign currency risk arising from a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets"
+        },
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "may be designated as a hedging instrument in a hedge of a net investment"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé en consolidation est l’exception IFRS 9 relative aux éléments monétaires intragroupe, et non la règle générale réservant les éléments couverts aux positions avec des tiers.",
+    "Il faut vérifier dès la mise en place de la relation de couverture que les entités concernées ont des monnaies fonctionnelles différentes.",
+    "La désignation doit être faite au niveau des comptes consolidés, car c’est à ce niveau qu’il faut apprécier la non-élimination complète des écarts de change.",
+    "Une créance de dividende déjà reconnue s’analyse différemment d’une transaction intragroupe future hautement probable : ici, le sujet est le poste monétaire reconnu."
+  ]
+}

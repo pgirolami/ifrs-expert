@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable arises between entities within the same group and is considered in consolidated financial statements.",
+    "The identified exposure is foreign currency risk arising from that intragroup balance or transaction."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "IFRS 9 hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes the IFRS 9 hedge accounting model for designated hedged items, including rules for when exposures with parties external to the reporting entity, and specified intragroup foreign currency exposures, can be designated in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately includes the hedge accounting model for foreign currency risk on a net investment in a foreign operation under IFRS 9 and IFRIC 16, which is a distinct recognised hedge accounting approach relevant to foreign exchange exposures at consolidated level."
+    }
+  ]
+}

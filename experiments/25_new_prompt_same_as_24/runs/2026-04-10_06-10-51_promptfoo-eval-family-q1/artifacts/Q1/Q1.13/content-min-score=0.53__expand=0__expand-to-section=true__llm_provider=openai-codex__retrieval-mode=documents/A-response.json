@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The receivable is a monetary item denominated in a foreign currency.",
+    "The question concerns the accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting requirements for eligible hedged items in consolidated financial statements, including foreign currency risk on intragroup monetary items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the distinct IFRS model for hedges of foreign currency risk arising from a net investment in a foreign operation, including related guidance in consolidated financial statements."
+    }
+  ]
+}

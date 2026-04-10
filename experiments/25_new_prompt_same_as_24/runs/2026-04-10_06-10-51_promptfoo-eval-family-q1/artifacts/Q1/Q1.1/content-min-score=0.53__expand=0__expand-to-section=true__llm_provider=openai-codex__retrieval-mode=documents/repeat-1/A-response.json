@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is limited to hedge accounting in consolidated financial statements for foreign exchange risk arising from an intragroup dividend-related balance or transaction.",
+    "The intragroup dividend receivable is being considered either as an existing intragroup monetary item or in connection with an intragroup forecast transaction."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model, and the context states that an intragroup monetary item may qualify as a hedged item in consolidated financial statements for foreign currency risk if the resulting exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a distinct hedge accounting model, and the context states that a highly probable forecast intragroup transaction denominated in a currency other than the functional currency of the transacting entity may qualify as a hedged item in consolidated financial statements if the foreign currency risk will affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a hedge of a net investment in a foreign operation as a distinct hedge accounting model, with specific guidance on designation and effectiveness in consolidated financial statements."
+    }
+  ]
+}

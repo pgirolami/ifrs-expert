@@ -14,21 +14,32 @@ logger = logging.getLogger(__name__)
 AUTH_FAILED_MESSAGE = "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
-REASONING_EFFORT = "low"
+DEFAULT_REASONING_EFFORT = "low"
+
+ReasoningLevel = str | None
 
 
 class OpenAIClient(LLMClient):
     """OpenAI API client."""
 
-    def __init__(self, api_key: str, model: str) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        reasoning_effort: ReasoningLevel = DEFAULT_REASONING_EFFORT,
+        base_url: str | None = None,
+    ) -> None:
         """Initialize the OpenAI client.
 
         Args:
             api_key: OpenAI API key
             model: Model identifier
+            reasoning_effort: Optional reasoning effort ("low", "medium", "high"). Defaults to "low".
+            base_url: Optional base URL for the API. If None, uses OpenAI's default.
         """
-        self._client = OpenAI(api_key=api_key)
+        self._client = OpenAI(api_key=api_key, base_url=base_url)
         self._model = model
+        self._reasoning_effort = reasoning_effort
 
     def generate_text(self, prompt: str, system: str | None = None) -> str:
         """Generate text from a prompt using OpenAI API.
@@ -85,22 +96,26 @@ class OpenAIClient(LLMClient):
 
     def _create_text_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
         """Create a text completion with model-specific settings."""
-        logger.info(f"Using OpenAI reasoning_effort={REASONING_EFFORT} for model {self._model}")
-        return self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            reasoning_effort=REASONING_EFFORT,
-        )
+        logger.info(f"Using OpenAI reasoning_effort={self._reasoning_effort} for model {self._model}")
+        kwargs: dict[str, object] = {
+            "model": self._model,
+            "messages": messages,
+        }
+        if self._reasoning_effort is not None:
+            kwargs["reasoning_effort"] = self._reasoning_effort
+        return self._client.chat.completions.create(**kwargs)  # type: ignore[arg-type]
 
     def _create_json_completion(self, messages: list[ChatCompletionMessageParam]) -> ChatCompletion:
         """Create a JSON completion with model-specific settings."""
-        logger.info(f"Using OpenAI reasoning_effort={REASONING_EFFORT} for model {self._model}")
-        return self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            response_format={"type": "json_object"},
-            reasoning_effort=REASONING_EFFORT,
-        )
+        logger.info(f"Using OpenAI reasoning_effort={self._reasoning_effort} for model {self._model}")
+        kwargs: dict[str, object] = {
+            "model": self._model,
+            "messages": messages,
+            "response_format": {"type": "json_object"},
+        }
+        if self._reasoning_effort is not None:
+            kwargs["reasoning_effort"] = self._reasoning_effort
+        return self._client.chat.completions.create(**kwargs)  # type: ignore[arg-type]
 
     def _parse_json_response(self, content: str) -> dict[str, Any]:
         """Parse JSON from the response content."""

@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The identified exposure is a foreign currency exposure arising from an intragroup balance connected with a dividend receivable or payable.",
+    "The question concerns accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "general_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 provides the general hedge accounting model for designated hedged items, including recognised assets or liabilities, firm commitments and highly probable forecast transactions, with specific consolidation-level rules for intragroup items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 establish a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}

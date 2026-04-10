@@ -1,0 +1,86 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des états financiers consolidés établis selon les IFRS.",
+    "La créance et la dette de dividendes sont intragroupe.",
+    "L'exposition visée est un risque de change attaché à cette créance ou dette intragroupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Au niveau consolidé, la créance de dividendes intragroupe est en principe éliminée, donc elle ne constitue pas, à elle seule, un élément couvert autonome. Elle ne peut être éligible que dans le cadre de l'exception IFRS 9 applicable au risque de change d'un poste monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting",
+      "label_fr": "Comptabilité de couverture générale",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans des comptes consolidés, IFRS 9 pose comme règle que seuls les éléments avec une partie externe au groupe sont éligibles comme éléments couverts. Toutefois, une exception existe pour le risque de change d'un poste monétaire intragroupe lorsque ce risque génère des écarts de change non totalement éliminés en consolidation. Donc, pour cette créance de dividendes intragroupe, l'éligibilité n'existe que si cette condition précise est satisfaite.",
+      "conditions_fr": [
+        "La créance sur dividendes constitue un poste monétaire intragroupe.",
+        "Les entités concernées ont des monnaies fonctionnelles différentes.",
+        "Les gains ou pertes de change correspondants ne sont pas totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "Documenter spécifiquement pourquoi l'exposition de change subsiste au niveau consolidé malgré l'élimination intragroupe.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise uniquement le risque de change provenant d'un investissement net dans une activité à l'étranger. Ici, le fait générateur décrit est une créance de dividendes intragroupe, c'est-à-dire un poste de règlement intragroupe distinct, et non le risque de change de l'investissement net lui-même. L'interprétation ne doit pas être appliquée par analogie à d'autres couvertures.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas fonder la désignation sur le modèle de couverture d'investissement net pour cette créance de dividendes.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "8",
+          "excerpt": "it should not be applied by analogy to other types of hedge accounting"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "consolidation_elimination",
+      "label_fr": "Élimination de consolidation",
+      "applicability": "oui",
+      "reasoning_fr": "En consolidation, les transactions et soldes intragroupe sont éliminés. Une créance de dividendes intragroupe n'emporte donc pas normalement, par elle-même, un élément exposé distinct au niveau du groupe. Cette élimination constitue le traitement de base, avant d'examiner l'exception limitée d'IFRS 9 sur certains postes monétaires intragroupe.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le point de départ en consolidation est l'élimination de la créance et de la dette de dividendes intragroupe.",
+      "references": [
+        {
+          "document": "ias24",
+          "section": "4",
+          "excerpt": "Intragroup related party transactions and outstanding balances are eliminated"
+        },
+        {
+          "document": "ias24",
+          "section": "2",
+          "excerpt": "outstanding balances, including commitments, between an entity and its related parties"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d'abord si la créance de dividendes reste un poste monétaire générant des écarts de change non totalement éliminés au niveau du groupe.",
+    "Si cette condition n'est pas démontrée, conclure à l'absence d'élément couvert éligible en consolidation pour cette exposition.",
+    "Ne pas assimiler automatiquement cette exposition à une couverture d'investissement net : ce modèle est distinct et strictement limité.",
+    "L'analyse doit être faite au niveau des comptes consolidés, pas à partir du seul traitement dans les comptes individuels."
+  ]
+}

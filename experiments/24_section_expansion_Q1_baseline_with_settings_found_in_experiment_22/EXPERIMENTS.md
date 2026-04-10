@@ -196,7 +196,7 @@ The matrix and prompt review both point to the same root cause: section expansio
 
 ## Human analysis
 
-As in the previous experiments, it seems to me that the model is having trouble when given multiple documents touching on the same topic: it doesn't treat them as complementary. Instead, it is reporting them as competing answers.
+As in the previous experiments, it seems that the model is having trouble when given multiple documents touching on the same topic: it doesn't treat them as complementary. Instead, it is reporting them as competing answers.
 - IAS 21 gives the baseline accounting consequence
 - IFRS 9 gives a possible hedge-accounting overlay / exception
 

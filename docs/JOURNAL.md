@@ -105,9 +105,9 @@ It documents how the system evolved from a single prompt to a structured, evalua
 
 ### 2026-04-07
 - Fixed bug in Chrome extension for downloading IFRS standards
-- Ingested many more files related to the Q1 family of questions and check it doesn't degrade the response
-        - [Experiment 19](../experiments/19_check_results_are_still_good_with_more_documents/EXPERIMENTS.md): a few more documents
-        - [Experiment 20](../experiments/20_check_results_are_still_good_with_all_public_ifrs_docs/EXPERIMENTS.md): all documents
+- Ingested many more files related to the Q1 family of questions and check it doesn't degrade the response (it does)
+    - [Experiment 19](../experiments/19_check_results_are_still_good_with_more_documents/EXPERIMENTS.md): a few more documents
+    - [Experiment 20](../experiments/20_check_results_are_still_good_with_all_public_ifrs_docs/EXPERIMENTS.md): all documents
 - Add Minimax API provider
 
 ### 2026-04-08 - 2026-04-09
@@ -118,7 +118,10 @@ It documents how the system evolved from a single prompt to a structured, evalua
     - extracted the retrieval pipeline and added a `retrieve` command that first retrieves documents and then only the chunks within those documents and did a quick test:
         - Q1.0 (one of the best retrieval for IFRS 9 and worst for IFRIC 16) returns the right response
         - Q1.18 (one of the worst retrieval for IFRS 9 and mid-performance for IFRIC 16) 
-    - run some manual experiments to get a sense of the parameters to use to consistently retrieve IFRS 9 and IFRIC 16, as well as the impact on the size of the context generated
-        - [Experiment 22](../experiments/2) (multiple sub experiments)
+    - ran some manual experiments to get a sense of the parameters to use to consistently retrieve IFRS 9 and IFRIC 16, as well as the impact on the size of the context generated
+        - [Experiment 22](../experiments/22_manual_experiment_on_document_routing/EXPERIMENTS.md) (multiple sub experiments)
+    - used those parameters on the Q1 family and analyzed the results. Realize that a lot of the apparent instability and spurious approaches aren't as bad as they look: they usually collapse into hedging vs not hedging and the hedging reasoning is usually correct
+        - [Experiment 23](../experiments/23_Q1_baseline_with_settings_found_in_experiment_22/EXPERIMENTS.md)
+        - [Experiment 24](../experiments/24_section_expansion_Q1_baseline_with_settings_found_in_experiment_22/EXPERIMENTS.md)
 
 

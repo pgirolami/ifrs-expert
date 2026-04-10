@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a recognised monetary item that gives rise to foreign exchange differences in the consolidated financial statements.",
+    "The question concerns possible designation of that foreign currency exposure within IFRS 9 hedge accounting."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a distinct hedge accounting model for eligible hedged items and groups of items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a separate hedge accounting model, including for highly probable forecast transactions and certain groups or net positions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 treat a hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk."
+    }
+  ]
+}

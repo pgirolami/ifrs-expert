@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The identified foreign exchange exposure arises from an intragroup dividend receivable or payable.",
+    "The issue is limited to IFRS accounting models explicitly reflected in the provided context."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 in the context sets out the general hedge accounting model, including what items may be designated as hedged items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IFRIC 16, which is a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Consolidation elimination",
+      "normalized_label": "consolidation_elimination",
+      "rationale_for_inclusion": "IAS 24 in the context states that intragroup related party transactions and outstanding balances are eliminated in consolidated financial statements, which is a distinct consolidation accounting model directly relevant to whether an exposure exists at group level."
+    }
+  ]
+}

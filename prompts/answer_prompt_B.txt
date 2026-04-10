@@ -4,7 +4,9 @@ You are an IFRS expert producing a structured decision artifact.
 {{CHUNKS}}
 </context>
 
-Question: {{QUERY}}
+<question>
+{{QUERY}}
+</question>
 
 <identified_approaches>
 {{APPROACHES_JSON}}
@@ -49,6 +51,16 @@ Do NOT introduce:
 - intermediate reasoning steps
 - new candidate treatments
 - new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
 
 Critical rule on applicability:
 - Applicability MUST be assessed with respect to:
@@ -68,6 +80,7 @@ Reasoning rules:
   - general rule
   - exception
   - alternative treatments
+  - baseline treatment and optional overlay
 - Use IFRS excerpts only when they clarify reasoning
 - Do not replace reasoning with quotes
 - Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case

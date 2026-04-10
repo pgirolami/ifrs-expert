@@ -1,0 +1,101 @@
+{
+  "assumptions_fr": [
+    "La question vise des comptes consolidés IFRS.",
+    "Le dividende intragroupe a déjà donné lieu à la comptabilisation d’une créance à recevoir.",
+    "Le risque visé est le risque de change sur cette créance intragroupe ou sur le flux correspondant."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidé, une documentation de couverture peut être envisagée sur le risque de change d’une créance intragroupe déjà comptabilisée si cette créance est un élément monétaire entre entités à monnaies fonctionnelles différentes et si les écarts de change ne sont pas totalement éliminés en consolidation. Dans ce cas, l’approche pertinente est la couverture de juste valeur, pas la couverture de flux de trésorerie ni la couverture d’investissement net."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans votre situation, la créance de dividende est déjà comptabilisée : on n’est donc plus sur une transaction future mais sur un actif reconnu. En consolidé, les éléments intragroupe ne sont en principe pas éligibles, sauf l’exception IFRS 9 pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation.",
+      "conditions_fr": [
+        "La créance de dividende doit constituer un élément monétaire intragroupe.",
+        "Les entités concernées doivent avoir des monnaies fonctionnelles différentes.",
+        "Le risque de change doit générer des écarts de change non totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "La relation de couverture peut être documentée en consolidé sur le seul risque de change de la créance reconnue, si l’exception intragroupe est satisfaite.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise une transaction future prévue et hautement probable. Or, dans votre cas, une créance de dividende a déjà été comptabilisée : le sujet n’est donc plus un flux futur non reconnu mais un poste monétaire existant. L’analyse doit alors se faire sur le poste reconnu, pas comme cash flow hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Une documentation de couverture de flux de trésorerie ne correspond pas aux faits décrits dès lors que le dividende est déjà comptabilisé en créance.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La couverture d’investissement net vise l’exposition de change sur les actifs nets d’une activité à l’étranger, pas une créance de dividende intragroupe déjà constatée. Les extraits fournis d’IFRIC 16 traitent du hedge d’un net investment et non du change sur un dividende à recevoir.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette documentation n’est pas adaptée à une créance de dividende intragroupe reconnue.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "12",
+          "excerpt": "The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity"
+        },
+        {
+          "document": "ifric16",
+          "section": "13",
+          "excerpt": "An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé en consolidé est de vérifier si la créance de dividende est bien un élément monétaire entre entités à monnaies fonctionnelles différentes.",
+    "Si les écarts de change sur cette créance sont totalement éliminés en consolidation, l’exception IFRS 9 sur les éléments intragroupe ne permet pas la désignation.",
+    "Comme la créance est déjà reconnue, la documentation doit viser un poste existant et non une transaction future de dividende.",
+    "La conclusion doit être arrêtée au niveau des comptes consolidés, pas seulement dans les comptes individuels des entités du groupe."
+  ]
+}

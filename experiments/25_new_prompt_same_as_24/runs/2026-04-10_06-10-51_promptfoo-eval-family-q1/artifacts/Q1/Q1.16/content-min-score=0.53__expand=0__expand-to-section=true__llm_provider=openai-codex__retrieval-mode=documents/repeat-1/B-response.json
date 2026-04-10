@@ -1,0 +1,93 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe est un élément monétaire comptabilisé dans les états financiers consolidés.",
+    "La question porte sur la possibilité de documenter une relation de couverture IFRS du risque de change au niveau consolidé."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Au niveau consolidé, une couverture IFRS peut être envisageable pour le risque de change d’une créance intragroupe seulement si cette créance monétaire génère des écarts de change qui ne sont pas intégralement éliminés en consolidation. Dans ce cas, le modèle pertinent est la couverture de juste valeur, et non la couverture de flux de trésorerie ni la couverture d’investissement net."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende est supposée être un élément monétaire comptabilisé exposé au risque de change. IFRS 9 permet exceptionnellement, en consolidation, de désigner un élément monétaire intragroupe comme élément couvert si les écarts de change ne sont pas totalement éliminés selon IAS 21. La documentation de couverture IFRS est donc possible seulement dans ce cas précis.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe reconnu.",
+        "Les écarts de change correspondants ne sont pas pleinement éliminés en consolidation au sens d’IAS 21."
+      ],
+      "practical_implication_fr": "Il faut documenter une relation de couverture de juste valeur ciblant le risque de change de la créance au niveau consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Les extraits fournis réservent ce modèle aux transactions prévues ou hautement probables. Ici, l’hypothèse retenue est celle d’une créance de dividende déjà comptabilisée, donc d’un élément existant et non d’un flux futur non encore reconnu. Ce modèle ne correspond donc pas aux faits décrits.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La relation ne devrait pas être documentée comme couverture de flux de trésorerie pour cette créance déjà reconnue.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Ce modèle vise le risque de change attaché à un investissement net dans une opération étrangère, c’est-à-dire à des actifs nets d’une activité étrangère inclus dans les comptes consolidés. Une créance de dividende intragroupe, même exposée au change, n’est pas en elle-même un investissement net. Les faits décrits ne relèvent donc pas de ce modèle.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance de dividende ne doit pas être documentée comme couverture d’investissement net.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency"
+        },
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier en premier lieu que la créance de dividende reste bien un élément monétaire pertinent au niveau consolidé et qu’elle génère des écarts de change non intégralement éliminés.",
+    "Si cette condition est satisfaite, la documentation de couverture doit être mise en place au niveau consolidé en identifiant explicitement le risque de change couvert.",
+    "Le modèle de couverture à retenir, dans les faits décrits, est la couverture de juste valeur ; les deux autres modèles ne correspondent pas à la nature de la position couverte."
+  ]
+}

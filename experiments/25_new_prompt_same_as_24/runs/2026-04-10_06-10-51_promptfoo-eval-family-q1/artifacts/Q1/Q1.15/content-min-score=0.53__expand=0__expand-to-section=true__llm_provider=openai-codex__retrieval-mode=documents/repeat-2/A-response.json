@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting under IFRS for a foreign exchange exposure arising from an intra-group balance recognised in consolidated financial statements.",
+    "The exposure relates to a recognised receivable rather than an unrecognised item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as an eligible type of hedged item, which makes fair value hedge accounting a relevant top-level hedge accounting model for a recognised foreign-currency-denominated receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies forecast transactions as eligible hedged items, and the context specifically includes an exception for highly probable forecast intragroup transactions with foreign currency risk affecting consolidated profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IFRIC 16 guidance on hedges of net investments in foreign operations, which is a distinct IFRS hedge accounting model for foreign currency exposures in consolidated financial statements."
+    }
+  ]
+}

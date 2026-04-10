@@ -31,7 +31,7 @@ prompts:
 
 providers:
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 current answer defaults'
+    label: 'OpenAI GPT 5.4 through Codex current answer defaults'
     config:
       <<: *answer_command_defaults
       llm_provider: 'openai-codex'

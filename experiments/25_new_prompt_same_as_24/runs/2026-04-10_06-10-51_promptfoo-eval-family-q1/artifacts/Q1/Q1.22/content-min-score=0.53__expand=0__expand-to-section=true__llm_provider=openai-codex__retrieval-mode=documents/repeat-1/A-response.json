@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable recognised in consolidation is a foreign-currency-denominated monetary item.",
+    "The question concerns accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context states that exchange differences on monetary items are recognised in profit or loss, and that intragroup monetary balances can create exchange differences in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting under IFRS 9",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 rules on hedged items and specifically notes that the foreign currency risk of an intragroup monetary item may qualify as a hedged item in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately includes the IFRS guidance for hedges of foreign currency risk arising from a net investment in a foreign operation, which is a distinct IFRS hedge accounting model for foreign exchange exposure."
+    }
+  ]
+}

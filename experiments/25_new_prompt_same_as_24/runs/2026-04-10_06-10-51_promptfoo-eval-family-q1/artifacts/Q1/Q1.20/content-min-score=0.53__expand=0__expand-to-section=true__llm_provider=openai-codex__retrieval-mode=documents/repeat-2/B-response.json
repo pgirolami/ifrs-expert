@@ -1,0 +1,102 @@
+{
+  "assumptions_fr": [
+    "La créance de dividendes intragroupe est un élément monétaire libellé en devise étrangère et elle est comptabilisée dans les états financiers consolidés.",
+    "La question vise la possibilité d'appliquer une relation de couverture au risque de change porté par cette position reconnue dans les comptes consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, une désignation de hedge accounting est envisageable en consolidation uniquement si la créance intragroupe relève de l'exception visant les éléments monétaires intragroupe dont le risque de change n'est pas totalement éliminé en consolidation. Dans ce cas, un fair value hedge ou un cash flow hedge peut être documenté; un net investment hedge n'est pas adapté à cette créance de dividendes en tant que telle."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En consolidation, un item intragroupe ne peut être couvert que s'il entre dans l'exception des éléments monétaires intragroupe exposés à des écarts de change non totalement éliminés. Si cette créance de dividendes reste bien porteuse d'un risque de change en résultat consolidé, elle peut être un élément couvert au titre d'un risque particulier sur un actif reconnu.",
+      "conditions_fr": [
+        "La créance doit constituer un élément monétaire intragroupe dont les gains/pertes de change ne sont pas totalement éliminés en consolidation.",
+        "Le risque couvert doit être le risque de change affectant le résultat consolidé."
+      ],
+      "practical_implication_fr": "Si la relation est qualifiée, les variations de valeur du dérivé et celles de l'élément couvert au titre du risque couvert sont reconnues en résultat.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias39",
+          "section": "86",
+          "excerpt": "fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability"
+        },
+        {
+          "document": "ias39",
+          "section": "89",
+          "excerpt": "the gain or loss on the hedged item attributable to the hedged risk shall adjust the carrying amount"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La norme permet une couverture de la variabilité des flux de trésorerie attachés à un actif reconnu. Pour cette créance de dividendes intragroupe, cela n'est possible en consolidation que si l'exposition de change sur l'élément monétaire n'est pas totalement éliminée et affecte le résultat consolidé.",
+      "conditions_fr": [
+        "La créance doit relever de l'exception applicable aux éléments monétaires intragroupe en devise dans les comptes consolidés.",
+        "La variabilité de flux couverte doit pouvoir affecter le résultat consolidé."
+      ],
+      "practical_implication_fr": "La part efficace de la couverture est comptabilisée en autres éléments du résultat global, puis reclassée lorsque les flux couverts affectent le résultat.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias39",
+          "section": "86",
+          "excerpt": "cash flow hedge: a hedge of the exposure to variability in cash flows"
+        },
+        {
+          "document": "ias39",
+          "section": "95",
+          "excerpt": "the portion of the gain or loss on the hedging instrument that is determined to be an effective hedge shall be recognised in other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question porte sur une créance de dividendes intragroupe reconnue en consolidation, non sur un investissement net dans une activité étrangère. Le modèle de net investment hedge vise le risque de change attaché aux net assets d'une activité étrangère, pas une créance de dividende isolée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne doit pas être retenu pour documenter la couverture de cette créance de dividendes.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "86",
+          "excerpt": "hedge of a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets"
+        },
+        {
+          "document": "ifric16",
+          "section": "12",
+          "excerpt": "The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif en consolidation est de démontrer que le risque de change sur cette créance intragroupe n'est pas totalement éliminé conformément à IAS 21.",
+    "La documentation doit être formalisée dès l'origine et identifier l'instrument de couverture, l'élément couvert, le risque de change couvert et le test d'efficacité.",
+    "Si les conditions de qualification cessent d'être remplies, la comptabilité de couverture doit être arrêtée prospectivement.",
+    "Le choix entre fair value hedge et cash flow hedge doit être cohérent avec la manière dont l'exposition de change de cette créance affecte le résultat consolidé."
+  ]
+}

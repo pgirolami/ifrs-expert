@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The intragroup dividend gives rise to foreign currency exposure and a recognised intragroup receivable.",
+    "The question is about possible IFRS hedge accounting models relevant to that foreign currency exposure."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 provides the general hedge accounting model for qualifying hedged items, including recognised assets or liabilities and highly probable forecast transactions."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge of intragroup monetary foreign currency risk",
+      "normalized_label": "intragroup_fx_hedge",
+      "rationale_for_inclusion": "IFRS 9 specifically states that, as an exception in consolidated financial statements, the foreign currency risk of an intragroup monetary item may qualify as a hedged item if the resulting FX gains or losses are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of forecast intragroup foreign currency transactions",
+      "normalized_label": "forecast_fx_hedge",
+      "rationale_for_inclusion": "IFRS 9 also specifically permits, in consolidated financial statements, hedge accounting for the foreign currency risk of a highly probable forecast intragroup transaction when that risk will affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the hedge accounting model for a net investment in a foreign operation, which is a distinct IFRS hedge accounting model for foreign currency exposures in consolidated financial statements."
+    }
+  ]
+}

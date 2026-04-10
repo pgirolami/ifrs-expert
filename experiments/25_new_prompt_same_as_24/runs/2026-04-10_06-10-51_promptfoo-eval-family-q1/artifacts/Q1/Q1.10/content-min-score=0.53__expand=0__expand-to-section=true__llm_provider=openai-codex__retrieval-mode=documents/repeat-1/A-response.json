@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated IFRS financial statements.",
+    "The intragroup dividend has been declared and a dividend receivable has been recognised.",
+    "The accounting issue is the possible use of IFRS hedge accounting for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies fair value hedge accounting as a distinct IFRS hedge accounting model with its own presentation and measurement consequences."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies cash flow hedge accounting as a separate hedge accounting model applicable to forecast transactions and related foreign currency risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses hedges of a net investment in a foreign operation, including foreign currency risk and OCI reclassification mechanics."
+    }
+  ]
+}

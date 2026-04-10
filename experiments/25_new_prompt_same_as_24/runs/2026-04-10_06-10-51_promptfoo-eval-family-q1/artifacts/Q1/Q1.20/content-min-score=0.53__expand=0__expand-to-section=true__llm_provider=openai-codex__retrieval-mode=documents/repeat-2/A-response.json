@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable is a monetary item denominated in a foreign currency and is recognised in the consolidated financial statements.",
+    "The question is about possible hedge accounting models for the foreign exchange exposure arising from that recognised position in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies fair value hedge accounting as a distinct hedge accounting model for recognised assets or liabilities and particular risks affecting profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IAS 39 and IFRS 9 identify cash flow hedge accounting as a separate hedge accounting model for exposures to variability in cash flows attributable to a particular risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 39, IFRS 9 and IFRIC 16 identify hedge accounting for a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk."
+    }
+  ]
+}

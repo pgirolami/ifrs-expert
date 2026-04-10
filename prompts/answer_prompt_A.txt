@@ -4,7 +4,9 @@ You are an IFRS expert performing structured accounting analysis.
 {{CHUNKS}}
 </context>
 
-Question: {{QUERY}}
+<question>
+{{QUERY}}
+</question>
 
 <instructions>
 Use only the information in this message's context and the question.
@@ -23,8 +25,9 @@ At this stage:
 - do not choose the best approach
 - do not narrow the list to the most likely answer
 
-An approach must be a distinct top-level IFRS accounting model, accounting treatment, recognition basis, measurement basis, or presentation basis.
-Output only approaches that are peers at the same level of abstraction.
+Definition of an approach:
+- An approach must be a distinct top-level IFRS accounting model, accounting treatment, recognition basis, measurement basis, or presentation basis
+- Output only approaches that are peers at the same level of abstraction
 
 Use the question only to identify the accounting issue.
 Use the context to identify the approaches.
@@ -42,8 +45,11 @@ Do NOT include as separate approaches:
 - labels that combine a top-level model with a fact-pattern-specific qualifier
 - vague labels such as "analysis", "assessment", "documentation", or "judgment"
 - labels that merely restate the fact pattern
+- fallback outcomes such as "no accounting treatment", "no designation"
 
-When a context-grounded concept is only a component, subtype, scoped application, eligibility feature, or variant of a broader accounting model, retain only the broader accounting model as the approach.
+Composition rule:
+- Do not treat a baseline accounting consequence, an optional overlay, or the absence of an optional overlay as separate peer approaches unless they are genuinely distinct top-level accounting treatments in IFRS
+- If a context-grounded concept is only a component, subtype, scoped application, eligibility feature, overlay, or variant of a broader accounting model, retain only the broader accounting model as the approach
 
 Normalization rules:
 - use standard IFRS terminology when available
