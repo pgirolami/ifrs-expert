@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns consolidated financial statements under IFRS.",
+    "The recognised intragroup dividend receivable is a monetary item denominated in a foreign currency.",
+    "The question is about hedge accounting for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets and liabilities as eligible hedged items, which makes the general fair value hedge model relevant to a recognised foreign-currency monetary receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 treats highly probable forecast transactions as potential hedged items, and specifically addresses when forecast intragroup foreign-currency transactions may qualify in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 recognise hedges of a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

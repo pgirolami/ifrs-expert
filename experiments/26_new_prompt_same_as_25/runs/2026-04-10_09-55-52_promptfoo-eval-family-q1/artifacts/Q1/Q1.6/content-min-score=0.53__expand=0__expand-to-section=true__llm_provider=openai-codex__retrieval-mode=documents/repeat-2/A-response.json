@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns consolidated financial statements.",
+    "A dividend receivable/payable arising within the group has been recognised and is denominated in a foreign currency.",
+    "The accounting question is about the foreign exchange exposure on that item rather than the dividend distribution accounting itself."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency hedge accounting",
+      "normalized_label": "foreign_currency_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a hedge accounting model for foreign currency risk on recognised assets or liabilities, including an exception for certain intragroup monetary items and highly probable forecast intragroup transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the separate IFRS hedge accounting model for hedges of a net investment in a foreign operation, which is a distinct top-level hedge accounting model for foreign exchange risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Foreign currency translation of monetary items",
+      "normalized_label": "monetary_item_translation",
+      "rationale_for_inclusion": "IAS 21 provides the baseline accounting model for exchange differences on monetary items, including intragroup monetary balances in consolidated financial statements."
+    }
+  ]
+}

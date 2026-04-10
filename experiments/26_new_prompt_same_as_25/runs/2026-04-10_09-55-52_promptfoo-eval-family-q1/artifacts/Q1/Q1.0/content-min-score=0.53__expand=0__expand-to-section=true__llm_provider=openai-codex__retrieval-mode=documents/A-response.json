@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns consolidated financial statements under IFRS.",
+    "The item in question is an intragroup foreign-currency dividend-related balance for which a receivable has been recognised.",
+    "The question is about hedge accounting treatment for foreign exchange risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting for recognised assets and liabilities, which is a relevant top-level hedge accounting model for a recognised receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context includes IFRS 9 hedge accounting for highly probable forecast transactions, which is a distinct top-level hedge accounting model relevant to dividend-related foreign exchange exposure."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes IFRIC 16 guidance on hedges of a net investment in a foreign operation, a separate top-level hedge accounting model for foreign currency exposure in consolidated financial statements."
+    }
+  ]
+}

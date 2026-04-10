@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is limited to hedge accounting in consolidated financial statements for foreign exchange risk related to an intragroup dividend amount.",
+    "The dividend has cross-currency exposure between group entities."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting on an intragroup monetary item's foreign currency risk",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 states that, as an exception in consolidated financial statements, the foreign currency risk of an intragroup monetary item may qualify as a hedged item if resulting exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting on a highly probable forecast intragroup transaction's foreign currency risk",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 states that the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements when the currency risk will affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge of a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 identifies hedge accounting for a net investment in a foreign operation as a distinct hedge accounting model, with the hedging instrument potentially held by any group entity if designation and documentation requirements are met."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements prepared under IFRS.",
+    "The item being considered is an intragroup dividend and a related intragroup receivable/payable that has been recognised before consolidation eliminations."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for foreign currency risk",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 provides the top-level hedge accounting model and specifically addresses when items in consolidated financial statements can be designated as hedged items, including certain intragroup foreign currency exposures."
+    },
+    {
+      "id": "approach_2",
+      "label": "Consolidation elimination accounting",
+      "normalized_label": "consolidation_elimination",
+      "rationale_for_inclusion": "IFRS 10 and IAS 24 require full elimination of intragroup assets, liabilities, income, expenses and cash flows in consolidated financial statements, which is a distinct top-level accounting treatment directly relevant to intragroup dividends and receivables."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been recognised as a receivable and gives rise to foreign currency exposure in the consolidated financial statements.",
+    "The question is about accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as a possible hedged item, making hedge accounting a relevant top-level model for foreign currency risk on a recognised receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the IFRS 9 and IFRIC 16 model for hedging foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Ordinary foreign currency accounting",
+      "normalized_label": "foreign_currency_translation",
+      "rationale_for_inclusion": "IAS 21 provides the baseline accounting model for exchange differences on foreign currency monetary items, including intragroup monetary balances in consolidated financial statements."
+    }
+  ]
+}

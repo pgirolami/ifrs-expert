@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "A dividend has been declared within the group and a corresponding intragroup receivable has been recognised before consolidation eliminations.",
+    "The issue raised is the accounting relevance of hedge designation for foreign exchange risk on that intragroup dividend-related amount."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "IFRS 9 hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The question directly asks whether foreign exchange risk on an intragroup dividend-related amount can be documented in a hedge relationship, which is governed by IFRS 9 hedge accounting requirements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Consolidation elimination",
+      "normalized_label": "consolidation_elimination",
+      "rationale_for_inclusion": "IFRS 10 requires full elimination of intragroup assets, income, expenses and cash flows, making consolidation accounting a distinct top-level model relevant to an intragroup dividend receivable and dividend income."
+    },
+    {
+      "id": "approach_3",
+      "label": "Separate financial statements accounting",
+      "normalized_label": "separate_financial_statements",
+      "rationale_for_inclusion": "IAS 27 provides a distinct accounting model under which dividends from a subsidiary are recognised when the right to receive the dividend is established, which is relevant because the fact pattern refers to recognition of a corresponding receivable."
+    }
+  ]
+}

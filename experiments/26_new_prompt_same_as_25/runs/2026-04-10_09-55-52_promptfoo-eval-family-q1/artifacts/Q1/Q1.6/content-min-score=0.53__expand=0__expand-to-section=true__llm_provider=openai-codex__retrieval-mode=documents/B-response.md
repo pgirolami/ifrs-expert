@@ -1,0 +1,94 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-10
+
+**Question**:
+>Dans les comptes consolidés, la variation de change relative à des dividendes intragroupe pour lesquels un receivable a été constaté est-elle éligible à une désignation en comptabilité de couverture ?
+
+**Documentation consultée**
+   - `ifric17`
+   - `ifrs9`
+   - `ifrs19`
+   - `ias21`
+   - `ias7`
+   - `sic25`
+   - `ifric16`
+   - `ias37`
+
+## Hypothèses
+   - Le dividende intragroupe a donné lieu à la comptabilisation d’une créance chez une entité du groupe et d’une dette chez une autre.
+   - La créance/dette est un élément monétaire libellé dans une devise créant un risque de change.
+   - L’analyse vise les états financiers consolidés.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Oui, en consolidation, la variation de change sur une créance/dividende intragroupe peut être désignée en comptabilité de couverture si elle résulte d’un élément monétaire intragroupe dont le risque de change affecte le résultat consolidé. Si l’élément fait partie d’un investissement net dans une activité étrangère, c’est alors le modèle spécifique de couverture d’investissement net qui s’applique.
+
+## Points Opérationnels
+
+   - Le point déterminant est le niveau de consolidation : l’exception IFRS 9 vise uniquement les expositions intragroupe dont le risque de change subsiste en résultat consolidé.
+   - La documentation de couverture doit identifier précisément le risque couvert : risque de change sur l’élément monétaire intragroupe, ou couverture d’investissement net si les faits le justifient.
+   - Si la créance de dividende n’affecte pas le résultat consolidé, elle n’est pas éligible comme élément couvert au titre de l’exception intragroupe.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Comptabilisation de change des éléments monétaires | OUI | - (non spécifiées) |
+| 2. Comptabilité de couverture IFRS 9 | OUI SOUS CONDITIONS | - La créance/dette de dividende est entre entités du groupe ayant des monnaies fonctionnelles différentes.<br>- Le risque de change sur cet élément monétaire n’est pas totalement éliminé en consolidation et affecte le résultat consolidé. |
+| 3. Couverture d’investissement net | OUI SOUS CONDITIONS | - L’élément monétaire intragroupe fait partie de l’investissement net dans une activité étrangère. |
+
+### 1. Comptabilisation de change des éléments monétaires
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+Dans cette situation, la créance et la dette de dividende intragroupe constituent, selon les hypothèses, des éléments monétaires. En consolidation, un solde monétaire intragroupe ne peut pas être éliminé sans faire apparaître l’effet des fluctuations de change ; l’écart de change subsiste donc en résultat, sauf cas d’investissement net visé par IAS 21.32.
+
+**Implications pratiques**: La base comptable est une variation de change reconnue en résultat consolidé, sauf si l’élément relève d’un investissement net.
+
+**Référence**:
+ - 28
+    >Exchange differences ... shall be recognised in profit or loss
+ - 45
+    >cannot be eliminated ... without showing the results of currency fluctuations
+
+### 2. Comptabilité de couverture IFRS 9
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance/dette de dividende est entre entités du groupe ayant des monnaies fonctionnelles différentes.
+   - Le risque de change sur cet élément monétaire n’est pas totalement éliminé en consolidation et affecte le résultat consolidé.
+
+**Raisonnment**:
+En consolidation, la règle générale exclut les éléments intragroupe comme éléments couverts. Toutefois, IFRS 9 prévoit une exception pour le risque de change d’un élément monétaire intragroupe lorsque ce risque génère des écarts de change non totalement éliminés en consolidation ; c’est précisément le cas visé si la créance de dividende affecte le résultat consolidé.
+
+**Implications pratiques**: La désignation est possible comme élément couvert en consolidation pour le seul risque de change répondant à l’exception intragroupe.
+
+**Référence**:
+ - 6.3.5
+    >only assets, liabilities ... with a party external to the reporting entity
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item
+
+### 3. Couverture d’investissement net
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’élément monétaire intragroupe fait partie de l’investissement net dans une activité étrangère.
+
+**Raisonnment**:
+Ce traitement n’est pertinent que si la créance/dette de dividende fait partie de l’investissement net dans une activité étrangère. Dans ce cas, les écarts de change sont d’abord reconnus en OCI en consolidation, et un instrument peut être désigné en couverture de cet investissement net ; à défaut de ce lien avec l’investissement net, cette approche n’est pas celle à retenir.
+
+**Implications pratiques**: Si le dividende intragroupe est assimilable à une composante de l’investissement net, la couverture relève du modèle de net investment hedge et non d’une couverture ordinaire du résultat.
+
+**Référence**:
+ - 32
+    >forms part of a reporting entity’s net investment in a foreign operation
+ - 14
+    >may be designated as a hedging instrument in a hedge of a net investment

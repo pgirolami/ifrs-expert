@@ -62,6 +62,15 @@ Composition rule:
 - Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
 - If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
 
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
 Critical rule on applicability:
 - Applicability MUST be assessed with respect to:
   - the specific facts described in the question
@@ -86,6 +95,7 @@ Reasoning rules:
 - Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
 - If an approach is not applicable, explain the decisive fact-pattern-specific reason
 - If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
 
 Recommendation rule:
 - The recommendation must be consistent with the approach-by-approach applicability analysis

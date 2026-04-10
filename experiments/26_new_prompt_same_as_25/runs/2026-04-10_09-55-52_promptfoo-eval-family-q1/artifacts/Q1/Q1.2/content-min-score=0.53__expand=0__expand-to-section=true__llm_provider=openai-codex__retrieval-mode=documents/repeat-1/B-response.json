@@ -1,0 +1,68 @@
+{
+  "assumptions_fr": [
+    "La question vise le risque de change, dans les comptes consolidés, sur un dividende intragroupe libellé dans une devise générant des écarts de change.",
+    "Le dividende intragroupe a déjà été comptabilisé en créance ; il ne s'agit donc plus, à la date considérée, d'une transaction intragroupe future.",
+    "La créance de dividende est un élément monétaire intragroupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Dans cette situation, une documentation de couverture en comptes consolidés peut viser la partie change via une couverture de juste valeur de la créance intragroupe, si le risque de change n'est pas totalement éliminé en consolidation. En revanche, la couverture de flux de trésorerie ne convient pas pour une créance déjà comptabilisée."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ici, le dividende intragroupe a déjà été enregistré en créance : on est donc face à un élément monétaire intragroupe reconnu. Le contexte IFRS 9 prévoit qu'en comptes consolidés, le risque de change d'un élément monétaire intragroupe peut être désigné comme élément couvert, mais seulement s'il crée des écarts de change qui ne sont pas totalement éliminés en consolidation.",
+      "conditions_fr": [
+        "La créance de dividende est libellée dans une devise exposant le groupe à des écarts de change en consolidation.",
+        "Les gains et pertes de change sur cet élément monétaire intragroupe ne sont pas totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "La documentation peut porter sur le risque de change de la créance de dividende déjà reconnue dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette voie vise une transaction intragroupe future hautement probable. Or, dans votre cas, le dividende intragroupe a déjà été comptabilisé en créance : l'exposition n'est plus celle d'un flux futur à documenter avant reconnaissance, mais celle d'un poste monétaire déjà reconnu.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette documentation ne correspond pas au stade actuel du dividende, déjà enregistré en créance.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point déterminant est le timing : une fois le dividende comptabilisé en créance, l'analyse se fait sur un élément monétaire reconnu, pas sur une transaction future.",
+    "En consolidation, la possibilité de couvrir un poste intragroupe est une exception limitée au risque de change ; il faut donc bien circonscrire la documentation à cette composante.",
+    "Il faut vérifier que l'exposition de change sur la créance n'est pas entièrement éliminée en consolidation, notamment lorsque les entités du groupe ont des monnaies fonctionnelles différentes."
+  ]
+}

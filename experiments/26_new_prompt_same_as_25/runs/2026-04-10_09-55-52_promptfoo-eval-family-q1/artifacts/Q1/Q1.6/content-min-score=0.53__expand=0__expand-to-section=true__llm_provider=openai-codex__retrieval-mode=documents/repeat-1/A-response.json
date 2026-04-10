@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The dividend receivable is denominated in a foreign currency.",
+    "The question concerns the accounting in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign currency accounting under IAS 21",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context provides the baseline accounting for exchange differences on monetary items, including intragroup monetary balances in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies recognised assets or liabilities as potentially hedgeable items under IFRS 9, which is a distinct hedge accounting model relevant to a recognised receivable."
+    },
+    {
+      "id": "approach_3",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context identifies highly probable forecast transactions as hedgeable items and notes IFRS 9 requirements for foreign currency items in hedge accounting, making cash flow hedging a distinct model within the issue space."
+    },
+    {
+      "id": "approach_4",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context separately addresses exchange differences on monetary items forming part of a net investment in a foreign operation and the use of hedging instruments for a net investment hedge."
+    }
+  ]
+}

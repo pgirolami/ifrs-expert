@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements.",
+    "An intragroup dividend has given rise to a recognised receivable/payable denominated in a foreign currency or creating foreign exchange exposure.",
+    "The issue is the IFRS accounting model relevant to designating that foreign exchange exposure in a documented hedging relationship."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies hedging relationships as a distinct model overriding the default fair value gain or loss presentation, and fair value hedge accounting is one of the top-level hedge accounting models relevant to recognised items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IAS 21 identify cash flow hedge accounting as a distinct hedge accounting model for foreign currency exposures, including highly probable forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9, IAS 21 and IFRIC 16 treat hedges of a net investment in a foreign operation as a separate hedge accounting model for foreign exchange risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_4",
+      "label": "IAS 21 foreign currency translation",
+      "normalized_label": "foreign_currency_translation",
+      "rationale_for_inclusion": "IAS 21 provides the default accounting model for exchange differences on foreign currency monetary items, including intragroup monetary balances in consolidated financial statements."
+    }
+  ]
+}

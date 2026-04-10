@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue is the foreign exchange risk in consolidated financial statements arising from an intragroup dividend denominated in a currency that creates exchange differences.",
+    "The question asks about hedge accounting models that could be documented for that FX exposure in consolidated accounts."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup dividend receivable is an intragroup monetary item, and the context states that the foreign currency risk of an intragroup monetary item may qualify as a hedged item in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The context states that the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements, which is a distinct hedge accounting model relevant to intragroup dividends when considered before recognition."
+    }
+  ]
+}

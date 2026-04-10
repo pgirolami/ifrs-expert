@@ -1,0 +1,95 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été comptabilisé en créance avant son règlement.",
+    "La question vise les états financiers consolidés établis selon les IFRS."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Au niveau consolidé, le risque de change d’une créance intragroupe peut être désigné comme élément couvert uniquement via l’exception visant un poste monétaire intragroupe dont les écarts de change ne sont pas totalement éliminés en consolidation. Dans cette situation, le modèle pertinent est la couverture de juste valeur ; les modèles de cash flow hedge et de net investment hedge ne correspondent pas aux faits décrits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende déjà comptabilisée est un actif reconnu, donc un type d’élément pouvant être couvert. En consolidation, les éléments intragroupe sont en principe exclus, sauf exception pour le risque de change d’un poste monétaire intragroupe lorsque les gains/pertes de change ne sont pas totalement éliminés. Une créance/dette intragroupe entre entités de monnaies fonctionnelles différentes entre dans ce cas si elle génère encore une exposition de change au niveau du groupe.",
+      "conditions_fr": [
+        "la créance et la dette de dividende constituent un poste monétaire intragroupe",
+        "les entités concernées ont des monnaies fonctionnelles différentes",
+        "les écarts de change correspondants ne sont pas totalement éliminés en consolidation"
+      ],
+      "practical_implication_fr": "Une relation de couverture formellement documentée au niveau consolidé est possible si l’exposition de change subsiste dans le résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Dans les faits décrits, le dividende a déjà été comptabilisé en créance à recevoir : il ne s’agit donc plus d’une transaction future hautement probable mais d’un poste reconnu. L’exception IFRS 9 en consolidation pour les transactions intragroupe hautement probables vise les opérations futures, pas une créance de dividende déjà constatée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne convient pas à une créance de dividende déjà enregistrée dans les comptes.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "if a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question porte sur le risque de change d’un dividende intragroupe comptabilisé en créance, non sur le risque de change attaché à un investissement net dans une activité à l’étranger. Le cadre IFRIC 16 vise les écarts entre la monnaie fonctionnelle de l’opération étrangère et celle du parent sur les actifs nets de l’opération étrangère ; une créance de dividende reconnue ne correspond pas à cet objet couvert.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation de couverture ne doit pas être structurée comme une couverture d’investissement net pour cette créance de dividende.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "7",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        },
+        {
+          "document": "ifric16",
+          "section": "11",
+          "excerpt": "the hedged item can be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "12",
+          "excerpt": "The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé est le timing : une fois le dividende comptabilisé en créance, l’analyse pertinente n’est plus celle d’une transaction future hautement probable.",
+    "Au niveau consolidé, il faut démontrer que l’exposition de change sur la créance/dette intragroupe n’est pas entièrement éliminée lors de la consolidation.",
+    "La documentation de couverture doit être portée au niveau des états financiers consolidés, avec identification précise du poste monétaire intragroupe et du risque de change couvert.",
+    "Si la créance ne génère pas d’écarts de change résiduels dans le résultat consolidé, la désignation comme élément couvert n’est pas justifiée dans cette situation."
+  ]
+}

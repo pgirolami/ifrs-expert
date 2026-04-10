@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been recognised as a receivable by one group entity and a payable by another group entity.",
+    "The receivable/payable is a monetary item denominated in a currency relevant to foreign exchange risk.",
+    "The question concerns the consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "IAS 21 foreign currency accounting for monetary items",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "The context includes the baseline accounting for exchange differences on monetary items and specifically addresses intragroup monetary balances in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "IFRS 9 hedge accounting",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes the general IFRS 9 model for designating hedged items and expressly addresses when intragroup foreign currency exposures may qualify in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the separate hedge accounting model for a net investment in a foreign operation, including related intragroup monetary items and presentation of exchange differences in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is assessed in the consolidated financial statements.",
+    "The contemplated hedge is an IFRS 9 hedge accounting relationship for foreign currency risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies highly probable forecast transactions as eligible hedged items, including certain intragroup foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes recognised assets and liabilities as eligible hedged items, which is relevant where an intragroup dividend has resulted in a recognised receivable."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a net investment in a foreign operation as a distinct hedge accounting model for foreign currency risk that can be relevant when exchange differences are recognised in OCI under IAS 21."
+    },
+    {
+      "id": "approach_4",
+      "label": "IAS 21 foreign currency accounting",
+      "normalized_label": "foreign_currency_accounting",
+      "rationale_for_inclusion": "IAS 21 provides the baseline accounting for exchange differences on intragroup monetary items in consolidated financial statements, against which any hedge accounting overlay would be considered."
+    }
+  ]
+}

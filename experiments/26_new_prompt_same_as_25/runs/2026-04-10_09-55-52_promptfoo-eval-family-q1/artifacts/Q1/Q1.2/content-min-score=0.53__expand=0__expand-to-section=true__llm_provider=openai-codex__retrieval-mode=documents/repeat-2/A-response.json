@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns hedge accounting in consolidated financial statements for foreign exchange risk arising from an intragroup dividend.",
+    "The intragroup dividend may be considered either as an existing intragroup balance or as an intragroup forecast transaction, depending on the fact pattern."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for an intragroup monetary item",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 explicitly allows the foreign currency risk of an intragroup monetary item to qualify as a hedged item in consolidated financial statements when the related exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting for a highly probable intragroup forecast transaction",
+      "normalized_label": "forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 explicitly allows the foreign currency risk of a highly probable forecast intragroup transaction to qualify as a hedged item in consolidated financial statements when that risk will affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context includes the IFRS model for hedging a net investment in a foreign operation, which is a distinct hedge accounting model for foreign exchange risk in consolidated accounts."
+    }
+  ]
+}

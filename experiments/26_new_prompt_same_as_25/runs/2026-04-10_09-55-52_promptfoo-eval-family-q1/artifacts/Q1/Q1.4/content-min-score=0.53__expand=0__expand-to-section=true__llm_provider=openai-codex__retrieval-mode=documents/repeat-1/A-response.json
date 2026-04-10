@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The issue concerns consolidated financial statements rather than separate or individual financial statements.",
+    "The fact pattern involves an intragroup dividend and a corresponding recognised intragroup receivable/payable before consolidation eliminations.",
+    "The question is about hedge designation of foreign currency risk under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting under IFRS 9",
+      "normalized_label": "hedge_accounting",
+      "rationale_for_inclusion": "The context includes IFRS 9 guidance on what may be designated as hedged items in consolidated financial statements, including limits on intragroup items and exceptions for certain foreign currency exposures."
+    },
+    {
+      "id": "approach_2",
+      "label": "Consolidation accounting under IFRS 10",
+      "normalized_label": "consolidation_accounting",
+      "rationale_for_inclusion": "The context includes the consolidation model requiring full elimination of intragroup assets, liabilities, income, expenses and cash flows, which is directly relevant to an intragroup dividend receivable in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Separate financial statements accounting under IAS 27",
+      "normalized_label": "separate_fs_accounting",
+      "rationale_for_inclusion": "The context includes IAS 27 treatment of dividends from subsidiaries in separate financial statements when the right to receive the dividend is established, which is relevant because the recognised receivable may arise in separate books before consolidation."
+    }
+  ]
+}
