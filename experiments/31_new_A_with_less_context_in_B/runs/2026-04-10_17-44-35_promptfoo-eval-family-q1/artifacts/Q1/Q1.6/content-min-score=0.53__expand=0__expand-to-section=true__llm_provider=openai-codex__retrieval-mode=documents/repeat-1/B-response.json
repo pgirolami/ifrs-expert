@@ -1,0 +1,95 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a déjà été déclaré et un receivable intragroupe a été comptabilisé ; la question porte donc sur un poste monétaire reconnu, et non sur une transaction future.",
+    "Le receivable est libellé dans une monnaie étrangère par rapport à la monnaie fonctionnelle d'au moins une des entités concernées.",
+    "L'analyse est faite au niveau des comptes consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement via la couverture du risque de change d'un poste monétaire intragroupe reconnu si les écarts de change ne sont pas entièrement éliminés en consolidation. Dans cette situation, le modèle pertinent est la couverture de juste valeur ; les modèles de cash flow hedge et de net investment hedge ne sont en principe pas adaptés aux faits décrits."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le receivable de dividende est un actif reconnu, donc un type de hedged item admis en IFRS 9. En comptes consolidés, un poste intragroupe est en principe exclu, sauf pour le risque de change d'un poste monétaire intragroupe si les écarts de change subsistent en consolidation ; IAS 21 précise que c'est le cas entre entités de monnaies fonctionnelles différentes.",
+      "conditions_fr": [
+        "Le receivable de dividende doit être un poste monétaire intragroupe exposé au risque de change.",
+        "Les écarts de change doivent ne pas être entièrement éliminés en consolidation, typiquement parce que les entités ont des monnaies fonctionnelles différentes."
+      ],
+      "practical_implication_fr": "La désignation peut être envisagée en couverture de juste valeur du risque de change du receivable intragroupe dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Ce modèle vise notamment une forecast transaction hautement probable. Or, dans la situation décrite, le dividende a déjà donné lieu à la constatation d'un receivable ; l'exposition analysée est donc la variation de change sur un poste reconnu, pas une transaction future intragroupe hautement probable.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La question doit être analysée sur la base d'un poste monétaire reconnu, et non comme une transaction future couverte en cash flow hedge.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'un investissement net dans une activité à l'étranger",
+      "applicability": "non",
+      "reasoning_fr": "Le fait décrit porte sur un receivable de dividende intragroupe, non sur la couverture d'un investissement net dans une activité étrangère. Le modèle de net investment hedge est distinct et vise les écarts de change liés à l'investissement net, avec comptabilisation en OCI dans les états financiers consolidés.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sauf si le poste relevait des circonstances d'IAS 21.32, ce modèle n'est pas celui correspondant au dividende à recevoir décrit.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "monetary item that forms part of a reporting entity’s net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "may be designated as a hedging instrument in a hedge of a net investment"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier d'abord si le receivable de dividende est bien un poste monétaire intragroupe entre entités ayant des monnaies fonctionnelles différentes.",
+    "Documenter que l'exposition de change affecte encore les comptes consolidés et n'est pas entièrement éliminée à la consolidation.",
+    "La question se tranche au moment où le receivable est comptabilisé : après cette date, on n'est plus dans une logique de transaction future.",
+    "Si les écarts de change relevaient d'un investissement net au sens d'IAS 21.32, l'analyse basculerait vers le modèle de net investment hedge, pas vers celui retenu ici."
+  ]
+}

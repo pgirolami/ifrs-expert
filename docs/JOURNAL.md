@@ -158,7 +158,14 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         
         The answer was correct and contained additional unsollicited JSON fields that mapped to the thinking we were asking of it: `primary_accounting_issue`, `authority_classification`, `treatment_families` and finally `approaches`.
         
-        This sounded like a good idea so we incorporated the idea in a new Prompt A and considered giving Prompt B a context limited to the authoratitive and supporting documents
+        This sounded like a good idea so we incorporated the idea in a new Prompt A and considered giving Prompt B a context limited to the authoritative and supporting documents
 
-    - Manual test with
+    - Manual test with an extended JSON output for the new prompt on question 1.5 (the 2nd worst) identifies all 3 approaches.
+
+    - Used new prompt instructions & limited context for Prompt B to authoritative & supporting documents.
+        - [Experiment 31](../experiments/31_new_A_with_less_context_in_B/EXPERIMENTS.md) ran only on the first 8 question and perfectly identifies the approaches. There is one case where the recommendation is "No" which will need to be investigated
+            
+            The key improvement came from forcing the model to first identify the accounting issue, then classify authority, then identify treatment families, then map to peer top-level approaches. Preventing Prompt A from doing applicability reasoning was critical. A richer structured JSON artifact improved stability and created a natural way to filter context for Prompt B.
+
+            **At this stage, we have a working pipeline on the Q1 family of question, running on a full IFRS free-corpus. 🎉**
 

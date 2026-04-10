@@ -1,0 +1,129 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Identification of the hedge accounting models that could be documented in consolidated financial statements for the foreign exchange risk on an intragroup dividend recognised as a receivable",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "These paragraphs directly govern which items may be designated as hedged items in hedge accounting, including intragroup foreign currency exposures in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["14", "15"],
+        "reason": "These paragraphs clarify the distinct hedge accounting model for a hedge of a net investment in a foreign operation and how it operates in a group context."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["35", "36", "40"],
+        "reason": "These paragraphs address presentation of dividends and equity versus liability effects, not the identification of hedge accounting models for intragroup foreign exchange risk."
+      },
+      {
+        "document": "ias7",
+        "references": ["31", "33A", "34A", "34B", "34C", "34D", "44A", "44B", "44C", "44D", "44E"],
+        "reason": "These paragraphs concern cash flow statement classification and financing liability reconciliations, not hedge accounting model selection."
+      },
+      {
+        "document": "ifric17",
+        "references": ["2", "9", "11", "12", "13", "14", "15", "16", "17"],
+        "reason": "These paragraphs address non-cash distributions to owners rather than hedge accounting for foreign currency risk on intragroup dividends."
+      },
+      {
+        "document": "ifric2",
+        "references": ["4", "5", "6", "7", "8", "9", "10", "11", "13"],
+        "reason": "These paragraphs concern classification of members' shares and related distributions, not hedge accounting for intragroup dividend foreign exchange exposure."
+      },
+      {
+        "document": "ifric19",
+        "references": ["1", "2", "3", "4"],
+        "reason": "These paragraphs deal with extinguishing liabilities through equity instruments, which is unrelated to the hedge accounting issue here."
+      },
+      {
+        "document": "ifrs12",
+        "references": ["10", "11", "12", "13", "18", "19", "19D", "B10", "B12"],
+        "reason": "These paragraphs relate to disclosures about subsidiaries, structured entities, associates and joint ventures, not hedge accounting models."
+      },
+      {
+        "document": "ifrs17",
+        "references": ["43", "44", "45", "46", "63", "64", "65", "65A", "66", "66A", "66B", "67", "68", "74", "75", "76", "77", "114", "115", "116", "B61", "B62", "B63", "B64", "B65", "B66", "B66A", "B67", "B68", "B69", "B70", "B71"],
+        "reason": "These paragraphs relate to insurance contracts and do not govern hedge accounting for an intragroup dividend receivable."
+      },
+      {
+        "document": "ifrs19",
+        "references": ["2", "3", "4", "5", "6", "31", "32", "33", "34", "138", "160", "161", "162", "B12"],
+        "reason": "These paragraphs mainly address disclosure relief and equity or dividend disclosures, not hedge accounting model identification."
+      },
+      {
+        "document": "ias37",
+        "references": ["1", "2", "3", "5", "84", "85", "86", "87", "88", "89", "90", "91", "92"],
+        "reason": "These paragraphs concern provisions and contingencies rather than hedge accounting for foreign exchange risk."
+      },
+      {
+        "document": "ias32",
+        "references": ["4", "8", "9", "10", "35A", "37", "38", "39", "41"],
+        "reason": "These paragraphs concern financial instrument presentation and transaction costs, not hedge accounting model identification."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["2.1", "2.2", "2.3", "2.3A", "2.3B", "2.4", "2.5", "2.6", "2.7", "2.8", "5.7.1", "5.7.1A", "5.7.2", "5.7.3", "5.7.4", "5.7.5", "5.7.6", "5.7.7", "5.7.8", "5.7.9", "5.7.10", "5.7.11", "6.3.2", "6.3.3", "6.3.4", "5.7.1"],
+        "reason": "These paragraphs are generally about scope, measurement and gain or loss recognition, but do not directly identify the peer hedge accounting models for this intragroup FX issue."
+      },
+      {
+        "document": "sic25",
+        "references": ["1", "2", "3"],
+        "reason": "These paragraphs concern tax status changes and are unrelated to hedge accounting for intragroup dividends."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting using a recognised hedge model for foreign currency risk exposures in consolidated financial statements",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_hedge",
+        "cash_flow_hedge"
+      ]
+    },
+    {
+      "family": "Hedge accounting for a foreign operation exposure at group level",
+      "authority_basis": [
+        {
+          "document": "ifric16",
+          "references": ["14", "15"]
+        }
+      ],
+      "mapped_approaches": [
+        "net_investment_hedge"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "Fair value hedge is a top-level IFRS hedge accounting model potentially relevant where foreign exchange risk on a recognised monetary item is designated in hedge accounting."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "Cash flow hedge is a top-level IFRS hedge accounting model potentially relevant where the foreign exchange exposure is documented through forecast or variable cash flow risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "A hedge of a net investment in a foreign operation is a distinct top-level IFRS hedge accounting model specifically addressed for group situations involving foreign exchange risk."
+    }
+  ]
+}

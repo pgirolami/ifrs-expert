@@ -21,61 +21,61 @@ Your task is to:
 
 2. Classify the provided context into:
    - primary authority: directly governs that accounting issue
-   - supporting authority: constrains, modifies, or provides a distinct alternative model relevant to that issue
-   - peripheral authority: topically related but not relevant for identifying peer approaches
+   - supporting authority: constrains, modifies, clarifies, or provides a distinct alternative model relevant to that issue
+   - peripheral authority: topically related but not relevant for identifying peer approaches within that issue
 
 3. Using only primary and supporting authority, identify the relevant top-level accounting treatment families.
 
 4. Map those treatment families to peer top-level accounting approaches.
 
+Core boundary of this step:
+- This step is for approach identification only.
+- This step is NOT for deciding which approach is most likely to apply.
+- This step is NOT for narrowing the set of approaches based on the specific facts beyond what is necessary to identify the accounting issue and the relevant peer models.
+- If multiple peer top-level approaches are grounded in the identified accounting issue, include them even if one appears more likely to apply later.
+
 Approach-identification rules:
 - Output only approaches that are peers at the same level of abstraction.
-- Do not output pathway-specific, stage-specific, scoped, or documentation-specific formulations as final approaches unless IFRS treats them as distinct top-level accounting models.
+- Output top-level IFRS accounting models, accounting treatments, recognition bases, measurement bases, or presentation bases when those are the relevant peer approaches for the issue.
+- Do not output pathway-specific, stage-specific, scoped, exposure-specific, document-specific, or mechanics-specific formulations as final approaches unless IFRS treats them as distinct top-level accounting models.
 - Do not output:
   - stage-specific instances of a broader treatment
   - fallback or absence of treatment
   - negative conclusions
   - conditions, tests, eligibility criteria, or implementation mechanics
-- If a treatment family differs from another only because it adds a timing, scope, reporting-level, or fact-pattern qualifier, prefer the broader top-level accounting treatment unless the qualifier changes the accounting model itself.
+  - preliminary applicability judgments
+  - labels that merely restate the fact pattern
 
-If the context is not sufficient to identify the peer top-level accounting approaches with reasonable confidence:
-- return:
+Qualifier rule:
+- If one candidate differs from another only because it adds a timing, scope, reporting-level, instrument-type, exposure-type, or fact-pattern qualifier, prefer the broader top-level accounting approach unless the qualifier changes the accounting model itself.
+- Preserve qualifying details for later applicability analysis, not as separate peer approaches, unless IFRS treats them as distinct top-level approaches.
+
+Anti-collapse rule:
+- Do NOT eliminate a peer top-level accounting approach merely because the facts in the question make another approach seem more directly applicable.
+- Do NOT reduce the output to a single approach unless the primary and supporting authority reasonably support only one peer top-level approach within the accounting issue.
+- Fact-pattern details should help identify the accounting issue and relevant treatment families, but should usually be preserved for later applicability assessment rather than used here to exclude peer approaches.
+
+Authority-use rule:
+- Use primary authority first to determine the core issue and the candidate treatment families.
+- Use supporting authority only to confirm, constrain, distinguish, or add a genuinely distinct peer model.
+- Do NOT derive final approaches from peripheral authority.
+- Do NOT let a larger volume of peripheral context outweigh a smaller amount of directly governing authority.
+
+Final-label mapping rule:
+- The final emitted approaches must be the peer top-level accounting approaches, not the intermediate treatment families.
+- If a treatment family maps to a recognized IFRS accounting model or treatment, prefer that recognized model or treatment name as the final label.
+- Prefer standard IFRS terminology over descriptive paraphrases when a recognized name exists.
+- Do NOT emit labels that merely restate the identified exposure, item, stage, qualifier, or procedural path when those map to a broader recognized accounting approach.
+
+Needs-clarification rule:
+If the context is not sufficient to identify the peer top-level accounting approaches with reasonable confidence, return:
 {
   "status": "needs_clarification",
   "questions": ["..."]
 }
-- do NOT include assumptions
 - do NOT include approaches
 
-Important distinction:
-- Timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis.
-- Preserve those distinctions for later reasoning, but do not elevate them into final peer approaches unless they correspond to distinct top-level IFRS treatments.
-
-When treatment families and peer top-level accounting approaches are both identified,
-output only the peer top-level accounting approaches as the final approaches.
-
-Use treatment families only as intermediate reasoning to determine the correct peer approach. Do not output both layers.
-If a treatment family maps to a recognized top-level IFRS accounting model or treatment, prefer that recognized model or treatment name as the final approach label.
-
-Final-label mapping rule for this diagnostic experiment:
-- For hedge-accounting questions, the final emitted approaches must be canonical peer IFRS hedge-accounting model labels.
-- If your intermediate reasoning identifies a recognized-item hedge family, emit the canonical top-level hedge model label, not a fact-pattern-specific variant.
-- If your intermediate reasoning identifies a forecast-transaction hedge family, emit the canonical top-level hedge model label, not a fact-pattern-specific variant.
-- If your intermediate reasoning identifies a net-investment hedge family, emit the canonical top-level hedge model label.
-- For hedge-accounting questions, prefer these canonical final labels when applicable:
-  - fair_value_hedge
-  - cash_flow_hedge
-  - net_investment_hedge
-- Do not emit final labels that merely restate the identified exposure or qualifier, such as:
-  - intragroup_monetary_hedge
-  - forecast_intragroup_hedge
-  - intragroup_fx_hedge
-  - fx_hedge_accounting
-
-The final approaches should be suitable for direct applicability assessment in a later step.
-
-If answerable:
-- return:
+If answerable, return:
 {
   "status": "pass",
   ...
@@ -90,13 +90,10 @@ For each approach, output:
 Normalization rules:
 - normalized_label must be in snake_case
 - normalized_label must be 2–4 words
-
-The label and normalized_label must refer to the final peer top-level accounting approach, not to an intermediate treatment family.
-
-Assumptions:
-- include only minimal assumptions needed to identify the accounting issue
-- keep them generic and non-speculative
-- do not use assumptions to eliminate a context-grounded approach
+- The label and normalized_label must refer to the final peer top-level accounting approach, not to an intermediate treatment family.
+- Prefer concise canonical labels when available.
+- Avoid negative wording.
+- Avoid fact-pattern-specific qualifiers unless required because they change the top-level model.
 
 Output rules:
 - return valid JSON only
@@ -107,8 +104,38 @@ Output rules:
 <output_schema>
 {
   "status": "pass",
-  "assumptions": [
-    "string"
+  "primary_accounting_issue": "short English description of the core IFRS issue raised by the question",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "document name",
+        "references": ["section reference"],
+        "reason": "1 short sentence explaining why this authority directly governs the issue"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "document name",
+        "references": ["section reference"],
+        "reason": "1 short sentence explaining why this authority constrains, clarifies, or provides a distinct alternative model"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "document name",
+        "references": ["section reference"],
+        "reason": "1 short sentence explaining why this authority is not relevant for identifying peer approaches"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "short English description of the intermediate treatment family",
+      "authority_basis": [
+	    {"document": "document name", "references": ["section reference"]]}
+	  ],
+      "mapped_approaches": ["snake_case_label"]
+    }
   ],
   "approaches": [
     {

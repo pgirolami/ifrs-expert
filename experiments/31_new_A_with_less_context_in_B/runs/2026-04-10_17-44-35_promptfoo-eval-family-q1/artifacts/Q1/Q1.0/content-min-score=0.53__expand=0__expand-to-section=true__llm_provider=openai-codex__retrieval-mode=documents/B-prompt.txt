@@ -1,0 +1,578 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ias32">
+<chunk id="3458" doc_uid="ias32" chunk_number="35" score="0.5509">
+Interest, dividends, losses and gains relating to a financial instrument or a component that is a financial liability shall be recognised as income or expense in profit or loss. Distributions to holders of an equity instrument shall be recognised by the entity directly in equity. Transaction costs of an equity transaction shall be accounted for as a deduction from equity.
+</chunk>
+
+<chunk id="3460" doc_uid="ias32" chunk_number="36" score="0.0000">
+The classification of a financial instrument as a financial liability or an equity instrument determines whether interest, dividends, losses and gains relating to that instrument are recognised as income or expense in profit or loss. Thus, dividend payments on shares wholly recognised as liabilities are recognised as expenses in the same way as interest on a bond. Similarly, gains and losses associated with redemptions or refinancings of financial liabilities are recognised in profit or loss, whereas redemptions or refinancings of equity instruments are recognised as changes in equity. Changes in the fair value of an equity instrument are not recognised in the financial statements.
+</chunk>
+</Document>
+
+<Document name="ifrs9">
+<chunk id="563" doc_uid="ifrs9" chunk_number="5.7.1" score="0.5572">
+A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss unless:
+(a)it is part of a hedging relationship (see paragraphs 6.5.8⁠–⁠6.5.14 and, if applicable, paragraphs 89⁠–⁠94 of IAS 39 for the fair value hedge accounting for a portfolio hedge of interest rate risk);
+(b)it is an investment in an equity instrument and the entity has elected to present gains and losses on that investment in other comprehensive income in accordance with paragraph 5.7.5;
+(c)it is a financial liability designated as at fair value through profit or loss and the entity is required to present the effects of changes in the liability’s credit risk in other comprehensive income in accordance with paragraph 5.7.7; or
+(d)it is a financial asset measured at fair value through other comprehensive income in accordance with paragraph 4.1.2A and the entity is required to recognise some changes in fair value in other comprehensive income in accordance with paragraph 5.7.10.
+</chunk>
+
+<chunk id="565" doc_uid="ifrs9" chunk_number="5.7.2" score="0.0000">
+A gain or loss on a financial asset that is measured at amortised cost and is not part of a hedging relationship (see paragraphs 6.5.8⁠–⁠6.5.14 and, if applicable, paragraphs 89⁠–⁠94 of IAS 39 for the fair value hedge accounting for a portfolio hedge of interest rate risk) shall be recognised in profit or loss when the financial asset is derecognised, reclassified in accordance with paragraph 5.6.2, through the amortisation process or in order to recognise impairment gains or losses. An entity shall apply paragraphs 5.6.2 and 5.6.4 if it reclassifies financial assets out of the amortised cost measurement category. A gain or loss on a financial liability that is measured at amortised cost and is not part of a hedging relationship (see paragraphs 6.5.8⁠–⁠6.5.14 and, if applicable, paragraphs 89⁠–⁠94 of IAS 39 for the fair value hedge accounting for a portfolio hedge of interest rate risk) shall be recognised in profit or loss when the financial liability is derecognised and through the amortisation process. (See paragraph B5.7.2 for guidance on foreign exchange gains or losses.)
+</chunk>
+
+<chunk id="566" doc_uid="ifrs9" chunk_number="5.7.3" score="0.0000">
+A gain or loss on financial assets or financial liabilities that are hedged items in a hedging relationship shall be recognised in accordance with paragraphs 6.5.8⁠–⁠6.5.14 and, if applicable, paragraphs 89⁠–⁠94 of IAS 39 for the fair value hedge accounting for a portfolio hedge of interest rate risk.
+</chunk>
+
+<chunk id="584" doc_uid="ifrs9" chunk_number="6.3.1" score="0.0000">
+A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction or a net investment in a foreign operation. The hedged item can be:
+(a)a single item; or
+(b)a group of items (subject to paragraphs 6.6.1⁠–⁠6.6.6 and B6.6.1⁠–⁠B6.6.16).
+A hedged item can also be a component of such an item or group of items (see paragraphs 6.3.7 and B6.3.7⁠–⁠B6.3.25).
+</chunk>
+
+<chunk id="585" doc_uid="ifrs9" chunk_number="6.3.2" score="0.0000">
+The hedged item must be reliably measurable.
+</chunk>
+
+<chunk id="586" doc_uid="ifrs9" chunk_number="6.3.3" score="0.0000">
+If a hedged item is a forecast transaction (or a component thereof), that transaction must be highly probable.
+</chunk>
+
+<chunk id="587" doc_uid="ifrs9" chunk_number="6.3.4" score="0.0000">
+An aggregated exposure that is a combination of an exposure that could qualify as a hedged item in accordance with paragraph 6.3.1 and a derivative may be designated as a hedged item (see paragraphs B6.3.3⁠–⁠B6.3.4). This includes a forecast transaction of an aggregated exposure (ie uncommitted but anticipated future transactions that would give rise to an exposure and a derivative) if that aggregated exposure is highly probable and, once it has occurred and is therefore no longer forecast, is eligible as a hedged item.
+</chunk>
+
+<chunk id="588" doc_uid="ifrs9" chunk_number="6.3.5" score="0.5831">
+For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group, except for the consolidated financial statements of an investment entity, as defined in IFRS 10, where transactions between an investment entity and its subsidiaries measured at fair value through profit or loss will not be eliminated in the consolidated financial statements.
+</chunk>
+
+<chunk id="589" doc_uid="ifrs9" chunk_number="6.3.6" score="0.5818">
+However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates. In accordance with IAS 21, foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies. In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.
+</chunk>
+</Document>
+
+<Document name="ifric16">
+<chunk id="4345" doc_uid="ifric16" chunk_number="10" score="0.0000">
+Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.
+</chunk>
+
+<chunk id="4347" doc_uid="ifric16" chunk_number="12" score="0.0000">
+The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity (the immediate, intermediate or ultimate parent entity) of that foreign operation. The fact that the net investment is held through an intermediate parent does not affect the nature of the economic risk arising from the foreign currency exposure to the ultimate parent entity.
+</chunk>
+
+<chunk id="4348" doc_uid="ifric16" chunk_number="13" score="0.5397">
+An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once in the consolidated financial statements. Therefore, if the same net assets of a foreign operation are hedged by more than one parent entity within the group (for example, both a direct and an indirect parent entity) for the same risk, only one hedging relationship will qualify for hedge accounting in the consolidated financial statements of the ultimate parent. A hedging relationship designated by one parent entity in its consolidated financial statements need not be maintained by another higher level parent entity. However, if it is not maintained by the higher level parent entity, the hedge accounting applied by the lower level parent must be reversed before the higher level parent’s hedge accounting is recognised.
+</chunk>
+
+<chunk id="4349" doc_uid="ifric16" chunk_number="14" score="0.5435">
+A derivative or a non-derivative instrument (or a combination of derivative and non-derivative instruments) may be designated as a hedging instrument in a hedge of a net investment in a foreign operation. The hedging instrument(s) may be held by any entity or entities within the group, as long as the designation, documentation and effectiveness requirements of IFRS 9 paragraph 6.4.1 that relate to a net investment hedge are satisfied. In particular, the hedging strategy of the group should be clearly documented because of the possibility of different designations at different levels of the group.
+</chunk>
+
+<chunk id="4350" doc_uid="ifric16" chunk_number="15" score="0.0000">
+For the purpose of assessing effectiveness, the change in value of the hedging instrument in respect of foreign exchange risk is computed by reference to the functional currency of the parent entity against whose functional currency the hedged risk is measured, in accordance with the hedge accounting documentation. Depending on where the hedging instrument is held, in the absence of hedge accounting the total change in value might be recognised in profit or loss, in other comprehensive income, or both. However, the assessment of effectiveness is not affected by whether the change in value of the hedging instrument is recognised in profit or loss or in other comprehensive income. As part of the application of hedge accounting, the total effective portion of the change is included in other comprehensive income. The assessment of effectiveness is not affected by whether the hedging instrument is a derivative or a non‑derivative instrument or by the method of consolidation.
+</chunk>
+
+<chunk id="4352" doc_uid="ifric16" chunk_number="17" score="0.5304">
+The amount reclassified to profit or loss from the foreign currency translation reserve in the consolidated financial statements of a parent in respect of the net investment in that foreign operation in accordance with IAS 21 paragraph 48 is the amount included in that parent’s foreign currency translation reserve in respect of that foreign operation. In the ultimate parent’s consolidated financial statements, the aggregate net amount recognised in the foreign currency translation reserve in respect of all foreign operations is not affected by the consolidation method. However, whether the ultimate parent uses the direct or the step‑by‑step method of consolidation 2 may affect the amount included in its foreign currency translation reserve in respect of an individual foreign operation. The use of the step‑by‑step method of consolidation may result in the reclassification to profit or loss of an amount different from that used to determine hedge effectiveness. This difference may be eliminated by determining the amount relating to that foreign operation that would have arisen if the direct method of consolidation had been used. Making this adjustment is not required by IAS 21. However, it is an accounting policy choice that should be followed consistently for all net investments.
+</chunk>
+</Document>
+</context>
+
+<question>
+Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "Which IFRS hedge accounting model could apply in consolidated financial statements to foreign exchange risk arising from an intragroup dividend-related receivable.",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "6.3.1",
+          "6.3.5",
+          "6.3.6"
+        ],
+        "reason": "These paragraphs directly govern what items may be designated as hedged items, including the special rules for intragroup items in consolidated financial statements."
+      },
+      {
+        "document": "ifric16",
+        "references": [
+          "10",
+          "12",
+          "13",
+          "14",
+          "15",
+          "17"
+        ],
+        "reason": "These paragraphs directly govern the hedge accounting model for foreign currency exposure on a net investment in a foreign operation in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "6.3.2",
+          "6.3.3",
+          "6.3.4",
+          "5.7.1",
+          "5.7.2",
+          "5.7.3"
+        ],
+        "reason": "These paragraphs help distinguish the recognized hedge accounting models and the types of exposures and remeasurements that can be linked to them."
+      },
+      {
+        "document": "ias32",
+        "references": [
+          "35",
+          "36"
+        ],
+        "reason": "These paragraphs clarify the basic presentation of dividends and the equity-versus-liability distinction, which helps frame but does not itself determine hedge accounting."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": [
+          "4",
+          "8",
+          "9",
+          "10",
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48",
+          "49",
+          "50",
+          "96",
+          "96A",
+          "96B",
+          "96C",
+          "97",
+          "97A",
+          "97B",
+          "97C",
+          "97D",
+          "97E",
+          "97G",
+          "97I",
+          "97J",
+          "97K",
+          "97L",
+          "97M",
+          "97N",
+          "97O",
+          "97Q",
+          "97R",
+          "97S",
+          "97T",
+          "97U"
+        ],
+        "reason": "These paragraphs address scope, net settlement contracts, offsetting, transaction costs, disclosures and transition matters rather than identifying hedge accounting approach families for this issue."
+      },
+      {
+        "document": "ifrs19",
+        "references": [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "53",
+          "138",
+          "160",
+          "161",
+          "162",
+          "B12"
+        ],
+        "reason": "These paragraphs relate to reduced disclosures and equity disclosures, not to the hedge accounting models for intragroup FX dividend exposures."
+      },
+      {
+        "document": "ifric17",
+        "references": [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "11",
+          "12",
+          "13",
+          "15",
+          "16",
+          "17"
+        ],
+        "reason": "This interpretation addresses non-cash distributions to owners, not hedge accounting for intragroup foreign exchange exposures."
+      },
+      {
+        "document": "ifrs9",
+        "references": [
+          "2.1",
+          "2.2",
+          "2.3",
+          "2.3A",
+          "2.3B",
+          "2.4",
+          "2.5",
+          "2.6",
+          "2.7",
+          "2.8",
+          "4.3.3",
+          "4.3.4",
+          "4.3.5",
+          "4.3.6",
+          "4.3.7",
+          "5.7.1A",
+          "5.7.4",
+          "5.7.5",
+          "5.7.6",
+          "5.7.7",
+          "5.7.8",
+          "5.7.9",
+          "5.7.10",
+          "5.7.11"
+        ],
+        "reason": "These paragraphs address scope, own-use contracts, embedded derivatives and general measurement matters that do not determine the peer hedge accounting models here."
+      },
+      {
+        "document": "ifrs18",
+        "references": [
+          "109",
+          "110",
+          "111",
+          "130",
+          "131",
+          "132",
+          "B43",
+          "B44",
+          "B70",
+          "B71",
+          "B72",
+          "B73",
+          "B74",
+          "B75",
+          "B76",
+          "B99",
+          "B100",
+          "B101",
+          "B102",
+          "B103",
+          "B104",
+          "B105",
+          "B106"
+        ],
+        "reason": "These paragraphs mainly address presentation, disclosure and liability classification rather than identifying which hedge accounting models are available."
+      },
+      {
+        "document": "ifrs12",
+        "references": [
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "19A",
+          "19B",
+          "19C",
+          "19D",
+          "19E",
+          "19F",
+          "19G",
+          "B10",
+          "B11",
+          "B12",
+          "B13",
+          "B14",
+          "B15",
+          "B16",
+          "B17"
+        ],
+        "reason": "These paragraphs concern disclosures about subsidiaries, associates and structured entities, not hedge accounting approach identification."
+      },
+      {
+        "document": "ias7",
+        "references": [
+          "31",
+          "32",
+          "33A",
+          "34A",
+          "34B",
+          "34C",
+          "34D",
+          "44A",
+          "44B",
+          "44C",
+          "44D",
+          "44E"
+        ],
+        "reason": "These paragraphs concern statement of cash flows classification and financing liability reconciliations, not hedge accounting models."
+      },
+      {
+        "document": "ias37",
+        "references": [
+          "1",
+          "2",
+          "3",
+          "5",
+          "7",
+          "8",
+          "9"
+        ],
+        "reason": "IAS 37 is not relevant because the issue concerns hedge accounting for financial instrument-related FX risk, not provisions."
+      },
+      {
+        "document": "sic25",
+        "references": [
+          "1",
+          "2",
+          "3"
+        ],
+        "reason": "This interpretation concerns tax status changes and is unrelated to hedge accounting for intragroup dividend FX risk."
+      },
+      {
+        "document": "sic29",
+        "references": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "reason": "This interpretation concerns service concession disclosures and is unrelated to the issue."
+      },
+      {
+        "document": "ifric19",
+        "references": [
+          "4"
+        ],
+        "reason": "This interpretation concerns extinguishing liabilities with equity instruments and is unrelated to hedge accounting for intragroup dividends."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "IFRS hedge accounting models for foreign currency risk in consolidated financial statements",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "6.3.1",
+            "6.3.5",
+            "6.3.6",
+            "5.7.3"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_hedge",
+        "cash_flow_hedge",
+        "net_investment_hedge"
+      ]
+    },
+    {
+      "family": "Special hedge accounting model for foreign currency exposure on a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ifric16",
+          "references": [
+            "10",
+            "12",
+            "13",
+            "14",
+            "15",
+            "17"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "net_investment_hedge"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 recognizes fair value hedge accounting as a top-level hedge accounting model for eligible foreign currency exposures."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 recognizes cash flow hedge accounting as a top-level hedge accounting model, including for eligible foreign currency forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 recognize a distinct top-level hedge accounting model for foreign currency exposure arising from a net investment in a foreign operation."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, references, or operational points
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation
+- references.excerpt must be short and verbatim
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "chunk section number",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "short point including timing, constraints or effort when relevant"
+  ]
+}

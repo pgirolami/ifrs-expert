@@ -1,0 +1,135 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign exchange risk on an intragroup dividend receivable recognised in the consolidated financial statements can be designated in a hedge accounting relationship, and which IFRS hedge accounting models are the relevant peer models.",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "These paragraphs directly govern what items can be designated as hedged items in hedge accounting, including the specific exception for foreign currency risk on intragroup monetary items in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["10", "11", "12", "13", "14", "15", "16", "17"],
+        "reason": "These paragraphs clarify the separate hedge accounting model for a hedge of a net investment in a foreign operation and constrain its use for foreign exchange exposures in consolidated financial statements."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["35", "36", "40", "42", "43"],
+        "reason": "These paragraphs address presentation of dividends, financial instruments and offsetting, not designation of hedged items in consolidated hedge accounting."
+      },
+      {
+        "document": "ifrs19",
+        "references": ["2", "3", "4", "53", "138", "160", "162", "B12"],
+        "reason": "These paragraphs are disclosure relief and disclosure requirements and do not identify hedge accounting models for the issue."
+      },
+      {
+        "document": "ifric17",
+        "references": ["2", "3", "5", "9", "11", "13", "16", "17"],
+        "reason": "This Interpretation addresses non-cash distributions to owners, not hedge accounting for foreign exchange risk on intragroup dividend receivables."
+      },
+      {
+        "document": "ifrs18",
+        "references": ["110", "130", "132", "B70", "B72", "B73"],
+        "reason": "These paragraphs deal mainly with presentation and disclosure categories, not eligibility of intragroup dividend receivables as hedged items."
+      },
+      {
+        "document": "ifrs12",
+        "references": ["10", "13", "19D", "B10", "B12"],
+        "reason": "These are disclosure requirements about interests in other entities and dividend-related information, not hedge designation rules."
+      },
+      {
+        "document": "ias7",
+        "references": ["31", "33A", "34A", "34B", "34C", "34D", "44A", "44D"],
+        "reason": "These paragraphs concern cash flow statement classification and financing liability disclosures, not hedge accounting eligibility."
+      },
+      {
+        "document": "ias37",
+        "references": ["1", "2", "5"],
+        "reason": "These paragraphs define the scope of provisions and exclude financial instruments, but they do not establish hedge accounting approaches."
+      },
+      {
+        "document": "sic25",
+        "references": ["3"],
+        "reason": "This Interpretation concerns tax status changes and is unrelated to hedge accounting for foreign exchange risk."
+      },
+      {
+        "document": "sic29",
+        "references": ["5"],
+        "reason": "This Interpretation concerns service concession disclosures and is not relevant to the accounting issue."
+      },
+      {
+        "document": "ifric19",
+        "references": ["4"],
+        "reason": "This Interpretation addresses extinguishing financial liabilities with equity instruments, not hedge accounting."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["5.7.1", "5.7.2", "5.7.10"],
+        "reason": "These paragraphs deal with measurement and recognition of gains and losses on financial instruments, not the identification of peer hedge accounting models for this issue."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign currency risk on a recognised item",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_hedge"
+      ]
+    },
+    {
+      "family": "Hedge accounting for foreign currency risk on a forecast transaction",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.3", "6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": [
+        "cash_flow_hedge"
+      ]
+    },
+    {
+      "family": "Hedge accounting for foreign currency risk arising from a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ifric16",
+          "references": ["10", "11", "12", "13", "14", "15", "16", "17"]
+        }
+      ],
+      "mapped_approaches": [
+        "net_investment_hedge"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a hedge accounting model for foreign currency risk on recognised assets or liabilities, which is a peer top-level model relevant to a recognised intragroup receivable exposure."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 provides a separate hedge accounting model for foreign currency risk on highly probable forecast transactions, including certain intragroup transactions in consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 identifies a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}

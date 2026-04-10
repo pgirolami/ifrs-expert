@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from src.b_response_utils import convert_json_to_markdown
+from src.b_response_utils import MarkdownOptions, convert_json_to_markdown_full
 from src.commands.constants import (
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
@@ -465,7 +466,9 @@ class AnswerCommand:
             result.error_stage = "prompt_a_parse"
             return result
 
-        result.prompt_b_text = self._build_prompt_b("\n\n".join(formatted_chunks), json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
+        # Build Prompt B context: use only chunks from primary and supporting authority
+        prompt_b_context = self._build_prompt_b_context(formatted_chunks, result.prompt_a_json)
+        result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
         try:
             result.prompt_b_raw_response = self._config.send_to_llm_fn(result.prompt_b_text)
@@ -484,11 +487,21 @@ class AnswerCommand:
                 logger.warning(f"Prompt B response could not be parsed as JSON: {e}")
             else:
                 if isinstance(result.prompt_b_json, dict):
-                    result.prompt_b_markdown = convert_json_to_markdown(
-                        result.prompt_b_json,
+                    # Build chunk_data for citation formatting
+                    chunk_data = self._build_chunk_data_for_markdown(prompt_b_context)
+
+                    # Extract Prompt B context doc_uids from the filtered context
+                    prompt_b_doc_uids = self._extract_doc_uids_from_context(prompt_b_context)
+
+                    # Create options and generate markdown
+                    options = MarkdownOptions(
                         question=self.query,
                         doc_uids=self._retrieved_doc_uids,
+                        authority_doc_uids=prompt_b_doc_uids,
+                        primary_accounting_issue=result.prompt_a_json.get("primary_accounting_issue") if isinstance(result.prompt_a_json, dict) else None,
+                        chunk_data=chunk_data,
                     )
+                    result.prompt_b_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
                 else:
                     logger.warning("Prompt B response parsed as JSON but is not an object; markdown conversion skipped")
 
@@ -548,9 +561,143 @@ class AnswerCommand:
 
         return formatted_documents
 
+    def _build_prompt_b_context(
+        self,
+        formatted_chunks: list[str],
+        prompt_a_json: JSONValue,
+    ) -> str:
+        """Build Prompt B context using only chunks from primary and supporting authority.
+
+        Parses authority_classification from Prompt A response and filters chunks to only
+        include those explicitly identified as primary or supporting authority.
+        """
+        authority_refs = self._extract_authority_references(prompt_a_json)
+        if authority_refs is None:
+            return "\n\n".join(formatted_chunks)
+
+        return self._filter_chunks_by_authority(formatted_chunks, authority_refs)
+
+    def _extract_authority_references(self, prompt_a_json: JSONValue) -> set[tuple[str, str]] | None:
+        """Extract (doc_uid, chunk_number) references from primary and supporting authority.
+
+        Returns None if no valid references can be extracted (falls back to all chunks).
+        """
+        if not isinstance(prompt_a_json, dict):
+            logger.error("Prompt A JSON is not a dict; using all chunks for Prompt B (authority filtering skipped)")
+            return None
+
+        authority_classification = prompt_a_json.get("authority_classification")
+        if not isinstance(authority_classification, dict):
+            logger.error("No authority_classification in Prompt A response; using all chunks for Prompt B (authority filtering skipped)")
+            return None
+
+        primary_authority = authority_classification.get("primary_authority", [])
+        supporting_authority = authority_classification.get("supporting_authority", [])
+
+        if not primary_authority and not supporting_authority:
+            logger.warning("No primary or supporting authority identified; using all chunks for Prompt B (authority filtering skipped)")
+            return None
+
+        allowed_chunks: set[tuple[str, str]] = set()
+
+        for authority_item in (*primary_authority, *supporting_authority):
+            if not isinstance(authority_item, dict):
+                continue
+            document = authority_item.get("document")
+            references = authority_item.get("references", [])
+            if not document or not references:
+                continue
+            for ref in references:
+                if isinstance(ref, str):
+                    allowed_chunks.add((document, ref))
+
+        if not allowed_chunks:
+            logger.error("Could not extract authority references; using all chunks for Prompt B (authority filtering skipped)")
+            return None
+
+        logger.info(f"Filtering Prompt B context to {len(allowed_chunks)} authority references")
+        return allowed_chunks
+
+    def _filter_chunks_by_authority(
+        self,
+        formatted_chunks: list[str],
+        authority_refs: set[tuple[str, str]],
+    ) -> str:
+        """Filter formatted chunks to only include those matching authority references."""
+        chunk_pattern = re.compile(
+            r'<chunk id="(\d+)" doc_uid="[^"]*" chunk_number="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
+            re.DOTALL,
+        )
+
+        filtered_documents: list[str] = []
+        for doc_xml in formatted_chunks:
+            if not isinstance(doc_xml, str):
+                continue
+
+            doc_match = re.search(r'<Document name="([^"]+)">', doc_xml)
+            if not doc_match:
+                continue
+            doc_uid = doc_match.group(1)
+
+            filtered_chunk_xmls = [match.group(0) for match in chunk_pattern.finditer(doc_xml) if (doc_uid, match.group(2)) in authority_refs]
+
+            if filtered_chunk_xmls:
+                joined_chunks = "\n\n".join(filtered_chunk_xmls)
+                document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
+                filtered_documents.append(document_xml)
+
+        if not filtered_documents:
+            logger.error("No chunks matched authority references; falling back to all chunks (authority filtering failed)")
+            return "\n\n".join(formatted_chunks)
+
+        return "\n\n".join(filtered_documents)
+
     def _escape_xml(self, text: str) -> str:
         """Escape special XML characters."""
         return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
+
+    def _extract_doc_uids_from_context(self, context: str) -> list[str]:
+        """Extract document UIDs from the Prompt B context XML.
+
+        Parses the <Document name="..."> tags to get the list of documents
+        actually used in Prompt B (after authority filtering).
+        """
+        doc_uids: list[str] = []
+        for match in re.finditer(r'<Document name="([^"]+)">', context):
+            doc_uid = match.group(1)
+            if doc_uid not in doc_uids:
+                doc_uids.append(doc_uid)
+        return doc_uids
+
+    def _build_chunk_data_for_markdown(self, context: str) -> dict[str, str]:
+        """Build chunk data dict from Prompt B context for citation formatting.
+
+        Returns a dict mapping "doc_uid/section" -> chunk text, where section
+        is the chunk_number extracted from the chunk XML tags.
+
+        Args:
+            context: The formatted Prompt B context XML string
+
+        Returns:
+            Dict mapping "doc_uid/section" -> full chunk text
+        """
+        chunk_data: dict[str, str] = {}
+
+        # Pattern to match <chunk ... chunk_number="...">text</chunk>
+        chunk_pattern = re.compile(
+            r'<chunk id="\d+" doc_uid="([^"]*)" chunk_number="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
+            re.DOTALL,
+        )
+
+        for match in chunk_pattern.finditer(context):
+            doc_uid = match.group(1)
+            chunk_number = match.group(2)
+            chunk_text = match.group(3)
+
+            key = f"{doc_uid}/{chunk_number}"
+            chunk_data[key] = chunk_text
+
+        return chunk_data
 
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build a one-line-per-document summary of retrieved chunk sections."""
