@@ -2,7 +2,7 @@
 
 # Goal
 
-Verify the conclusion from experiment 27 that we should continue working on the prompt because retrieval is sufficient to find the relevant approaches.
+Verify the conclusion from experiment 28 that we should continue working on the prompt because retrieval is sufficient to find the relevant approaches.
 
 ## What Changed from Experiment 26
 

@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as an eligible hedged item, and specifically provides an exception for foreign currency risk on an intragroup monetary item in consolidated financial statements when exchange differences are not fully eliminated."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately recognises highly probable forecast transactions, including certain forecast intragroup foreign-currency transactions in consolidated financial statements, as a distinct hedge-accounting model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9, IAS 21 and IFRIC 16 establish hedging of foreign currency risk arising from a net investment in a foreign operation as a separate canonical hedge-accounting model at consolidated level."
+    }
+  ]
+}

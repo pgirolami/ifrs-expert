@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes recognised assets and liabilities as possible hedged items, which makes the fair value hedge model a relevant top-level hedge-accounting approach for a recognised FX receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes forecast transactions as possible hedged items and specifically addresses when foreign currency risk on intragroup forecast transactions can qualify in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a distinct hedge-accounting model for foreign currency risk on a net investment in a foreign operation, which is a peer top-level hedge model within the FX hedging framework."
+    }
+  ]
+}

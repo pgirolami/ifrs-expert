@@ -1,0 +1,101 @@
+{
+  "assumptions_fr": [
+    "La question vise des comptes consolidés IFRS, puisque la créance de dividende est indiquée comme reconnue dans les comptes consolidés.",
+    "Le dividende intragroupe a déjà été déclaré de sorte qu’une créance monétaire existe à la date de documentation envisagée.",
+    "La créance et l’engagement corrélatif sont libellés dans une monnaie exposant le groupe à un risque de change non totalement éliminé en consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en principe, si la créance de dividende déjà reconnue constitue dans les comptes consolidés un poste monétaire intragroupe exposant le groupe à un risque de change non totalement éliminé. Dans ce cas, la voie pertinente est la couverture de juste valeur; la couverture de flux de trésorerie ne vise pas ce fait générateur déjà reconnu, et la couverture d’investissement net répond à un autre risque."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, l’élément visé est une créance déjà reconnue en consolidation. IFRS 9 admet comme élément couvert un actif ou passif reconnu, et IAS 21 précise qu’un actif monétaire intragroupe ne peut pas être éliminé sans laisser apparaître l’effet de change en consolidation si les monnaies fonctionnelles diffèrent. La documentation est donc recevable si la créance de dividende crée bien cette exposition résiduelle au niveau consolidé.",
+      "conditions_fr": [
+        "La créance de dividende est un poste monétaire reconnu dans les comptes consolidés",
+        "Le risque de change sur cette créance n’est pas totalement éliminé en consolidation",
+        "L’exposition concerne une contrepartie intragroupe ayant une monnaie fonctionnelle différente"
+      ],
+      "practical_implication_fr": "La documentation de couverture peut viser la créance reconnue en consolidation comme élément couvert de risque de change, sous réserve de démontrer l’exposition résiduelle au niveau groupe.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise des transactions prévues hautement probables. Or la question porte sur des dividendes intragroupe ayant déjà donné lieu à la reconnaissance d’une créance dans les comptes consolidés. Une fois la créance reconnue, le risque porte sur un poste monétaire existant, non sur un flux futur encore seulement prévu.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation en cash flow hedge n’est pas adaptée au fait décrit, car le dividende n’est plus un flux futur simplement anticipé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La couverture d’investissement net concerne le risque de change afférent aux actifs nets d’une opération étrangère. Ici, le risque visé porte sur une créance de dividende intragroupe déjà constatée, c’est-à-dire un poste monétaire distinct de l’investissement net lui-même. Le fait décrit ne correspond donc pas au modèle de net investment hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il ne faut pas documenter cette créance de dividende comme une couverture d’investissement net; ce modèle vise les actifs nets de l’opération étrangère.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "The item being hedged ... may be an amount of net assets"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé de recevabilité est le niveau de reporting: il faut démontrer l’existence d’une exposition de change résiduelle dans les comptes consolidés.",
+    "Le timing est déterminant: avant reconnaissance du dividende, la logique pourrait relever d’un flux futur; après reconnaissance de la créance, l’analyse bascule sur un poste monétaire reconnu.",
+    "La documentation doit être cohérente avec IAS 21: les écarts de change sur le poste monétaire intragroupe doivent être de ceux qui ne sont pas totalement éliminés en consolidation.",
+    "Si l’entité applique la comptabilité de couverture, elle doit aligner la désignation sur le bon objet couvert: créance reconnue, et non investissement net ni simple flux futur."
+  ]
+}

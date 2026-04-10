@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies hedge accounting for recognised assets or liabilities, and a dividend receivable recognised as an asset can fall within the recognised-item hedge family."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies hedge accounting for forecast transactions, which is a separate top-level hedge model relevant to dividend-related foreign currency exposures before recognition."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a distinct hedge model for foreign currency risk on a net investment in a foreign operation in consolidated financial statements."
+    }
+  ]
+}

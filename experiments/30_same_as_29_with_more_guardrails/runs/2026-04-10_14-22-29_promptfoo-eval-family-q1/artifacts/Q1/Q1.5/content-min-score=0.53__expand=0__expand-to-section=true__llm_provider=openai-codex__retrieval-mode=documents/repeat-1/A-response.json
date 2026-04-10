@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as an eligible hedged item, and specifically addresses foreign currency risk on intragroup monetary items in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 presents cash flow hedging as a distinct top-level hedge accounting model for foreign currency risk exposures, including items considered in consolidated financial statements."
+    }
+  ]
+}

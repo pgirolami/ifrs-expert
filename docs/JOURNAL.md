@@ -124,4 +124,41 @@ It documents how the system evolved from a single prompt to a structured, evalua
         - [Experiment 23](../experiments/23_Q1_baseline_with_settings_found_in_experiment_22/EXPERIMENTS.md)
         - [Experiment 24](../experiments/24_section_expansion_Q1_baseline_with_settings_found_in_experiment_22/EXPERIMENTS.md)
 
+### 2026-04-10
+
+Continued work to identify correct approaches on the full free IFRS corpus, using learnings from Experiments 23 & 24. Also created a new output for experiment analysis that shows the returned approaches per run as well as the sections returned
+
+
+- Rework the prompt so multiple documents are used together rather than against each other before trying to narrow further the documents retrieved because retrieving IAS 21 makes perfect sense but not a "general accounting" approache
+    - [Experiment 25](../experiments/25_new_prompt_same_as_24/EXPERIMENTS.md)
+    - [Experiment 26](../experiments/26_new_prompt_same_as_25/EXPERIMENTS.md)
+- New preliminary step in Prompt A to force the LLM to perform its analysis by identifying the accounting issue, which documents were authoritative or not, and only then identify the approaches (from the primary or supporting authorities)
+    - [Experiment 27](../experiments/27_new_prompt_same_as_26/EXPERIMENTS.md)
+    - [Experiment 28](../experiments/28_more_questions_same_as_27/EXPERIMENTS.md) : same as experiment 27 but on 8 questions instead of 2
+
+    Results were better in that the spurious approaches were now limited to the "hedging" universe of possibilities but the core approaches still very unstable: some were regularly missing, even across runs for a given question.
+    
+    This led us to hypothesis we had good-enough retrieval and the problem was now in the reasoning induced by the prompt.
+
+- We wanted to confirm/invalidate our hypothesis: if we change the prompt to more forcefully constrain the output to the core approaches, are they consistently returned ? This would allow us to know whether the remaining problem was the retrieved context or the prompt
+    - [Experiment 29](../experiments/29_same_8_questions_prompt_with_hedging/EXPERIMENTS.md).
+    
+        Only the core approaches were returned and the applicable approaches was always returned but *the 2 others were not returned on every run !* We hypothesized this indicated that the LLM was choosing what to return based on applicability so we rewrote the prompt to force it even further not to consider applicability when identifying approaches and we removed the "assumptions" field from the output since it wasn't needed. We considered removing the question but that would prevent the LLM from identifying the primary accounting issue.
+    - [Experiment 30](../experiments/30_same_as_29_with_more_guardrails/EXPERIMENTS.md)
+
+        This was the first experiment with near perfect result on approaches identified, see the [matrix](../experiments/30_same_as_29_with_more_guardrails/spurious_approaches_vs_sections_matrix.html).
+        
+        ![Experiment 30 result matrix](./Experiment_30_result_matrix.png)
+        
+        Consequently, this confirmed the context was good enough and further work should focus on making the prompt generic again to remove any mention of hedging approaches.
+
+
+- Experiments to generalize the prompt away from hedging-specific language
+    - Manual test of a new prompt on question Q1.4 (one of the worst)
+        
+        The answer was correct and contained additional unsollicited JSON fields that mapped to the thinking we were asking of it: `primary_accounting_issue`, `authority_classification`, `treatment_families` and finally `approaches`.
+        
+        This sounded like a good idea so we incorporated the idea in a new Prompt A and considered giving Prompt B a context limited to the authoratitive and supporting documents
+
+    - Manual test with
 

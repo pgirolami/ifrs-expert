@@ -1,0 +1,75 @@
+{
+  "assumptions_fr": [
+    "La question vise des états financiers consolidés, et non des états financiers séparés.",
+    "Le dividende intragroupe est libellé dans une devise différente de la monnaie fonctionnelle d’au moins l’une des entités concernées.",
+    "La créance de dividende reconnue constitue un poste monétaire intragroupe générant un risque de change dont les écarts ne sont pas intégralement éliminés en consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, une documentation de couverture peut être mise en place sur la composante change d’une créance de dividende intragroupe reconnue si cette créance est un poste monétaire intragroupe dont le risque de change n’est pas totalement éliminé en consolidation. Dans ce cas, le modèle pertinent est la fair value hedge, pas la cash flow hedge."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En consolidation, les éléments intragroupe sont en principe exclus comme éléments couverts, car seuls les éléments avec une partie externe peuvent être désignés. Toutefois, IFRS 9 prévoit une exception pour le risque de change d’un poste monétaire intragroupe lorsque les écarts de change ne sont pas entièrement éliminés en consolidation. Si la créance de dividende reconnue entre dans ce cas, une documentation de couverture est possible sur cette composante change.",
+      "conditions_fr": [
+        "La créance de dividende reconnue est un poste monétaire intragroupe.",
+        "Les écarts de change correspondants ne sont pas intégralement éliminés en consolidation.",
+        "La désignation porte sur la composante change de la créance reconnue, après sa comptabilisation."
+      ],
+      "practical_implication_fr": "La couverture peut être documentée au niveau consolidé sur la créance reconnue, mais seulement pour le risque de change qui subsiste en consolidation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs10",
+          "section": "B86",
+          "excerpt": "eliminate in full intragroup assets and liabilities"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Dans la situation décrite, une créance de dividende a déjà été reconnue. Le modèle de cash flow hedge vise plutôt une transaction future hautement probable; IFRS 9 admet, par exception, certaines transactions intragroupe futures en devise en consolidation. Une fois la créance comptabilisée, on n’est plus dans le cas d’une transaction future à documenter en cash flow hedge.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le modèle de cash flow hedge n’est pas le bon véhicule si le dividende intragroupe a déjà donné lieu à la reconnaissance d’une créance.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        },
+        {
+          "document": "ias27",
+          "section": "12",
+          "excerpt": "Dividends from a subsidiary... are recognised ... when the entity’s right to receive the dividend is established"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé est le niveau de reporting : l’analyse doit être faite en consolidation, où la créance intragroupe est éliminée mais où certains écarts de change peuvent subsister.",
+    "Le moment est déterminant : avant reconnaissance du dividende, la logique peut relever d’une transaction future; après reconnaissance de la créance, la question se traite comme un poste monétaire reconnu.",
+    "La documentation doit viser strictement la composante change résiduelle en consolidation, et non le dividende intragroupe en tant que tel.",
+    "Il faut vérifier concrètement que les écarts de change sur cette créance ne sont pas totalement éliminés en consolidation, notamment en présence de monnaies fonctionnelles différentes."
+  ]
+}

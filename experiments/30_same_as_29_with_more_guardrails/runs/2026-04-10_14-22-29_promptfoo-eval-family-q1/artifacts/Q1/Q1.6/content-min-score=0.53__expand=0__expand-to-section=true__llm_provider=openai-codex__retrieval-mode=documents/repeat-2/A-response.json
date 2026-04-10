@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The question concerns foreign exchange risk on a recognised intragroup receivable, and the provided hedge-accounting guidance includes recognised assets or liabilities as potential hedged items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "The provided hedge-accounting framework also identifies highly probable forecast transactions as a distinct top-level hedge model relevant to foreign-currency intragroup items in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The context specifically includes the separate hedge-accounting model for foreign exchange exposures that form part of a net investment in a foreign operation."
+    }
+  ]
+}

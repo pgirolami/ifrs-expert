@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets or liabilities as eligible hedged items, making the fair value hedge model a canonical peer model for FX risk on a recognised item."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies highly probable forecast transactions and cash flow variability exposures as a distinct hedge-accounting model, including in consolidated financial statements for qualifying external or specified intragroup FX exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 establish net investment hedging as a separate canonical hedge-accounting model for foreign currency exposures in consolidated financial statements."
+    }
+  ]
+}

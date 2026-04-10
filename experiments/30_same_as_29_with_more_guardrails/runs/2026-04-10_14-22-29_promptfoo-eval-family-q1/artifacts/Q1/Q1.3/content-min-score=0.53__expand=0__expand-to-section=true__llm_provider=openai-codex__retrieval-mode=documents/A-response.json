@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The question refers to a recognised intragroup dividend receivable, which points to the IFRS 9 hedge-accounting model for a recognised asset exposed to foreign exchange risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 specifically contemplates highly probable forecast intragroup transactions as possible hedged items for foreign currency risk in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "The provided IAS 21 and IFRIC 16 guidance establishes net investment hedging as a distinct IFRS hedge-accounting model for foreign currency exposures in consolidated financial statements."
+    }
+  ]
+}

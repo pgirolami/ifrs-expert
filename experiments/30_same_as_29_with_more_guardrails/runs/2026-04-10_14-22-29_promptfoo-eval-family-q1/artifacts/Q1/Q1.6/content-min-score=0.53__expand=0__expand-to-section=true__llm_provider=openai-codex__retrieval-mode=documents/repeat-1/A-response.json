@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets or liabilities as potential hedged items, which makes the recognised intragroup dividend receivable conceptually part of the fair value hedge model set."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately recognises highly probable forecast transactions as hedged items, so the cash flow hedge model is a peer hedge-accounting approach relevant to foreign-currency intragroup exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 specifically address foreign-currency exposures connected with net investments in foreign operations, making net investment hedge a distinct peer IFRS hedge model for this issue set."
+    }
+  ]
+}

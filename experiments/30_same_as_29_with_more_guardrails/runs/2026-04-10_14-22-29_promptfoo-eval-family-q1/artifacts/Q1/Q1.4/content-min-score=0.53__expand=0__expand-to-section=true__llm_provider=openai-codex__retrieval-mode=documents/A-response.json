@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies hedge accounting for recognised items, and a recognised intragroup foreign-currency receivable raises the recognised-item hedge model at consolidated level."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also treats forecast transactions, including certain intragroup foreign-currency exposures in consolidation, within the hedge-accounting framework, making the cash flow hedge model a peer top-level approach."
+    }
+  ]
+}
