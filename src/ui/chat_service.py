@@ -85,9 +85,34 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
     """Create the real chat service."""
     logger.info("ChatService: creating chat service")
 
+    effective_options = answer_options
+    if effective_options is None:
+        logger.info("ChatService: no options provided, using base.yaml defaults")
+        effective_options = AnswerOptions(
+            k=5,
+            min_score=0.53,
+            d=25,
+            doc_min_score=None,
+            ifrs_d=4,
+            ias_d=4,
+            ifric_d=6,
+            sic_d=6,
+            ps_d=1,
+            ifrs_min_score=0.53,
+            ias_min_score=0.4,
+            ifric_min_score=0.48,
+            sic_min_score=0.4,
+            ps_min_score=0.4,
+            content_min_score=0.53,
+            expand_to_section=True,
+            expand=0,
+            full_doc_threshold=0,
+            retrieval_mode="documents",
+        )
+
     def run_first_turn(question: str) -> AnswerCommandResult:
         logger.info(f"ChatService: creating AnswerCommand for question='{question[:80]}'")
-        command = create_answer_command(query=question, options=answer_options)
+        command = create_answer_command(query=question, options=effective_options)
         return command.execute()
 
     def generate_follow_up(prompt: str) -> str:
