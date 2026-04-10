@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has given rise to a recognised receivable/payable that is a monetary item.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a top-level hedge accounting model for recognised assets or liabilities, which is relevant when assessing a recognised intragroup monetary receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a separate top-level model, including for highly probable forecast transactions and exposures whose cash flows are affected by foreign exchange risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 identify a hedge of a net investment in a foreign operation as a distinct top-level hedge accounting model for foreign exchange exposures in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "assumptions_fr": [
+    "La question vise les états financiers consolidés et l'application de la comptabilité de couverture IFRS 9 à un risque de change.",
+    "Le dividende intragroupe a déjà donné lieu à la comptabilisation d'une créance, donc à un poste monétaire.",
+    "La créance et la dette intragroupe correspondante sont libellées dans une devise créant un risque de change entre entités du groupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en comptes consolidés, la variation de change sur une créance de dividende intragroupe peut être éligible comme élément couvert si elle constitue un poste monétaire intragroupe exposé à des écarts de change non totalement éliminés en consolidation. Dans ce cas, la voie pertinente est la couverture de juste valeur; la couverture de flux de trésorerie n'est pas adaptée à une créance déjà comptabilisée, et la couverture d'investissement net ne s'applique que si le poste fait partie de l'investissement net."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende déjà comptabilisée est un actif reconnu, donc un type d'élément pouvant relever d'une couverture. En consolidation, IFRS 9 admet exceptionnellement un poste monétaire intragroupe comme élément couvert si le risque de change génère des gains/pertes non totalement éliminés; IAS 21 confirme que ces écarts subsistent en consolidation pour des entités à monnaies fonctionnelles différentes.",
+      "conditions_fr": [
+        "la créance de dividende est un poste monétaire intragroupe",
+        "le risque de change affecte le résultat consolidé parce qu'il n'est pas totalement éliminé en consolidation",
+        "les entités concernées ont des monnaies fonctionnelles différentes"
+      ],
+      "practical_implication_fr": "La désignation est envisageable en couverture de juste valeur du risque de change de la créance constatée, sous réserve du respect des conditions de documentation et d'efficacité IFRS 9.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities... with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Ici, l'hypothèse retenue est qu'une créance a déjà été constatée au titre du dividende intragroupe. Or l'approche de couverture de flux de trésorerie vise les transactions prévues hautement probables, alors que le risque porte désormais sur un poste monétaire reconnu et non sur une transaction future non comptabilisée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche ne correspond pas au fait générateur décrit, car le dividende n'est plus au stade de transaction future.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "The hedged item can be: ... a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La couverture d'investissement net vise le risque de change lié à un investissement net dans une activité à l'étranger. Un dividende intragroupe donnant lieu à une créance est en principe un poste à régler; rien dans les faits fournis n'indique qu'il forme partie de l'investissement net au sens d'IAS 21, de sorte que cette désignation n'est pas la bonne pour la situation décrite.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Sauf qualification spécifique du poste comme faisant partie de l'investissement net, cette voie n'est pas pertinente pour une créance de dividende intragroupe.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity’s net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "may be designated as a hedging instrument in a hedge of a net investment in a foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif en consolidation est de démontrer que l'écart de change sur la créance de dividende intragroupe affecte bien le résultat consolidé et n'est pas totalement éliminé.",
+    "Le fait que la créance soit déjà comptabilisée oriente l'analyse vers un poste monétaire reconnu, et non vers une transaction future.",
+    "Si le poste relevait en substance d'un investissement net dans une activité à l'étranger, l'analyse changerait; ce n'est pas le cas sur les faits donnés.",
+    "La documentation de couverture doit être établie au niveau consolidé, en cohérence avec la désignation de l'élément couvert et de l'instrument de couverture."
+  ]
+}

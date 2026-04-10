@@ -1,0 +1,109 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-04-10
+
+**Question**:
+>Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
+
+**Documentation consultée**
+   - `ias32`
+   - `ifrs19`
+   - `ifric17`
+   - `ifrs9`
+   - `ifrs18`
+   - `ifrs12`
+   - `ias7`
+   - `ias37`
+   - `sic25`
+   - `ifric16`
+   - `sic29`
+   - `ifric19`
+
+## Hypothèses
+   - La question porte sur la comptabilité de couverture selon IFRS 9 dans des comptes consolidés.
+   - La créance de dividende intragroupe est libellée en devise étrangère et crée une exposition de change.
+   - La créance et la dette intragroupe correspondante constituent un poste monétaire entre entités du groupe ayant des monnaies fonctionnelles différentes.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Oui, en consolidation, seulement si la créance de dividende intragroupe constitue un poste monétaire intragroupe exposé à un risque de change non totalement éliminé en consolidation. Dans ce cas, la voie pertinente est la couverture de juste valeur; la couverture de flux de trésorerie et la couverture d'investissement net ne conviennent pas aux faits décrits.
+
+## Points Opérationnels
+
+   - Le point clé est le niveau de reporting: en consolidation, un élément intragroupe n’est éligible que dans l’exception IFRS 9 sur le risque de change des postes monétaires intragroupe.
+   - Le timing est déterminant: une fois la créance de dividende comptabilisée, l’exposition visée est celle d’un poste reconnu, non celle d’une transaction future hautement probable.
+   - Vérifiez que les écarts de change sur la créance/dette intragroupe ne sont pas totalement éliminés en consolidation, condition décisive de l’éligibilité.
+   - L’instrument de couverture retenu au niveau consolidé doit être avec une contrepartie externe pour être cohérent avec la logique d’IFRS 9 en consolidation.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture de juste valeur | OUI SOUS CONDITIONS | - la créance de dividende intragroupe est un poste monétaire<br>- le risque de change sur ce poste n’est pas totalement éliminé en consolidation<br>- l’instrument de couverture est conclu avec une partie externe au groupe au niveau consolidé |
+| 2. Couverture de flux de trésorerie | NON | - (non spécifiées) |
+| 3. Couverture d’investissement net | NON | - (non spécifiées) |
+
+### 1. Couverture de juste valeur
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - la créance de dividende intragroupe est un poste monétaire
+   - le risque de change sur ce poste n’est pas totalement éliminé en consolidation
+   - l’instrument de couverture est conclu avec une partie externe au groupe au niveau consolidé
+
+**Raisonnment**:
+La créance de dividende déjà comptabilisée est un actif reconnu, ce qui correspond au modèle de couverture d’un élément reconnu. En comptes consolidés, IFRS 9 n’admet en principe que des éléments avec des tiers externes, sauf exception pour le risque de change d’un poste monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation.
+Donc, dans votre situation, cette documentation peut être utilisée si la créance de dividende est bien un poste monétaire intragroupe créant un effet de change résiduel dans le résultat consolidé.
+
+**Implications pratiques**: La relation de couverture à documenter en consolidation est celle du risque de change porté par la créance reconnue, pas celle du dividende intragroupe en tant que transaction intragroupe éliminée.
+
+**Référence**:
+ - 6.3.1
+    >A hedged item can be a recognised asset or liability
+ - 6.3.5
+    >only assets, liabilities... with a party external to the reporting entity can be designated as hedged items
+ - 6.3.6
+    >the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements
+
+### 2. Couverture de flux de trésorerie
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+Ce modèle vise notamment une transaction prévue hautement probable ou une exposition à la variabilité de flux futurs. Or, dans votre cas, le dividende intragroupe a déjà donné lieu à la comptabilisation d’une créance à recevoir.
+L’exposition décrite n’est donc plus celle d’un flux futur prévu, mais celle d’un poste monétaire reconnu; ce n’est pas le bon modèle pour ces faits.
+
+**Implications pratiques**: Une documentation de cash flow hedge ne correspond pas à une créance de dividende déjà enregistrée.
+
+**Référence**:
+ - 6.3.1
+    >The hedged item can be: (a)a single item; or (b)a group of items
+ - 6.3.3
+    >If a hedged item is a forecast transaction ... that transaction must be highly probable.
+ - 6.3.5
+    >only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated
+
+### 3. Couverture d’investissement net
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnment**:
+La couverture d’investissement net vise l’exposition de change sur un investissement net dans une activité à l’étranger. Une créance de dividende intragroupe déjà comptabilisée est un poste distinct, de nature receivable, et non l’investissement net lui-même.
+Dans votre situation, le risque couvert porte sur une créance de dividende reconnue, pas sur les actifs nets d’une activité étrangère; ce modèle n’est donc pas approprié.
+
+**Implications pratiques**: Il ne faut pas documenter cette exposition comme une couverture d’investissement net.
+
+**Référence**:
+ - 11
+    >the hedged item can be an amount of net assets
+ - 12
+    >The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity
+ - 13
+    >An exposure to foreign currency risk arising from a net investment in a foreign operation may qualify for hedge accounting only once

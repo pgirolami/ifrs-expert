@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is assessed at the consolidated financial statements level.",
+    "The intragroup dividend has resulted in a recognised intragroup monetary receivable/payable."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency monetary receivable is a recognised item that can fall within the fair value hedge model, subject to the intragroup foreign-currency exception in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS treats foreign-currency risk on transactions, including eligible intragroup forecast transactions in consolidated financial statements, under the cash flow hedge model as a distinct top-level hedge accounting approach."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS identifies hedges of foreign-currency risk arising from a net investment in a foreign operation as a separate hedge accounting model relevant to intragroup foreign-currency exposures."
+    }
+  ]
+}

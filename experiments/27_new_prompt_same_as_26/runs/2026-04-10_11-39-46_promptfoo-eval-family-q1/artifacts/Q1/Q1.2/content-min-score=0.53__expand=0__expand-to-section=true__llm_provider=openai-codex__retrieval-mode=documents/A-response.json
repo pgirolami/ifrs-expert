@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable/payable is between group entities with different functional currencies.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised monetary receivable is a recognised item that can be designated as a hedged item, and IFRS permits certain intragroup foreign currency exposures to be hedged in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "A highly probable forecast intragroup dividend-related foreign currency exposure can fall within the intragroup exception for forecast transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS separately recognises a hedge of a net investment in a foreign operation as a distinct hedge accounting model for foreign exchange risk at group level."
+    }
+  ]
+}

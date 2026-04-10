@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spurious approaches vs retrieved sections matrix</title>
+  
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    color: #1f2937;
+    background: #f8fafc;
+  }
+  main {
+    padding: 1rem;
+  }
+  h1 {
+    margin-top: 0;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  .legend {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+  }
+  .spurious-filter-panel {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+  }
+  .spurious-filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+  .spurious-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .spurious-filter-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .table-wrap {
+    overflow: auto;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+  }
+  table {
+    border-collapse: collapse;
+    font-size: 12px;
+    width: max-content;
+    min-width: 100%;
+  }
+  th, td {
+    border: 1px solid #d1d5db;
+    padding: 0.35rem 0.5rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #f3f4f6;
+  }
+  .group-header {
+    background: #e5e7eb;
+    font-weight: 700;
+  }
+  .metadata-col {
+    text-align: left;
+    background: #ffffff;
+  }
+  .metadata-q,
+  .metadata-run,
+  .metadata-rec {
+    text-align: center;
+  }
+  .metadata-spur {
+    white-space: normal;
+    line-height: 1.2;
+    min-width: 140px;
+  }
+  .sticky-1, .sticky-2, .sticky-3, .sticky-4 {
+    position: sticky;
+    z-index: 2;
+    background: #ffffff;
+  }
+  .sticky-1 { left: 0; min-width: 56px; }
+  .sticky-2 { left: 56px; min-width: 34px; }
+  .sticky-3 { left: 90px; min-width: 54px; }
+  .sticky-4 { left: 144px; min-width: 140px; }
+  thead .sticky-1, thead .sticky-2, thead .sticky-3, thead .sticky-4 {
+    z-index: 4;
+    background: #f3f4f6;
+  }
+  .label-cell.present.core {
+    color: #111827;
+    font-weight: 700;
+  }
+  .label-cell.present.spurious {
+    background: #b91c1c;
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .label-cell.absent {
+    color: #d1d5db;
+  }
+  .label-cell.core.absent {
+    background: #ffffff;
+  }
+  .section-cell {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  button {
+    cursor: pointer;
+  }
+</style>
+
+</head>
+<body>
+  <main>
+    <h1>Spurious approaches vs retrieved sections matrix</h1>
+    <p><strong>Experiment:</strong> 27_new_prompt_same_as_26<br>
+       <strong>Provider:</strong> content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents<br>
+       <strong>Generated:</strong> 2026-04-10T11:45:28+00:00</p>
+
+    <section class="controls">
+      <button type="button" data-sort-mode="question">Question order</button>
+      <button type="button" data-sort-mode="spurious">Spurious-first</button>
+      <label><input type="checkbox" id="spurious-only"> Show only runs with spurious labels</label>
+      <label><input type="checkbox" id="show-visible-context"> Show visible-context sections</label>
+      <label><input type="checkbox" id="hide-empty-columns" checked> Hide empty section columns</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs9" checked> IFRS 9</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ias21" checked> IAS 21</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifric16" checked> IFRIC 16</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs10" checked> IFRS 10</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ias24" checked> IAS 24</label>
+    </section>
+
+    
+    
+<section class="legend">
+  <p>
+    <strong>Rows:</strong> 6 runs.<br>
+    <strong>Section columns:</strong> 11 observed visible-context sections across runs.
+  </p>
+  <ul>
+    <li>Core label columns use ✅ when present; spurious label columns are red when present.</li>
+    <li>Section text shows the score range for the active mode: retrieved-only by default, or full visible context when toggled on.</li>
+    <li>Blue = IFRS 9, orange = IAS 21, green = IFRIC 16, purple = IFRS 10, pink = IAS 24.</li>
+    <li>Darker section cells mean a higher maximum retrieved score in that section.</li>
+  </ul>
+</section>
+
+
+    <div class="table-wrap">
+      <table id="matrix-table">
+        <thead>
+          <tr>
+            <th class="group-header sticky-group" colspan="4">Run metadata</th><th class="group-header" colspan="3">Emitted labels</th><th class="group-header section-group" id="group-header-ifrs9" data-doc-key="ifrs9" colspan="8">IFRS 9</th><th class="group-header section-group" id="group-header-ias21" data-doc-key="ias21" colspan="0">IAS 21</th><th class="group-header section-group" id="group-header-ifric16" data-doc-key="ifric16" colspan="3">IFRIC 16</th><th class="group-header section-group" id="group-header-ifrs10" data-doc-key="ifrs10" colspan="0">IFRS 10</th><th class="group-header section-group" id="group-header-ias24" data-doc-key="ias24" colspan="0">IAS 24</th>
+          </tr>
+          <tr>
+            <th class="sticky-1 metadata-col">Q</th><th class="sticky-2 metadata-col">run</th><th class="sticky-3 metadata-col">rec</th><th class="sticky-4 metadata-col">spur</th><th class="label-col" data-label="cash_flow_hedge">cash_flow_hedge</th><th class="label-col" data-label="fair_value_hedge">fair_value_hedge</th><th class="label-col" data-label="net_investment_hedge">net_investment_hedge</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+position: 1">g2.1-2.7</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+position: 2">g2.4-2.8</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g4.3.3-4.3.7
+title: Other hybrid contracts E15
+lineage: Classification &gt; Embedded derivatives &gt; Other hybrid contracts E15
+position: 19">g4.3.3-4.3.7</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+position: 40">g5.7.1-5.7.11</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+position: 41">g5.7.5-5.7.6</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+position: 42">g5.7.7-5.7.9</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+position: 43">g5.7.10-5.7.11</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+position: 50">g6.3.1-6.3.6</th><th class="section-col ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" title="IFRIC 16
+section_id: IFRIC16_g10-13
+title: Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+lineage: Consensus &gt; Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+position: 5">g10-13</th><th class="section-col ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+position: 6">g14-15</th><th class="section-col ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" title="IFRIC 16
+section_id: IFRIC16_g16-17
+title: Disposal of a hedged foreign operation
+lineage: Consensus &gt; Disposal of a hedged foreign operation
+position: 7">g16-17</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-order-question="0" data-order-spurious="1::Q1.0:base:0000" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.0"><td class="sticky-1 metadata-col metadata-q">Q1.0</td><td class="sticky-2 metadata-col metadata-run">0</td><td class="sticky-3 metadata-col metadata-rec">oui_sc</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.8%)" data-visible-bg="hsl(214 70% 75.8%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.58)
+
+visible context chunks:
+- 2.1 (0.58)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.8%);">0.58</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.0%)" data-visible-bg="hsl(214 70% 78.0%)" title="IFRS 9
+section_id: IFRS09_g4.3.3-4.3.7
+title: Other hybrid contracts E15
+lineage: Classification &gt; Embedded derivatives &gt; Other hybrid contracts E15
+
+retrieved chunks:
+- 4.3.4 (0.56)
+
+visible context chunks:
+- 4.3.3 (0.00)
+- 4.3.4 (0.56)
+- 4.3.5 (0.00)
+- 4.3.6 (0.00)
+- 4.3.7 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.0%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.56)
+
+visible context chunks:
+- 5.7.1 (0.56)
+- 5.7.1A (0.00)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.7 (0.00)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58-0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.2%)" data-visible-bg="hsl(214 70% 75.2%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+retrieved display: 0.58-0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.2%);">0.58-0.58</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 80.2%)" data-visible-bg="hsl(140 70% 80.2%)" title="IFRIC 16
+section_id: IFRIC16_g10-13
+title: Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+lineage: Consensus &gt; Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+
+retrieved chunks:
+- 13 (0.54)
+
+visible context chunks:
+- 10 (0.00)
+- 11 (0.00)
+- 12 (0.00)
+- 13 (0.54)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 80.2%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 79.7%)" data-visible-bg="hsl(140 70% 79.7%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.54)
+
+visible context chunks:
+- 14 (0.54)
+- 15 (0.00)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 79.7%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.2%)" data-visible-bg="hsl(140 70% 81.2%)" title="IFRIC 16
+section_id: IFRIC16_g16-17
+title: Disposal of a hedged foreign operation
+lineage: Consensus &gt; Disposal of a hedged foreign operation
+
+retrieved chunks:
+- 17 (0.53)
+
+visible context chunks:
+- 16 (0.00)
+- 17 (0.53)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.2%);">0.53</td></tr>
+<tr data-order-question="1" data-order-spurious="1::Q1.0:repeat-1:0001" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.0"><td class="sticky-1 metadata-col metadata-q">Q1.0</td><td class="sticky-2 metadata-col metadata-run">1</td><td class="sticky-3 metadata-col metadata-rec">oui_sc</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.8%)" data-visible-bg="hsl(214 70% 75.8%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.58)
+
+visible context chunks:
+- 2.1 (0.58)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.8%);">0.58</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.0%)" data-visible-bg="hsl(214 70% 78.0%)" title="IFRS 9
+section_id: IFRS09_g4.3.3-4.3.7
+title: Other hybrid contracts E15
+lineage: Classification &gt; Embedded derivatives &gt; Other hybrid contracts E15
+
+retrieved chunks:
+- 4.3.4 (0.56)
+
+visible context chunks:
+- 4.3.3 (0.00)
+- 4.3.4 (0.56)
+- 4.3.5 (0.00)
+- 4.3.6 (0.00)
+- 4.3.7 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.0%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.56)
+
+visible context chunks:
+- 5.7.1 (0.56)
+- 5.7.1A (0.00)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.7 (0.00)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58-0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.2%)" data-visible-bg="hsl(214 70% 75.2%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+retrieved display: 0.58-0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.2%);">0.58-0.58</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 80.2%)" data-visible-bg="hsl(140 70% 80.2%)" title="IFRIC 16
+section_id: IFRIC16_g10-13
+title: Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+lineage: Consensus &gt; Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+
+retrieved chunks:
+- 13 (0.54)
+
+visible context chunks:
+- 10 (0.00)
+- 11 (0.00)
+- 12 (0.00)
+- 13 (0.54)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 80.2%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 79.7%)" data-visible-bg="hsl(140 70% 79.7%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.54)
+
+visible context chunks:
+- 14 (0.54)
+- 15 (0.00)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 79.7%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.2%)" data-visible-bg="hsl(140 70% 81.2%)" title="IFRIC 16
+section_id: IFRIC16_g16-17
+title: Disposal of a hedged foreign operation
+lineage: Consensus &gt; Disposal of a hedged foreign operation
+
+retrieved chunks:
+- 17 (0.53)
+
+visible context chunks:
+- 16 (0.00)
+- 17 (0.53)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.2%);">0.53</td></tr>
+<tr data-order-question="2" data-order-spurious="1::Q1.0:repeat-2:0002" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.0"><td class="sticky-1 metadata-col metadata-q">Q1.0</td><td class="sticky-2 metadata-col metadata-run">2</td><td class="sticky-3 metadata-col metadata-rec">oui_sc</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.8%)" data-visible-bg="hsl(214 70% 75.8%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.58)
+
+visible context chunks:
+- 2.1 (0.58)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.8%);">0.58</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.0%)" data-visible-bg="hsl(214 70% 78.0%)" title="IFRS 9
+section_id: IFRS09_g4.3.3-4.3.7
+title: Other hybrid contracts E15
+lineage: Classification &gt; Embedded derivatives &gt; Other hybrid contracts E15
+
+retrieved chunks:
+- 4.3.4 (0.56)
+
+visible context chunks:
+- 4.3.3 (0.00)
+- 4.3.4 (0.56)
+- 4.3.5 (0.00)
+- 4.3.6 (0.00)
+- 4.3.7 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.0%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.56)
+
+visible context chunks:
+- 5.7.1 (0.56)
+- 5.7.1A (0.00)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.7 (0.00)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.58-0.58" data-visible-text="0.00-0.58" data-retrieved-bg="hsl(214 70% 75.2%)" data-visible-bg="hsl(214 70% 75.2%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.58)
+- 6.3.6 (0.58)
+
+retrieved display: 0.58-0.58
+visible display: 0.00-0.58" style="background-color: hsl(214 70% 75.2%);">0.58-0.58</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 80.2%)" data-visible-bg="hsl(140 70% 80.2%)" title="IFRIC 16
+section_id: IFRIC16_g10-13
+title: Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+lineage: Consensus &gt; Nature of the hedged risk and amount of the hedged item for which a hedging relationship may be designated
+
+retrieved chunks:
+- 13 (0.54)
+
+visible context chunks:
+- 10 (0.00)
+- 11 (0.00)
+- 12 (0.00)
+- 13 (0.54)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 80.2%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.54" data-visible-text="0.00-0.54" data-retrieved-bg="hsl(140 70% 79.7%)" data-visible-bg="hsl(140 70% 79.7%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.54)
+
+visible context chunks:
+- 14 (0.54)
+- 15 (0.00)
+
+retrieved display: 0.54
+visible display: 0.00-0.54" style="background-color: hsl(140 70% 79.7%);">0.54</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.2%)" data-visible-bg="hsl(140 70% 81.2%)" title="IFRIC 16
+section_id: IFRIC16_g16-17
+title: Disposal of a hedged foreign operation
+lineage: Consensus &gt; Disposal of a hedged foreign operation
+
+retrieved chunks:
+- 17 (0.53)
+
+visible context chunks:
+- 16 (0.00)
+- 17 (0.53)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.2%);">0.53</td></tr>
+<tr data-order-question="3" data-order-spurious="1::Q1.2:base:0003" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.2"><td class="sticky-1 metadata-col metadata-q">Q1.2</td><td class="sticky-2 metadata-col metadata-run">0</td><td class="sticky-3 metadata-col metadata-rec">oui_sc</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.55)
+
+visible context chunks:
+- 2.1 (0.55)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55-0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+
+visible context chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.55-0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55-0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+- 5.7.7 (0.56)
+
+visible context chunks:
+- 5.7.7 (0.56)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.5%)" data-visible-bg="hsl(214 70% 78.5%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.55)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.55)
+- 6.3.6 (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.5%);">0.55</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.1%)" data-visible-bg="hsl(140 70% 81.1%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.53)
+
+visible context chunks:
+- 14 (0.53)
+- 15 (0.00)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.1%);">0.53</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td></tr>
+<tr data-order-question="4" data-order-spurious="1::Q1.2:repeat-1:0004" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.2"><td class="sticky-1 metadata-col metadata-q">Q1.2</td><td class="sticky-2 metadata-col metadata-run">1</td><td class="sticky-3 metadata-col metadata-rec">oui_sc</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.55)
+
+visible context chunks:
+- 2.1 (0.55)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55-0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+
+visible context chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.55-0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55-0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+- 5.7.7 (0.56)
+
+visible context chunks:
+- 5.7.7 (0.56)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.5%)" data-visible-bg="hsl(214 70% 78.5%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.55)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.55)
+- 6.3.6 (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.5%);">0.55</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.1%)" data-visible-bg="hsl(140 70% 81.1%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.53)
+
+visible context chunks:
+- 14 (0.53)
+- 15 (0.00)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.1%);">0.53</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td></tr>
+<tr data-order-question="5" data-order-spurious="1::Q1.2:repeat-2:0005" data-has-spurious="0" data-spurious-labels="" data-question-id="Q1.2"><td class="sticky-1 metadata-col metadata-q">Q1.2</td><td class="sticky-2 metadata-col metadata-run">2</td><td class="sticky-3 metadata-col metadata-rec">oui</td><td class="sticky-4 metadata-col metadata-spur"></td><td class="label-cell core present" data-label="cash_flow_hedge">✅</td><td class="label-cell core present" data-label="fair_value_hedge">✅</td><td class="label-cell core present" data-label="net_investment_hedge">✅</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.1-2.7" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g2.1-2.7
+title: Scope
+lineage: Scope
+
+retrieved chunks:
+- 2.1 (0.55)
+
+visible context chunks:
+- 2.1 (0.55)
+- 2.2 (0.00)
+- 2.3 (0.00)
+- 2.3A (0.00)
+- 2.3B (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g2.4-2.8" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g2.4-2.8
+title: Contracts to buy or sell non‑financial items
+lineage: Scope &gt; Contracts to buy or sell non‑financial items
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 2.4 (0.00)
+- 2.5 (0.00)
+- 2.6 (0.00)
+- 2.7 (0.00)
+- 2.8 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.3.3-4.3.7" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55-0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.7%)" data-visible-bg="hsl(214 70% 78.7%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: Measurement &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+
+visible context chunks:
+- 5.7.1 (0.55)
+- 5.7.1A (0.55)
+- 5.7.2 (0.00)
+- 5.7.3 (0.00)
+- 5.7.4 (0.00)
+
+retrieved display: 0.55-0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.7%);">0.55-0.55</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.5-5.7.6" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.5-5.7.6
+title: Investments in equity instruments
+lineage: Measurement &gt; Gains and losses &gt; Investments in equity instruments
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.5 (0.00)
+- 5.7.6 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.7-5.7.9" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.56" data-visible-text="0.00-0.56" data-retrieved-bg="hsl(214 70% 78.2%)" data-visible-bg="hsl(214 70% 78.2%)" title="IFRS 9
+section_id: IFRS09_g5.7.7-5.7.9
+title: Liabilities designated as at fair value through profit or loss
+lineage: Measurement &gt; Gains and losses &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+- 5.7.7 (0.56)
+
+visible context chunks:
+- 5.7.7 (0.56)
+- 5.7.8 (0.00)
+- 5.7.9 (0.00)
+
+retrieved display: 0.56
+visible display: 0.00-0.56" style="background-color: hsl(214 70% 78.2%);">0.56</td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.10-5.7.11" data-doc-key="ifrs9" data-has-retrieved="0" data-has-visible="1" data-retrieved-text="" data-visible-text="0.00" data-retrieved-bg="transparent" data-visible-bg="hsl(214 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g5.7.10-5.7.11
+title: Assets measured at fair value through other comprehensive income
+lineage: Measurement &gt; Gains and losses &gt; Assets measured at fair value through other comprehensive income
+
+retrieved chunks:
+(none)
+
+visible context chunks:
+- 5.7.10 (0.00)
+- 5.7.11 (0.00)
+
+retrieved display: (blank)
+visible display: 0.00" style="background-color: transparent;"></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.3.1-6.3.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.55" data-visible-text="0.00-0.55" data-retrieved-bg="hsl(214 70% 78.5%)" data-visible-bg="hsl(214 70% 78.5%)" title="IFRS 9
+section_id: IFRS09_g6.3.1-6.3.6
+title: Qualifying items
+lineage: Hedge accounting &gt; Hedged items &gt; Qualifying items
+
+retrieved chunks:
+- 6.3.5 (0.55)
+
+visible context chunks:
+- 6.3.1 (0.00)
+- 6.3.2 (0.00)
+- 6.3.3 (0.00)
+- 6.3.4 (0.00)
+- 6.3.5 (0.55)
+- 6.3.6 (0.00)
+
+retrieved display: 0.55
+visible display: 0.00-0.55" style="background-color: hsl(214 70% 78.5%);">0.55</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g10-13" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g14-15" data-doc-key="ifric16" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="0.53" data-visible-text="0.00-0.53" data-retrieved-bg="hsl(140 70% 81.1%)" data-visible-bg="hsl(140 70% 81.1%)" title="IFRIC 16
+section_id: IFRIC16_g14-15
+title: Where the hedging instrument can be held
+lineage: Consensus &gt; Where the hedging instrument can be held
+
+retrieved chunks:
+- 14 (0.53)
+
+visible context chunks:
+- 14 (0.53)
+- 15 (0.00)
+
+retrieved display: 0.53
+visible display: 0.00-0.53" style="background-color: hsl(140 70% 81.1%);">0.53</td><td class="section-cell ifric16" data-section-key="ifric16::IFRIC16_g16-17" data-doc-key="ifric16" data-has-retrieved="0" data-has-visible="0"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  
+<script>
+  const tableBody = document.querySelector('#matrix-table tbody');
+  const sortButtons = document.querySelectorAll('button[data-sort-mode]');
+  const spuriousOnlyCheckbox = document.getElementById('spurious-only');
+  const showVisibleContextCheckbox = document.getElementById('show-visible-context');
+  const hideEmptyCheckbox = document.getElementById('hide-empty-columns');
+  const docToggles = document.querySelectorAll('.doc-toggle');
+  const spuriousLabelFilters = document.querySelectorAll('.spurious-label-filter');
+  const selectAllSpuriousButton = document.getElementById('select-all-spurious');
+  const clearAllSpuriousButton = document.getElementById('clear-all-spurious');
+  const sectionKeys = ["ifrs9::IFRS09_g2.1-2.7", "ifrs9::IFRS09_g2.4-2.8", "ifrs9::IFRS09_g4.3.3-4.3.7", "ifrs9::IFRS09_g5.7.1-5.7.11", "ifrs9::IFRS09_g5.7.5-5.7.6", "ifrs9::IFRS09_g5.7.7-5.7.9", "ifrs9::IFRS09_g5.7.10-5.7.11", "ifrs9::IFRS09_g6.3.1-6.3.6", "ifric16::IFRIC16_g10-13", "ifric16::IFRIC16_g14-15", "ifric16::IFRIC16_g16-17"];
+  let currentSortMode = 'question';
+
+  function visibleRows() {
+    return Array.from(tableBody.querySelectorAll('tr')).filter((row) => row.style.display !== 'none');
+  }
+
+  function sortRows(mode) {
+    currentSortMode = mode;
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    rows.sort((left, right) => {
+      const leftValue = left.dataset[mode === 'question' ? 'orderQuestion' : 'orderSpurious'];
+      const rightValue = right.dataset[mode === 'question' ? 'orderQuestion' : 'orderSpurious'];
+      if (mode === 'question') {
+        return Number(leftValue) - Number(rightValue);
+      }
+      return leftValue.localeCompare(rightValue);
+    });
+    rows.forEach((row) => tableBody.appendChild(row));
+  }
+
+  function selectedSpuriousLabels() {
+    return new Set(
+      Array.from(spuriousLabelFilters)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.spuriousLabel)
+    );
+  }
+
+  function applyRowVisibility() {
+    const spuriousOnly = spuriousOnlyCheckbox.checked;
+    const selectedLabels = selectedSpuriousLabels();
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    rows.forEach((row) => {
+      const hasSpurious = row.dataset.hasSpurious === '1';
+      const rowSpuriousLabels = row.dataset.spuriousLabels
+        ? row.dataset.spuriousLabels.split('|').filter((value) => value.length > 0)
+        : [];
+      const matchesSelectedLabels =
+        selectedLabels.size === 0 || rowSpuriousLabels.some((label) => selectedLabels.has(label));
+      const isVisible = (!spuriousOnly || hasSpurious) && matchesSelectedLabels;
+      row.style.display = isVisible ? '' : 'none';
+    });
+  }
+
+  function isVisibleContextMode() {
+    return showVisibleContextCheckbox.checked;
+  }
+
+  function updateSectionCellPresentation() {
+    const useVisibleContext = isVisibleContextMode();
+    document.querySelectorAll('td.section-cell').forEach((cell) => {
+      const text = useVisibleContext ? cell.dataset.visibleText : cell.dataset.retrievedText;
+      const backgroundColor = useVisibleContext ? cell.dataset.visibleBg : cell.dataset.retrievedBg;
+      cell.textContent = text || '';
+      cell.style.backgroundColor = backgroundColor || 'transparent';
+    });
+  }
+
+  function updateSectionVisibility() {
+    const enabledDocs = new Set(
+      Array.from(docToggles)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.docKey)
+    );
+    const rows = visibleRows();
+    const hideEmpty = hideEmptyCheckbox.checked;
+    const visibleCounts = { ifrs9: 0, ias21: 0, ifric16: 0, ifrs10: 0, ias24: 0 };
+
+    sectionKeys.forEach((sectionKey) => {
+      const header = document.querySelector(`th[data-section-key="${sectionKey}"]`);
+      if (!header) {
+        return;
+      }
+      const docKey = header.dataset.docKey;
+      let visible = enabledDocs.has(docKey);
+      if (visible && hideEmpty) {
+        visible = rows.some((row) => {
+          const cell = row.querySelector(`td[data-section-key="${sectionKey}"]`);
+          if (!cell) {
+            return false;
+          }
+          return isVisibleContextMode() ? cell.dataset.hasVisible === '1' : cell.dataset.hasRetrieved === '1';
+        });
+      }
+
+      header.style.display = visible ? '' : 'none';
+      document.querySelectorAll(`td[data-section-key="${sectionKey}"]`).forEach((cell) => {
+        cell.style.display = visible ? '' : 'none';
+      });
+      if (visible) {
+        visibleCounts[docKey] += 1;
+      }
+    });
+
+    ['ifrs9', 'ias21', 'ifric16', 'ifrs10', 'ias24'].forEach((docKey) => {
+      const groupHeader = document.getElementById(`group-header-${docKey}`);
+      if (!groupHeader) {
+        return;
+      }
+      const visibleCount = visibleCounts[docKey];
+      groupHeader.style.display = visibleCount > 0 ? '' : 'none';
+      groupHeader.colSpan = Math.max(visibleCount, 1);
+    });
+  }
+
+  function applyAll() {
+    applyRowVisibility();
+    sortRows(currentSortMode);
+    updateSectionCellPresentation();
+    updateSectionVisibility();
+  }
+
+  sortButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      sortRows(button.dataset.sortMode);
+      updateSectionVisibility();
+    });
+  });
+  spuriousOnlyCheckbox.addEventListener('change', applyAll);
+  showVisibleContextCheckbox.addEventListener('change', applyAll);
+  hideEmptyCheckbox.addEventListener('change', updateSectionVisibility);
+  docToggles.forEach((checkbox) => checkbox.addEventListener('change', updateSectionVisibility));
+  spuriousLabelFilters.forEach((checkbox) => checkbox.addEventListener('change', applyAll));
+  if (selectAllSpuriousButton) {
+    selectAllSpuriousButton.addEventListener('click', () => {
+      spuriousLabelFilters.forEach((checkbox) => {
+        checkbox.checked = true;
+      });
+      applyAll();
+    });
+  }
+  if (clearAllSpuriousButton) {
+    clearAllSpuriousButton.addEventListener('click', () => {
+      spuriousLabelFilters.forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+      applyAll();
+    });
+  }
+  applyAll();
+</script>
+
+</body>
+</html>

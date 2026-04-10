@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intra-group dividend has been declared and a foreign-currency-denominated intra-group receivable has been recognised.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency monetary receivable is a candidate hedged item within the IFRS 9 hedge accounting model, subject to the specific consolidated-group rules for intragroup items."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "Cash flow hedge accounting is a distinct top-level IFRS hedge accounting model and is part of the peer set for assessing foreign-currency risk hedging treatments."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "Net investment hedging is a separate top-level IFRS hedge accounting model for foreign exchange risk and is specifically addressed by IFRIC 16."
+    }
+  ]
+}

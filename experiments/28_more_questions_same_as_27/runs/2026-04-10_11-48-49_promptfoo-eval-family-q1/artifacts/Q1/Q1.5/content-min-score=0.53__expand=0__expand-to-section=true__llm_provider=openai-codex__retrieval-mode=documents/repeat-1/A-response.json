@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been declared and recognised as a foreign-currency monetary receivable/payable before elimination on consolidation.",
+    "The question is limited to hedge accounting classification at the consolidated financial statement level under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets and liabilities as eligible hedged item families, and the foreign currency risk on an intragroup monetary item is specifically addressed for consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 treats forecast transactions as a separate top-level hedged item family, including certain intragroup foreign currency exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 establish a distinct hedge accounting model for foreign currency risk arising from a net investment in a foreign operation."
+    }
+  ]
+}

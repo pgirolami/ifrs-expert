@@ -1,0 +1,49 @@
+{
+  "assumptions_fr": [
+    "La question vise les états financiers consolidés établis selon les IFRS.",
+    "Le dividende intragroupe et la créance correspondante sont libellés dans une devise générant un risque de change au niveau du groupe.",
+    "La créance de dividende reconnue constitue un élément monétaire entre entités du groupe ayant des monnaies fonctionnelles différentes."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, la règle générale exclut les transactions intragroupe comme éléments couverts. Toutefois, une exception existe pour le risque de change d’un élément monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés en consolidation. Une créance de dividende reconnue peut donc être couverte si elle remplit précisément cette condition."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fx_hedge_accounting",
+      "label_fr": "Comptabilité de couverture du risque de change en consolidation",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende reconnue peut relever d’un élément monétaire intragroupe. En consolidation, les éléments couverts doivent en principe être externes au groupe, mais IFRS 9 admet une exception pour le risque de change d’un élément monétaire intragroupe lorsque les gains/pertes de change ne sont pas totalement éliminés. Donc la documentation de couverture est possible seulement si la créance de dividende crée bien une exposition de change résiduelle au niveau consolidé.",
+      "conditions_fr": [
+        "La créance de dividende est un élément monétaire intragroupe effectivement reconnu.",
+        "Les deux entités du groupe concernées ont des monnaies fonctionnelles différentes.",
+        "Les écarts de change sur cette créance ne sont pas totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "La désignation peut être faite au niveau consolidé sur la composante change de la créance de dividende, sous réserve de démontrer l’exposition résiduelle au groupe.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé est le niveau de reporting : l’analyse doit être faite en consolidation, pas dans les comptes individuels.",
+    "Le timing compte : la possibilité naît lorsque la créance de dividende est reconnue, car l’exception IFRS 9 vise un élément monétaire intragroupe.",
+    "Il faut documenter spécifiquement que l’objet couvert est la composante change de la créance intragroupe, et non le dividende intragroupe en tant que flux éliminé.",
+    "Si les entités concernées ont la même monnaie fonctionnelle, ou si le risque de change est totalement éliminé en consolidation, la désignation ne serait pas recevable."
+  ]
+}

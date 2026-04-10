@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est libellé en devise et a donné lieu, ou donnera lieu, à un montant pertinent dans les comptes consolidés.",
+    "La question porte uniquement sur l’identification du modèle de comptabilité de couverture IFRS potentiellement applicable au risque de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, dans les comptes consolidés, si le dividende intragroupe a déjà généré une créance monétaire en devise dont les écarts de change ne sont pas totalement éliminés en consolidation. Dans ce cas, la voie pertinente est la couverture de juste valeur ; la couverture de flux de trésorerie ne convient pas si la créance est déjà comptabilisée."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans la situation décrite, un dividende intragroupe donnant lieu à une créance à recevoir correspond à un poste monétaire reconnu. En consolidé, un poste monétaire intragroupe peut être désigné comme élément couvert pour son risque de change si les écarts de change ne sont pas totalement éliminés, notamment entre entités ayant des monnaies fonctionnelles différentes. Les écarts de change sur ce poste affectent alors le résultat consolidé, ce qui rend cette désignation possible.",
+      "conditions_fr": [
+        "La créance intragroupe est un poste monétaire reconnu en devise.",
+        "Les entités concernées ont des monnaies fonctionnelles différentes.",
+        "Les écarts de change sur cette créance ne sont pas totalement éliminés en consolidation et affectent le résultat consolidé."
+      ],
+      "practical_implication_fr": "Documenter la relation de couverture au niveau consolidé en visant la créance intragroupe reconnue et son risque de change.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences arising on ... translating monetary items ... shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise une transaction intragroupe future hautement probable. Or la question vise un dividende intragroupe ayant donné lieu à la comptabilisation d’une créance à recevoir : le risque porte donc sur un poste déjà reconnu, non sur un flux futur encore non comptabilisé. Dans ce cas précis, le modèle de couverture de flux de trésorerie n’est pas le bon véhicule.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ne pas documenter la relation comme couverture de flux de trésorerie si le dividende a déjà généré une créance reconnue.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est le niveau de reporting : l’analyse doit être faite en comptes consolidés, pas seulement dans les comptes individuels.",
+    "Le moment est essentiel : avant comptabilisation, on peut raisonner sur une transaction future ; après comptabilisation d’une créance, on raisonne sur un poste monétaire reconnu.",
+    "Il faut vérifier que le dividende/solde est libellé dans une devise autre que la monnaie fonctionnelle de l’entité concernée et que le risque de change affecte bien le résultat consolidé.",
+    "La documentation de couverture doit être concurrente à la désignation et décrire précisément l’élément couvert, le risque de change couvert et le niveau de consolidation concerné."
+  ]
+}

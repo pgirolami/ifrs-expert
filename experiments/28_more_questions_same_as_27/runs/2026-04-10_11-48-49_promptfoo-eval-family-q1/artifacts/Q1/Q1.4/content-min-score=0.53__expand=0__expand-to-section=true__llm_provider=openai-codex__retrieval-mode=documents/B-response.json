@@ -1,0 +1,68 @@
+{
+  "assumptions_fr": [
+    "La question vise les états financiers consolidés établis selon les IFRS.",
+    "La créance de dividende intragroupe est libellée dans une devise différente de la monnaie fonctionnelle d’au moins une des entités concernées."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement via le modèle de couverture d’un élément monétaire intragroupe en consolidation. Dès lors qu’une créance de dividende est reconnue, on n’est plus dans une transaction intragroupe prévue ; la désignation n’est possible que si l’écart de change sur cette créance/dette n’est pas totalement éliminé en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_monetary_hedge",
+      "label_fr": "Couverture d’un élément monétaire intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans la situation décrite, la reconnaissance d’une créance de dividende crée un poste monétaire intragroupe. En consolidation, IFRS 9 admet la couverture du risque de change d’un poste monétaire intragroupe si les écarts de change qui en résultent ne sont pas entièrement éliminés à la consolidation. Cela peut être le cas lorsque les entités ont des monnaies fonctionnelles différentes.",
+      "conditions_fr": [
+        "La créance et la dette de dividende constituent un élément monétaire intragroupe.",
+        "Le risque de change sur cet élément génère des écarts de change qui ne sont pas totalement éliminés en consolidation.",
+        "Les entités parties au dividende ont des monnaies fonctionnelles différentes."
+      ],
+      "practical_implication_fr": "La documentation de couverture peut être mise en place au niveau consolidé sur la créance/dette de dividende reconnue, si ces conditions sont remplies.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs10",
+          "section": "B86(c)",
+          "excerpt": "eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "forecast_intragroup_hedge",
+      "label_fr": "Couverture d’une transaction intragroupe prévue",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise une transaction intragroupe hautement probable mais encore future. Or la question précise qu’une créance correspondante a déjà été reconnue : à ce stade, il ne s’agit plus d’une transaction prévue mais d’un poste monétaire existant. Ce modèle ne correspond donc pas aux faits décrits.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Il ne faut pas documenter la couverture comme une transaction intragroupe prévue une fois la créance de dividende constatée.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé est le moment de désignation : après comptabilisation de la créance de dividende, l’analyse relève du poste monétaire intragroupe, pas de la transaction prévue.",
+    "En consolidation, il faut vérifier si les écarts de change sur la créance/dette de dividende subsistent au résultat consolidé du fait de monnaies fonctionnelles différentes.",
+    "L’élimination intragroupe du dividende lui-même n’empêche pas, à elle seule, une relation de couverture sur le risque de change du poste monétaire, si l’exception IFRS 9 sur les éléments monétaires intragroupe est satisfaite."
+  ]
+}

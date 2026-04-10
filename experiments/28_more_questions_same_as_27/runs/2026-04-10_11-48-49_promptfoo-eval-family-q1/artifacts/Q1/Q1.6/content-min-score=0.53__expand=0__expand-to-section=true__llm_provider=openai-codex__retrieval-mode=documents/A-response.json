@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns designation of the foreign exchange exposure in consolidated financial statements under IFRS hedge accounting.",
+    "The intragroup dividend has resulted in a recognized receivable, ie a monetary item."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognized assets and liabilities as possible hedged items, making the fair value hedge model a core peer hedge accounting approach for a recognized foreign-currency receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately identifies forecast transactions as hedged items, so the cash flow hedge model is a distinct peer approach relevant to foreign-currency intragroup exposures in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 establish a separate hedge accounting model for foreign exchange risk on a net investment in a foreign operation."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been declared and gives rise to a recognized intragroup receivable/payable monetary item.",
+    "The question concerns consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for foreign currency risk of an intragroup monetary item",
+      "normalized_label": "intragroup_fx_hedge",
+      "rationale_for_inclusion": "IFRS 9 specifically permits, in consolidated financial statements, the foreign currency risk of an intragroup monetary item to be a hedged item when the related exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 provide a distinct hedge accounting model for foreign currency exposures connected with a net investment in a foreign operation, which is a relevant alternative foreign-currency hedge model in consolidated accounts."
+    }
+  ]
+}

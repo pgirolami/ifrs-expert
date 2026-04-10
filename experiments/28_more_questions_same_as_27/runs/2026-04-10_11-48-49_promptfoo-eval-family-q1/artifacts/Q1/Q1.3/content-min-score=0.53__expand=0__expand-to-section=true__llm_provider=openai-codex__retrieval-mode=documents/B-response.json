@@ -1,0 +1,75 @@
+{
+  "assumptions_fr": [
+    "La question vise les comptes consolidés.",
+    "Le dividende intragroupe déclaré a donné lieu à la comptabilisation d’une créance et d’une dette intragroupe monétaires.",
+    "La créance/dette est libellée dans une devise générant un risque de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais dans les comptes consolidés seulement via l’exception IFRS 9 applicable aux éléments monétaires intragroupe en devise dont les écarts de change ne sont pas totalement éliminés en consolidation. En revanche, la voie de la couverture d’un investissement net n’est pas adaptée au simple dividende à recevoir, sauf s’il fait partie d’un investissement net au sens d’IAS 21."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, le dividende déclaré a créé une créance intragroupe monétaire reconnue. En consolidation, IFRS 9 interdit en principe les éléments intragroupe comme éléments couverts, sauf pour le risque de change d’un élément monétaire intragroupe si les écarts de change ne sont pas totalement éliminés, notamment entre entités de monnaies fonctionnelles différentes. La désignation est donc possible dans ce cas précis.",
+      "conditions_fr": [
+        "La créance/dette intragroupe doit être un élément monétaire.",
+        "Les entités concernées doivent avoir des monnaies fonctionnelles différentes, de sorte que les écarts de change affectent encore le résultat consolidé.",
+        "La relation de couverture doit être documentée."
+      ],
+      "practical_implication_fr": "La désignation peut viser le risque de change de la créance de dividende intragroupe dans les comptes consolidés si l’exception relative aux éléments monétaires intragroupe est satisfaite.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "Le modèle de couverture d’investissement net vise le risque de change attaché à un investissement net dans une activité étrangère. Un dividende intragroupe déclaré donnant lieu à une créance à recevoir correspond, dans les faits posés, à un poste monétaire de règlement et non à un investissement net. Rien dans les faits ne permet de conclure qu’il forme partie d’un investissement net au sens d’IAS 21.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette voie ne fonde pas la désignation de la créance de dividende intragroupe dans la situation décrite.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity’s net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "Hedge accounting of the foreign currency risk arising from a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est le niveau de reporting : l’exception IFRS 9 vaut en consolidation, pas comme règle générale pour les transactions intragroupe.",
+    "Le moment pertinent est après la déclaration du dividende, lorsqu’une créance/dette monétaire intragroupe est comptabilisée.",
+    "Il faut vérifier que les écarts de change sur cette créance/dette affectent bien le résultat consolidé parce qu’ils ne sont pas totalement éliminés.",
+    "Si la créance de dividende est réglée rapidement ou ne génère pas d’exposition de change résiduelle en consolidation, l’intérêt et la portée de la désignation deviennent limités."
+  ]
+}

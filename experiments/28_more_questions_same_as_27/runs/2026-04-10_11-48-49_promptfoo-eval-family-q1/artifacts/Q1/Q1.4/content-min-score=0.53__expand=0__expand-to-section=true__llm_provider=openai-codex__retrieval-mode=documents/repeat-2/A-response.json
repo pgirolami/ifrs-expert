@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements prepared under IFRS.",
+    "The intragroup dividend and the related receivable are denominated in a currency that creates foreign exchange risk relevant at group level."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for foreign currency risk in consolidated financial statements",
+      "normalized_label": "fx_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 directly addresses when foreign currency risk from intragroup items can be designated as a hedged item in consolidated financial statements."
+    }
+  ]
+}

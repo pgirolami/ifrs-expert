@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has resulted, or may result, in a foreign-currency-denominated amount relevant in the consolidated financial statements.",
+    "The question is limited to identifying the potentially applicable IFRS hedge accounting models for the foreign exchange risk."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency monetary receivable is a hedged-item candidate within the IFRS 9 hedge accounting model when its exchange differences affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge accounting",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 treats highly probable forecast intragroup foreign-currency transactions that affect consolidated profit or loss as a distinct hedge accounting model."
+    }
+  ]
+}

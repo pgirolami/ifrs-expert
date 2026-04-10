@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns consolidated financial statements under IFRS.",
+    "The dividend-related balance is denominated in a foreign currency."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for intragroup monetary items",
+      "normalized_label": "intragroup_monetary_hedge",
+      "rationale_for_inclusion": "IFRS 9 specifically identifies foreign currency risk on an intragroup monetary item as a distinct hedged-item model that can apply in consolidated financial statements when the exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting for highly probable forecast intragroup transactions",
+      "normalized_label": "forecast_intragroup_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately identifies foreign currency risk on a highly probable forecast intragroup transaction as a distinct hedged-item model in consolidated financial statements."
+    }
+  ]
+}

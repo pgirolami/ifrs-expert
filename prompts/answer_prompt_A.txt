@@ -15,62 +15,30 @@ Answer in English.
 
 Your task is NOT to write the final answer.
 
-Your task is:
-1. Determine whether the question is answerable from the provided context
-2. If it is, identify and normalize the distinct accounting approaches grounded in the provided context that are relevant to the accounting issue raised by the question
+Your task is to:
 
-At this stage:
-- identify approaches
-- do not decide applicability
-- do not choose the best approach
-- do not narrow the list to the most likely answer
+1. Identify the primary accounting issue raised by the question.
 
-Definition of an approach:
-- An approach must be a distinct top-level IFRS accounting model, accounting treatment, recognition basis, measurement basis, or presentation basis
-- Output only approaches that are peers at the same level of abstraction
+2. Classify the provided context into:
+   - primary authority: directly governs that accounting issue
+   - supporting authority: constrains, modifies, or provides a distinct alternative model relevant to that issue
+   - peripheral authority: topically related but not relevant for identifying peer approaches
 
-Use the question only to identify the accounting issue.
-Use the context to identify the approaches.
-If the context contains multiple distinct recognized IFRS approaches within that issue, include them.
+3. Using only primary and supporting authority, identify the relevant top-level accounting treatment families.
 
-Do NOT include as separate approaches:
-- reasoning steps
-- diagnostic or classification steps
-- conditions, tests, indicators, or criteria
-- implementation details or mechanics
-- general principles on their own
-- exceptions or prohibitions on their own
-- designation techniques or designation scopes
-- vague labels such as "analysis", "assessment", "documentation", or "judgment"
-- labels that merely restate the fact pattern
-- fallback outcomes such as "no accounting treatment", "no designation"
+4. Map those treatment families to peer top-level accounting approaches.
 
-Important distinction:
-- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the reasoning
-- however, do NOT elevate such distinctions into separate peer approaches unless the context shows that IFRS treats them as distinct top-level accounting treatments or models
-- if such a distinction only narrows, conditions, scopes, or explains a broader accounting model, retain only the broader model as the approach
-- use those distinctions later in assumptions, applicability reasoning, or conditions, not as separate top-level approaches
+Approach-identification rules:
+- Output only approaches that are peers at the same level of abstraction.
+- Do not output pathway-specific, stage-specific, scoped, or documentation-specific formulations as final approaches unless IFRS treats them as distinct top-level accounting models.
+- Do not output:
+  - stage-specific instances of a broader treatment
+  - fallback or absence of treatment
+  - negative conclusions
+  - conditions, tests, eligibility criteria, or implementation mechanics
+- If a treatment family differs from another only because it adds a timing, scope, reporting-level, or fact-pattern qualifier, prefer the broader top-level accounting treatment unless the qualifier changes the accounting model itself.
 
-Composition rule:
-- Do not treat a baseline accounting consequence, an optional overlay, or the absence of an optional overlay as separate peer approaches unless they are genuinely distinct top-level accounting treatments in IFRS
-- If a context-grounded concept is only a component, subtype, scoped application, eligibility feature, overlay, or variant of a broader accounting model, retain only the broader accounting model as the approach
-- If two candidate labels differ only because one adds a timing, scope, reporting-level, or fact-pattern qualifier to the other, prefer the broader top-level accounting treatment label unless the context clearly supports both as peer treatments
-
-Normalization rules:
-- use standard IFRS terminology when available
-- avoid synonyms if a canonical term exists
-- prefer the recognized accounting treatment name
-- normalized_label must be in snake_case
-- normalized_label must be 2–4 words
-- avoid context-specific qualifiers
-- avoid negative wording
-
-Assumptions:
-- include only minimal assumptions needed to identify the accounting issue
-- keep them generic and non-speculative
-- do not use assumptions to eliminate a context-grounded approach
-
-If the context is not sufficient to identify the relevant accounting approaches:
+If the context is not sufficient to identify the peer top-level accounting approaches with reasonable confidence:
 - return:
 {
   "status": "needs_clarification",
@@ -78,6 +46,20 @@ If the context is not sufficient to identify the relevant accounting approaches:
 }
 - do NOT include assumptions
 - do NOT include approaches
+
+
+Important distinction:
+- Timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis.
+- Preserve those distinctions for later reasoning, but do not elevate them into final peer approaches unless they correspond to distinct top-level IFRS treatments.
+
+When treatment families and peer top-level accounting approaches are both identified,
+output only the peer top-level accounting approaches as the final approaches.
+
+Use treatment families only as intermediate reasoning to determine the correct peer approach. Do not output both layers.
+If a treatment family maps to a recognized top-level IFRS accounting model or treatment, prefer that recognized model or treatment name as the final approach label.
+
+The final approaches should be suitable for direct applicability assessment in a later step.
+
 
 If answerable:
 - return:
@@ -92,12 +74,21 @@ For each approach, output:
 - normalized_label
 - rationale_for_inclusion
 
+Normalization rules:
+- normalized_label must be in snake_case
+- normalized_label must be 2–4 words
+
+The label and normalized_label must refer to the final peer top-level accounting approach, not to an intermediate treatment family.
+
+Assumptions:
+- include only minimal assumptions needed to identify the accounting issue
+- keep them generic and non-speculative
+- do not use assumptions to eliminate a context-grounded approach
+
 Output rules:
 - return valid JSON only
 - no markdown
 - no prose before or after JSON
-- keep the list focused
-- preserve all materially distinct grounded top-level approaches within the accounting issue
 </instructions>
 
 <output_schema>
@@ -115,3 +106,4 @@ Output rules:
     }
   ]
 }
+</output_schema>

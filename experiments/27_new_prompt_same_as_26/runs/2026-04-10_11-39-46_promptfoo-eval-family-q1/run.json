@@ -1,0 +1,10 @@
+{
+  "description": "promptfoo eval family=Q1",
+  "artifacts_path": "experiments/27_new_prompt_same_as_26/runs/2026-04-10_11-39-46_promptfoo-eval-family-q1/artifacts",
+  "promptfoo_config_dir": "experiments/27_new_prompt_same_as_26/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q1\u00a4"
+  ],
+  "created_at_utc": "2026-04-10T11:39:46.226318+00:00"
+}

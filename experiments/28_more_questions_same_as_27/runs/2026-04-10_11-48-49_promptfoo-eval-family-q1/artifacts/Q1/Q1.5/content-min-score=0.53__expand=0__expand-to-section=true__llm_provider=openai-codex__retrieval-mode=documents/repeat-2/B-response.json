@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été déclaré et comptabilisé en créance monétaire à recevoir.",
+    "La créance et la dette intragroupe correspondante sont libellées dans une devise étrangère par rapport à la monnaie fonctionnelle d’au moins une entité du groupe concernée.",
+    "L’analyse vise uniquement les états financiers consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidation, uniquement si la créance intragroupe constitue un élément monétaire générant des écarts de change non totalement éliminés en consolidation. Dans ce cas, la voie pertinente parmi les approches proposées est la couverture de juste valeur, pas la couverture de flux de trésorerie."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende déclarée est un actif comptabilisé. En consolidation, IFRS 9 admet exceptionnellement qu’un élément monétaire intragroupe exposé au risque de change soit un élément couvert si les écarts de change ne sont pas totalement éliminés. IAS 21 confirme qu’un actif/passif monétaire intragroupe entre entités de monnaies fonctionnelles différentes laisse subsister un résultat de change en consolidation.",
+      "conditions_fr": [
+        "La créance de dividende doit être un élément monétaire intragroupe.",
+        "Les écarts de change afférents doivent ne pas être totalement éliminés en consolidation, notamment entre entités ayant des monnaies fonctionnelles différentes."
+      ],
+      "practical_implication_fr": "Une relation de couverture formellement documentée peut être mise en place au niveau consolidé sur le risque de change de cette créance si ces conditions sont remplies.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Ici, le fait générateur supposé est déjà survenu : le dividende est déclaré et comptabilisé en créance à recevoir. Le sujet n’est donc pas une transaction future hautement probable, mais un actif monétaire déjà reconnu dont le risque de change se matérialise via sa réévaluation en consolidation. Les extraits fournis orientent ce cas vers l’exception relative aux éléments monétaires intragroupe reconnus, non vers une logique de flux futurs.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation de couverture ne devrait pas être structurée comme une couverture de flux de trésorerie pour cette créance déjà comptabilisée.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est le niveau de reporting : l’exception IFRS 9 vise expressément les états financiers consolidés.",
+    "La qualification de la créance de dividende comme élément monétaire intragroupe est essentielle.",
+    "Il faut vérifier que les entités concernées ont des monnaies fonctionnelles différentes et que le change affecte bien le résultat consolidé.",
+    "La documentation de couverture doit être formalisée au niveau consolidé, en ciblant le risque de change de la créance reconnue."
+  ]
+}
