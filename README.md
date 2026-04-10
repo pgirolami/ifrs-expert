@@ -28,9 +28,9 @@ Building LLM systems in practice quickly surfaces non-obvious challenges:
 
 This project addresses these issues through:
 - structured retrieval over IFRS standards
-- a two-stage reasoning pipeline
+- a two-stage reasoning pipeline with explicit intermediate artifacts
 - structured JSON outputs
-- a lightweight evaluation loop to detect regressions
+- a systematic Promptfoo-based evaluation loop to detect regressions and confirm improvements
 
 ---
 
@@ -71,7 +71,7 @@ La créance à recevoir comptabilisée est, selon l'hypothèse, un poste monéta
 (...)
 ```
 
-The full structured output [(example)](./experiments/11_remove_extraneous_approaches_while_reserving_nih/Q1.0_k=5_e=5_min-score=0.5__run1/B-response.md) includes:
+The full structured output [(example)](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.3/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.md) includes:
 - explicit assumptions
 - all candidate approaches (cash flow, fair value, net investment, etc.)
 - applicability assessment per approach
@@ -91,55 +91,93 @@ retrieve → structure → reason → evaluate
 ### Key components
 
 - **Structure-aware ingestion**
-  - IFRS PDFs are parsed into section-aligned chunks (not arbitrary text windows)
+  - IFRS HTML pages (downloaded via the chrome-extension) are parsed into section-aligned chunks (not arbitrary text windows)
+    - Legacy PDF ingestion is also possible but doesn't work well
+  - document structure (sections, hierarchy) is preserved and reused at retrieval time
 
-- **Semantic retrieval**
+- **Multi-level semantic retrieval**
   - embeddings (`BAAI/bge-m3`) + cosine similarity search using FAISS
-  - top-k per document + chunk expansion
+    - bge-m3 was chosen because it is multilingual and it maximized the score distance between non-sensical questions and actual accounting questions among the embeddings tested initially
+  - retrieval operates at multiple levels:
+    - **document-level retrieval** (coarse filtering)
+    - **section-title retrieval** (semantic matching on headings) - not used in the current pipeline, but tested
+    - **chunk retrieval** (fine-grained passages)
+  - section expansion allows retrieving entire logical subsections instead of isolated chunks
+    - there is a "neighbooring expansion" method but it was abandonned
+
+- **Document-aware retrieval strategy**
+  - document-first retrieval narrows the corpus before chunk search
+  - per-document-type routing (IFRS / IAS / IFRIC / SIC / PS) with different thresholds and caps
+  - avoids global top-k competition across heterogeneous documents
+
+- **Shared retrieval pipeline**
+  - retrieval logic is centralized and reused across commands
+  - exposed via a dedicated `retrieve` command for inspection and debugging (without invoking the LLM)
 
 - **Two-stage reasoning**
-  - Prompt A: identify candidate accounting approaches
-  - Prompt B: evaluate applicability and produce structured output
+  - Prompt A: identify candidate accounting approaches using structured analysis:
+    - accounting issue identification
+    - authority classification (primary / supporting / peripheral)
+    - treatment-family identification
+    - mapping to peer top-level approaches
+  - Prompt B: evaluate applicability and produce the final structured answer
+  - Prompt B only receives **primary and supporting authority**, reducing noise and contradictions
 
 - **Structured outputs**
   - JSON schema with:
-    - assumptions
+    - primary accounting issue
+    - authority classification
+    - treatment families
     - approaches
+    - applicability assessment
     - recommendation
     - references
     - operational points
 
 - **Evaluation loop**
   - Promptfoo-based regression tests
-  - checks schema, approach coverage, recommendation consistency
+  - schema validation
+  - approach coverage checks
+  - recommendation consistency checks
 
 ---
 
 ## Key design decisions
 
-### Two-stage reasoning
+### Two-stage reasoning with explicit intermediate artifact
 Separating:
 1. *What are the possible approaches?*
 2. *Which one applies here?*
 
-→ significantly improved stability across question variants.
+→ significantly improved stability across question variants
+
+Prompt A produces a **structured analysis artifact** (issue, authority, treatment families, approaches), which:
+- stabilizes approach identification
+- makes reasoning auditable
+- enables context filtering for Prompt B
 
 ---
 
-### Section-aware chunking
-IFRS is highly structured.
+### Retrieval strategy is a first-class problem
+Retrieval evolved from simple chunk search to a **multi-stage, document-aware pipeline**:
 
-Aligning chunks with sections:
-- improves retrieval relevance
-- enables precise citations
-- reduces hallucination risk
+- document-level filtering reduces noise early
+- per-document-type thresholds avoid cross-document interference
+- section-title retrieval improves semantic recall
+- section expansion improves completeness
+
+→ retrieval quality directly determines which accounting reasoning paths are even available to the model
 
 ---
 
-### Retrieval strategy matters as much as prompting
-- Moving from global top-k to top-k *per document* handled relevancy competition among documents
-- chunk expansion improves recall
-- missing documents = missing reasoning paths
+### Authority classification improves reasoning quality
+Explicitly separating:
+- primary authority (governing)
+- supporting authority (clarifying / alternative models)
+- peripheral authority (ignored for approach identification)
+
+→ prevents irrelevant context from influencing the set of candidate approaches  
+→ enables Prompt B to operate on a much cleaner context
 
 ---
 
@@ -147,27 +185,19 @@ Aligning chunks with sections:
 Moving from free text to JSON made it possible to:
 - validate outputs programmatically
 - assert presence of key approaches
-- detect regressions
+- detect regressions across experiments
+- compare runs systematically
 
 ---
 
-## Evaluation
-
-The project uses two evaluation modes:
-
-### 1. Experimental analysis
-
-This is an ad-hoc implementation built incrementally from inception:
-- multiple question variants
-- repeated runs
-- qualitative analysis of failure modes
-- some automated quantitative analysis
-
-With Promptfoo now in place, this path is mainly historical.
-
-### 2. Promptfoo regression suite
+## Evaluation with Promptfoo
 
 Promptfoo is the ongoing regression harness for structured-answer quality.
+
+Recent work focused on:
+- stabilizing approach identification (ensuring all peer approaches are consistently found)
+- eliminating spurious approaches
+- improving recommendation consistency
 
 Typical usage:
 
@@ -175,12 +205,16 @@ Typical usage:
 make eval EXPERIMENT_DIR=promptfoo_regression
 ```
 
+All artifacts are preserved and the Promptfoo UI can be launched to view the results of any evaluation.
+
 Promptfoo details, commands, storage layout, and archive conventions are documented in:
 - [`docs/PROMPTFOO.md`](./docs/PROMPTFOO.md)
 
 ---
 
 ## Demo
+
+This sections sets up a quick demo with only 2 documents (IFRS-9 & IFRIC-16).
 
 ### Set up
 The assistant supports `openai`, `openai-codex`, `anthropic`, and `mistral` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
@@ -210,17 +244,22 @@ or go-through it line by line by following the instructions.
 
 ### Ingest documents
 
+#### Ingesting 2 provided documents
+This is enough for the demo
+
 ```bash
 uv sync --all-groups
 
-
-curl https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifrs-9-financial-instruments.pdf --output /tmp/ifrs-9-financial-instruments.pdf
-
-curl https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf --output /tmp/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf 
-
-uv run python -m src.cli store /tmp/ifrs-9-financial-instruments.pdf --doc-uid ifrs-9
-uv run python -m src.cli store /tmp/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf  --doc-uid ifric-16
+uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html --doc-uid ifric16
+uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html  --doc-uid ifrs9
 ```
+#### Ingesting more documents
+If you want to look at how all 64 free documents are ingested:
+- create an account on https://ifrs.org
+- install the [chrome extension](./chrome_extension/ifrs-expert-import/) through developer mode
+- navigate to the [list of standards](https://www.ifrs.org/issued-standards/list-of-standards/)
+  - click on each standard: the extension's icon becomes red. Click on the icon
+- run the ingestion `uv run python -m src.cli ingest --scope all`
 
 ### Quick start using the UI
 
@@ -232,12 +271,11 @@ Then copy-paste the following and hit enter
 Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
 ```
 
-
 ### Ask a question via the CLI
 
 ```bash
 echo "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?" \
-  | uv run python -m src.cli answer -k 5 -e 5 --min-score 0.55
+  | uv run python -m src.cli answer
 ```
 
 ---
@@ -255,19 +293,20 @@ These documents reflect how the system evolved in response to real-world constra
 
 ## Limitations
 
-- Limited corpus (IFRS 9 + IFRIC 16)
-- PDF parsing is heuristic
+- Full IFRS, IAS, IFRIC, SIC corpus ingested limited to Free documents
+- PDF parsing is heuristic which is why it was abandonned in favor of HTML parsing
 - retrieval errors still affect reasoning completeness
-- eval suite is minimal (focused on regression, not full benchmarking)
+- evaluation coverage is still limited (focused on regression, not full benchmarking)
 
 ---
 
 ## Future work
 
-- expand corpus (IFRS + Big 4 doctrine + expert materials)
-- improve retrieval completeness and chunk expansion
-- refine prompts for uncertainty handling
-- extend evaluation coverage and automation
+- expand corpus (private IFRS + Big 4 doctrine + expert materials)
+- evaluate on other questions in IFRS 9
+- evaluate to other types of questions: we expect the prompt to need improvement here because it is very approach-centric and not all questions are about an approach 
+- further improve retrieval completeness and document routing
+- refine uncertainty handling in outputs
 
 ---
 
@@ -275,7 +314,8 @@ These documents reflect how the system evolved in response to real-world constra
 
 This project is an exploration of how to build **reliable LLM systems** by:
 - grounding *reasoning* in explicit sources
-- structuring outputs for inspection
+- structuring intermediate and final outputs
+- separating retrieval, approach identification, and applicability
 - iterating with real users
 - and making behavior testable
 

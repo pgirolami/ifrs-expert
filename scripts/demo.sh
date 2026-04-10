@@ -4,8 +4,10 @@ set -euo pipefail
 
 DEMO_IFRS9_URL="https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifrs-9-financial-instruments.pdf"
 DEMO_IFRIC16_URL="https://www.ifrs.org/content/dam/ifrs/publications/pdf-standards/english/2021/issued/part-a/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf"
-DEMO_IFRS9_PDF="/tmp/ifrs-9-financial-instruments.pdf"
-DEMO_IFRIC16_PDF="/tmp/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.pdf"
+DEMO_IFRIC16_HTML="examples/www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html"
+DEMO_IFRS9_HTML="examples/www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html"
+
+
 DEMO_QUESTION="Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?"
 LOG_PATH="logs/app.log"
 TAIL_PID=""
@@ -115,19 +117,15 @@ main() {
   echo "Syncing dependencies with uv..."
   uv sync --all-groups
 
-  echo "Downloading IFRS demo documents..."
-  curl --fail --location --silent --show-error "${DEMO_IFRS9_URL}" --output "${DEMO_IFRS9_PDF}"
-  curl --fail --location --silent --show-error "${DEMO_IFRIC16_URL}" --output "${DEMO_IFRIC16_PDF}"
-
   echo "Ingesting IFRS 9..."
-  uv run python -m src.cli store "${DEMO_IFRS9_PDF}" --doc-uid ifrs-9
+  uv run python -m src.cli store "${DEMO_IFRS9_HTML}" --doc-uid ifrs9
 
   echo "Ingesting IFRIC 16..."
-  uv run python -m src.cli store "${DEMO_IFRIC16_PDF}" --doc-uid ifric-16
+  uv run python -m src.cli store "${DEMO_IFRIC16_HTML}" --doc-uid ifric16
 
   echo "Asking demo question via the CLI..."
   start_log_tail
-  printf '%s\n' "${DEMO_QUESTION}" | uv run python -m src.cli answer -k 5 -e 5 --min-score 0.55
+  printf '%s\n' "${DEMO_QUESTION}" | uv run python -m src.cli answer
   stop_log_tail
   TAIL_PID=""
 
