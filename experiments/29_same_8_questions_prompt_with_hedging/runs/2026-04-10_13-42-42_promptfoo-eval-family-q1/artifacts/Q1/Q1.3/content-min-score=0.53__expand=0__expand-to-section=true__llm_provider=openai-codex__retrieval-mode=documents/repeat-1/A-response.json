@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been declared and has created a recognized monetary receivable/payable denominated in a foreign currency.",
+    "The related foreign exchange differences affect consolidated profit or loss rather than being fully eliminated on consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies a recognized asset or liability as an eligible hedged item under IFRS 9, including certain intragroup monetary items in consolidated financial statements."
+    }
+  ]
+}

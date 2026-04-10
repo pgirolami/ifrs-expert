@@ -47,7 +47,6 @@ If the context is not sufficient to identify the peer top-level accounting appro
 - do NOT include assumptions
 - do NOT include approaches
 
-
 Important distinction:
 - Timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis.
 - Preserve those distinctions for later reasoning, but do not elevate them into final peer approaches unless they correspond to distinct top-level IFRS treatments.
@@ -58,8 +57,22 @@ output only the peer top-level accounting approaches as the final approaches.
 Use treatment families only as intermediate reasoning to determine the correct peer approach. Do not output both layers.
 If a treatment family maps to a recognized top-level IFRS accounting model or treatment, prefer that recognized model or treatment name as the final approach label.
 
-The final approaches should be suitable for direct applicability assessment in a later step.
+Final-label mapping rule for this diagnostic experiment:
+- For hedge-accounting questions, the final emitted approaches must be canonical peer IFRS hedge-accounting model labels.
+- If your intermediate reasoning identifies a recognized-item hedge family, emit the canonical top-level hedge model label, not a fact-pattern-specific variant.
+- If your intermediate reasoning identifies a forecast-transaction hedge family, emit the canonical top-level hedge model label, not a fact-pattern-specific variant.
+- If your intermediate reasoning identifies a net-investment hedge family, emit the canonical top-level hedge model label.
+- For hedge-accounting questions, prefer these canonical final labels when applicable:
+  - fair_value_hedge
+  - cash_flow_hedge
+  - net_investment_hedge
+- Do not emit final labels that merely restate the identified exposure or qualifier, such as:
+  - intragroup_monetary_hedge
+  - forecast_intragroup_hedge
+  - intragroup_fx_hedge
+  - fx_hedge_accounting
 
+The final approaches should be suitable for direct applicability assessment in a later step.
 
 If answerable:
 - return:

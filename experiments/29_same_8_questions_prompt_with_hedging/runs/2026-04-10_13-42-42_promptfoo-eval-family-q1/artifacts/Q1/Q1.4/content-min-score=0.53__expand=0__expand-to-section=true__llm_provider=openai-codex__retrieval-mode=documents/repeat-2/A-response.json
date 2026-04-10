@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is assessed at the level of consolidated financial statements.",
+    "The dividend gives rise to an intragroup foreign-currency-denominated balance once the receivable is recognised."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a recognised asset or liability as a hedged item family, which is the relevant top-level hedge model once a dividend receivable has been recognised."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately identifies forecast transactions as a distinct hedged item family, making cash flow hedge a peer top-level hedge model relevant to intragroup foreign exchange exposures more broadly."
+    }
+  ]
+}

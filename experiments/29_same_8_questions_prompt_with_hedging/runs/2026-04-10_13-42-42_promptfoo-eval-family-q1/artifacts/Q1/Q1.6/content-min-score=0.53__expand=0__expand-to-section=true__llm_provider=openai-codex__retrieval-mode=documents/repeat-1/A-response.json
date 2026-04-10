@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend receivable is a recognised monetary item in the consolidated financial statements.",
+    "The question concerns hedge-accounting model identification for foreign exchange risk in consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised receivable is a recognised asset/liability type of hedged item under IFRS 9, making the fair value hedge model a relevant top-level hedge-accounting approach."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies highly probable forecast transactions as hedged items, so the cash flow hedge model is a peer canonical hedge-accounting model relevant to foreign-currency hedging analysis."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 establish a distinct hedge-accounting model for foreign-exchange exposures that form part of a net investment in a foreign operation."
+    }
+  ]
+}

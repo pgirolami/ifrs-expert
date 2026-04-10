@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has resulted in a foreign-currency-denominated monetary receivable/payable that is recognised for consolidation purposes.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9 and IAS 21."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised monetary receivable can fall within the recognised-item hedge family, which maps to the fair value hedge model under IFRS 9."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "Foreign currency risk on a recognised item can also fall within the variability-in-cash-flows hedge family, which maps to the cash flow hedge model under IFRS 9."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 identify a distinct hedge-accounting model for foreign currency risk associated with a net investment in a foreign operation."
+    }
+  ]
+}

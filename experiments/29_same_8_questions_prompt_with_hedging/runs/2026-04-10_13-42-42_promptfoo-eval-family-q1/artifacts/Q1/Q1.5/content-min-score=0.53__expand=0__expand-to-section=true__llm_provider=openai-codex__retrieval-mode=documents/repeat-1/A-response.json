@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has already been recognised as a receivable/payable and is a foreign-currency-denominated monetary item between group entities with different functional currencies.",
+    "The assessment is at the level of consolidated financial statements."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The fact pattern concerns hedge accounting for foreign currency risk on a recognised monetary item in consolidated financial statements, which maps to the IFRS fair value hedge model."
+    }
+  ]
+}

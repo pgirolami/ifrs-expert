@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The recognised intragroup dividend receivable is a monetary item exposed to foreign exchange risk in the consolidated financial statements.",
+    "The question asks about possible hedge-accounting model eligibility rather than measurement of the dividend itself."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 includes recognised assets or liabilities as possible hedged items, which makes the fair value hedge model a relevant top-level hedge-accounting approach for a recognised foreign-currency monetary receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also treats exposure to variability in cash flows of recognised items as a distinct hedge-accounting model, so it is a peer top-level approach to assess for foreign-exchange risk on a recognised receivable."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 21 and IFRIC 16 identify a separate hedge-accounting model for foreign-exchange exposures relating to a net investment in a foreign operation, which is the other relevant canonical IFRS hedge model in consolidated financial statements."
+    }
+  ]
+}

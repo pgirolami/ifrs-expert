@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9.",
+    "The recognised intragroup dividend receivable/payable is a foreign-currency-denominated intragroup monetary item between group entities with different functional currencies."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised receivable is a recognised asset, so the recognised-item hedge model is a relevant peer IFRS hedge-accounting model for assessing FX risk hedging in consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately recognises the forecast-transaction cash flow hedge model, which is relevant as the peer alternative to a recognised-item hedge when analysing dividend-related FX exposures."
+    }
+  ]
+}

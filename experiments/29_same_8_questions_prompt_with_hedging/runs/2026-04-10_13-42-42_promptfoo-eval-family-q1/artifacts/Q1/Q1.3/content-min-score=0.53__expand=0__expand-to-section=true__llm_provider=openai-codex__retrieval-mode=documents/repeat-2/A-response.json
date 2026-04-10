@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9 for foreign currency risk on an intragroup dividend that has resulted in a recognised receivable.",
+    "The dividend receivable/payable is treated as an intragroup monetary item for purposes of assessing foreign exchange effects in consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised monetary receivable exposed to foreign currency movements falls within the recognised-item hedge family that maps to the fair value hedge model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies highly probable forecast transactions, including certain intragroup foreign currency transactions in consolidation, as a distinct hedge family mapping to the cash flow hedge model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "Foreign currency risk in consolidated financial statements also has a distinct hedge-accounting model for net investments in foreign operations, which is a canonical peer hedge model under IFRS."
+    }
+  ]
+}

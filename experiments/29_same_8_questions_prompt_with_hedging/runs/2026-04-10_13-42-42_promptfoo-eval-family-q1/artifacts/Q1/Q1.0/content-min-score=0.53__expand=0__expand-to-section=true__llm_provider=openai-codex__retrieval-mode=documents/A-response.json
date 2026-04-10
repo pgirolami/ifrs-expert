@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question is limited to hedge-accounting model identification under IFRS for consolidated financial statements.",
+    "The intragroup dividend has already given rise to a recognised receivable."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "The context identifies hedge accounting for a recognised item and specifically permits, in consolidated financial statements, foreign currency risk on an intragroup monetary item if the resulting exchange differences are not fully eliminated on consolidation."
+    }
+  ]
+}

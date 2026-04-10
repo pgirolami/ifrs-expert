@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting for foreign currency risk in consolidated financial statements.",
+    "The contemplated hedging relationship would use a hedging instrument with a party external to the reporting entity."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognised assets or liabilities as eligible hedged items, which maps to the fair value hedge model for a recognised foreign-currency-denominated receivable."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies forecast transactions, including qualifying highly probable intragroup foreign-currency transactions, as a distinct hedge-accounting model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 treat a hedge of a net investment in a foreign operation as a separate top-level hedge-accounting model for foreign exchange risk."
+    }
+  ]
+}

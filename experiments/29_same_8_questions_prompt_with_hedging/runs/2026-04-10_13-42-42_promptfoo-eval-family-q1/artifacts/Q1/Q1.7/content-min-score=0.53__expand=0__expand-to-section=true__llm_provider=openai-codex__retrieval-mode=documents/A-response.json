@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend declaration has created a recognised intragroup monetary receivable/payable exposure in the consolidated financial statements.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised intragroup monetary receivable that gives rise to foreign exchange gains or losses not fully eliminated on consolidation falls within the recognised-item hedge family in consolidated financial statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "Foreign currency risk within hedge accounting is also addressed through the cash flow hedge model, which is a canonical peer IFRS hedge-accounting model relevant to foreign-currency exposures."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS separately identifies hedges of foreign currency risk arising from a net investment in a foreign operation as a distinct hedge-accounting model."
+    }
+  ]
+}

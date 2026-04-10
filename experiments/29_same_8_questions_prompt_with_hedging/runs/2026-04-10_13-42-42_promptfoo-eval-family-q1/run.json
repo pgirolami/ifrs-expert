@@ -1,0 +1,10 @@
+{
+  "description": "promptfoo eval family=Q1",
+  "artifacts_path": "experiments/29_same_8_questions_prompt_with_hedging/runs/2026-04-10_13-42-42_promptfoo-eval-family-q1/artifacts",
+  "promptfoo_config_dir": "experiments/29_same_8_questions_prompt_with_hedging/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q1\u00a4"
+  ],
+  "created_at_utc": "2026-04-10T13:42:42.304979+00:00"
+}

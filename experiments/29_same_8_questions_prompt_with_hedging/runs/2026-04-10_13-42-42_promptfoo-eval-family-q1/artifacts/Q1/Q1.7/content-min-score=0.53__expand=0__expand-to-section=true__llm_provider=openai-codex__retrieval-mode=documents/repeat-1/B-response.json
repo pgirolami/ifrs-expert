@@ -1,0 +1,49 @@
+{
+  "assumptions_fr": [
+    "La question vise les comptes consolidés.",
+    "Le dividende intragroupe a été déclaré, de sorte qu'une créance/dette monétaire intragroupe est comptabilisée.",
+    "La créance et la dette correspondante sont libellées de façon à créer un risque de change entre des entités du groupe ayant des monnaies fonctionnelles différentes."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidation, si le dividende déclaré a créé un poste monétaire intragroupe exposé à un risque de change qui n'est pas entièrement éliminé en consolidation. Dans ce cas, la créance reconnue peut être documentée comme élément couvert au titre d'une couverture de juste valeur."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende déclarée est un actif reconnu et, selon IAS 21, un poste monétaire intragroupe ne peut pas être éliminé sans faire apparaître les écarts de change en consolidation. IFRS 9 admet précisément qu'un risque de change sur un poste monétaire intragroupe soit désigné comme élément couvert dans les comptes consolidés lorsque ces écarts ne sont pas totalement éliminés.",
+      "conditions_fr": [
+        "la créance de dividende doit être un poste monétaire reconnu à la date de désignation",
+        "le risque couvert doit être le risque de change",
+        "les écarts de change doivent affecter les comptes consolidés, car ils ne sont pas totalement éliminés en consolidation"
+      ],
+      "practical_implication_fr": "La documentation de couverture doit être faite au niveau consolidé sur la créance de dividende reconnue, et non sur un simple dividende futur non encore constaté.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) ... cannot be eliminated ... without showing the results of currency fluctuations"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point décisif est le moment : il faut qu'un dividende déclaré ait déjà donné naissance à une créance/dette monétaire.",
+    "L'analyse doit être menée en consolidation ; en comptes consolidés, seules certaines expositions intragroupe sont éligibles.",
+    "Il faut vérifier que les deux entités concernées ont des monnaies fonctionnelles différentes afin que l'écart de change subsiste en consolidation.",
+    "La documentation doit viser le risque de change de la créance reconnue et être cohérente avec les exigences de désignation et d'efficacité d'IFRS 9."
+  ]
+}

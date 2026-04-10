@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The intragroup dividend has been declared and recognised as a foreign-currency monetary receivable before consolidation.",
+    "The question concerns hedge accounting in consolidated financial statements under IFRS 9."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "A recognised foreign-currency receivable is a recognised monetary item, so the relevant top-level IFRS hedge accounting model for its foreign exchange risk is the fair value hedge model."
+    }
+  ]
+}

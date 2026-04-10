@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "L’analyse est effectuée au niveau des états financiers consolidés.",
+    "Le dividende intragroupe a donné lieu à la comptabilisation d’une créance libellée en devise entre entités du groupe.",
+    "La créance et la dette correspondante constituent un poste monétaire intragroupe et les entités concernées ont des monnaies fonctionnelles différentes."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, une désignation de couverture peut être envisageable sur le risque de change d’une créance intragroupe reconnue seulement via l’exception visant les postes monétaires intragroupe dont les écarts de change ne sont pas totalement éliminés. En revanche, le modèle de cash flow hedge n’est pas le bon dès lors qu’une créance est déjà reconnue."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, l’élément visé est une créance déjà comptabilisée, donc la famille pertinente est celle d’un actif reconnu. En consolidation, les transactions intragroupe sont en principe exclues des éléments couverts, mais IFRS 9 prévoit une exception pour le risque de change d’un poste monétaire intragroupe lorsque les gains/pertes de change ne sont pas totalement éliminés. Cela peut donc permettre une documentation de couverture sur la composante change de la créance de dividende reconnue.",
+      "conditions_fr": [
+        "la créance de dividende est un poste monétaire intragroupe",
+        "les entités concernées ont des monnaies fonctionnelles différentes",
+        "le risque de change génère des écarts non totalement éliminés en consolidation"
+      ],
+      "practical_implication_fr": "La documentation doit viser la composante change de la créance intragroupe reconnue, et non le dividende comme flux futur abstrait.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "not in the consolidated financial statements of the group"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ifrs10",
+          "section": "B86(c)",
+          "excerpt": "eliminate in full intragroup assets and liabilities"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche vise les transactions prévues, alors que la question précise qu’une créance a déjà été reconnue. À ce stade, on n’est plus face à un flux futur hautement probable mais à un actif intragroupe comptabilisé. En consolidation, IFRS 9 n’ouvre une exception explicite pour l’intragroupe qu’aux postes monétaires intragroupe et à certaines transactions intragroupe hautement probables; ici le fait déclencheur est précisément la reconnaissance de la créance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Une fois la créance de dividende comptabilisée, il ne faut pas documenter la relation comme une couverture de flux de trésorerie.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le point clé de timing est la reconnaissance de la créance: avant reconnaissance, on raisonnerait sur une transaction prévue; après reconnaissance, sur un poste monétaire.",
+    "En consolidation, il faut vérifier que l’exposition de change subsiste malgré l’élimination intragroupe, ce qui suppose des monnaies fonctionnelles différentes.",
+    "La base IFRS fournie soutient surtout l’éligibilité de l’élément couvert en consolidation; la documentation devra rester alignée sur cette exception étroite."
+  ]
+}

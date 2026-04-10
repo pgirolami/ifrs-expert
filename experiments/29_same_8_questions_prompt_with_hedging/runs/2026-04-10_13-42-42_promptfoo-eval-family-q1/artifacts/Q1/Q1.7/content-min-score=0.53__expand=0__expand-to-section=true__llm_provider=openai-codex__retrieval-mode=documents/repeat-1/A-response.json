@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "assumptions": [
+    "The question concerns hedge accounting in consolidated financial statements.",
+    "The intragroup dividend has been declared such that a monetary receivable is recognised and gives rise to foreign exchange exposure in consolidation."
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 treats a recognised asset or liability as an eligible hedged item, and IAS 21/IFRS 9 specifically acknowledge that foreign currency gains or losses on intragroup monetary items may remain in consolidated financial statements."
+    }
+  ]
+}

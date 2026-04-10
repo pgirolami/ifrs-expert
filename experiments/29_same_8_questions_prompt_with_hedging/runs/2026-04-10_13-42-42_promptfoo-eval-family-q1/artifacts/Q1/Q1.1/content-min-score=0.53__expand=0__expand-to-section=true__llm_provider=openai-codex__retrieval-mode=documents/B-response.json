@@ -1,0 +1,95 @@
+{
+  "assumptions_fr": [
+    "La question vise les comptes consolidés et uniquement la couverture du risque de change attaché à une créance intragroupe de dividende déjà comptabilisée.",
+    "La créance de dividende est supposée être un poste monétaire libellé dans une devise créant potentiellement des écarts de change.",
+    "L’analyse porte sur les modèles de comptabilité de couverture IFRS possibles au niveau consolidé, sans conclure sur toute la documentation détaillée ni sur les tests d’efficacité."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En consolidation, la voie pertinente sur une créance de dividende déjà comptabilisée est la couverture de juste valeur, mais seulement si la partie change de ce poste monétaire intragroupe génère des écarts non totalement éliminés en consolidation. La couverture de flux de trésorerie vise une transaction future, et la couverture d’investissement net vise une exposition différente."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende est déjà comptabilisée, donc on est bien sur un actif reconnu plutôt que sur une transaction future. En comptes consolidés, un élément intragroupe ne peut être désigné que par exception pour le risque de change d’un poste monétaire intragroupe lorsque les écarts de change ne sont pas totalement éliminés à la consolidation. Dans cette situation, la couverture de juste valeur peut donc être envisagée sur la composante change, sous cette limite de consolidation.",
+      "conditions_fr": [
+        "La créance de dividende doit être un poste monétaire intragroupe.",
+        "Le risque de change doit produire des gains ou pertes non totalement éliminés en consolidation."
+      ],
+      "practical_implication_fr": "La documentation doit cibler la composante change de la créance reconnue au niveau consolidé, et non le dividende intragroupe en tant que flux interne éliminé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities ... with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "Ce modèle vise une transaction prévue ou hautement probable. Or, dans les faits posés, le dividende intragroupe a déjà été comptabilisé en créance, donc l’exposition n’est plus une transaction future mais un poste reconnu. L’exception consolidation pour transactions intragroupe hautement probables ne correspond donc pas à cette situation déjà cristallisée en créance.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle n’est pas adapté à la créance de dividende déjà enregistrée ; il viserait en amont un dividende futur hautement probable, pas la créance existante.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "The hedged item can be: ... a forecast transaction"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction ... that transaction must be highly probable"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d’investissement net",
+      "applicability": "non",
+      "reasoning_fr": "La question porte sur une créance intragroupe de dividende déjà reconnue, donc sur une exposition transactionnelle de change attachée à un receivable. Le modèle de couverture d’investissement net vise une exposition de nature différente, liée à un investissement net dans une activité à l’étranger. Sur les faits donnés, rien n’indique que la créance de dividende constitue l’objet couvert de ce type.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle ne répond pas directement à la créance de dividende comptabilisée ; il couvrirait l’investissement net dans l’entité étrangère, pas la créance de dividende en tant que telle.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.1",
+          "excerpt": "a hedged item can be ... a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "may be designated as a hedging instrument in a hedge of a net investment in a foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Le niveau d’analyse est la consolidation : la règle générale exclut les éléments intragroupe, sauf l’exception change sur poste monétaire intragroupe.",
+    "Le fait que le dividende soit déjà comptabilisé en créance est décisif : cela oriente vers un poste reconnu, pas vers une transaction future.",
+    "La documentation de couverture doit être alignée sur les écarts de change qui subsistent en consolidation ; si tout est éliminé, il n’y a pas d’objet couvert au niveau consolidé.",
+    "La couverture d’investissement net doit rester séparée conceptuellement de la couverture de la créance de dividende ; ce ne sont pas la même exposition ni le même objet couvert."
+  ]
+}
