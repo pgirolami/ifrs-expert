@@ -44,14 +44,14 @@ def _example_file(name: str) -> Path:
     return examples_dir / name
 
 
-def _write_html_sidecar(sidecar_path: Path, canonical_url: str, title: str) -> None:
+def _write_html_sidecar(sidecar_path: Path, canonical_url: str, title: str, source_domain: str = "www.ifrs.org") -> None:
     sidecar_path.write_text(
         json.dumps(
             {
                 "url": canonical_url,
                 "title": title,
                 "captured_at": "2026-04-04T14:23:10Z",
-                "source_domain": "www.ifrs.org",
+                "source_domain": source_domain,
                 "canonical_url": canonical_url,
             }
         ),
@@ -146,6 +146,35 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
         chunks = cs.get_chunks_by_doc("ifrs9")
     assert any(chunk.section_path == "2.4" for chunk in chunks)
     assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
+
+
+def test_ingest_command_imports_naxis_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
+    """Representative Naxis HTML captures should ingest into the database and processed/."""
+    del temp_db_path
+    html_source = _example_file("Lefebvre-Naxis/20260412T190029Z--document.html")
+    json_source = _example_file("Lefebvre-Naxis/20260412T190029Z--document.json")
+    inbox_html = capture_root / "20260412T190029Z--document.html"
+    inbox_json = capture_root / "20260412T190029Z--document.json"
+    shutil.copy(html_source, inbox_html)
+    shutil.copy(json_source, inbox_json)
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+
+    output = command.execute()
+
+    assert "1 imported" in output
+    assert (capture_root / "processed" / inbox_html.name).exists()
+    assert (capture_root / "processed" / inbox_json.name).exists()
+    with document_store as ds:
+        document = ds.get_document("naxis-qrifrs-c2a8e6f292f99e-efl")
+    assert document is not None, "Expected Naxis ingestion to upsert a document record"
+    assert document.source_type == "html"
+    assert document.source_domain == "abonnes.efl.fr"
+    assert document.document_type == "NAXIS"
+    with chunk_store as cs:
+        chunks = cs.get_chunks_by_doc("naxis-qrifrs-c2a8e6f292f99e-efl")
+    assert any(chunk.section_path == "12501" for chunk in chunks)
+    assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
 
 
 def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_path: Path, capture_root: Path) -> None:

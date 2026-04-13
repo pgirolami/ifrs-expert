@@ -4,7 +4,7 @@ const HTML_MIME_TYPE = "text/html;charset=utf-8";
 const JSON_MIME_TYPE = "application/json;charset=utf-8";
 const PAGE_TOAST_DURATION_MS = 4000;
 const ACTION_TITLE = "Import to IFRS Expert";
-const UNSUPPORTED_ACTION_TITLE = "Import to IFRS Expert (available only on ifrs.org)";
+const UNSUPPORTED_ACTION_TITLE = "Import to IFRS Expert (available only on supported sources)";
 const SUPPORTED_ACTION_ICON_PATHS = {
   16: "icons/ifrs-red-16.png",
   24: "icons/ifrs-red-24.png",
@@ -68,6 +68,7 @@ chrome.action.onClicked.addListener(async (tab) => {
       tabId: tab.id,
       canonicalUrl: result.sidecar.canonical_url,
       title: result.sidecar.title,
+      sourceFamily: getSourceFamily(result.sidecar.url),
       htmlLength: result.html.length,
     });
 
@@ -412,10 +413,33 @@ function isSupportedTabUrl(tabUrl) {
 
   try {
     const url = new URL(tabUrl);
-    return url.protocol === "https:" && (url.hostname === "ifrs.org" || url.hostname.endsWith(".ifrs.org"));
+    if (url.protocol !== "https:") {
+      return false;
+    }
+    return isSupportedHostname(url.hostname);
   } catch {
     return false;
   }
+}
+
+function isSupportedHostname(hostname) {
+  return hostname === "ifrs.org" || hostname.endsWith(".ifrs.org") || hostname === "abonnes.efl.fr";
+}
+
+function getSourceFamily(tabUrl) {
+  try {
+    const hostname = new URL(tabUrl).hostname;
+    if (hostname === "abonnes.efl.fr") {
+      return "naxis";
+    }
+    if (hostname === "ifrs.org" || hostname.endsWith(".ifrs.org")) {
+      return "ifrs";
+    }
+  } catch {
+    return "unknown";
+  }
+
+  return "unknown";
 }
 
 function logInfo(message, details = undefined) {

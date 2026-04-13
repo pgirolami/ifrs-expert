@@ -537,11 +537,13 @@ class TestAnswerCommand:
                 ifric_d=4,
                 sic_d=3,
                 ps_d=2,
+                naxis_d=5,
                 ifrs_min_score=0.61,
                 ias_min_score=0.54,
                 ifric_min_score=0.50,
                 sic_min_score=0.49,
                 ps_min_score=0.48,
+                naxis_min_score=0.47,
                 content_min_score=0.1,
                 expand_to_section=True,
                 expand=1,
@@ -568,6 +570,7 @@ class TestAnswerCommand:
             "IFRIC": 4,
             "SIC": 3,
             "PS": 2,
+            "NAXIS": 5,
         }
         assert getattr(request, "document_min_score_by_type") == {
             "IFRS": 0.61,
@@ -575,6 +578,7 @@ class TestAnswerCommand:
             "IFRIC": 0.50,
             "SIC": 0.49,
             "PS": 0.48,
+            "NAXIS": 0.47,
         }
         assert getattr(request, "content_min_score") == 0.1
         assert getattr(request, "expand_to_section") is True

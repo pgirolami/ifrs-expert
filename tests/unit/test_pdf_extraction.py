@@ -128,7 +128,8 @@ class TestExtractChunks:
         from src.pdf.extraction import extract_chunks
 
         pdf_path = Path(__file__).parent.parent.parent / "examples" / "ifrs" / "ifrs-9-financial-instruments 2025 required.pdf"
-        assert pdf_path.exists(), f"Missing test PDF: {pdf_path}"
+        if not pdf_path.exists():
+            pytest.skip(f"Missing test PDF: {pdf_path}")
         chunks = extract_chunks(pdf_path)
 
         # Find section 6.5.2
@@ -141,10 +142,7 @@ class TestExtractChunks:
         assert chunk_6_5_2 is not None, "Section 6.5.2 not found in extracted chunks"
 
         # Verify the section ends with "IAS 21." (the complete reference)
-        assert chunk_6_5_2.text.endswith("IAS 21."), (
-            f"Section 6.5.2 is truncated. Expected to end with 'IAS 21.' but got: "
-            f"...{chunk_6_5_2.text[-100:]}"
-        )
+        assert chunk_6_5_2.text.endswith("IAS 21."), f"Section 6.5.2 is truncated. Expected to end with 'IAS 21.' but got: ...{chunk_6_5_2.text[-100:]}"
 
         # Verify the full content includes the complete hedge of net investment text
         assert "hedge of a net investment in a foreign operation as defined in" in chunk_6_5_2.text

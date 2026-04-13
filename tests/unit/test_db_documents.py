@@ -43,6 +43,7 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
         "source_url",
         "canonical_url",
         "captured_at",
+        "source_domain",
         "document_type",
         "background_text",
         "issue_text",
@@ -57,13 +58,35 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
 
 
 def test_infer_document_type_returns_supported_prefixes() -> None:
-    """Document types should be inferred from the leading doc_uid prefix."""
+    """Document types should fall back to supported doc_uid prefixes when no DB row exists."""
     assert infer_document_type("ifrs9") == "IFRS"
     assert infer_document_type("ias21") == "IAS"
     assert infer_document_type("ifric16") == "IFRIC"
     assert infer_document_type("sic25") == "SIC"
     assert infer_document_type("ps1") == "PS"
+    assert infer_document_type("naxis-qrifrs-c2a8e6f292f99e-efl") == "NAXIS"
     assert infer_document_type("custom-doc") is None
+
+
+def test_infer_document_type_prefers_persisted_document_type(temp_db: Path) -> None:
+    """Document-type inference should prefer persisted metadata over doc_uid prefixes."""
+    from src.db.documents import DocumentStore
+
+    with DocumentStore() as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="custom-doc",
+                source_type="html",
+                source_title="Custom Naxis document",
+                source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+                canonical_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+                captured_at="2026-04-04T14:23:10Z",
+                source_domain="abonnes.efl.fr",
+                document_type="NAXIS",
+            )
+        )
+
+    assert infer_document_type("custom-doc") == "NAXIS"
 
 
 def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> None:
@@ -77,6 +100,7 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
         source_url="https://www.ifrs.org/ifrs9.html",
         canonical_url="https://www.ifrs.org/ifrs9.html",
         captured_at="2026-04-04T14:23:10Z",
+        source_domain="www.ifrs.org",
         background_text="Background text",
         issue_text="Issue text",
         objective_text="Objective text",
@@ -93,6 +117,7 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
     assert fetched.doc_uid == "ifrs9"
     assert fetched.source_type == "html"
     assert fetched.canonical_url == "https://www.ifrs.org/ifrs9.html"
+    assert fetched.source_domain == "www.ifrs.org"
     assert fetched.document_type == "IFRS"
     assert fetched.background_text == "Background text"
     assert fetched.issue_text == "Issue text"

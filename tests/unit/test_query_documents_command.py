@@ -168,7 +168,7 @@ def test_query_documents_returns_error_for_unsupported_document_type() -> None:
 
     result = command.execute()
 
-    assert result == "Error: document_type must be one of IFRS, IAS, IFRIC, SIC, PS"
+    assert result == "Error: document_type must be one of IFRS, IAS, IFRIC, SIC, PS, NAXIS"
 
 
 def test_query_documents_returns_error_when_index_missing() -> None:
@@ -189,6 +189,48 @@ def test_query_documents_returns_error_when_index_missing() -> None:
     result = command.execute()
 
     assert result == "Error: No document index found. Please run 'store' command first."
+
+
+def test_query_documents_returns_naxis_documents() -> None:
+    """The command should include NAXIS as a supported document family."""
+    from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+
+    document_store = InMemoryDocumentStore()
+    with document_store as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="naxis-qrifrs-c2a8e6f292f99e-efl",
+                source_type="html",
+                source_title="Mémento IFRS 2026",
+                source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+                canonical_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+                captured_at="2026-04-12T19:00:29Z",
+                source_domain="abonnes.efl.fr",
+                document_type="NAXIS",
+                intro_text="Cadre conceptuel de l'information financière",
+            )
+        )
+
+    command = QueryDocumentsCommand(
+        query="cadre conceptuel",
+        config=QueryDocumentsConfig(
+            document_vector_store=MockDocumentVectorStore(
+                [
+                    {"doc_uid": "naxis-qrifrs-c2a8e6f292f99e-efl", "score": 0.91},
+                ]
+            ),
+            document_store=document_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=QueryDocumentsOptions(document_type="NAXIS", d=2, min_score=0.6, verbose=False),
+    )
+
+    result = command.execute()
+
+    data = json.loads(result)
+    assert [item["doc_uid"] for item in data] == ["naxis-qrifrs-c2a8e6f292f99e-efl"]
+    assert data[0]["document_type"] == "NAXIS"
 
 
 def test_query_documents_verbose_output_starts_with_options() -> None:

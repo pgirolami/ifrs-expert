@@ -11,6 +11,7 @@ from src.commands.constants import (
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
     DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_NAXIS_DOCUMENTS,
     DEFAULT_D_FOR_PS_DOCUMENTS,
     DEFAULT_D_FOR_SIC_DOCUMENTS,
     DEFAULT_EXPAND,
@@ -18,6 +19,7 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_NAXIS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
@@ -71,11 +73,13 @@ class RetrieveOptions:
     ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
     sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
     ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
+    naxis_d: int = DEFAULT_D_FOR_NAXIS_DOCUMENTS
     ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
     ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
     ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
     sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
     ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
+    naxis_min_score: float = DEFAULT_MIN_SCORE_FOR_NAXIS_DOCUMENTS
     content_min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
     expand_to_section: bool = False
     verbose: bool = DEFAULT_VERBOSE
@@ -116,6 +120,7 @@ class RetrieveCommand:
                 "IFRIC": self._options.ifric_d,
                 "SIC": self._options.sic_d,
                 "PS": self._options.ps_d,
+                "NAXIS": self._options.naxis_d,
             },
             document_min_score_by_type={
                 "IFRS": self._options.ifrs_min_score,
@@ -123,6 +128,7 @@ class RetrieveCommand:
                 "IFRIC": self._options.ifric_min_score,
                 "SIC": self._options.sic_min_score,
                 "PS": self._options.ps_min_score,
+                "NAXIS": self._options.naxis_min_score,
             },
             content_min_score=(self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_RETRIEVE_CONTENT_MIN_SCORE),
             expand_to_section=self._options.expand_to_section,
@@ -185,6 +191,7 @@ class RetrieveCommand:
             "ifric_d": self._options.ifric_d,
             "sic_d": self._options.sic_d,
             "ps_d": self._options.ps_d,
+            "naxis_d": self._options.naxis_d,
         }
         for option_name, option_value in per_type_d_values.items():
             if option_value <= 0:

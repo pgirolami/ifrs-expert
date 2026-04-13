@@ -9,7 +9,8 @@
   ],
   "host_permissions": [
     "https://ifrs.org/*",
-    "https://*.ifrs.org/*"
+    "https://*.ifrs.org/*",
+    "https://abonnes.efl.fr/*"
   ],
   "background": {
     "service_worker": "service_worker.js",

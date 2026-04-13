@@ -140,7 +140,7 @@ class StoreCommand:
                 explicit_doc_uid=self._explicit_doc_uid,
             )
             doc_uid = extracted_document.document.doc_uid
-            extracted_document.document.document_type = infer_document_type(doc_uid)
+            extracted_document.document.document_type = extracted_document.document.document_type or infer_document_type(doc_uid)
 
             self._truncate_oversized_chunks(extracted_document.chunks)
 
@@ -414,12 +414,13 @@ class StoreCommand:
     def _document_payload(
         self,
         document: DocumentRecord,
-    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
+    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
         return (
             document.source_type,
             document.source_title,
             document.source_url,
             document.canonical_url,
+            document.source_domain,
             document.document_type,
             document.background_text,
             document.issue_text,

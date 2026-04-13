@@ -14,6 +14,7 @@ from src.commands.constants import (
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
     DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_NAXIS_DOCUMENTS,
     DEFAULT_D_FOR_PS_DOCUMENTS,
     DEFAULT_D_FOR_SIC_DOCUMENTS,
     DEFAULT_EXPAND,
@@ -21,6 +22,7 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_NAXIS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
@@ -85,11 +87,13 @@ class AnswerOptions:
     ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
     sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
     ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
+    naxis_d: int = DEFAULT_D_FOR_NAXIS_DOCUMENTS
     ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
     ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
     ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
     sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
     ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
+    naxis_min_score: float = DEFAULT_MIN_SCORE_FOR_NAXIS_DOCUMENTS
     content_min_score: float | None = None
     expand_to_section: bool = False
     expand: int = DEFAULT_EXPAND
@@ -251,11 +255,13 @@ class AnswerCommand:
         self.ifric_d = resolved_options.ifric_d
         self.sic_d = resolved_options.sic_d
         self.ps_d = resolved_options.ps_d
+        self.naxis_d = resolved_options.naxis_d
         self.ifrs_min_score = resolved_options.ifrs_min_score
         self.ias_min_score = resolved_options.ias_min_score
         self.ifric_min_score = resolved_options.ifric_min_score
         self.sic_min_score = resolved_options.sic_min_score
         self.ps_min_score = resolved_options.ps_min_score
+        self.naxis_min_score = resolved_options.naxis_min_score
         self.content_min_score = resolved_options.content_min_score if resolved_options.content_min_score is not None else self.min_score
         self.expand_to_section = resolved_options.expand_to_section
         self.expand = resolved_options.expand
@@ -330,6 +336,7 @@ class AnswerCommand:
             "ifric_d": self.ifric_d,
             "sic_d": self.sic_d,
             "ps_d": self.ps_d,
+            "naxis_d": self.naxis_d,
         }
         for option_name, option_value in per_type_d_values.items():
             if option_value <= 0:
@@ -406,6 +413,7 @@ class AnswerCommand:
                     "IFRIC": self.ifric_d,
                     "SIC": self.sic_d,
                     "PS": self.ps_d,
+                    "NAXIS": self.naxis_d,
                 },
                 document_min_score_by_type={
                     "IFRS": self.ifrs_min_score,
@@ -413,6 +421,7 @@ class AnswerCommand:
                     "IFRIC": self.ifric_min_score,
                     "SIC": self.sic_min_score,
                     "PS": self.ps_min_score,
+                    "NAXIS": self.naxis_min_score,
                 },
                 content_min_score=self.content_min_score,
                 expand_to_section=self.expand_to_section,
