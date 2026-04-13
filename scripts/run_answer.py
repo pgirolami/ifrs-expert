@@ -99,10 +99,6 @@ CANNED_RESPONSE: Final[str] = json.dumps(
                 "references": ["IFRIC 16.8", "IFRIC 16.11"],
             },
         ],
-        "operational_points_fr": [
-            "Vérifier si la créance est bien un élément monétaire intragroupe.",
-            "Documenter formellement la relation de couverture et la méthode d'évaluation de l'efficacité.",
-        ],
     },
     ensure_ascii=False,
 )

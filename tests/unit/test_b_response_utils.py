@@ -243,7 +243,6 @@ class TestConvertJsonToMarkdown:
                     "references": [],
                 },
             ],
-            "operational_points_fr": ["Point opérationnel 1", "Point opérationnel 2"],
         }
 
         result = convert_json_to_markdown(b_json, question="Test question?", doc_uids=["doc1", "doc2"])
@@ -282,12 +281,6 @@ class TestConvertJsonToMarkdown:
         assert "**OUI**" in rec_section
         assert "Test justification text" in rec_section
 
-        # Check operational points with formatted list
-        ops_section_start = lines.index("## Points Opérationnels")
-        ops_section = "\n".join(lines[ops_section_start : ops_section_start + 4])
-        assert "   - Point opérationnel 1" in ops_section
-        assert "   - Point opérationnel 2" in ops_section
-
         # Check summary table structure
         table_start = lines.index("| Approche | Applicabilité | Conditions |")
         table_rows = "\n".join(lines[table_start : table_start + 4])
@@ -319,7 +312,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "non", "justification": "Not applicable"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(b_json)
@@ -343,7 +335,6 @@ class TestConvertJsonToMarkdown:
                     "references": [],
                 }
             ],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(b_json)
@@ -368,7 +359,6 @@ class TestConvertJsonToMarkdown:
                     "references": [],
                 }
             ],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(b_json)
@@ -392,7 +382,6 @@ class TestConvertJsonToMarkdown:
                     "references": [],
                 }
             ],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(b_json)
@@ -406,7 +395,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(
@@ -435,7 +423,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(
@@ -463,7 +450,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(
@@ -489,7 +475,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(
@@ -508,7 +493,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(b_json, question="Test question?")
@@ -528,7 +512,6 @@ class TestConvertJsonToMarkdown:
             "assumptions_fr": [],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         result = convert_json_to_markdown(

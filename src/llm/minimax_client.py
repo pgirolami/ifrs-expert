@@ -19,7 +19,7 @@ class MinimaxClient(OpenAIClient):
         self,
         api_key: str,
         model: str,
-        reasoning_effort: ReasoningLevel = "low",
+        reasoning_effort: ReasoningLevel = "high",
     ) -> None:
         """Initialize the Minimax client.
 

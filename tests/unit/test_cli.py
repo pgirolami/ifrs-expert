@@ -18,7 +18,6 @@ VALID_PROMPT_B_RESPONSE = """{
     "justification": "Justification de test"
   },
   "approaches": [],
-  "operational_points_fr": []
 }"""
 
 
@@ -46,7 +45,6 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
             "assumptions_fr": ["Hypothèse de test"],
             "recommendation": {"answer": "oui", "justification": "Justification de test"},
             "approaches": [],
-            "operational_points_fr": [],
         },
         prompt_b_markdown="# Markdown answer",
     )

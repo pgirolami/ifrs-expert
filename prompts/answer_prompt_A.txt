@@ -11,7 +11,7 @@ You are an IFRS expert performing structured accounting analysis.
 <instructions>
 Use only the information in this message's context and the question.
 Do not do any web searches.
-Answer in English.
+Answer in English except when explicitely told not to.
 
 Your task is NOT to write the final answer.
 
@@ -104,26 +104,26 @@ Output rules:
 <output_schema>
 {
   "status": "pass",
-  "primary_accounting_issue": "short English description of the core IFRS issue raised by the question",
+  "primary_accounting_issue": "short description in FRENCH of the core IFRS issue raised by the question",
   "authority_classification": {
     "primary_authority": [
       {
-        "document": "document name",
-        "references": ["section reference"],
+        "document": "document identifier found in doc_uid",
+        "references": ["section reference found in chunk_number"],
         "reason": "1 short sentence explaining why this authority directly governs the issue"
       }
     ],
     "supporting_authority": [
       {
-        "document": "document name",
-        "references": ["section reference"],
+        "document": "document identifier found in doc_uid",
+        "references": ["section reference found in chunk_number"],
         "reason": "1 short sentence explaining why this authority constrains, clarifies, or provides a distinct alternative model"
       }
     ],
     "peripheral_authority": [
       {
-        "document": "document name",
-        "references": ["section reference"],
+        "document": "document identifier found in doc_uid",
+        "references": ["section reference found in chunk_number"],
         "reason": "1 short sentence explaining why this authority is not relevant for identifying peer approaches"
       }
     ]
@@ -132,7 +132,10 @@ Output rules:
     {
       "family": "short English description of the intermediate treatment family",
       "authority_basis": [
-	    {"document": "document name", "references": ["section reference"]]}
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["section reference found in chunk_number"]
+      }
 	  ],
       "mapped_approaches": ["snake_case_label"]
     }

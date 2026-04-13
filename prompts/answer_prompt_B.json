@@ -40,8 +40,7 @@
       "required": [
         "assumptions_fr",
         "recommendation",
-        "approaches",
-        "operational_points_fr"
+        "approaches"
       ],
       "properties": {
         "assumptions_fr": {
@@ -81,14 +80,6 @@
           "description": "List of identified approaches with applicability analysis",
           "items": {
             "$ref": "#/definitions/Approach"
-          }
-        },
-        "operational_points_fr": {
-          "type": "array",
-          "description": "Operational implementation points in French",
-          "items": {
-            "type": "string",
-            "description": "Short point including timing, constraints or effort when relevant"
           }
         }
       }

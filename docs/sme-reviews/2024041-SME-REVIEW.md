@@ -205,3 +205,18 @@ How are the transaction costs treated on initial recognition and on sale?
 The asset is not classified initially at fair value through profit or loss (FVTPL), so the entity recognises the financial asset at its fair value and adds the purchase commission (that is, a total of C102). At the end of the entity’s financial year, the asset is recorded at C105, without regard to the commission of C4 payable on sale. The change in fair value of C3 recognised in other comprehensive income includes the purchase commission of C2 payable at the acquisition date.
 
 Transaction selling costs are not a subsequent change in fair value that permits to be recognised in OCI, because transaction costs are not deducted in determining fair value (or ‘gains and losses’, as referred to in the standard). IFRS 9 does not otherwise require or permit transaction costs on sale of an equity instrument designated at FVOCI to be recognised in OCI or equity. Therefore, if the asset were sold, the commission payable of C4 would be recognised as an expense in profit or loss. However, in some situations, judgement might be required in determining what is a transaction cost on disposal and what is part of the financial instrument’s fair value.
+
+---
+
+## 8. TODO
+
+- [✅] Revisit the French wording of the reformulation section in the Q1.0 answer.
+  - Changed to be output in French
+- [✅] Remove "Points Opérationnels"
+  - Done
+- [✅] Ask for a concrete Lefebvre example that shows the preferred balance between narrow answer and broader context.
+  - SME says it actually doesn't happen often
+- [🚧] Decide whether the product should support two distinct answer modes or one mode with optional expansion
+  - For now, we focus on the current scope and get it working aross the corpus
+- [ ] Evaluate how to integrate practical secondary sources such as PwC Viewpoint and Lefebvre into the retrieval corpus.
+- [ ] Review whether rejected approaches should be hidden for mechanical questions.

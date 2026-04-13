@@ -113,12 +113,12 @@ def _build_assumptions(assumptions: list[str]) -> list[str]:
     return lines
 
 
-def _build_recommendation(recommendation: dict, operational_points: list[str]) -> list[str]:
+def _build_recommendation(recommendation: dict) -> list[str]:
     """Build the recommendation section."""
     answer = _format_applicability(recommendation.get("answer", "N/A"))
     justification = recommendation.get("justification", "")
 
-    lines = [
+    return [
         "",
         "## Recommandation",
         "",
@@ -127,13 +127,6 @@ def _build_recommendation(recommendation: dict, operational_points: list[str]) -
         f"{justification}",
         "",
     ]
-
-    if operational_points:
-        lines.extend(["## Points Opérationnels", ""])
-        lines.extend(f"   - {point}" for point in operational_points)
-        lines.append("")
-
-    return lines
 
 
 def _build_approaches_summary(approaches: list[dict]) -> list[str]:
@@ -375,7 +368,6 @@ def _convert_json_to_markdown_with_options(b_json: dict, options: MarkdownOption
     """
     assumptions = b_json.get("assumptions_fr", [])
     recommendation = b_json.get("recommendation", {})
-    operational_points = b_json.get("operational_points_fr", [])
     approaches = b_json.get("approaches", [])
 
     lines: list[str] = []
@@ -388,7 +380,7 @@ def _convert_json_to_markdown_with_options(b_json: dict, options: MarkdownOption
         )
     )
     lines.extend(_build_assumptions(assumptions))
-    lines.extend(_build_recommendation(recommendation, operational_points))
+    lines.extend(_build_recommendation(recommendation))
     lines.extend(_build_approaches_summary(approaches))
 
     for idx, approach in enumerate(approaches, start=1):

@@ -27,7 +27,7 @@ Input guardrail:
   "questions_fr": ["..."]
 }
 - Translate the clarification questions into French faithfully
-- In that case, do NOT generate assumptions, recommendation, approaches, references, or operational points
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
 - Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
 
 Assumptions:
@@ -148,8 +148,5 @@ Field rules:
         }
       ]
     }
-  ],
-  "operational_points_fr": [
-    "short point including timing, constraints or effort when relevant"
   ]
 }

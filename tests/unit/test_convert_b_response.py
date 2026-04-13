@@ -66,7 +66,6 @@ class TestConvertFile:
             "assumptions_fr": ["Test assumption"],
             "recommendation": {"answer": "oui", "justification": "Test"},
             "approaches": [],
-            "operational_points_fr": [],
         }
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -109,7 +108,7 @@ class TestConvertDirectory:
             subdir = Path(tmpdir) / "run1"
             subdir.mkdir()
 
-            b_json = {"assumptions_fr": [], "recommendation": {"answer": "oui", "justification": "Test"}, "approaches": [], "operational_points_fr": []}
+            b_json = {"assumptions_fr": [], "recommendation": {"answer": "oui", "justification": "Test"}, "approaches": []}
             (subdir / "B-response.md").write_text(json.dumps(b_json))
 
             # Create another subdirectory with A-prompt.txt

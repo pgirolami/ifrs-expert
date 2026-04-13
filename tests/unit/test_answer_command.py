@@ -37,8 +37,7 @@ VALID_PROMPT_B_RESPONSE = """{
         }
       ]
     }
-  ],
-  "operational_points_fr": ["Point opérationnel de test"]
+  ]
 }"""
 
 
