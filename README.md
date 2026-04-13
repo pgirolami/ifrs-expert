@@ -217,7 +217,7 @@ Promptfoo details, commands, storage layout, and archive conventions are documen
 This sections sets up a quick demo with only 2 documents (IFRS-9 & IFRIC-16).
 
 ### Set up
-The assistant supports `openai`, `openai-codex`, `anthropic`, and `mistral` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
+The assistant supports `openai`, `openai-codex`, `anthropic`, `mistral`, `minimax`, and `ollama` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
 
 Example using Mistral:
 
@@ -234,6 +234,16 @@ export LLM_PROVIDER=openai-codex
 export OPENAI_CODEX_MODEL=gpt-5.4
 # optional override if you do not use ~/.codex/auth.json
 # export CODEX_AUTH_FILE=/path/to/auth.json
+```
+
+Example using local Ollama via its OpenAI-compatible API:
+
+```bash
+export LLM_PROVIDER=ollama
+export OLLAMA_MODEL=llama3.2
+# optional overrides
+# export OLLAMA_BASE_URL=http://localhost:11434/v1
+# export OLLAMA_API_KEY=ollama
 ```
 
 Run the full demo flow end-to-end with the following

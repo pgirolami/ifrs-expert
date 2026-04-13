@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
+if TYPE_CHECKING:
+    from pathlib import Path
+
 from src.llm.client import get_client
 from src.llm.minimax_client import MinimaxClient
+from src.llm.ollama_client import OllamaClient
 from src.llm.openai_codex_client import OpenAICodexClient
 
 
@@ -81,9 +85,32 @@ def test_get_client_minimax_constructs_successfully(monkeypatch: pytest.MonkeyPa
     assert isinstance(client, MinimaxClient)
 
 
-def test_get_client_unknown_provider_lists_openai_codex(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Unknown provider errors should advertise the Codex provider too."""
+def test_get_client_ollama_requires_model_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Ollama provider should fail when OLLAMA_MODEL is missing."""
+    monkeypatch.setenv("LLM_PROVIDER", "ollama")
+    monkeypatch.delenv("OLLAMA_MODEL", raising=False)
+
+    with pytest.raises(ValueError, match="OLLAMA_MODEL"):
+        get_client()
+
+
+def test_get_client_ollama_constructs_successfully_without_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Ollama provider should construct successfully without OLLAMA_API_KEY."""
+    monkeypatch.setenv("LLM_PROVIDER", "ollama")
+    monkeypatch.setenv("OLLAMA_MODEL", "llama3.2")
+    monkeypatch.delenv("OLLAMA_API_KEY", raising=False)
+
+    client = get_client()
+
+    assert isinstance(client, OllamaClient)
+
+
+def test_get_client_unknown_provider_lists_openai_codex_and_ollama(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Unknown provider errors should advertise the Codex and Ollama providers too."""
     monkeypatch.setenv("LLM_PROVIDER", "unknown-provider")
 
     with pytest.raises(ValueError, match="openai-codex"):
+        get_client()
+
+    with pytest.raises(ValueError, match="ollama"):
         get_client()

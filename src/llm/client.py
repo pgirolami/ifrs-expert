@@ -8,6 +8,7 @@ from src.llm.base import MISSING_API_KEY_MESSAGE, MISSING_MODEL_MESSAGE, LLMClie
 from src.llm.codex_auth import CodexAuthLoader
 from src.llm.minimax_client import MinimaxClient
 from src.llm.mistral_client import MistralClient
+from src.llm.ollama_client import OLLAMA_API_KEY_PLACEHOLDER, OLLAMA_BASE_URL, OllamaClient
 from src.llm.openai_client import OpenAIClient
 from src.llm.openai_codex_client import OpenAICodexClient
 
@@ -27,7 +28,7 @@ def get_client() -> LLMClient:
     """
     provider = os.getenv("LLM_PROVIDER")
     if not provider:
-        msg = "LLM_PROVIDER environment variable is required. Set it to: openai, openai-codex, anthropic, or mistral"
+        msg = "LLM_PROVIDER environment variable is required. Set it to: openai, openai-codex, anthropic, mistral, minimax, or ollama"
         raise ValueError(msg)
     provider = provider.lower()
 
@@ -56,7 +57,13 @@ def get_client() -> LLMClient:
         model = _require_env_var("MINIMAX_MODEL", MISSING_MODEL_MESSAGE)
         return MinimaxClient(api_key=api_key, model=model)
 
-    error_msg = f"Unknown LLM provider: {provider}. Supported providers: openai, openai-codex, anthropic, mistral, minimax"
+    if provider == "ollama":
+        model = _require_env_var("OLLAMA_MODEL", MISSING_MODEL_MESSAGE)
+        api_key = os.getenv("OLLAMA_API_KEY", OLLAMA_API_KEY_PLACEHOLDER)
+        base_url = os.getenv("OLLAMA_BASE_URL", OLLAMA_BASE_URL)
+        return OllamaClient(model=model, api_key=api_key, base_url=base_url)
+
+    error_msg = f"Unknown LLM provider: {provider}. Supported providers: openai, openai-codex, anthropic, mistral, minimax, ollama"
     raise ValueError(error_msg)
 
 
