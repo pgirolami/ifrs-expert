@@ -1227,6 +1227,9 @@ def _find_previous_named_anchor_id(node: Tag) -> str | None:
             anchor_id = _tag_attribute_as_string(current_sibling, "id")
             if anchor_id and not anchor_id.startswith("_JV"):
                 return anchor_id
+            context_anchor_id = _tag_attribute_as_string(current_sibling, "data-ifrs-expert-context-ref-id")
+            if context_anchor_id and not context_anchor_id.startswith("_JV"):
+                return context_anchor_id
         current_sibling = current_sibling.previous_sibling
     return None
 

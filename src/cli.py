@@ -439,7 +439,11 @@ def main() -> int:
         return 1
 
     logger.info(f"CLI command received: {args.command}")
-    result = _execute_command(args)
+    try:
+        result = _execute_command(args)
+    except Exception:
+        logger.exception(f"CLI command failed: {args.command}")
+        raise
 
     if result.startswith("Error:"):
         logger.error(result)

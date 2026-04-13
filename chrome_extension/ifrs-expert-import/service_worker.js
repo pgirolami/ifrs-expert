@@ -733,6 +733,117 @@ async function runNavisPageTask(task) {
     return document.querySelector(questionSelector);
   }
 
+  function getContentRootChildren(contentRoot) {
+    return Array.from(contentRoot.children);
+  }
+
+  function isContentAnchor(node) {
+    return node instanceof HTMLElement && node.tagName === "A" && node.id !== "";
+  }
+
+  function isHeadingBlock(node) {
+    return node instanceof HTMLElement && node.tagName === "DIV" && node.classList.contains("qw-level");
+  }
+
+  function getHeadingLevel(node) {
+    if (!isHeadingBlock(node)) {
+      return null;
+    }
+    const levelClass = Array.from(node.classList).find((className) => /^qw-level-\d+$/.test(className));
+    if (levelClass === undefined) {
+      return null;
+    }
+    const parsedLevel = Number.parseInt(levelClass.replace("qw-level-", ""), 10);
+    return Number.isNaN(parsedLevel) ? null : parsedLevel;
+  }
+
+  function getDirectChildAnchorIndexById(contentRoot, anchorId) {
+    return getContentRootChildren(contentRoot).findIndex((node) => isContentAnchor(node) && node.id === anchorId);
+  }
+
+  function getPathTitleAnchors(titleAnchor) {
+    if (!titleAnchor.id.includes("-")) {
+      return [titleAnchor];
+    }
+    return buildAnchorPrefixes(titleAnchor.id)
+      .map((anchorId) => getTitleAnchorById(anchorId))
+      .filter((anchor) => anchor !== null);
+  }
+
+  function buildCapturedFragmentHtml(contentRoot, selectedAnchor) {
+    // Some Navis leaf selections only scroll within an already-rendered chapter view.
+    // Capture the selected section slice, not the full question-export subtree, while
+    // prepending the minimal ancestor heading chain needed to preserve hierarchy.
+    if (isChapterNode(selectedAnchor)) {
+      return contentRoot.outerHTML;
+    }
+
+    const selectedRefId = selectedAnchor.dataset.refId ?? "";
+    if (selectedRefId === "") {
+      return contentRoot.outerHTML;
+    }
+
+    const selectedStartIndex = getDirectChildAnchorIndexById(contentRoot, selectedRefId);
+    if (selectedStartIndex < 0) {
+      return contentRoot.outerHTML;
+    }
+
+    const contentChildren = getContentRootChildren(contentRoot);
+    const selectedHeadingLevel = getHeadingLevel(contentChildren[selectedStartIndex + 1] ?? null);
+    if (selectedHeadingLevel === null) {
+      return contentRoot.outerHTML;
+    }
+
+    const nodesToClone = [];
+    const appendedNodeIndexes = new Set();
+    const pathAnchors = getPathTitleAnchors(selectedAnchor);
+    const ancestorRefIds = pathAnchors
+      .filter((anchor) => !isRootNode(anchor) && !isChapterNode(anchor))
+      .map((anchor) => anchor.dataset.refId ?? "")
+      .filter((refId) => refId && refId !== selectedRefId);
+
+    for (const ancestorRefId of ancestorRefIds) {
+      const ancestorIndex = getDirectChildAnchorIndexById(contentRoot, ancestorRefId);
+      if (ancestorIndex < 0 || appendedNodeIndexes.has(ancestorIndex)) {
+        continue;
+      }
+      const ancestorAnchor = contentChildren[ancestorIndex];
+      const ancestorAnchorClone = ancestorAnchor.cloneNode(true);
+      ancestorAnchorClone.dataset.ifrsExpertContextRefId = ancestorRefId;
+      ancestorAnchorClone.dataset.ifrsExpertContextOnly = "true";
+      ancestorAnchorClone.removeAttribute("id");
+      nodesToClone.push(ancestorAnchorClone);
+      appendedNodeIndexes.add(ancestorIndex);
+      const ancestorHeading = contentChildren[ancestorIndex + 1] ?? null;
+      if (isHeadingBlock(ancestorHeading) && !appendedNodeIndexes.has(ancestorIndex + 1)) {
+        nodesToClone.push(ancestorHeading.cloneNode(true));
+        appendedNodeIndexes.add(ancestorIndex + 1);
+      }
+    }
+
+    for (let index = selectedStartIndex; index < contentChildren.length; index += 1) {
+      const node = contentChildren[index];
+      if (index > selectedStartIndex && isContentAnchor(node)) {
+        const nextNode = contentChildren[index + 1] ?? null;
+        const nextHeadingLevel = getHeadingLevel(nextNode);
+        if (nextHeadingLevel !== null && nextHeadingLevel <= selectedHeadingLevel) {
+          break;
+        }
+      }
+      if (appendedNodeIndexes.has(index)) {
+        continue;
+      }
+      nodesToClone.push(node.cloneNode(true));
+      appendedNodeIndexes.add(index);
+    }
+
+    const fragmentRoot = contentRoot.cloneNode(false);
+    for (const node of nodesToClone) {
+      fragmentRoot.appendChild(node);
+    }
+    return fragmentRoot.outerHTML;
+  }
+
   function buildContentSignature() {
     const contentRoot = getContentRoot();
     if (contentRoot === null) {
@@ -972,7 +1083,7 @@ async function runNavisPageTask(task) {
       pageTitle: getTitleAnchorText(selectedAnchor),
       url: window.location.href,
       canonicalUrl: window.location.href,
-      fragmentHtml: contentRoot.outerHTML,
+      fragmentHtml: buildCapturedFragmentHtml(contentRoot, selectedAnchor),
     };
   }
 

@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+import src.cli as cli
 from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result
 from src.models.answer_command_result import AnswerCommandResult
 
@@ -271,6 +272,37 @@ def test_execute_command_dispatches_ingest_with_scope(monkeypatch: pytest.Monkey
 
     assert output == "ingest output"
     assert captured_scopes == ["sections"]
+
+
+def test_main_logs_and_reraises_unhandled_command_exceptions(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should log unexpected command exceptions before re-raising them."""
+    captured_messages: list[str] = []
+
+    class FakeParser:
+        def parse_args(self) -> argparse.Namespace:
+            return argparse.Namespace(command="ingest")
+
+        def print_help(self) -> None:
+            return None
+
+    def _raise_command_error(args: argparse.Namespace) -> str:
+        del args
+        raise RuntimeError("boom")
+
+    def _capture_exception(message: str, *args: object, **kwargs: object) -> None:
+        del args, kwargs
+        captured_messages.append(message)
+
+    monkeypatch.setattr(cli, "load_dotenv", lambda: None)
+    monkeypatch.setattr(cli, "setup_logging", lambda: None)
+    monkeypatch.setattr(cli, "_build_parser", lambda: FakeParser())
+    monkeypatch.setattr(cli, "_execute_command", _raise_command_error)
+    monkeypatch.setattr(cli.logger, "exception", _capture_exception)
+
+    with pytest.raises(RuntimeError, match="boom"):
+        cli.main()
+
+    assert captured_messages == ["CLI command failed: ingest"]
 
 
 def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch) -> None:

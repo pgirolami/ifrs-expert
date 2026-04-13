@@ -305,6 +305,90 @@ class TestHtmlExtractor:
         assert any(chunk.chunk_number == "12501" for chunk in extracted_document.chunks)
         assert any(chunk.chunk_id == "P8A8E6F292F99E-EFL" for chunk in extracted_document.chunks)
 
+    def test_extract_deduplicates_navis_context_headings_without_repeated_anchor_ids(self, tmp_path: Path) -> None:
+        """Navis bundle context headings should preserve hierarchy via data attributes without duplicating raw anchor ids."""
+        bundle_html_path = tmp_path / "navis-context-bundle.html"
+        bundle_sidecar_path = tmp_path / "navis-context-bundle.json"
+        manifest_payload = {
+            "chapter_ref_id": "C-TEST-EFL",
+            "chapter_title": "CHAPITRE TEST",
+            "product_key": "QRIFRS",
+            "page_ref_ids": ["N-LEAF-1-EFL", "N-LEAF-2-EFL"],
+            "page_titles": ["Leaf One", "Leaf Two"],
+        }
+        manifest_json = json.dumps(manifest_payload)
+        bundle_html_path.write_text(
+            """
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <title>CHAPITRE TEST</title>
+              </head>
+              <body>
+                <script id="ifrs-expert-navis-manifest" type="application/json">"""
+            + manifest_json
+            + """</script>
+                <div id="ifrs-expert-navis-bundle" data-chapter-ref-id="C-TEST-EFL">
+                  <section class="ifrs-expert-navis-page" data-page-ref-id="N-LEAF-1-EFL" data-page-title="Leaf One">
+                    <div class="question question-export">
+                      <a data-ifrs-expert-context-ref-id="N-ANCESTOR-EFL" data-ifrs-expert-context-only="true"></a>
+                      <div class="qw-level qw-level-4"><div class="qw-level-wrapper"><div class="qw-level-title">A. Généralités</div></div></div>
+                      <a id="N-LEAF-1-EFL"></a>
+                      <div class="qw-level qw-level-7"><div class="qw-level-wrapper"><div class="qw-level-title">Leaf One</div></div></div>
+                      <a id="P-LEAF-1-EFL"></a>
+                      <div class="qw-par qw-par-p"><div class="qw-p-no"><span class="qw-art">10001</span></div><div class="qw-p-body"><span class="BASEXAlinea">Premier texte.</span></div></div>
+                    </div>
+                  </section>
+                  <section class="ifrs-expert-navis-page" data-page-ref-id="N-LEAF-2-EFL" data-page-title="Leaf Two">
+                    <div class="question question-export">
+                      <a data-ifrs-expert-context-ref-id="N-ANCESTOR-EFL" data-ifrs-expert-context-only="true"></a>
+                      <div class="qw-level qw-level-4"><div class="qw-level-wrapper"><div class="qw-level-title">A. Généralités</div></div></div>
+                      <a id="N-LEAF-2-EFL"></a>
+                      <div class="qw-level qw-level-7"><div class="qw-level-wrapper"><div class="qw-level-title">Leaf Two</div></div></div>
+                      <a id="P-LEAF-2-EFL"></a>
+                      <div class="qw-par qw-par-p"><div class="qw-p-no"><span class="qw-art">10002</span></div><div class="qw-p-body"><span class="BASEXAlinea">Deuxième texte.</span></div></div>
+                    </div>
+                  </section>
+                </div>
+              </body>
+            </html>
+            """,
+            encoding="utf-8",
+        )
+        bundle_sidecar_path.write_text(
+            json.dumps(
+                {
+                    "url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C-TEST-EFL",
+                    "title": "CHAPITRE TEST",
+                    "captured_at": "2026-04-12T19:00:29Z",
+                    "source_domain": "abonnes.efl.fr",
+                    "canonical_url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C-TEST-EFL",
+                    "extension_version": "0.1.0",
+                    "content_type": "text/html",
+                    "capture_format": "navis-chapter-bundle/v1",
+                    "capture_mode": "chapter",
+                    "product_key": "QRIFRS",
+                    "root_ref_id": "N24F9F491387ED-EFL",
+                    "chapter_ref_id": "C-TEST-EFL",
+                    "chapter_title": "CHAPITRE TEST",
+                    "page_ref_ids": ["N-LEAF-1-EFL", "N-LEAF-2-EFL"],
+                    "page_titles": ["Leaf One", "Leaf Two"],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        extractor = HtmlExtractor(sidecar_path=bundle_sidecar_path)
+        extracted_document = extractor.extract(source_path=bundle_html_path, explicit_doc_uid=None)
+
+        sections_by_id = {section.section_id: section for section in extracted_document.sections}
+        assert len(extracted_document.sections) == 4
+        assert sections_by_id["N-ANCESTOR-EFL"].title == "A. Généralités"
+        assert "N-LEAF-1-EFL" in sections_by_id
+        assert "N-LEAF-2-EFL" in sections_by_id
+        assert [chunk.chunk_id for chunk in extracted_document.chunks] == ["P-LEAF-1-EFL", "P-LEAF-2-EFL"]
+
     def test_extract_rejects_navis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
         """Navis sidecar url and canonical_url must point to the same refId."""
         base_path = _navis_example_base("20260412T190029Z--document")
