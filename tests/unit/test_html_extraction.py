@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 import pytest
+from bs4 import BeautifulSoup
 
 from src.extraction.html import HtmlExtractor, HtmlValidationError
 
@@ -174,13 +175,13 @@ class TestHtmlExtractor:
         [
             (
                 "20260412T190013Z--document",
-                "navis-qrifrs-n2d7d9d1995f171f-efl",
+                "navis-QRIFRS-N2D7D9D1995F171F-EFL",
                 "N2D7D9D1995F171F-EFL",
                 "S2B0D9D1995F171F-EFL",
             ),
             (
                 "20260412T190029Z--document",
-                "navis-qrifrs-c2a8e6f292f99e-efl",
+                "navis-QRIFRS-C2A8E6F292F99E-EFL",
                 "C2A8E6F292F99E-EFL",
                 "T1A42F43DD29C5-EFL",
             ),
@@ -230,6 +231,79 @@ class TestHtmlExtractor:
         sections_by_id = {section.section_id: section for section in extracted_document.sections}
         assert "C2A8E6F292F99E-EFL" in sections_by_id
         assert "A004-000" not in sections_by_id
+
+    def test_extract_returns_expected_navis_chapter_bundle_chunks_and_sections(self, tmp_path: Path) -> None:
+        """Synthetic Navis chapter bundles should ingest as one chapter-level document."""
+        base_path = _navis_example_base("20260412T190029Z--document")
+        soup = BeautifulSoup(base_path.with_suffix(".html").read_text(encoding="utf-8"), "html.parser")
+        content_root = soup.select_one("#documentContent .question.question-export")
+        assert content_root is not None, "Expected the Navis example to contain the content root"
+
+        bundle_html_path = tmp_path / "navis-chapter-bundle.html"
+        bundle_sidecar_path = tmp_path / "navis-chapter-bundle.json"
+        manifest_payload = {
+            "chapter_ref_id": "C2A8E6F292F99E-EFL",
+            "chapter_title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+            "product_key": "QRIFRS",
+            "page_ref_ids": ["P8A8E6F292F99E-EFL"],
+            "page_titles": ["Généralités"],
+        }
+        manifest_json = json.dumps(manifest_payload)
+        bundle_html_path.write_text(
+            """
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <title>CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)</title>
+              </head>
+              <body>
+                <script id="ifrs-expert-navis-manifest" type="application/json">"""
+            + manifest_json
+            + """</script>
+                <div id="ifrs-expert-navis-bundle" data-chapter-ref-id="C2A8E6F292F99E-EFL">
+                  <section class="ifrs-expert-navis-page" data-page-ref-id="P8A8E6F292F99E-EFL" data-page-title="Généralités">
+                    """
+            + str(content_root)
+            + """
+                  </section>
+                </div>
+              </body>
+            </html>
+            """,
+            encoding="utf-8",
+        )
+        bundle_sidecar_path.write_text(
+            json.dumps(
+                {
+                    "url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C2A8E6F292F99E-EFL",
+                    "title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+                    "captured_at": "2026-04-12T19:00:29Z",
+                    "source_domain": "abonnes.efl.fr",
+                    "canonical_url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C2A8E6F292F99E-EFL",
+                    "extension_version": "0.1.0",
+                    "content_type": "text/html",
+                    "capture_format": "navis-chapter-bundle/v1",
+                    "capture_mode": "chapter",
+                    "product_key": "QRIFRS",
+                    "root_ref_id": "N24F9F491387ED-EFL",
+                    "chapter_ref_id": "C2A8E6F292F99E-EFL",
+                    "chapter_title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+                    "page_ref_ids": ["P8A8E6F292F99E-EFL"],
+                    "page_titles": ["Généralités"],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        extractor = HtmlExtractor(sidecar_path=bundle_sidecar_path)
+        extracted_document = extractor.extract(source_path=bundle_html_path, explicit_doc_uid=None)
+
+        assert extracted_document.document.doc_uid == "navis-QRIFRS-C2A8E6F292F99E-EFL"
+        sections_by_id = {section.section_id: section for section in extracted_document.sections}
+        assert sections_by_id["C2A8E6F292F99E-EFL"].parent_section_id is None
+        assert any(chunk.chunk_number == "12501" for chunk in extracted_document.chunks)
+        assert any(chunk.chunk_id == "P8A8E6F292F99E-EFL" for chunk in extracted_document.chunks)
 
     def test_extract_rejects_navis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
         """Navis sidecar url and canonical_url must point to the same refId."""

@@ -166,13 +166,90 @@ def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capt
     assert (capture_root / "processed" / inbox_html.name).exists()
     assert (capture_root / "processed" / inbox_json.name).exists()
     with document_store as ds:
-        document = ds.get_document("navis-qrifrs-c2a8e6f292f99e-efl")
+        document = ds.get_document("navis-QRIFRS-C2A8E6F292F99E-EFL")
     assert document is not None, "Expected Navis ingestion to upsert a document record"
     assert document.source_type == "html"
     assert document.source_domain == "abonnes.efl.fr"
     assert document.document_type == "NAVIS"
     with chunk_store as cs:
-        chunks = cs.get_chunks_by_doc("navis-qrifrs-c2a8e6f292f99e-efl")
+        chunks = cs.get_chunks_by_doc("navis-QRIFRS-C2A8E6F292F99E-EFL")
+    assert any(chunk.section_path == "12501" for chunk in chunks)
+    assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
+
+
+def test_ingest_command_imports_navis_chapter_bundle_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
+    """Synthetic Navis chapter bundles should ingest as one chapter-level document."""
+    del temp_db_path
+    html_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.html")
+    soup = BeautifulSoup(html_source.read_text(encoding="utf-8"), "html.parser")
+    content_root = soup.select_one("#documentContent .question.question-export")
+    assert content_root is not None, "Expected Navis example to contain the content root"
+
+    inbox_html = capture_root / "20260413T120000Z--navis-QRIFRS-C2A8E6F292F99E-EFL--CHAPITRE_4.html"
+    inbox_json = capture_root / "20260413T120000Z--navis-QRIFRS-C2A8E6F292F99E-EFL--CHAPITRE_4.json"
+    manifest_payload = {
+        "chapter_ref_id": "C2A8E6F292F99E-EFL",
+        "chapter_title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+        "product_key": "QRIFRS",
+        "page_ref_ids": ["P8A8E6F292F99E-EFL"],
+        "page_titles": ["Généralités"],
+    }
+    manifest_json = json.dumps(manifest_payload)
+    inbox_html.write_text(
+        """
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)</title>
+          </head>
+          <body>
+            <script id="ifrs-expert-navis-manifest" type="application/json">"""
+        + manifest_json
+        + """</script>
+            <div id="ifrs-expert-navis-bundle" data-chapter-ref-id="C2A8E6F292F99E-EFL">
+              <section class="ifrs-expert-navis-page" data-page-ref-id="P8A8E6F292F99E-EFL" data-page-title="Généralités">
+                """
+        + str(content_root)
+        + """
+              </section>
+            </div>
+          </body>
+        </html>
+        """,
+        encoding="utf-8",
+    )
+    inbox_json.write_text(
+        json.dumps(
+            {
+                "url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C2A8E6F292F99E-EFL",
+                "title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+                "captured_at": "2026-04-13T12:00:00Z",
+                "source_domain": "abonnes.efl.fr",
+                "canonical_url": "https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&uaId=000K&refId=C2A8E6F292F99E-EFL",
+                "capture_format": "navis-chapter-bundle/v1",
+                "capture_mode": "chapter",
+                "product_key": "QRIFRS",
+                "root_ref_id": "N24F9F491387ED-EFL",
+                "chapter_ref_id": "C2A8E6F292F99E-EFL",
+                "chapter_title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+                "page_ref_ids": ["P8A8E6F292F99E-EFL"],
+                "page_titles": ["Généralités"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
+
+    output = command.execute()
+
+    assert "1 imported" in output
+    with document_store as ds:
+        document = ds.get_document("navis-QRIFRS-C2A8E6F292F99E-EFL")
+    assert document is not None, "Expected chapter bundle ingestion to upsert a document record"
+    with chunk_store as cs:
+        chunks = cs.get_chunks_by_doc("navis-QRIFRS-C2A8E6F292F99E-EFL")
     assert any(chunk.section_path == "12501" for chunk in chunks)
     assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
 

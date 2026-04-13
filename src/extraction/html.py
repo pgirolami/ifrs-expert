@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass
 from datetime import datetime
+from time import perf_counter
 from typing import TYPE_CHECKING, Final, NoReturn
 from urllib.parse import parse_qs, urlparse
 
@@ -32,12 +34,15 @@ TABLE_ROW_WITH_LABEL_CELL_COUNT: Final[int] = 2
 HEADING_TAG_NAMES: Final[tuple[str, ...]] = ("h1", "h2", "h3", "h4", "h5", "h6")
 HEADING_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^(?:Chapter\s+[A-Za-z0-9.]+|[A-Z]?\d+(?:\.\d+)*)\s+")
 SUBSECTION_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^[A-Z]?\d+\.\d+")
-NAVIS_DOC_UID_TOKEN_PATTERN: Final[re.Pattern[str]] = re.compile(r"[^a-z0-9]+")
+NAVIS_DOC_UID_TOKEN_PATTERN: Final[re.Pattern[str]] = re.compile(r"[^A-Za-z0-9-]+")
 NAVIS_TITLE_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^(?:TITRE\s+[A-Z0-9IVXLCM]+|CHAPITRE\s+[A-Z0-9IVXLCM]+|SECTION\s+[A-Z0-9IVXLCM]+)\s+",
     re.IGNORECASE,
 )
 NAVIS_EDITORIAL_TITLES: Final[set[str]] = {"QUESTIONS/REPONSES PRATIQUES"}
+NAVIS_CHAPTER_BUNDLE_CAPTURE_FORMAT: Final[str] = "navis-chapter-bundle/v1"
+
+logger = logging.getLogger(__name__)
 
 
 class HtmlValidationError(ValueError):
@@ -64,6 +69,14 @@ class HtmlSidecar:
     canonical_url: str
     extension_version: str | None
     content_type: str | None
+    capture_format: str | None
+    capture_mode: str | None
+    product_key: str | None
+    root_ref_id: str | None
+    chapter_ref_id: str | None
+    chapter_title: str | None
+    page_ref_ids: tuple[str, ...]
+    page_titles: tuple[str, ...]
 
     @classmethod
     def from_path(cls, sidecar_path: Path) -> HtmlSidecar:
@@ -98,6 +111,14 @@ class HtmlSidecar:
             canonical_url=payload["canonical_url"],
             extension_version=_optional_string(payload.get("extension_version")),
             content_type=_optional_string(payload.get("content_type")),
+            capture_format=_optional_string(payload.get("capture_format")),
+            capture_mode=_optional_string(payload.get("capture_mode")),
+            product_key=_optional_string(payload.get("product_key")),
+            root_ref_id=_optional_string(payload.get("root_ref_id")),
+            chapter_ref_id=_optional_string(payload.get("chapter_ref_id")),
+            chapter_title=_optional_string(payload.get("chapter_title")),
+            page_ref_ids=_optional_string_tuple(payload.get("page_ref_ids")),
+            page_titles=_optional_string_tuple(payload.get("page_titles")),
         )
 
 
@@ -118,14 +139,35 @@ class HtmlExtractor:
         if not self._sidecar_path.exists():
             _fail_validation(f"HTML sidecar not found: {self._sidecar_path}")
 
+        sidecar_started_at = perf_counter()
+        logger.info(f"Loading HTML sidecar from {self._sidecar_path}")
         sidecar = HtmlSidecar.from_path(self._sidecar_path)
-        soup = BeautifulSoup(source_path.read_text(encoding="utf-8"), "html.parser")
+        logger.info(f"Loaded HTML sidecar from {self._sidecar_path} in {_elapsed_ms(sidecar_started_at):.2f}ms; source_domain={sidecar.source_domain}, capture_format={sidecar.capture_format}, capture_mode={sidecar.capture_mode}")
+
+        html_read_started_at = perf_counter()
+        logger.info(f"Reading HTML source from {source_path}")
+        html_text = source_path.read_text(encoding="utf-8")
+        logger.info(f"Read HTML source from {source_path} in {_elapsed_ms(html_read_started_at):.2f}ms; html_chars={len(html_text)}")
+
+        parse_started_at = perf_counter()
+        logger.info(f"Parsing HTML source from {source_path} with BeautifulSoup(html.parser)")
+        soup = BeautifulSoup(html_text, "html.parser")
+        logger.info(f"Parsed HTML source from {source_path} in {_elapsed_ms(parse_started_at):.2f}ms")
+
         extractor = _build_source_extractor(sidecar)
-        return extractor.extract_from_soup(
+        logger.info(f"Selected HTML source extractor {type(extractor).__name__} for source_domain={sidecar.source_domain}")
+        extraction_started_at = perf_counter()
+        extracted_document = extractor.extract_from_soup(
             soup=soup,
             sidecar=sidecar,
             explicit_doc_uid=explicit_doc_uid,
         )
+        logger.info(
+            f"HTML extraction completed for {source_path} in {_elapsed_ms(extraction_started_at):.2f}ms; "
+            f"doc_uid={extracted_document.document.doc_uid}, chunk_count={len(extracted_document.chunks)}, "
+            f"section_count={len(extracted_document.sections)}"
+        )
+        return extracted_document
 
 
 class IfrsHtmlExtractor:
@@ -406,6 +448,8 @@ class _NavisStructureState:
     active_kinds_by_level: dict[int, str]
     sections: list[SectionRecord]
     chunks: list[Chunk]
+    seen_section_ids: set[str]
+    seen_chunk_ids: set[str]
     position: int = 0
     matched_context_index: int = 0
 
@@ -418,6 +462,17 @@ class _SectionRecordDraft:
     title: str
     level: int
     position: int
+
+
+@dataclass(frozen=True)
+class _NavisBundleManifest:
+    """Machine-readable metadata for one synthetic Navis chapter bundle."""
+
+    chapter_ref_id: str
+    chapter_title: str
+    page_ref_ids: tuple[str, ...]
+    page_titles: tuple[str, ...]
+    product_key: str | None
 
 
 class NavisHtmlExtractor:
@@ -435,8 +490,16 @@ class NavisHtmlExtractor:
         """Extract a Navis HTML capture from a parsed soup and sidecar."""
         del explicit_doc_uid
 
+        logger.info(f"Starting Navis HTML extraction for canonical_url={sidecar.canonical_url}, capture_format={sidecar.capture_format}")
+        validation_started_at = perf_counter()
         self._validate_sidecar_urls(sidecar)
         doc_uid = self._derive_doc_uid(sidecar)
+        logger.info(f"Validated Navis sidecar URLs and derived doc_uid={doc_uid} in {_elapsed_ms(validation_started_at):.2f}ms")
+
+        if sidecar.capture_format == NAVIS_CHAPTER_BUNDLE_CAPTURE_FORMAT:
+            logger.info(f"Detected Navis chapter bundle capture for doc_uid={doc_uid}")
+            return self._extract_bundle_document(soup=soup, sidecar=sidecar, doc_uid=doc_uid)
+
         content_root = soup.select_one("#documentContent .question.question-export")
         if not isinstance(content_root, Tag):
             _fail_validation("HTML is missing the Navis content root")
@@ -480,8 +543,8 @@ class NavisHtmlExtractor:
             _fail_validation("Navis sidecar url and canonical_url must contain the same key")
 
     def _derive_doc_uid(self, sidecar: HtmlSidecar) -> str:
-        key = self._get_query_param_value(sidecar.canonical_url, "key")
-        ref_id = self._get_query_param_value(sidecar.canonical_url, "refId")
+        key = sidecar.product_key or self._get_query_param_value(sidecar.canonical_url, "key")
+        ref_id = sidecar.chapter_ref_id or self._get_query_param_value(sidecar.canonical_url, "refId")
         if not key or not ref_id:
             fallback_slug = _slugify_doc_uid_token(sidecar.title)
             return f"navis-{fallback_slug}"
@@ -523,6 +586,185 @@ class NavisHtmlExtractor:
                 )
         return context
 
+    def _extract_bundle_document(
+        self,
+        soup: BeautifulSoup,
+        sidecar: HtmlSidecar,
+        doc_uid: str,
+    ) -> ExtractedDocument:
+        manifest_started_at = perf_counter()
+        manifest = self._extract_bundle_manifest(soup=soup, sidecar=sidecar)
+        logger.info(f"Extracted Navis bundle manifest for doc_uid={doc_uid} in {_elapsed_ms(manifest_started_at):.2f}ms; chapter_ref_id={manifest.chapter_ref_id}, manifest_page_count={len(manifest.page_ref_ids)}")
+
+        bundle_root = soup.select_one("#ifrs-expert-navis-bundle")
+        if not isinstance(bundle_root, Tag):
+            _fail_validation("HTML is missing the Navis bundle root")
+
+        page_nodes = [node for node in bundle_root.select("section.ifrs-expert-navis-page") if isinstance(node, Tag)]
+        if not page_nodes:
+            _fail_validation("HTML Navis bundle does not contain any page fragments")
+        logger.info(f"Located Navis bundle root for doc_uid={doc_uid}; page_fragment_count={len(page_nodes)}")
+
+        structure_started_at = perf_counter()
+        chunks, sections = self._extract_bundle_structure(
+            doc_uid=doc_uid,
+            page_nodes=page_nodes,
+            manifest=manifest,
+        )
+        logger.info(f"Extracted Navis bundle structure for doc_uid={doc_uid} in {_elapsed_ms(structure_started_at):.2f}ms; chunk_count={len(chunks)}, section_count={len(sections)}")
+        closure_started_at = perf_counter()
+        section_closure_rows = _build_section_closure_rows(sections)
+        logger.info(f"Built Navis section closure rows for doc_uid={doc_uid} in {_elapsed_ms(closure_started_at):.2f}ms; closure_row_count={len(section_closure_rows)}")
+
+        return ExtractedDocument(
+            document=DocumentRecord(
+                doc_uid=doc_uid,
+                source_type=self.source_type,
+                source_title=manifest.chapter_title,
+                source_url=sidecar.url,
+                canonical_url=sidecar.canonical_url,
+                captured_at=sidecar.captured_at,
+                source_domain=sidecar.source_domain,
+                document_type="NAVIS",
+            ),
+            chunks=chunks,
+            sections=sections,
+            section_closure_rows=section_closure_rows,
+        )
+
+    def _extract_bundle_manifest(self, soup: BeautifulSoup, sidecar: HtmlSidecar) -> _NavisBundleManifest:
+        manifest_payload: dict[str, object] = {}
+        manifest_tag = soup.select_one("#ifrs-expert-navis-manifest")
+        if isinstance(manifest_tag, Tag):
+            manifest_text = manifest_tag.string or manifest_tag.get_text("", strip=True)
+            if manifest_text:
+                try:
+                    parsed_manifest = json.loads(manifest_text)
+                except json.JSONDecodeError as error:
+                    _fail_validation("Navis bundle manifest is not valid JSON", cause=error)
+                if not isinstance(parsed_manifest, dict):
+                    _fail_validation("Navis bundle manifest must be a JSON object")
+                manifest_payload = parsed_manifest
+
+        chapter_ref_id = _optional_string(manifest_payload.get("chapter_ref_id")) or sidecar.chapter_ref_id
+        chapter_title = _optional_string(manifest_payload.get("chapter_title")) or sidecar.chapter_title or sidecar.title
+        if chapter_ref_id is None or chapter_title is None:
+            _fail_validation("Navis chapter bundles must define chapter_ref_id and chapter_title")
+
+        page_ref_ids = _optional_string_tuple(manifest_payload.get("page_ref_ids")) or sidecar.page_ref_ids
+        page_titles = _optional_string_tuple(manifest_payload.get("page_titles")) or sidecar.page_titles
+        product_key = _optional_string(manifest_payload.get("product_key")) or sidecar.product_key
+
+        return _NavisBundleManifest(
+            chapter_ref_id=chapter_ref_id,
+            chapter_title=chapter_title,
+            page_ref_ids=page_ref_ids,
+            page_titles=page_titles,
+            product_key=product_key,
+        )
+
+    def _extract_bundle_structure(
+        self,
+        doc_uid: str,
+        page_nodes: list[Tag],
+        manifest: _NavisBundleManifest,
+    ) -> tuple[list[Chunk], list[SectionRecord]]:
+        logger.info(f"Starting Navis bundle structure walk for doc_uid={doc_uid}; page_fragment_count={len(page_nodes)}, chapter_ref_id={manifest.chapter_ref_id}")
+        state = _NavisStructureState(
+            active_sections_by_level={},
+            active_kinds_by_level={},
+            sections=[],
+            chunks=[],
+            seen_section_ids=set(),
+            seen_chunk_ids=set(),
+        )
+
+        chapter_section = _build_section_record(
+            doc_uid=doc_uid,
+            draft=_SectionRecordDraft(
+                section_id=manifest.chapter_ref_id,
+                title=_normalize_navis_heading_title(manifest.chapter_title),
+                level=1,
+                position=state.position,
+            ),
+            parent_section=None,
+        )
+        state.position += 1
+        state.sections.append(chapter_section)
+        state.seen_section_ids.add(chapter_section.section_id)
+        state.active_sections_by_level[1] = chapter_section
+        state.active_kinds_by_level[1] = "chapter"
+
+        total_pages = len(page_nodes)
+        for page_index, page_node in enumerate(page_nodes, start=1):
+            content_root = page_node.select_one(".question.question-export")
+            if not isinstance(content_root, Tag):
+                _fail_validation("Navis bundle page fragment is missing .question.question-export")
+
+            page_ref_id = _tag_attribute_as_string(page_node, "data-page-ref-id") or f"page-{page_index}"
+            page_title = _tag_attribute_as_string(page_node, "data-page-title") or ""
+            chunks_before = len(state.chunks)
+            sections_before = len(state.sections)
+            page_started_at = perf_counter()
+            logger.info(f"Walking Navis bundle page {page_index}/{total_pages} for doc_uid={doc_uid}; page_ref_id={page_ref_id}, page_title={page_title!r}")
+            self._append_bundle_page_structure(
+                doc_uid=doc_uid,
+                content_root=content_root,
+                state=state,
+            )
+            logger.info(
+                f"Finished Navis bundle page {page_index}/{total_pages} for doc_uid={doc_uid} in {_elapsed_ms(page_started_at):.2f}ms; added_chunks={len(state.chunks) - chunks_before}, added_sections={len(state.sections) - sections_before}"
+            )
+
+        return state.chunks, state.sections
+
+    def _append_bundle_page_structure(
+        self,
+        doc_uid: str,
+        content_root: Tag,
+        state: _NavisStructureState,
+    ) -> None:
+        for child in content_root.children:
+            if not isinstance(child, Tag):
+                continue
+            heading = self._build_navis_heading(child)
+            if heading is not None:
+                if heading.kind in {"title", "chapter"}:
+                    continue
+                self._append_bundle_heading(doc_uid=doc_uid, heading=heading, state=state)
+                continue
+            self._append_chunk(doc_uid=doc_uid, child=child, state=state)
+
+    def _append_bundle_heading(
+        self,
+        doc_uid: str,
+        heading: _NavisHeading,
+        state: _NavisStructureState,
+    ) -> None:
+        level = _resolve_navis_heading_level(
+            kind=heading.kind,
+            active_kinds_by_level=state.active_kinds_by_level,
+        )
+        self._prune_navis_state(state=state, level=level)
+        parent_section = state.active_sections_by_level.get(level - 1)
+        section = _build_section_record(
+            doc_uid=doc_uid,
+            draft=_SectionRecordDraft(
+                section_id=heading.anchor_id or f"{doc_uid}::{state.position}",
+                title=heading.title,
+                level=level,
+                position=state.position,
+            ),
+            parent_section=parent_section,
+        )
+        if section.section_id in state.seen_section_ids:
+            return
+        state.position += 1
+        state.active_sections_by_level[level] = section
+        state.active_kinds_by_level[level] = heading.kind
+        state.sections.append(section)
+        state.seen_section_ids.add(section.section_id)
+
     def _extract_structure(
         self,
         doc_uid: str,
@@ -536,6 +778,8 @@ class NavisHtmlExtractor:
             active_kinds_by_level={},
             sections=[],
             chunks=[],
+            seen_section_ids=set(),
+            seen_chunk_ids=set(),
         )
 
         self._seed_toc_context(doc_uid=doc_uid, base_context=base_context, state=state)
@@ -568,8 +812,11 @@ class NavisHtmlExtractor:
                 ),
                 parent_section=parent_section,
             )
+            if section.section_id in state.seen_section_ids:
+                continue
             state.position += 1
             state.sections.append(section)
+            state.seen_section_ids.add(section.section_id)
             state.active_sections_by_level[level] = section
             state.active_kinds_by_level[level] = context_entry.kind
 
@@ -605,10 +852,13 @@ class NavisHtmlExtractor:
             ),
             parent_section=parent_section,
         )
+        if section.section_id in state.seen_section_ids:
+            return True
         state.position += 1
         state.active_sections_by_level[level] = section
         state.active_kinds_by_level[level] = heading.kind
         state.sections.append(section)
+        state.seen_section_ids.add(section.section_id)
         return True
 
     def _append_chunk(self, doc_uid: str, child: Tag, state: _NavisStructureState) -> None:
@@ -620,7 +870,11 @@ class NavisHtmlExtractor:
             active_sections_by_level=state.active_sections_by_level,
         )
         if chunk is not None:
+            chunk_identity = chunk.chunk_id or chunk.chunk_number
+            if chunk_identity in state.seen_chunk_ids:
+                return
             state.chunks.append(chunk)
+            state.seen_chunk_ids.add(chunk_identity)
 
     def _build_navis_heading(self, child: Tag) -> _NavisHeading | None:
         if not _is_navis_heading_tag(child):
@@ -1034,9 +1288,13 @@ def _extract_navis_ref_id_from_anchor(anchor: Tag) -> str | None:
 
 
 def _slugify_doc_uid_token(value: str) -> str:
-    normalized_value = value.strip().lower()
+    normalized_value = value.strip()
     slug = NAVIS_DOC_UID_TOKEN_PATTERN.sub("-", normalized_value).strip("-")
     return slug or "document"
+
+
+def _elapsed_ms(started_at: float) -> float:
+    return (perf_counter() - started_at) * 1000
 
 
 def _fail_validation(message: str, *, cause: Exception | None = None) -> NoReturn:
@@ -1052,6 +1310,21 @@ def _optional_string(value: object) -> str | None:
         stripped = value.strip()
         return stripped or None
     _fail_validation("optional sidecar fields must be strings when present")
+
+
+def _optional_string_tuple(value: object) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    if not isinstance(value, list):
+        _fail_validation("optional sidecar list fields must be arrays of strings when present")
+
+    normalized_values: list[str] = []
+    for item in value:
+        normalized_item = _optional_string(item)
+        if normalized_item is None:
+            _fail_validation("optional sidecar list fields must not contain empty values")
+        normalized_values.append(normalized_item)
+    return tuple(normalized_values)
 
 
 def _validate_http_url(value: str, field_name: str) -> None:

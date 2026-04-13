@@ -64,7 +64,7 @@ def test_infer_document_type_returns_supported_prefixes() -> None:
     assert infer_document_type("ifric16") == "IFRIC"
     assert infer_document_type("sic25") == "SIC"
     assert infer_document_type("ps1") == "PS"
-    assert infer_document_type("navis-qrifrs-c2a8e6f292f99e-efl") == "NAVIS"
+    assert infer_document_type("navis-QRIFRS-C2A8E6F292F99E-EFL") == "NAVIS"
     assert infer_document_type("custom-doc") is None
 
 

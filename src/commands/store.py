@@ -6,6 +6,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from time import perf_counter
 from typing import TYPE_CHECKING
 
 from src.commands.section_filter import filter_extraction
@@ -114,8 +115,11 @@ class StoreCommand:
 
     def execute_result(self) -> StoreCommandResult:
         """Execute the store command and return a structured result."""
+        logger.info(f"Starting store command for source_path={self.source_path}, scope={self._scope}, explicit_doc_uid={self._explicit_doc_uid}, extractor={type(self._extractor).__name__}")
+
         scope_error = self._get_scope_error()
         if scope_error is not None:
+            logger.error(f"Store command rejected invalid scope={self._scope}: {scope_error}")
             return StoreCommandResult(
                 status="failed",
                 doc_uid=self._explicit_doc_uid or self.source_path.stem,
@@ -125,6 +129,7 @@ class StoreCommand:
             )
 
         if not self.source_path.exists():
+            logger.error(f"Store command source file does not exist: {self.source_path}")
             return StoreCommandResult(
                 status="failed",
                 doc_uid=self._explicit_doc_uid or self.source_path.stem,
@@ -134,22 +139,44 @@ class StoreCommand:
             )
 
         try:
+            init_started_at = perf_counter()
+            logger.info(f"Initializing database dependencies for source_path={self.source_path}")
             self._dependencies.init_db_fn()
+            logger.info(f"Initialized database dependencies for source_path={self.source_path} in {_elapsed_ms(init_started_at):.2f}ms")
+
+            extraction_started_at = perf_counter()
+            logger.info(f"Starting extraction for source_path={self.source_path}")
             extracted_document = self._extractor.extract(
                 source_path=self.source_path,
                 explicit_doc_uid=self._explicit_doc_uid,
             )
             doc_uid = extracted_document.document.doc_uid
             extracted_document.document.document_type = extracted_document.document.document_type or infer_document_type(doc_uid)
+            logger.info(
+                f"Extraction completed for source_path={self.source_path} in {_elapsed_ms(extraction_started_at):.2f}ms; "
+                f"doc_uid={doc_uid}, document_type={extracted_document.document.document_type}, "
+                f"raw_chunk_count={len(extracted_document.chunks)}, raw_section_count={len(extracted_document.sections)}, "
+                f"raw_closure_row_count={len(extracted_document.section_closure_rows)}"
+            )
 
             self._truncate_oversized_chunks(extracted_document.chunks)
 
+            filter_started_at = perf_counter()
+            logger.info(f"Applying extraction filters for doc_uid={doc_uid}")
             filter_result = filter_extraction(
                 chunks=extracted_document.chunks,
                 sections=extracted_document.sections,
                 closure_rows=extracted_document.section_closure_rows,
             )
+            logger.info(
+                f"Applied extraction filters for doc_uid={doc_uid} in {_elapsed_ms(filter_started_at):.2f}ms; "
+                f"kept_chunks={len(filter_result.chunks)}, kept_sections={len(filter_result.sections)}, "
+                f"kept_closure_rows={len(filter_result.closure_rows)}, "
+                f"excluded_chunks={filter_result.excluded_chunk_count}, excluded_sections={filter_result.excluded_section_count}"
+            )
 
+            profile_started_at = perf_counter()
+            logger.info(f"Building document profile for doc_uid={doc_uid}")
             built_document_profile = self._document_profile_builder.build(
                 document=extracted_document.document,
                 chunks=extracted_document.chunks,
@@ -158,6 +185,7 @@ class StoreCommand:
                 toc_sections=filter_result.sections,
             )
             extracted_document.document = built_document_profile.document
+            logger.info(f"Built document profile for doc_uid={doc_uid} in {_elapsed_ms(profile_started_at):.2f}ms")
 
             # Build the document representation from the unfiltered extraction, except
             # for the TOC field which should reflect the filtered section set used for
@@ -188,6 +216,7 @@ class StoreCommand:
                 f"embedding_chars={len(built_document_profile.embedding_text)}"
             )
 
+            logger.info(f"Preparing persistence for doc_uid={doc_uid}; stores_chunks={self._stores_chunks()}, stores_sections={self._stores_sections()}, stores_documents={self._stores_documents()}")
             skip_result = self._store_chunks(
                 doc_uid=doc_uid,
                 chunks=chunks,
@@ -197,20 +226,23 @@ class StoreCommand:
             if skip_result is not None:
                 return skip_result
 
+            persistence_started_at = perf_counter()
             embeddings_stored = self._store_selected_outputs(
                 doc_uid=doc_uid,
                 extracted_document=extracted_document,
                 chunks=chunks,
                 document_embedding_text=built_document_profile.embedding_text,
             )
+            logger.info(f"Finished persistence for doc_uid={doc_uid} in {_elapsed_ms(persistence_started_at):.2f}ms; stored_chunks={len(chunks)}, stored_sections={len(extracted_document.sections)}, stored_embeddings={embeddings_stored}")
 
+            logger.info(f"Store command completed successfully for doc_uid={doc_uid}")
             return StoreCommandResult(
                 status="stored",
                 doc_uid=doc_uid,
                 chunk_count=len(chunks),
                 embedding_count=embeddings_stored,
             )
-        except Exception as error:
+        except (OSError, RuntimeError, ValueError) as error:
             logger.exception(f"Error storing source file: {self.source_path}")
             return StoreCommandResult(
                 status="failed",
@@ -230,6 +262,12 @@ class StoreCommand:
         existing_chunks = self._get_existing_chunks(doc_uid) if self._stores_chunks() else []
         existing_sections = self._get_existing_sections(doc_uid) if self._stores_sections() else []
         existing_document = self._get_existing_document(doc_uid) if self._stores_documents() else None
+        logger.info(
+            f"Loaded existing persisted state for doc_uid={doc_uid}; "
+            f"existing_chunks={len(existing_chunks)}, existing_sections={len(existing_sections)}, "
+            f"existing_document={'yes' if existing_document is not None else 'no'}, "
+            f"new_chunks={len(chunks)}, new_sections={len(sections)}, new_document=yes"
+        )
         should_skip = self._should_skip(
             existing_snapshot=StorePayloadSnapshot(
                 chunks=existing_chunks,
@@ -251,6 +289,8 @@ class StoreCommand:
                 embedding_count=0,
                 reason="unchanged content",
             )
+
+        logger.info(f"Detected changes for doc_uid={doc_uid}; continuing with persistence")
 
         if not self._stores_chunks():
             return None
@@ -283,11 +323,13 @@ class StoreCommand:
         document_embedding_text: str,
     ) -> int:
         if self._stores_sections():
+            logger.info(f"Persisting sections for doc_uid={doc_uid}")
             self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
         if self._stores_documents():
             with self._dependencies.document_store as document_store:
                 logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
                 document_store.upsert_document(extracted_document.document)
+                logger.info(f"Persisted document representation fields for doc_uid={doc_uid}")
 
         embeddings_stored = 0
         if self._stores_chunks():
@@ -301,6 +343,7 @@ class StoreCommand:
     def _store_chunk_embeddings(self, doc_uid: str, chunks: list[Chunk]) -> int:
         embeddings_stored = 0
         with self._dependencies.vector_store as vector_store:
+            logger.info(f"Persisting chunk embeddings for doc_uid={doc_uid}; candidate_chunks={len(chunks)}")
             deleted = vector_store.delete_by_doc(doc_uid)
             if deleted > 0:
                 logger.info(f"Deleted {deleted} existing embeddings for {doc_uid}")
@@ -318,6 +361,7 @@ class StoreCommand:
         if self._dependencies.title_vector_store is None:
             return
         with self._dependencies.title_vector_store as title_vector_store:
+            logger.info(f"Persisting title embeddings for doc_uid={doc_uid}; candidate_sections={len(sections)}")
             deleted_titles = title_vector_store.delete_by_doc(doc_uid)
             if deleted_titles > 0:
                 logger.info(f"Deleted {deleted_titles} existing title embeddings for {doc_uid}")
@@ -444,6 +488,10 @@ class StoreCommand:
 
     def _stores_documents(self) -> bool:
         return self._scope in {"all", "documents"}
+
+
+def _elapsed_ms(started_at: float) -> float:
+    return (perf_counter() - started_at) * 1000
 
 
 def build_store_dependencies() -> StoreDependencies:

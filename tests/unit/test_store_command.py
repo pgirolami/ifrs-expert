@@ -39,6 +39,17 @@ class FakeExtractor:
         return self.extracted_document
 
 
+@dataclass
+class FakeBuggyExtractor:
+    """Test extractor simulating an unexpected programmer error."""
+
+    skip_if_unchanged: bool = False
+
+    def extract(self, source_path: Path, explicit_doc_uid: str | None) -> ExtractedDocument:
+        del source_path, explicit_doc_uid
+        raise NameError("simulated programmer bug")
+
+
 class TestStoreCommand:
     """Tests for store command using dependency injection."""
 
@@ -669,6 +680,27 @@ class TestStoreCommand:
         assert stored_document.source_title == "IFRS 9"
         assert stored_document.intro_text is None
         assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9"])]
+
+    def test_store_command_raises_unexpected_programmer_errors(self, tmp_path: Path) -> None:
+        """Unexpected programmer errors should not be downgraded into failed results."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        dependencies = StoreDependencies(
+            chunk_store=InMemoryChunkStore(),
+            document_store=InMemoryDocumentStore(),
+            vector_store=RecordingVectorStore(),
+            document_vector_store=RecordingDocumentVectorStore(),
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=FakeBuggyExtractor(),
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+        )
+
+        with pytest.raises(NameError, match="simulated programmer bug"):
+            command.execute_result()
 
     def test_store_command_requires_dependencies(self, tmp_path: Path) -> None:
         """The constructor should keep dependency injection explicit."""

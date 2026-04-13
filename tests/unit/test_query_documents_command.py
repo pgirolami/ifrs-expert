@@ -199,7 +199,7 @@ def test_query_documents_returns_navis_documents() -> None:
     with document_store as store:
         store.upsert_document(
             DocumentRecord(
-                doc_uid="navis-qrifrs-c2a8e6f292f99e-efl",
+                doc_uid="navis-QRIFRS-C2A8E6F292F99E-EFL",
                 source_type="html",
                 source_title="Mémento IFRS 2026",
                 source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
@@ -216,7 +216,7 @@ def test_query_documents_returns_navis_documents() -> None:
         config=QueryDocumentsConfig(
             document_vector_store=MockDocumentVectorStore(
                 [
-                    {"doc_uid": "navis-qrifrs-c2a8e6f292f99e-efl", "score": 0.91},
+                    {"doc_uid": "navis-QRIFRS-C2A8E6F292F99E-EFL", "score": 0.91},
                 ]
             ),
             document_store=document_store,
@@ -229,7 +229,7 @@ def test_query_documents_returns_navis_documents() -> None:
     result = command.execute()
 
     data = json.loads(result)
-    assert [item["doc_uid"] for item in data] == ["navis-qrifrs-c2a8e6f292f99e-efl"]
+    assert [item["doc_uid"] for item in data] == ["navis-QRIFRS-C2A8E6F292F99E-EFL"]
     assert data[0]["document_type"] == "NAVIS"
 
 
