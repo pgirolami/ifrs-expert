@@ -64,7 +64,7 @@ def test_infer_document_type_returns_supported_prefixes() -> None:
     assert infer_document_type("ifric16") == "IFRIC"
     assert infer_document_type("sic25") == "SIC"
     assert infer_document_type("ps1") == "PS"
-    assert infer_document_type("naxis-qrifrs-c2a8e6f292f99e-efl") == "NAXIS"
+    assert infer_document_type("navis-qrifrs-c2a8e6f292f99e-efl") == "NAVIS"
     assert infer_document_type("custom-doc") is None
 
 
@@ -77,16 +77,16 @@ def test_infer_document_type_prefers_persisted_document_type(temp_db: Path) -> N
             DocumentRecord(
                 doc_uid="custom-doc",
                 source_type="html",
-                source_title="Custom Naxis document",
+                source_title="Custom Navis document",
                 source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
                 canonical_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
                 captured_at="2026-04-04T14:23:10Z",
                 source_domain="abonnes.efl.fr",
-                document_type="NAXIS",
+                document_type="NAVIS",
             )
         )
 
-    assert infer_document_type("custom-doc") == "NAXIS"
+    assert infer_document_type("custom-doc") == "NAVIS"
 
 
 def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> None:

@@ -148,11 +148,11 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
     assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
 
 
-def test_ingest_command_imports_naxis_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
-    """Representative Naxis HTML captures should ingest into the database and processed/."""
+def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
+    """Representative Navis HTML captures should ingest into the database and processed/."""
     del temp_db_path
-    html_source = _example_file("Lefebvre-Naxis/20260412T190029Z--document.html")
-    json_source = _example_file("Lefebvre-Naxis/20260412T190029Z--document.json")
+    html_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.html")
+    json_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.json")
     inbox_html = capture_root / "20260412T190029Z--document.html"
     inbox_json = capture_root / "20260412T190029Z--document.json"
     shutil.copy(html_source, inbox_html)
@@ -166,13 +166,13 @@ def test_ingest_command_imports_naxis_html_capture_pair(temp_db_path: Path, capt
     assert (capture_root / "processed" / inbox_html.name).exists()
     assert (capture_root / "processed" / inbox_json.name).exists()
     with document_store as ds:
-        document = ds.get_document("naxis-qrifrs-c2a8e6f292f99e-efl")
-    assert document is not None, "Expected Naxis ingestion to upsert a document record"
+        document = ds.get_document("navis-qrifrs-c2a8e6f292f99e-efl")
+    assert document is not None, "Expected Navis ingestion to upsert a document record"
     assert document.source_type == "html"
     assert document.source_domain == "abonnes.efl.fr"
-    assert document.document_type == "NAXIS"
+    assert document.document_type == "NAVIS"
     with chunk_store as cs:
-        chunks = cs.get_chunks_by_doc("naxis-qrifrs-c2a8e6f292f99e-efl")
+        chunks = cs.get_chunks_by_doc("navis-qrifrs-c2a8e6f292f99e-efl")
     assert any(chunk.section_path == "12501" for chunk in chunks)
     assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
 

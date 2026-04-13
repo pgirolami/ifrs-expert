@@ -430,7 +430,7 @@ function getSourceFamily(tabUrl) {
   try {
     const hostname = new URL(tabUrl).hostname;
     if (hostname === "abonnes.efl.fr") {
-      return "naxis";
+      return "navis";
     }
     if (hostname === "ifrs.org" || hostname.endsWith(".ifrs.org")) {
       return "ifrs";

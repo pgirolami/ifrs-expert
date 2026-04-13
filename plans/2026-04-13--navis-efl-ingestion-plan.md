@@ -1,4 +1,4 @@
-# Plan — support `abonnes.efl.fr` DOM ingestion as `naxis`
+# Plan — support `abonnes.efl.fr` DOM ingestion as `navis`
 
 ## Goal
 
@@ -7,7 +7,7 @@ Extend the existing HTML ingestion pipeline so IFRS Expert can ingest rendered D
 - `https://ifrs.org` / `https://*.ifrs.org`
 - `https://abonnes.efl.fr`
 
-The new `abonnes.efl.fr` corpus will be stored as a new document type called `naxis`.
+The new `abonnes.efl.fr` corpus will be stored as a new document type called `navis`.
 
 This plan is intended to be implemented on a dedicated worktree branch created from the current SME review branch state, with the plan artifact committed on that branch.
 
@@ -18,12 +18,12 @@ In the current codebase:
 - `source_type` means **transport format** (`pdf` or `html`)
 - `document_type` means **document family** and should be treated as persisted metadata from the `documents` table, not something inferred from a naming convention in `doc_uid`
 
-Because `naxis` is a new kind of document but still arrives as HTML, it should **not** become a new `source_type`.
+Because `navis` is a new kind of document but still arrives as HTML, it should **not** become a new `source_type`.
 
 The correct representation is:
 
 - keep `source_type="html"`
-- add support for `document_type="NAXIS"`  consistently across storage and retrieval
+- add support for `document_type="NAVIS"`  consistently across storage and retrieval
 - route extraction by **source domain / source-specific parser**, not by `source_type`
 
 ## Current-state assessment
@@ -49,23 +49,23 @@ Those assumptions will break for `abonnes.efl.fr` unless the HTML pipeline is sp
 ## Fixed decisions for this slice
 
 1. Support both `ifrs.org` and `abonnes.efl.fr` in the same ingestion flow.
-2. The new EFL-derived corpus is represented as document type `NAXIS`.
-3. `source_type` remains `html` for naxis captures.
+2. The new EFL-derived corpus is represented as document type `NAVIS`.
+3. `source_type` remains `html` for navis captures.
 4. Existing IFRS HTML ingestion must continue to work unchanged.
 5. Parser design should be sample-driven from the two provided DOM downloads plus expected `_CHUNKS.json` fixtures.
-6. Section hierarchy is required for naxis.
+6. Section hierarchy is required for navis.
 7. Implementation work happens in a dedicated worktree branch from the current SME review state.
 
 ## Sample inputs now available on the branch
 
 The branch now contains representative EFL fixtures under:
 
-- `examples/Lefebvre-Naxis/20260412T190013Z--document.html`
-- `examples/Lefebvre-Naxis/20260412T190013Z--document.json`
-- `examples/Lefebvre-Naxis/20260412T190013Z--document__CHUNKS.json`
-- `examples/Lefebvre-Naxis/20260412T190029Z--document.html`
-- `examples/Lefebvre-Naxis/20260412T190029Z--document.json`
-- `examples/Lefebvre-Naxis/20260412T190029Z--document__CHUNKS.json`
+- `examples/Lefebvre-Navis/20260412T190013Z--document.html`
+- `examples/Lefebvre-Navis/20260412T190013Z--document.json`
+- `examples/Lefebvre-Navis/20260412T190013Z--document__CHUNKS.json`
+- `examples/Lefebvre-Navis/20260412T190029Z--document.html`
+- `examples/Lefebvre-Navis/20260412T190029Z--document.json`
+- `examples/Lefebvre-Navis/20260412T190029Z--document__CHUNKS.json`
 
 These samples are enough to replace several earlier assumptions with concrete parser decisions.
 
@@ -78,9 +78,9 @@ The added `abonnes.efl.fr` HTML samples do **not** contain:
 - `link[rel="canonical"]`
 - `meta[name="DC.Identifier"]`
 
-So the IFRS HTML contract cannot be reused for naxis.
+So the IFRS HTML contract cannot be reused for navis.
 
-For naxis, the plan should therefore assume:
+For navis, the plan should therefore assume:
 
 - trust the sidecar `canonical_url`
 - validate it against the sidecar `url` shape and hostname
@@ -111,7 +111,7 @@ This matches the expected `_CHUNKS.json` files well:
 - sample 1 produces numbered chunks such as `49850`, `49860`, `49870`
 - sample 2 produces numbered chunks such as `12501`, `12545`
 
-So the chunking rule for naxis v1 should be:
+So the chunking rule for navis v1 should be:
 
 - one `div.qw-par.qw-par-p` with a `div.qw-p-no` becomes one chunk
 - `chunk_number == section_path == text from div.qw-p-no`
@@ -147,7 +147,7 @@ The parser should instead rely on the actual document body stream under `#docume
 
 That means:
 
-- no TOC-tree parsing is required for naxis ingestion
+- no TOC-tree parsing is required for navis ingestion
 - no dependence on TOC node IDs or TOC ancestry
 - section hierarchy should be reconstructed from the heading nodes that appear inline in the document body
 
@@ -161,7 +161,7 @@ Concrete examples from the updated fixtures:
 - chunk `12501` -> anchor id `P8A8E6F292F99E-EFL`
 - chunk `12545` -> anchor id `P7DA8E6F292F99E-EFL`
 
-So for naxis v1 the plan should assume:
+So for navis v1 the plan should assume:
 
 - `chunk_number == section_path == text from div.qw-p-no`
 - the anchor immediately preceding the paragraph block is the stable paragraph locator
@@ -183,19 +183,19 @@ From the samples:
 - `uaId` looks session- or user-specific and should not be part of persistent identity
 - `refId=...-EFL` identifies the selected document node/page and should be treated as the stable page identity
 
-Therefore the naxis `doc_uid` should be derived from `key` + `refId`, not from title and not from `uaId`.
+Therefore the navis `doc_uid` should be derived from `key` + `refId`, not from title and not from `uaId`.
 
 Recommended format:
 
 ```text
-naxis-qrifrs-<refid-lowercased>
+navis-qrifrs-<refid-lowercased>
 ```
 
 This form is preferable because it preserves the original `key` exactly.
 
 ### 8. The current samples support sections, not just chunks
 
-The added fixtures strongly suggest naxis should support section extraction in v1 because we have visible heading levels in the content body that can be tracked as a hierarchy while scanning the page linearly.
+The added fixtures strongly suggest navis should support section extraction in v1 because we have visible heading levels in the content body that can be tracked as a hierarchy while scanning the page linearly.
 
 So the plan should assume **Option A** by default:
 
@@ -222,7 +222,7 @@ src/
     html_common.py         # shared sidecar validation and helpers
     html_router.py         # dispatch by source_domain / hostname
     html_ifrs.py           # existing ifrs.org extraction logic
-    html_naxis.py          # new abonnes.efl.fr extraction logic
+    html_navis.py          # new abonnes.efl.fr extraction logic
     pdf.py
 ```
 
@@ -236,10 +236,10 @@ with:
 
 - `HtmlCaptureMetadata`
 - `IfrsHtmlExtractor`
-- `NaxisHtmlExtractor`
+- `NavisHtmlExtractor`
 - `HtmlExtractorRouter`
 
-The important design point is not the exact file split, but that **IFRS-specific assumptions are isolated from naxis-specific assumptions**.
+The important design point is not the exact file split, but that **IFRS-specific assumptions are isolated from navis-specific assumptions**.
 
 ### 2. Route by sidecar/source domain, not by suffix
 
@@ -251,7 +251,7 @@ The important design point is not the exact file split, but that **IFRS-specific
 Recommended routing rules:
 
 - `ifrs.org` and `*.ifrs.org` -> IFRS extractor
-- `abonnes.efl.fr` -> Naxis extractor
+- `abonnes.efl.fr` -> Navis extractor
 - anything else -> validation failure
 
 This keeps `IngestCommand` simple and makes the source-specific logic explicit.
@@ -260,7 +260,7 @@ This keeps `IngestCommand` simple and makes the source-specific logic explicit.
 
 Do **not** fork storage logic.
 
-Both IFRS HTML and Naxis HTML should continue to flow through the same `StoreCommand` path so that they all benefit from:
+Both IFRS HTML and Navis HTML should continue to flow through the same `StoreCommand` path so that they all benefit from:
 
 - chunk replacement
 - skip-if-unchanged behavior
@@ -273,7 +273,7 @@ Only extraction should vary by source.
 
 ## Data model changes
 
-## 1. Add `NAXIS` as a supported document type
+## 1. Add `NAVIS` as a supported document type
 
 Current code uses:
 
@@ -285,27 +285,27 @@ Current code uses:
 
 Planned changes:
 
-- add `NAXIS` to `DOCUMENT_TYPES`
-- ensure `DocumentRecord.document_type` can carry `NAXIS`
+- add `NAVIS` to `DOCUMENT_TYPES`
+- ensure `DocumentRecord.document_type` can carry `NAVIS`
 - change `infer_document_type(doc_uid)` so it queries the database for the stored document record instead of relying on a `doc_uid` naming convention
 - update callers and tests so document-family classification comes from persisted metadata, not prefixes in `doc_uid`
 - update any tests that currently assume the only valid families are `IFRS`, `IAS`, `IFRIC`, `SIC`, `PS`
 
-## 2. Standardize naxis `doc_uid`
+## 2. Standardize navis `doc_uid`
 
-Even after moving document-type inference to the database, naxis documents should still use a readable stable `doc_uid` namespace starting with `naxis`.
+Even after moving document-type inference to the database, navis documents should still use a readable stable `doc_uid` namespace starting with `navis`.
 
 Recommended format:
 
 ```text
-naxis-<key-lowercased>-<refid-lowercased>
+navis-<key-lowercased>-<refid-lowercased>
 ```
 
 Concrete examples from the added fixtures:
 
 ```text
-naxis-qrifrs-n2d7d9d1995f171f-efl
-naxis-qrifrs-c2a8e6f292f99e-efl
+navis-qrifrs-n2d7d9d1995f171f-efl
+navis-qrifrs-c2a8e6f292f99e-efl
 ```
 
 This preserves a stable namespace and keeps document identifiers readable, even though correctness should no longer depend on prefix-based logic.
@@ -336,7 +336,7 @@ Recommended change:
 
 - add `source_domain` to `DocumentRecord`
 - add a migration to `documents` that defaults to IFRS
-- populate it from the sidecar for both IFRS and naxis HTML
+- populate it from the sidecar for both IFRS and navis HTML
 
 This is not strictly required for ingestion, but it improves:
 
@@ -374,7 +374,7 @@ Expected work:
 - preserve current tests and fixtures
 - ensure routing still selects it for `ifrs.org`
 
-### 3. Implement a new `NaxisHtmlExtractor`
+### 3. Implement a new `NavisHtmlExtractor`
 
 The new extractor should be written from the supplied `abonnes.efl.fr` fixtures, not from guesswork.
 
@@ -404,7 +404,7 @@ The added EFL samples already resolve several of these decisions:
 
 The remaining implementation work is to codify these rules cleanly and validate them against more examples.
 
-#### 4. Naxis supports sections
+#### 4. Navis supports sections
 
 Ingest:
 
@@ -429,13 +429,13 @@ This preserves parity with IFRS HTML retrieval.
 
 Planned changes:
 
-- allow the extractor to set `document.document_type` explicitly to `NAXIS`
+- allow the extractor to set `document.document_type` explicitly to `NAVIS`
 - use the explicit type from extraction when storing a document
 - reserve `infer_document_type(doc_uid)` for looking up already-persisted documents from the database, not for deriving type from naming
 
 ### 2. Keep chunk and document skip logic unchanged
 
-Skip-if-unchanged should apply to naxis exactly as it already does for IFRS HTML:
+Skip-if-unchanged should apply to navis exactly as it already does for IFRS HTML:
 
 - same `doc_uid`
 - same extracted chunk payload
@@ -454,7 +454,7 @@ Current document-selection code uses prefix inference from `doc_uid`.
 
 Planned change:
 
-- add `NAXIS` to `DOCUMENT_TYPES`
+- add `NAVIS` to `DOCUMENT_TYPES`
 - change `infer_document_type(doc_uid)` to resolve `document_type` from the `documents` table
 - update `query_documents`, retrieval, and response-formatting paths so they rely on persisted `document_type` metadata rather than `doc_uid` prefixes
 
@@ -466,7 +466,7 @@ Affected components include:
 
 ### 2. Authority semantics
 
-Naxis documents are authoritative alongside IFRS/IAS/IFRIC/SIC/PS.
+Navis documents are authoritative alongside IFRS/IAS/IFRIC/SIC/PS.
 
 This matters for:
 
@@ -477,7 +477,7 @@ This matters for:
 
 Consequence:
 
-- treat `NAXIS` as another retrievable family
+- treat `NAVIS` as another retrievable family
 - but keep the distinction visible in output formatting
 
 ## Chrome extension changes
@@ -515,14 +515,14 @@ Keep the current capture contract:
 The added EFL samples do not expose `link[rel="canonical"]` in the HTML, so the source-specific rule should be:
 
 - for IFRS: keep the current DOM canonical validation
-- for naxis: use the sidecar `canonical_url` / `url` directly, normalize the query string, and derive identity from `key` + `refId`
+- for navis: use the sidecar `canonical_url` / `url` directly, normalize the query string, and derive identity from `key` + `refId`
 
 ### Nice-to-have logging improvement
 
 Log which source family is being captured:
 
 - `ifrs`
-- `naxis`
+- `navis`
 
 This will make extension debugging easier.
 
@@ -534,25 +534,25 @@ Add or update tests for:
 
 1. HTML extractor routing by `source_domain`
 2. IFRS extraction remains unchanged
-3. Naxis extraction matches expected `_CHUNKS.json`
-4. Naxis `doc_uid` derivation
-5. Naxis `document_type == "NAXIS"`
-6. Naxis chunk locator extraction from the preceding `<a id="..."></a>` anchor into the same persisted fields used by IFRS (`chunk_id` / `source_anchor`)
-7. Naxis section hierarchy reconstruction from inline body headings
+3. Navis extraction matches expected `_CHUNKS.json`
+4. Navis `doc_uid` derivation
+5. Navis `document_type == "NAVIS"`
+6. Navis chunk locator extraction from the preceding `<a id="..."></a>` anchor into the same persisted fields used by IFRS (`chunk_id` / `source_anchor`)
+7. Navis section hierarchy reconstruction from inline body headings
 8. canonical URL fallback/validation behavior for EFL if needed
 9. behavior when EFL DOM shape is invalid
 10. `infer_document_type(doc_uid)` returns the stored `document_type` from the database
-11. response grouping and query filtering include `NAXIS`
+11. response grouping and query filtering include `NAVIS`
 12. extension supported-domain predicate includes `abonnes.efl.fr`
 
 ### Integration tests
 
 Add or update tests for:
 
-1. end-to-end ingestion of one naxis HTML capture pair
-2. skip behavior for unchanged naxis capture
-3. replace behavior when naxis HTML changes
-4. mixed ingestion run containing IFRS HTML + Naxis HTML + PDF
+1. end-to-end ingestion of one navis HTML capture pair
+2. skip behavior for unchanged navis capture
+3. replace behavior when navis HTML changes
+4. mixed ingestion run containing IFRS HTML + Navis HTML + PDF
 5. archive behavior to `processed/`, `skipped/`, and `failed/`
 
 ### Regression tests
@@ -570,14 +570,14 @@ Existing IFRS tests must continue to pass:
 
 Deliver:
 
-- codified parsing notes from the 2 representative `abonnes.efl.fr` HTML examples already under `examples/Lefebvre-Naxis/`
+- codified parsing notes from the 2 representative `abonnes.efl.fr` HTML examples already under `examples/Lefebvre-Navis/`
 - matching sidecar handling rules
 - expected `_CHUNKS.json` assertions
 - optional `__SECTIONS.json` fixtures if we decide to formalize the hierarchy expectations explicitly
 
 Success criteria:
 
-- the team agrees on the stable naxis parsing contract derived from the existing real samples
+- the team agrees on the stable navis parsing contract derived from the existing real samples
 
 ### Phase 2 — refactor HTML extraction into routed strategies
 
@@ -591,21 +591,21 @@ Success criteria:
 
 - all existing IFRS HTML ingestion tests still pass
 
-### Phase 3 — implement `NaxisHtmlExtractor`
+### Phase 3 — implement `NavisHtmlExtractor`
 
 Deliver:
 
 - source-specific DOM parsing for `abonnes.efl.fr`
 - stable `doc_uid` derivation
-- `document_type="NAXIS"`
+- `document_type="NAVIS"`
 - chunk extraction matching expected fixtures
 - section extraction if the samples support it
 
 Success criteria:
 
-- the provided naxis fixtures ingest into expected chunks
+- the provided navis fixtures ingest into expected chunks
 
-### Phase 4 — update storage/query semantics for `NAXIS`
+### Phase 4 — update storage/query semantics for `NAVIS`
 
 Deliver:
 
@@ -616,7 +616,7 @@ Deliver:
 
 Success criteria:
 
-- `NAXIS` documents can be stored, grouped, and filtered without breaking existing types
+- `NAVIS` documents can be stored, grouped, and filtered without breaking existing types
 
 ### Phase 5 — extend the Chrome extension
 
@@ -636,7 +636,7 @@ Success criteria:
 
 ## Recommendation
 
-Proceed with a **source-routed HTML extraction refactor** before adding the naxis parser itself.
+Proceed with a **source-routed HTML extraction refactor** before adding the navis parser itself.
 
 That is the cleanest path because:
 
@@ -646,10 +646,10 @@ That is the cleanest path because:
 
 The smallest sound implementation sequence is:
 
-1. lock the naxis parser contract from the fixtures already in `examples/Lefebvre-Naxis/`
-2. refactor HTML extraction into IFRS + naxis strategies behind a router
-3. implement `NaxisHtmlExtractor` using body headings for section hierarchy and preceding paragraph anchors for chunk identity
-4. add `NAXIS` document-type support and switch document-family inference to the database-backed `infer_document_type(doc_uid)` lookup
+1. lock the navis parser contract from the fixtures already in `examples/Lefebvre-Navis/`
+2. refactor HTML extraction into IFRS + navis strategies behind a router
+3. implement `NavisHtmlExtractor` using body headings for section hierarchy and preceding paragraph anchors for chunk identity
+4. add `NAVIS` document-type support and switch document-family inference to the database-backed `infer_document_type(doc_uid)` lookup
 5. extend the Chrome extension to capture from `abonnes.efl.fr`
 
 This preserves the current architecture, avoids mixing two incompatible DOM contracts into one extractor, and keeps the feature grounded in real sample data.

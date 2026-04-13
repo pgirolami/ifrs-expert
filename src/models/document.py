@@ -6,7 +6,7 @@ import importlib
 import sqlite3
 from dataclasses import dataclass
 
-DOCUMENT_TYPES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS", "NAXIS")
+DOCUMENT_TYPES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS", "NAVIS")
 
 
 def derive_document_type_from_doc_uid(doc_uid: str) -> str | None:

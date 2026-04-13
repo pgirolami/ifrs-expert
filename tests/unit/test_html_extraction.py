@@ -43,8 +43,8 @@ def _write_sidecar(sidecar_path: Path, canonical_url: str, title: str, source_do
     )
 
 
-def _naxis_example_base(name: str) -> Path:
-    return Path(__file__).parent.parent.parent / "examples" / "Lefebvre-Naxis" / name
+def _navis_example_base(name: str) -> Path:
+    return Path(__file__).parent.parent.parent / "examples" / "Lefebvre-Navis" / name
 
 
 class TestHtmlExtractor:
@@ -174,27 +174,27 @@ class TestHtmlExtractor:
         [
             (
                 "20260412T190013Z--document",
-                "naxis-qrifrs-n2d7d9d1995f171f-efl",
+                "navis-qrifrs-n2d7d9d1995f171f-efl",
                 "N2D7D9D1995F171F-EFL",
                 "S2B0D9D1995F171F-EFL",
             ),
             (
                 "20260412T190029Z--document",
-                "naxis-qrifrs-c2a8e6f292f99e-efl",
+                "navis-qrifrs-c2a8e6f292f99e-efl",
                 "C2A8E6F292F99E-EFL",
                 "T1A42F43DD29C5-EFL",
             ),
         ],
     )
-    def test_extract_returns_expected_naxis_chunks_and_sections(
+    def test_extract_returns_expected_navis_chunks_and_sections(
         self,
         basename: str,
         expected_doc_uid: str,
         expected_section_id: str,
         expected_parent_section_id: str,
     ) -> None:
-        """Representative Naxis HTML files should parse into stable chunks and TOC-backed sections."""
-        base_path = _naxis_example_base(basename)
+        """Representative Navis HTML files should parse into stable chunks and TOC-backed sections."""
+        base_path = _navis_example_base(basename)
         html_path = base_path.with_suffix(".html")
         sidecar_path = base_path.with_suffix(".json")
         expected_chunks = json.loads(base_path.with_name(f"{basename}__CHUNKS.json").read_text(encoding="utf-8"))
@@ -204,10 +204,10 @@ class TestHtmlExtractor:
         extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
 
         assert extracted_document.document.doc_uid == expected_doc_uid
-        assert extracted_document.document.document_type == "NAXIS"
+        assert extracted_document.document.document_type == "NAVIS"
         assert extracted_document.document.source_domain == "abonnes.efl.fr"
-        assert extracted_document.sections, "Expected Naxis section extraction to produce section rows"
-        assert extracted_document.section_closure_rows, "Expected Naxis section extraction to produce closure rows"
+        assert extracted_document.sections, "Expected Navis section extraction to produce section rows"
+        assert extracted_document.section_closure_rows, "Expected Navis section extraction to produce closure rows"
 
         sections_by_id = {section.section_id: section for section in extracted_document.sections}
         assert expected_section_id in sections_by_id
@@ -216,13 +216,13 @@ class TestHtmlExtractor:
         chunks_by_number = {chunk.chunk_number: chunk for chunk in extracted_document.chunks}
         for expected in expected_chunks:
             chunk = chunks_by_number.get(expected["section_path"])
-            assert chunk is not None, f"Missing Naxis chunk for number {expected['section_path']}"
+            assert chunk is not None, f"Missing Navis chunk for number {expected['section_path']}"
             assert _normalize(chunk.text) == _normalize(expected["text"])
             assert chunk.chunk_id == expected["section_id"]
 
-    def test_extract_uses_ref_id_from_toc_links_for_naxis_section_identity(self) -> None:
-        """Naxis section ids should come from the TOC refId, not the DOM anchor id."""
-        base_path = _naxis_example_base("20260412T190029Z--document")
+    def test_extract_uses_ref_id_from_toc_links_for_navis_section_identity(self) -> None:
+        """Navis section ids should come from the TOC refId, not the DOM anchor id."""
+        base_path = _navis_example_base("20260412T190029Z--document")
         extractor = HtmlExtractor(sidecar_path=base_path.with_suffix(".json"))
 
         extracted_document = extractor.extract(source_path=base_path.with_suffix(".html"), explicit_doc_uid=None)
@@ -231,11 +231,11 @@ class TestHtmlExtractor:
         assert "C2A8E6F292F99E-EFL" in sections_by_id
         assert "A004-000" not in sections_by_id
 
-    def test_extract_rejects_naxis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
-        """Naxis sidecar url and canonical_url must point to the same refId."""
-        base_path = _naxis_example_base("20260412T190029Z--document")
+    def test_extract_rejects_navis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
+        """Navis sidecar url and canonical_url must point to the same refId."""
+        base_path = _navis_example_base("20260412T190029Z--document")
         html_path = base_path.with_suffix(".html")
-        sidecar_path = tmp_path / "broken-naxis.json"
+        sidecar_path = tmp_path / "broken-navis.json"
         sidecar_path.write_text(
             json.dumps(
                 {

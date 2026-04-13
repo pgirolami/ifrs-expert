@@ -32,12 +32,12 @@ TABLE_ROW_WITH_LABEL_CELL_COUNT: Final[int] = 2
 HEADING_TAG_NAMES: Final[tuple[str, ...]] = ("h1", "h2", "h3", "h4", "h5", "h6")
 HEADING_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^(?:Chapter\s+[A-Za-z0-9.]+|[A-Z]?\d+(?:\.\d+)*)\s+")
 SUBSECTION_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^[A-Z]?\d+\.\d+")
-NAXIS_DOC_UID_TOKEN_PATTERN: Final[re.Pattern[str]] = re.compile(r"[^a-z0-9]+")
-NAXIS_TITLE_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(
+NAVIS_DOC_UID_TOKEN_PATTERN: Final[re.Pattern[str]] = re.compile(r"[^a-z0-9]+")
+NAVIS_TITLE_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^(?:TITRE\s+[A-Z0-9IVXLCM]+|CHAPITRE\s+[A-Z0-9IVXLCM]+|SECTION\s+[A-Z0-9IVXLCM]+)\s+",
     re.IGNORECASE,
 )
-NAXIS_EDITORIAL_TITLES: Final[set[str]] = {"QUESTIONS/REPONSES PRATIQUES"}
+NAVIS_EDITORIAL_TITLES: Final[set[str]] = {"QUESTIONS/REPONSES PRATIQUES"}
 
 
 class HtmlValidationError(ValueError):
@@ -379,7 +379,7 @@ class IfrsHtmlExtractor:
 
 @dataclass(frozen=True)
 class _TocContextEntry:
-    """One table-of-contents lineage entry for a Naxis page."""
+    """One table-of-contents lineage entry for a Navis page."""
 
     anchor_id: str
     ref_id: str
@@ -389,8 +389,8 @@ class _TocContextEntry:
 
 
 @dataclass(frozen=True)
-class _NaxisHeading:
-    """One inline Naxis heading encountered in document order."""
+class _NavisHeading:
+    """One inline Navis heading encountered in document order."""
 
     raw_text: str
     title: str
@@ -399,8 +399,8 @@ class _NaxisHeading:
 
 
 @dataclass
-class _NaxisStructureState:
-    """Mutable traversal state while extracting Naxis sections and chunks."""
+class _NavisStructureState:
+    """Mutable traversal state while extracting Navis sections and chunks."""
 
     active_sections_by_level: dict[int, SectionRecord]
     active_kinds_by_level: dict[int, str]
@@ -420,8 +420,8 @@ class _SectionRecordDraft:
     position: int
 
 
-class NaxisHtmlExtractor:
-    """Extractor implementation for EFL/Naxis rendered DOM capture pairs."""
+class NavisHtmlExtractor:
+    """Extractor implementation for EFL/Navis rendered DOM capture pairs."""
 
     source_type = "html"
     skip_if_unchanged = True
@@ -432,14 +432,14 @@ class NaxisHtmlExtractor:
         sidecar: HtmlSidecar,
         explicit_doc_uid: str | None,
     ) -> ExtractedDocument:
-        """Extract a Naxis HTML capture from a parsed soup and sidecar."""
+        """Extract a Navis HTML capture from a parsed soup and sidecar."""
         del explicit_doc_uid
 
         self._validate_sidecar_urls(sidecar)
         doc_uid = self._derive_doc_uid(sidecar)
         content_root = soup.select_one("#documentContent .question.question-export")
         if not isinstance(content_root, Tag):
-            _fail_validation("HTML is missing the Naxis content root")
+            _fail_validation("HTML is missing the Navis content root")
 
         toc_context = self._build_toc_context(soup=soup, sidecar=sidecar)
         chunks, sections = self._extract_structure(doc_uid=doc_uid, content_root=content_root, toc_context=toc_context)
@@ -454,7 +454,7 @@ class NaxisHtmlExtractor:
                 canonical_url=sidecar.canonical_url,
                 captured_at=sidecar.captured_at,
                 source_domain=sidecar.source_domain,
-                document_type="NAXIS",
+                document_type="NAVIS",
             ),
             chunks=chunks,
             sections=sections,
@@ -465,27 +465,27 @@ class NaxisHtmlExtractor:
         canonical_parts = urlparse(sidecar.canonical_url)
         source_parts = urlparse(sidecar.url)
         if canonical_parts.netloc.lower() != "abonnes.efl.fr":
-            _fail_validation("Naxis canonical_url must point to abonnes.efl.fr")
+            _fail_validation("Navis canonical_url must point to abonnes.efl.fr")
         if source_parts.netloc.lower() != "abonnes.efl.fr":
-            _fail_validation("Naxis url must point to abonnes.efl.fr")
+            _fail_validation("Navis url must point to abonnes.efl.fr")
 
         canonical_ref_id = self._get_query_param_value(sidecar.canonical_url, "refId")
         url_ref_id = self._get_query_param_value(sidecar.url, "refId")
         if not canonical_ref_id or not url_ref_id or canonical_ref_id != url_ref_id:
-            _fail_validation("Naxis sidecar url and canonical_url must contain the same refId")
+            _fail_validation("Navis sidecar url and canonical_url must contain the same refId")
 
         canonical_key = self._get_query_param_value(sidecar.canonical_url, "key")
         url_key = self._get_query_param_value(sidecar.url, "key")
         if not canonical_key or not url_key or canonical_key != url_key:
-            _fail_validation("Naxis sidecar url and canonical_url must contain the same key")
+            _fail_validation("Navis sidecar url and canonical_url must contain the same key")
 
     def _derive_doc_uid(self, sidecar: HtmlSidecar) -> str:
         key = self._get_query_param_value(sidecar.canonical_url, "key")
         ref_id = self._get_query_param_value(sidecar.canonical_url, "refId")
         if not key or not ref_id:
             fallback_slug = _slugify_doc_uid_token(sidecar.title)
-            return f"naxis-{fallback_slug}"
-        return f"naxis-{_slugify_doc_uid_token(key)}-{_slugify_doc_uid_token(ref_id)}"
+            return f"navis-{fallback_slug}"
+        return f"navis-{_slugify_doc_uid_token(key)}-{_slugify_doc_uid_token(ref_id)}"
 
     def _build_toc_context(self, soup: BeautifulSoup, sidecar: HtmlSidecar) -> list[_TocContextEntry]:
         ref_id = self._get_query_param_value(sidecar.canonical_url, "refId")
@@ -494,11 +494,11 @@ class NaxisHtmlExtractor:
 
         toc_anchor = self._find_toc_anchor_by_ref_id(soup=soup, ref_id=ref_id)
         if not isinstance(toc_anchor, Tag):
-            _fail_validation(f"Could not locate Naxis TOC entry for refId={ref_id}")
+            _fail_validation(f"Could not locate Navis TOC entry for refId={ref_id}")
 
         toc_anchor_id = _tag_attribute_as_string(toc_anchor, "id")
         if not toc_anchor_id:
-            _fail_validation(f"Naxis TOC entry for refId={ref_id} is missing an id")
+            _fail_validation(f"Navis TOC entry for refId={ref_id} is missing an id")
 
         context: list[_TocContextEntry] = []
         for anchor_id in _build_toc_anchor_lineage_ids(toc_anchor_id):
@@ -506,11 +506,11 @@ class NaxisHtmlExtractor:
             if not isinstance(lineage_anchor, Tag):
                 continue
             raw_text = _normalize_whitespace(lineage_anchor.get_text(" ", strip=True))
-            lineage_ref_id = _extract_naxis_ref_id_from_anchor(lineage_anchor)
+            lineage_ref_id = _extract_navis_ref_id_from_anchor(lineage_anchor)
             if not raw_text or not lineage_ref_id:
                 continue
-            title = _normalize_naxis_heading_title(raw_text)
-            kind = _classify_naxis_heading(raw_text=raw_text, classes=_tag_classes(lineage_anchor))
+            title = _normalize_navis_heading_title(raw_text)
+            kind = _classify_navis_heading(raw_text=raw_text, classes=_tag_classes(lineage_anchor))
             if title and kind is not None:
                 context.append(
                     _TocContextEntry(
@@ -530,8 +530,8 @@ class NaxisHtmlExtractor:
         toc_context: list[_TocContextEntry],
     ) -> tuple[list[Chunk], list[SectionRecord]]:
         inline_headings = self._collect_inline_headings(content_root)
-        base_context, matched_context = _split_naxis_toc_context(toc_context, inline_headings)
-        state = _NaxisStructureState(
+        base_context, matched_context = _split_navis_toc_context(toc_context, inline_headings)
+        state = _NavisStructureState(
             active_sections_by_level={},
             active_kinds_by_level={},
             sections=[],
@@ -553,7 +553,7 @@ class NaxisHtmlExtractor:
         self,
         doc_uid: str,
         base_context: list[_TocContextEntry],
-        state: _NaxisStructureState,
+        state: _NavisStructureState,
     ) -> None:
         for context_entry in base_context:
             level = len(state.active_sections_by_level) + 1
@@ -579,13 +579,13 @@ class NaxisHtmlExtractor:
         child: Tag,
         base_context: list[_TocContextEntry],
         matched_context: list[_TocContextEntry],
-        state: _NaxisStructureState,
+        state: _NavisStructureState,
     ) -> bool:
-        heading = self._build_naxis_heading(child)
+        heading = self._build_navis_heading(child)
         if heading is None:
             return False
 
-        level = _resolve_naxis_heading_level(
+        level = _resolve_navis_heading_level(
             kind=heading.kind,
             active_kinds_by_level=state.active_kinds_by_level,
         )
@@ -593,7 +593,7 @@ class NaxisHtmlExtractor:
             level = len(base_context) + state.matched_context_index + 1
             state.matched_context_index += 1
 
-        self._prune_naxis_state(state=state, level=level)
+        self._prune_navis_state(state=state, level=level)
         parent_section = state.active_sections_by_level.get(level - 1)
         section = _build_section_record(
             doc_uid=doc_uid,
@@ -611,8 +611,8 @@ class NaxisHtmlExtractor:
         state.sections.append(section)
         return True
 
-    def _append_chunk(self, doc_uid: str, child: Tag, state: _NaxisStructureState) -> None:
-        if not _is_naxis_chunk_tag(child):
+    def _append_chunk(self, doc_uid: str, child: Tag, state: _NavisStructureState) -> None:
+        if not _is_navis_chunk_tag(child):
             return
         chunk = self._extract_chunk(
             doc_uid=doc_uid,
@@ -622,45 +622,45 @@ class NaxisHtmlExtractor:
         if chunk is not None:
             state.chunks.append(chunk)
 
-    def _build_naxis_heading(self, child: Tag) -> _NaxisHeading | None:
-        if not _is_naxis_heading_tag(child):
+    def _build_navis_heading(self, child: Tag) -> _NavisHeading | None:
+        if not _is_navis_heading_tag(child):
             return None
-        raw_text = _extract_naxis_heading_text(child)
+        raw_text = _extract_navis_heading_text(child)
         if not raw_text:
             return None
-        kind = _classify_naxis_heading(raw_text=raw_text, classes=_tag_classes(child))
+        kind = _classify_navis_heading(raw_text=raw_text, classes=_tag_classes(child))
         if kind is None:
             return None
-        title = _normalize_naxis_heading_title(raw_text)
+        title = _normalize_navis_heading_title(raw_text)
         if not title:
             return None
-        return _NaxisHeading(
+        return _NavisHeading(
             raw_text=raw_text,
             title=title,
             kind=kind,
             anchor_id=_find_previous_named_anchor_id(child),
         )
 
-    def _prune_naxis_state(self, state: _NaxisStructureState, level: int) -> None:
+    def _prune_navis_state(self, state: _NavisStructureState, level: int) -> None:
         state.active_sections_by_level = {existing_level: existing_section for existing_level, existing_section in state.active_sections_by_level.items() if existing_level < level}
         state.active_kinds_by_level = {existing_level: existing_kind for existing_level, existing_kind in state.active_kinds_by_level.items() if existing_level < level}
 
-    def _collect_inline_headings(self, content_root: Tag) -> list[_NaxisHeading]:
-        headings: list[_NaxisHeading] = []
+    def _collect_inline_headings(self, content_root: Tag) -> list[_NavisHeading]:
+        headings: list[_NavisHeading] = []
         for child in content_root.children:
-            if not isinstance(child, Tag) or not _is_naxis_heading_tag(child):
+            if not isinstance(child, Tag) or not _is_navis_heading_tag(child):
                 continue
-            raw_text = _extract_naxis_heading_text(child)
+            raw_text = _extract_navis_heading_text(child)
             if not raw_text:
                 continue
-            kind = _classify_naxis_heading(raw_text=raw_text, classes=_tag_classes(child))
+            kind = _classify_navis_heading(raw_text=raw_text, classes=_tag_classes(child))
             if kind is None:
                 continue
-            title = _normalize_naxis_heading_title(raw_text)
+            title = _normalize_navis_heading_title(raw_text)
             if not title:
                 continue
             headings.append(
-                _NaxisHeading(
+                _NavisHeading(
                     raw_text=raw_text,
                     title=title,
                     kind=kind,
@@ -673,7 +673,7 @@ class NaxisHtmlExtractor:
         for anchor in soup.select("#sommaire a[href], #tocTree a[href]"):
             if not isinstance(anchor, Tag):
                 continue
-            if _extract_naxis_ref_id_from_anchor(anchor) == ref_id:
+            if _extract_navis_ref_id_from_anchor(anchor) == ref_id:
                 return anchor
         return soup.select_one(f'a[data-ref-id="{ref_id}"]')
 
@@ -692,7 +692,7 @@ class NaxisHtmlExtractor:
         if not chunk_number:
             return None
 
-        text = _extract_naxis_chunk_text(body_tag)
+        text = _extract_navis_chunk_text(body_tag)
         if not text:
             return None
 
@@ -715,10 +715,10 @@ class NaxisHtmlExtractor:
         return first_value or None
 
 
-def _build_source_extractor(sidecar: HtmlSidecar) -> IfrsHtmlExtractor | NaxisHtmlExtractor:
+def _build_source_extractor(sidecar: HtmlSidecar) -> IfrsHtmlExtractor | NavisHtmlExtractor:
     source_domain = sidecar.source_domain.lower()
     if source_domain == "abonnes.efl.fr":
-        return NaxisHtmlExtractor()
+        return NavisHtmlExtractor()
     if source_domain == "ifrs.org" or source_domain.endswith(".ifrs.org"):
         return IfrsHtmlExtractor()
     message = f"unsupported HTML source_domain: {sidecar.source_domain}"
@@ -858,9 +858,9 @@ def _get_nearest_ancestor_section(
     return active_sections_by_level[nearest_level]
 
 
-def _split_naxis_toc_context(
+def _split_navis_toc_context(
     toc_context: list[_TocContextEntry],
-    inline_headings: list[_NaxisHeading],
+    inline_headings: list[_NavisHeading],
 ) -> tuple[list[_TocContextEntry], list[_TocContextEntry]]:
     if not toc_context or not inline_headings:
         return toc_context, []
@@ -888,26 +888,26 @@ def _build_toc_anchor_lineage_ids(anchor_id: str) -> list[str]:
     return lineage_ids
 
 
-def _is_naxis_heading_tag(node: Tag) -> bool:
+def _is_navis_heading_tag(node: Tag) -> bool:
     classes = _tag_classes(node)
     return node.name == "div" and "qw-level" in classes
 
 
-def _is_naxis_chunk_tag(node: Tag) -> bool:
+def _is_navis_chunk_tag(node: Tag) -> bool:
     classes = _tag_classes(node)
     return node.name == "div" and "qw-par" in classes and "qw-par-p" in classes
 
 
-def _extract_naxis_heading_text(node: Tag) -> str:
+def _extract_navis_heading_text(node: Tag) -> str:
     return _normalize_whitespace(node.get_text(" ", strip=True))
 
 
-def _normalize_naxis_heading_title(raw_text: str) -> str:
-    stripped_title = NAXIS_TITLE_PREFIX_PATTERN.sub("", raw_text).strip()
+def _normalize_navis_heading_title(raw_text: str) -> str:
+    stripped_title = NAVIS_TITLE_PREFIX_PATTERN.sub("", raw_text).strip()
     return _normalize_whitespace(stripped_title)
 
 
-def _classify_naxis_heading(raw_text: str, classes: list[str]) -> str | None:
+def _classify_navis_heading(raw_text: str, classes: list[str]) -> str | None:
     lowered_text = raw_text.lower()
     if "qw-level-8" in classes:
         return None
@@ -921,8 +921,8 @@ def _classify_naxis_heading(raw_text: str, classes: list[str]) -> str | None:
         if lowered_text.startswith(prefix):
             return kind
 
-    normalized_title = _normalize_naxis_heading_title(raw_text)
-    if normalized_title in NAXIS_EDITORIAL_TITLES or normalized_title.startswith("L'ESSENTIEL"):
+    normalized_title = _normalize_navis_heading_title(raw_text)
+    if normalized_title in NAVIS_EDITORIAL_TITLES or normalized_title.startswith("L'ESSENTIEL"):
         return "editorial"
 
     class_rules: tuple[tuple[str, str], ...] = (
@@ -938,7 +938,7 @@ def _classify_naxis_heading(raw_text: str, classes: list[str]) -> str | None:
     return "leaf"
 
 
-def _resolve_naxis_heading_level(kind: str, active_kinds_by_level: dict[int, str]) -> int:
+def _resolve_navis_heading_level(kind: str, active_kinds_by_level: dict[int, str]) -> int:
     fixed_levels = {
         "title": 1,
         "chapter": 2,
@@ -983,7 +983,7 @@ def _get_highest_level_section(active_sections_by_level: dict[int, SectionRecord
     return active_sections_by_level[max(active_sections_by_level)]
 
 
-def _extract_naxis_chunk_text(node: Tag) -> str:
+def _extract_navis_chunk_text(node: Tag) -> str:
     fragment = BeautifulSoup(str(node), "html.parser")
     for hidden_node in fragment.select('[style*="display: none"], [hidden], [aria-hidden="true"]'):
         hidden_node.decompose()
@@ -993,7 +993,7 @@ def _extract_naxis_chunk_text(node: Tag) -> str:
         line_break.replace_with(f" {line_break_marker} ")
 
     text = fragment.get_text(" ", strip=True).replace(line_break_marker, "\n")
-    normalized_lines = [_normalize_naxis_text_line(line) for line in text.splitlines()]
+    normalized_lines = [_normalize_navis_text_line(line) for line in text.splitlines()]
 
     meaningful_lines: list[str] = []
     for line in normalized_lines:
@@ -1007,7 +1007,7 @@ def _extract_naxis_chunk_text(node: Tag) -> str:
     return "\n".join(meaningful_lines)
 
 
-def _normalize_naxis_text_line(text: str) -> str:
+def _normalize_navis_text_line(text: str) -> str:
     normalized_text = _normalize_whitespace(text)
     normalized_text = re.sub(r"\(\s+", "(", normalized_text)
     normalized_text = re.sub(r"\s+\)", ")", normalized_text)
@@ -1017,7 +1017,7 @@ def _normalize_naxis_text_line(text: str) -> str:
     return re.sub(r"([A-Za-zÀ-ÿ])'\s+([A-Za-zÀ-ÿ])", r"\1'\2", normalized_text)
 
 
-def _extract_naxis_ref_id_from_anchor(anchor: Tag) -> str | None:
+def _extract_navis_ref_id_from_anchor(anchor: Tag) -> str | None:
     href = _tag_attribute_as_string(anchor, "href")
     if href:
         href_ref_id_values = parse_qs(urlparse(href).query).get("refId")
@@ -1035,7 +1035,7 @@ def _extract_naxis_ref_id_from_anchor(anchor: Tag) -> str | None:
 
 def _slugify_doc_uid_token(value: str) -> str:
     normalized_value = value.strip().lower()
-    slug = NAXIS_DOC_UID_TOKEN_PATTERN.sub("-", normalized_value).strip("-")
+    slug = NAVIS_DOC_UID_TOKEN_PATTERN.sub("-", normalized_value).strip("-")
     return slug or "document"
 
 
