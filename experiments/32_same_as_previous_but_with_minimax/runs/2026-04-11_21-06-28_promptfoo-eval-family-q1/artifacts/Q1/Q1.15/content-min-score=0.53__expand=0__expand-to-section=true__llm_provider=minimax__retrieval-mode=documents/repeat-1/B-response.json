@@ -1,0 +1,53 @@
+{
+  "assumptions_fr": [
+    "La créance de dividende intragroupe est un actif monétaire au sens d'IAS 21.",
+    "Les dividendes intragroupe sont éliminés en consolidation, mais les écarts de change peuvent subsister si les entités ont des devises fonctionnelles différentes.",
+    "L'exposition au risque de change porte sur la conversion de la créance dans la devise de consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'exposition de change d'une créance de dividende intragroupe peut être désignée comme élément couvert uniquement si l'écart de change n'est pas éliminé en consolidation (différence de devises fonctionnelles entre les entités du groupe)."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_monetary_fair_value_hedge",
+      "label_fr": "Couverture de juste valeur d'un élément monétaire intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende intragroupe est un élément monétaire. En vertu de l'exception prévue au paragraphe 6.3.6 d'IFRS 9, le risque de change d'un élément monétaire intragroupe peut être désigné comme élément couvert dans les états financiers consolidés, à condition que les écarts de change ne soient pas éliminés en consolidation.",
+      "conditions_fr": [
+        "Les entités émettrice et destinataire du dividende ont des devises fonctionnelles différentes, générant des écarts de change non éliminés à la consolidation selon IAS 21.",
+        "La créance de dividende constitue un élément monétaire au sens d'IAS 21."
+      ],
+      "practical_implication_fr": "L'entité peut désigner le risque de change de la créance dans une relation de couverture (couverture de juste valeur ou de flux de trésorerie, sous réserve des conditions d'IFRS 9).",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "paragraph 6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "external_party_only_hedge",
+      "label_fr": "Absence de désignation de couverture pour les éléments intragroupe",
+      "applicability": "non",
+      "reasoning_fr": "La règle générale du paragraphe 6.3.5 d'IFRS 9 interdit la désignation d'éléments couverts pour des transactions intragroupe dans les états financiers consolidés. Toutefois, cette interdiction est levée par l'exception du paragraphe 6.3.6 applicable aux éléments monétaires intragroupe dont le risque de change n'est pas éliminé en consolidation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche ne s'applique pas en présence de l'exception pour les éléments monétaires intragroupe.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "paragraph 6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture en identifiant la créance de dividende comme élément couvert et le risque de change comme risque couvert.",
+    "Vérifier que les écarts de change sur la créance ne sont pas éliminés en consolidation (IAS 21) avant de procéder à la désignation.",
+    "Appliquer les exigences d'IFRS 9 en matière d'efficacité de la couverture et de comptabilité de couverture (juste valeur ou flux de trésorerie)."
+  ]
+}

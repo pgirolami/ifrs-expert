@@ -1,0 +1,84 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est un actif monétaire libellé dans une devise autre que la devise fonctionnelle de l'entité qui le comptabilise.",
+    "Le dividende a été comptabilisé en créance dans les états financiers consolidés du groupe.",
+    "Les deux entités impliquées dans la transaction intragroupe ont des devises fonctionnelles différentes."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La couverture du risque de change sur une créance de dividende intragroupe est recevable car l'exception de l'IAS 21 paragraphe 45 maintient l'exposition aux fluctuations de change dans les comptes consolidés, ce qui permet de désigner ce risque comme élément couvert en vertu de l'exception IFRS 9 paragraphe 6.3.5. Cette désignation n'est valide que si le dividende intragroupe n'est pas éliminé par consolidation en raison de la différence de devises fonctionnelles."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "general_external_party_hedge",
+      "label_fr": "Couverture avec élément couvert externe à l'entité déclarante",
+      "applicability": "non",
+      "reasoning_fr": "Une créance de dividende intragroupe est un élément entre parties liées ; elle ne constitue pas une transaction avec une partie externe au sens de la règle générale de l'IFRS 9 paragraphe 6.3.5, qui exclut les éléments intragroupe du champ de désignation comme éléments couverts sous cette règle.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cet approche ne s'applique pas à la situation décrite.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "intragroup_monetary_item_hedge",
+      "label_fr": "Couverture d'un élément monétaire intragroupe en vertu de l'exception",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L'IFRS 9 paragraphe 6.3.5 exception permet de couvrir le risque de change d'un élément monétaire intragroupe dans les états financiers consolidés si cet élément crée une exposition à des gains ou pertes de change qui ne sont pas entièrement éliminés par consolidation conformément à l'IAS 21. Selon l'IAS 21 paragraphe 45, un actif monétaire intragroupe ne peut être éliminé contre le passif correspondant sans reconnaître les effets des fluctuations de change dans les comptes consolidés.",
+      "conditions_fr": [
+        "Les devises fonctionnelles des deux entités intragroupe doivent être différentes.",
+        "L'exposition au risque de change doit subsister dans les comptes consolidés (non éliminée par consolidation).",
+        "La documentation de la relation de couverture doit satisfaire aux exigences de l'IFRS 9 paragraphe 6.4.1.",
+        "Le risque de change doit affecter le résultat consolidé."
+      ],
+      "practical_implication_fr": "La créance de dividende intragroupe peut être désignée comme élément couvert d'une relation de couverture de change dès lors que les conditions ci-dessus sont réunies.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates."
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "An intragroup monetary asset (or liability), whether short-term or long-term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements."
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity's functional currency."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fx_recognition_without_hedge",
+      "label_fr": "Reconnaissance des écarts de change sans couverture",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En l'absence de désignation de couverture, les écarts de change sur la créance de dividende intragroupe sont reconnus dans le résultat ou en autres éléments du résultat global conformément à l'IAS 21 paragraphe 45. Cette approche est recevable mais constitue une alternative à la désignation d'une relation de couverture, non une option concurrente.",
+      "conditions_fr": [
+        "Aucune désignation de relation de couverture n'est effectuée."
+      ],
+      "practical_implication_fr": "Les variations de change sur la créance sont comptabilisées en résultat ou en OCI selon l'IAS 21 sans instrument de couverture.",
+      "references": [
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "Such an exchange difference is recognised in profit or loss or, if it arises from the circumstances described in paragraph 32, it is recognised in other comprehensive income and accumulated in a separate component of equity until the disposal of the foreign operation."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture dès la date de reconnaissance de la créance de dividende intragroupe.",
+    "Identifier explicitement le risque de change (exposition entre devises fonctionnelles des entités intragroupe) et l'instrument de couverture dans la documentation de hedge accounting.",
+    "Vérifier que la créance de dividende intragroupe n'est pas éliminée par consolidation en raison de la différence de devises fonctionnelles, conformément à l'IAS 21 paragraphe 45.",
+    "L'IFRIC 16 paragraphe 12 confirme que le risque de change peut être mesuré par rapport à la devise fonctionnelle de n'importe quel niveau de société mère (immédiate, intermédiaire ou ultime)."
+  ]
+}

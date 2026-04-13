@@ -1,0 +1,61 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of foreign exchange risk hedge accounting for intragroup dividend receivables in consolidated financial statements under IFRS",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.1, 6.3.5"],
+        "reason": "IFRS 9 defines eligible hedged items for hedge accounting, including recognized assets, and paragraph 6.3.5 restricts hedged items to parties external to the reporting entity while providing an exception for intragroup monetary items with FX exposure affecting consolidated profit or loss"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 45"],
+        "reason": "IAS 21 requires recognition of foreign exchange differences on intragroup monetary items in consolidated financial statements when entities have different functional currencies, creating the underlying FX exposure"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 7, 10-12"],
+        "reason": "IFRIC 16 clarifies that hedge accounting for net investments applies only when net assets are included in financial statements and specifies the conditions under which intragroup FX exposure qualifies for hedge accounting"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 24",
+        "references": ["paragraphs 2, 17-18"],
+        "reason": "IAS 24 addresses related party disclosure requirements but does not govern hedge accounting eligibility for intragroup transactions"
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 5-19"],
+        "reason": "IFRS 12 addresses disclosure requirements for interests in subsidiaries, joint arrangements, and associates but does not address hedge accounting treatment"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign exchange risk on intragroup monetary items",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]},
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["hedge_accounting_eligible_intragroup_fx_exposure", "hedge_accounting_ineligible_intragroup_same_functional_currency"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting eligible for intragroup FX exposure",
+      "normalized_label": "hedge_accounting_eligible_intragroup_fx_exposure",
+      "rationale_for_inclusion": "When intragroup dividend receivables involve entities with different functional currencies, the resulting foreign exchange exposure is recognized in consolidated profit or loss under IAS 21 paragraph 45, and IFRS 9 paragraph 6.3.5 permits such intragroup monetary items to qualify as hedged items"
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting ineligible for same-functional-currency intragroup items",
+      "normalized_label": "hedge_accounting_ineligible_intragroup_same_functional_currency",
+      "rationale_for_inclusion": "When intragroup dividend receivables are between entities with the same functional currency, no foreign exchange exposure exists in the consolidated financial statements, and therefore hedge accounting for FX risk is not applicable"
+    }
+  ]
+}

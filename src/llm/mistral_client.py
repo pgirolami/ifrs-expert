@@ -11,7 +11,6 @@ from src.llm.base import LLMClient
 logger = logging.getLogger(__name__)
 
 
-AUTH_FAILED_MESSAGE = "Mistral API authentication failed. Please check your MISTRAL_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Mistral returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
 
@@ -53,7 +52,8 @@ class MistralClient(LLMClient):
         except Exception as e:
             error_str = str(e)
             if "401" in error_str or "Unauthorized" in error_str:
-                raise RuntimeError(AUTH_FAILED_MESSAGE) from e
+                auth_failed_message = f"{type(self).__name__} API authentication failed. Please check your API key configuration."
+                raise RuntimeError(auth_failed_message) from e
             raise
 
         content = self._extract_text_content(response.choices[0].message.content)

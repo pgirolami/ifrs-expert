@@ -1,0 +1,60 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des états financiers consolidés (et non individuels ou séparés)",
+    "Le dividende intragroupe est éliminé à la consolidation, conformément à IFRS 10 B86(c)"
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "La composante change des dividendes intragroupe ne génère pas de différences de change affectant le résultat consolidé après élimination, de sorte que ni la règle générale ni l'exception de l'IFRS 9 paragraphes 6.3.5–6.3.6 ne permettent la désignation d'une relation de couverture en consolidated statements"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "general_prohibition_intragroup_hedge_accounting",
+      "label_fr": "Interdiction générale de la comptabilité de couverture intragroupe dans les états consolidés",
+      "applicability": "oui",
+      "reasoning_fr": "IFRS 9 §6.3.5 exclutexplicitement les transactions intragroupe de la comptabilité de couverture dans les états consolidés du groupe, sauf pour une entité d'investissement. Les dividendes intragroupe étant des transactions entre entités du même groupe, ils ne peuvent pas être désignés comme élément couvert dans les états consolidés",
+      "conditions_fr": [
+        "Contexte = états financiers consolidés (non individuels ou séparés)",
+        "Il ne s'agit pas d'une entité d'investissement au sens d'IFRS 10"
+      ],
+      "practical_implication_fr": "Aucune documentation de couverture ne peut être mise en place pour le risque de change des dividendes intragroupe dans les comptes consolidés",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "narrow_exception_intragroup_monetary_items",
+      "label_fr": "Exception restreinte pour le risque de change sur les éléments monétaires intragroupe",
+      "applicability": "non",
+      "reasoning_fr": "L'exception de l'IFRS 9 §6.3.6 ne s'applique qu'aux différences de change qui ne sont pas éliminées à la consolidation et qui affectent le résultat consolidé. Or, les dividendes intragroupe sont éliminés à la consolidation (IFRS 10 B86(c)) : la créance et la dette correspondantes s'annulent, de sorte que les écarts de change ne touchent pas le résultat consolidé",
+      "conditions_fr": [
+        "Le dividende intragroupe doit être un élément monétaire au sens d'IAS 21",
+        "Les différences de change doivent affecter le résultat consolidé"
+      ],
+      "practical_implication_fr": "L'exception ne s'applique pas car les différences de change sur dividendes intragroupe sont éliminées à la consolidation et n'affectent pas le résultat consolidé",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item ... may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IFRS 10",
+          "section": "B86(c)",
+          "excerpt": "eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows relating to transactions between entities of the group"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "En états consolidés, les différences de change sur dividendes intragroupe sont éliminées et n'ont aucun impact sur le résultat consolidé",
+    "Une documentation de couverture ne peut être établie au niveau consolidé pour le risque de change des dividendes intragroupe",
+    "Dans les états financiers individuels ou séparés des entités concernées, l'application d'IFRS 9 §6.3.5 (note de bas de page) pourrait permettre une désignation intragroupe, sous réserve de satisfaction de toutes les conditions d'efficacité"
+  ]
+}

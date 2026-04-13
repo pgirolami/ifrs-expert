@@ -1,0 +1,64 @@
+{
+  "assumptions_fr": [
+    "La créance à recevoir relative aux dividendes intragroupe est un actif financier libellé dans une devise étrangère à la devise fonctionnelle de l'entité qui la comptabilise.",
+    "Les dividendes intragroupe sont éliminés lors de la consolidation, mais les différences de change sur la créance peuvent affecter le résultat consolidé.",
+    "L'entité souhaite appliquer la comptabilité de couverture de manière optionnelle et non de manière obligatoire."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La comptabilité de couverture est permissible pour le risque de change sur une créance de dividende intragroupe dans les comptes consolidés, sous réserve que le risque de change affecte le résultat consolidé et que les conditions de désignation et de documentation soient satisfaites."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge_fx_dividend_receivable",
+      "label_fr": "Désignation d'une couverture en juste valeur du risque de change sur la créance de dividende intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 autorise la désignation d'un élément monétaire reconnu libellé en devise étrangère comme élément couvert dans une couverture en juste valeur du risque de change. Pour les comptes consolidés, IFRIC 16 ¶10 confirme que le risque de change sur un élément monétaire intragroupe peut être éligible si les différences de change affectent le résultat consolidé.",
+      "conditions_fr": [
+        "Le risque de change doit affecter le résultat consolidé (IAS 21 ¶48 et IFRIC 16 ¶10).",
+        "L'entité doit satisfaire aux critères de documentation et d'efficacité de IFRS 9 ¶6.4.1.",
+        "La créance de dividende doit être un actif financier dans le scope de IFRS 9."
+      ],
+      "practical_implication_fr": "Les variations de juste valeur du risque de change désignée sont reconnues en résultat plutôt qu'en résultat global.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability..."
+        },
+        {
+          "document": "IFRS 9",
+          "section": "6.5.8",
+          "excerpt": "For a hedge of foreign currency risk..."
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity's functional currency."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "no_hedge_designation",
+      "label_fr": "Absence de désignation de couverture – différences de change reconnues en résultat",
+      "applicability": "oui",
+      "reasoning_fr": "En l'absence de désignation de couverture, IAS 21 ¶48 impose de reconnaître toutes les différences de change sur la créance monétaire en résultat. Ce traitement constitue le point de référence par défaut et s'applique toujours lorsqu'aucune désignation n'est effectuée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Les différences de change sont reconnues en résultat au fur et à mesure qu'elles surviennent.",
+      "references": [
+        {
+          "document": "IAS 21",
+          "section": "48",
+          "excerpt": "Foreign exchange differences on monetary items..."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Choisir Approach 1 si l'entité souhaite réduire la volatilité du résultat sur les différences de change ; sinon, Approach 2 s'applique par défaut.",
+    "Documenter formellement la relation de couverture dès la désignation et vérifier l'efficacité prospectif et rétrospectif selon IFRS 9 ¶6.4.1.",
+    "Dans les comptes consolidés, vérifier que le risque de change sur la créance affecte effectivement le résultat consolidé (condition d'IFRIC 16 ¶10) avant de désigner la couverture."
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "assumptions_fr": [
+    "L'entité qui pose la question prépare des comptes consolides dans lesquels figure une fille qui verse des dividendes",
+    "La creance de dividende intragroupe est denominnee dans une devise differente de la devise fonctionnelle de la filer qui paie le dividende",
+    "L'exposition au risque de change resultant n'est pas eliminee integralement lors de la consolidationconformement a IAS 21"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'exception du paragraphe 6.3.6 de l'IFRS 9 permet de designer le risque de change d'un postemonetaire intragroupe comme element couvert dans les comptes consolides, des lors que l'exposition au risque de change n'est pas eliminee integralement lors de la consolidation et affecte le resultat consolide. La creance de dividende intragroupe constitue un poste monetaire au sens d'IAS 21."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "no_hedge_accounting_fx_recognition",
+      "label_fr": "Pas de designation de couverture - risque de change reconnu en resultat",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche represente le cas general de l'IFRS 9 paragraphe 6.3.5. Toutefois, des lors qu'une creance de dividende intragroupe est un poste monetaire genereant une exposition au risque de change non eliminee a la consolidation (condition visee au paragraphe 6.3.6), l'exception s'applique et le risque de change peut etre designe comme element couvert. L'approche generale n'est pas applicable des lors que les conditions de l'exception sont remplies.",
+      "conditions_fr": [
+        "L'exposition au risque de change liee a la creance intragroupe est integralement eliminee lors de la consolidation"
+      ],
+      "practical_implication_fr": "Pas de designation possible - les ecarts de change sont immediatement comptabilises en resultat.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "Only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "Exchange differences arising on the settlement of monetary items or on translating monetary items at rates different from those at which they were translated on initial recognition shall be recognised in profit or loss."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "intragroup_monetary_item_hedge",
+      "label_fr": "Designation en couverture de change du poste monetaire intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Une creance de dividende intragroupe est un poste monetaire au sens d'IAS 21. Lorsqu'elle est denominnee dans une devise differente de la devise fonctionnelle de la filer, l'ecart de change qui en resulte n'est pas elimine a la consolidation et affecte le resultat consolide (IAS 21 paragraphe 45). Dans cette configuration, l'exception du paragraphe 6.3.6 de l'IFRS 9 s'applique et le risque de change de cette creance peut etre designe comme element couvert dans les comptes consolides.",
+      "conditions_fr": [
+        "La creance de dividende intragroupe est un poste monetaire denominne dans une devise etrangere a la devise fonctionnelle de la filer",
+        "L'ecart de change lie a cette creance n'est pas integralement elimine a la consolidation",
+        "L'ecart de change affecte le resultat consolide (et non uniquement les capitaux propres)",
+        "Une documentation de relation de couverture est etablie et les exigences d'efficacite sont satisfaites"
+      ],
+      "practical_implication_fr": "Le risque de change de la creance de dividende intragroupe peut etre designe comme element couvert dans une relation de couverture documentee, avec comptabilisation des ecarts de change effective en autres_elements du resultat global jusqu'a la realisation de la couverture.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21."
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset cannot be eliminated against the corresponding intragroup liability without showing the results of currency fluctuations in the consolidated financial statements."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Verifier que la creance de dividende intragroupe est denominnee dans une devise differente de la devise fonctionnelle de la filer qui verse le dividende et de celle de la societe mere consolidee",
+    "Confirmer que les ecarts de change ne sont pas elimines integralement a la consolidation (hypothese remplie si les devises fonctionnelles sont differentes)",
+    "Etablir et documenter la relation de couverture des la reconnaissance initiale de la creance ou des son apparition",
+    "Satisfaire aux exigences d'efficacite de l'IFRS 9 section 6.4 pour que la designation soit qualifiante",
+    "En cas de desinvestissement ulterieur de l'operation etrangere, les montants accumules en autres elements du resultat global seront reclasses en resultat."
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup dividend receivable for IFRS hedge accounting for foreign currency risk",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.1", "paragraph 6.3.5", "paragraph 6.3.6", "paragraph 6.5.8"],
+        "reason": "These paragraphs define hedged items, restrict hedged items to external parties, provide an exception for intragroup monetary items, and specify fair value hedge accounting."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 45"],
+        "reason": "This paragraph requires recognition of exchange differences on intragroup monetary items in profit or loss (or OCI), creating foreign currency exposure."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.4.1"],
+        "reason": "This paragraph sets out the conditions for hedge accounting, including formal documentation and effectiveness assessment."
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.5.8–6.5.14"],
+        "reason": "These paragraphs specify the accounting treatment for a fair value hedge."
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.6.1–6.6.6"],
+        "reason": "These paragraphs specify the accounting treatment for a cash flow hedge."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 44–47"],
+        "reason": "These paragraphs provide guidance on translation of foreign operations and treatment of exchange differences."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 7",
+        "references": ["paragraph 9–11"],
+        "reason": "Disclosures about hedge accounting are not relevant to the eligibility question."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraph 10–19"],
+        "reason": "Disclosures about interests in subsidiaries are not directly relevant."
+      },
+      {
+        "document": "IAS 32",
+        "references": ["paragraph 8–10"],
+        "reason": "Presentation of financial instruments is not relevant."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign currency risk of intragroup monetary items",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge", "cash_flow_hedge"]
+    },
+    {
+      "family": "No hedge accounting – recognition of FX differences in profit or loss",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["paragraph 45"]},
+        {"document": "IFRS 9", "references": ["paragraph 6.3.1"]}
+      ],
+      "mapped_approaches": ["fx_recognition"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of foreign currency risk on intragroup dividend receivable",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits designation of the foreign currency risk of a monetary intragroup asset as the hedged item in a fair value hedge, provided the criteria (documentation, effectiveness) are met and the FX differences are not eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign currency risk on intragroup dividend receivable",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 also allows a cash flow hedge designation for the foreign currency risk affecting the cash flows of a monetary asset, if the entity elects to hedge the variability in functional currency cash flows."
+    },
+    {
+      "id": "approach_3",
+      "label": "Recognition of foreign exchange differences in profit or loss (or OCI)",
+      "normalized_label": "fx_recognition",
+      "rationale_for_inclusion": "If the entity does not designate the exposure as a hedged item, the foreign exchange differences on the intragroup dividend receivable are recognised in profit or loss (or OCI) in accordance with IAS 21."
+    }
+  ]
+}

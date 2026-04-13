@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of an intragroup dividend receivable for designation as a hedged item in a hedge accounting relationship under IFRS.",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.1", "6.3.5", "Section 6"],
+        "reason": "These paragraphs specify that a hedged item can be a recognised asset or liability and require the hedged item to be with a party external to the reporting entity."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 2-4", "14-15"],
+        "reason": "Clarifies that hedge accounting for foreign currency risk is limited to net investments in foreign operations and that intragroup items cannot be hedged in consolidated statements."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 7",
+        "references": ["paragraphs 21-25"],
+        "reason": "Provides disclosure requirements for hedge relationships but does not affect eligibility."
+      },
+      {
+        "document": "IAS 32",
+        "references": ["paragraphs 1-5"],
+        "reason": "Deals with presentation of financial instruments but not hedge accounting eligibility."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 5-13"],
+        "reason": "Deals with disclosures of interests in other entities, not relevant to hedge eligibility."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 1-5"],
+        "reason": "Addresses foreign exchange differences but not hedge accounting eligibility."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge of foreign currency risk of a financial asset (cash flow or fair value hedge)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraphs 6.3.1", "6.5.8", "6.5.9"]}
+      ],
+      "mapped_approaches": ["cash_flow_hedge_foreign_currency_risk", "fair_value_hedge_foreign_currency_risk"]
+    },
+    {
+      "family": "Hedge of net investment in a foreign operation",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.1"]},
+        {"document": "IFRIC 16", "references": ["paragraphs 2-4", "14-15"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Cash flow hedge of foreign currency risk",
+      "normalized_label": "cash_flow_hedge_foreign_currency_risk",
+      "rationale_for_inclusion": "IFRS 9 permits designation of foreign currency risk of a recognised financial asset as the hedged item in a cash flow hedge, provided the hedged item is with an external party."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge of foreign currency risk",
+      "normalized_label": "fair_value_hedge_foreign_currency_risk",
+      "rationale_for_inclusion": "IFRS 9 permits designation of foreign currency risk of a recognised financial asset as the hedged item in a fair value hedge, provided the hedged item is with an external party."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 and IFRIC 16 allow designation of foreign currency risk of a net investment in a foreign operation as the hedged item in a net investment hedge."
+    }
+  ]
+}

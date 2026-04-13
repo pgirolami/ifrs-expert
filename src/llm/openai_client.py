@@ -11,7 +11,6 @@ from src.llm.base import LLMClient
 
 logger = logging.getLogger(__name__)
 
-AUTH_FAILED_MESSAGE = "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
 DEFAULT_REASONING_EFFORT = "low"
@@ -62,7 +61,8 @@ class OpenAIClient(LLMClient):
         except Exception as e:
             error_str = str(e)
             if "401" in error_str or "api_key" in error_str.lower() or "Unauthorized" in error_str:
-                raise RuntimeError(AUTH_FAILED_MESSAGE) from e
+                auth_failed_message = f"{type(self).__name__} API authentication failed. Please check your API key configuration."
+                raise RuntimeError(auth_failed_message) from e
             raise
 
         content = response.choices[0].message.content

@@ -1,0 +1,73 @@
+{
+  "assumptions_fr": [
+    "Les dividendes intragroupe ont été reconnus comme une créance monétaire libellée en devise étrangère",
+    "La question porte sur les états financiers consolidés du groupe",
+    "Aucune autre information factuelle ne vient modifier les conditions d'application des approches identifiées"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'exception de l'IFRS 9 paragraphe 6.3.6 permet de désigner le risque de change des postes monétaires intragroupe dans les comptes consolidés. Sous réserve que le risque de change ne soit pas éliminé par la consolidation et que la documentation soit effectuée, un risque de change sur une créance de dividende intragroupe peut être couvert."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Un dividende intragroupe constitue un poste monétaire dont le risque de change peut, en vertu de l'exception IFRS 9.6.3.6, être désigné comme élément couvert dans une couverture d'investissement net, dès lors que le dividende est libellé dans une devise différente de la devise fonctionnelle de la société mère et que les écarts de change ne sont pas éliminés par la consolidation.",
+      "conditions_fr": [
+        "Le dividende est libellé dans une devise différente de la devise fonctionnelle de la société mère",
+        "Les écarts de change ne sont pas éliminés sur consolidation (différence de devises fonctionnelles entre les entités du groupe)",
+        "L'entité doit être partie à l'instrument de couverture ou documenter la relation de couverture",
+        "Le risque désigné se limite aux écarts de change entre devises fonctionnelles (interprétation IFRIC 16.10)",
+        "Le montant couvert ne peut excéder la valeur comptable des actifs nets de l'opération étrangère dans les états consolidés"
+      ],
+      "practical_implication_fr": "Les écarts de change efficaces sont reconnus en OCI dans la réserve de conversion, puis reclassés en résultat lors de la cession de l'investissement net.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity's functional currency"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende intragroupe étant un actif financier monétaire libellé en devise étrangère, son risque de change peut être désigné comme risque couvert dans une couverture de juste valeur. Les variations de juste valeur attribuables au risque de change sont reconnues en résultat et compensent la variation de juste valeur de l'élément couvert.",
+      "conditions_fr": [
+        "La créance de dividende doit être un actif financier relevant de l'IFRS 9",
+        "Le risque de change doit être identifié et documenté comme risque couvert à la date de désignation",
+        "L'instrument de couverture doit être un dérivé ou un autre instrument financier éligible",
+        "La documentation doit démontrer l'efficacité de la relation de couverture"
+      ],
+      "practical_implication_fr": "Les variations de juste valeur dues au risque de change sont comptabilisées en résultat (contrepartie des variations de juste valeur de la créance), permettant une compensation économique.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability"
+        },
+        {
+          "document": "IFRS 9",
+          "section": "6.3.2",
+          "excerpt": "The hedged item must be reliably measurable"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La désignation de la relation de couverture doit être документация à la date de désignation et préciser l'objectif et la stratégie de gestion des risques",
+    "L'entité doit appliquer les tests d'efficacité conformément à l'IFRS 9 paragraphs 6.4.1 et suivants",
+    "Une seule relation de couverture peut être qualifiée pour les mêmes actifs nets d'une même operation étrangère dans les états consolidés de la mère ultime (IFRIC 16.13)",
+    "En cas de désignation dans une couverture d'investissement net, le cumul des gains et pertes sur l'instrument de couverture déterminé comme couverture efficace est reconnu en OCI et reclassé en résultat à la cession de l'investissement net",
+    "En cas de désignation dans une couverture de juste valeur, la composante de change de la créance est ajustée à chaque date de clôture"
+  ]
+}

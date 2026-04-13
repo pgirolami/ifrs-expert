@@ -1,0 +1,68 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign exchange exposure from intragroup dividends (once the receivable is recorded) can be designated as a hedged item for hedge accounting in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IAS 39",
+        "references": ["paragraph 78", "paragraph 80"],
+        "reason": "Defines that only assets, liabilities, firm commitments or highly probable forecast transactions involving a party external to the entity can be designated as hedged items, and explicitly prohibits hedge accounting for intragroup transactions in consolidated financial statements"
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "Establishes the same external party requirement for hedged items in consolidated statements, with a specific exception for foreign currency risk of intragroup monetary items between entities with different functional currencies"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 32"],
+        "reason": "Defines the scope of monetary items qualifying for foreign currency hedge accounting exception and establishes when exchange differences on intragroup items affect consolidated profit or loss"
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 9-10"],
+        "reason": "Clarifies that hedge accounting applies only to foreign exchange differences between functional currencies and confirms external party requirement for hedged items in net investment hedges"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 19",
+        "references": ["paragraphs 58-63"],
+        "reason": "Disclosure requirements for hedge accounting but do not define eligibility criteria for hedged items"
+      },
+      {
+        "document": "IFRS 18",
+        "references": ["paragraph B70-B76"],
+        "reason": "Classification requirements for gains/losses on hedging instruments but not relevant to determining hedged item eligibility"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Intragroup items ineligible as hedged items in consolidated statements",
+      "authority_basis": [
+        {"document": "IAS 39", "references": ["paragraph 78", "paragraph 80"]},
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["No hedge accounting for intragroup dividends"]
+    },
+    {
+      "family": "Exception for intragroup monetary items with foreign currency risk",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IAS 21", "references": ["paragraph 32"]}
+      ],
+      "mapped_approaches": []
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "No hedge accounting for intragroup dividends",
+      "normalized_label": "no_hedge_accounting_intragroup_dividends",
+      "rationale_for_inclusion": "The primary authority (IAS 39/IFRS 9) prohibits designation of intragroup transactions as hedged items in consolidated financial statements; dividend receivables do not qualify for the foreign currency exception which applies only to monetary items with different functional currencies affecting consolidated profit or loss"
+    }
+  ]
+}

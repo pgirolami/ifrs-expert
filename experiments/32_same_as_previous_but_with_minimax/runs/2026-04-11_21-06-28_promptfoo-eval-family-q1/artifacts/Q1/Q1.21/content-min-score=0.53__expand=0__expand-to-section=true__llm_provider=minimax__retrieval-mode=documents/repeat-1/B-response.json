@@ -1,0 +1,61 @@
+{
+  "assumptions_fr": [
+    "Le receivable de dividendes intragroupe est un élément monétaire entre deux entités du groupe",
+    "L'exposition au risque de change résulte de la différence entre les devises fonctionnelles des entités concernées",
+    "La question porte sur les comptes financiers consolidés du groupe"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La désignation comme élément couvert est possible uniquement si la différence entre les devises fonctionnelles des entités concernées crée une exposition aux gains ou pertes de change qui n'est pas éliminée en consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting_permitted",
+      "label_fr": "Comptabilité de couverture autorisée pour le risque de change",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En présence de devises fonctionnelles différentes entre l'entité créditrice et l'entité débitrice du dividende intragroupe, les écarts de change ne sont pas éliminés en consolidation (IAS 21 §45), ce qui ouvre le droit de désigner ce risque comme élément couvert en vertu de l'exception prévue par IFRS 9 §6.3.6.",
+      "conditions_fr": [
+        "Les entités doivent avoir des devises fonctionnelles différentes",
+        "Le risque de change doit affecter le résultat consolidé et ne pas être éliminé lors de la consolidation",
+        "Les conditions habituelles de désignation d'une relation de couverture doivent être remplies (documentation, efficacité économique)"
+      ],
+      "practical_implication_fr": "Le groupe peut désigner le risque de change de ce receivable comme élément couvert dans les comptes consolidés, sous réserve de respecter les exigences de documentation et d'efficacité.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability) cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting_not_permitted",
+      "label_fr": "Comptabilité de couverture non autorisée en consolidation",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche ne s'applique pas à la situation décrite dans la question, car l'existence même du risque de change implique que les entités ont des devises fonctionnelles différentes. Si les devises fonctionnelles étaient identiques, il n'y aurait pas d'exposition au risque de change à couvrir.",
+      "conditions_fr": [
+        "Les entités ont la même devise fonctionnelle, éliminant toute exposition au change en consolidation"
+      ],
+      "practical_implication_fr": "Dans ce cas de figure (non applicable ici), aucun risque de change n'existe et la question de la désignation comme élément couvert ne se pose pas.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter dès l'origine la relation de couverture en précisant le risque de change désigné et la nature de la relation économique entre l'élément couvert et l'instrument de couverture",
+    "Établir que le receivable de dividendes constitue bien un élément monétaire aux fins d'IAS 21 (les dividendes à recevoir sont un actif monétaire selon IAS 21 §15)",
+    "Vérifier que le risque de change affectera effectivement le résultat consolidé et n'est pas éliminé par d'autres mécanismes"
+  ]
+}

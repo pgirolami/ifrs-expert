@@ -1,0 +1,62 @@
+{
+  "assumptions_fr": [
+    "Il s'agit des comptes consolidés du groupe (et non de comptes individuels).",
+    "La créance dividendes intragroupe est libellée dans une devise différente de la devise fonctionnelle de l'entité qui la comptabilise.",
+    "Aucun traité de change spécifique n'a été mis en place pour qualifier l'exposition comme un élément monétaire éligible."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "En application d'IFRS 9 §6.3.5, une créance dividendes intragroupe ne peut pas être désignée comme élément couvert dans les comptes consolidés car elle constitue une transaction avec une partie interne au groupe. L'exception prévue par IFRS 9 §6.3.6 ne s'applique qu'aux éléments monétaires intragroupe dont le risque de change affecte le résultat consolidé, ce qui n'est pas le cas ici."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "no_hedge_accounting_intragroup",
+      "label_fr": "Impossibilité d'applique la comptabilité de couverture sur des créances dividendes intragroupe",
+      "applicability": "oui",
+      "reasoning_fr": "La créance de dividende intragroupe est une exposition avec une partie interne au groupe. En consolidated statements, les dividendes intragroupe sont éliminés à la consolidation ; ils ne génèrent pas d'exposition au risque de change avec une partie externe. IFRS 9 §6.3.5 exclut expressément les transactions intragroupe de l'éligibilité à la comptabilité de couverture.",
+      "conditions_fr": [
+        "La créance dividendes intragroupe doit être éliminée en consolidation.",
+        "Le risque de change doit concerner une partie externe au groupe."
+      ],
+      "practical_implication_fr": "Aucune documentation de couverture ne peut être établie sur cette créance dans les comptes consolidés.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity's functional currency"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting_intragroup_monetary",
+      "label_fr": "Exception pour les éléments monétaires intragroupe",
+      "applicability": "non",
+      "reasoning_fr": "L'exception d'IFRS 9 §6.3.6 ne s'applique qu'aux éléments monétaires intragroupe (tels que des prête/receive entre deux filles). Une créance de dividende, avant sa constatation comme élément financier, n'est pas automatiquement un élément monétaire au sens d'IAS 21. De plus, le dividende intragroupe est éliminé en consolidation et son risque de change ne se traduit pas par un impact sur le résultat consolidé.",
+      "conditions_fr": [
+        "L'élément doit être monétaire au sens d'IAS 21.",
+        "Le risque de change doit affecter le résultat consolidé après élimination.",
+        "L'exposition doit être avec une partie interne mais résulter en un impact consolidé réel."
+      ],
+      "practical_implication_fr": "Cette exception ne permet pas de couvrir la créance dividendes intragroupe.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Dans les comptes individuels de la fille distributrice, le dividende est exigible et peut être considéré comme un élément monétaire ; dans ces comptes, une documentation de couverture pourrait être envisagée si le risque affecte le résultat individuel.",
+    "Dans les comptes consolidés, la créance dividendes intragroupe est éliminée et ne constitue pas une exposition externe au groupe.",
+    "Le groupe peut cependant chercher à couvrir le risque de change au niveau de la transaction finale (par exemple, sur le dividende effectivement versé à des actionnaires externes) en utilisant des instruments dérivés externes."
+  ]
+}

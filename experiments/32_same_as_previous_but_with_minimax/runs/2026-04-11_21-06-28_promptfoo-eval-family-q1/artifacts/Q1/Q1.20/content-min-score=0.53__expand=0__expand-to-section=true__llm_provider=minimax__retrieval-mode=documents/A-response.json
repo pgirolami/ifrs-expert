@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility for hedge accounting of foreign currency risk arising from an intragroup dividend receivable recognised in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IAS 39",
+        "references": ["paragraph 80", "paragraphs 88-102"],
+        "reason": "Defines conditions for hedge accounting and provides an exception for foreign currency risk of intragroup monetary items in consolidated statements"
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.5-6.3.6"],
+        "reason": "Hedge accounting requirements for foreign currency risk of intragroup monetary items; specifies that only external parties can be hedging instruments"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 45"],
+        "reason": "Explains that intragroup monetary assets cannot be eliminated and create foreign exchange exposure in consolidated financial statements"
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 1-15"],
+        "reason": "Clarifies eligible hedged items and hedging instruments for net investment hedges, providing analogous guidance for intragroup items"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 10-19"],
+        "reason": "Disclosures about subsidiaries and non-controlling interests, not directly relevant to hedge accounting eligibility"
+      },
+      {
+        "document": "IAS 24",
+        "references": ["paragraphs 2-24"],
+        "reason": "Related party disclosure requirements, not applicable to hedge accounting treatment"
+      },
+      {
+        "document": "IFRS 19",
+        "references": ["paragraphs 53-63"],
+        "reason": "Hedge accounting disclosures, but not eligibility criteria"
+      },
+      {
+        "document": "IFRS 18",
+        "references": ["paragraphs 109-112"],
+        "reason": "Presentation of equity and OCI, not relevant to hedge eligibility"
+      },
+      {
+        "document": "IAS 29",
+        "references": ["paragraphs 1-37"],
+        "reason": "Hyperinflation accounting, unrelated to foreign currency hedge of intragroup dividend"
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraphs 1-17"],
+        "reason": "Dividend distributions, not about hedge accounting"
+      },
+      {
+        "document": "IFRIC 21",
+        "references": ["paragraph 1"],
+        "reason": "Levy accounting, not relevant"
+      },
+      {
+        "document": "SIC 25",
+        "references": ["paragraphs 1-3"],
+        "reason": "Tax status changes, not relevant"
+      },
+      {
+        "document": "SIC 29",
+        "references": ["paragraphs 1-5"],
+        "reason": "Service concession arrangements, not relevant"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign currency risk of intragroup monetary items in consolidated financial statements",
+      "authority_basis": [
+        {"document": "IAS 39", "references": ["paragraph 80"]},
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge", "cash_flow_hedge"]
+    },
+    {
+      "family": "Recognition of exchange differences on intragroup dividend receivable without hedge accounting",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["paragraphs 28-32"]}
+      ],
+      "mapped_approaches": ["profit_or_loss_recognition"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of foreign currency risk",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "Permitted for a recognised financial asset exposed to foreign currency risk, provided hedge accounting criteria are satisfied"
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign currency risk",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "Allowed for variability in cash flows attributable to foreign currency risk of a monetary item, subject to meeting qualifying criteria"
+    },
+    {
+      "id": "approach_3",
+      "label": "Recognition of exchange differences in profit or loss",
+      "normalized_label": "profit_or_loss_recognition",
+      "rationale_for_inclusion": "Default treatment when hedge accounting is not applied; exchange differences on monetary items are recognised in profit or loss under IAS 21"
+    }
+  ]
+}

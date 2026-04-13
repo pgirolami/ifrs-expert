@@ -39,7 +39,14 @@ from src.vector.title_store import TitleVectorStore, get_title_index_path
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
+    from src.interfaces import (
+        ReadChunkStoreProtocol,
+        ReadSectionStoreProtocol,
+        SearchDocumentVectorStoreProtocol,
+        SearchResult,
+        SearchTitleVectorStoreProtocol,
+        SearchVectorStoreProtocol,
+    )
     from src.models.chunk import Chunk
 
 logger = logging.getLogger(__name__)

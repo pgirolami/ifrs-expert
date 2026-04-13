@@ -30,11 +30,16 @@ prompts:
   - '{{question}}'
 
 providers:
+  # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
+  #   label: 'OpenAI GPT 5.4 through Codex current answer defaults'
+  #   config:
+  #     <<: *answer_command_defaults
+  #     llm_provider: 'openai-codex'
   - id: 'exec:uv run python ../../../../scripts/run_answer.py'
-    label: 'OpenAI GPT 5.4 through Codex current answer defaults'
+    label: 'MiniMax 2.7 High current answer defaults'
     config:
       <<: *answer_command_defaults
-      llm_provider: 'openai-codex'
+      llm_provider: 'minimax'
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
   #   label: 'Mistral Large 3 current answer defaults'
   #   config:

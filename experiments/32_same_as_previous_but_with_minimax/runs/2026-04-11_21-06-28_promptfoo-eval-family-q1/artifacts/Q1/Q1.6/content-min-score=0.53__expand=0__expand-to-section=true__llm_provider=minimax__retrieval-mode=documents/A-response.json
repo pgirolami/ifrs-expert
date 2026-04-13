@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of foreign exchange variation on intragroup dividend receivables for designation as hedged item in consolidated financial statements under hedge accounting rules",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "Paragraph 6.3.5 establishes the general rule that hedge accounting applies only to external party transactions in consolidated financial statements, while paragraph 6.3.6 provides the exception for intragroup monetary items with foreign currency risk affecting consolidated profit or loss"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 32", "paragraph 33"],
+        "reason": "Paragraph 32 addresses exchange differences on monetary items forming part of net investment in foreign operations, potentially providing an alternative treatment pathway for certain intragroup dividend receivables"
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 14", "paragraph 15"],
+        "reason": "Clarifies requirements for net investment hedges including that hedging instruments may be held by any entity within the group and effectiveness assessment methodology"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraph 1-9"],
+        "reason": "Addresses non-cash asset distributions but does not govern hedge accounting eligibility for foreign exchange variation"
+      },
+      {
+        "document": "IAS 7",
+        "references": ["paragraphs 33A, 34A-34D"],
+        "reason": "Addresses cash flow classification of dividends paid/received, not hedge accounting designation eligibility"
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 5.7.1-5.7.11"],
+        "reason": "Addresses recognition and presentation of gains/losses on financial instruments, not hedge accounting eligibility criteria"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "General intragroup transaction restriction: intragroup monetary items ineligible for hedge designation in consolidated financial statements",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["intragroup_transaction_hedge_prohibition"]
+    },
+    {
+      "family": "Foreign currency risk exception: intragroup monetary items may qualify when foreign exchange exposure affects consolidated profit or loss",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_item_hedge_exception"]
+    },
+    {
+      "family": "Net investment hedge pathway: monetary items forming part of net investment in foreign operation with alternative OCI treatment",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["paragraph 32"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup transaction hedge prohibition",
+      "normalized_label": "intragroup_transaction_hedge_prohibition",
+      "rationale_for_inclusion": "Under IFRS 9.6.3.5, hedge accounting in consolidated financial statements applies only to external party transactions, making intragroup dividend receivables generally ineligible for hedge designation"
+    },
+    {
+      "id": "approach_2",
+      "label": "Intragroup monetary item hedge exception",
+      "normalized_label": "intragroup_monetary_item_hedge_exception",
+      "rationale_for_inclusion": "Under IFRS 9.6.3.6, foreign currency risk on intragroup monetary items may qualify as a hedged item when exchange differences are not fully eliminated on consolidation and will affect consolidated profit or loss"
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge_accounting",
+      "rationale_for_inclusion": "Under IAS 21.32, exchange differences on monetary items forming part of net investment in foreign operations are recognised initially in OCI rather than profit or loss, potentially qualifying for hedge designation under IFRIC 16"
+    }
+  ]
+}

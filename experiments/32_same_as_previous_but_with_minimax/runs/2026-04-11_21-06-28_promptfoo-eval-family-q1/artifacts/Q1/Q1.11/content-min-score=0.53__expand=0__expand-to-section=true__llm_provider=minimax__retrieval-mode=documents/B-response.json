@@ -1,0 +1,84 @@
+{
+  "assumptions_fr": [
+    "La créance dividendes intragroupe est un instrument monétaire libellé dans une devise étrangère",
+    "Les deux entités intragroupe ont des devises fonctionnelles différentes",
+    "L'exposition au change générée affectera le résultat consolidé"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'approche 1 (exception pour les éléments monétaires intragroupe) s'applique sous réserve que les conditions spécifiques de IFRS 9 §6.3.6 soient remplies. L'approche 2 (règle générale) exclut les transactions intragroupe de la comptabilité de couverture consolidée sauf exception. L'approche 3 (comptes séparés) constitue une alternative si les conditions de l'approche 1 ne sont pas satisfaites."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_monetary_item_exception",
+      "label_fr": "Exception pour élément monétaire intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance dividendes intragroupe est un élément monétaire. Selon IFRS 9 §6.3.6, son risque de change peut être éligible si les écarts de change ne sont pas entièrement éliminés lors de la consolidation, ce qui se produit lorsque les entités ont des devises fonctionnelles différentes.",
+      "conditions_fr": [
+        "La créance doit être libellée dans une devise différente de la devise fonctionnelle de l'entité qui la comptabilise",
+        "Les écarts de change doivent affecter le résultat consolidé (IAS 21 §32)",
+        "Documentation conforme à IFRS 9 §6.4.1 requise à l'origine"
+      ],
+      "practical_implication_fr": "La couverture est possible dans les comptes consolidés uniquement si les devises fonctionnelles diffèrent.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IAS 21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity's net investment in a foreign operation shall be recognised in profit or loss... in the separate financial statements... in the financial statements that include the foreign operation... such exchange differences shall be recognised initially in other comprehensive income"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "no_hedge_accounting_consolidated",
+      "label_fr": "Aucune comptabilité de couverture dans les comptes consolidés",
+      "applicability": "non",
+      "reasoning_fr": "La règle générale de IFRS 9 §6.3.5 exclut les transactions intragroupe de la comptabilité de couverture consolidée. Cependant, cette exclusion ne s'applique pas si l'exception de l'approche 1 est satisfaite, car cette exception constitue un cas spécifique qui prévaut sur la règle générale.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche est supplantée par l'exception de l'approche 1.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "hedge_accounting_separate_statements",
+      "label_fr": "Comptabilité de couverture dans les comptes individuels/séparés",
+      "applicability": "oui",
+      "reasoning_fr": "Si les conditions de l'approche 1 ne sont pas satisfaites (ou comme alternative), la comptabilité de couverture est permise dans les comptes individuels de chaque entité car le critère de partie externe est respecté à ce niveau de reporting.",
+      "conditions_fr": [
+        "La désignation est faite dans les états financiers de l'entité qui est partie à la créance",
+        "Les instruments et éléments couverts impliquent une partie externe à cette entité"
+      ],
+      "practical_implication_fr": "Les entités peuvent appliquer la comptabilité de couverture individuellement si la consolidation ne le permet pas.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities"
+        },
+        {
+          "document": "IAS 39",
+          "section": "80",
+          "excerpt": "they may qualify for hedge accounting in the individual or separate financial statements of individual entities within the group provided that they are external to the individual entity that is being reported on"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier que les devises fonctionnelles des entités impliquées sont effectivement différentes pour déterminer l'applicabilité de l'approche 1",
+    "Documenter la relation de couverture conformément à IFRS 9 §6.4.1 dès l'origine avec identification de l'instrument de couverture, de l'élément couvert et du risque",
+    "Si les devises fonctionnelles sont identiques, la couverture n'est pas disponible dans les comptes consolidés mais peut l'être dans les comptes individuels de chaque entité",
+    "En cas de désignation dans les comptes consolidés, l'inefficacité doit être comptabilisée en résultat et la关系 doit être évaluée régulièrement"
+  ]
+}

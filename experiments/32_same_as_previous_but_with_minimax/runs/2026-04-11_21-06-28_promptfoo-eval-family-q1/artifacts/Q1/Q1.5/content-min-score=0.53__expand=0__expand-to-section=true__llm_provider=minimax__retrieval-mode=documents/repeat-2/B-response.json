@@ -1,0 +1,60 @@
+{
+  "assumptions_fr": [
+    "Les dividendes intragroupe sont comptabilisés comme créances à recevoir, constituant ainsi des élémentsmonétaires soumis au risque de change.",
+    "La question porte sur les états financiers consolidés du groupe, et non sur les états financiers individuels des entités du groupe."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La réponse dépend de la mesure dans laquelle les différences de change ne sont pas éliminées lors de la consolidation. Lorsque les entités du groupe ont des devises fonctionnelles différentes, l'exception prévue à l'IFRS 9 para 6.3.6 permet de qualifier le risque de change des créances intragroupe comme élément couvert dans les comptes consolidés."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "eligible_hedged_item",
+      "label_fr": "Élément couvert admissible en raison de l'exception sur les éléments monétaires intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L'IFRS 9 para 6.3.6 offre une exception à l'interdiction générale de couverture des transactions intragroupe : le risque de change d'un élément monétaire intragroupe peut être désigné comme élément hedgé dans les comptes consolidés, à condition que les différences de change ne soient pas entièrement éliminées lors de la consolidation. Cela s'applique lorsque la créance de dividende expose le groupe à un risque de change qui se reflète dans les états financiers consolidés.",
+      "conditions_fr": [
+        "Les entités du groupe source et destinataire ont des devises fonctionnelles différentes",
+        "Les différences de change ne sont pas éliminées sur consolidation (application IAS 21 para 45)"
+      ],
+      "practical_implication_fr": "Le groupe peut mettre en place une relation de couverture sur le risque de change de la créance de dividende intragroupe dans ses états financiers consolidés.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item...may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability)...cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "ineligible_hedged_item",
+      "label_fr": "Élément hedgé non admissible en raison de l'interdiction générale de couverture intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L'IFRS 9 para 6.3.5 établit la règle générale selon laquelle seuls les actifs, passifs, engagements inconditionnels ou transactions prévisionnelles hautement probables avec une partie externe à l'entité déclarante peuvent être désignés comme éléments hedgés. Les dividendes intragroupe étant des créances internes, ils ne remplissent pas ce critère en tant que tels. Cette prohibition s'applique dans les comptes consolidés, sauf exception.",
+      "conditions_fr": [
+        "Les entités du groupe source et destinataire ont la même devise fonctionnelle",
+        "Les différences de change sont entièrement éliminées lors de la consolidation"
+      ],
+      "practical_implication_fr": "Le groupe ne peut pas mettre en place de relation de couverture sur le risque de change de la créance de dividende intragroupe dans ses états financiers consolidés.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Déterminer la devise fonctionnelle de chaque entité du groupe émettrice et récipiendiaire des dividendes.",
+    "Si les devises fonctionnelles diffèrent, documenter le risque de change comme élément hedgable éligible à l'exception para 6.3.6.",
+    "Si les devises fonctionnelles sont identiques, aucune couverture de change ne peut être désignée sur la créance intragroupe consolidée."
+  ]
+}

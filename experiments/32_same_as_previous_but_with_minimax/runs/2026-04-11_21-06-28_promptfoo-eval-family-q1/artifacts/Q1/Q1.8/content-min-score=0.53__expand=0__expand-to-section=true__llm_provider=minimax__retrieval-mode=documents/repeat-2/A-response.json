@@ -1,0 +1,73 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup dividend receivables as hedged items in a hedge accounting relationship for foreign exchange risk in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "Defines eligible hedged items and establishes the general requirement that hedged items must involve parties external to the reporting entity, while providing an exception for foreign currency risk on intragroup monetary items"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["6", "9", "10"],
+        "reason": "Provides specific guidance on hedge accounting for net investments in foreign operations and clarifies the scope of foreign currency risks that qualify as hedged risks in consolidated financial statements"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["general"],
+        "reason": "Governs foreign currency translation and exchange differences but does not specifically address hedge accounting eligibility for intragroup items"
+      },
+      {
+        "document": "IFRS 10",
+        "references": ["general"],
+        "reason": "Addresses consolidation principles but does not provide specific guidance on hedge accounting for intragroup foreign exchange exposures"
+      },
+      {
+        "document": "IAS 32",
+        "references": ["general"],
+        "reason": "Addresses financial instrument classification and presentation but is not directly relevant to hedge accounting eligibility"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "General restriction on hedging intragroup items vs. exception for foreign currency risk on intragroup monetary items",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.5", "6.3.6"]}
+      ],
+      "mapped_approaches": ["hedge_accounting_prohibited", "hedge_accounting_permitted_exception"]
+    },
+    {
+      "family": "Hedge accounting for foreign currency risk arising from net investment in foreign operation",
+      "authority_basis": [
+        {"document": "IFRIC 16", "references": ["6", "10"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting prohibited for intragroup dividend receivable",
+      "normalized_label": "hedge_accounting_prohibited",
+      "rationale_for_inclusion": "Under IFRS 9 paragraph 6.3.5, hedged items must involve parties external to the reporting entity; intragroup dividend receivables are internal transactions and cannot be designated as hedged items absent a specific exception"
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting permitted under the intragroup monetary item exception",
+      "normalized_label": "hedge_accounting_permitted_exception",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.6 provides an explicit exception permitting foreign currency risk of intragroup monetary items to qualify as a hedged item in consolidated financial statements when exchange differences are not fully eliminated on consolidation"
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge accounting as net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 clarifies that hedge accounting may apply to foreign currency risk arising from net investments in foreign operations; if the dividend receivable relates to net assets of a foreign subsidiary, it may qualify under this framework"
+    }
+  ]
+}

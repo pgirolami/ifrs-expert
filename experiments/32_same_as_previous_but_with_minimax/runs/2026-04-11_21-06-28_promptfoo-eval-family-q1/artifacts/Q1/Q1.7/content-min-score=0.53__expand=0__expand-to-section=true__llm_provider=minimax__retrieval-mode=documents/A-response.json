@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup dividend receivables for foreign exchange hedge accounting in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.5"],
+        "reason": "Explicitly addresses the exception allowing foreign currency risk of intragroup monetary items to qualify as hedged items in consolidated financial statements"
+      },
+      {
+        "document": "ias21",
+        "references": ["45"],
+        "reason": "Explains why intragroup monetary items cannot be eliminated upon consolidation and represent foreign exchange exposure requiring recognition"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["10"],
+        "reason": "Clarifies that hedge accounting applies only to foreign exchange differences between functional currencies of foreign operation and parent entity"
+      },
+      {
+        "document": "ias21",
+        "references": ["45"],
+        "reason": "Confirms that intragroup monetary items create exposure to currency fluctuations that affect consolidated profit or loss"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifric17",
+        "references": ["11-13"],
+        "reason": "Addresses measurement of dividend payables but not hedge accounting eligibility for foreign exchange risk"
+      },
+      {
+        "document": "ias7",
+        "references": ["33A"],
+        "reason": "Classifies dividend payments in cash flow statements but does not address hedge accounting treatment of dividend receivables"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Eligibility of intragroup monetary items as hedged items under IFRS 9 hedge accounting",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["6.3.5"]},
+        {"document": "ias21", "references": ["45"]}
+      ],
+      "mapped_approaches": ["hedge_accounting_permitted", "hedge_accounting_excluded"]
+    },
+    {
+      "family": "Foreign exchange gain/loss recognition on intragroup monetary items in consolidated financial statements",
+      "authority_basis": [
+        {"document": "ias21", "references": ["45"]}
+      ],
+      "mapped_approaches": ["recognize_in_profit_or_loss", "recognize_in_equity"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign exchange risk of intragroup monetary item qualifies as hedged item",
+      "normalized_label": "hedge_accounting_permitted",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 explicitly permits foreign currency risk of intragroup monetary items to qualify as hedged items when not fully eliminated on consolidation"
+    },
+    {
+      "id": "approach_2",
+      "label": "Intragroup monetary items excluded from hedge accounting in consolidated statements",
+      "normalized_label": "hedge_accounting_excluded",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 provides exception-based permission; without meeting the exception criteria, intragroup items may not qualify as eligible hedged items"
+    },
+    {
+      "id": "approach_3",
+      "label": "Foreign exchange differences on intragroup monetary items recognized in profit or loss",
+      "normalized_label": "recognize_in_profit_or_loss",
+      "rationale_for_inclusion": "IAS 21 paragraph 45 requires recognition of exchange differences in profit or loss unless paragraph 32 circumstances apply, supporting this as a peer approach when hedge accounting is not documented"
+    },
+    {
+      "id": "approach_4",
+      "label": "Foreign exchange differences accumulated in separate component of equity",
+      "normalized_label": "recognize_in_equity",
+      "rationale_for_inclusion": "IAS 21 paragraph 45 references recognition in other comprehensive income for circumstances described in paragraph 32 (net investment hedge), providing distinct treatment path"
+    }
+  ]
+}

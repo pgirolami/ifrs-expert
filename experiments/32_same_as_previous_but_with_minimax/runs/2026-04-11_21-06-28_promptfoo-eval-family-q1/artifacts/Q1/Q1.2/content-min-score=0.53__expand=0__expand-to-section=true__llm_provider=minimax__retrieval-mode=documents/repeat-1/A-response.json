@@ -1,0 +1,222 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Hedge accounting for foreign exchange risk of an intragroup dividend recognized as a receivable in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.1", "paragraph 6.3.5", "paragraph 6.4.1", "paragraph 6.5.1"],
+        "reason": "IFRS 9 sets out the requirements for hedge accounting, including which items can be designated as hedged items and restrictions on intragroup transactions in consolidated statements."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 14", "paragraph 15"],
+        "reason": "IFRIC 16 clarifies that a net investment hedge can be used to hedge foreign currency risk of a net investment in a foreign operation, which may include intragroup dividend."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 39", "paragraph 48"],
+        "reason": "IAS 21 addresses the recognition of foreign exchange differences on foreign currency transactions and the translation of foreign operations."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRS 10",
+        "references": ["paragraph 19", "paragraph 20"],
+        "reason": "IFRS 10 requires elimination of intragroup transactions in consolidated financial statements, which affects the ability to apply hedge accounting to intragroup items."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraph 10", "paragraph 12"],
+        "reason": "IFRS 12 requires disclosures about interests in other entities, but does not directly affect hedge accounting."
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.5.2", "paragraph 6.5.3"],
+        "reason": "These paragraphs describe the documentation requirements for hedge accounting, supporting the need for formal documentation."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 2",
+        "references": ["paragraph 2"],
+        "reason": "IFRS 2 deals with share-based payment, not relevant to dividend hedge."
+      },
+      {
+        "document": "IFRS 17",
+        "references": ["paragraph 43"],
+        "reason": "IFRS 17 deals with insurance contracts, not relevant."
+      },
+      {
+        "document": "IFRS 18",
+        "references": ["paragraph 5"],
+        "reason": "IFRS 18 deals with presentation and disclosure, not relevant."
+      },
+      {
+        "document": "IFRS 19",
+        "references": ["paragraph 2"],
+        "reason": "IFRS 19 deals with disclosure for SMEs, not relevant."
+      },
+      {
+        "document": "IFRS 20",
+        "references": ["paragraph 1"],
+        "reason": "IFRS 20 deals with accounting for government grants, not relevant."
+      },
+      {
+        "document": "IFRS 33",
+        "references": ["paragraph 1"],
+        "reason": "IFRS 33 deals with earnings per share, not relevant."
+      },
+      {
+        "document": "IAS 7",
+        "references": ["paragraph 31"],
+        "reason": "IAS 7 deals with cash flow statements, not relevant."
+      },
+      {
+        "document": "IAS 37",
+        "references": ["paragraph 1"],
+        "reason": "IAS 37 deals with provisions, not relevant."
+      },
+      {
+        "document": "IFRIC 19",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 19 deals with debt for equity swaps, not relevant."
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraph 9"],
+        "reason": "IFRIC 17 deals with distribution of non-cash assets, not relevant."
+      },
+      {
+        "document": "IFRIC 2",
+        "references": ["paragraph 4"],
+        "reason": "IFRIC 2 deals with members' shares in co-operative entities, not relevant."
+      },
+      {
+        "document": "IFRIC 5",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 5 deals with rights to interests arising from decommissioning, not relevant."
+      },
+      {
+        "document": "IFRIC 6",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 6 deals with liabilities arising from participating in a specific market, not relevant."
+      },
+      {
+        "document": "IFRIC 7",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 7 deals with applying the restatement approach under IAS 29, not relevant."
+      },
+      {
+        "document": "IFRIC 10",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 10 deals with interim financial reporting, not relevant."
+      },
+      {
+        "document": "IFRIC 12",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 12 deals with service concession arrangements, not relevant."
+      },
+      {
+        "document": "IFRIC 13",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 13 deals with customer loyalty programmes, not relevant."
+      },
+      {
+        "document": "IFRIC 14",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 14 deals with prepaid contributions for long-term employee benefits, not relevant."
+      },
+      {
+        "document": "IFRIC 15",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 15 deals with agreements for the construction of real estate, not relevant."
+      },
+      {
+        "document": "IFRIC 18",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 18 deals with transfers of assets from customers, not relevant."
+      },
+      {
+        "document": "IFRIC 20",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 20 deals with stripping costs in the production phase, not relevant."
+      },
+      {
+        "document": "IFRIC 21",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 21 deals with levies, not relevant."
+      },
+      {
+        "document": "IFRIC 22",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 22 deals with foreign currency transactions and advance consideration, not relevant."
+      },
+      {
+        "document": "IFRIC 23",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 23 deals with uncertainty over income tax treatments, not relevant."
+      },
+      {
+        "document": "IFRIC 25",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 25 deals with changes in tax status, not relevant."
+      },
+      {
+        "document": "IFRIC 27",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 27 deals with assessing the substance of transactions involving the legal form of a lease, not relevant."
+      },
+      {
+        "document": "IFRIC 29",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 29 deals with service concession arrangements: disclosures, not relevant."
+      },
+      {
+        "document": "IFRIC 31",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 31 deals with revenue: bartering of advertising services, not relevant."
+      },
+      {
+        "document": "IFRIC 32",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 32 deals with intents for an entity to sell its investment, not relevant."
+      },
+      {
+        "document": "IFRIC 34",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 34 deals with income taxes: contingent liability, not relevant."
+      },
+      {
+        "document": "IFRIC 37",
+        "references": ["paragraph 1"],
+        "reason": "IFRIC 37 deals with onerous contracts, not relevant."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign exchange risk on intragroup dividend receivable",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.1", "paragraph 6.3.5", "paragraph 6.4.1", "paragraph 6.5.1"]},
+        {"document": "IFRIC 16", "references": ["paragraph 14", "paragraph 15"]},
+        {"document": "IAS 21", "references": ["paragraph 39", "paragraph 48"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge", "investment_entity_hedge_exception"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "Permitted under IFRIC 16 to hedge foreign currency risk of a net investment in a foreign operation, which may include intragroup dividend receivable in consolidated statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "Investment entity hedge exception",
+      "normalized_label": "investment_entity_hedge_exception",
+      "rationale_for_inclusion": "IFRS 9 allows hedge accounting for intragroup transactions in consolidated financial statements of an investment entity that measures its subsidiaries at fair value through profit or loss."
+    }
+  ]
+}

@@ -12,7 +12,6 @@ from src.llm.base import LLMClient
 
 logger = logging.getLogger(__name__)
 
-AUTH_FAILED_MESSAGE = "Anthropic API authentication failed. Please check your ANTHROPIC_API_KEY in .env file."
 EMPTY_RESPONSE_MESSAGE = "Anthropic returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
 HIGH_THINKING_BUDGET_TOKENS = 4096
@@ -70,7 +69,8 @@ class AnthropicClient(LLMClient):
         except Exception as e:
             error_str = str(e)
             if "401" in error_str or "api_key" in error_str.lower() or "Unauthorized" in error_str:
-                raise RuntimeError(AUTH_FAILED_MESSAGE) from e
+                auth_failed_message = f"{type(self).__name__} API authentication failed. Please check your API key configuration."
+                raise RuntimeError(auth_failed_message) from e
             raise
 
         text_parts = _extract_text_from_blocks(response.content)

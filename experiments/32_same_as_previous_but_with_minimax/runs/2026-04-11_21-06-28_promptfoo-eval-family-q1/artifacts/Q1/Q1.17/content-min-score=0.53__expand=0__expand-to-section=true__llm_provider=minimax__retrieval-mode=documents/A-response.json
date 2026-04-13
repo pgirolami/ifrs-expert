@@ -1,0 +1,68 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether a foreign currency risk component of an intragroup dividend receivable can be designated as a hedged item in a hedge accounting relationship in consolidated financial statements, given the prohibition on hedging transactions between entities in the same group.",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.5", "6.3.1"],
+        "reason": "Paragraph 6.3.5 explicitly prohibits hedge accounting for transactions between entities in the same group in consolidated financial statements, while paragraph 6.3.1 establishes that hedged items can be components of items, directly governing whether a foreign exchange component can be isolated as a hedged item."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["28", "32"],
+        "reason": "Paragraph 28 requires exchange differences on monetary items to be recognised in profit or loss, while paragraph 32 provides an exception for net investment hedging that is relevant for understanding the boundary between what can and cannot be hedged for intragroup items."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["9(a)", "10"],
+        "reason": "Clarifies that hedge accounting may only be applied to foreign exchange differences between functional currencies and explicitly addresses the scope of eligible hedged risks for net investments, providing guidance on what constitutes a separable foreign currency risk component."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["5.7.1", "5.7.10"],
+        "reason": "These paragraphs address general recognition of fair value changes and FVOCI treatment but do not specifically address hedge accounting eligibility for intragroup items or component hedging."
+      },
+      {
+        "document": "IAS 24",
+        "references": ["17", "18"],
+        "reason": "Related party disclosure requirements do not govern whether hedge accounting can be applied to foreign exchange exposures."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for the entire monetary item",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.1"]}
+      ],
+      "mapped_approaches": ["full_hedge_accounting_monetary_item"]
+    },
+    {
+      "family": "No hedge accounting for the intragroup monetary item",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.5"]},
+        {"document": "IAS 21", "references": ["28"]}
+      ],
+      "mapped_approaches": ["no_hedge_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Full hedge accounting for the intragroup monetary item",
+      "normalized_label": "full_hedge_accounting_monetary_item",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.1 permits hedged items to be components of items, and paragraph 6.3.6 creates an exception allowing foreign currency risk of intragroup monetary items to qualify as a hedged risk in consolidated financial statements when exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge accounting for the intragroup dividend receivable",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 prohibits hedge accounting for transactions between entities in the same group, and IAS 21 paragraph 28 requires exchange differences on monetary items to be recognised in profit or loss, meaning the foreign exchange variation is recognised without hedge accounting treatment."
+    }
+  ]
+}

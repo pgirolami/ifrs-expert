@@ -1,0 +1,86 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether intragroup dividend receivables creating foreign currency exposure in consolidated financial statements can qualify as hedged items under IFRS 9 hedge accounting",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "Section 6.3 establishes what can be designated as hedged items; paragraph 6.3.6 specifically addresses intragroup monetary items and their eligibility for hedge accounting in consolidated financial statements"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["28", "32"],
+        "reason": "Governs recognition of exchange differences on monetary items and clarifies when FX gains/losses on intragroup items are not eliminated on consolidation, which is the prerequisite for hedge eligibility under IFRS 9 6.3.6"
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["7", "10"],
+        "reason": "Provides guidance on hedges of net investments in foreign operations, which is an alternative model when the dividend receivable relates to a net investment with FX exposure"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 12",
+        "references": ["10-19"],
+        "reason": "Addresses disclosures about subsidiaries and non-controlling interests but does not govern hedge accounting eligibility for intragroup items"
+      },
+      {
+        "document": "IAS 24",
+        "references": ["2-24"],
+        "reason": "Deals with related party disclosure requirements rather than hedge accounting treatment for FX exposures"
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["3-14"],
+        "reason": "Addresses non-reciprocal distributions of assets but does not address hedging of related FX exposures"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Intragroup monetary items as eligible hedged items under general hedge accounting",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.5", "6.3.6"]}
+      ],
+      "mapped_approaches": ["general_intragroup_monetary_hedge"]
+    },
+    {
+      "family": "Net investment hedge accounting for FX exposure on foreign operations",
+      "authority_basis": [
+        {"document": "IFRIC 16", "references": ["7", "10"]},
+        {"document": "IAS 21", "references": ["32"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    },
+    {
+      "family": "Recognition of FX differences without hedge accounting",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["28"]}
+      ],
+      "mapped_approaches": ["no_hedge_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "General intragroup monetary hedge accounting",
+      "normalized_label": "general_intragroup_monetary_hedge",
+      "rationale_for_inclusion": "Under IFRS 9 paragraph 6.3.6, intragroup monetary items (including dividend receivables) creating FX exposure not eliminated on consolidation may be designated as hedged items, provided all hedge accounting criteria in IFRS 9 are met"
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "When the intragroup dividend receivable arises from a net investment in a foreign operation, IFRIC 16 permits hedge accounting for the foreign currency risk, with FX differences initially recognized in OCI and reclassified to P&L on disposal"
+    },
+    {
+      "id": "approach_3",
+      "label": "FX recognition without hedge accounting",
+      "normalized_label": "no_hedge_accounting",
+      "rationale_for_inclusion": "IAS 21 paragraph 28 requires FX differences on monetary items to be recognized in P&L as they arise; hedge accounting is optional and not required if the entity does not designate a hedging relationship"
+    }
+  ]
+}

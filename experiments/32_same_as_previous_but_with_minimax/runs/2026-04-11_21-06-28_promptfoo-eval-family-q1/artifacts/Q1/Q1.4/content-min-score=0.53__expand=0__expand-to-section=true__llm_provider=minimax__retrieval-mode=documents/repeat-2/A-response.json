@@ -1,0 +1,129 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Hedge accounting for foreign exchange risk of intragroup dividend receivables in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "These paragraphs define eligibility of hedged items, restricting hedge accounting to external transactions and providing an exception for intragroup monetary items."
+      },
+      {
+        "document": "IFRS 10",
+        "references": ["paragraph B86", "paragraph 4B"],
+        "reason": "These paragraphs require elimination of intragroup assets and liabilities in consolidated financial statements and set out the investment entity exception that exempts certain entities from presenting consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRS 10",
+        "references": ["paragraph B92", "paragraph B93", "paragraph B94"],
+        "reason": "These paragraphs establish reporting date alignment and profit attribution rules that affect the recognition of intragroup items in consolidated financial statements."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraph 19A", "paragraph 19B", "paragraph 19C", "paragraph 19D", "paragraph 19E", "paragraph 19F", "paragraph 19G"],
+        "reason": "These paragraphs specify disclosure requirements for investment entities, supporting the distinct treatment of hedge accounting for intragroup items in investment entity consolidated statements."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 7",
+        "references": ["paragraph 31", "paragraph 33A", "paragraph 44A"],
+        "reason": "These paragraphs address cash flow classification and disclosures but do not determine hedge accounting eligibility for intragroup dividend FX risk."
+      },
+      {
+        "document": "IAS 32",
+        "references": ["paragraph 35", "paragraph 42"],
+        "reason": "These paragraphs address presentation and offsetting of financial instruments, not hedge accounting."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraph 10", "paragraph 12", "paragraph 13", "paragraph 14", "paragraph 15", "paragraph 16", "paragraph 17", "paragraph 18", "paragraph 19"],
+        "reason": "These paragraphs deal with disclosures about group composition and restrictions, not hedge accounting eligibility."
+      },
+      {
+        "document": "IFRS 19",
+        "references": ["paragraph 7", "paragraph 11", "paragraph 12"],
+        "reason": "These paragraphs address eligibility for reduced disclosures, not relevant to hedge accounting."
+      },
+      {
+        "document": "IAS 24",
+        "references": ["paragraph 2", "paragraph 3", "paragraph 13"],
+        "reason": "These paragraphs address related party disclosures, not hedge accounting."
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraph 3", "paragraph 5", "paragraph 11"],
+        "reason": "These paragraphs address non-cash distributions, not hedge accounting."
+      },
+      {
+        "document": "IAS 27",
+        "references": ["paragraph 4", "paragraph 8", "paragraph 10"],
+        "reason": "These paragraphs address separate financial statements, not hedge accounting in consolidation."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 7", "paragraph 9", "paragraph 10"],
+        "reason": "These paragraphs address hedges of net investments, not intragroup dividend receivables."
+      },
+      {
+        "document": "SIC 25",
+        "references": ["paragraph 1", "paragraph 2"],
+        "reason": "These paragraphs address tax status changes, not hedge accounting."
+      },
+      {
+        "document": "IFRIC 2",
+        "references": ["paragraph 5", "paragraph 6"],
+        "reason": "These paragraphs address members' shares, not hedge accounting."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Ineligible hedged items – intracompany transactions (no hedge accounting)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]},
+        {"document": "IFRS 10", "references": ["paragraph B86"]}
+      ],
+      "mapped_approaches": ["intragroup_dividend_hedge_excluded"]
+    },
+    {
+      "family": "Eligible hedged items – intragroup monetary items (FX risk not fully eliminated)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IFRS 10", "references": ["paragraph B86"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_item_hedge"]
+    },
+    {
+      "family": "Eligible hedged items – investment entity subsidiaries",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]},
+        {"document": "IFRS 10", "references": ["paragraph 4B"]},
+        {"document": "IFRS 12", "references": ["paragraph 19A", "paragraph 19B", "paragraph 19C", "paragraph 19D", "paragraph 19E", "paragraph 19F", "paragraph 19G"]}
+      ],
+      "mapped_approaches": ["investment_entity_hedge_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup dividend hedge excluded",
+      "normalized_label": "intragroup_dividend_hedge_excluded",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 prohibits hedge accounting for intragroup transactions in consolidated financial statements, and IFRS 10 paragraph B86 requires elimination of intragroup assets and liabilities."
+    },
+    {
+      "id": "approach_2",
+      "label": "Intragroup monetary item hedge",
+      "normalized_label": "intragroup_monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.6 allows hedge accounting for foreign exchange risk of intragroup monetary items when the FX gains/losses are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_3",
+      "label": "Investment entity hedge accounting",
+      "normalized_label": "investment_entity_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 provides an exception for investment entities, and IFRS 10 paragraph 4B and IFRS 12 paragraphs 19A-19G permit hedge accounting for intragroup items measured at fair value through profit or loss."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est libellé dans une devise étrangère à celle de l'entité consolidante",
+    "Les entités du groupe ont des devises fonctionnelles différentes",
+    "Les états financiers concernés sont les comptes consolidés du groupe"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'approche 1 (exception paragraphe 6.3.6) est applicable sous réserve que le risque de change du dividende intragroupe ne soit pas éliminé totalement lors de la consolidation. L'approche 2 (règle générale paragraphe 6.3.5) n'est pas applicable car elle interdit la désignation d'éléments intragroupe comme éléments couverts."
+  },
+  "approaches": [
+    {
+      "id": "approach_2",
+      "normalized_label": "ifrs9_standard_hedge_accounting_external_party",
+      "label_fr": "Couverture de change стандарт IFRS 9 (exigence de contrepartie externe)",
+      "applicability": "non",
+      "reasoning_fr": "La règle générale du paragraphe 6.3.5 exige qu'un élément désigné comme élément couvert soit avec une partie externe à l'entité déclarante. Un dividende intragroupe est une créance entre entités du même groupe, hence this condition is not met for standard hedge accounting.",
+      "conditions_fr": [
+        "N/A - Non applicable"
+      ],
+      "practical_implication_fr": "Aucun traitement de couverture possible en vertu de cette approche pour le dividende intragroupe.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    },
+    {
+      "id": "approach_1",
+      "normalized_label": "ifrs9_6_3_6_intragroup_monetary_item_exception",
+      "label_fr": "Exception pour les postes monétaires intragroupe (paragraphe 6.3.6)",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "En vertu du paragraphe 6.3.6, le risque de change d'un poste monétaire intragroupe (telle qu'une créance dividende) peut qualify as a hedged item dans les états financiers consolidés si l'exposition aux gains ou pertes de change n'est pas totalement éliminée lors de la consolidation. Cette condition est remplie lorsque les devises fonctionnelles des entités sont différentes et que les écarts de change affectent le résultat consolidé.",
+      "conditions_fr": [
+        "Les entités émettrice et destinataire du dividende ont des devises fonctionnelles différentes",
+        "Les écarts de change ne sont pas totalement éliminés lors de la consolidation conformément à IAS 21",
+        "Le risque de change affecte le résultat consolidé du groupe"
+      ],
+      "practical_implication_fr": "Possibilité de désigner le risque de change du dividende intragroupe comme risque couvert dans une relation de couverture au niveau des comptes consolidés.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture en identifiant le dividende intragroupe comme élément couvert et en désignant le risque de change comme risque couvert",
+    "S'assurer que les conditions d'efficacité de la couverture sont satisfaites selon IFRS 9 paragraphes 6.4.1 et suivants",
+    "Vérifier que les écarts de change sur le dividende intragroupe ne sont pas éliminés à la consolidation du fait de la différence de devises fonctionnelles",
+    "Présenter les variations de juste valeur du dérivé de couverture dans la même catégorie que le résultat sur l'élément couvert selon IFRS 18 paragraphes B70-B76"
+  ]
+}

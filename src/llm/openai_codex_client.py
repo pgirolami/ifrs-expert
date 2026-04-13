@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-AUTH_FAILED_MESSAGE = "OpenAI Codex authentication failed. Please run 'codex login' and verify your Codex auth.json file."
 EMPTY_RESPONSE_MESSAGE = "OpenAI Codex returned empty response"
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
 DEFAULT_INSTRUCTIONS = "You are a helpful assistant."
@@ -145,7 +144,8 @@ class OpenAICodexClient(LLMClient):
 
     def _raise_for_http_error(self, response: HTTPResponseProtocol) -> None:
         if response.status_code == UNAUTHORIZED_STATUS_CODE:
-            raise RuntimeError(AUTH_FAILED_MESSAGE)
+            auth_failed_message = f"{type(self).__name__} authentication failed. Please run 'codex login' and verify your Codex auth.json file."
+            raise RuntimeError(auth_failed_message)
         if response.status_code >= HTTP_ERROR_STATUS_MIN:
             error_message = self._extract_error_message(response.text)
             raise RuntimeError(error_message)

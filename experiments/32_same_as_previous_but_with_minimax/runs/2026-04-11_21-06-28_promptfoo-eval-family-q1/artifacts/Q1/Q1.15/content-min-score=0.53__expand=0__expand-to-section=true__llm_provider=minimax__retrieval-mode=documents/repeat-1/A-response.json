@@ -1,0 +1,67 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of an intragroup dividend receivable for designation as a hedged item in a hedge accounting relationship under IFRS",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "These paragraphs directly govern which items can be designated as hedged items in consolidated financial statements, including the exception for foreign‑currency‑risk of intragroup monetary items."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 2–8"],
+        "reason": "Provides guidance on the scope of eligible hedged items and clarifies that hedge accounting is generally limited to transactions with external parties, supporting the restriction in IFRS 9 paragraph 6.3.5."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 7",
+        "references": ["paragraphs 9–11"],
+        "reason": "Deals with disclosures for financial instruments and hedge relationships, but does not determine eligibility of a hedged item."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraph 5"],
+        "reason": "Addresses disclosure of interests in other entities; not relevant to the hedge‑eligibility question."
+      },
+      {
+        "document": "IAS 24",
+        "references": ["paragraphs 13–24"],
+        "reason": "Covers related‑party disclosures; not applicable to hedge designation criteria."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge‑eligible intragroup monetary item (foreign‑currency‑risk exception)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_fair_value_hedge"]
+    },
+    {
+      "family": "Hedge‑ineligible intragroup item (general rule for internal transactions)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["external_party_only_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge for intragroup monetary item",
+      "normalized_label": "intragroup_monetary_fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.6 permits designation of the foreign‑currency risk of an intragroup monetary item as a hedged item in consolidated statements when the FX differences are not eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge designation for intragroup items",
+      "normalized_label": "external_party_only_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 generally prohibits hedge designation for intragroup items in consolidated financial statements unless the specific exception for foreign‑currency risk applies."
+    }
+  ]
+}

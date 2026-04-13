@@ -1,0 +1,78 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether intragroup dividend receivables can be designated as hedged items for foreign exchange risk under hedge accounting at the consolidated level",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.5", "6.3.6"],
+        "reason": "Paragraph 6.3.5 establishes that only items with external parties can be designated as hedged items, while paragraph 6.3.6 provides a narrow exception for intragroup monetary items with foreign currency risk that is not fully eliminated on consolidation"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["4", "6"],
+        "reason": "Clarifies the scope of eligible hedging instruments and provides guidance on foreign currency risk hedging in group structures, including limitations on applying hedge accounting to intragroup items in consolidated financial statements"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["Consolidated financial statements treatment"],
+        "reason": "Governs when foreign exchange differences on intragroup monetary items are eliminated on consolidation versus when they affect consolidated profit or loss, which determines applicability of the paragraph 6.3.6 exception"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRIC 17",
+        "references": ["Dividends to owners"],
+        "reason": "Addresses measurement and recognition of dividend payables but does not govern hedge accounting eligibility or foreign exchange risk treatment"
+      },
+      {
+        "document": "IFRIC 2",
+        "references": ["Members' shares classification"],
+        "reason": "Addresses equity versus liability classification of financial instruments but is not relevant to hedge accounting for foreign exchange risk on intragroup dividends"
+      },
+      {
+        "document": "IAS 32",
+        "references": ["Financial instruments presentation"],
+        "reason": "Governs classification of financial instruments as equity or liability but does not address hedge accounting eligibility for intragroup items"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Eligibility of intragroup items as hedged items for hedge accounting",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.5", "6.3.6"]}
+      ],
+      "mapped_approaches": [
+        "hedge_accounting_eligible_intragroup_item",
+        "hedge_accounting_ineligible_intragroup_item"
+      ]
+    },
+    {
+      "family": "Recognition of foreign exchange gains or losses on intragroup monetary items in consolidated financial statements",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["Intragroup monetary items"]}
+      ],
+      "mapped_approaches": [
+        "hedge_accounting_eligible_intragroup_item",
+        "hedge_accounting_ineligible_intragroup_item"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting eligible - intragroup monetary item exception applies",
+      "normalized_label": "hedge_accounting_eligible_intragroup_item",
+      "rationale_for_inclusion": "Under IFRS 9 paragraph 6.3.6, foreign currency risk of intragroup monetary items may qualify as a hedged item if the FX gains or losses are not fully eliminated on consolidation, which could include intragroup dividend receivables when the entities have different functional currencies"
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting ineligible - external party requirement not met",
+      "normalized_label": "hedge_accounting_ineligible_intragroup_item",
+      "rationale_for_inclusion": "Under IFRS 9 paragraph 6.3.5, only items with external parties can be designated as hedged items; intragroup dividend receivables do not qualify, and the paragraph 6.3.6 exception does not apply when FX differences are fully eliminated on consolidation"
+    }
+  ]
+}

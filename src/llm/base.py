@@ -7,20 +7,6 @@ MISSING_API_KEY_MESSAGE = "API key environment variable is required for this pro
 MISSING_MODEL_MESSAGE = "Model environment variable is required for this provider. Set it in your environment or .env file."
 UNKNOWN_PROVIDER_MESSAGE = "Provider not supported."
 
-AUTH_FAILED_MESSAGES = {
-    "openai": "OpenAI API authentication failed. Please check your OPENAI_API_KEY in .env file.",
-    "anthropic": "Anthropic API authentication failed. Please check your ANTHROPIC_API_KEY in .env file.",
-    "mistral": "Mistral API authentication failed. Please check your MISTRAL_API_KEY in .env file.",
-    "minimax": "Minimax API authentication failed. Please check your MINIMAX_API_KEY in .env file.",
-}
-
-EMPTY_RESPONSE_MESSAGES = {
-    "openai": "OpenAI returned empty response",
-    "anthropic": "Anthropic returned empty response",
-    "mistral": "Mistral returned empty response",
-    "minimax": "Minimax returned empty response",
-}
-
 JSON_PARSE_FAILED_MESSAGE = "Failed to parse JSON response"
 
 

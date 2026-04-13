@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign exchange risk arising from intragroup dividend receivables can be designated as a hedged item under IFRS hedge accounting requirements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.1, 6.3.5, 6.3.6"],
+        "reason": "Defines eligible hedged items and explicitly limits hedge accounting to transactions with parties external to the reporting entity"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 45, 52"],
+        "reason": "Addresses treatment of intragroup monetary items and exchange differences in consolidated financial statements"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 1, 5, 6, 7, 9(a)(ii), 10, 12"],
+        "reason": "Provides specific guidance on hedge accounting for net investments in foreign operations and the exception for intragroup monetary items in consolidated financial statements"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 7",
+        "references": ["paragraphs 9-11, 17"],
+        "reason": "Disclosures about hedge accounting and financial instruments but does not govern eligibility for hedge accounting designation"
+      },
+      {
+        "document": "IAS 32",
+        "references": ["paragraphs 35-36"],
+        "reason": "Addresses presentation and classification of financial instruments but not hedge accounting eligibility"
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 13-17"],
+        "reason": "Disclosures about structured entities and restrictions, not directly relevant to hedge accounting designation for intragroup items"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Designation of intragroup monetary items as hedged items in consolidated financial statements",
+      "authority_basis": [
+        {"document": "IFRIC 16", "references": ["paragraph 6"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge_exception"]
+    },
+    {
+      "family": "Ineligibility of internal group transactions as hedged items under general hedge accounting rules",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["no_hedge_accounting_eligibility"]
+    },
+    {
+      "family": "Recognition of foreign exchange gains and losses on monetary intragroup items",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["foreign_exchange_recognition_pl"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge exception applies",
+      "normalized_label": "net_investment_hedge_exception",
+      "rationale_for_inclusion": "IFRIC 16 paragraph 6 permits hedge accounting for foreign currency risk of intragroup monetary items in consolidated financial statements when the intragroup item creates exposure to foreign exchange gains or losses not fully eliminated on consolidation"
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge accounting eligibility for intragroup dividend receivable",
+      "normalized_label": "no_hedge_accounting_eligibility",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 restricts hedged items to transactions with external parties, and intragroup dividends do not qualify as net investment hedges under IFRIC 16 unless the dividend receivable is part of net assets of a foreign operation"
+    },
+    {
+      "id": "approach_3",
+      "label": "Foreign exchange recognition in profit or loss without hedge accounting",
+      "normalized_label": "foreign_exchange_recognition_pl",
+      "rationale_for_inclusion": "IAS 21 paragraph 45 requires recognition of exchange differences on intragroup monetary items in profit or loss (or OCI for certain circumstances) even when not designated as hedged items"
+    }
+  ]
+}

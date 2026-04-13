@@ -1,0 +1,61 @@
+{
+  "assumptions_fr": [
+    "L'entité qui reçoit le dividende intragroupe et l'entité qui le verse ont des devises fonctionnelles différentes",
+    "Le dividende intragroupe a été déclaré et constitue une créance monétaire à recevoir",
+    "L'exposition au risque de change affecte le résultat consolidé du groupe"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Le risque de change sur une créance de dividende intragroupe peut être désigné comme élément couvert dans les états financiers consolidés, sous réserve que le dividende soit une créance monétaire et que le risque de change affecte le résultat consolidé du groupe."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_item_prohibition",
+      "label_fr": "Interdiction générale de couverture des éléments intragroupes",
+      "applicability": "non",
+      "reasoning_fr": "La prohibition générale de l'article 6.3.5 ne s'applique pas car l'article 6.3.6 prévoit une exception spécifique pour le risque de change des éléments monétaires intragroupes dans les états financiers consolidés.",
+      "conditions_fr": [],
+      "practical_implication_fr": "L'interdiction générale n'empêche pas la désignation lorsque l'exception s'applique.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "seuls les actifs, passifs, engagements fermes ou transactions prévues hautement probables avec une partie externe à l'entité déclarante peuvent être désignés comme éléments couverts"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "intragroup_monetary_item_exception",
+      "label_fr": "Exception pour le risque de change des éléments monétaires intragroupes",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Un dividende intragroupe déclaré et comptabilisé à recevoir constitue un élément monétaire dont le risque de change peut être couvert si les entités ont des devises fonctionnelles différentes et que ce risque affecte le résultat consolidé.",
+      "conditions_fr": [
+        "Le dividende intragroupe doit être une créance monétaire (devrait être déclaré et unconditionally receivable)",
+        "Les entités concernées doivent avoir des devises fonctionnelles différentes",
+        "Le risque de change doit affecter le résultat consolidé (c'est-à-dire ne pas être éliminé par consolidation)"
+      ],
+      "practical_implication_fr": "La relation de couverture peut être documentée pour le risque de change sur la créance de dividende intragroupe dans les états financiers consolidés si les conditions sont remplies.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "le risque de change d'un élément monétaire intragroupe peut être qualifié d'élément couvert dans les états financiers consolidés s'il entraîne une exposition aux gains ou pertes de change qui ne sont pas entièrement éliminés lors de la consolidation"
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "un élément monétaire intragroupe ne peut être éliminé contre l'élément correspondant sans montrer les résultats des fluctuations de change dans les états financiers consolidés"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture dès la date de reconnaissance initiale de la créance de dividende",
+    "S'assurer que le dividende est bien un élément monétaire (dividende déclaré mais non encore payé)",
+    "Vérifier que la variation de change n'est pas éliminée lors de la consolidation",
+    "La désignation doit identifier précisément le risque de change couvert et l'instrument de couverture utilisé",
+    "Appliquer les tests d'efficacité requis par IFRS 9 pour la comptabilité de couverture"
+  ]
+}

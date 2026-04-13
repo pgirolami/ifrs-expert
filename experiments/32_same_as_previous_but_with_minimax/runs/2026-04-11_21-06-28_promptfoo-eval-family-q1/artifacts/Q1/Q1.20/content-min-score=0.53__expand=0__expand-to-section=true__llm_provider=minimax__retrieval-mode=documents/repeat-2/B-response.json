@@ -1,0 +1,69 @@
+{
+  "assumptions_fr": [
+    "La créance dividendes intragroupe est un actif financier moné aires denotionnel entre deux entités d'un même groupe.",
+    "Les deux entités du groupe ont des devises fonctionnelles différentes, de sorte que l'exposition au risque de change n'est pas éliminée par consolidation.",
+    "Le risque de change influence le résultat consolidé."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La créance de dividendes intragroupe est un actif monétaire intragroupe. Bien que la règle générale exclue les postes intragroupes de la désignation comme élément couvert (IAS 39 §80 ; IFRS 9 §6.3.5), une exception existe précisément pour le risque de change des postes monétaires intragroupes lorsque les différences de change ne sont pas éliminées en consolidation (IAS 39 §80 ; IFRS 9 §6.3.6). Cette exception s'applique sous réserve que les conditions de IAS 21 soient remplies."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge_exclusion",
+      "label_fr": "Exclusion de la créance intragroupe comme élément couvert en vertu de l'exigence de partie externe",
+      "applicability": "non",
+      "reasoning_fr": "En vertu de la règle générale (IAS 39 §80 et IFRS 9 §6.3.5), seuls les actifs, passifs, engagements ferme ou transactionsForecast hautement probables impliquant une partie externe à l'entité peuvent être désignés comme éléments couverts dans les états financiers consolidés. La créance intragroupe étant éliminée en consolidation, elle ne satisfait pas, en apparence, à cette exigence.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche ne constitue pas un obstacle dirimant dès lors que l'exception pour risque de change s'applique.",
+      "references": [
+        {
+          "document": "IAS 39",
+          "section": "80",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions that involve a party external to the entity can be designated as hedged items."
+        },
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_hedge_of_fx_risk",
+      "label_fr": "Couverture du risque de change sur un poste monétaire intragroupe (exception)",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L'exception prévue par IAS 39 §80 et IFRS 9 §6.3.6 permet de désigner le risque de change d'un poste monétaire intragroupe (tels qu'un dividende à recevoir entre deux filiales) comme élément couvert dans les états financiers consolidés, à condition que ce poste génère une exposition aux gains ou pertes de change qui ne sont pas entièrement éliminés en consolidation. IAS 21 §45 confirme que les postes monétaires intragroupes ne sont pas éliminés lorsque les entités ont des devises fonctionnelles différentes.",
+      "conditions_fr": [
+        "La créance de dividendes est dénommée dans une monnaie autre que la devise fonctionnelle de l'entité qui la comptabilise.",
+        "Le risque de change affectera le résultat consolidé (les différences de change ne sont pas éliminées en consolidation)."
+      ],
+      "practical_implication_fr": "La créance de dividendes intragroupe peut être désignée comme élément couvert dans le cadre d'une relation de couverture de juste valeur ou de couverture de flux de trésorerie, sous réserve du respect des conditions de désignation et de documentation de IAS 39 §88 ou IFRS 9 §6.4.1.",
+      "references": [
+        {
+          "document": "IAS 39",
+          "section": "80",
+          "excerpt": "As an exception, the foreign currency risk of an intragroup monetary item (eg a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21."
+        },
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21."
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "However, an intragroup monetary asset (or liability), whether short-term or long-term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter formellement la relation de couverture dès son inception avec identification de l'instrument de couverture, de l'élément couvert (risque de change sur la créance intragroupe) et de la stratégie de gestion des risques (IAS 39 §88(a) / IFRS 9 §6.4.1).",
+    "Démontrer l'efficacité de la couverture de manière continue et vérifier que le risque de change affecte effectivement le résultat consolidé (condition cumulative de l'exception).",
+    "Sélectionner le type de couverture approprié : une couverture de juste valeur est généralement adaptée pour une créance déjà comptabilisée ; une couverture de flux de trésorerie serait envisageable si la créance était encore conditionnelle.",
+    "Appliquer les dispositions de IAS 39 §89 (fair value hedge) ou §95 (cash flow hedge) pour le traitement comptable des gains et pertes sur l'instrument de couverture et l'élément couvert."
+  ]
+}

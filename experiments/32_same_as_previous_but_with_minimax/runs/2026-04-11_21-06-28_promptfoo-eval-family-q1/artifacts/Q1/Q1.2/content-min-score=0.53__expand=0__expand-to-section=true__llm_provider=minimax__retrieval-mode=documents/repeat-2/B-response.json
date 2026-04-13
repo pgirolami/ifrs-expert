@@ -1,0 +1,90 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est comptabilisé en créance dans les comptes consolidés",
+    "Les deux entités ont des devises fonctionnelles différentes",
+    "Le risque de change n'est pas éliminé à la consolidation car les devises fonctionnelles diffèrent",
+    "Le contexte est celui des états financiers consolidés d'un groupe"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'approche 3 (couverture d'investissement net) est la plus adaptée si les conditions d'IFRIC 16 sont remplies. L'approche 2 (couverture en juste valeur) est également possible via l'exception d'IFRS 9 §6.3.6. L'approche 1 est le traitement de base sans couverture."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "direct_fx_recognition",
+      "label_fr": "Reconnaissance directe des effets de change sans comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche représente le traitement de base par défaut selon IAS 21, mais la question porte spécifiquement sur l'application d'une documentation de couverture, ce qui exclut cette option comme réponse à la question posée.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Les différences de change sur la créance de dividende sont reconnues directement en résultat sans mécanisme de couverture.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "général",
+          "excerpt": "Les différences de change sur les éléments monétaires sont généralement reconnues en résultat."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture en juste valeur du risque de change sur la créance de dividende",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 §6.3.6 permet de désigner le risque de change d'un élément monétaire intragroupe comme élément couvert dans les états consolidés, à condition que l'exposition aux gains ou pertes de change ne soit pas éliminée à la consolidation (IAS 21). Ici, les devises fonctionnelles différentes créent une telle exposition.",
+      "conditions_fr": [
+        "Les entités ont des devises fonctionnelles différentes",
+        "Le risque de change sur la créance n'est pas éliminé à la consolidation",
+        "L'exposition affectera le résultat consolidé",
+        "La documentation satisfies aux exigences d'IFRS 9 §6.4.1"
+      ],
+      "practical_implication_fr": "La variation de juste valeur attribuable au risque de change peut être reconnue en résultat, compensant partiellement la variation de la créance.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item... may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "ifrs9",
+          "section": "5.7.1",
+          "excerpt": "A gain or loss on a financial asset or financial liability that is measured at fair value shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net dans une opération étrangère",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRIC 16 §§14-15 confirme que le risque de change d'éléments monétaires intragroupe peut être désigné comme élément couvert dans les comptes consolidés. La créance de dividende en monnaie étrangère constitue une exposition au risque de change qui peut être couverte comme partie d'une relation de couverture d'investissement net.",
+      "conditions_fr": [
+        "Le dividende est reçu d'une filiale étrangère (investissement net dans une opération étrangère)",
+        "La transaction est libellée dans une devise autre que la devise fonctionnelle de l'entité qui reçoit le dividende",
+        "Le risque de change affectera le résultat consolidé",
+        "La stratégie de couverture est clairement documentée conformément à IFRS 9 §6.4.1",
+        "L'instrument de couverture peut être détenu par n'importe quelle entité du groupe"
+      ],
+      "practical_implication_fr": "La partie efficace de la variation de valeur de l'instrument de couverture est incluse en autres éléments du résultat全局, tandis que la partie inefficace est reconnue en résultat.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "A derivative or a non-derivative instrument may be designated as a hedging instrument in a hedge of a net investment in a foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "15",
+          "excerpt": "the foreign currency risk of an intragroup monetary item... may qualify as a hedged item in consolidated financial statements"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter dès l'origine la relation de couverture avec désignation explicite du risque de change couvert",
+    "S'assurer que l'instrument de couverture (dérivé ou non-dérivé) est détenu par une entité appropriée du groupe",
+    "Mettre en place un processus de测试 d'efficacité à chaque période de reporting",
+    "En cas de couverture d'investissement net (approche 3), la portion efficace est recyclée en OCI et la portion inefficace en résultat",
+    "Les flux de trésorerie liés aux dividendes sont présentés en activités de financement selon IAS 7 §33A"
+  ]
+}

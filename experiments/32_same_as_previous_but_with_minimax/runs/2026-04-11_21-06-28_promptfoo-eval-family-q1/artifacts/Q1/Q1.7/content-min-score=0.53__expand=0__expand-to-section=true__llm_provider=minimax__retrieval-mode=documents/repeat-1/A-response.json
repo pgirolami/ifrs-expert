@@ -1,0 +1,91 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup monetary items (dividend receivable) for designation as hedged items in foreign currency risk hedge accounting",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.1", "paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "Directly governs what items qualify as hedged items for hedge accounting, including the exception for intragroup monetary items in consolidated financial statements"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 45"],
+        "reason": "Establishes the fundamental principle that intragroup monetary items cannot be eliminated without recognizing currency fluctuation effects in consolidated financial statements"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 2-4", "paragraph 10", "paragraph 12"],
+        "reason": "Clarifies scope of foreign currency risk eligible for hedge accounting in net investment hedges and confirms that FX exposure between functional currencies of entities within a group qualifies"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 32"],
+        "reason": "Specifies circumstances under which exchange differences on monetary items may be recognized in OCI rather than P&L, relevant to determining hedge accounting treatment"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 7",
+        "references": ["paragraph 44A-44E"],
+        "reason": "Addresses cash flow presentation but does not affect the hedge accounting eligibility question"
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 14-17"],
+        "reason": "Disclosures about structured entities and financial support are not relevant to hedge accounting eligibility"
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraphs 9-13"],
+        "reason": "Addresses measurement of dividend payable, not eligibility of dividend receivable for hedge accounting"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign currency risk on intragroup monetary items under the general exclusion (IFRS 9 paragraph 6.3.5 general rule)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["general_external_party_requirement"]
+    },
+    {
+      "family": "Hedge accounting under the intragroup monetary item exception (IFRS 9 paragraph 6.3.5 exception)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5 exception"]},
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_item_exception"]
+    },
+    {
+      "family": "Recognition of foreign exchange differences without hedge accounting",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["foreign_exchange_recognition_without_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting with external party hedged item",
+      "normalized_label": "general_external_party_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 general rule requires hedged items to be with external parties; dividend receivables from external sources (not intragroup) could qualify under this approach"
+    },
+    {
+      "id": "approach_2",
+      "label": "Hedge accounting under intragroup monetary item exception",
+      "normalized_label": "intragroup_monetary_item_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 exception permits hedging intragroup monetary items that create uneliminated FX exposure in consolidated financial statements per IAS 21 paragraph 45"
+    },
+    {
+      "id": "approach_3",
+      "label": "Foreign exchange recognition without hedge accounting",
+      "normalized_label": "fx_recognition_without_hedge",
+      "rationale_for_inclusion": "IAS 21 paragraph 45 requires recognition of FX gains/losses on intragroup monetary items in consolidated P&L or OCI; hedge accounting is optional, not mandatory"
+    }
+  ]
+}

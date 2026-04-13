@@ -1,0 +1,70 @@
+{
+  "assumptions_fr": [
+    "Il s'agit de comptes consolidés (pas de comptes individuels ou séparés)",
+    "Le dividende intragroupe est libellé dans une devise étrangère à la fois par rapport à la société mère et par rapport à la filiale distributrice",
+    "Un receivable (créance) a été constaté à la date de déclaration du dividende"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La variation de change sur un dividende intragroupe constaté en receivable peut être éligible à une désignation de couverture en comptes consolidés, mais uniquement si les différences de change ne sont pas éliminées par suite de l'élimination des transactions intragroupe et affectent le résultat consolidé (condition posée par l'exception IFRS 9.6.3.6)."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_transaction_hedge_prohibition",
+      "label_fr": "Interdiction générale de couverture des transactions intragroupe",
+      "applicability": "non",
+      "reasoning_fr": "La règle générale d'IFRS 9.6.3.5 pose effectivement une interdiction de désigner des éléments intragroupe comme éléments couverts en comptes consolidés. Cependant, cette interdiction trouve une exception dans l'approche 2 qui permet, sous conditions, de couvrir le risque de change sur des éléments monétaires intragroupe.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche pose le principe de base mais ne constitue pas la réponse finale car elle est overridden par l'exception de l'approche 2.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "intragroup_monetary_item_hedge_exception",
+      "label_fr": "Exception pour les éléments monétaires intragroupe présentant un risque de change",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Un dividende intragroupe constaté en créance (receivable) constitue un élément monétaire intragroupe. En vertu d'IFRS 9.6.3.6, ce risque de change peut être éligible à une désignation de couverture dans les comptes consolidés si les différences de change ne sont pas éliminées à la consolidation et affectent le résultat consolidé. Le dividende intragroupe en devise étrangère génère typiquement une exposition au change non éliminée.",
+      "conditions_fr": [
+        "Les différences de change sur le dividende recevable ne sont pas éliminées à la consolidation (c'est-à-dire que la créance est libellée dans une devise autre que la devise fonctionnelle de l'entité qui la comptabilise)",
+        "Le risque de change affecte effectivement le résultat consolidé (et non uniquement les capitaux propres consolidés)"
+      ],
+      "practical_implication_fr": "L'entité peut désigner le risque de change sur le dividende intragroupe comme élément couvert dans une relation de couverture (couverture de juste valeur ou de flux de trésorerie), sous réserve de satisfaire aux critères généraux de la comptabilité de couverture.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge_accounting",
+      "label_fr": "Traitement de couverture d'un investissement net dans une activité à l'étranger",
+      "applicability": "non",
+      "reasoning_fr": "Un dividende intragroupe constaté en receivable constitue un élément monétaire à court terme et ne fait pas partie de l'investissement net dans la filiale étrangère au sens d'IAS 21.32. L'investissement net désigne la participation durable dans les capitaux propres de l'entité étrangère, et non les créances liées à la distribution de dividendes. Cette approche ne s'applique donc pas à la situation décrite.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La désignation en couverture d'investissement net (IFRIC 16) n'est pas envisageable pour le dividende recevable en tant que tel.",
+      "references": [
+        {
+          "document": "IAS 21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity's net investment in a foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter rigoureusement la relation de couverture en identifiant l'élément couvert (risque de change sur le dividende recevable en devise étrangère), l'instrument de couverture et la nature du risque désigné",
+    "Établir au niveau de la documentation de couverture que les différences de change ne sont pas éliminées à la consolidation (IAS 21.45 confirme que les actifs monétaires intragroupe ne peuvent être éliminés contre les passifs intragroupe correspondants sans constatation du résultat de change)",
+    "Mettre en place un suivi de l'efficacité de la couverture et des ajustements éventuels à chaque date de clôture conformément à IFRS 9.6.4 à 6.6.6",
+    "Le dividende recevable doit être libellé dans une devise autre que la devise fonctionnelle de l'entité qui le comptabilise pour que l'exception de l'IFRS 9.6.3.6 soit applicable"
+  ]
+}

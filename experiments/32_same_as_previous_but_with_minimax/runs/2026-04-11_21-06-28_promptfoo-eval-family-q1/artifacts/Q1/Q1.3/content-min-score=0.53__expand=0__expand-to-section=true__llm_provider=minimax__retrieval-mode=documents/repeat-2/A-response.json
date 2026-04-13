@@ -1,0 +1,69 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign exchange risk on intragroup dividend receivables can be designated as a hedged item in consolidated financial statements under IFRS 9 hedge accounting requirements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.5-6.3.6"],
+        "reason": "Paragraph 6.3.5 explicitly restricts hedge accounting for intragroup transactions in consolidated statements, while paragraph 6.3.6 provides the specific exception for foreign currency risk of intragroup monetary items where exchange differences are not fully eliminated on consolidation"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 27, 28, 32, 45"],
+        "reason": "These paragraphs govern recognition of exchange differences on monetary items, establish that intragroup monetary items with different functional currencies create exposures not eliminated on consolidation, and determine how FX differences affect profit or loss"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 1, 2, 4, 7, 13"],
+        "reason": "Provides guidance on hedge accounting for net investments in foreign operations, including that only one hedging relationship qualifies in consolidated statements and that amounts are reclassified on disposal, clarifying the broader hedge accounting framework within which the intragroup dividend exception operates"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.1"],
+        "reason": "Defines eligible hedged items (recognized assets/liabilities, firm commitments, forecast transactions, net investments) but does not specifically address the intragroup restriction or its exception"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 3, 5"],
+        "reason": "Scope provisions establishing that IFRS 9 applies to hedge accounting for foreign currency items, which is background context but not directly relevant to the intragroup dividend treatment"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Exception to the general restriction on intragroup hedging - foreign currency risk qualifies for hedge accounting when exchange differences are not fully eliminated on consolidation",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IAS 21", "references": ["paragraphs 28, 32, 45"]}
+      ],
+      "mapped_approaches": ["fx_risk_eligible_hedge_accounting"]
+    },
+    {
+      "family": "General restriction on intragroup hedging in consolidated financial statements - foreign currency risk cannot be designated as a hedged item when exchange differences are fully eliminated on consolidation",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]},
+        {"document": "IAS 21", "references": ["paragraph 45"]}
+      ],
+      "mapped_approaches": ["fx_risk_ineligible_hedge_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "FX risk eligible for hedge accounting in consolidated statements",
+      "normalized_label": "fx_risk_eligible_hedge_accounting",
+      "rationale_for_inclusion": "When intragroup dividend receivables create foreign currency monetary items with different functional currencies between group entities, exchange differences are not fully eliminated on consolidation per IAS 21, and the exception in IFRS 9 paragraph 6.3.6 permits designation of the foreign currency risk as a hedged item in consolidated financial statements"
+    },
+    {
+      "id": "approach_2",
+      "label": "FX risk ineligible for hedge accounting in consolidated statements",
+      "normalized_label": "fx_risk_ineligible_hedge_accounting",
+      "rationale_for_inclusion": "When intragroup dividend receivables result in exchange differences that are fully eliminated on consolidation (same functional currency), the general restriction in IFRS 9 paragraph 6.3.5 prohibits designation of foreign currency risk as a hedged item for intragroup transactions in consolidated financial statements"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "assumptions_fr": [
+    "Les dividendes intragroupe sont reconnus en tant que créance dans les comptes consolidés du groupe",
+    "Les entités émettrices et réceptrices des dividendes ont des devises fonctionnelles différentes",
+    "La question porte sur les comptes consolidés du groupe, et non sur les comptes individuels ou séparés"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La variation de change sur une créance de dividende intragroupe peut être désignée comme élément couvert dans les comptes consolidés en vertu de l'exception prévue par IFRS 9 §6.3.6, dès lors que la devise du dividende diffère de la devise fonctionnelle de l'entité qui comptabilise la créance et que les différences de change affectent le résultat consolidé."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_monetary_item_hedge_eligibility",
+      "label_fr": "Inéligibilité générale des éléments intragroupe à la désignation de couverture",
+      "applicability": "non",
+      "reasoning_fr": "IFRS 9 §6.3.5 pose une interdiction générale de désigner des éléments intragroupe comme éléments couverts. Toutefois, cette prohibition cède devant l'exception prévue au §6.3.6 pour les éléments monétaires intragroupe ayant une exposition en devise qui affecte le résultat consolidé. Dans la situation décrite, cette exception s'applique et rend l'approche 1 non applicable.",
+      "conditions_fr": [
+        "Élément monétaire intragroupe avec exposition en devise différente de la devise fonctionnelle"
+      ],
+      "practical_implication_fr": "L'interdiction générale ne fait pas obstacle à la désignation lorsque l'exception pour risque de change est satisfaite.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge_accounting",
+      "label_fr": "Couverture du risque de change sur éléments monétaires intragroupe (exception IFRS 9 §6.3.6)",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "La créance de dividende intragroupe constitue un élément monétaire au sens d'IAS 21. Conformément à IAS 21 §45, les écarts de change sur éléments monétaires intragroupe ne sont pas éliminés à la consolidation lorsque les entités ont des devises fonctionnelles différentes, et sont reconnus en résultat consolidé. IFRS 9 §6.3.6 autorise la désignation de ce risque de change comme élément couvert dans les comptes consolidés, sous réserve que les conditions de documentation et d'efficacité soient satisfaites.",
+      "conditions_fr": [
+        "La créance de dividende est libellée dans une devise différente de la devise fonctionnelle de l'entité qui la comptabilise",
+        "Les écarts de change affectent le résultat consolidé (non éliminés à la consolidation)",
+        "Documentation et démonstration d'efficacité conformément à IFRS 9 §6.4.1"
+      ],
+      "practical_implication_fr": "Le groupe peut désigner le risque de change sur la créance de dividende intragroupe comme élément couvert dans une relation de couverture de change sur élément monetary intragroupe.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset cannot be eliminated against the corresponding intragroup liability without showing the results of currency fluctuations in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "28",
+          "excerpt": "exchange differences arising on translating monetary items at rates different from those at which they were translated on initial recognition shall be recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "external_party_hedge_eligibility",
+      "label_fr": "Éligibilité des transactions avec des parties externes à la comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche décrit la condition générale selon laquelle seuls les éléments avec une partie externe peuvent être désignés. Les dividendes intragroupe impliquent par définition une contrepartie intragroupe (une entité du même groupe), de sorte que cette approche ne s'applique pas directement à la situation décrite.",
+      "conditions_fr": [
+        "Transaction avec une partie externe au groupe consolidé"
+      ],
+      "practical_implication_fr": "Les dividendes intragroupe ne remplissent pas la condition de partie externe, mais peuvent néanmoins être éligibles via l'exception pour risque de change (approche 2).",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La créance de dividende doit être initialement comptabilisée au cours de spot à la date de constatation du dividende (IAS 21 §28) et réévaluée au cours de clôture à chaque date de reporting, les écarts étant reconnus en résultat consolidé",
+    "Pour désigner le risque de change comme élément couvert, le groupe doit documenter la relation de couverture, l'objectif de gestion des risques et la méthode d'évaluation de l'efficacité conformément à IFRS 9 §6.4.1",
+    "L'instrument de couverture peut être détenu par n'importe quelle entité du groupe, mais la désignation doit être cohérente avec la stratégie de couverture documentée du groupe (IFRIC 16 §14)"
+  ]
+}

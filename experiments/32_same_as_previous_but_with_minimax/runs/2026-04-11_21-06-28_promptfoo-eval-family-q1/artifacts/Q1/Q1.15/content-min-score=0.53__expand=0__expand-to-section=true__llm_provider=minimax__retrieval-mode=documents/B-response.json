@@ -1,0 +1,71 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est constaté comme une créance (actif financier) dans les états financiers consolidés du groupe.",
+    "La créance est libellée dans une monnaie étrangère autre que la monnaie fonctionnelle de l'entité consolidante.",
+    "Le dividende représente une transaction monétaire intragroupe, le contrepartie étant une entité du même groupe."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "En IFRS, un élément couvert doit correspondre à un actif ou passif avec une partie externe (IFRS 9, §6.3.5). Un dividende intragroupe est un actif interne, et aucun texte ne prévoit d'exception pour les créances de dividendes intragroupe. L'exception d'IFRIC 16 ne s'applique qu'aux couvertures d'investissements nets dans des opérations étrangères, ce qui n'est pas le cas ici."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "cash_flow_hedge_foreign_currency_risk",
+      "label_fr": "Couverture en cash flow du risque de change",
+      "applicability": "non",
+      "reasoning_fr": "La couverture en cash flow exige que l'élément couvert soit un actif ou passif avec une partie externe. La créance de dividende intragroupe a pour contrepartie une entité du groupe, donc elle ne peut être désignée comme élément couvert en vertu d'IFRS 9 §6.3.5.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucun enregistrement de couverture de flux de change ne peut être appliqué à cette créance intragroupe.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_hedge_foreign_currency_risk",
+      "label_fr": "Couverture en juste valeur du risque de change",
+      "applicability": "non",
+      "reasoning_fr": "Même raisonnement que pour la couverture en cash flow : la juste valeur d'un élément couvert doit refléter un risque de change avec un tiers externe. La créance de dividende intragroupe ne répond pas au critère d'externalité exigé par IFRS 9 §6.3.5.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Aucune désignation en couverture en juste valeur n'est possible pour ce dividende.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "non",
+      "reasoning_fr": "IFRIC 16 limite expressément son champ aux couvertures du risque de change lié à un investissement net dans une opération étrangère. Une créance de dividende intragroupe ne constitue pas un investissement net et ne peut être traitée comme tel selon IFRS 9 §6.3.1.",
+      "conditions_fr": [],
+      "practical_implication_fr": "L'approche de couverture d'investissement net ne s'applique pas à la créance de dividende.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction or a net investment in a foreign operation."
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "8",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la position de change du dividende intragroupe et évaluer si elle affecte le résultat consolidé (IAS 21).",
+    "Envisager la comptabilisation des écarts de change directement en autres éléments du résultat全局 (OCI) si l'exposition n'est pas éliminée par consolidation.",
+    "Le cas échéant, utiliser les instruments dérivés intragroupe pour couvrir le risque de change au niveau des comptes individuels des entités, puis éliminer les effets en consolidation."
+  ]
+}

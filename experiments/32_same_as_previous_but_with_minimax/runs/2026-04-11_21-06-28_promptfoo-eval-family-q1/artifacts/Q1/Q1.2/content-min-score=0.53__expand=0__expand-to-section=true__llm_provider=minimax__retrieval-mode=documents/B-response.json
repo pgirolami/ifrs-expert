@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est dénommé dans une devise étrangère à celle de l'entité consolidante.",
+    "Le dividende est comptabilisé comme une créance monétaire dans les états financiers consolidés.",
+    "L'entité consolidante prépare des états financiers consolidés conformes aux IFRS."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Trois approches de couverture peuvent être envisageables selon le contexte spécifique : la couverture de juste valeur, la couverture de flux de trésorerie et la couverture d'investissement net. La troisième n'est applicable que si le dividende fait partie intégrante d'un investissement net dans une opération étrangère."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui",
+      "reasoning_fr": "La créance de dividende intragroupe est un actif monétaire fermé à la comptabilisation en juste valeur des variations de change. Conformément à IFRS 9, un élément monétaire peut être désigné comme élément couvert dans une couverture de juste valeur. L'instrument de couverture (par ex., un contrat à terme) est évalué à la juste valeur et les gains ou pertes sont comptabilisés en résultat.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance de dividende doit être évaluée à chaque clôture à la juste valeur pour la portion change ; les variations sont reconnues en résultat.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.5.8",
+          "excerpt": "Un элемент couvert peut être un actif ou un passif reconnu."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "oui",
+      "reasoning_fr": "Le dividende intragroupe crée une variabilité des flux de trésorerie en monnaie fonctionnelle du fait des fluctuations de change. IFRS 9 permet de désigner cette exposition comme couverture de flux de trésorerie, avec la portion efficace enregistrée en autres éléments du résultat global et reclassée en résultat lors de la réalisation des flux.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La portion efficace de la couverture doit être isolée enOCI ; seul le montant ineficace est immédiatatement reconnu en résultat.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.5.11",
+          "excerpt": "Un couverture de flux de trésorerie designates pour varabilité de flux de trésorerie attribuable au risque de change."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Si le dividende intragroupe est constitue une partie de l'investissement net dans une succursale étrangère, IFRS 9 et IFRIC 16 permettent de constituer une couverture d'investissement net pour compenser les différences de conversion. La portion efficace est portée en autres éléments du résultat global jusqu'à la disposal de l'investissement net.",
+      "conditions_fr": [
+        "Le dividende doit être étroitement lié à un investissement net dans une operation étrangère",
+        "Le risque de change doit affecter le résultat consolidé (les flux entre entités ayant des devises fonctionnelles différentes)"
+      ],
+      "practical_implication_fr": "L'instrument de couverture peut être détenu par n'importe quelle entité du groupe (IFRIC 16 §15) ; la designation doit être clairement documentée.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.5.13",
+          "excerpt": "Couverture d'un investissement net dans une operation étrangère."
+        },
+        {
+          "document": "IFRIC 16",
+          "section": "14-15",
+          "excerpt": "L'instrument de couverture peut être détenu par n'importe quelle entité du groupe."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documentation obligatoire dès la designation : objectif et stratégie de couverture, identification de l'élément couvert et de l'instrument, méthode d'efficacité.",
+    "L'exigence de l'IFRS 9 §6.3.5 selon laquelle l'élément couvert doit être avec une partie externe au groupe peut être contournée via IFRS 9 §6.3.6 pour les postes monétaires intragroupe si l'exposition change affecte le résultat consolidé.",
+    "La designation doit être effectuée dès l'origine et ne peut être appliquée rétroactivement."
+  ]
+}

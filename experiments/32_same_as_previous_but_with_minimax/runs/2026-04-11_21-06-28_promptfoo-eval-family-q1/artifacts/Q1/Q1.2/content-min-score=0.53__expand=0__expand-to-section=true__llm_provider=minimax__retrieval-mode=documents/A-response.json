@@ -1,0 +1,116 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Accounting for the foreign exchange risk of an intragroup dividend recognised as a receivable by using hedge documentation in the consolidated financial statements.",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["Section 6 (Hedge Accounting)", "Paragraphs 6.3.1-6.3.6"],
+        "reason": "IFRS 9 establishes the requirements for designating and documenting hedge relationships, including the eligibility of foreign‑currency monetary items as hedged items and the use of derivatives as hedging instruments."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["Paragraphs 14-15"],
+        "reason": "IFRIC 16 clarifies the application of hedge accounting to a net investment in a foreign operation, providing guidance on the scope and effectiveness testing relevant to FX risk of intragroup items."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["Overall"],
+        "reason": "IAS 21 governs the recognition of foreign exchange differences on monetary items and provides the baseline treatment against which hedge accounting alternatives are compared."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 12",
+        "references": ["Overall"],
+        "reason": "Pertains to disclosures about interests in other entities; not directly relevant to the mechanics of hedge designation for a dividend receivable."
+      },
+      {
+        "document": "IAS 32",
+        "references": ["Overall"],
+        "reason": "Addresses presentation of financial instruments; not relevant to hedge documentation for FX risk."
+      },
+      {
+        "document": "IFRS 18",
+        "references": ["Overall"],
+        "reason": "Covers presentation and disclosure in the financial statements; not governing hedge accounting treatment."
+      },
+      {
+        "document": "IAS 7",
+        "references": ["Overall"],
+        "reason": "Deals with cash flow statement classification; not applicable to hedge documentation."
+      },
+      {
+        "document": "IFRS 19",
+        "references": ["Overall"],
+        "reason": "Addresses share‑based payment disclosures; irrelevant to FX hedging of a dividend."
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["Overall"],
+        "reason": "Addresses non‑cash dividend distributions; unrelated to hedge accounting."
+      },
+      {
+        "document": "IFRIC 19",
+        "references": ["Overall"],
+        "reason": "Covers debt‑for‑equity swaps; not relevant to dividend FX hedging."
+      },
+      {
+        "document": "IAS 37",
+        "references": ["Overall"],
+        "reason": "Governs provisions and contingent liabilities; not relevant to hedge documentation."
+      },
+      {
+        "document": "IFRS 17",
+        "references": ["Overall"],
+        "reason": "Insurance contracts; not relevant to a dividend receivable."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value hedge of a monetary item for foreign exchange risk",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["Paragraph 6.4.1", "Paragraph 6.5.8"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Cash flow hedge of forecast cash flows for foreign exchange risk",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["Paragraph 6.5.11", "Paragraph 6.5.14"]}
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Net investment hedge for foreign currency risk of a net investment in a foreign operation",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["Paragraph 6.5.13"]},
+        {"document": "IFRIC 16", "references": ["Paragraphs 14-15"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits designation of a hedging relationship to hedge the change in fair value of a recognised monetary asset (the dividend receivable) attributable to foreign‑exchange movements, with the hedging instrument (e.g., a forward contract) measured at fair value and gains/losses recognised in profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 allows an entity to designate a hedging relationship to mitigate the variability in functional‑currency cash flows arising from foreign‑exchange fluctuations on the dividend receivable, with the effective portion recorded in other comprehensive income and reclassified to profit or loss when the hedged cash flow affects reporting."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "Where the dividend receivable is part of a net investment in a foreign subsidiary, IFRS 9 together with IFRIC 16 permits the use of a net investment hedge to offset foreign‑currency translation differences, with the effective portion recognised in other comprehensive income until the net investment is disposed of."
+    }
+  ]
+}

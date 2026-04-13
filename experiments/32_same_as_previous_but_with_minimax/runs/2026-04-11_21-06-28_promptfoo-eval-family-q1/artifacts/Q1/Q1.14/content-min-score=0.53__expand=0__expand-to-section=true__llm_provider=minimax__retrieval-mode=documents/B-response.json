@@ -1,0 +1,57 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe génère une créance (poste monétaire) au sein du périmètre consolidé",
+    "L'entité émettrice du dividende est une filiale dont la monnaie fonctionnelle diffère potentiellement de celle de la société mère consolidante"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'exception prévue au paragraphe 6.3.6 d'IFRS 9 permet de désigner le risque de change d'un poste monétaire intragroupe comme élément couvert dans les comptes consolidés, à condition que les différences de change ne soient pas entièrement éliminées à la consolidation et qu'elles affectent le résultat consolidé. Le paragraphe 45 d'IAS 21 confirme que les postes monétaires intragroupe ne s'éliminent pas et créent une exposition au change."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_monetary_item_hedge",
+      "label_fr": "Couverture d'un poste monétaire intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Le dividende à recevoir constitue un poste monétaire intragroupe. Conformément à l'exception d'IFRS 9 §6.3.6, ce poste peut être éligible à une couverture de change dans les comptes consolidés si les différences de change ne sont pas éliminées à la consolidation (ce qui est le cas lorsque les entités ont des devises fonctionnelles différentes) et si elles affectent le résultat consolidé.",
+      "conditions_fr": [
+        "Les deux entités intragroupe doivent avoir des devises fonctionnelles différentes",
+        "Les différences de change doivent affecter le résultat consolidé (et non être éliminées ou reconnues uniquement en OCI de manière permanente)"
+      ],
+      "practical_implication_fr": "La désignation en couverture est possible sous réserve que l'exposition au change ne soit pas éliminée à la consolidation et que les écarts de change influencent le résultat consolidé.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "The foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "An intragroup monetary asset cannot be eliminated against the corresponding intragroup liability without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'investissement net dans une opération étrangère",
+      "applicability": "non",
+      "reasoning_fr": "Cette approche concerne la couverture du risque de change sur les actifs nets d'une opération étrangère, tel que prévu par IFRIC 16. Un dividende intragroupe à recevoir ne constitue pas en tant que tel un investissement net dans une opération étrangère ; il s'agit d'une créance sur une filiale qui a déjà été comptabilisée au niveau du groupe.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche n'est pas pertinente pour la situation décrite.",
+      "references": [
+        {
+          "document": "ifric16",
+          "section": "2",
+          "excerpt": "The item being hedged may be an amount of net assets equal to or less than the carrying amount of the net assets of the foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier que les entités impliquées ont des devises fonctionnelles différentes pour que les écarts de change ne soient pas éliminés à la consolidation",
+    "Confirmer que les différences de change affectent bien le résultat consolidé et non uniquement l'OCl de manière définitive",
+    "Documenter la relation de couverture conformément aux exigences d'IFRS 9 sections 6.4 et 6.5"
+  ]
+}

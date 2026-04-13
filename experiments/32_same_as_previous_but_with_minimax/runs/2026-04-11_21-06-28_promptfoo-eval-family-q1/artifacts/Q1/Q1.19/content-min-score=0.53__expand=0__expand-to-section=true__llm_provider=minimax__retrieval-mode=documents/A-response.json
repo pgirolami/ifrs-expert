@@ -1,0 +1,61 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Hedge accounting for foreign currency risk on intragroup dividend receivable in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.1", "6.3.5", "6.3.6"],
+        "reason": "These paragraphs define hedged items and specify the conditions under which foreign currency risk of intragroup monetary items may be designated as a hedged item in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 32", "33"],
+        "reason": "These paragraphs explain the treatment of exchange differences on monetary items that form part of a net investment in a foreign operation and the requirement to recognise them in profit or loss or OCI."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 7", "10", "11", "12", "13"],
+        "reason": "This Interpretation clarifies the nature of the hedged risk and the amount of the hedged item for net investment hedges, and confirms that foreign currency risk of an intragroup monetary item may qualify as a hedged risk."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 10-19"],
+        "reason": "These disclosures relate to interests in subsidiaries, but do not address hedge accounting treatment for intragroup dividend receivables."
+      },
+      {
+        "document": "IAS 24",
+        "references": ["paragraphs 13-24"],
+        "reason": "This standard deals with related party disclosures, which is not relevant to the hedge accounting treatment of FX risk on intragroup dividends."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign currency risk on intragroup dividend receivable",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IFRIC 16", "references": ["paragraph 7"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge", "fair_value_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 para 6.3.6 permits designation of the foreign currency risk of an intragroup monetary item as a hedged item in a net investment hedge in consolidated financial statements, provided the FX gains/losses are not eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "Under IFRS 9, an entity may designate the foreign currency risk of a financial asset (the dividend receivable) as the hedged risk in a fair value hedge, offsetting fair value changes due to FX movements in profit or loss."
+    }
+  ]
+}

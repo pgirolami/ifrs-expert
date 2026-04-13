@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Hedge accounting for foreign exchange risk on an intragroup dividend receivable recognized in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.5", "6.3.6", "5.7.1"],
+        "reason": "IFRS 9 establishes the hedge accounting framework and specifies that only items with external parties qualify as hedged items, but contains an exception for intragroup monetary items with FX exposure"
+      },
+      {
+        "document": "ias21",
+        "references": ["general"],
+        "reason": "IAS 21 governs recognition of foreign exchange differences on monetary items, including intragroup dividend receivables"
+      },
+      {
+        "document": "ifric16",
+        "references": ["14", "15"],
+        "reason": "IFRIC 16 specifically addresses hedge accounting in consolidated financial statements and the treatment of intragroup items"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["general"],
+        "reason": "IFRS 10 establishes the consolidated financial statements context where intragroup transactions are eliminated but FX exposures may remain"
+      },
+      {
+        "document": "ias7",
+        "references": ["31", "33A", "44A-44E"],
+        "reason": "IAS 7 classifies dividend cash flows as financing activities and requires disclosure of changes in liabilities from financing activities"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifric19",
+        "references": ["general"],
+        "reason": "Addresses debt extinguishment by equity issuance, not relevant to dividend FX hedging"
+      },
+      {
+        "document": "ifric17",
+        "references": ["general"],
+        "reason": "Addresses non-cash dividend distributions, not applicable to FX hedge documentation"
+      },
+      {
+        "document": "ifrs17",
+        "references": ["general"],
+        "reason": "Insurance contracts standard, not relevant to dividend receivable hedging"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognition vs. deferral of FX effects on intragroup monetary items",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["6.3.5", "6.3.6"]},
+        {"document": "ias21", "references": ["general"]}
+      ],
+      "mapped_approaches": ["direct_fx_recognition", "hedge_accounting_deferral"]
+    },
+    {
+      "family": "Hedge accounting type selection for FX exposure on dividend receivable",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["6.3.1", "6.3.5", "6.3.6"]},
+        {"document": "ifric16", "references": ["14", "15"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge", "net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Direct FX recognition without hedge accounting",
+      "normalized_label": "direct_fx_recognition",
+      "rationale_for_inclusion": "Under IAS 21, FX differences on monetary items are generally recognized in profit or loss; hedge accounting is optional and not required"
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge of FX risk on dividend receivable",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits designating the FX fair value change of the receivable as a hedged item in a fair value hedge, subject to the intragroup exception in paragraph 6.3.6"
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of net investment in foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 confirms that FX risk on intragroup monetary items can be hedged in consolidated financial statements when functional currencies differ, using net investment hedge accounting"
+    }
+  ]
+}

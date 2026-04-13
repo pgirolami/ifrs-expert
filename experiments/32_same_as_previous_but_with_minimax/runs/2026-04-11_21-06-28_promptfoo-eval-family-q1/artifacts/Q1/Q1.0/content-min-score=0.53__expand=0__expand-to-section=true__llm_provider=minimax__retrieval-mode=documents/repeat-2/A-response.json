@@ -1,0 +1,72 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of hedge accounting for foreign exchange risk on intragroup dividend receivables in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.1", "6.4.1", "6.5.8"],
+        "reason": "These paragraphs establish that a recognised financial asset denominated in a foreign currency can be designated as a hedged item in a fair value hedge of foreign exchange risk and set the criteria for applying hedge accounting."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["48"],
+        "reason": "This paragraph requires foreign exchange differences on monetary items to be recognised in profit or loss, providing the baseline treatment that a hedge is designed to modify."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["10‑12"],
+        "reason": "The Interpretation clarifies the scope of hedge accounting for foreign exchange differences in consolidated statements, confirming that hedge accounting can be applied to FX risk on intragroup monetary items, while limiting net‑investment hedges to net assets."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 32",
+        "references": ["4‑5"],
+        "reason": "IAS 32 addresses classification of financial instruments as liability or equity but does not govern hedge eligibility for FX risk on dividend receivables."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["10‑19"],
+        "reason": "Disclosures about interests in consolidated entities are not relevant to the hedge accounting treatment of intragroup dividend FX risk."
+      },
+      {
+        "document": "IAS 7",
+        "references": ["31‑34D"],
+        "reason": "Cash flow statement classification of interest and dividends is unrelated to the recognition and measurement of a hedge for dividend FX risk."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign exchange risk on a recognised intragroup dividend receivable (fair value hedge)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.1", "6.4.1", "6.5.8"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge_fx_dividend_receivable"]
+    },
+    {
+      "family": "No hedge designation – foreign exchange differences recognised in profit or loss as they arise under IAS 21",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["48"]}
+      ],
+      "mapped_approaches": ["no_hedge_designation"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of foreign exchange risk on intragroup dividend receivable",
+      "normalized_label": "fair_value_hedge_fx_dividend_receivable",
+      "rationale_for_inclusion": "IFRS 9 permits a recognised foreign‑currency monetary item to be designated as the hedged item in a fair value hedge of FX risk, meeting the criteria for hedge documentation in consolidated statements."
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge designation – FX differences recognised in profit or loss without hedge accounting",
+      "normalized_label": "no_hedge_designation",
+      "rationale_for_inclusion": "When an entity does not elect hedge accounting, IAS 21 requires all foreign exchange differences on the dividend receivable to be recognised in profit or loss, which is the default treatment."
+    }
+  ]
+}

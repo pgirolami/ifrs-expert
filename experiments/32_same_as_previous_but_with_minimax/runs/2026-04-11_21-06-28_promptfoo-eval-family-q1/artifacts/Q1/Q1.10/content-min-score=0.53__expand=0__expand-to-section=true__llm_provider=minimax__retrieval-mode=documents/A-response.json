@@ -1,0 +1,72 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup dividend receivable for foreign currency hedge accounting in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.5 and 6.3.6"],
+        "reason": "These paragraphs set the eligibility criteria for hedged items in hedge accounting, including the exception allowing intragroup monetary items to be hedged for foreign currency risk in consolidated statements."
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.4.1 and 6.5.8-6.5.14"],
+        "reason": "These paragraphs establish the documentation and effectiveness requirements for applying hedge accounting."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraphs 44-47A"],
+        "reason": "These paragraphs explain the treatment of foreign exchange differences on intragroup monetary items and when they are recognized in profit or loss or other comprehensive income."
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 5.7.1-5.7.11"],
+        "reason": "These paragraphs address the recognition of gains and losses on financial instruments, including foreign currency risk."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 1-15"],
+        "reason": "This interpretation provides guidance on net investment hedges, which is a different type of hedge and not directly applicable to intragroup dividend receivables."
+      },
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 10-19"],
+        "reason": "This standard deals with disclosures about interests in other entities, but does not govern the eligibility of hedge accounting for intragroup items."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Foreign currency risk hedge accounting for intragroup monetary items (exception to external party rule)",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Foreign currency risk hedge accounting for forecast intragroup transactions",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.3"]}
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge of foreign currency risk on intragroup dividend receivable",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "This approach is permitted under the exception in IFRS 9 paragraph 6.3.6 for intragroup monetary items where foreign exchange differences are not fully eliminated on consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge of foreign currency risk on forecast intragroup dividend",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "This approach is available for highly probable forecast intragroup transactions denominated in a foreign currency, as per IFRS 9 paragraph 6.3.3, though not applicable to already recognized receivables."
+    }
+  ]
+}

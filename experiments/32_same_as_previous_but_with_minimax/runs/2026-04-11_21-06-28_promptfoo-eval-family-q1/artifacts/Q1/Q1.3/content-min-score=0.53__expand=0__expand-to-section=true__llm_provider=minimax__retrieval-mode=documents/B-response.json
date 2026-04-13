@@ -1,0 +1,64 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des dividendes intragroupe à recevoir entre entités du même groupe, dans les comptes consolidés",
+    "La créance de dividende intragroupe est un élément monétaire libellé dans une devise autre que la fonctionnelle de l'entité qui la comptabilise"
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "La désignation directe du risque de change sur une créance de dividende intragroupe en tant que tel n'est pas permise en raison de l'exigence de transaction avec une partie externe (IFRS 9 §6.3.5). Toutefois, l'exposition au risque de change peut être couverte dans le cadre d'une couverture de l'investissement net dans l'opération étrangère, sous réserve que les conditions spécifiques soient remplies."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "foreign_currency_hedge_accounting",
+      "label_fr": "Couverture de change classique",
+      "applicability": "non",
+      "reasoning_fr": "En vertu d'IFRS 9 §6.3.5, seuls les actifs, passifs, engagements ferme ou transactions forecast avec une partie externe à l'entité rapportante peuvent être désignés comme éléments couverts. Une créance de dividende intragroupe est une transaction entre entités du même groupe ; elle ne répond pas à cette condition d'externalité.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Le risque de change sur la créance de dividende intragroupe ne peut pas être désigné directement comme élément couvert dans une relation de couverture en comptes consolidés.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge_accounting",
+      "label_fr": "Couverture de l'investissement net dans une operation etrangere",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IAS 21 §32 crée une exception pour le risque de change des éléments monétaires intragroupe faisant partie de l'investissement net dans une operation etrangere. IFRIC 16 §9(a)(i) confirme que le risque de change entre la devise fonctionnelle de l'operation etrangere et celle de la societe mère peut être désigné comme risque couvert. Le dividende à recevoir fait partie intégrante de la position d'investissement net.",
+      "conditions_fr": [
+        "Le dividende intragroupe doit être un élément monétaire faisant partie de l'investissement net de l'entité dans l'operation etrangere (IAS 21 §32)",
+        "Le risque de change couvert doit être celui existant entre la devise fonctionnelle de l'operation etrangere et celle de la société mère (IFRIC 16 §10)",
+        "Le risque de change doit affecter le resultat consolidé (IAS 21 §32 in fine)",
+        "L'exposition au risque de change ne peut être couverte qu'une seule fois dans les comptes consolidés (IFRIC 16 §13)"
+      ],
+      "practical_implication_fr": "Le risque de change afférent à la créance de dividende intragroupe peut être inclus dans une relation de couverture de l'investissement net, sous réserve de respecter les conditions de documentation et d'efficacité requises par IFRS 9.",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "32",
+          "excerpt": "Exchange differences arising on a monetary item that forms part of a reporting entity's net investment in a foreign operation shall be recognised initially in other comprehensive income."
+        },
+        {
+          "document": "ifric16",
+          "section": "9(a)(i)",
+          "excerpt": "whether the parent entity may designate as a hedged risk only the foreign exchange differences arising from a difference between the functional currencies of the parent entity and its foreign operation"
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity's functional currency."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter soigneusement la relation de couverture en precisant que l'élément couvert est le risque de change attaché à l'investissement net, et non la créance de dividende en tant que telle",
+    "S'assurer que l'exposition au risque de change n'est pas déjà couverte par une autre entité du groupe (IFRIC 16 §13)",
+    "Vérifier que la créance de dividende n'a pas été eliminée lors de la consolidation avant d'être prise en compte dans l'investissement net"
+  ]
+}

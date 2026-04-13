@@ -7,7 +7,7 @@ from src.llm.openai_client import OpenAIClient, ReasoningLevel
 
 logger = logging.getLogger(__name__)
 
-MINIMAX_BASE_URL = "https://api.minimax.chat/v1"
+MINIMAX_BASE_URL = "https://api.minimax.io/v1"
 
 THINKING_PATTERN = re.compile(r"<think>[\s\S]*?</think>", re.DOTALL)
 
@@ -19,7 +19,7 @@ class MinimaxClient(OpenAIClient):
         self,
         api_key: str,
         model: str,
-        reasoning_effort: ReasoningLevel = "high",
+        reasoning_effort: ReasoningLevel = "low",
     ) -> None:
         """Initialize the Minimax client.
 

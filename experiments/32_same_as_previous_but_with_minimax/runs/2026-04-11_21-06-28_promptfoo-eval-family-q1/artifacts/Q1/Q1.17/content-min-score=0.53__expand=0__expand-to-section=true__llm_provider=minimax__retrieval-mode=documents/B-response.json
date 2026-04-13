@@ -1,0 +1,59 @@
+{
+  "assumptions_fr": [
+    "Les deux entités du groupe ont des devises fonctionnelles différentes.",
+    "La variation de change sur la créance dividendes intragroupe n'est pas éliminée à la consolidation.",
+    "L'entité qui reçoit le dividende intragroupe prépare des états financiers consolidés."
+  ],
+  "recommendation": {
+    "answer": "oui",
+    "justification": "L'approche 1 est applicable en virtud de l'exception prévue au paragraphe 6.3.6 d'IFRS 9, qui permet spécifiquement de couvrir le risque de change d'un élément monétaire intragroupe dans les états financiers consolidés lorsque les différences de change ne sont pas entièrement éliminées à la consolidation. Les dividendes intragroupe créent une exposition en devise et relèvent de cette exception."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "full_hedge_accounting_monetary_item",
+      "label_fr": "Comptabilisation de couverture sur l'élément monétaire intragroupe",
+      "applicability": "oui",
+      "reasoning_fr": "Le paragraphe 6.3.6 d'IFRS 9 crée une exception explicite pour le risque de change des éléments monétaires intragroupe dans les comptes consolidés. Une créance dividendes intragroupe en devise étrangère constitue un élément monétaire dont les différences de change ne sont pas éliminées à la consolidation selon IAS 21. De plus, le paragraphe 6.3.1 permet de désigner un composant d'un élément comme élément couvert.",
+      "conditions_fr": [
+        "Les devises fonctionnelles des deux entités du groupe doivent être différentes.",
+        "Les différences de change ne doivent pas être éliminées à la consolidation.",
+        "Les exigences de documentation et d'efficacité d'IFRS 9 paragraphe 6.4.1 doivent être satisfaites."
+      ],
+      "practical_implication_fr": "L'entreprise peut désigner le risque de change de la créance dividendes intragroupe comme risque couvert et appliquer la comptabilité de couverture dans ses états financiers consolidés.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "The foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation."
+        },
+        {
+          "document": "IFRS 9",
+          "section": "6.3.1",
+          "excerpt": "A hedged item can be a recognised asset or liability [...] A hedged item can also be a component of such an item or group of items."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "no_hedge_accounting",
+      "label_fr": "Absence de comptabilité de couverture sur la créance dividendes intragroupe",
+      "applicability": "non",
+      "reasoning_fr": "La règle générale du paragraphe 6.3.5 interdisant la couverture des transactions intragroupe dans les comptes consolidés ne s'applique pas ici car elle est supplantée par l'exception spécifique du paragraphe 6.3.6. Celle-ci autorise explicitement la couverture du risque de change des éléments monétaires intragroupe lorsque les différences de change ne sont pas éliminées à la consolidation.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Non applicable car l'exception de 6.3.6 permet la désignation.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter clairement que seule la composante risque de change est désignée comme élément couvert.",
+    "Satisfaire les conditions de désignation et d'efficacité selon IFRS 9 paragraphe 6.4.1.",
+    "Vérifier que les différences de change ne sont pas éliminées à la consolidation (IAS 21 paragraphe 45)."
+  ]
+}

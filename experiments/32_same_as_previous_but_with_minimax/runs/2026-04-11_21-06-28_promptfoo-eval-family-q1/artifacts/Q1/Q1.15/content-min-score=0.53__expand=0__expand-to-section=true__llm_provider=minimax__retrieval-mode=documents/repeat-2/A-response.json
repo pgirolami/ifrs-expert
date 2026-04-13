@@ -1,0 +1,58 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup monetary items (dividend receivable) to be designated as hedged items in hedge accounting for foreign exchange risk under IFRS",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["paragraphs 6.3.1-6.3.6"],
+        "reason": "IFRS 9 defines which items can be designated as hedged items for hedge accounting purposes, including the requirement for external parties and the exception for intragroup monetary items"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["paragraphs 1, 8"],
+        "reason": "IFRIC 16 clarifies that the exception for intragroup monetary items applies only to net investment hedges and should not be applied by analogy to other types of hedge accounting"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["paragraphs 8-10"],
+        "reason": "IAS 32 deals with non-financial item contracts and settlement provisions, not directly relevant to hedge accounting eligibility of intragroup monetary items"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Eligibility of intragroup monetary items as hedged items for foreign currency risk",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["paragraph 6.3.5"]},
+        {"document": "ifrs9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_item_eligible", "intragroup_monetary_item_not_eligible"]
+    },
+    {
+      "family": "Scope of exception for intragroup items in hedge accounting",
+      "authority_basis": [
+        {"document": "ifric16", "references": ["paragraph 8"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge_only", "all_hedge_types"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup monetary item eligible in net investment hedge",
+      "normalized_label": "intragroup_item_eligible_net_investment",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.6 explicitly permits foreign currency risk of intragroup monetary items to qualify as hedged item in consolidated financial statements when FX exposure is not fully eliminated on consolidation"
+    },
+    {
+      "id": "approach_2",
+      "label": "Intragroup monetary item not eligible for hedges other than net investment hedges",
+      "normalized_label": "intragroup_item_not_eligible_other_hedges",
+      "rationale_for_inclusion": "IFRIC 16 paragraph 8 clarifies that the exception for intragroup items applies only to net investment hedges and should not be applied by analogy to other hedge types"
+    }
+  ]
+}

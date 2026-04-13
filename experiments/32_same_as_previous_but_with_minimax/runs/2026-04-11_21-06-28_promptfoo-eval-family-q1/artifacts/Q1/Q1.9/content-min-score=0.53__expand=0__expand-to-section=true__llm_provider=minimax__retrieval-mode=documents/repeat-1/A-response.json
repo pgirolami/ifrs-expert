@@ -1,0 +1,72 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign currency risk arising from intercompany dividend receivables can be designated as a hedged item in consolidated financial statements under IFRS 9 hedge accounting requirements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "Paragraph 6.3.5 establishes the general requirement that hedged items must be with external parties, while paragraph 6.3.6 provides the specific exception for intragroup monetary items' foreign currency risk in consolidated financial statements"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 10", "paragraph 9(a)(ii)"],
+        "reason": "Clarifies the scope of hedged risk that can be designated for foreign currency exposure in net investment hedges and addresses functional currency differences in group structures"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["IAS 21 paragraph as referenced in IFRS 9 6.3.6"],
+        "reason": "Governs when foreign exchange differences on intragroup monetary items are not fully eliminated on consolidation based on different functional currencies"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 19",
+        "references": ["paragraphs 58-63"],
+        "reason": "Disclosure requirements for hedge accounting but do not govern the eligibility of hedged items"
+      },
+      {
+        "document": "IAS 32",
+        "references": ["paragraph 35"],
+        "reason": "Addresses classification of dividends as expense versus equity distribution but not hedge accounting eligibility"
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraphs 9-14"],
+        "reason": "Addresses measurement and recognition of dividend payables but not hedge accounting treatment"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Intragroup monetary item foreign currency risk hedge",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["intragroup_monetary_item_fx_hedge"]
+    },
+    {
+      "family": "Intragroup forecast transaction hedge",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraphs 6.3.3", "6.3.5"]}
+      ],
+      "mapped_approaches": ["intragroup_forecast_transaction_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Intragroup monetary item foreign currency risk hedge",
+      "normalized_label": "intragroup_monetary_item_fx_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.6 explicitly permits designation of foreign currency risk of intragroup monetary items (including receivables between subsidiaries) as hedged items in consolidated financial statements when functional currencies differ and FX gains/losses affect consolidated P&L"
+    },
+    {
+      "id": "approach_2",
+      "label": "Intragroup forecast transaction hedge",
+      "normalized_label": "intragroup_forecast_transaction_hedge",
+      "rationale_for_inclusion": "IFRS 9 paragraph 6.3.5 generally prohibits designation of intragroup items as hedged items unless they qualify under the paragraph 6.3.6 exception, and paragraph 6.3.3 requires forecast transactions to be highly probable with external parties"
+    }
+  ]
+}

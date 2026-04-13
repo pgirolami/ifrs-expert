@@ -1,0 +1,87 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign currency risk arising from intra-group dividend receivables recognized in consolidated financial statements can be designated as a hedged item under hedge accounting rules",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "Governs hedge accounting eligibility criteria, including which items can be designated as hedged items and restrictions on intragroup items"
+      },
+      {
+        "document": "IAS 21",
+        "references": ["32", "45"],
+        "reason": "Addresses recognition and treatment of exchange differences on monetary items in consolidated financial statements, including intragroup monetary items"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRIC 16",
+        "references": ["9", "10"],
+        "reason": "Clarifies the scope of hedged risk in net investment hedges and the restriction to functional currency differences between parent and foreign operation"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 17",
+        "references": ["47-52"],
+        "reason": "Addresses insurance contract measurement but does not govern hedge accounting for foreign currency risk on dividend receivables"
+      },
+      {
+        "document": "IAS 7",
+        "references": ["44A-44E"],
+        "reason": "Disclosures for financing activities; not relevant to hedge accounting eligibility determination"
+      },
+      {
+        "document": "IAS 37",
+        "references": ["12-13"],
+        "reason": "Provisions and contingent liabilities framework; not relevant to hedge accounting for monetary items"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Net investment hedge accounting for foreign currency risk on intragroup monetary items",
+      "authority_basis": [
+        {"document": "IAS 21", "references": ["32"]},
+        {"document": "IFRIC 16", "references": ["9", "10"]}
+      ],
+      "mapped_approaches": ["net_investment_hedge_accounting"]
+    },
+    {
+      "family": "Fair value hedge accounting for foreign currency risk on monetary items",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.2.1", "6.5.8"]},
+        {"document": "IAS 21", "references": ["28"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge_accounting"]
+    },
+    {
+      "family": "No hedge accounting permitted for intragroup items",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["6.3.5"]}
+      ],
+      "mapped_approaches": ["no_hedge_accounting_intragroup"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Net investment hedge accounting",
+      "normalized_label": "net_investment_hedge_accounting",
+      "rationale_for_inclusion": "IAS 21.32 permits OCI treatment for exchange differences on monetary items forming part of net investment; IFRIC 16 confirms hedge accounting may apply to foreign currency differences between functional currencies of parent and foreign operation"
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value hedge accounting",
+      "normalized_label": "fair_value_hedge_accounting",
+      "rationale_for_inclusion": "IFRS 9 permits fair value hedge accounting for foreign currency risk on monetary items; may apply to intragroup dividend receivables if structured appropriately"
+    },
+    {
+      "id": "approach_3",
+      "label": "No hedge accounting (intragroup restriction applies)",
+      "normalized_label": "no_hedge_accounting_intragroup",
+      "rationale_for_inclusion": "IFRS 9.6.3.5 restricts hedge accounting to transactions with parties external to the reporting entity, which may preclude hedge accounting for intragroup dividend receivables"
+    }
+  ]
+}

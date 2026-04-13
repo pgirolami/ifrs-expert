@@ -1,0 +1,59 @@
+{
+  "assumptions_fr": [
+    "La question porte sur des dividendes intragroupe déjà comptabilisés en tant que créances (montantsmonétaires) dans les états financiers consolidés.",
+    "Les entités du groupe ont des devises fonctionnelles différentes, générant un risque de change sur la créance de dividende.",
+    "Le risque de change n'est pas éliminé par consolidation en raison de la différence de devises fonctionnelles entre les entités."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'approche 1 est applicable en vertu de l'exception prévue à l'IFRS 9 §6.3.6 pour les élémentsmonétaires intragroupe dont les différences de change ne sont pas éliminées à la consolidation. L'approche 2 ne s'applique pas car les dividendes sont déjà comptabilisés et non forecast."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de la juste valeur du risque de change sur une créance de dividende intragroupe",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Un dividende intragroupe comptabilisé en tant que créance constitue un élément monétaire intragroupe. Conformément à l'IFRS 9 §6.3.6, exception au §6.3.5, ce type d'élément peut être désigné comme élément couvert pour le risque de change dans les états financiers consolidés, dès lors que les différences de change ne sont pas éliminées à la consolidation selon IAS 21 §45.",
+      "conditions_fr": [
+        "Les entités émettrice et destinataire du dividende ont des devises fonctionnelles différentes.",
+        "Les différences de change ne sont pas éliminées à la consolidation (IAS 21 §45).",
+        "La relation de couverture satisfait aux exigences de documentation et d'efficacité (IFRS 9 §6.4.1 et §6.5.8)."
+      ],
+      "practical_implication_fr": "Les variations de juste valeur liées au risque de change de la créance et de l'instrument de couverture seront reconnues en résultat (ou en OCI selon le type de relation).",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5-6.3.6",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items. However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability), whether short‑term or long‑term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie sur un dividende intragroupe prévu",
+      "applicability": "non",
+      "reasoning_fr": "L'approche 2 concerne les transactions forecast hautement probables (§6.3.3). Or, la question porte sur des dividendes déjà comptabilisés en tant que créances (« comptabilisés à recevoir »). Cette approche n'est pas applicable à la situation décrite.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Non applicable car les dividendes sont déjà reconnus et non forecast.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.3",
+          "excerpt": "If a hedged item is a forecast transaction (or a component thereof), that transaction must be highly probable."
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter la relation de couverture dès l'origine en identifiant le risque de change, l'élément couvert (créance de dividende) et l'instrument de couverture.",
+    "Évaluer l'efficacité de la couverture selon les méthodes prévues par l'IFRS 9 §6.5.8.",
+    "Présenter les variations de juste valeur en résultat (ou en OCI pour la portion efficace d'une couverture de flux de trésorerie, non applicable ici)."
+  ]
+}

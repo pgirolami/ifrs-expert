@@ -1,0 +1,58 @@
+{
+  "assumptions_fr": [
+    "Les dividendes intragroupe à recevoir constituent des actifs monétaires vis-à-vis desquels des différences de change peuvent survenir dans les comptes consolidés.",
+    "Les entités impliquées dans la transaction intragroupe ont des devises fonctionnelles différentes, ce qui est une condition nécessaire pour que le risque de change ne soit pas éliminé par consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "L'exception prévue au paragraphe 6.3.6 d'IFRS 9 permet de désigner le risque de change d'un élément monétaire intragroupe comme élément couvert dans les états financiers consolidés, sous réserve que les différences de change ne soient pas éliminées par consolidation conformément à IAS 21."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "risk_component_hedge",
+      "label_fr": "Couverture de la composante risque de change",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L'intragroup dividend receivable est un élément monétaire dont le risque de change peut ne pas être éliminé en consolidation si les entités ont des devises fonctionnelles différentes. Le paragraphe 6.3.6 d'IFRS 9 prévoit une exception permettant de désigner ce risque de change comme élément couvert.",
+      "conditions_fr": [
+        "Le risque de change de la créance dividendes intragroupe ne doit pas être éliminé par consolidation (IAS 21, paragraphe 45)",
+        "Les entités émettrice et destinataire doivent avoir des devises fonctionnelles différentes"
+      ],
+      "practical_implication_fr": "L'entité peut mettre en place une relation de couverture sur le risque de change de la créance, mais doit documenter que les différences de change ne sont pas éliminées en consolidation.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "IAS 21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset or liability cannot be eliminated against the corresponding intragroup liability or asset without showing the results of currency fluctuations in the consolidated financial statements"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "no_hedge_accounting",
+      "label_fr": "Absence de comptabilité de couverture",
+      "applicability": "non",
+      "reasoning_fr": "En vertu de la règle générale du paragraphe 6.3.5, les éléments intragroupe ne peuvent pas être désignés comme éléments couverts. Cependant, l'exception du paragraphe 6.3.6 s'applique spécifiquement au risque de change des éléments monétaires intragroupe, rendant cette interdiction générale inopposable dans le cas d'espèce.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Cette approche n'est pas retenue car l'exception permettant la désignation du risque de change est applicable.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "Only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Documenter dès l'origine la relation de couverture et préciser que le risque couvert est uniquement le risque de change de la créance de dividendes intragroupe.",
+    "Vérifier que les devises fonctionnelles de l'entité distributrice et de l'entité destinataire sont effectivement différentes.",
+    "Appliquer les exigences d'efficacité et de documentation d'IFRS 9 paragraphes 6.4.1 et suivants.",
+    "Revaloriser le dérivé de couverture à la juste valeur à chaque clôture et reconnaître les variations en résultat (ou en capitaux propres selon le type de couverture)."
+  ]
+}

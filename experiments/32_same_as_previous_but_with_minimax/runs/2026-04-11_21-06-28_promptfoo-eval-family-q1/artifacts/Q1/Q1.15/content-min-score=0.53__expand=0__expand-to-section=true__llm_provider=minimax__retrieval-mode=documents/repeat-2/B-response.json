@@ -1,0 +1,67 @@
+{
+  "assumptions_fr": [
+    "La créance dividends intragroupe est dénommée en devise étrangère.",
+    "L'entité prépare des états financiers consolidés.",
+    "La question porte sur la désignation de l'exposition de change de cette créance intragroupe comme élément couvert dans une relation de couverture de change."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "En vertu d'IFRS 9 §6.3.6, une créance intragroupe libellée en devise étrangère peut être désignée comme élément couvert dans les états financiers consolidés, mais uniquement pour couvrir le risque de change lié à un investissement net dans une opération étrangère, et uniquement si ce risque n'est pas éliminé par consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_item_eligible_net_investment",
+      "label_fr": "Créance intragroupe éligible uniquement en couverture d'investissement net",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "IFRS 9 §6.3.6 autorise la désignation du risque de change d'un élément monétaire intragroupe comme élément couvert dans les états consolidés, mais cette exception est limitée aux couvertures d'investissement net dans une opération étrangère dont l'exposition de change n'est pas éliminée à la consolidation.",
+      "conditions_fr": [
+        "La créance constitue un élément monétaire intragroupe.",
+        "L'exposition de change n'est pas éliminée à la consolidation (IAS 21).",
+        "La relation de couverture vise spécifiquement le risque de change lié à l'investissement net dans l'opération étrangère (couverture de'investissement net)."
+      ],
+      "practical_implication_fr": "Si ces conditions sont satisfaites, la créance peut être désignée comme élément couvert dans une couverture de investissement net.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        },
+        {
+          "document": "ifric16",
+          "section": "8",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations; it should not be applied by analogy to other types of hedge accounting"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "intragroup_item_not_eligible_other_hedges",
+      "label_fr": "Créance intragroupe non éligible pour les couvertures autres que l'investissement net",
+      "applicability": "non",
+      "reasoning_fr": "IFRS 9 §6.3.5 exige qu'un élément couvert soit une partie externe à l'entité déclarante. IFRIC 16 §8 confirme que l'exception pour les éléments intragroupe est limitée aux couvertures d'investissement net et ne peut être appliquée par analogie à d'autres types de couvertures.",
+      "conditions_fr": [
+        "Restriction : cette approche n'est pas applicable si la relation de couverture est une couverture d'investissement net dans une opération étrangère."
+      ],
+      "practical_implication_fr": "Une créance dividendes intragroupe ne peut pas être désignée comme élément couvert dans une couverture de flux de trésorerie ou une couverture de juste valeur.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        },
+        {
+          "document": "ifric16",
+          "section": "8",
+          "excerpt": "This Interpretation applies only to hedges of net investments in foreign operations"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier si le risque de change de la créance dividendes intragroupe est éliminé à la consolidation avant toute désignation.",
+    "Si la créance est éliminée à la consolidation (même devise fonctionnelle), aucune désignation n'est possible.",
+    "Si la créance n'est pas éliminée et concerne l'investissement net dans une opération étrangère, la désignation est possible dans une couverture de investissement net.",
+    "Pour tout autre type de couverture (flux de trésorerie, juste valeur), la désignation est interdite."
+  ]
+}

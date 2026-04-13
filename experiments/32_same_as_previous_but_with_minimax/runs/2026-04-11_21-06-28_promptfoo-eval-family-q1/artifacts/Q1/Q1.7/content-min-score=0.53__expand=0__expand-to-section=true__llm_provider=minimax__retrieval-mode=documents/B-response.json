@@ -1,0 +1,91 @@
+{
+  "assumptions_fr": [
+    "La créance dividendes intragroupe est comptabilisée dans les états financiers consolidés du groupe",
+    "Il s'agit d'une entité présentant classique (non une entité d'investissement au sens d'IFRS 10)",
+    "La couverture concernerait le risque de change entre la monnaie fonctionnelle de la succursale/distributeur étranger et la monnaie de présentation du groupe"
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "En présence d'une créance dividendes intragroupe reconnue en consolidated statements, IFRS 9.6.3.5 exclut la désignation d'articles intragroupe comme éléments couverts dans les comptes consolidés, sauf pour les entités d'investissement. L'exposition au change existe bien (IAS 21.45) et doit être comptabilisée en résultat, mais ne peut pas faire l'objet d'une comptabilité de couverture dans ce contexte."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "hedge_accounting_permitted",
+      "label_fr": "Le risque de change d'un article monétaire intragroupe peut constituer un élément couvert",
+      "applicability": "non",
+      "reasoning_fr": "IFRS 9.6.3.5 autorise la couverture du risque de change sur les articles monétaires intragroupe uniquement dans les comptes individuels/séparés ou pour les entités d'investissement. Hypothèse confirmant qu'il s'agit d'un groupe présentant classique, cette exception ne s'applique pas.",
+      "conditions_fr": [
+        "Uniquement pour une entité d'investissement au sens d'IFRS 10"
+      ],
+      "practical_implication_fr": "Éligibilité exclue en consolidate statements pour une entité présentant classique",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "hedge_accounting_excluded",
+      "label_fr": "Articles monétaires intragroupe exclus de la comptabilité de couverture dans les statements consolidés",
+      "applicability": "oui",
+      "reasoning_fr": "IFRS 9.6.3.5 pose une interdiction générale de couvrir des articles intragroupe dans les comptes consolidés d'une entité présentant classique. La créance dividendes intragroupe ne peut pas être désignée comme élément couvert en consolidated statements car elle n'a pas de contrepartie externe.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La créance dividendes intragroupe ne peut pas être designated comme élément couvert dans les consolidated financial statements",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "6.3.5",
+          "excerpt": "Hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group"
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "an intragroup monetary asset (or liability), whether short‑term or long‑term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "recognize_in_profit_or_loss",
+      "label_fr": "Différences de change sur articles monétaires intragroupe reconnues en résultat",
+      "applicability": "oui",
+      "reasoning_fr": "IAS 21.45 impose la comptabilisation des écarts de change en résultat pour les articles monétaires intragroupe non éliminés à la consolidation. En l'absence de désignation de couverture, cette approche constitue le traitement de base applicable.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Les écarts de change sur la créance dividendes intragroupe sont passés en profit or loss à chaque closing",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "such an exchange difference is recognised in profit or loss"
+        }
+      ]
+    },
+    {
+      "id": "approach_4",
+      "normalized_label": "recognize_in_equity",
+      "label_fr": "Différences de change accumulées dans un composant distinct des capitaux propres",
+      "applicability": "non",
+      "reasoning_fr": "IAS 21.45 limitant le recognize in OCI aux circonstances décrites au paragraphe 32 (couverture d'investissement net dans une activité à l'étranger). La créance dividendes intragroupe ne constitue pas une couverture d'investissement net, cette approche ne s'applique pas.",
+      "conditions_fr": [
+        "Uniquement en présence d'une couverture d'investissement net dans une activité étrangère (IAS 21.32)"
+      ],
+      "practical_implication_fr": "Non applicable à une créance dividendes intragroupe isolée",
+      "references": [
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "it is recognised in other comprehensive income and accumulated in a separate component of equity until the disposal of the foreign operation"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "La créance dividendes intragroupe doit être maintenue dans les consolidated statements et ne peut pas être éliminée (IAS 21.45)",
+    "En l'absence de désignation de couverture, comptabiliser systématiquement les écarts de change en résultat à chaque reporting date",
+    "Si le groupe change de qualification vers une entité d'investissement (IFRS 10), la désignation de couverture pourrait devenir eligible pour les transactions avec les FIL-valued-at-FVTPL"
+  ]
+}

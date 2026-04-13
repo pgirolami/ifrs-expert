@@ -1,0 +1,88 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Whether foreign exchange exposure from intragroup dividend receivables can qualify as a hedged item in consolidated financial statements under hedge accounting rules",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IAS 39",
+        "references": ["paragraph 88(a), chunk 4014"],
+        "reason": "Establishes the requirement that hedged items must involve a party external to the reporting entity, with explicit statement that hedge accounting applies to intragroup transactions only in individual/separate statements, not consolidated statements"
+      },
+      {
+        "document": "IFRS 9",
+        "references": ["paragraphs 6.3.5, 6.3.6, chunks 588-589"],
+        "reason": "Contains the core eligibility criteria for hedged items and the specific exception for intragroup monetary items in consolidated financial statements"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 32, chunk 3130"],
+        "reason": "Defines when intragroup monetary items create foreign exchange exposure that is not fully eliminated on consolidation (different functional currencies between transacting entities)"
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraphs 9, 13, chunks 4344, 4348"],
+        "reason": "Clarifies application of hedge accounting to net investment hedges and constraints on multiple overlapping hedging relationships in consolidated statements"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IAS 39",
+        "references": ["paragraphs 89-102, chunks 4024-4038"],
+        "reason": "Specifies accounting mechanics for hedge types but does not address eligibility of intragroup items as hedged items"
+      },
+      {
+        "document": "IFRS 18",
+        "references": ["paragraphs B70-B76, chunks 2071-2076"],
+        "reason": "Addresses classification of hedge accounting gains/losses by category in profit or loss, not hedge eligibility"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedging of intragroup monetary items under the specific exception",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]},
+        {"document": "IAS 39", "references": ["paragraph 81"]}
+      ],
+      "mapped_approaches": ["hedge_accounting_exception_intragroup_monetary_items"]
+    },
+    {
+      "family": "General exclusion of intragroup items from hedge accounting in consolidated statements",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]},
+        {"document": "IAS 39", "references": ["paragraph 80"]}
+      ],
+      "mapped_approaches": ["no_hedge_accounting_consolidated_statements"]
+    },
+    {
+      "family": "Hedge accounting applied in individual/separate financial statements",
+      "authority_basis": [
+        {"document": "IAS 39", "references": ["paragraph 80"]},
+        {"document": "IFRS 9", "references": ["paragraph 6.3.5"]}
+      ],
+      "mapped_approaches": ["hedge_accounting_separate_statements"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Hedge accounting for intragroup monetary item exception",
+      "normalized_label": "intragroup_monetary_item_exception",
+      "rationale_for_inclusion": "IFRS 9 and IAS 39 provide an explicit exception permitting foreign currency risk of intragroup monetary items (including receivables) to qualify as hedged items in consolidated financial statements if the exchange differences are not fully eliminated on consolidation per IAS 21"
+    },
+    {
+      "id": "approach_2",
+      "label": "No hedge accounting in consolidated financial statements",
+      "normalized_label": "no_hedge_accounting_consolidated",
+      "rationale_for_inclusion": "Primary rule in IFRS 9 and IAS 39 prohibits designation of intragroup items as hedged items in consolidated financial statements; the general principle excludes all transactions between group entities from consolidated hedge accounting"
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge accounting in separate or individual financial statements",
+      "normalized_label": "hedge_accounting_separate_statements",
+      "rationale_for_inclusion": "Both IFRS 9 and IAS 39 explicitly permit hedge accounting for intragroup transactions in the individual or separate financial statements of the entities involved, as the external party criterion is met at that level"
+    }
+  ]
+}

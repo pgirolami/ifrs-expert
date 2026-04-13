@@ -1,0 +1,83 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Eligibility of intragroup dividend receivable for formal hedge accounting of foreign exchange risk at consolidated level",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.5"],
+        "reason": "IFRS 9 defines hedged items and provides the exception for foreign currency risk of intragroup monetary items in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["9", "14"],
+        "reason": "IFRIC 16 clarifies the nature of the hedged risk for intragroup items and that hedging instruments may be held by any entity within the group."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["5.7.1", "5.7.2"],
+        "reason": "IFRS 9 specifies the default accounting for foreign exchange differences on financial assets, recognised in profit or loss unless part of a hedging relationship."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["6.3.2", "6.3.3"],
+        "reason": "IFRS 9 sets criteria for hedged items such as reliable measurability and, for forecast transactions, high probability."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifric17",
+        "references": ["1", "2", "9", "11", "12", "13", "14"],
+        "reason": "IFRIC 17 addresses accounting for dividends to owners, but does not govern hedge accounting eligibility."
+      },
+      {
+        "document": "ifric2",
+        "references": ["4", "5", "6", "7", "8", "9", "10", "11", "12"],
+        "reason": "IFRIC 2 deals with members' shares and redemption rights, unrelated to intragroup dividend hedge accounting."
+      },
+      {
+        "document": "sic25",
+        "references": ["1", "2", "3"],
+        "reason": "SIC-25 addresses changes in tax status, not relevant to foreign exchange hedge accounting."
+      },
+      {
+        "document": "ias32",
+        "references": ["26", "27", "35", "36", "37", "38", "39", "40", "41"],
+        "reason": "IAS 32 deals with classification of financial instruments as liabilities or equity, not directly addressing hedge accounting for intragroup dividend receivable."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting eligibility for foreign exchange risk on intragroup dividend receivable",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["6.3.1", "6.3.5"]},
+        {"document": "ifric16", "references": ["9", "14"]}
+      ],
+      "mapped_approaches": ["foreign_exchange_hedge_accounting"]
+    },
+    {
+      "family": "Default accounting for foreign exchange risk without hedge designation",
+      "authority_basis": [
+        {"document": "ifrs9", "references": ["5.7.1", "5.7.2"]}
+      ],
+      "mapped_approaches": ["non_hedge_fx_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Foreign exchange hedge accounting",
+      "normalized_label": "foreign_exchange_hedge_accounting",
+      "rationale_for_inclusion": "Under IFRS 9 and IFRIC 16, foreign exchange risk on an intragroup dividend receivable may be designated as a hedged item in consolidated financial statements, provided the hedge accounting criteria are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Non-hedge foreign exchange accounting",
+      "normalized_label": "non_hedge_fx_accounting",
+      "rationale_for_inclusion": "If no hedge designation is made, foreign exchange differences on the intragroup dividend receivable are recognised in profit or loss in accordance with IFRS 9 default treatment."
+    }
+  ]
+}

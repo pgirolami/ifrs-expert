@@ -1,0 +1,75 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe est comptabilisé en tant que montant à recevoir (actif monetary) dans les états financiers consolidés.",
+    "Aucune information n'indique que l'entité answers est une entité d'investissement au sens d'IFRS 10.",
+    "Aucune information n'indique que le dividende intragroupe fait partie d'un investissement net dans une opération étrangère."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "En l'absence de précision sur l'existence d'une opération étrangère ou du statut d'entité d'investissement, la documentation d'une couverture de change sur le dividende intragroupe dans les comptes consolidés n'est pas permise : l'exposition est éliminée lors de la consolidation."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "intragroup_item_hedge_prohibited",
+      "label_fr": "Dividende intragroupe non éligible à une couverture dans les comptes consolidés",
+      "applicability": "oui",
+      "reasoning_fr": "Un dividende intragroupe comptabilisé en résultat consolidé est éliminé lors de la consolidation : l'exposition au change qui en résulte est内部ée (eliminée). Par conséquent, l'exposition ne peut être designated comme élément couvert dans les comptes consolidés.",
+      "conditions_fr": [
+        "L'exposition est éliminée dans les comptes consolidés",
+        "Aucune exception IFSR 9 paragraphe 6.3.6 ou statut d'entité d'investissement ne s'applique"
+      ],
+      "practical_implication_fr": "Aucune réserve de couverture ne peut être constatée ; les gains ou pertes de change sur le dividende intragroupe sont éliminés à la consolidation.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "only assets, liabilities, firm commitments or highly probable forecast transactions with a party external to the reporting entity can be designated as hedged items"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture possible si le dividende fait partie d'un investissement net dans une opération étrangère",
+      "applicability": "non",
+      "reasoning_fr": "Cette exception ne s'applique que lorsque le montant à recevoir intragroupe fait partie intégrante de l'investissement net dans une opération étrangère (IAS 21 paragraphe 32). L'énoncé ne précise pas que le dividende a cette nature.",
+      "conditions_fr": [
+        "Le dividende intragroupe doit être un élément monétaire faisant partie de l'investissement net dans une opération étrangère",
+        "Le risque de change doit affecter le résultat consolidé"
+      ],
+      "practical_implication_fr": "Si le dividende est un actif monétaire faisant partie d'un investissement net dans une opération étrangère, une couverture de change serait admissible.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.6",
+          "excerpt": "the foreign currency risk of an intragroup monetary item may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation"
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "investment_entity_exception",
+      "label_fr": "Exception d'entité d'investissement permettant la couverture avec des filiales évaluées à la juste valeur par le biais du résultat",
+      "applicability": "non",
+      "reasoning_fr": "L'exception pour entités d'investissement (IFRS 9 paragraphe 6.3.5) ne s'applique qu'aux transactions intragroupes avec des filiales évaluées à la juste valeur par le biais du résultat. L'énoncé ne mentionne pas que l'entité est une entité d'investissement.",
+      "conditions_fr": [
+        "L'entité doit être une entité d'investissement au sens d'IFRS 10",
+        "La filiale doit être évaluée à la juste valeur par le biais du résultat"
+      ],
+      "practical_implication_fr": "Pour une entité d'investissement, les transactions intragroupes avec des filiales à la JVPR ne sont pas éliminées et peuvent faire l'objet d'une couverture.",
+      "references": [
+        {
+          "document": "IFRS 9",
+          "section": "6.3.5",
+          "excerpt": "except for the consolidated financial statements of an investment entity... where transactions between an investment entity and its subsidiaries measured at fair value through profit or loss will not be eliminated"
+        }
+      ]
+    }
+  ],
+  "operational_points_fr": [
+    "Vérifier si le dividende intragroupe constitue un actif monétaire faisant partie d'un investissement net dans une opération étrangère (IAS 21 paragraphe 32) : dans ce cas, une couverture serait admissible sous conditions.",
+    "Si l'entité est une entité d'investissement au sens d'IFRS 10 et que la filiale est évaluée à la JVPR, une couverture intragroupe serait également envisageable.",
+    "En l'absence de ces précisions, aucune couverture de change ne peut être documentée pour le dividende intragroupe dans les comptes consolidés."
+  ]
+}

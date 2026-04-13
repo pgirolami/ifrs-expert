@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Hedge accounting for foreign exchange risk on intragroup dividend receivables in consolidated financial statements",
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.3.1", "paragraph 6.3.5", "paragraph 6.3.6"],
+        "reason": "These paragraphs establish the eligibility of recognized assets as hedged items, the restriction to external transactions in consolidated statements, and the exception for intragroup monetary items."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 28", "paragraph 32"],
+        "reason": "These paragraphs prescribe the recognition of exchange differences on monetary items in profit or loss and the option for recognition in other comprehensive income for items forming part of a net investment."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 9(a)", "paragraph 10"],
+        "reason": "This Interpretation clarifies that hedge accounting may be applied only to foreign exchange differences arising between the functional currencies of the parent and the foreign operation."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "IFRS 9",
+        "references": ["paragraph 6.4.1", "paragraph 6.5.14"],
+        "reason": "These paragraphs set out the hedge accounting criteria and the reclassification of gains or losses upon disposal."
+      },
+      {
+        "document": "IAS 21",
+        "references": ["paragraph 27", "paragraph 45"],
+        "reason": "These paragraphs illustrate the interaction between hedge accounting and exchange difference recognition, and the treatment of intragroup monetary items in consolidation."
+      },
+      {
+        "document": "IFRIC 16",
+        "references": ["paragraph 12", "paragraph 13"],
+        "reason": "These paragraphs address the assessment of hedge effectiveness and the impact of the consolidation method."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "IFRS 12",
+        "references": ["paragraphs 10-19"],
+        "reason": "These paragraphs require disclosures about subsidiaries, but do not govern the accounting treatment for hedge accounting."
+      },
+      {
+        "document": "IAS 24",
+        "references": ["paragraphs 18-24"],
+        "reason": "These paragraphs require disclosures about related party transactions, but are not relevant to the hedge accounting treatment."
+      },
+      {
+        "document": "IFRIC 17",
+        "references": ["paragraphs 3-14"],
+        "reason": "This Interpretation addresses the measurement of dividend payables, but not the foreign exchange risk on dividend receivables."
+      },
+      {
+        "document": "IAS 7",
+        "references": ["paragraphs 44A-44E"],
+        "reason": "These paragraphs require disclosures about financing activities, but do not affect the hedge accounting treatment."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for foreign exchange risk on intragroup monetary items in consolidated financial statements",
+      "authority_basis": [
+        {"document": "IFRS 9", "references": ["paragraph 6.3.6"]}
+      ],
+      "mapped_approaches": ["fair_value_hedge", "recognition_in_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 permits the designation of the foreign exchange risk of an intragroup dividend receivable as a hedged item in a fair value hedge, subject to meeting the hedge accounting criteria."
+    },
+    {
+      "id": "approach_2",
+      "label": "Recognition in profit or loss without hedge accounting",
+      "normalized_label": "recognition_in_profit_or_loss",
+      "rationale_for_inclusion": "If hedge accounting is not applied, exchange differences on the dividend receivable are recognized in profit or loss in accordance with IAS 21 paragraph 28."
+    }
+  ]
+}
