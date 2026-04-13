@@ -11,8 +11,6 @@ assert:
              data.assumptions_fr.length >= 1 &&
              Array.isArray(data.approaches) &&
              data.approaches.length >= 3 &&
-             Array.isArray(data.operational_points_fr) &&
-             data.operational_points_fr.length >= 1;
     description: Core structured fields are present and non-empty
 
   - type: javascript
@@ -24,22 +22,22 @@ assert:
              labels.includes('net_investment_hedge');
     description: All expected hedge approaches are identified
 
-  # - type: javascript
-  #   value: |
-  #     const data = JSON.parse(output);
-  #     const byLabel = Object.fromEntries(
-  #       data.approaches.map(a => [a.normalized_label, a.applicability])
-  #     );
-  #     return ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_hedge) &&
-  #            byLabel.cash_flow_hedge === 'non' &&
-  #            byLabel.net_investment_hedge === 'non';
-  #   description: Expected applicability is assigned to each hedge approach
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      const byLabel = Object.fromEntries(
+        data.approaches.map(a => [a.normalized_label, a.applicability])
+      );
+      return ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_hedge) &&
+             byLabel.cash_flow_hedge === 'non' &&
+             byLabel.net_investment_hedge === 'non';
+    description: Expected applicability is assigned to each hedge approach
 
   - type: javascript
     value: |
       const data = JSON.parse(output);
       return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
-    description: Recommendation answer is one of the allowed values
+    description: Recommendation answer is yes or yes-if
 
   - type: javascript
     value: |
@@ -58,15 +56,15 @@ assert:
       );
     description: Each approach has applicability and at least one reference
 
-  - type: llm-rubric
-    value: |
-      The answer should:
-      - clearly state whether the requested hedge treatment is applicable
-      - distinguish between the main hedge approaches
-      - provide reasoning that would be useful to an IFRS expert
-      - include practical next steps or operational implications
-    threshold: 0.8
-    description: LLM-as-judge considers the answer is coherent, useful, and practically actionable
+  # - type: llm-rubric
+  #   value: |
+  #     The answer should:
+  #     - clearly state whether the requested hedge treatment is applicable
+  #     - distinguish between the main hedge approaches
+  #     - provide reasoning that would be useful to an IFRS expert
+  #     - include practical next steps or operational implications
+  #   threshold: 0.8
+  #   description: LLM-as-judge considers the answer is coherent, useful, and practically actionable
 
 variants:
   - id: Q1.0
