@@ -29,6 +29,7 @@ class ListCommand:
                                 "chunk_number": c.chunk_number,
                                 "chunk_id": c.chunk_id,
                                 "containing_section_id": c.containing_section_id,
+                                "containing_section_db_id": c.containing_section_db_id,
                                 "page_start": c.page_start,
                                 "page_end": c.page_end,
                                 "text": c.text,

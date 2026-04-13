@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import re
+import unicodedata
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
@@ -31,6 +33,9 @@ EMBEDDING_LABEL_BY_FIELD: dict[str, str] = {
     "intro_text": "Introduction",
     "toc_text": "TOC",
 }
+NAVIS_INTRO_PARENT_PREFIX = "l'essentiel de la norme"
+NAVIS_INTRO_SECTION_TITLE = "generalites"
+NAVIS_LEADING_MARKER_PATTERN = re.compile(r"^(?:[a-z]|\d+|[ivxlcdm]+)\s*[.\-)]+\s*", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -74,6 +79,17 @@ class DocumentProfileBuilder:
             sections=sections,
             descendant_ids_by_ancestor=descendant_ids_by_ancestor,
         )
+
+        if field_values.get("intro_text") is None:
+            navis_intro_text = _build_navis_intro_text(
+                doc_uid=document.doc_uid,
+                document_type=document.document_type,
+                chunks=chunks,
+                sections=sections,
+                descendant_ids_by_ancestor=descendant_ids_by_ancestor,
+            )
+            if navis_intro_text is not None:
+                field_values["intro_text"] = navis_intro_text
 
         if field_values.get("intro_text") is None:
             intro_text = _build_intro_fallback(doc_uid=document.doc_uid, source_type=document.source_type, chunks=chunks)
@@ -223,6 +239,62 @@ def _find_descendant_section_ids(
             descendant_ids.add(child_section_id)
             to_process.append(child_section_id)
     return descendant_ids
+
+
+def _build_navis_intro_text(
+    doc_uid: str,
+    document_type: str | None,
+    chunks: list[Chunk],
+    sections: list[SectionRecord],
+    descendant_ids_by_ancestor: dict[str, set[str]],
+) -> str | None:
+    if document_type != "NAVIS":
+        logger.info(f"Skipping Navis introduction extraction for doc_uid={doc_uid} because document_type={document_type}")
+        return None
+
+    section_by_id = {section.section_id: section for section in sections}
+    for section in sorted(sections, key=lambda item: item.position):
+        if not _is_navis_intro_section_title(section.title):
+            continue
+        parent_section_id = section.parent_section_id
+        if parent_section_id is None:
+            continue
+        parent_section = section_by_id.get(parent_section_id)
+        if parent_section is None or not _is_navis_intro_parent_title(parent_section.title):
+            continue
+
+        descendant_ids = descendant_ids_by_ancestor.get(section.section_id, {section.section_id})
+        intro_text = _collect_section_text(
+            doc_uid=doc_uid,
+            field_name="intro_text",
+            section_title=section.title,
+            chunks=chunks,
+            descendant_ids=descendant_ids,
+        )
+        if intro_text is None:
+            logger.info(f"Matched Navis intro section for doc_uid={doc_uid}, section_id={section.section_id}, but found no chunk text")
+            return None
+
+        logger.info(f"Built Navis introduction text for doc_uid={doc_uid} from section_id={section.section_id} under parent_section_id={parent_section.section_id}")
+        return intro_text
+
+    logger.info(f"No matching Navis introduction section found for doc_uid={doc_uid}")
+    return None
+
+
+def _is_navis_intro_parent_title(title: str) -> bool:
+    return _normalize_navis_section_match_text(title).startswith(NAVIS_INTRO_PARENT_PREFIX)
+
+
+def _is_navis_intro_section_title(title: str) -> bool:
+    return _normalize_navis_section_match_text(title) == NAVIS_INTRO_SECTION_TITLE
+
+
+def _normalize_navis_section_match_text(title: str) -> str:
+    normalized_title = _normalize_section_title(title).replace("\u2019", "'")
+    normalized_title = NAVIS_LEADING_MARKER_PATTERN.sub("", normalized_title)
+    decomposed_title = unicodedata.normalize("NFKD", normalized_title)
+    return "".join(character for character in decomposed_title if not unicodedata.combining(character))
 
 
 def _build_intro_fallback(doc_uid: str, source_type: str, chunks: list[Chunk]) -> str | None:

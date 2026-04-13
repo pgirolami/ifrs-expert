@@ -304,16 +304,38 @@ class StoreCommand:
             logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
         return None
 
-    def _store_sections(self, doc_uid: str, extracted_document: ExtractedDocument) -> None:
+    def _store_sections(self, doc_uid: str, extracted_document: ExtractedDocument) -> dict[str, int]:
         if self._dependencies.section_store is None:
-            return
+            return {}
         with self._dependencies.section_store as section_store:
             deleted_sections = section_store.delete_sections_by_doc(doc_uid)
             if deleted_sections > 0:
                 logger.info(f"Deleted {deleted_sections} existing sections for {doc_uid}")
             section_store.insert_sections(extracted_document.sections)
-            section_store.insert_closure_rows(extracted_document.section_closure_rows)
-            logger.info(f"Stored {len(extracted_document.sections)} sections with doc_uid={doc_uid}")
+            section_store.insert_closure_rows(doc_uid=doc_uid, closure_rows=extracted_document.section_closure_rows)
+            section_db_id_by_source_id = section_store.map_source_ids_to_db_ids(
+                doc_uid=doc_uid,
+                section_ids=[section.section_id for section in extracted_document.sections],
+            )
+            logger.info(f"Stored {len(extracted_document.sections)} sections with doc_uid={doc_uid}; resolved_section_db_ids={len(section_db_id_by_source_id)}")
+            return section_db_id_by_source_id
+
+    def _sync_chunk_section_links(
+        self,
+        doc_uid: str,
+        chunks: list[Chunk],
+        section_db_id_by_source_id: dict[str, int],
+    ) -> None:
+        if not section_db_id_by_source_id:
+            return
+        for chunk in chunks:
+            chunk.containing_section_db_id = section_db_id_by_source_id.get(chunk.containing_section_id) if chunk.containing_section_id is not None else None
+        with self._dependencies.chunk_store as chunk_store:
+            updated_count = chunk_store.sync_containing_section_db_ids(
+                doc_uid=doc_uid,
+                section_db_id_by_source_id=section_db_id_by_source_id,
+            )
+        logger.info(f"Synchronized synthetic section links for {updated_count} chunk(s) in doc_uid={doc_uid}")
 
     def _store_selected_outputs(
         self,
@@ -322,15 +344,20 @@ class StoreCommand:
         chunks: list[Chunk],
         document_embedding_text: str,
     ) -> int:
-        if self._stores_sections():
-            logger.info(f"Persisting sections for doc_uid={doc_uid}")
-            self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
         if self._stores_documents():
             with self._dependencies.document_store as document_store:
                 logger.info(f"Persisting document representation fields for doc_uid={doc_uid}")
                 document_store.upsert_document(extracted_document.document)
                 logger.info(f"Persisted document representation fields for doc_uid={doc_uid}")
 
+        if self._stores_sections():
+            logger.info(f"Persisting sections for doc_uid={doc_uid}")
+            section_db_id_by_source_id = self._store_sections(doc_uid=doc_uid, extracted_document=extracted_document)
+            self._sync_chunk_section_links(
+                doc_uid=doc_uid,
+                chunks=chunks,
+                section_db_id_by_source_id=section_db_id_by_source_id,
+            )
         embeddings_stored = 0
         if self._stores_chunks():
             embeddings_stored = self._store_chunk_embeddings(doc_uid=doc_uid, chunks=chunks)
@@ -369,7 +396,7 @@ class StoreCommand:
                 title_vector_store.add_embeddings(
                     doc_uid,
                     [section.section_id for section in sections],
-                    [section.embedding_text for section in sections],
+                    [section.title for section in sections],
                 )
                 logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
 
@@ -447,8 +474,8 @@ class StoreCommand:
     def _section_payloads_match(self, existing_sections: list[SectionRecord], new_sections: list[SectionRecord]) -> bool:
         return [self._section_payload(section) for section in existing_sections] == [self._section_payload(section) for section in new_sections]
 
-    def _section_payload(self, section: SectionRecord) -> tuple[str, str | None, str, str]:
-        return (section.section_id, section.parent_section_id, section.title, section.embedding_text)
+    def _section_payload(self, section: SectionRecord) -> tuple[str, str | None, str]:
+        return (section.section_id, section.parent_section_id, section.title)
 
     def _document_payloads_match(self, existing_document: DocumentRecord | None, new_document: DocumentRecord) -> bool:
         if existing_document is None:

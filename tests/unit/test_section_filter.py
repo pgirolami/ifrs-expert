@@ -294,7 +294,6 @@ def _make_section(section_id: str, title: str) -> SectionRecord:
         level=1,
         title=title,
         section_lineage=[title],
-        embedding_text=title,
         position=0,
     )
 

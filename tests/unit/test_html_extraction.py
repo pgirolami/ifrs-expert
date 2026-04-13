@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from bs4 import BeautifulSoup
 
-from src.extraction.html import HtmlExtractor, HtmlValidationError
+from src.extraction.html import HtmlExtractor, HtmlValidationError, _normalize_navis_heading_title
 
 
 def _example_html_path(slug: str) -> Path:
@@ -103,7 +103,6 @@ class TestHtmlExtractor:
             section = sections_by_id.get(expected["section_id"])
             assert section is not None, f"Missing section {expected['section_id']}"
             assert expected["section_name"] in section.title
-            assert section.embedding_text == section.title
             assert section.parent_section_id == expected.get("section_parent_id")
 
     def test_extract_builds_recursive_section_closure_rows(self, tmp_path: Path) -> None:
@@ -384,10 +383,29 @@ class TestHtmlExtractor:
 
         sections_by_id = {section.section_id: section for section in extracted_document.sections}
         assert len(extracted_document.sections) == 4
-        assert sections_by_id["N-ANCESTOR-EFL"].title == "A. Généralités"
-        assert "N-LEAF-1-EFL" in sections_by_id
-        assert "N-LEAF-2-EFL" in sections_by_id
+        assert sections_by_id["N-ANCESTOR-EFL"].title == "Généralités"
+        assert sections_by_id["N-LEAF-1-EFL"].parent_section_id == "N-ANCESTOR-EFL"
+        assert sections_by_id["N-LEAF-2-EFL"].parent_section_id == "N-ANCESTOR-EFL"
         assert [chunk.chunk_id for chunk in extracted_document.chunks] == ["P-LEAF-1-EFL", "P-LEAF-2-EFL"]
+
+    @pytest.mark.parametrize(
+        ("raw_title", "expected_title"),
+        [
+            ("1. Généralités", "Généralités"),
+            ("A. Généralités", "Généralités"),
+            ("II. Généralités", "Généralités"),
+            ("i. Généralités", "Généralités"),
+            ("CHAPITRE 4 Cadre conceptuel", "Cadre conceptuel"),
+            ("Sans numérotation", "Sans numérotation"),
+        ],
+    )
+    def test_normalize_navis_heading_title_strips_supported_leading_list_markers(
+        self,
+        raw_title: str,
+        expected_title: str,
+    ) -> None:
+        """Navis heading normalization should strip leading list markers from section titles."""
+        assert _normalize_navis_heading_title(raw_title) == expected_title
 
     def test_extract_rejects_navis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
         """Navis sidecar url and canonical_url must point to the same refId."""

@@ -41,6 +41,10 @@ NAVIS_TITLE_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(
 )
 NAVIS_EDITORIAL_TITLES: Final[set[str]] = {"QUESTIONS/REPONSES PRATIQUES"}
 NAVIS_CHAPTER_BUNDLE_CAPTURE_FORMAT: Final[str] = "navis-chapter-bundle/v1"
+NAVIS_LIST_MARKER_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"^(?:\d+|[A-Z]|[IVXLCDM]+)\.\s+",
+    re.IGNORECASE,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -308,7 +312,6 @@ class IfrsHtmlExtractor:
             level=nested_level,
             title=title,
             section_lineage=section_lineage,
-            embedding_text=title,
             position=traversal_state.position,
         )
 
@@ -431,6 +434,14 @@ class _TocContextEntry:
 
 
 @dataclass(frozen=True)
+class _PreviousNavisAnchor:
+    """Anchor metadata immediately preceding a Navis heading or chunk."""
+
+    anchor_id: str
+    is_context_only: bool
+
+
+@dataclass(frozen=True)
 class _NavisHeading:
     """One inline Navis heading encountered in document order."""
 
@@ -438,6 +449,7 @@ class _NavisHeading:
     title: str
     kind: str
     anchor_id: str | None
+    is_context_only: bool = False
 
 
 @dataclass
@@ -446,7 +458,9 @@ class _NavisStructureState:
 
     active_sections_by_level: dict[int, SectionRecord]
     active_kinds_by_level: dict[int, str]
+    active_context_only_by_level: dict[int, bool]
     sections: list[SectionRecord]
+    section_by_id: dict[str, SectionRecord]
     chunks: list[Chunk]
     seen_section_ids: set[str]
     seen_chunk_ids: set[str]
@@ -673,7 +687,9 @@ class NavisHtmlExtractor:
         state = _NavisStructureState(
             active_sections_by_level={},
             active_kinds_by_level={},
+            active_context_only_by_level={},
             sections=[],
+            section_by_id={},
             chunks=[],
             seen_section_ids=set(),
             seen_chunk_ids=set(),
@@ -691,9 +707,11 @@ class NavisHtmlExtractor:
         )
         state.position += 1
         state.sections.append(chapter_section)
+        state.section_by_id[chapter_section.section_id] = chapter_section
         state.seen_section_ids.add(chapter_section.section_id)
         state.active_sections_by_level[1] = chapter_section
         state.active_kinds_by_level[1] = "chapter"
+        state.active_context_only_by_level[1] = False
 
         total_pages = len(page_nodes)
         for page_index, page_node in enumerate(page_nodes, start=1):
@@ -744,6 +762,7 @@ class NavisHtmlExtractor:
         level = _resolve_navis_heading_level(
             kind=heading.kind,
             active_kinds_by_level=state.active_kinds_by_level,
+            active_context_only_by_level=state.active_context_only_by_level,
         )
         self._prune_navis_state(state=state, level=level)
         parent_section = state.active_sections_by_level.get(level - 1)
@@ -758,11 +777,17 @@ class NavisHtmlExtractor:
             parent_section=parent_section,
         )
         if section.section_id in state.seen_section_ids:
+            existing_section = state.section_by_id[section.section_id]
+            state.active_sections_by_level[level] = existing_section
+            state.active_kinds_by_level[level] = heading.kind
+            state.active_context_only_by_level[level] = heading.is_context_only
             return
         state.position += 1
         state.active_sections_by_level[level] = section
         state.active_kinds_by_level[level] = heading.kind
+        state.active_context_only_by_level[level] = heading.is_context_only
         state.sections.append(section)
+        state.section_by_id[section.section_id] = section
         state.seen_section_ids.add(section.section_id)
 
     def _extract_structure(
@@ -776,7 +801,9 @@ class NavisHtmlExtractor:
         state = _NavisStructureState(
             active_sections_by_level={},
             active_kinds_by_level={},
+            active_context_only_by_level={},
             sections=[],
+            section_by_id={},
             chunks=[],
             seen_section_ids=set(),
             seen_chunk_ids=set(),
@@ -816,9 +843,11 @@ class NavisHtmlExtractor:
                 continue
             state.position += 1
             state.sections.append(section)
+            state.section_by_id[section.section_id] = section
             state.seen_section_ids.add(section.section_id)
             state.active_sections_by_level[level] = section
             state.active_kinds_by_level[level] = context_entry.kind
+            state.active_context_only_by_level[level] = False
 
     def _append_heading_section(
         self,
@@ -835,6 +864,7 @@ class NavisHtmlExtractor:
         level = _resolve_navis_heading_level(
             kind=heading.kind,
             active_kinds_by_level=state.active_kinds_by_level,
+            active_context_only_by_level=state.active_context_only_by_level,
         )
         if state.matched_context_index < len(matched_context) and matched_context[state.matched_context_index].title == heading.title:
             level = len(base_context) + state.matched_context_index + 1
@@ -853,11 +883,17 @@ class NavisHtmlExtractor:
             parent_section=parent_section,
         )
         if section.section_id in state.seen_section_ids:
+            existing_section = state.section_by_id[section.section_id]
+            state.active_sections_by_level[level] = existing_section
+            state.active_kinds_by_level[level] = heading.kind
+            state.active_context_only_by_level[level] = heading.is_context_only
             return True
         state.position += 1
         state.active_sections_by_level[level] = section
         state.active_kinds_by_level[level] = heading.kind
+        state.active_context_only_by_level[level] = heading.is_context_only
         state.sections.append(section)
+        state.section_by_id[section.section_id] = section
         state.seen_section_ids.add(section.section_id)
         return True
 
@@ -888,16 +924,19 @@ class NavisHtmlExtractor:
         title = _normalize_navis_heading_title(raw_text)
         if not title:
             return None
+        previous_anchor = _find_previous_navis_anchor(child)
         return _NavisHeading(
             raw_text=raw_text,
             title=title,
             kind=kind,
-            anchor_id=_find_previous_named_anchor_id(child),
+            anchor_id=previous_anchor.anchor_id if previous_anchor is not None else None,
+            is_context_only=previous_anchor.is_context_only if previous_anchor is not None else False,
         )
 
     def _prune_navis_state(self, state: _NavisStructureState, level: int) -> None:
         state.active_sections_by_level = {existing_level: existing_section for existing_level, existing_section in state.active_sections_by_level.items() if existing_level < level}
         state.active_kinds_by_level = {existing_level: existing_kind for existing_level, existing_kind in state.active_kinds_by_level.items() if existing_level < level}
+        state.active_context_only_by_level = {existing_level: is_context_only for existing_level, is_context_only in state.active_context_only_by_level.items() if existing_level < level}
 
     def _collect_inline_headings(self, content_root: Tag) -> list[_NavisHeading]:
         headings: list[_NavisHeading] = []
@@ -913,12 +952,14 @@ class NavisHtmlExtractor:
             title = _normalize_navis_heading_title(raw_text)
             if not title:
                 continue
+            previous_anchor = _find_previous_navis_anchor(child)
             headings.append(
                 _NavisHeading(
                     raw_text=raw_text,
                     title=title,
                     kind=kind,
-                    anchor_id=_find_previous_named_anchor_id(child),
+                    anchor_id=previous_anchor.anchor_id if previous_anchor is not None else None,
+                    is_context_only=previous_anchor.is_context_only if previous_anchor is not None else False,
                 )
             )
         return headings
@@ -992,7 +1033,6 @@ def _build_section_record(
         level=draft.level,
         title=draft.title,
         section_lineage=section_lineage,
-        embedding_text=draft.title,
         position=draft.position,
     )
 
@@ -1158,6 +1198,7 @@ def _extract_navis_heading_text(node: Tag) -> str:
 
 def _normalize_navis_heading_title(raw_text: str) -> str:
     stripped_title = NAVIS_TITLE_PREFIX_PATTERN.sub("", raw_text).strip()
+    stripped_title = NAVIS_LIST_MARKER_PATTERN.sub("", stripped_title)
     return _normalize_whitespace(stripped_title)
 
 
@@ -1192,7 +1233,11 @@ def _classify_navis_heading(raw_text: str, classes: list[str]) -> str | None:
     return "leaf"
 
 
-def _resolve_navis_heading_level(kind: str, active_kinds_by_level: dict[int, str]) -> int:
+def _resolve_navis_heading_level(
+    kind: str,
+    active_kinds_by_level: dict[int, str],
+    active_context_only_by_level: dict[int, bool],
+) -> int:
     fixed_levels = {
         "title": 1,
         "chapter": 2,
@@ -1202,6 +1247,7 @@ def _resolve_navis_heading_level(kind: str, active_kinds_by_level: dict[int, str
 
     highest_active_level = max(active_kinds_by_level, default=0)
     highest_active_kind = active_kinds_by_level.get(highest_active_level)
+    highest_active_is_context_only = active_context_only_by_level.get(highest_active_level, False)
 
     if kind == "editorial":
         return highest_active_level + 1 if highest_active_kind == "chapter" else 3
@@ -1216,22 +1262,29 @@ def _resolve_navis_heading_level(kind: str, active_kinds_by_level: dict[int, str
         return next_level
 
     if highest_active_kind == "leaf":
-        return highest_active_level
+        return highest_active_level + 1 if highest_active_is_context_only else highest_active_level
     return highest_active_level + 1 if highest_active_kind in {"editorial", "section", "chapter", "title"} else 4
 
 
-def _find_previous_named_anchor_id(node: Tag) -> str | None:
+def _find_previous_navis_anchor(node: Tag) -> _PreviousNavisAnchor | None:
     current_sibling: PageElement | None = node.previous_sibling
     while current_sibling is not None:
         if isinstance(current_sibling, Tag) and current_sibling.name == "a":
             anchor_id = _tag_attribute_as_string(current_sibling, "id")
             if anchor_id and not anchor_id.startswith("_JV"):
-                return anchor_id
+                return _PreviousNavisAnchor(anchor_id=anchor_id, is_context_only=False)
             context_anchor_id = _tag_attribute_as_string(current_sibling, "data-ifrs-expert-context-ref-id")
             if context_anchor_id and not context_anchor_id.startswith("_JV"):
-                return context_anchor_id
+                return _PreviousNavisAnchor(anchor_id=context_anchor_id, is_context_only=True)
         current_sibling = current_sibling.previous_sibling
     return None
+
+
+def _find_previous_named_anchor_id(node: Tag) -> str | None:
+    previous_anchor = _find_previous_navis_anchor(node)
+    if previous_anchor is None:
+        return None
+    return previous_anchor.anchor_id
 
 
 def _get_highest_level_section(active_sections_by_level: dict[int, SectionRecord]) -> SectionRecord | None:

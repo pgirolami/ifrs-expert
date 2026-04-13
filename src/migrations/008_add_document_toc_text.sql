@@ -1,1 +1,1 @@
-ALTER TABLE documents ADD COLUMN toc_text TEXT;
+-- Legacy no-op after consolidation into 000_schema.sql

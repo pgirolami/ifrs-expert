@@ -61,6 +61,13 @@ class ChunkStoreProtocol(ReadChunkStoreProtocol, Protocol):
     def delete_chunks_by_doc(self, doc_uid: str) -> int:
         """Delete all chunks for a document."""
 
+    def sync_containing_section_db_ids(
+        self,
+        doc_uid: str,
+        section_db_id_by_source_id: dict[str, int],
+    ) -> int:
+        """Resolve document-local section ids to synthetic db ids for one document."""
+
 
 class ReadSectionStoreProtocol(Protocol):
     """Protocol for section-store reads used by title retrieval flows."""
@@ -74,8 +81,11 @@ class ReadSectionStoreProtocol(Protocol):
     def get_sections_by_doc(self, doc_uid: str) -> list[SectionRecord]:
         """Get indexed sections for a document."""
 
-    def get_descendant_section_ids(self, section_id: str) -> list[str]:
-        """Get descendant section ids including the matched section itself."""
+    def get_section_by_source_id(self, doc_uid: str, section_id: str) -> SectionRecord | None:
+        """Resolve one document-local section id to its stored section row."""
+
+    def get_descendant_section_db_ids(self, section_db_id: int) -> list[int]:
+        """Get descendant synthetic section ids including the matched section itself."""
 
 
 class SectionStoreProtocol(ReadSectionStoreProtocol, Protocol):
@@ -84,8 +94,11 @@ class SectionStoreProtocol(ReadSectionStoreProtocol, Protocol):
     def insert_sections(self, sections: list[SectionRecord]) -> None:
         """Insert sections into the store."""
 
-    def insert_closure_rows(self, closure_rows: list[SectionClosureRow]) -> None:
+    def insert_closure_rows(self, doc_uid: str, closure_rows: list[SectionClosureRow]) -> None:
         """Insert section closure rows into the store."""
+
+    def map_source_ids_to_db_ids(self, doc_uid: str, section_ids: list[str]) -> dict[str, int]:
+        """Resolve one document's source section ids to synthetic db ids."""
 
     def delete_sections_by_doc(self, doc_uid: str) -> int:
         """Delete all sections for a document."""

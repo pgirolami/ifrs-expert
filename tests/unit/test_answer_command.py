@@ -381,6 +381,28 @@ class TestAnswerCommand:
 
         section_store = InMemorySectionStore()
         with section_store as store:
+            store.insert_sections(
+                [
+                    SectionRecord(
+                        section_id="IFRS09_0054",
+                        doc_uid="ifrs9",
+                        parent_section_id=None,
+                        level=2,
+                        title="Recognition and derecognition",
+                        section_lineage=["Recognition and derecognition"],
+                        position=1,
+                    ),
+                    SectionRecord(
+                        section_id="IFRS09_g3.1.1-3.1.2",
+                        doc_uid="ifrs9",
+                        parent_section_id="IFRS09_0054",
+                        level=3,
+                        title="Initial recognition",
+                        section_lineage=["Recognition and derecognition", "Initial recognition"],
+                        position=2,
+                    ),
+                ]
+            )
             store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"])
 
         captured_prompts: list[str] = []
@@ -649,7 +671,6 @@ class TestAnswerCommand:
                         level=2,
                         title="Recognition and derecognition",
                         section_lineage=["Recognition and derecognition"],
-                        embedding_text="Recognition and derecognition",
                         position=1,
                     ),
                     SectionRecord(
@@ -659,7 +680,6 @@ class TestAnswerCommand:
                         level=3,
                         title="Initial recognition",
                         section_lineage=["Recognition and derecognition", "Initial recognition"],
-                        embedding_text="Initial recognition",
                         position=2,
                     ),
                 ]

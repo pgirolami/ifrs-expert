@@ -26,7 +26,6 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
             level=2,
             title="Background",
             section_lineage=["Background"],
-            embedding_text="Background",
             position=1,
         ),
         SectionRecord(
@@ -36,7 +35,6 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
             level=2,
             title="Issue",
             section_lineage=["Issue"],
-            embedding_text="Issue",
             position=2,
         ),
         SectionRecord(
@@ -46,7 +44,6 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
             level=2,
             title="Scope",
             section_lineage=["Scope"],
-            embedding_text="Scope",
             position=3,
         ),
     ]
@@ -108,6 +105,107 @@ def test_document_profile_builder_uses_pdf_fallback_intro() -> None:
     assert "Introduction: First paragraph.\nSecond paragraph." in built_profile.embedding_text
 
 
+def test_document_profile_builder_extracts_navis_intro_from_essentiel_generalites_section() -> None:
+    """Navis documents should use the Généralités subsection under L'ESSENTIEL DE LA NORME as intro text."""
+    document = DocumentRecord(
+        doc_uid="navis-QRIFRS-C2A8E6F292F99E-EFL",
+        source_type="html",
+        source_title="CHAPITRE 4 Cadre conceptuel de l'information financière",
+        source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+        canonical_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+        captured_at="2026-04-05T10:00:00Z",
+        source_domain="abonnes.efl.fr",
+        document_type="NAVIS",
+    )
+    sections = [
+        SectionRecord(
+            section_id="chapter-1",
+            doc_uid=document.doc_uid,
+            parent_section_id=None,
+            level=1,
+            title="Cadre conceptuel de l'information financière",
+            section_lineage=["Cadre conceptuel de l'information financière"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="essential",
+            doc_uid=document.doc_uid,
+            parent_section_id="chapter-1",
+            level=2,
+            title="L’ESSENTIEL DE LA NORME",
+            section_lineage=["Cadre conceptuel de l'information financière", "L’ESSENTIEL DE LA NORME"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="generalites",
+            doc_uid=document.doc_uid,
+            parent_section_id="essential",
+            level=3,
+            title="A. Généralités",
+            section_lineage=["Cadre conceptuel de l'information financière", "L’ESSENTIEL DE LA NORME", "A. Généralités"],
+            position=3,
+        ),
+        SectionRecord(
+            section_id="generalites-child",
+            doc_uid=document.doc_uid,
+            parent_section_id="generalites",
+            level=4,
+            title="Champ d'application",
+            section_lineage=[
+                "Cadre conceptuel de l'information financière",
+                "L’ESSENTIEL DE LA NORME",
+                "A. Généralités",
+                "Champ d'application",
+            ],
+            position=4,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("chapter-1", "chapter-1", 0),
+        SectionClosureRow("chapter-1", "essential", 1),
+        SectionClosureRow("chapter-1", "generalites", 2),
+        SectionClosureRow("chapter-1", "generalites-child", 3),
+        SectionClosureRow("essential", "essential", 0),
+        SectionClosureRow("essential", "generalites", 1),
+        SectionClosureRow("essential", "generalites-child", 2),
+        SectionClosureRow("generalites", "generalites", 0),
+        SectionClosureRow("generalites", "generalites-child", 1),
+        SectionClosureRow("generalites-child", "generalites-child", 0),
+    ]
+    chunks = [
+        Chunk(
+            doc_uid=document.doc_uid,
+            chunk_number="12501",
+            page_start="",
+            page_end="",
+            chunk_id="P8A8E6F292F99E-EFL",
+            containing_section_id="generalites",
+            text="Premier paragraphe d'introduction.",
+        ),
+        Chunk(
+            doc_uid=document.doc_uid,
+            chunk_number="12502",
+            page_start="",
+            page_end="",
+            chunk_id="P8A8E6F292F99E-EFL-2",
+            containing_section_id="generalites-child",
+            text="Deuxième paragraphe d'introduction.",
+        ),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.intro_text == (
+        "Premier paragraphe d'introduction.\nDeuxième paragraphe d'introduction."
+    )
+    assert "Introduction: Premier paragraphe d'introduction." in built_profile.embedding_text
+
+
 def test_document_profile_builder_pulls_objective_subsections_into_document_representation() -> None:
     """Objective text should include descendant subsection chunks, not only direct section chunks."""
     document = DocumentRecord(
@@ -126,7 +224,6 @@ def test_document_profile_builder_pulls_objective_subsections_into_document_repr
             level=2,
             title="Objective",
             section_lineage=["Objective"],
-            embedding_text="Objective",
             position=1,
         ),
         SectionRecord(
@@ -136,7 +233,6 @@ def test_document_profile_builder_pulls_objective_subsections_into_document_repr
             level=3,
             title="Subsidiaries",
             section_lineage=["Objective", "Subsidiaries"],
-            embedding_text="Subsidiaries",
             position=2,
         ),
     ]
@@ -182,7 +278,6 @@ def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided()
             level=2,
             title="Contents",
             section_lineage=["Contents"],
-            embedding_text="Contents",
             position=1,
         ),
         SectionRecord(
@@ -192,7 +287,6 @@ def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided()
             level=2,
             title="Scope",
             section_lineage=["Scope"],
-            embedding_text="Scope",
             position=2,
         ),
     ]
@@ -207,6 +301,78 @@ def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided()
 
     assert built_profile.document.toc_text is None
     assert "TOC:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_does_not_extract_navis_intro_without_matching_essentiel_parent() -> None:
+    """Navis intro extraction should require Généralités to sit under an L'ESSENTIEL DE LA NORME section."""
+    document = DocumentRecord(
+        doc_uid="navis-QRIFRS-C2A8E6F292F99E-EFL",
+        source_type="html",
+        source_title="CHAPITRE 4 Cadre conceptuel de l'information financière",
+        source_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+        canonical_url="https://abonnes.efl.fr/EFL2/document/?key=QRIFRS&refId=C2A8E6F292F99E-EFL",
+        captured_at="2026-04-05T10:00:00Z",
+        source_domain="abonnes.efl.fr",
+        document_type="NAVIS",
+    )
+    sections = [
+        SectionRecord(
+            section_id="chapter-1",
+            doc_uid=document.doc_uid,
+            parent_section_id=None,
+            level=1,
+            title="Cadre conceptuel de l'information financière",
+            section_lineage=["Cadre conceptuel de l'information financière"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="overview",
+            doc_uid=document.doc_uid,
+            parent_section_id="chapter-1",
+            level=2,
+            title="Présentation générale",
+            section_lineage=["Cadre conceptuel de l'information financière", "Présentation générale"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="generalites",
+            doc_uid=document.doc_uid,
+            parent_section_id="overview",
+            level=3,
+            title="Généralités",
+            section_lineage=["Cadre conceptuel de l'information financière", "Présentation générale", "Généralités"],
+            position=3,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("chapter-1", "chapter-1", 0),
+        SectionClosureRow("chapter-1", "overview", 1),
+        SectionClosureRow("chapter-1", "generalites", 2),
+        SectionClosureRow("overview", "overview", 0),
+        SectionClosureRow("overview", "generalites", 1),
+        SectionClosureRow("generalites", "generalites", 0),
+    ]
+    chunks = [
+        Chunk(
+            doc_uid=document.doc_uid,
+            chunk_number="12501",
+            page_start="",
+            page_end="",
+            chunk_id="P8A8E6F292F99E-EFL",
+            containing_section_id="generalites",
+            text="Texte qui ne doit pas être promu en introduction.",
+        )
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.intro_text is None
+    assert "Introduction:" not in built_profile.embedding_text
 
 
 def test_document_profile_builder_truncates_embedding_text_proportionally() -> None:
@@ -229,7 +395,6 @@ def test_document_profile_builder_truncates_embedding_text_proportionally() -> N
             level=2,
             title="Issue",
             section_lineage=["Issue"],
-            embedding_text="Issue",
             position=1,
         ),
         SectionRecord(
@@ -239,7 +404,6 @@ def test_document_profile_builder_truncates_embedding_text_proportionally() -> N
             level=2,
             title="Scope",
             section_lineage=["Scope"],
-            embedding_text="Scope",
             position=2,
         ),
     ]

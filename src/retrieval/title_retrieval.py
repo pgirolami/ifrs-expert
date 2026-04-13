@@ -44,6 +44,15 @@ class TitleRetrievalHit:
     chunks: list[Chunk]
 
 
+@dataclass(frozen=True)
+class _SectionResolutionContext:
+    """Resolved section lookup state for title expansion."""
+
+    sections_by_key: dict[tuple[str, str], SectionRecord]
+    section_db_id_by_source_id_by_doc: dict[str, dict[str, int]]
+    descendant_db_ids_by_key: dict[tuple[str, str], list[int]]
+
+
 def retrieve_title_hits(
     query: str,
     config: TitleRetrievalConfig,
@@ -68,20 +77,21 @@ def retrieve_title_hits(
 
     doc_uids = list({result["doc_uid"] for result in selected_results})
     doc_chunks: dict[str, list[Chunk]] = {}
-    sections_by_id: dict[str, SectionRecord] = {}
-    descendant_ids_by_section: dict[str, list[str]] = {}
 
     with config.chunk_store as chunk_store, config.section_store as section_store:
         for doc_uid in doc_uids:
             doc_chunks[doc_uid] = chunk_store.get_chunks_by_doc(doc_uid)
-            for section in section_store.get_sections_by_doc(doc_uid):
-                sections_by_id[section.section_id] = section
+        resolution_context = _build_section_resolution_context(
+            selected_results=selected_results,
+            doc_uids=doc_uids,
+            section_store=section_store,
+        )
 
-        for result in selected_results:
-            section_id = result["section_id"]
-            descendant_ids_by_section[section_id] = section_store.get_descendant_section_ids(section_id)
-
-    hits = _build_hits(selected_results, doc_chunks, sections_by_id, descendant_ids_by_section)
+    hits = _build_hits(
+        selected_results=selected_results,
+        doc_chunks=doc_chunks,
+        resolution_context=resolution_context,
+    )
     return None, hits
 
 
@@ -121,23 +131,76 @@ def _select_top_k_per_document(
     return selected_results
 
 
+def _build_section_resolution_context(
+    selected_results: list[TitleSearchResult],
+    doc_uids: list[str],
+    section_store: ReadSectionStoreProtocol,
+) -> _SectionResolutionContext:
+    sections_by_key: dict[tuple[str, str], SectionRecord] = {}
+    section_db_id_by_source_id_by_doc: dict[str, dict[str, int]] = {}
+    descendant_db_ids_by_key: dict[tuple[str, str], list[int]] = {}
+
+    for doc_uid in doc_uids:
+        sections = section_store.get_sections_by_doc(doc_uid)
+        section_db_id_by_source_id_by_doc[doc_uid] = {section.section_id: section.db_id for section in sections if section.db_id is not None}
+        for section in sections:
+            sections_by_key[(doc_uid, section.section_id)] = section
+
+    for result in selected_results:
+        section_key = (result["doc_uid"], result["section_id"])
+        section = sections_by_key.get(section_key)
+        if section is None:
+            section = section_store.get_section_by_source_id(
+                doc_uid=result["doc_uid"],
+                section_id=result["section_id"],
+            )
+            if section is not None:
+                sections_by_key[section_key] = section
+        if section is None or section.db_id is None:
+            continue
+        descendant_db_ids_by_key[section_key] = section_store.get_descendant_section_db_ids(section.db_id)
+
+    return _SectionResolutionContext(
+        sections_by_key=sections_by_key,
+        section_db_id_by_source_id_by_doc=section_db_id_by_source_id_by_doc,
+        descendant_db_ids_by_key=descendant_db_ids_by_key,
+    )
+
+
 def _build_hits(
     selected_results: list[TitleSearchResult],
     doc_chunks: dict[str, list[Chunk]],
-    sections_by_id: dict[str, SectionRecord],
-    descendant_ids_by_section: dict[str, list[str]],
+    resolution_context: _SectionResolutionContext,
 ) -> list[TitleRetrievalHit]:
     hits: list[TitleRetrievalHit] = []
 
     for result in selected_results:
-        section_id = result["section_id"]
-        section = sections_by_id.get(section_id)
+        doc_uid = result["doc_uid"]
+        section_key = (doc_uid, result["section_id"])
+        section = resolution_context.sections_by_key.get(section_key)
         if section is None:
             continue
 
-        descendant_ids = set(descendant_ids_by_section.get(section_id, [section_id]))
-        matched_chunks = [chunk for chunk in doc_chunks.get(result["doc_uid"], []) if chunk.containing_section_id in descendant_ids]
+        descendant_db_ids = set(
+            resolution_context.descendant_db_ids_by_key.get(
+                section_key,
+                [section.db_id] if section.db_id is not None else [],
+            )
+        )
+        section_db_id_by_source_id = resolution_context.section_db_id_by_source_id_by_doc.get(doc_uid, {})
+        matched_chunks = [chunk for chunk in doc_chunks.get(doc_uid, []) if _resolve_chunk_section_db_id(chunk, section_db_id_by_source_id) in descendant_db_ids]
 
         hits.append(TitleRetrievalHit(section=section, score=result["score"], chunks=matched_chunks))
 
     return hits
+
+
+def _resolve_chunk_section_db_id(
+    chunk: Chunk,
+    section_db_id_by_source_id: dict[str, int],
+) -> int | None:
+    if chunk.containing_section_db_id is not None:
+        return chunk.containing_section_db_id
+    if chunk.containing_section_id is None:
+        return None
+    return section_db_id_by_source_id.get(chunk.containing_section_id)

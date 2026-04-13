@@ -17,6 +17,7 @@ class Chunk:
     chunk_id: str = ""
     text: str = ""
     containing_section_id: str | None = None
+    containing_section_db_id: int | None = None
 
     @property
     def section_path(self) -> str:

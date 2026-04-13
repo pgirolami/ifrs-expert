@@ -6,7 +6,7 @@ Fix section persistence so section identifiers are treated as **document-local**
 
 Target state:
 
-- `sections` has a synthetic primary key, e.g. `id INTEGER PRIMARY KEY`
+- `sections` has a synthetic primary key `db_id INTEGER PRIMARY KEY`
 - business uniqueness is enforced by `UNIQUE (doc_uid, section_id)`
 - foreign-key-style references use the synthetic section row id, not raw `section_id`
 - section closure rows and chunk-to-section references become robust even when two documents reuse the same `section_id`
@@ -35,7 +35,7 @@ Observed consequence:
 3. `(doc_uid, section_id)` is the true business key and must be enforced with a unique constraint.
 4. `section_closure` should reference section rows by synthetic ids, not by raw section ids.
 5. chunks should reference the containing section row by synthetic id for relational integrity.
-6. raw `containing_section_id` may be retained temporarily for migration/debugging, but the durable relational link should be the synthetic id.
+6. raw `containing_section_id` may be retained temporarily for debugging/compatibility, but the durable relational link must be the synthetic id.
 7. APIs that currently accept only `section_id` must be rewritten to work either with:
    - synthetic section ids, or
    - `(doc_uid, section_id)` when addressing source ids explicitly.
@@ -44,9 +44,9 @@ Observed consequence:
 
 ### `sections`
 
-Add / migrate to:
+Use:
 
-- `id INTEGER PRIMARY KEY`
+- `db_id INTEGER PRIMARY KEY`
 - `doc_uid TEXT NOT NULL`
 - `section_id TEXT NOT NULL`
 - `parent_section_db_id INTEGER NULL`
@@ -95,23 +95,23 @@ Either is valid, but DB reads and closure expansion should ultimately use synthe
 
 ## Code changes required
 
-### 1. Migrations
+### 1. Schema setup
 
-Add one or more new migrations that:
+Because the database and indices will be rebuilt from scratch via `ingest`, we do **not** need a data migration/backfill plan.
 
-- create a new `sections_v2` table with synthetic PK + unique `(doc_uid, section_id)`
-- create a new `section_closure_v2` table keyed by synthetic ids
-- add `chunks.containing_section_db_id`
-- backfill synthetic parent/closure/chunk links from existing rows
-- swap tables / rename once data is migrated
+Instead, reset the schema baseline and bootstrap path so a fresh database is created with:
 
-Because SQLite has limited `ALTER TABLE` support, this likely means:
+- `sections` using a synthetic PK + unique `(doc_uid, section_id)`
+- `section_closure` keyed by synthetic ids and including `doc_uid`
+- `chunks.containing_section_db_id`
 
-1. create replacement tables
-2. copy/backfill data
-3. recreate indexes
-4. drop old tables
-5. rename replacements
+Concretely, this means:
+
+1. consolidate the current schema-defining migration set into a single baseline file such as `000_schema.sql`
+2. encode the new post-cutover schema in that baseline file
+3. treat future schema changes as normal forward migrations in new numbered files after `000_schema.sql`
+4. remove assumptions that old persisted data must be preserved
+5. rebuild the database and vector indices by rerunning `ingest`
 
 ### 2. Models
 
@@ -123,7 +123,7 @@ Update section-related models so they distinguish:
 Likely changes:
 
 - `SectionRecord`
-  - add `id: int | None`
+  - add `db_id: int | None`
   - add `parent_section_db_id: int | None`
   - keep `section_id: str`
 - `SectionClosureRow`
@@ -146,12 +146,27 @@ This avoids forcing extractors to know about database-generated ids.
 
 Refactor `src/db/sections.py` to:
 
-- insert sections and capture generated row ids
-- resolve `(doc_uid, section_id) -> db id`
+- insert sections and capture generated `db_id` values
+- resolve `(doc_uid, section_id) -> db_id`
 - persist parent linkage via `parent_section_db_id`
 - persist closure rows via synthetic ids
 - expose descendant lookups by synthetic section id
 - optionally expose helper lookups by `(doc_uid, section_id)` for interoperability
+
+Recommended insert flow:
+
+1. insert all sections with `db_id=NULL` and `parent_section_db_id=NULL`
+2. let SQLite populate `db_id` automatically because `db_id INTEGER PRIMARY KEY` aliases the rowid
+3. read back the inserted rows for that `doc_uid` and build a `(doc_uid, section_id) -> db_id` map
+4. update `parent_section_db_id` using that map
+5. insert closure rows using `ancestor_section_db_id` / `descendant_section_db_id`
+6. populate `chunks.containing_section_db_id` using the same map
+
+Implementation note:
+
+- simplest approach: insert rows one by one and use `cursor.lastrowid`, or `INSERT ... RETURNING db_id` if convenient
+- robust batch approach: insert all rows, then query them back by `doc_uid` and `section_id`
+- because `(doc_uid, section_id)` is unique, either approach is deterministic
 
 Suggested interface additions:
 
@@ -213,34 +228,30 @@ Anything assuming section identity is a single string key must be updated to use
 - synthetic id, or
 - `(doc_uid, section_id)`
 
-## Migration strategy
+## Rollout strategy
 
-## Phase 1 — schema introduction
+Because the database and indices will be recreated, rollout can be simpler:
 
-Add new schema elements without removing old ones yet:
+### 1. Schema cutover
 
-- synthetic section PK
+Create the fresh schema with:
+
+- synthetic section PK `db_id`
 - unique `(doc_uid, section_id)`
-- synthetic closure references
+- synthetic closure references plus `doc_uid`
 - `chunks.containing_section_db_id`
 
-Backfill all existing persisted rows.
+### 2. Code cutover
 
-## Phase 2 — dual-write / dual-read
+Update persistence, retrieval, title search, and answer flows to use the new schema.
 
-Temporarily support both old and new section linkage while code is being migrated:
+### 3. Rebuild
 
-- writes populate synthetic references
-- reads prefer synthetic references
-- legacy source-id fields remain for compatibility/debugging
+Delete the existing database and vector indices, then rebuild everything by rerunning `ingest`.
 
-## Phase 3 — retrieval cutover
+### 4. Cleanup
 
-Switch retrieval, title search, and closure expansion to synthetic references only.
-
-## Phase 4 — cleanup
-
-Once all code paths are migrated:
+Once all code paths are on synthetic references:
 
 - remove obsolete source-id-as-FK usage
 - keep raw source `section_id` only as document metadata / external identifier
@@ -264,7 +275,7 @@ Add or update tests covering:
 1. ingest two docs sharing one or more section source ids
 2. re-ingest same doc and verify replacement behavior still works
 3. section expansion in retrieval remains document-local
-4. answer pipeline still builds context correctly after migration
+4. answer pipeline still builds context correctly after the schema cutover and rebuild
 
 ### Manual verification
 
@@ -279,12 +290,13 @@ Confirm:
 
 ## Risks / watchpoints
 
-1. **SQLite migration complexity**
-   - table rebuilds must preserve existing data correctly
+1. **Schema cutover complexity**
+   - all code paths must agree on the new synthetic-id contract after the rebuild
 2. **Hidden assumptions in retrieval code**
    - many places currently compare plain string section ids
+   - the implementation must explicitly audit the codebase for every place `section_id` is used, including lookups, joins, in-memory maps, deduplication logic, vector-store id maps, retrieval expansion, and answer-context assembly
 3. **Title-vector index compatibility**
-   - old id-map data may need rebuild/migration
+   - old id-map data should be discarded and rebuilt alongside the fresh database
 4. **Chunk compatibility**
    - if `containing_section_id` is used in JSON/debug output, changing it abruptly may break expectations
 5. **Test fake drift**
@@ -294,13 +306,15 @@ Confirm:
 
 1. add plan artifact
 2. add failing tests for per-document section-id reuse
-3. implement schema migration(s)
-4. update section models and `SectionStore`
-5. update chunk linkage to synthetic section ids
-6. update retrieval/title expansion paths
-7. update fakes and remaining tests
-8. rebuild/revalidate title index if needed
-9. run full ingest and retrieval validation
+3. consolidate schema creation into `000_schema.sql`
+4. implement the schema cutover in the fresh DB definition
+5. update section models and `SectionStore`
+6. audit the codebase for every `section_id` usage and update affected paths
+7. update chunk linkage to synthetic section ids
+8. update retrieval/title expansion paths
+9. update fakes and remaining tests
+10. rebuild/revalidate title index if needed
+11. run full ingest and retrieval validation
 
 ## Success criteria
 

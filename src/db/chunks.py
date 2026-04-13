@@ -31,8 +31,17 @@ class ChunkStore:
         """Insert a chunk into the database and return its database row id."""
         cursor = self._conn.execute(
             """
-            INSERT INTO chunks (doc_uid, chunk_number, page_start, page_end, chunk_id, text, containing_section_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO chunks (
+                doc_uid,
+                chunk_number,
+                page_start,
+                page_end,
+                chunk_id,
+                text,
+                containing_section_id,
+                containing_section_db_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 chunk.doc_uid,
@@ -42,6 +51,7 @@ class ChunkStore:
                 chunk.chunk_id,
                 chunk.text,
                 chunk.containing_section_id,
+                chunk.containing_section_db_id,
             ),
         )
         self._conn.commit()
@@ -65,7 +75,16 @@ class ChunkStore:
         """Get all chunks for a document."""
         rows = self._conn.execute(
             """
-            SELECT id, doc_uid, chunk_number, page_start, page_end, chunk_id, text, containing_section_id
+            SELECT
+                id,
+                doc_uid,
+                chunk_number,
+                page_start,
+                page_end,
+                chunk_id,
+                text,
+                containing_section_id,
+                containing_section_db_id
             FROM chunks
             WHERE doc_uid = ?
             ORDER BY id
@@ -83,6 +102,7 @@ class ChunkStore:
                 chunk_id=row["chunk_id"],
                 text=row["text"],
                 containing_section_id=row["containing_section_id"],
+                containing_section_db_id=row["containing_section_db_id"],
             )
             for row in rows
         ]
@@ -99,3 +119,37 @@ class ChunkStore:
         deleted = cursor.rowcount
         logger.info(f"Deleted {deleted} chunks for document {doc_uid}")
         return deleted
+
+    def sync_containing_section_db_ids(
+        self,
+        doc_uid: str,
+        section_db_id_by_source_id: dict[str, int],
+    ) -> int:
+        """Resolve one document's source section ids to synthetic db ids on stored chunks."""
+        rows = self._conn.execute(
+            """
+            SELECT id, containing_section_id
+            FROM chunks
+            WHERE doc_uid = ?
+            ORDER BY id
+            """,
+            (doc_uid,),
+        ).fetchall()
+        if not rows:
+            return 0
+
+        updates: list[tuple[int | None, int]] = []
+        for row in rows:
+            containing_section_id = row["containing_section_id"]
+            resolved_db_id = None
+            if isinstance(containing_section_id, str):
+                resolved_db_id = section_db_id_by_source_id.get(containing_section_id)
+            updates.append((resolved_db_id, row["id"]))
+
+        self._conn.executemany(
+            "UPDATE chunks SET containing_section_db_id = ? WHERE id = ?",
+            updates,
+        )
+        self._conn.commit()
+        logger.info(f"Synchronized containing_section_db_id for {len(updates)} chunk(s) in doc_uid={doc_uid}")
+        return len(updates)

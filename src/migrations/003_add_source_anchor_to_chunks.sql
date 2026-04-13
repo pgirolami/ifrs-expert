@@ -1,1 +1,1 @@
-ALTER TABLE chunks ADD COLUMN source_anchor TEXT NOT NULL DEFAULT '';
+-- Legacy no-op after consolidation into 000_schema.sql

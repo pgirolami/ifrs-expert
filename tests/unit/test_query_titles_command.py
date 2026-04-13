@@ -68,7 +68,6 @@ def test_query_titles_returns_all_chunks_in_matched_section_subtree() -> None:
                     level=2,
                     title="Recognition and derecognition",
                     section_lineage=["Recognition and derecognition"],
-                    embedding_text="Recognition and derecognition",
                     position=1,
                 ),
                 SectionRecord(
@@ -78,7 +77,6 @@ def test_query_titles_returns_all_chunks_in_matched_section_subtree() -> None:
                     level=3,
                     title="Initial recognition",
                     section_lineage=["Recognition and derecognition", "Initial recognition"],
-                    embedding_text="Initial recognition",
                     position=2,
                 ),
             ]
@@ -133,7 +131,6 @@ def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None
                     level=2,
                     title="Recognition and derecognition",
                     section_lineage=["Recognition and derecognition"],
-                    embedding_text="Recognition and derecognition",
                     position=1,
                 ),
                 SectionRecord(
@@ -143,7 +140,6 @@ def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None
                     level=3,
                     title="Initial recognition",
                     section_lineage=["Recognition and derecognition", "Initial recognition"],
-                    embedding_text="Initial recognition",
                     position=2,
                 ),
             ]
@@ -173,6 +169,90 @@ def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None
     assert [chunk["id"] for chunk in data[1]["chunks"]] == [1]
 
 
+def test_query_titles_uses_doc_uid_to_resolve_overlapping_source_section_ids() -> None:
+    """Title hits should resolve descendants within the matched document only."""
+    from src.commands.query_titles import QueryTitlesCommand, QueryTitlesConfig, QueryTitlesOptions
+
+    search_results = [
+        {"doc_uid": "doc-a", "section_id": "shared-section", "score": 0.95},
+    ]
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="doc-a", chunk_number="1", chunk_id="DOCA_1", containing_section_id="shared-section", text="doc a root"),
+                Chunk(id=2, doc_uid="doc-a", chunk_number="1.1", chunk_id="DOCA_1_1", containing_section_id="child-a", text="doc a child"),
+                Chunk(id=3, doc_uid="doc-b", chunk_number="1", chunk_id="DOCB_1", containing_section_id="shared-section", text="doc b root"),
+                Chunk(id=4, doc_uid="doc-b", chunk_number="1.1", chunk_id="DOCB_1_1", containing_section_id="child-b", text="doc b child"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="shared-section",
+                    doc_uid="doc-a",
+                    parent_section_id=None,
+                    level=1,
+                    title="Shared title A",
+                    section_lineage=["Shared title A"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="child-a",
+                    doc_uid="doc-a",
+                    parent_section_id="shared-section",
+                    level=2,
+                    title="Child A",
+                    section_lineage=["Shared title A", "Child A"],
+                    position=2,
+                ),
+                SectionRecord(
+                    section_id="shared-section",
+                    doc_uid="doc-b",
+                    parent_section_id=None,
+                    level=1,
+                    title="Shared title B",
+                    section_lineage=["Shared title B"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="child-b",
+                    doc_uid="doc-b",
+                    parent_section_id="shared-section",
+                    level=2,
+                    title="Child B",
+                    section_lineage=["Shared title B", "Child B"],
+                    position=2,
+                ),
+            ]
+        )
+        store.add_descendant_mapping("shared-section", ["shared-section", "child-a"], doc_uid="doc-a")
+        store.add_descendant_mapping("shared-section", ["shared-section", "child-b"], doc_uid="doc-b")
+
+    command = QueryTitlesCommand(
+        query="shared title",
+        config=QueryTitlesConfig(
+            title_vector_store=MockTitleVectorStore(search_results),
+            section_store=section_store,
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=QueryTitlesOptions(k=5, min_score=None, verbose=False),
+    )
+
+    result = command.execute()
+
+    data = json.loads(result)
+    assert len(data) == 1
+    assert data[0]["doc_uid"] == "doc-a"
+    assert [chunk["id"] for chunk in data[0]["chunks"]] == [1, 2]
+
+
 def test_query_titles_verbose_output_starts_with_options() -> None:
     """Verbose title-query output should start with the resolved options."""
     from src.commands.query_titles import QueryTitlesCommand, QueryTitlesConfig, QueryTitlesOptions
@@ -200,7 +280,6 @@ def test_query_titles_verbose_output_starts_with_options() -> None:
                     level=2,
                     title="Recognition and derecognition",
                     section_lineage=["Recognition and derecognition"],
-                    embedding_text="Recognition and derecognition",
                     position=1,
                 ),
             ]

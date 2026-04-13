@@ -46,6 +46,25 @@ class InMemoryChunkStore(ChunkStoreProtocol):
         self._chunks = [chunk for chunk in self._chunks if chunk.doc_uid != doc_uid]
         return original_count - len(self._chunks)
 
+    def sync_containing_section_db_ids(
+        self,
+        doc_uid: str,
+        section_db_id_by_source_id: dict[str, int],
+    ) -> int:
+        updated_count = 0
+        updated_chunks: list[Chunk] = []
+        for chunk in self._chunks:
+            if chunk.doc_uid != doc_uid:
+                updated_chunks.append(chunk)
+                continue
+            containing_section_db_id = None
+            if chunk.containing_section_id is not None:
+                containing_section_db_id = section_db_id_by_source_id.get(chunk.containing_section_id)
+            updated_chunks.append(replace(chunk, containing_section_db_id=containing_section_db_id))
+            updated_count += 1
+        self._chunks = updated_chunks
+        return updated_count
+
     def clear(self) -> None:
         self._chunks.clear()
         self._next_id = 1
@@ -55,9 +74,10 @@ class InMemorySectionStore:
     """In-memory implementation of section storage for testing."""
 
     def __init__(self) -> None:
-        self._sections: dict[str, SectionRecord] = {}
-        self._descendants: dict[str, list[str]] = {}
+        self._sections_by_key: dict[tuple[str, str], SectionRecord] = {}
+        self._descendant_db_ids_by_ancestor_db_id: dict[int, list[int]] = {}
         self._closure_rows: list[SectionClosureRow] = []
+        self._next_db_id = 1
 
     def __enter__(self) -> Self:
         return self
@@ -66,32 +86,127 @@ class InMemorySectionStore:
         return None
 
     def insert_sections(self, sections: list[SectionRecord]) -> None:
+        assigned_sections_by_key: dict[tuple[str, str], SectionRecord] = {}
         for section in sections:
-            self._sections[section.section_id] = replace(section)
+            key = (section.doc_uid, section.section_id)
+            if key in assigned_sections_by_key or key in self._sections_by_key:
+                msg = f"Duplicate section business key: doc_uid={section.doc_uid}, section_id={section.section_id}"
+                raise ValueError(msg)
+            section_db_id = section.db_id if section.db_id is not None else self._next_db_id
+            self._next_db_id = max(self._next_db_id, section_db_id + 1)
+            assigned_sections_by_key[key] = replace(section, db_id=section_db_id, parent_section_db_id=None)
 
-    def insert_closure_rows(self, closure_rows: list[SectionClosureRow]) -> None:
+        self._sections_by_key.update(assigned_sections_by_key)
+
+        updated_sections_by_key: dict[tuple[str, str], SectionRecord] = {}
+        for key, section in self._sections_by_key.items():
+            parent_section_db_id = None
+            if section.parent_section_id is not None:
+                parent_key = (section.doc_uid, section.parent_section_id)
+                parent_section = self._sections_by_key.get(parent_key)
+                if parent_section is not None:
+                    parent_section_db_id = parent_section.db_id
+            updated_sections_by_key[key] = replace(section, parent_section_db_id=parent_section_db_id)
+        self._sections_by_key = updated_sections_by_key
+
+    def insert_closure_rows(self, doc_uid: str, closure_rows: list[SectionClosureRow]) -> None:
+        section_db_id_by_source_id = self.map_source_ids_to_db_ids(
+            doc_uid=doc_uid,
+            section_ids=[section_id for row in closure_rows for section_id in (row.ancestor_section_id, row.descendant_section_id)],
+        )
         for row in closure_rows:
-            self._closure_rows.append(row)
-            self._descendants.setdefault(row.ancestor_section_id, [])
-            if row.descendant_section_id not in self._descendants[row.ancestor_section_id]:
-                self._descendants[row.ancestor_section_id].append(row.descendant_section_id)
+            ancestor_section_db_id = section_db_id_by_source_id[row.ancestor_section_id]
+            descendant_section_db_id = section_db_id_by_source_id[row.descendant_section_id]
+            translated_row = replace(
+                row,
+                ancestor_section_db_id=ancestor_section_db_id,
+                descendant_section_db_id=descendant_section_db_id,
+            )
+            self._closure_rows.append(translated_row)
+            self._descendant_db_ids_by_ancestor_db_id.setdefault(ancestor_section_db_id, [])
+            if descendant_section_db_id not in self._descendant_db_ids_by_ancestor_db_id[ancestor_section_db_id]:
+                self._descendant_db_ids_by_ancestor_db_id[ancestor_section_db_id].append(descendant_section_db_id)
 
     def get_sections_by_doc(self, doc_uid: str) -> list[SectionRecord]:
-        sections = [section for section in self._sections.values() if section.doc_uid == doc_uid]
+        sections = [section for section in self._sections_by_key.values() if section.doc_uid == doc_uid]
         return sorted(sections, key=lambda section: section.position)
 
-    def get_descendant_section_ids(self, section_id: str) -> list[str]:
-        return list(self._descendants.get(section_id, [section_id]))
+    def get_section_by_source_id(self, doc_uid: str, section_id: str) -> SectionRecord | None:
+        section = self._sections_by_key.get((doc_uid, section_id))
+        if section is None:
+            return None
+        return replace(section)
+
+    def get_descendant_section_db_ids(self, section_db_id: int) -> list[int]:
+        return list(self._descendant_db_ids_by_ancestor_db_id.get(section_db_id, [section_db_id]))
+
+    def map_source_ids_to_db_ids(self, doc_uid: str, section_ids: list[str]) -> dict[str, int]:
+        section_db_id_by_source_id: dict[str, int] = {}
+        for section_id in section_ids:
+            section = self._sections_by_key.get((doc_uid, section_id))
+            if section is None or section.db_id is None:
+                continue
+            section_db_id_by_source_id[section_id] = section.db_id
+        return section_db_id_by_source_id
 
     def delete_sections_by_doc(self, doc_uid: str) -> int:
-        section_ids = [section.section_id for section in self._sections.values() if section.doc_uid == doc_uid]
-        for section_id in section_ids:
-            self._sections.pop(section_id, None)
-            self._descendants.pop(section_id, None)
-        return len(section_ids)
+        keys_to_delete = [key for key, section in self._sections_by_key.items() if section.doc_uid == doc_uid]
+        deleted_db_ids = {
+            section.db_id
+            for key, section in self._sections_by_key.items()
+            if key in keys_to_delete and section.db_id is not None
+        }
+        for key in keys_to_delete:
+            self._sections_by_key.pop(key, None)
+        self._descendant_db_ids_by_ancestor_db_id = {
+            ancestor_db_id: [
+                descendant_db_id
+                for descendant_db_id in descendant_db_ids
+                if descendant_db_id not in deleted_db_ids
+            ]
+            for ancestor_db_id, descendant_db_ids in self._descendant_db_ids_by_ancestor_db_id.items()
+            if ancestor_db_id not in deleted_db_ids
+        }
+        self._closure_rows = [
+            row
+            for row in self._closure_rows
+            if row.ancestor_section_db_id not in deleted_db_ids and row.descendant_section_db_id not in deleted_db_ids
+        ]
+        return len(keys_to_delete)
 
-    def add_descendant_mapping(self, section_id: str, descendant_ids: list[str]) -> None:
-        self._descendants[section_id] = list(descendant_ids)
+    def add_descendant_mapping(
+        self,
+        section_id: str,
+        descendant_ids: list[str],
+        doc_uid: str | None = None,
+    ) -> None:
+        resolved_doc_uid = self._resolve_doc_uid(section_id=section_id, doc_uid=doc_uid)
+        ancestor_section = self._sections_by_key.get((resolved_doc_uid, section_id))
+        if ancestor_section is None or ancestor_section.db_id is None:
+            msg = f"Unknown ancestor section: doc_uid={resolved_doc_uid}, section_id={section_id}"
+            raise ValueError(msg)
+
+        descendant_db_ids: list[int] = []
+        for descendant_id in descendant_ids:
+            descendant_section = self._sections_by_key.get((resolved_doc_uid, descendant_id))
+            if descendant_section is None or descendant_section.db_id is None:
+                msg = f"Unknown descendant section: doc_uid={resolved_doc_uid}, section_id={descendant_id}"
+                raise ValueError(msg)
+            descendant_db_ids.append(descendant_section.db_id)
+        self._descendant_db_ids_by_ancestor_db_id[ancestor_section.db_id] = descendant_db_ids
+
+    def _resolve_doc_uid(self, section_id: str, doc_uid: str | None) -> str:
+        if doc_uid is not None:
+            return doc_uid
+        matching_doc_uids = sorted(
+            stored_doc_uid
+            for stored_doc_uid, stored_section_id in self._sections_by_key
+            if stored_section_id == section_id
+        )
+        if len(matching_doc_uids) != 1:
+            msg = f"Ambiguous section id without doc_uid: section_id={section_id}"
+            raise ValueError(msg)
+        return matching_doc_uids[0]
 
 
 class InMemoryDocumentStore(DocumentStoreProtocol):

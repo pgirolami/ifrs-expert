@@ -255,6 +255,7 @@ def _build_chunk_json_output(
                     "chunk_number": chunk.chunk_number,
                     "chunk_id": chunk.chunk_id,
                     "containing_section_id": chunk.containing_section_id,
+                    "containing_section_db_id": chunk.containing_section_db_id,
                     "page_start": chunk.page_start,
                     "page_end": chunk.page_end,
                     "text": chunk.text,

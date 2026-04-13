@@ -363,23 +363,36 @@ def _expand_to_section_subtrees(
         logger.info("Skipping section expansion because no section store is configured")
         return
 
-    descendant_section_ids_by_section_id: dict[str, set[str]] = {}
+    descendant_section_db_ids_by_section_db_id: dict[int, set[int]] = {}
+    section_db_id_by_source_id_by_doc: dict[str, dict[str, int]] = {}
     with section_store as active_section_store:
         for result in results:
+            doc_uid = result["doc_uid"]
+            if doc_uid not in section_db_id_by_source_id_by_doc:
+                section_db_id_by_source_id_by_doc[doc_uid] = {section.section_id: section.db_id for section in active_section_store.get_sections_by_doc(doc_uid) if section.db_id is not None}
             matching_chunk = _find_chunk_by_id(
-                chunks=doc_chunks.get(result["doc_uid"], []),
+                chunks=doc_chunks.get(doc_uid, []),
                 chunk_id=result["chunk_id"],
             )
-            if matching_chunk is None or matching_chunk.containing_section_id is None:
+            if matching_chunk is None:
                 continue
-            containing_section_id = matching_chunk.containing_section_id
-            if containing_section_id not in descendant_section_ids_by_section_id:
-                descendant_section_ids_by_section_id[containing_section_id] = set(active_section_store.get_descendant_section_ids(containing_section_id))
-            descendant_section_ids = descendant_section_ids_by_section_id[containing_section_id]
-            for chunk in doc_chunks.get(result["doc_uid"], []):
-                if chunk.id is None or chunk.containing_section_id not in descendant_section_ids:
+            containing_section_db_id = _resolve_chunk_section_db_id(
+                chunk=matching_chunk,
+                section_db_id_by_source_id=section_db_id_by_source_id_by_doc[doc_uid],
+            )
+            if containing_section_db_id is None:
+                continue
+            if containing_section_db_id not in descendant_section_db_ids_by_section_db_id:
+                descendant_section_db_ids_by_section_db_id[containing_section_db_id] = set(active_section_store.get_descendant_section_db_ids(containing_section_db_id))
+            descendant_section_db_ids = descendant_section_db_ids_by_section_db_id[containing_section_db_id]
+            for chunk in doc_chunks.get(doc_uid, []):
+                chunk_section_db_id = _resolve_chunk_section_db_id(
+                    chunk=chunk,
+                    section_db_id_by_source_id=section_db_id_by_source_id_by_doc[doc_uid],
+                )
+                if chunk.id is None or chunk_section_db_id not in descendant_section_db_ids:
                     continue
-                selected_ids_by_doc[result["doc_uid"]].add(chunk.id)
+                selected_ids_by_doc[doc_uid].add(chunk.id)
 
 
 def _find_chunk_by_id(chunks: list[Chunk], chunk_id: int) -> Chunk | None:
@@ -387,6 +400,17 @@ def _find_chunk_by_id(chunks: list[Chunk], chunk_id: int) -> Chunk | None:
         if chunk.id == chunk_id:
             return chunk
     return None
+
+
+def _resolve_chunk_section_db_id(
+    chunk: Chunk,
+    section_db_id_by_source_id: dict[str, int],
+) -> int | None:
+    if chunk.containing_section_db_id is not None:
+        return chunk.containing_section_db_id
+    if chunk.containing_section_id is None:
+        return None
+    return section_db_id_by_source_id.get(chunk.containing_section_id)
 
 
 def _expand_with_neighbour_chunks(

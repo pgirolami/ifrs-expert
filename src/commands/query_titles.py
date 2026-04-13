@@ -88,6 +88,7 @@ class QueryTitlesCommand:
                         "chunk_number": chunk.chunk_number,
                         "chunk_id": chunk.chunk_id,
                         "containing_section_id": chunk.containing_section_id,
+                        "containing_section_db_id": chunk.containing_section_db_id,
                         "text": chunk.text,
                     }
                     for chunk in hit.chunks

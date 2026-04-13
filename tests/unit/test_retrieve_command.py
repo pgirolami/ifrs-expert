@@ -7,6 +7,7 @@ from typing import cast
 
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
+from src.models.section import SectionRecord
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
 
 
@@ -193,6 +194,28 @@ def test_retrieve_expand_to_section_includes_descendant_section_chunks() -> None
 
     section_store = InMemorySectionStore()
     with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="IFRS09_0054",
+                    doc_uid="ifrs9",
+                    parent_section_id=None,
+                    level=2,
+                    title="Recognition and derecognition",
+                    section_lineage=["Recognition and derecognition"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g3.1.1-3.1.2",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_0054",
+                    level=3,
+                    title="Initial recognition",
+                    section_lineage=["Recognition and derecognition", "Initial recognition"],
+                    position=2,
+                ),
+            ]
+        )
         store.add_descendant_mapping("IFRS09_0054", ["IFRS09_0054", "IFRS09_g3.1.1-3.1.2"])
 
     command = RetrieveCommand(
