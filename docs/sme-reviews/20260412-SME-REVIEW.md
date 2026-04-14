@@ -218,5 +218,6 @@ Transaction selling costs are not a subsequent change in fair value that permits
   - SME says it actually doesn't happen often
 - [🚧] Decide whether the product should support two distinct answer modes or one mode with optional expansion
   - For now, we focus on the current scope and get it working aross the corpus
-- [ ] Evaluate how to integrate practical secondary sources such as PwC Viewpoint and Lefebvre into the retrieval corpus.
+- [✅] Evaluate how to integrate practical secondary sources such as PwC Viewpoint and Lefebvre into the retrieval corpus
+  - [✅] Implement ingestion of Lefebvre Naxis
 - [ ] Review whether rejected approaches should be hidden for mechanical questions.
