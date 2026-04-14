@@ -36,7 +36,8 @@ The behavior is:
 When clicked on an IFRS listing page that contains multiple `div.ifrs-cmp-standards__group__tile` cards, it:
 
 - discovers one link per tile
-- navigates to each linked standard page in order
+- skips `Conceptual Framework for Financial Reporting`
+- navigates to each remaining linked standard page in order
 - runs the standard page import flow for that page
 - saves all emitted HTML + JSON pairs under `Downloads/ifrs-expert/`
 
@@ -119,8 +120,15 @@ Chrome extensions do not expose a true filesystem rename primitive for arbitrary
    - open any IFRS variant page for one standard, or
    - open an IFRS listing page containing multiple standard tiles
 3. Click **Import to IFRS Expert**.
-4. Wait for the extension to batch through the detected standard page(s) and save the emitted file pairs.
-5. Run:
+4. The extension opens its side panel and shows live progress, including:
+   - a total progress bar
+   - current page
+   - current variant
+   - saved artifact count
+   - failure list
+   - live log lines
+5. Wait for the extension to batch through the detected standard page(s) and save the emitted file pairs.
+6. Run:
 
 ```bash
 uv run python -m src.cli ingest
@@ -156,6 +164,13 @@ You can see this text when hovering the toolbar button and in the extensions men
 
 ## Logging and feedback
 
-The extension logs its execution in the extension service worker console and shows in-page toasts on success or error.
+When an import starts, the extension opens its side panel and shows live progress with:
 
-For longer Navis captures, those logs are the main way to follow progress chapter by chapter.
+- a total progress bar
+- current page title and page index
+- current variant label and variant index
+- saved artifact count
+- failure count and failure details
+- a reverse-chronological live log
+
+The extension also logs execution details in the service worker console and still uses in-page toasts for final success or error summaries.

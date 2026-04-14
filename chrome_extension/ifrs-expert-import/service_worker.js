@@ -5,6 +5,10 @@ import {
   selectIfrsCaptureTargets,
   selectIfrsCorpusTargets,
 } from "./ifrs_import.mjs";
+import {
+  createImportProgressState,
+  reduceImportProgressState,
+} from "./progress_state.mjs";
 
 const LOG_PREFIX = "[IFRS Expert Import]";
 const ROOT_PREFIX = "ifrs-expert";
@@ -25,6 +29,11 @@ const NAVIS_PAGE_TASK_RETRY_DELAY_MS = 750;
 const IFRS_SECTION_LOAD_DELAY_MS = 1000;
 const IFRS_PAGE_TASK_MAX_ATTEMPTS = 3;
 const IFRS_PAGE_TASK_RETRY_DELAY_MS = 750;
+const IMPORT_PROGRESS_STORAGE_KEY = "importProgressState";
+const IFRS_CORPUS_SKIPPED_PAGE_TITLES = new Set([
+  "Conceptual Framework",
+  "Conceptual Framework for Financial Reporting",
+]);
 const SUPPORTED_ACTION_ICON_PATHS = {
   16: "icons/ifrs-red-16.png",
   24: "icons/ifrs-red-24.png",
@@ -35,6 +44,8 @@ const UNSUPPORTED_ACTION_ICON_PATHS = {
   24: "icons/ifrs-grey-24.png",
   32: "icons/ifrs-grey-32.png",
 };
+
+let importProgressState = createImportProgressState();
 
 chrome.runtime.onInstalled.addListener(() => {
   runTask("runtime.onInstalled", () => initializeActionState("runtime.onInstalled"));
@@ -78,6 +89,17 @@ chrome.action.onClicked.addListener(async (tab) => {
     return;
   }
 
+  openImportSidePanel(tab.id);
+  await updateImportProgress({
+    type: "jobStarted",
+    sourceFamily,
+    jobType: "initializing",
+    title: "Starting import",
+    totalPages: 0,
+    startedAt: new Date().toISOString(),
+    logMessage: `Preparing ${sourceFamily.toUpperCase()} import`,
+  });
+
   try {
     if (sourceFamily === "navis") {
       await captureNavisImport(tab.id, tab.url ?? "");
@@ -92,14 +114,43 @@ chrome.action.onClicked.addListener(async (tab) => {
       url: tab.url,
       error: errorMessage,
     });
+    await updateImportProgress({
+      type: "jobFailed",
+      finishedAt: new Date().toISOString(),
+      error: errorMessage,
+    });
     await showToastInTab(tab.id, `Import failed: ${errorMessage}`, "error");
   } finally {
     logInfo("Import attempt finished.");
   }
 });
 
+function openImportSidePanel(tabId) {
+  if (chrome.sidePanel === undefined) {
+    return;
+  }
+
+  void chrome.sidePanel.open({ tabId }).catch((error) => {
+    logWarn("Unable to open import side panel.", {
+      tabId,
+      error: formatErrorMessage(error),
+    });
+  });
+}
+
+async function updateImportProgress(event) {
+  importProgressState = reduceImportProgressState(importProgressState, event);
+  await chrome.storage.session.set({ [IMPORT_PROGRESS_STORAGE_KEY]: importProgressState });
+}
+
+async function resetImportProgress() {
+  importProgressState = createImportProgressState();
+  await chrome.storage.session.set({ [IMPORT_PROGRESS_STORAGE_KEY]: importProgressState });
+}
+
 async function initializeActionState(reason) {
   logInfo("Initializing action state.", { reason });
+  await resetImportProgress();
   await chrome.action.setIcon({ path: UNSUPPORTED_ACTION_ICON_PATHS });
   await chrome.action.setTitle({ title: UNSUPPORTED_ACTION_TITLE });
   await chrome.action.disable();
@@ -251,7 +302,14 @@ async function captureIfrsSource(tabId, tabUrl) {
     await captureIfrsCorpus(tabId, tabUrl, context);
     return;
   }
-  await captureIfrsImport(tabId, tabUrl);
+  await captureIfrsImport(tabId, tabUrl, {
+    jobConfig: {
+      sourceFamily: "ifrs",
+      jobType: "ifrs-page",
+      title: "IFRS page import",
+      totalPages: 1,
+    },
+  });
 }
 
 async function captureIfrsCorpus(tabId, tabUrl, context) {
@@ -268,9 +326,33 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
     documentCount: corpusTargets.length,
     corpusTargets,
   });
-  await showToastInTab(tabId, `Starting IFRS corpus import: 0/${corpusTargets.length} pages`, "info");
+  await updateImportProgress({
+    type: "jobStarted",
+    sourceFamily: "ifrs",
+    jobType: "ifrs-corpus",
+    title: "IFRS corpus import",
+    totalPages: corpusTargets.length,
+    startedAt: new Date().toISOString(),
+    logMessage: `Starting IFRS corpus import (${corpusTargets.length} pages)`,
+  });
 
   for (const [documentIndex, corpusTarget] of corpusTargets.entries()) {
+    if (IFRS_CORPUS_SKIPPED_PAGE_TITLES.has(corpusTarget.title)) {
+      logInfo("Skipping IFRS corpus page by title.", {
+        tabId,
+        documentIndex: documentIndex + 1,
+        documentCount: corpusTargets.length,
+        documentTitle: corpusTarget.title,
+        documentUrl: corpusTarget.url,
+      });
+      await updateImportProgress({
+        type: "pageSkipped",
+        pageTitle: corpusTarget.title,
+        logMessage: `Skipped ${corpusTarget.title}`,
+      });
+      continue;
+    }
+
     logInfo("Capturing IFRS document page from corpus.", {
       tabId,
       documentIndex: documentIndex + 1,
@@ -278,18 +360,21 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
       documentTitle: corpusTarget.title,
       documentUrl: corpusTarget.url,
     });
+    await updateImportProgress({
+      type: "pageStarted",
+      pageTitle: corpusTarget.title,
+      pageUrl: corpusTarget.url,
+      pageIndex: documentIndex + 1,
+      logMessage: `Page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
+    });
 
     try {
       await navigateTabToUrl(tabId, corpusTarget.url);
       await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
       await waitForTabComplete(tabId);
-      await showToastInTab(
-        tabId,
-        `Importing IFRS page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
-        "info",
-      );
       const documentBasenames = await captureIfrsImport(tabId, corpusTarget.url, {
         showCompletionToast: false,
+        skipJobStart: true,
         corpusProgress: {
           documentIndex: documentIndex + 1,
           documentCount: corpusTargets.length,
@@ -297,6 +382,11 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
         },
       });
       savedBasenames.push(...documentBasenames);
+      await updateImportProgress({
+        type: "pageCompleted",
+        pageTitle: corpusTarget.title,
+        logMessage: `Completed ${corpusTarget.title}`,
+      });
     } catch (error) {
       const errorMessage = formatErrorMessage(error);
       failedTargets.push({
@@ -310,11 +400,12 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
         documentUrl: corpusTarget.url,
         error: errorMessage,
       });
-      await showToastInTab(
-        tabId,
-        `Skipped IFRS page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
-        "error",
-      );
+      await updateImportProgress({
+        type: "pageFailed",
+        pageTitle: corpusTarget.title,
+        pageUrl: corpusTarget.url,
+        error: errorMessage,
+      });
     }
   }
 
@@ -325,6 +416,12 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
   const summaryMessage = failedTargets.length === 0
     ? `Saved ${savedBasenames.length} IFRS captures from ${corpusTargets.length} pages`
     : `Saved ${savedBasenames.length} IFRS captures; ${failedTargets.length} pages failed`;
+  await updateImportProgress({
+    type: "jobCompleted",
+    finishedAt: new Date().toISOString(),
+    completedPages: corpusTargets.length,
+    summary: summaryMessage,
+  });
   await showToastInTab(tabId, summaryMessage, failedTargets.length === 0 ? "success" : "error");
 }
 
@@ -335,6 +432,25 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
 
   if (captureTargets.length === 0) {
     throw new Error("No selectable IFRS documents were found on the current page");
+  }
+
+  if (options.skipJobStart !== true) {
+    await updateImportProgress({
+      type: "jobStarted",
+      sourceFamily: "ifrs",
+      jobType: options.jobConfig?.jobType ?? "ifrs-page",
+      title: options.jobConfig?.title ?? "IFRS page import",
+      totalPages: options.jobConfig?.totalPages ?? 1,
+      startedAt: new Date().toISOString(),
+      logMessage: `Starting ${options.jobConfig?.title ?? "IFRS page import"}`,
+    });
+    await updateImportProgress({
+      type: "pageStarted",
+      pageTitle: captureContext.availableDocuments.find((target) => target.checked)?.label ?? "IFRS document",
+      pageUrl: captureContext.currentUrl || tabUrl,
+      pageIndex: 1,
+      logMessage: `Page 1/1: ${captureContext.availableDocuments.find((target) => target.checked)?.label ?? "IFRS document"}`,
+    });
   }
 
   let currentVariantValue = captureContext.currentVariantValue || captureTargets[0].value;
@@ -368,14 +484,15 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
       targetUrl,
       corpusProgress: options.corpusProgress,
     });
-    const corpusPrefix = options.corpusProgress
-      ? `${options.corpusProgress.documentIndex}/${options.corpusProgress.documentCount} ${options.corpusProgress.documentTitle} — `
-      : "";
-    await showToastInTab(
-      tabId,
-      `Importing ${corpusPrefix}${captureTarget.label} (${documentIndex + 1}/${captureTargets.length})`,
-      "info",
-    );
+    await updateImportProgress({
+      type: "variantStarted",
+      variantLabel: captureTarget.label,
+      variantIndex: documentIndex + 1,
+      variantCount: captureTargets.length,
+      logMessage: options.corpusProgress
+        ? `Variant ${documentIndex + 1}/${captureTargets.length} for ${options.corpusProgress.documentTitle}: ${captureTarget.label}`
+        : `Variant ${documentIndex + 1}/${captureTargets.length}: ${captureTarget.label}`,
+    });
 
     try {
       const selectionResult = await executeIfrsPageTaskWithRetry(tabId, {
@@ -447,11 +564,30 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
 
     const basename = await downloadCaptureArtifacts(result);
     savedBasenames.push(basename);
+    await updateImportProgress({
+      type: "artifactSaved",
+      basename,
+      count: 1,
+      logMessage: `Saved ${basename}`,
+    });
   }
 
   const summaryMessage = savedBasenames.length === 1
     ? `Saved ${savedBasenames[0]}.html and ${savedBasenames[0]}.json`
     : `Saved ${savedBasenames.length} IFRS captures to ${ROOT_PREFIX}/`;
+  if (options.skipJobStart !== true) {
+    await updateImportProgress({
+      type: "pageCompleted",
+      pageTitle: captureContext.availableDocuments.find((target) => target.checked)?.label ?? "IFRS document",
+      logMessage: summaryMessage,
+    });
+    await updateImportProgress({
+      type: "jobCompleted",
+      finishedAt: new Date().toISOString(),
+      completedPages: 1,
+      summary: summaryMessage,
+    });
+  }
   if (options.showCompletionToast !== false) {
     await showToastInTab(tabId, summaryMessage, "success");
   }
@@ -516,6 +652,18 @@ async function captureNavisImport(tabId, tabUrl) {
   const savedBasenames = [];
   const baseUrl = tabUrl;
 
+  await updateImportProgress({
+    type: "jobStarted",
+    sourceFamily: "navis",
+    jobType: batchMode,
+    title: batchMode === "root-batch" ? "Navis root import" : "Navis chapter import",
+    totalPages: chapterTargets.length,
+    startedAt: new Date().toISOString(),
+    logMessage: batchMode === "root-batch"
+      ? `Starting Navis root import (${chapterTargets.length} chapters)`
+      : `Starting Navis chapter import (${chapterTargets.length} chapter)`,
+  });
+
   logInfo("Starting Navis chapter capture.", {
     tabId,
     mode: batchMode,
@@ -533,6 +681,13 @@ async function captureNavisImport(tabId, tabUrl) {
       chapterRefId: chapterTarget.refId,
       chapterTitle: chapterTarget.title,
     });
+    await updateImportProgress({
+      type: "pageStarted",
+      pageTitle: chapterTarget.title,
+      pageUrl: buildNavisDocumentUrl(baseUrl, chapterTarget.refId),
+      pageIndex: chapterIndex + 1,
+      logMessage: `Chapter ${chapterIndex + 1}/${chapterTargets.length}: ${chapterTarget.title}`,
+    });
 
     const capture = await captureNavisChapter(tabId, {
       baseUrl,
@@ -544,11 +699,28 @@ async function captureNavisImport(tabId, tabUrl) {
     });
     const basename = await downloadCaptureArtifacts(capture);
     savedBasenames.push(basename);
+    await updateImportProgress({
+      type: "artifactSaved",
+      basename,
+      count: 1,
+      logMessage: `Saved ${basename}`,
+    });
+    await updateImportProgress({
+      type: "pageCompleted",
+      pageTitle: chapterTarget.title,
+      logMessage: `Completed ${chapterTarget.title}`,
+    });
   }
 
   const summaryMessage = savedBasenames.length === 1
     ? `Saved ${savedBasenames[0]}.html and ${savedBasenames[0]}.json`
     : `Saved ${savedBasenames.length} chapter captures to ${ROOT_PREFIX}/`;
+  await updateImportProgress({
+    type: "jobCompleted",
+    finishedAt: new Date().toISOString(),
+    completedPages: chapterTargets.length,
+    summary: summaryMessage,
+  });
   await showToastInTab(tabId, summaryMessage, "success");
 }
 

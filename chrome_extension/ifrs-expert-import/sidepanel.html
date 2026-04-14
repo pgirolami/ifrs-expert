@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IFRS Expert Import Progress</title>
+    <link rel="stylesheet" href="sidepanel.css">
+  </head>
+  <body>
+    <main class="panel">
+      <header class="panel__header">
+        <p class="panel__eyebrow">IFRS Expert Import</p>
+        <h1 id="job-title">No active import</h1>
+        <p id="job-status" class="status status--idle">Idle</p>
+      </header>
+
+      <section class="card">
+        <div class="card__row">
+          <span>Progress</span>
+          <span id="progress-summary">0 / 0 pages</span>
+        </div>
+        <div class="progress-bar" aria-hidden="true">
+          <div id="progress-bar-fill" class="progress-bar__fill"></div>
+        </div>
+      </section>
+
+      <section class="card metrics">
+        <div>
+          <p class="metric__label">Saved artifacts</p>
+          <p id="saved-artifacts" class="metric__value">0</p>
+        </div>
+        <div>
+          <p class="metric__label">Failures</p>
+          <p id="failed-pages" class="metric__value">0</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Current page</h2>
+        <p id="current-page-title" class="current__title">—</p>
+        <p id="current-page-meta" class="muted">Waiting to start</p>
+      </section>
+
+      <section class="card">
+        <h2>Current variant</h2>
+        <p id="current-variant-title" class="current__title">—</p>
+        <p id="current-variant-meta" class="muted">No active variant</p>
+      </section>
+
+      <section class="card">
+        <h2>Failures</h2>
+        <ul id="failure-list" class="list list--failures">
+          <li class="muted">No failures</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Live log</h2>
+        <ul id="log-list" class="list list--logs">
+          <li class="muted">No logs yet</li>
+        </ul>
+      </section>
+    </main>
+
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>

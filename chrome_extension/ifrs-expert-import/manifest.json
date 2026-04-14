@@ -5,7 +5,9 @@
   "description": "Capture the rendered IFRS HTML page and save it into Downloads/ifrs-expert/inbox.",
   "permissions": [
     "downloads",
-    "scripting"
+    "scripting",
+    "storage",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://ifrs.org/*",
@@ -15,6 +17,9 @@
   "background": {
     "service_worker": "service_worker.js",
     "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "icons": {
     "16": "icons/ifrs-grey-16.png",
