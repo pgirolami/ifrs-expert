@@ -1,12 +1,12 @@
 # Promptfoo Evaluation
 
-This project uses Promptfoo as the main regression harness for structured-answer quality.
+This project uses Promptfoo as the main regression harness for the current Prompt A → Prompt B answer pipeline.
 
 It helps detect regressions across:
-- question phrasing variants
-- question families
-- LLM providers and models
-- retrieval and prompting changes
+- question phrasing variants within a family
+- question families under `experiments/00_QUESTIONS/`
+- retrieval defaults and prompt changes
+- whichever provider configurations are currently enabled in `promptfoo_src/base.yaml`
 
 ## Quick start
 
@@ -27,6 +27,8 @@ make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="Mistral Lar
 make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral smoke"
 make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
 ```
+
+The checked-in base config currently enables one MiniMax provider stanza. Uncomment or add provider blocks in `promptfoo_src/base.yaml` when you want cross-provider comparisons.
 
 ## Operator rules
 
@@ -99,6 +101,11 @@ stable across eval runs, such as:
 - `full-doc-threshold`
 - `retrieval-mode`
 
+The checked-in defaults currently run the answer command in document-first mode
+with section expansion enabled:
+- `retrieval-mode: documents`
+- `expand-to-section: true`
+
 Artifact-output settings such as `output-dir` and `save-all` are not stored in
 `promptfoo_src/base.yaml`; they are managed by `scripts/run_promptfoo_eval.py`
 through the run archive layout and `PROMPTFOO_ARTIFACTS_DIR`.
@@ -112,24 +119,29 @@ npm run eval:build
 
 ## Direct runner usage
 
-The direct runner remains available when raw Promptfoo arguments need to be forwarded:
+The direct runner remains available when you want to bypass the Makefile shortcuts:
 
 ```bash
 uv run python scripts/run_promptfoo_eval.py \
   --experiment-dir promptfoo_regression \
-  --description "Q1 mistral" \
-  -- --filter-metadata family=Q1¤ --filter-targets Mistral
+  --family Q1 \
+  --provider "MiniMax 2.7 High current answer defaults" \
+  --description "Q1 minimax"
 ```
 
-In normal project usage, prefer the `make` targets.
+If you need raw Promptfoo flags, append them after `--`. In normal project usage,
+prefer the `make` targets.
 
 ## What the suite checks
 
 The Promptfoo suite currently checks:
-- valid JSON schema
-- presence of expected approaches
-- consistency of recommendation
-- basic reasoning quality via an LLM-graded rubric
+- output matches `prompts/answer_prompt_B.json`
+- core structured fields are present for the active French families
+- family-specific expected approach coverage where applicable (for example Q1 hedge approaches)
+- recommendation answers use the allowed enum and include a non-trivial justification
+- each approach carries an applicability assessment and at least one reference
+
+LLM-graded rubric assertions are currently commented out in the checked-in family files, so the active suite relies on deterministic JSON/Javascript assertions.
 
 ## Related docs
 

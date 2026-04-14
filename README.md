@@ -6,7 +6,7 @@ This project explores a practical question:
 
 > How do you make LLM-based systems reliable in a constrained expert domain?
 
-It was **developed in collaboration with an IFRS subject-matter expert**, starting from real questions encountered in practice. The goal was not just to retrieve relevant standards, but to produce answers that match how experts reason: identifying possible accounting approaches, evaluating their applicability, and providing structured, auditable outputs.
+It was **developed in collaboration with an IFRS subject-matter expert**, starting from real questions encountered in practice. The goal was not just to retrieve relevant standards, but to produce answers that match how experts reason: identifying possible accounting approaches, evaluating their applicability, and providing structured, auditable outputs. Recent work also widened the corpus beyond IASB standards to include **practical FAQ-style sources such as Lefebvre Naxis/Navis captures**, reflecting the SME's actual workflow.
 
 ---
 
@@ -27,7 +27,7 @@ Building LLM systems in practice quickly surfaces non-obvious challenges:
   Expert users require answers to cite and justify their reasoning from source material.
 
 This project addresses these issues through:
-- structured retrieval over IFRS standards
+- structured retrieval over IFRS standards and practical secondary-source captures
 - a two-stage reasoning pipeline with explicit intermediate artifacts
 - structured JSON outputs
 - a systematic Promptfoo-based evaluation loop to detect regressions and confirm improvements
@@ -91,9 +91,10 @@ retrieve → structure → reason → evaluate
 ### Key components
 
 - **Structure-aware ingestion**
-  - IFRS HTML pages (downloaded via the chrome-extension) are parsed into section-aligned chunks (not arbitrary text windows)
-    - Legacy PDF ingestion is also possible but doesn't work well
-  - document structure (sections, hierarchy) is preserved and reused at retrieval time
+  - IASB IFRS HTML pages (downloaded via the chrome extension) are parsed into section-aligned chunks (not arbitrary text windows)
+    - legacy PDF ingestion is also possible but doesn't work well
+  - Lefebvre Naxis/Navis HTML captures are also supported, including synthetic chapter-bundle captures
+  - document structure (sections, hierarchy) is preserved with stable synthetic section ids and reused at retrieval time
 
 - **Multi-level semantic retrieval**
   - embeddings (`BAAI/bge-m3`) + cosine similarity search using FAISS
@@ -107,7 +108,7 @@ retrieve → structure → reason → evaluate
 
 - **Document-aware retrieval strategy**
   - document-first retrieval narrows the corpus before chunk search
-  - per-document-type routing (IFRS / IAS / IFRIC / SIC / PS) with different thresholds and caps
+  - per-document-type routing (IFRS / IAS / IFRIC / SIC / PS / NAVIS) with different thresholds and caps
   - avoids global top-k competition across heterogeneous documents
 
 - **Shared retrieval pipeline**
@@ -124,15 +125,14 @@ retrieve → structure → reason → evaluate
   - Prompt B only receives **primary and supporting authority**, reducing noise and contradictions
 
 - **Structured outputs**
-  - JSON schema with:
-    - primary accounting issue
+  - Prompt A returns structured approach discovery with:
+    - primary accounting issue (in French)
     - authority classification
     - treatment families
-    - approaches
-    - applicability assessment
-    - recommendation
-    - references
-    - operational points
+    - candidate approaches
+  - Prompt B returns either:
+    - a clarification payload (`status = needs_clarification`, `questions_fr`)
+    - or the final answer artifact with assumptions, recommendation, approach-by-approach applicability, practical implications, and verbatim references
 
 - **Evaluation loop**
   - Promptfoo-based regression tests
@@ -214,7 +214,7 @@ Promptfoo details, commands, storage layout, and archive conventions are documen
 
 ## Demo
 
-This sections sets up a quick demo with only 2 documents (IFRS-9 & IFRIC-16).
+This section sets up a quick demo with only 2 documents (IFRS-9 & IFRIC-16).
 
 ### Set up
 The assistant supports `openai`, `openai-codex`, `anthropic`, `mistral`, `minimax`, and `ollama` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
@@ -250,7 +250,7 @@ Run the full demo flow end-to-end with the following
 ```bash
 make demo
 ```
-or go-through it line by line by following the instructions.
+or go through it line by line by following the instructions.
 
 ### Ingest documents
 
@@ -264,12 +264,39 @@ uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-
 uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html  --doc-uid ifrs9
 ```
 #### Ingesting more documents
-If you want to look at how all 64 free documents are ingested:
+If you want to look at how all 64 free IASB documents are ingested:
 - create an account on https://ifrs.org
 - install the [chrome extension](./chrome_extension/ifrs-expert-import/) through developer mode
 - navigate to the [list of standards](https://www.ifrs.org/issued-standards/list-of-standards/)
   - click on each standard: the extension's icon becomes red. Click on the icon
 - run the ingestion `uv run python -m src.cli ingest --scope all`
+
+#### Ingesting the Lefebvre Naxis files
+
+These files are behind a paywall, so they cannot be distributed as part of the repo. The intended workflow is:
+
+1. log in to Lefebvre on `https://abonnes.efl.fr`
+2. install the [chrome extension](./chrome_extension/ifrs-expert-import/) in developer mode
+3. open the Navis / Mémento IFRS content page
+4. choose one of the two capture modes in the left TOC:
+   - **chapter mode**: select a `CHAPITRE` node, then click the extension to capture only that chapter
+   - **full corpus mode**: select the corpus root node, then click the extension to crawl the whole corpus; this does **not** create one giant file, it emits **one HTML + JSON pair per chapter**
+5. run the ingestion command:
+
+```bash
+uv run python -m src.cli ingest --scope all
+```
+
+`ingest` scans `~/Downloads/ifrs-expert/`, imports every complete HTML + JSON capture pair it finds, and archives each pair to `processed/`, `skipped/`, or `failed/`.
+
+If you just want to test the extractor locally with the bundled sample captures in this repository, you can still store them directly:
+
+```bash
+uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190013Z--document.html
+uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190029Z--document.html
+```
+
+The extractor derives a `navis-...` document UID from the sidecar metadata and preserves the captured chapter/section hierarchy.
 
 ### Quick start using the UI
 
@@ -303,7 +330,7 @@ These documents reflect how the system evolved in response to real-world constra
 
 ## Limitations
 
-- Full IFRS, IAS, IFRIC, SIC corpus ingested limited to Free documents
+- The IASB corpus is limited to the free documents available through ifrs.org; secondary-source captures such as Lefebvre Naxis depend on licensed access and local capture
 - PDF parsing is heuristic which is why it was abandonned in favor of HTML parsing
 - retrieval errors still affect reasoning completeness
 - evaluation coverage is still limited (focused on regression, not full benchmarking)
@@ -312,10 +339,10 @@ These documents reflect how the system evolved in response to real-world constra
 
 ## Future work
 
-- expand corpus (private IFRS + Big 4 doctrine + expert materials)
+- expand corpus further (private IFRS & PwC Viewpoint)
 - evaluate on other questions in IFRS 9
-- evaluate to other types of questions: we expect the prompt to need improvement here because it is very approach-centric and not all questions are about an approach 
-- further improve retrieval completeness and document routing
+- evaluate other types of questions: we expect the prompt to need to be extended here because it is very approach-centric and not all questions are about an approach 
+- further improve retrieval completeness and document routing across standards and FAQ-style sources
 - refine uncertainty handling in outputs
 
 ---
