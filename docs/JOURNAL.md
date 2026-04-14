@@ -183,11 +183,13 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 ### 2026-04-14
 - Review meeting with SME ([Notes](./sme-reviews/20260414-SME-REVIEW.md))
-- Improvement to Chrome extension
-    - Extract IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion)
+- Increase Corpus to all of IFRS & Lefebvre
+    - Extend extraction through Chrome extension to all of IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion)
         - To implement later: Supporting Materials, Refs annotation
-- Extracted all IFRS and all Lefebvre
-- Fix ingestion freeze on Naxis documents
+    - Extracted all IFRS and all Lefebvre
+    - Fix ingestion freeze on Naxis documents
+    - Ran a full ingestion on all extracted documents
+        - intro_text is still missing for some NAVIS docs
+    - Uncovered authority competition with a manual test of Q1.0 because IFRS9 wasn't surfaced and IAS 39 was used as the governing standard: we need to guide the LLM towards choosing IFRS over IAS (and IFRIC over SIC) when in doubt and to surface that as a hypothesis.
 - Implemented new markdown output in FAQ style
-
 

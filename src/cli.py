@@ -11,7 +11,16 @@ from typing import TYPE_CHECKING
 from dotenv import load_dotenv
 
 from src.answer_artifacts import save_answer_command_result
-from src.commands import AnswerOptions, ChunkCommand, IngestCommand, ListCommand, QueryDocumentsOptions, QueryOptions, QueryTitlesOptions, RetrieveOptions
+from src.commands import (
+    AnswerOptions,
+    ChunkCommand,
+    IngestCommand,
+    ListCommand,
+    QueryDocumentsOptions,
+    QueryOptions,
+    QueryTitlesOptions,
+    RetrieveOptions,
+)
 from src.commands.answer import create_answer_command
 from src.commands.constants import (
     DEFAULT_D_FOR_IAS_DOCUMENTS,
@@ -24,6 +33,7 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+    DEFAULT_RETRIEVAL_K,
     DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
     DEFAULT_RETRIEVE_DOCUMENT_D,
 )
@@ -168,8 +178,8 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         "-k",
         "--k",
         type=int,
-        default=5,
-        help="Number of chunks to retrieve per document (default: 5)",
+        default=DEFAULT_RETRIEVAL_K,
+        help=f"Number of chunks to retrieve per document (default: {DEFAULT_RETRIEVAL_K})",
     )
     retrieve_parser.add_argument(
         "-d",
@@ -247,13 +257,14 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
     retrieve_parser.add_argument(
         "--content-min-score",
         type=float,
-        default=None,
+        default=DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
         help=f"Minimum chunk/title-stage score. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}.",
     )
     retrieve_parser.add_argument(
         "--expand-to-section",
         action="store_true",
-        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion.",
+        default=True,
+        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default=True).",
     )
     retrieve_parser.add_argument(
         "-e",
@@ -272,8 +283,8 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
     retrieve_parser.add_argument(
         "--retrieval-mode",
         choices=["text", "titles", "documents"],
-        default="text",
-        help="Retrieval mode to use (default: text)",
+        default="documents",
+        help="Retrieval mode to use (default: documents)",
     )
     retrieve_parser.add_argument("--json", action="store_true", help="Output results as JSON (default is verbose text)")
 
@@ -312,7 +323,13 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         default=0,
         help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
     )
-    answer_parser.add_argument("-k", "--k", type=int, default=5, help="Number of chunks to retrieve (default: 5)")
+    answer_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=DEFAULT_RETRIEVAL_K,
+        help=f"Number of chunks to retrieve (default: {DEFAULT_RETRIEVAL_K})",
+    )
     answer_parser.add_argument(
         "--min-score",
         type=float,
@@ -401,13 +418,14 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
     answer_parser.add_argument(
         "--expand-to-section",
         action="store_true",
-        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion.",
+        default=True,
+        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default True).",
     )
     answer_parser.add_argument(
         "--retrieval-mode",
         choices=["text", "titles", "documents"],
-        default="text",
-        help="Retrieval mode to use before prompting the LLM (default: text)",
+        default="documents",
+        help="Retrieval mode to use before prompting the LLM (default: documents)",
     )
     answer_parser.add_argument(
         "--output-dir",
