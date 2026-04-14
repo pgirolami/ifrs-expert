@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from src.b_response_utils import MarkdownOptions, convert_json_to_markdown_full
+from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.commands.constants import (
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
@@ -518,6 +518,12 @@ class AnswerCommand:
                         chunk_data=chunk_data,
                     )
                     result.prompt_b_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
+
+                    # Generate FAQ-style markdown from the same JSON
+                    result.prompt_b_faq_markdown = convert_json_to_faq_markdown(
+                        result.prompt_b_json,
+                        primary_accounting_issue=options.primary_accounting_issue,
+                    )
                 else:
                     logger.warning("Prompt B response parsed as JSON but is not an object; markdown conversion skipped")
 

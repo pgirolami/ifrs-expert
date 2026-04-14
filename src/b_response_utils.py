@@ -387,3 +387,183 @@ def _convert_json_to_markdown_with_options(b_json: dict, options: MarkdownOption
         lines.extend(_build_approach_detail(idx, approach, options.chunk_data))
 
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# FAQ-style markdown conversion
+# ---------------------------------------------------------------------------
+
+IFRS_URL_TEMPLATE = "https://www.ifrs.org/issued-standards/list-of-standards/{slug}/content/dam/ifrs/publications/html-standards/english/2026/issued/{slug}/#/{anchor}"
+
+IFRS_DOCUMENT_SLUGS: dict[str, str] = {
+    "ifrs9": "ifrs-9-financial-instruments",
+    "ifric16": "ifric-16-hedges-of-a-net-investment-in-a-foreign-operation",
+    "ias21": "ias-21-the-effects-of-changes-in-foreign-exchange-rates",
+}
+
+
+def _build_faq_url(document: str, section: str) -> str:
+    """Build the IFRS.org URL for a document reference."""
+    slug = IFRS_DOCUMENT_SLUGS.get(document.lower(), document.lower())
+    anchor = f"{document.upper()}_{section.replace('.', '')}"
+    return IFRS_URL_TEMPLATE.format(slug=slug, anchor=anchor)
+
+
+def _format_faq_answer(answer: str) -> str:
+    """Format answer value for FAQ display."""
+    if answer == "oui_sous_conditions":
+        return "Oui"
+    return answer.capitalize()
+
+
+def _format_approach_inline_refs(references: list[dict]) -> str:
+    """Format inline section references from a list of references.
+
+    Produces strings like '(IFRS 9 6.3.1, IFRS 9 6.3.5, IFRIC 16 10)'.
+    """
+    if not references:
+        return ""
+    parts = []
+    for ref in references:
+        doc = ref.get("document", "")
+        section = ref.get("section", "")
+        if doc and section:
+            parts.append(f"{_humanise_doc_label(doc)} {section}")
+    if not parts:
+        return ""
+    return "(" + ", ".join(parts) + ")"
+
+
+def _humanise_doc_label(doc_uid: str) -> str:
+    """Humanise a document UID into a display label.
+
+    'ifrs9' -> 'IFRS 9'
+    'ifric16' -> 'IFRIC 16'
+    'ias12' -> 'IAS 12'
+    'sic13' -> 'SIC 13'
+    """
+    if doc_uid.startswith("ifrs"):
+        suffix = doc_uid[4:]
+        return f"IFRS {suffix}" if suffix else "IFRS"
+    if doc_uid.startswith("ifric"):
+        suffix = doc_uid[5:]
+        return f"IFRIC {suffix}" if suffix else "IFRIC"
+    if doc_uid.startswith("ias"):
+        suffix = doc_uid[3:]
+        return f"IAS {suffix}" if suffix else "IAS"
+    if doc_uid.startswith("sic"):
+        suffix = doc_uid[3:]
+        return f"SIC {suffix}" if suffix else "SIC"
+    return doc_uid
+
+
+def _build_faq_approaches(approaches: list[dict]) -> list[str]:
+    """Build inline reasoning paragraphs for each approach."""
+    lines: list[str] = []
+    for approach in approaches:
+        applicability = approach.get("applicability", "non")
+        reasoning = approach.get("reasoning_fr", "")
+        label_fr = approach.get("label_fr", "")
+        refs = approach.get("references", [])
+        inline_ref = _format_approach_inline_refs(refs)
+
+        if applicability in ("oui", "oui_sous_conditions"):
+            # Full paragraph: reasoning + inline refs
+            ref_suffix = inline_ref
+            reasoning_stripped = reasoning.rstrip().removesuffix(".")
+            lines.append(f"{reasoning_stripped}{ref_suffix}.")
+        elif applicability == "non":
+            # Brief one-liner: label + inline refs
+            ref_suffix = f" {inline_ref}" if inline_ref else ""
+            lines.append(f"{label_fr} ne s'applique donc pas{ref_suffix}.")
+
+    return lines
+
+
+def _build_faq_citations(approaches: list[dict]) -> list[str]:
+    """Build the Citations section from all unique references across approaches."""
+    seen_refs: set[tuple[str, str]] = set()
+    all_citations: list[dict] = []
+    for approach in approaches:
+        for ref in approach.get("references", []):
+            key = (ref.get("document", ""), ref.get("section", ""))
+            if key in seen_refs:
+                continue
+            seen_refs.add(key)
+            doc = ref.get("document", "")
+            section = ref.get("section", "")
+            excerpt = ref.get("excerpt", "")
+            all_citations.append({"document": doc, "section": section, "excerpt": excerpt})
+
+    if not all_citations:
+        return []
+
+    lines = ["**Citations**:"]
+    for ref in all_citations:
+        doc = ref["document"]
+        section = ref["section"]
+        excerpt = ref["excerpt"]
+        url = _build_faq_url(doc, section)
+        label = _humanise_doc_label(doc)
+        lines.append(f" - [{label} {section}]({url})")
+        lines.append("")
+        lines.append(f"    >{excerpt}")
+        lines.append("")
+
+    return lines
+
+
+def convert_json_to_faq_markdown(
+    b_json: dict,
+    primary_accounting_issue: str | None = None,
+) -> str:
+    """Convert B-response JSON to FAQ-style French markdown.
+
+    Format:
+        >primary_accounting_issue
+
+        Pour cette réponse, on considère que
+        - assumptions...
+
+        **Answer**, justification
+
+        inline reasoning per approach (non-applicable approaches are
+        noted briefly, applicable ones get a full paragraph with refs)
+
+        **Citations**:
+        - [DOC SECTION](url)
+
+            >full excerpt
+    """
+    assumptions: list[str] = b_json.get("assumptions_fr", [])
+    recommendation: dict = b_json.get("recommendation", {})
+    approaches: list[dict] = b_json.get("approaches", [])
+
+    lines: list[str] = []
+
+    # ---- Reformulation
+    if primary_accounting_issue:
+        lines.extend([f">{primary_accounting_issue}", ""])
+
+    # ---- Assumptions
+    lines.append("Pour cette réponse, on considère que")
+    lines.extend(f"  - {a}" for a in assumptions)
+    lines.append("")
+
+    # ---- Recommendation
+    rec_answer = _format_faq_answer(recommendation.get("answer", ""))
+    rec_justification = recommendation.get("justification", "")
+    if rec_justification:
+        lines.append(f"**{rec_answer}**, {rec_justification}")
+    else:
+        lines.append(f"**{rec_answer}**")
+    lines.append("")
+
+    # ---- Approaches inline
+    lines.extend(_build_faq_approaches(approaches))
+    lines.append("")
+
+    # ---- Citations
+    lines.extend(_build_faq_citations(approaches))
+
+    return "\n".join(lines)

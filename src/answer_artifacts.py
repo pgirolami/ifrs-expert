@@ -28,7 +28,10 @@ def save_answer_command_result(result: AnswerCommandResult, output_dir: Path) ->
         _write_b_response_json(output_dir / "B-response.json", result)
 
     if result.prompt_b_markdown is not None:
-        _write_text_file(output_dir / "B-response.md", result.prompt_b_markdown)
+        _write_text_file(output_dir / "B-response_memo.md", result.prompt_b_markdown)
+
+    if result.prompt_b_faq_markdown is not None:
+        _write_text_file(output_dir / "B-response_faq.md", result.prompt_b_faq_markdown)
 
     if result.error is not None and result.error_stage == "prompt_a":
         _write_text_file(output_dir / "A-error.txt", result.error)
