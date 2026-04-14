@@ -13,10 +13,25 @@ The toolbar icon is grey and disabled on unsupported pages and switches to IFRS 
 
 ### IFRS pages
 
-When clicked on an authenticated IFRS page, it captures:
+When clicked on an authenticated IFRS page, it now captures **all selectable document variants for the current standard**.
+
+The behavior is:
+
+- discover all selectable `documentType` radio options on the page
+- in premium mode, capture every available variant shown by the page, such as:
+  - Standard
+  - Basis for Conclusions
+  - Implementation Guidance
+  - Illustrative Examples
+- in free mode, capture only the Standard when that is the only selectable option
+- switch **Annotation** on before each capture
+- save one HTML + JSON pair per captured variant
+
+For each captured IFRS variant, the extension records:
 
 - the rendered DOM via `document.documentElement.outerHTML`
-- the canonical URL via `document.querySelector('link[rel="canonical"]')?.href`
+- the shared shell canonical URL plus the checked `documentType` radio value, producing a variant-specific `canonical_url`
+- the checked IFRS variant label, normalized sidecar `title`, and resolved `document_type`
 - the agreed JSON sidecar metadata
 
 ### Navis / Lefebvre pages
@@ -58,6 +73,8 @@ YYYYMMDDTHHMMSSZ--<slug>.html
 YYYYMMDDTHHMMSSZ--<slug>.json
 ```
 
+For IFRS pages, the slug is derived from the variant-specific `canonical_url`, so Standard / Basis for Conclusions / Illustrative Examples / Implementation Guidance produce different basenames.
+
 ### Navis chapter bundles
 
 ```text
@@ -85,9 +102,10 @@ Chrome extensions do not expose a true filesystem rename primitive for arbitrary
 ### IFRS workflow
 
 1. Sign in to the IFRS site in Chrome.
-2. Open the target `ifrs.org` standard page.
+2. Open any IFRS variant page for the target standard.
 3. Click **Import to IFRS Expert**.
-4. Run:
+4. Wait for the extension to batch through every selectable document variant and save one file pair per variant.
+5. Run:
 
 ```bash
 uv run python -m src.cli ingest

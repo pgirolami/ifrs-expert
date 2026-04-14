@@ -7,7 +7,7 @@ from typing import Self
 
 from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
-from src.models.document import DocumentRecord, derive_document_type_from_doc_uid
+from src.models.document import DocumentRecord, resolve_document_type
 from src.models.section import SectionClosureRow, SectionRecord
 
 
@@ -206,7 +206,7 @@ class InMemoryDocumentStore(DocumentStoreProtocol):
         return None
 
     def upsert_document(self, document: DocumentRecord) -> None:
-        document_type = document.document_type or derive_document_type_from_doc_uid(document.doc_uid)
+        document_type = resolve_document_type(document.doc_uid, document.document_type)
         self._documents[document.doc_uid] = replace(document, document_type=document_type)
 
     def get_document(self, doc_uid: str) -> DocumentRecord | None:

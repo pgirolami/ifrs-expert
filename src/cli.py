@@ -141,7 +141,7 @@ def _add_query_documents_parser(subparsers: argparse._SubParsersAction[argparse.
         "--document-type",
         choices=DOCUMENT_TYPES,
         required=True,
-        help="Document type to search: IFRS, IAS, IFRIC, SIC, or PS.",
+        help="Document type to search: IFRS, IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC, PS, or NAVIS.",
     )
     query_documents_parser.add_argument(
         "-d",

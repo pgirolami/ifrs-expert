@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.models.document import DOCUMENT_TYPES, infer_document_type
+from src.models.document import DOCUMENT_TYPE_FAMILIES, infer_document_family
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 
@@ -288,7 +288,7 @@ def _select_top_d_documents(
     document_min_score_by_type: dict[str, float],
 ) -> list[DocumentHit]:
     document_hits: list[DocumentHit] = []
-    selected_count_by_type = dict.fromkeys(DOCUMENT_TYPES, 0)
+    selected_count_by_type = dict.fromkeys(DOCUMENT_TYPE_FAMILIES, 0)
     effective_min_score_by_type = _build_effective_document_min_score_by_type(
         global_min_score=global_min_score,
         document_min_score_by_type=document_min_score_by_type,
@@ -296,7 +296,7 @@ def _select_top_d_documents(
     for result in ranked_results:
         doc_uid = str(result["doc_uid"])
         score = float(result["score"])
-        document_type = infer_document_type(doc_uid)
+        document_type = infer_document_family(doc_uid)
         if document_type is None:
             continue
         if score < effective_min_score_by_type[document_type]:
@@ -315,8 +315,8 @@ def _build_effective_document_min_score_by_type(
     document_min_score_by_type: dict[str, float],
 ) -> dict[str, float]:
     if global_min_score is not None:
-        return dict.fromkeys(DOCUMENT_TYPES, global_min_score)
-    return {document_type: document_min_score_by_type[document_type] for document_type in DOCUMENT_TYPES}
+        return dict.fromkeys(DOCUMENT_TYPE_FAMILIES, global_min_score)
+    return {document_type: document_min_score_by_type[document_type] for document_type in DOCUMENT_TYPE_FAMILIES}
 
 
 def _init_expansion_state(

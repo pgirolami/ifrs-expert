@@ -168,7 +168,7 @@ def test_query_documents_returns_error_for_unsupported_document_type() -> None:
 
     result = command.execute()
 
-    assert result == "Error: document_type must be one of IFRS, IAS, IFRIC, SIC, PS, NAVIS"
+    assert result == "Error: document_type must be one of IFRS, IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC, PS, NAVIS"
 
 
 def test_query_documents_returns_error_when_index_missing() -> None:
@@ -189,6 +189,62 @@ def test_query_documents_returns_error_when_index_missing() -> None:
     result = command.execute()
 
     assert result == "Error: No document index found. Please run 'store' command first."
+
+
+def test_query_documents_returns_ifrs_variant_documents() -> None:
+    """The command should support exact IFRS variant document types."""
+    from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+
+    document_store = InMemoryDocumentStore()
+    with document_store as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS - IFRS 9 Financial Instruments",
+                source_url="https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9/",
+                canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html",
+                captured_at="2026-04-14T09:45:54Z",
+                source_domain="www.ifrs.org",
+                document_type="IFRS-S",
+                intro_text="IFRS standard introduction",
+            )
+        )
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9-bc",
+                source_type="html",
+                source_title="IFRS - IFRS 9 Financial Instruments - Basis for Conclusions",
+                source_url="https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9-bc/",
+                canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9-bc.html",
+                captured_at="2026-04-14T09:46:15Z",
+                source_domain="www.ifrs.org",
+                document_type="IFRS-BC",
+                intro_text="Basis introduction",
+            )
+        )
+
+    command = QueryDocumentsCommand(
+        query="financial instruments",
+        config=QueryDocumentsConfig(
+            document_vector_store=MockDocumentVectorStore(
+                [
+                    {"doc_uid": "ifrs9-bc", "score": 0.92},
+                    {"doc_uid": "ifrs9", "score": 0.91},
+                ]
+            ),
+            document_store=document_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=QueryDocumentsOptions(document_type="IFRS-BC", d=2, min_score=0.6, verbose=False),
+    )
+
+    result = command.execute()
+
+    data = json.loads(result)
+    assert [item["doc_uid"] for item in data] == ["ifrs9-bc"]
+    assert data[0]["document_type"] == "IFRS-BC"
 
 
 def test_query_documents_returns_navis_documents() -> None:

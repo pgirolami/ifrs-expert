@@ -44,27 +44,75 @@ def _example_file(name: str) -> Path:
     return examples_dir / name
 
 
-def _write_html_sidecar(sidecar_path: Path, canonical_url: str, title: str, source_domain: str = "www.ifrs.org") -> None:
-    sidecar_path.write_text(
-        json.dumps(
-            {
-                "url": canonical_url,
-                "title": title,
-                "captured_at": "2026-04-04T14:23:10Z",
-                "source_domain": source_domain,
-                "canonical_url": canonical_url,
-            }
-        ),
-        encoding="utf-8",
-    )
+def _require_example_file(name: str) -> Path:
+    path = _example_file(name)
+    if not path.exists():
+        pytest.skip(f"Fixture not available in this worktree: {name}")
+    return path
 
 
-def _extract_canonical_url(html_path: Path) -> str:
-    html_text = html_path.read_text(encoding="utf-8")
-    canonical_prefix = '<link rel="canonical"\n    href="'
-    start = html_text.index(canonical_prefix) + len(canonical_prefix)
-    end = html_text.index('">', start)
-    return html_text[start:end]
+def _write_html_sidecar(
+    sidecar_path: Path,
+    canonical_url: str,
+    title: str,
+    source_domain: str = "www.ifrs.org",
+    document_type: str | None = None,
+    url: str | None = None,
+) -> None:
+    payload: dict[str, str] = {
+        "url": url or canonical_url,
+        "title": title,
+        "captured_at": "2026-04-04T14:23:10Z",
+        "source_domain": source_domain,
+        "canonical_url": canonical_url,
+    }
+    if document_type is not None:
+        payload["document_type"] = document_type
+    sidecar_path.write_text(json.dumps(payload), encoding="utf-8")
+
+
+def _extract_ifrs_sidecar_payload(html_path: Path) -> dict[str, str]:
+    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+    canonical_tag = soup.select_one('link[rel="canonical"]')
+    identifier_tag = soup.select_one('meta[name="DC.Identifier"]')
+    checked_input = soup.select_one('input[name="documentType"][checked]')
+    if canonical_tag is None or identifier_tag is None or checked_input is None:
+        raise AssertionError(f"Expected IFRS metadata in {html_path}")
+
+    shell_canonical_url = str(canonical_tag.get("href", "")).strip()
+    variant_value = str(checked_input.get("value", "")).strip()
+    variant_label_node = checked_input.find_next_sibling("span")
+    variant_label = variant_label_node.get_text(" ", strip=True) if variant_label_node is not None else "Standard"
+    doc_uid = str(identifier_tag.get("content", "")).strip()
+    shell_title = soup.title.get_text(" ", strip=True) if soup.title is not None else doc_uid
+
+    if variant_label == "Standard":
+        title = shell_title
+    else:
+        title = f"{shell_title} - {variant_label}"
+
+    if doc_uid.startswith("ifrs"):
+        document_type = {
+            "Standard": "IFRS-S",
+            "Basis for Conclusions": "IFRS-BC",
+            "Illustrative Examples": "IFRS-IE",
+            "Implementation Guidance": "IFRS-IG",
+        }[variant_label]
+    elif doc_uid.startswith("ias"):
+        document_type = "IAS"
+    elif doc_uid.startswith("ifric"):
+        document_type = "IFRIC"
+    elif doc_uid.startswith("sic"):
+        document_type = "SIC"
+    else:
+        document_type = "PS"
+
+    return {
+        "url": f"https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/{html_path.stem}.html{variant_value.removesuffix('.html')}/",
+        "title": title,
+        "canonical_url": f"{shell_canonical_url}{variant_value}",
+        "document_type": document_type,
+    }
 
 
 def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None, scope: str):
@@ -123,12 +171,13 @@ def test_ingest_command_imports_pdf_from_capture_root(temp_db_path: Path, captur
 def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
     """Representative IFRS HTML captures should ingest into the database and processed/."""
     del temp_db_path
-    html_source = _example_file("www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html")
-    inbox_html = capture_root / "20260404T142310Z--ifrs9.html"
-    inbox_json = capture_root / "20260404T142310Z--ifrs9.json"
+    html_source = _example_file("IFRS/20260414T094554Z--ifrs-9-financial-instruments.html")
+    json_source = _example_file("IFRS/20260414T094554Z--ifrs-9-financial-instruments.json")
+    expected_sidecar = json.loads(json_source.read_text(encoding="utf-8"))
+    inbox_html = capture_root / "20260414T094554Z--ifrs-9-financial-instruments.html"
+    inbox_json = capture_root / "20260414T094554Z--ifrs-9-financial-instruments.json"
     shutil.copy(html_source, inbox_html)
-    canonical_url = _extract_canonical_url(inbox_html)
-    _write_html_sidecar(inbox_json, canonical_url=canonical_url, title="IFRS 9")
+    shutil.copy(json_source, inbox_json)
 
     command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
 
@@ -141,18 +190,20 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
         document = ds.get_document("ifrs9")
     assert document is not None, "Expected HTML ingestion to upsert a document record"
     assert document.source_type == "html"
-    assert document.canonical_url == canonical_url
+    assert document.document_type == "IFRS-S"
+    assert document.canonical_url == expected_sidecar["canonical_url"]
     with chunk_store as cs:
         chunks = cs.get_chunks_by_doc("ifrs9")
     assert any(chunk.section_path == "2.4" for chunk in chunks)
+    assert any(chunk.section_path == "E19" for chunk in chunks)
     assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
 
 
 def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
     """Representative Navis HTML captures should ingest into the database and processed/."""
     del temp_db_path
-    html_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.html")
-    json_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.json")
+    html_source = _require_example_file("Lefebvre-Navis/20260412T190029Z--document.html")
+    json_source = _require_example_file("Lefebvre-Navis/20260412T190029Z--document.json")
     inbox_html = capture_root / "20260412T190029Z--document.html"
     inbox_json = capture_root / "20260412T190029Z--document.json"
     shutil.copy(html_source, inbox_html)
@@ -180,7 +231,7 @@ def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capt
 def test_ingest_command_imports_navis_chapter_bundle_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
     """Synthetic Navis chapter bundles should ingest as one chapter-level document."""
     del temp_db_path
-    html_source = _example_file("Lefebvre-Navis/20260412T190029Z--document.html")
+    html_source = _require_example_file("Lefebvre-Navis/20260412T190029Z--document.html")
     soup = BeautifulSoup(html_source.read_text(encoding="utf-8"), "html.parser")
     content_root = soup.select_one("#documentContent .question.question-export")
     assert content_root is not None, "Expected Navis example to contain the content root"
@@ -262,8 +313,14 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     first_html = capture_root / "20260404T142310Z--ifric16.html"
     first_json = capture_root / "20260404T142310Z--ifric16.json"
     shutil.copy(html_source, first_html)
-    canonical_url = _extract_canonical_url(first_html)
-    _write_html_sidecar(first_json, canonical_url=canonical_url, title="IFRIC 16")
+    first_sidecar = _extract_ifrs_sidecar_payload(first_html)
+    _write_html_sidecar(
+        first_json,
+        canonical_url=first_sidecar["canonical_url"],
+        title=first_sidecar["title"],
+        document_type=first_sidecar["document_type"],
+        url=first_sidecar["url"],
+    )
 
     command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
     first_output = command.execute()
@@ -272,7 +329,13 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     second_html = capture_root / "20260405T142310Z--ifric16.html"
     second_json = capture_root / "20260405T142310Z--ifric16.json"
     shutil.copy(html_source, second_html)
-    _write_html_sidecar(second_json, canonical_url=canonical_url, title="IFRIC 16")
+    _write_html_sidecar(
+        second_json,
+        canonical_url=first_sidecar["canonical_url"],
+        title=first_sidecar["title"],
+        document_type=first_sidecar["document_type"],
+        url=first_sidecar["url"],
+    )
 
     skip_output = command.execute()
 
@@ -287,7 +350,13 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     assert paragraph is not None, "Expected to locate the first IFRIC 16 paragraph"
     paragraph.append(" Additional integration test sentence.")
     third_html.write_text(str(soup), encoding="utf-8")
-    _write_html_sidecar(third_json, canonical_url=canonical_url, title="IFRIC 16")
+    _write_html_sidecar(
+        third_json,
+        canonical_url=first_sidecar["canonical_url"],
+        title=first_sidecar["title"],
+        document_type=first_sidecar["document_type"],
+        url=first_sidecar["url"],
+    )
 
     replace_output = command.execute()
 

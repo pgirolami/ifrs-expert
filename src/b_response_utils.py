@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TypeAlias
 
-from src.models.document import infer_document_type
+from src.models.document import infer_document_family
 
 JSONValue: TypeAlias = "str | int | float | bool | None | list[JSONValue] | dict[str, JSONValue]"
 
@@ -24,14 +24,14 @@ def _group_by_family(doc_uids: list[str]) -> dict[str, list[str]]:
     """Group document UIDs by their family type.
 
     Returns a dict mapping family name -> list of doc_uids in that family.
-    Uses document type inference from doc_uid prefix (IFRS, IAS, IFRIC, SIC, PS).
+    Uses document-family inference from persisted metadata or doc_uid fallback.
     Documents with unknown type are grouped under "Autres".
     """
     families: dict[str, list[str]] = defaultdict(list)
     other_docs: list[str] = []
 
     for doc_uid in doc_uids:
-        doc_type = infer_document_type(doc_uid)
+        doc_type = infer_document_family(doc_uid)
         if doc_type:
             families[doc_type].append(doc_uid)
         else:

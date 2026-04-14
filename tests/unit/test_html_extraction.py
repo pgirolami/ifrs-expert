@@ -27,35 +27,104 @@ def _example_sections_path(slug: str) -> Path:
     return next(examples_dir.glob(f"*{slug}__SECTIONS.json"))
 
 
-def _write_sidecar(sidecar_path: Path, canonical_url: str, title: str, source_domain: str = "www.ifrs.org") -> None:
-    sidecar_path.write_text(
-        json.dumps(
-            {
-                "url": canonical_url,
-                "title": title,
-                "captured_at": "2026-04-04T14:23:10Z",
-                "source_domain": source_domain,
-                "canonical_url": canonical_url,
-                "extension_version": "0.1.0",
-                "content_type": "text/html",
-            }
-        ),
-        encoding="utf-8",
+def _write_sidecar(
+    sidecar_path: Path,
+    canonical_url: str,
+    title: str,
+    source_domain: str = "www.ifrs.org",
+    document_type: str | None = None,
+    url: str | None = None,
+) -> None:
+    payload: dict[str, str] = {
+        "url": url or canonical_url,
+        "title": title,
+        "captured_at": "2026-04-04T14:23:10Z",
+        "source_domain": source_domain,
+        "canonical_url": canonical_url,
+        "extension_version": "0.1.0",
+        "content_type": "text/html",
+    }
+    if document_type is not None:
+        payload["document_type"] = document_type
+    sidecar_path.write_text(json.dumps(payload), encoding="utf-8")
+
+
+def _extract_ifrs_variant_metadata(html_path: Path) -> dict[str, str]:
+    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+    canonical_tag = soup.select_one('link[rel="canonical"]')
+    identifier_tag = soup.select_one('meta[name="DC.Identifier"]')
+    checked_input = soup.select_one('input[name="documentType"][checked]')
+    if canonical_tag is None or identifier_tag is None or checked_input is None:
+        raise AssertionError(f"Expected IFRS fixture metadata in {html_path}")
+
+    shell_canonical_url = str(canonical_tag.get("href", "")).strip()
+    variant_value = str(checked_input.get("value", "")).strip()
+    variant_label_node = checked_input.find_next_sibling("span")
+    variant_label = variant_label_node.get_text(" ", strip=True) if variant_label_node is not None else "Standard"
+    doc_uid = str(identifier_tag.get("content", "")).strip()
+    shell_title = soup.title.get_text(" ", strip=True) if soup.title is not None else doc_uid
+
+    if variant_label == "Standard":
+        normalized_title = shell_title
+    else:
+        normalized_title = f"{shell_title} - {variant_label}"
+
+    if doc_uid.startswith("ifrs"):
+        document_type = {
+            "Standard": "IFRS-S",
+            "Basis for Conclusions": "IFRS-BC",
+            "Illustrative Examples": "IFRS-IE",
+            "Implementation Guidance": "IFRS-IG",
+        }[variant_label]
+    elif doc_uid.startswith("ias"):
+        document_type = "IAS"
+    elif doc_uid.startswith("ifric"):
+        document_type = "IFRIC"
+    elif doc_uid.startswith("sic"):
+        document_type = "SIC"
+    else:
+        document_type = "PS"
+
+    return {
+        "doc_uid": doc_uid,
+        "document_type": document_type,
+        "title": normalized_title,
+        "canonical_url": f"{shell_canonical_url}{variant_value}",
+        "url": f"https://www.ifrs.org/issued-standards/list-of-standards/{html_path.stem}.html{variant_value.removesuffix('.html')}/",
+    }
+
+
+def _write_ifrs_sidecar(sidecar_path: Path, html_path: Path) -> dict[str, str]:
+    sidecar_payload = _extract_ifrs_variant_metadata(html_path)
+    _write_sidecar(
+        sidecar_path=sidecar_path,
+        canonical_url=sidecar_payload["canonical_url"],
+        title=sidecar_payload["title"],
+        document_type=sidecar_payload["document_type"],
+        url=sidecar_payload["url"],
     )
+    return sidecar_payload
+
+
+def _ifrs_fixture_base(name: str) -> Path:
+    return Path(__file__).parent.parent.parent / "examples" / "IFRS" / name
 
 
 def _navis_example_base(name: str) -> Path:
-    return Path(__file__).parent.parent.parent / "examples" / "Lefebvre-Navis" / name
+    base_path = Path(__file__).parent.parent.parent / "examples" / "Lefebvre-Navis" / name
+    if not base_path.with_suffix(".html").exists() or not base_path.with_suffix(".json").exists():
+        pytest.skip("Navis fixtures are not available in this worktree")
+    return base_path
 
 
 class TestHtmlExtractor:
     """Tests for HTML extraction from IFRS captures."""
 
     @pytest.mark.parametrize(
-        ("slug", "expected_doc_uid", "expected_chunk_id"),
+        ("slug", "expected_doc_uid", "expected_chunk_id", "expected_document_type"),
         [
-            ("ifrs9", "ifrs9", "IFRS09_2.4"),
-            ("ifric16", "ifric16", "IFRIC16_1"),
+            ("ifrs9", "ifrs9", "IFRS09_2.4", "IFRS-S"),
+            ("ifric16", "ifric16", "IFRIC16_1", "IFRIC"),
         ],
     )
     def test_extract_returns_document_metadata_expected_chunks_and_sections(
@@ -63,6 +132,7 @@ class TestHtmlExtractor:
         slug: str,
         expected_doc_uid: str,
         expected_chunk_id: str,
+        expected_document_type: str,
         tmp_path: Path,
     ) -> None:
         """Representative IFRS HTML files should parse into stable chunks and sections."""
@@ -70,12 +140,7 @@ class TestHtmlExtractor:
         expected_chunks = json.loads(_example_chunks_path(slug).read_text(encoding="utf-8"))
         expected_sections = json.loads(_example_sections_path(slug).read_text(encoding="utf-8"))
         sidecar_path = tmp_path / f"{slug}.json"
-        html_text = html_path.read_text(encoding="utf-8")
-        canonical_prefix = '<link rel="canonical"\n    href="'
-        start = html_text.index(canonical_prefix) + len(canonical_prefix)
-        end = html_text.index('">', start)
-        html_canonical_url = html_text[start:end]
-        _write_sidecar(sidecar_path=sidecar_path, canonical_url=html_canonical_url, title=f"Title for {slug}")
+        sidecar_payload = _write_ifrs_sidecar(sidecar_path=sidecar_path, html_path=html_path)
 
         extractor = HtmlExtractor(sidecar_path=sidecar_path)
 
@@ -83,7 +148,8 @@ class TestHtmlExtractor:
 
         assert extracted_document.document.doc_uid == expected_doc_uid
         assert extracted_document.document.source_type == "html"
-        assert extracted_document.document.canonical_url == html_canonical_url
+        assert extracted_document.document.canonical_url == sidecar_payload["canonical_url"]
+        assert extracted_document.document.document_type == expected_document_type
         assert extracted_document.chunks, "Expected at least one extracted HTML chunk"
         assert extracted_document.sections, "Expected at least one extracted HTML section"
         assert extracted_document.section_closure_rows, "Expected ancestor/descendant section rows"
@@ -105,16 +171,61 @@ class TestHtmlExtractor:
             assert expected["section_name"] in section.title
             assert section.parent_section_id == expected.get("section_parent_id")
 
+    @pytest.mark.parametrize(
+        ("basename", "expected_doc_uid", "expected_document_type"),
+        [
+            ("20260414T094554Z--ifrs-9-financial-instruments", "ifrs9", "IFRS-S"),
+            ("20260414T094602Z--ifrs-9-financial-instruments", "ifrs9-ig", "IFRS-IG"),
+            ("20260414T094610Z--ifrs-9-financial-instruments", "ifrs9-ie", "IFRS-IE"),
+            ("20260414T094615Z--ifrs-9-financial-instruments", "ifrs9-bc", "IFRS-BC"),
+        ],
+    )
+    def test_extract_returns_expected_ifrs_variant_metadata(
+        self,
+        basename: str,
+        expected_doc_uid: str,
+        expected_document_type: str,
+    ) -> None:
+        """IFRS fixture captures should preserve distinct variant metadata and representative chunks."""
+        base_path = _ifrs_fixture_base(basename)
+        html_path = base_path.with_suffix(".html")
+        sidecar_path = base_path.with_suffix(".json")
+        expected_sidecar = json.loads(sidecar_path.read_text(encoding="utf-8"))
+        expected_chunks = json.loads(base_path.with_name(f"{basename}__CHUNKS.json").read_text(encoding="utf-8"))
+        expected_sections = json.loads(base_path.with_name(f"{basename}__SECTIONS.json").read_text(encoding="utf-8"))
+
+        extractor = HtmlExtractor(sidecar_path=sidecar_path)
+
+        extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+        assert extracted_document.document.doc_uid == expected_doc_uid
+        assert extracted_document.document.document_type == expected_document_type
+        assert extracted_document.document.source_title == expected_sidecar["title"]
+        assert extracted_document.document.canonical_url == expected_sidecar["canonical_url"]
+        assert extracted_document.document.source_url == expected_sidecar["url"]
+
+        chunks_by_number = {chunk.chunk_number: chunk for chunk in extracted_document.chunks}
+        for expected in expected_chunks:
+            chunk = chunks_by_number.get(expected["section_path"])
+            assert chunk is not None, f"Missing chunk for number {expected['section_path']}"
+            assert _normalize(chunk.text) == _normalize(expected["text"])
+            assert chunk.containing_section_id == expected["section_id"]
+
+        matching_chunk = chunks_by_number[expected_chunks[0]["section_path"]]
+        assert matching_chunk.chunk_id, "Expected representative chunk to preserve a stable chunk_id"
+
+        sections_by_id = {section.section_id: section for section in extracted_document.sections}
+        for expected in expected_sections:
+            section = sections_by_id.get(expected["section_id"])
+            assert section is not None, f"Missing section {expected['section_id']}"
+            assert expected["section_name"] in section.title
+            assert section.parent_section_id == expected.get("section_parent_id")
+
     def test_extract_builds_recursive_section_closure_rows(self, tmp_path: Path) -> None:
         """Section closure rows should include recursive descendants for subtree expansion."""
         html_path = _example_html_path("ifrs9")
         sidecar_path = tmp_path / "ifrs9.json"
-        html_text = html_path.read_text(encoding="utf-8")
-        canonical_prefix = '<link rel="canonical"\n    href="'
-        start = html_text.index(canonical_prefix) + len(canonical_prefix)
-        end = html_text.index('">', start)
-        html_canonical_url = html_text[start:end]
-        _write_sidecar(sidecar_path=sidecar_path, canonical_url=html_canonical_url, title="IFRS 9")
+        _write_ifrs_sidecar(sidecar_path=sidecar_path, html_path=html_path)
 
         extractor = HtmlExtractor(sidecar_path=sidecar_path)
 
@@ -130,15 +241,36 @@ class TestHtmlExtractor:
         """The sidecar canonical URL must match the saved HTML canonical URL."""
         html_path = _example_html_path("ifrs9")
         sidecar_path = tmp_path / "ifrs9.json"
+        sidecar_payload = _write_ifrs_sidecar(sidecar_path=sidecar_path, html_path=html_path)
         _write_sidecar(
             sidecar_path=sidecar_path,
             canonical_url="https://www.ifrs.org/content/does-not-match.html",
-            title="IFRS 9",
+            title=sidecar_payload["title"],
+            document_type=sidecar_payload["document_type"],
+            url=sidecar_payload["url"],
         )
 
         extractor = HtmlExtractor(sidecar_path=sidecar_path)
 
         with pytest.raises(HtmlValidationError, match="canonical URL"):
+            extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+    def test_extract_rejects_mismatched_document_types(self, tmp_path: Path) -> None:
+        """The sidecar document_type must match the resolved IFRS variant."""
+        html_path = _example_html_path("ifrs9")
+        sidecar_path = tmp_path / "ifrs9.json"
+        sidecar_payload = _write_ifrs_sidecar(sidecar_path=sidecar_path, html_path=html_path)
+        _write_sidecar(
+            sidecar_path=sidecar_path,
+            canonical_url=sidecar_payload["canonical_url"],
+            title=sidecar_payload["title"],
+            document_type="IFRS-BC",
+            url=sidecar_payload["url"],
+        )
+
+        extractor = HtmlExtractor(sidecar_path=sidecar_path)
+
+        with pytest.raises(HtmlValidationError, match="document_type"):
             extractor.extract(source_path=html_path, explicit_doc_uid=None)
 
     def test_extract_requires_dc_identifier(self, tmp_path: Path) -> None:
@@ -148,9 +280,14 @@ class TestHtmlExtractor:
             """
             <html>
               <head>
+                <title>IFRS - Missing identifier</title>
                 <link rel="canonical" href="https://www.ifrs.org/content/missing-id.html">
               </head>
               <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html" checked>
+                  <span class="custom-select-option-checkbox__label">Standard</span>
+                </div>
                 <section class="ifrs-cmp-htmlviewer__section"></section>
               </body>
             </html>
@@ -160,8 +297,10 @@ class TestHtmlExtractor:
         sidecar_path = tmp_path / "missing-identifier.json"
         _write_sidecar(
             sidecar_path=sidecar_path,
-            canonical_url="https://www.ifrs.org/content/missing-id.html",
-            title="Missing identifier",
+            canonical_url=("https://www.ifrs.org/content/missing-id.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html"),
+            title="IFRS - Missing identifier",
+            document_type="IFRS-S",
+            url="https://www.ifrs.org/content/missing-id.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9/",
         )
 
         extractor = HtmlExtractor(sidecar_path=sidecar_path)

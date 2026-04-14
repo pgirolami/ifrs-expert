@@ -69,6 +69,9 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
 def test_infer_document_type_returns_supported_prefixes() -> None:
     """Document types should fall back to supported doc_uid prefixes when no DB row exists."""
     assert infer_document_type("ifrs9") == "IFRS"
+    assert infer_document_type("ifrs9-bc") == "IFRS-BC"
+    assert infer_document_type("ifrs9-ie") == "IFRS-IE"
+    assert infer_document_type("ifrs9-ig") == "IFRS-IG"
     assert infer_document_type("ias21") == "IAS"
     assert infer_document_type("ifric16") == "IFRIC"
     assert infer_document_type("sic25") == "SIC"
@@ -96,6 +99,27 @@ def test_infer_document_type_prefers_persisted_document_type(temp_db: Path) -> N
         )
 
     assert infer_document_type("custom-doc") == "NAVIS"
+
+
+def test_infer_document_type_prefers_persisted_ifrs_variant_document_type(temp_db: Path) -> None:
+    """Persisted IFRS variant metadata should override the doc_uid fallback family."""
+    from src.db.documents import DocumentStore
+
+    with DocumentStore() as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS 9 Financial Instruments",
+                source_url="https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9/",
+                canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html",
+                captured_at="2026-04-14T09:45:54Z",
+                source_domain="www.ifrs.org",
+                document_type="IFRS-S",
+            )
+        )
+
+    assert infer_document_type("ifrs9") == "IFRS-S"
 
 
 def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> None:

@@ -7,7 +7,7 @@ import sqlite3
 from typing import Self
 
 from src.db.connection import get_connection
-from src.models.document import DocumentRecord, derive_document_type_from_doc_uid
+from src.models.document import DocumentRecord, resolve_document_type
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class DocumentStore:
 
     def upsert_document(self, document: DocumentRecord) -> None:
         """Insert or update a document record keyed by doc_uid."""
-        document_type = document.document_type or derive_document_type_from_doc_uid(document.doc_uid)
+        document_type = resolve_document_type(document.doc_uid, document.document_type)
         self._conn.execute(
             """
             INSERT INTO documents (
