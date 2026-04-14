@@ -1,6 +1,6 @@
-# IFRS Expert Import Chrome extension
+# IFRS Expert Extract Chrome extension
 
-This Chrome-only extension adds the toolbar action **Import to IFRS Expert**.
+This Chrome-only extension adds the toolbar action **Extract**.
 
 It supports two source families:
 
@@ -38,7 +38,7 @@ When clicked on an IFRS listing page that contains multiple `div.ifrs-cmp-standa
 - discovers one link per tile
 - skips `Conceptual Framework for Financial Reporting`
 - navigates to each remaining linked standard page in order
-- runs the standard page import flow for that page
+- runs the standard page extraction flow for that page
 - saves all emitted HTML + JSON pairs under `Downloads/ifrs-expert/`
 
 For each captured IFRS variant, the extension records:
@@ -119,7 +119,7 @@ Chrome extensions do not expose a true filesystem rename primitive for arbitrary
 2. Either:
    - open any IFRS variant page for one standard, or
    - open an IFRS listing page containing multiple standard tiles
-3. Click **Import to IFRS Expert**.
+3. Click **Extract**.
 4. The extension opens its side panel and shows live progress, including:
    - a total progress bar
    - current page
@@ -141,7 +141,7 @@ uv run python -m src.cli ingest
 3. In the left TOC, select either:
    - the root corpus node `N24F9F491387ED-EFL`, or
    - a `CHAPITRE` node
-4. Click **Import to IFRS Expert**.
+4. Click **Extract**.
 5. Wait for the extension to traverse the TOC and emit one file pair per captured chapter.
 6. In root-batch mode, chapters that already have a downloaded chapter-bundle HTML file in `Downloads/ifrs-expert/` are skipped so the batch resumes from the first chapter not already downloaded.
 7. Run:
@@ -154,9 +154,9 @@ uv run python -m src.cli ingest
 
 On Navis pages, the toolbar title changes with context:
 
-- root selected: `Import all chapters to IFRS Expert`
-- chapter selected: `Import this chapter to IFRS Expert`
-- anything else selected: `Import available only on Navis root or CHAPITRE nodes`
+- root selected: `Extract all Navis chapters`
+- chapter selected: `Extract this Navis chapter`
+- anything else selected: `Extract available only on Navis root or CHAPITRE nodes`
 
 The extension primarily determines this from the current Navis `refId` in the page URL, with DOM inspection as an additional refinement when available. This makes enablement more robust even when the site does not visibly mark the selected TOC node consistently.
 
@@ -164,7 +164,7 @@ You can see this text when hovering the toolbar button and in the extensions men
 
 ## Logging and feedback
 
-When an import starts, the extension opens its side panel and shows live progress with:
+When an extraction starts, the extension opens its side panel and shows live progress with:
 
 - a total progress bar
 - current page title and page index

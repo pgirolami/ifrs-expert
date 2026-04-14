@@ -49,7 +49,7 @@ async function requestStop() {
 
 function render(state) {
   const progressPercent = calculateProgressPercent(state);
-  elements.jobTitle.textContent = state.title || "No active import";
+  elements.jobTitle.textContent = state.title || "No active extraction";
   elements.jobStatus.textContent = humanizeStatus(state.status, state.cancelRequested);
   elements.jobStatus.className = `status status--${state.cancelRequested && state.status === "running" ? "running" : state.status || "idle"}`;
   elements.progressSummary.textContent = `${state.completedPages} / ${state.totalPages} pages`;
@@ -70,7 +70,7 @@ function render(state) {
     : "No active work item";
   if (elements.stopButton) {
     elements.stopButton.disabled = state.status !== "running" || state.cancelRequested;
-    elements.stopButton.textContent = state.cancelRequested ? "Stopping…" : "Stop import";
+    elements.stopButton.textContent = state.cancelRequested ? "Stopping…" : "Stop extraction";
   }
   renderFailures(state.failures);
   renderLogs(state.logs);

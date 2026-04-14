@@ -5,7 +5,7 @@ export function createImportProgressState() {
     status: "idle",
     sourceFamily: "",
     jobType: "",
-    title: "No active import",
+    title: "No active extraction",
     totalPages: 0,
     completedPages: 0,
     failedPages: 0,
@@ -72,7 +72,7 @@ export function reduceImportProgressState(currentState, event) {
         },
         {
           level: "info",
-          message: event.logMessage ?? `Importing ${event.variantLabel}`,
+          message: event.logMessage ?? `Extracting ${event.variantLabel}`,
         },
       );
     case "phaseUpdated":
@@ -204,7 +204,7 @@ export function reduceImportProgressState(currentState, event) {
         },
         {
           level: "info",
-          message: event.logMessage ?? event.summary ?? "Import cancelled by user",
+          message: event.logMessage ?? event.summary ?? "Extraction cancelled by user",
         },
       );
     case "jobFailed":

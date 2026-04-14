@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "IFRS Expert Import",
+  "name": "IFRS Expert Extract",
   "version": "0.1.0",
   "description": "Capture the rendered IFRS HTML page and save it into Downloads/ifrs-expert/inbox.",
   "permissions": [
@@ -28,7 +28,7 @@
     "128": "icons/ifrs-grey-128.png"
   },
   "action": {
-    "default_title": "Import to IFRS Expert",
+    "default_title": "Extract",
     "default_icon": {
       "16": "icons/ifrs-grey-16.png",
       "24": "icons/ifrs-grey-24.png",

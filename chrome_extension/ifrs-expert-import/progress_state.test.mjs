@@ -14,7 +14,7 @@ test("job lifecycle tracks page progress and artifacts", () => {
     type: "jobStarted",
     sourceFamily: "ifrs",
     jobType: "ifrs-corpus",
-    title: "IFRS corpus import",
+    title: "IFRS corpus extraction",
     totalPages: 3,
     startedAt: "2026-04-14T12:00:00Z",
   });
@@ -56,7 +56,7 @@ test("page failures mark the run as partial on completion", () => {
     type: "jobStarted",
     sourceFamily: "ifrs",
     jobType: "ifrs-corpus",
-    title: "IFRS corpus import",
+    title: "IFRS corpus extraction",
     totalPages: 2,
     startedAt: "2026-04-14T12:00:00Z",
   });
@@ -84,7 +84,7 @@ test("phase updates track the current page activity", () => {
     type: "jobStarted",
     sourceFamily: "ifrs",
     jobType: "ifrs-corpus",
-    title: "IFRS corpus import",
+    title: "IFRS corpus extraction",
     totalPages: 2,
     startedAt: "2026-04-14T12:00:00Z",
   });
@@ -104,7 +104,7 @@ test("page skips advance progress without failures", () => {
     type: "jobStarted",
     sourceFamily: "ifrs",
     jobType: "ifrs-corpus",
-    title: "IFRS corpus import",
+    title: "IFRS corpus extraction",
     totalPages: 2,
     startedAt: "2026-04-14T12:00:00Z",
   });
@@ -125,7 +125,7 @@ test("cancel requests move the run to cancelled when finished", () => {
     type: "jobStarted",
     sourceFamily: "ifrs",
     jobType: "ifrs-corpus",
-    title: "IFRS corpus import",
+    title: "IFRS corpus extraction",
     totalPages: 2,
     startedAt: "2026-04-14T12:00:00Z",
   });
@@ -137,12 +137,12 @@ test("cancel requests move the run to cancelled when finished", () => {
   state = reduceImportProgressState(state, {
     type: "jobCancelled",
     finishedAt: "2026-04-14T12:02:00Z",
-    summary: "Import cancelled by user",
+    summary: "Extraction cancelled by user",
   });
 
   assert.equal(state.status, "cancelled");
   assert.equal(state.cancelRequested, false);
-  assert.equal(state.logs.at(-1)?.message, "Import cancelled by user");
+  assert.equal(state.logs.at(-1)?.message, "Extraction cancelled by user");
 });
 
 test("job failures preserve the error state", () => {
@@ -151,17 +151,17 @@ test("job failures preserve the error state", () => {
       type: "jobStarted",
       sourceFamily: "ifrs",
       jobType: "ifrs-page",
-      title: "IFRS page import",
+      title: "IFRS page extraction",
       totalPages: 1,
       startedAt: "2026-04-14T12:00:00Z",
     }),
     {
       type: "jobFailed",
       finishedAt: "2026-04-14T12:01:00Z",
-      error: "Import failed",
+      error: "Extraction failed",
     },
   );
 
   assert.equal(state.status, "error");
-  assert.equal(state.logs.at(-1)?.message, "Import failed");
+  assert.equal(state.logs.at(-1)?.message, "Extraction failed");
 });
