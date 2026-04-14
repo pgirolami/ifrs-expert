@@ -16,6 +16,7 @@ export function createImportProgressState() {
     currentVariantLabel: "",
     currentVariantIndex: 0,
     currentVariantCount: 0,
+    currentPhaseLabel: "",
     startedAt: "",
     finishedAt: "",
     logs: [],
@@ -52,6 +53,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantLabel: "",
           currentVariantIndex: 0,
           currentVariantCount: 0,
+          currentPhaseLabel: "",
         },
         {
           level: "info",
@@ -71,6 +73,22 @@ export function reduceImportProgressState(currentState, event) {
           message: event.logMessage ?? `Importing ${event.variantLabel}`,
         },
       );
+    case "phaseUpdated":
+      return event.logMessage
+        ? appendLog(
+            {
+              ...state,
+              currentPhaseLabel: event.phaseLabel,
+            },
+            {
+              level: event.level ?? "info",
+              message: event.logMessage,
+            },
+          )
+        : {
+            ...state,
+            currentPhaseLabel: event.phaseLabel,
+          };
     case "artifactSaved":
       return appendLog(
         {
@@ -90,6 +108,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantLabel: "",
           currentVariantIndex: 0,
           currentVariantCount: 0,
+          currentPhaseLabel: "",
         },
         {
           level: "info",
@@ -113,6 +132,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantLabel: "",
           currentVariantIndex: 0,
           currentVariantCount: 0,
+          currentPhaseLabel: "",
         },
         {
           level: "error",
@@ -127,6 +147,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantLabel: "",
           currentVariantIndex: 0,
           currentVariantCount: 0,
+          currentPhaseLabel: "",
         },
         {
           level: "info",
@@ -149,6 +170,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantLabel: "",
           currentVariantIndex: 0,
           currentVariantCount: 0,
+          currentPhaseLabel: "",
         },
         {
           level: finalStatus === "success" ? "info" : "error",
@@ -162,6 +184,7 @@ export function reduceImportProgressState(currentState, event) {
           ...state,
           status: "error",
           finishedAt: event.finishedAt,
+          currentPhaseLabel: "",
         },
         {
           level: "error",

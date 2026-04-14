@@ -13,6 +13,8 @@ const elements = {
   currentPageMeta: document.getElementById("current-page-meta"),
   currentVariantTitle: document.getElementById("current-variant-title"),
   currentVariantMeta: document.getElementById("current-variant-meta"),
+  currentPhaseTitle: document.getElementById("current-phase-title"),
+  currentPhaseMeta: document.getElementById("current-phase-meta"),
   failureList: document.getElementById("failure-list"),
   logList: document.getElementById("log-list"),
 };
@@ -48,6 +50,10 @@ function render(state) {
   elements.currentVariantMeta.textContent = state.currentVariantIndex > 0 && state.currentVariantCount > 0
     ? `Variant ${state.currentVariantIndex} of ${state.currentVariantCount}`
     : "No active variant";
+  elements.currentPhaseTitle.textContent = state.currentPhaseLabel || "—";
+  elements.currentPhaseMeta.textContent = state.currentPhaseLabel
+    ? "Active phase"
+    : "No active work item";
   renderFailures(state.failures);
   renderLogs(state.logs);
 }

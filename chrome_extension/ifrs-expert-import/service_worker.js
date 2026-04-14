@@ -367,6 +367,10 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
       pageIndex: documentIndex + 1,
       logMessage: `Page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
     });
+    await updateImportProgress({
+      type: "phaseUpdated",
+      phaseLabel: "Navigating…",
+    });
 
     try {
       await navigateTabToUrl(tabId, corpusTarget.url);
@@ -427,6 +431,10 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
 
 async function captureIfrsImport(tabId, tabUrl, options = {}) {
   logInfo("Starting IFRS import.", { tabId, url: tabUrl, corpusProgress: options.corpusProgress });
+  await updateImportProgress({
+    type: "phaseUpdated",
+    phaseLabel: "Inspecting page…",
+  });
   const captureContext = await executeIfrsPageTaskWithRetry(tabId, { type: "inspectCaptureTargets" });
   const captureTargets = selectIfrsCaptureTargets(captureContext.availableDocuments ?? []);
 
@@ -493,6 +501,10 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
         ? `Variant ${documentIndex + 1}/${captureTargets.length} for ${options.corpusProgress.documentTitle}: ${captureTarget.label}`
         : `Variant ${documentIndex + 1}/${captureTargets.length}: ${captureTarget.label}`,
     });
+    await updateImportProgress({
+      type: "phaseUpdated",
+      phaseLabel: "Selecting variant…",
+    });
 
     try {
       const selectionResult = await executeIfrsPageTaskWithRetry(tabId, {
@@ -525,6 +537,10 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
     }
 
     let result;
+    await updateImportProgress({
+      type: "phaseUpdated",
+      phaseLabel: "Parsing…",
+    });
     try {
       result = await executeIfrsPageTaskWithRetry(tabId, {
         type: "captureCurrentVariant",
@@ -537,6 +553,11 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
         targetVariantValue: captureTarget.value,
         targetUrl,
         error: formatErrorMessage(error),
+      });
+      await updateImportProgress({
+        type: "phaseUpdated",
+        phaseLabel: "Retrying after reload…",
+        logMessage: `Retrying ${captureTarget.label} after reload`,
       });
       await reloadTab(tabId);
       await waitForTabComplete(tabId);
@@ -562,6 +583,10 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
       htmlLength: result.html.length,
     });
 
+    await updateImportProgress({
+      type: "phaseUpdated",
+      phaseLabel: "Downloading…",
+    });
     const basename = await downloadCaptureArtifacts(result);
     savedBasenames.push(basename);
     await updateImportProgress({

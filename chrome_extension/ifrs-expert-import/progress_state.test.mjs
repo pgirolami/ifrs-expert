@@ -79,6 +79,26 @@ test("page failures mark the run as partial on completion", () => {
   assert.equal(calculateProgressPercent(state), 50);
 });
 
+test("phase updates track the current page activity", () => {
+  let state = reduceImportProgressState(createImportProgressState(), {
+    type: "jobStarted",
+    sourceFamily: "ifrs",
+    jobType: "ifrs-corpus",
+    title: "IFRS corpus import",
+    totalPages: 2,
+    startedAt: "2026-04-14T12:00:00Z",
+  });
+
+  state = reduceImportProgressState(state, {
+    type: "phaseUpdated",
+    phaseLabel: "Parsing…",
+    logMessage: "Parsing Standard",
+  });
+
+  assert.equal(state.currentPhaseLabel, "Parsing…");
+  assert.equal(state.logs.at(-1)?.message, "Parsing Standard");
+});
+
 test("page skips advance progress without failures", () => {
   let state = reduceImportProgressState(createImportProgressState(), {
     type: "jobStarted",
