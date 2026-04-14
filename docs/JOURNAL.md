@@ -169,3 +169,20 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
             **At this stage, we have a working pipeline on the Q1 family of question, running on a full IFRS free-corpus. 🎉**
 
+
+### 2026-04-13
+- Review meeting with SME ([Notes](./sme-reviews/20260413-SME-REVIEW.md))
+- Updates consecutive to feedback
+    - Remove "Points Opérationnels"
+    - "Reformulation" is now in French
+    - Ingest Lefebvre Navis corpus.
+        - Defined that a Navis "CHAPITRE" will be a `document`. Found how to create deep links back into the website.
+        - Make Chrome Extension download whole CHAPITRE or the whole corpus depending on what's selected in the TOC
+    - Updates to the data model to handle possibly duplicated `section_id` values across documents
+- Prepared some alternative outputs styles to be more FAQ-like, to be discussed with SME
+
+### 2026-04-14
+- Review meeting with SME ([Notes](./sme-reviews/20260414-SME-REVIEW.md))
+- Investigate ingestion freeze on Naxis documents
+
+

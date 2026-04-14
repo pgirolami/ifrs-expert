@@ -5,25 +5,6 @@
 
 ---
 
-## ⚠️ File Access Restrictions
-
-**This project lives inside a monorepo. The agent must respect these boundaries:**
-
-- ✅ **May read:** Any file outside the repository (e.g., system files, user home, `/opt/homebrew/`, etc.)
-- ✅ **May read:** Files in this directory and its subdirectories
-- ✅ **May read:** Symlinked files from parent directories (e.g., `ARCHITECTURE.md`, `README.md`, `examples/`)
-- ❌ **Must NOT read:** Any other file in the parent repository that is not symlinked into this directory
-- ❌ **Must NOT write:** Any file outside this directory
-
-The following directories are used:
-- `.cache/` - cache files (query embeddings)
-- `corpus/data/` - IFRS content (database in `db/`, FAISS indices in `index/`)
-- `data/` - legacy location, no longer used
-
-If you need information from the parent repo, check if it's symlinked first. If not, request the user to add a symlink rather than accessing the parent directly.
-
----
-
 ## Project Overview
 
 **Project name:** IFRS Expert Assistant  
