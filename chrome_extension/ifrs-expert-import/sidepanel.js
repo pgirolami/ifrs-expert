@@ -5,6 +5,7 @@ const STORAGE_KEY = "importProgressState";
 const elements = {
   jobTitle: document.getElementById("job-title"),
   jobStatus: document.getElementById("job-status"),
+  stopButton: document.getElementById("stop-button"),
   progressSummary: document.getElementById("progress-summary"),
   progressBarFill: document.getElementById("progress-bar-fill"),
   savedArtifacts: document.getElementById("saved-artifacts"),
@@ -20,6 +21,10 @@ const elements = {
 };
 
 async function main() {
+  elements.stopButton?.addEventListener("click", () => {
+    void requestStop();
+  });
+
   const stored = await chrome.storage.session.get(STORAGE_KEY);
   render(stored[STORAGE_KEY] ?? createImportProgressState());
   chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -33,11 +38,20 @@ async function main() {
   });
 }
 
+async function requestStop() {
+  elements.stopButton.disabled = true;
+  try {
+    await chrome.runtime.sendMessage({ type: "cancelImport" });
+  } catch {
+    elements.stopButton.disabled = false;
+  }
+}
+
 function render(state) {
   const progressPercent = calculateProgressPercent(state);
   elements.jobTitle.textContent = state.title || "No active import";
-  elements.jobStatus.textContent = humanizeStatus(state.status);
-  elements.jobStatus.className = `status status--${state.status || "idle"}`;
+  elements.jobStatus.textContent = humanizeStatus(state.status, state.cancelRequested);
+  elements.jobStatus.className = `status status--${state.cancelRequested && state.status === "running" ? "running" : state.status || "idle"}`;
   elements.progressSummary.textContent = `${state.completedPages} / ${state.totalPages} pages`;
   elements.progressBarFill.style.width = `${progressPercent}%`;
   elements.savedArtifacts.textContent = String(state.savedArtifacts);
@@ -54,6 +68,10 @@ function render(state) {
   elements.currentPhaseMeta.textContent = state.currentPhaseLabel
     ? "Active phase"
     : "No active work item";
+  if (elements.stopButton) {
+    elements.stopButton.disabled = state.status !== "running" || state.cancelRequested;
+    elements.stopButton.textContent = state.cancelRequested ? "Stopping…" : "Stop import";
+  }
   renderFailures(state.failures);
   renderLogs(state.logs);
 }
@@ -94,7 +112,11 @@ function renderLogs(logs) {
   }
 }
 
-function humanizeStatus(status) {
+function humanizeStatus(status, cancelRequested) {
+  if (status === "running" && cancelRequested) {
+    return "Stopping…";
+  }
+
   switch (status) {
     case "running":
       return "Running";
@@ -104,6 +126,8 @@ function humanizeStatus(status) {
       return "Completed with failures";
     case "error":
       return "Failed";
+    case "cancelled":
+      return "Cancelled";
     default:
       return "Idle";
   }

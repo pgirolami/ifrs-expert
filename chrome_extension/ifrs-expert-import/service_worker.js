@@ -46,6 +46,7 @@ const UNSUPPORTED_ACTION_ICON_PATHS = {
 };
 
 let importProgressState = createImportProgressState();
+let importCancellationRequested = false;
 
 chrome.runtime.onInstalled.addListener(() => {
   runTask("runtime.onInstalled", () => initializeActionState("runtime.onInstalled"));
@@ -75,6 +76,19 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
   runTask("windows.onFocusChanged", () => refreshActiveTabActionState("windows.onFocusChanged"));
 });
 
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type !== "cancelImport") {
+    return false;
+  }
+
+  void requestImportCancellation().then(() => {
+    sendResponse({ ok: true });
+  }).catch((error) => {
+    sendResponse({ ok: false, error: formatErrorMessage(error) });
+  });
+  return true;
+});
+
 chrome.action.onClicked.addListener(async (tab) => {
   logInfo("Toolbar action clicked", { tabId: tab.id, url: tab.url });
 
@@ -90,6 +104,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 
   openImportSidePanel(tab.id);
+  importCancellationRequested = false;
   await updateImportProgress({
     type: "jobStarted",
     sourceFamily,
@@ -109,18 +124,33 @@ chrome.action.onClicked.addListener(async (tab) => {
     await captureIfrsSource(tab.id, tab.url ?? "");
   } catch (error) {
     const errorMessage = formatErrorMessage(error);
-    logError("IFRS Expert import failed.", {
-      tabId: tab.id,
-      url: tab.url,
-      error: errorMessage,
-    });
-    await updateImportProgress({
-      type: "jobFailed",
-      finishedAt: new Date().toISOString(),
-      error: errorMessage,
-    });
-    await showToastInTab(tab.id, `Import failed: ${errorMessage}`, "error");
+    if (isImportCancellationError(error)) {
+      logInfo("IFRS Expert import cancelled.", {
+        tabId: tab.id,
+        url: tab.url,
+        error: errorMessage,
+      });
+      await updateImportProgress({
+        type: "jobCancelled",
+        finishedAt: new Date().toISOString(),
+        summary: errorMessage,
+      });
+      await showToastInTab(tab.id, errorMessage, "success");
+    } else {
+      logError("IFRS Expert import failed.", {
+        tabId: tab.id,
+        url: tab.url,
+        error: errorMessage,
+      });
+      await updateImportProgress({
+        type: "jobFailed",
+        finishedAt: new Date().toISOString(),
+        error: errorMessage,
+      });
+      await showToastInTab(tab.id, `Import failed: ${errorMessage}`, "error");
+    }
   } finally {
+    importCancellationRequested = false;
     logInfo("Import attempt finished.");
   }
 });
@@ -143,8 +173,30 @@ async function updateImportProgress(event) {
   await chrome.storage.session.set({ [IMPORT_PROGRESS_STORAGE_KEY]: importProgressState });
 }
 
+async function requestImportCancellation() {
+  if (importProgressState.status !== "running" || importProgressState.cancelRequested) {
+    return;
+  }
+  importCancellationRequested = true;
+  await updateImportProgress({
+    type: "cancelRequested",
+    logMessage: "Stop requested by user",
+  });
+}
+
+function isImportCancellationError(error) {
+  return formatErrorMessage(error) === "Import cancelled by user";
+}
+
+function throwIfImportCancelled() {
+  if (importCancellationRequested) {
+    throw new Error("Import cancelled by user");
+  }
+}
+
 async function resetImportProgress() {
   importProgressState = createImportProgressState();
+  importCancellationRequested = false;
   await chrome.storage.session.set({ [IMPORT_PROGRESS_STORAGE_KEY]: importProgressState });
 }
 
@@ -297,6 +349,7 @@ async function resolveActionState(tabId, tabUrl) {
 }
 
 async function captureIfrsSource(tabId, tabUrl) {
+  throwIfImportCancelled();
   const context = await executeIfrsPageTaskWithRetry(tabId, { type: "inspectContext" });
   if (context.mode === "corpus") {
     await captureIfrsCorpus(tabId, tabUrl, context);
@@ -337,6 +390,7 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
   });
 
   for (const [documentIndex, corpusTarget] of corpusTargets.entries()) {
+    throwIfImportCancelled();
     if (IFRS_CORPUS_SKIPPED_PAGE_TITLES.has(corpusTarget.title)) {
       logInfo("Skipping IFRS corpus page by title.", {
         tabId,
@@ -430,6 +484,7 @@ async function captureIfrsCorpus(tabId, tabUrl, context) {
 }
 
 async function captureIfrsImport(tabId, tabUrl, options = {}) {
+  throwIfImportCancelled();
   logInfo("Starting IFRS import.", { tabId, url: tabUrl, corpusProgress: options.corpusProgress });
   await updateImportProgress({
     type: "phaseUpdated",
@@ -477,6 +532,7 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
   });
 
   for (const [documentIndex, captureTarget] of captureTargets.entries()) {
+    throwIfImportCancelled();
     const targetUrl = buildIfrsVariantNavigationUrl({
       currentUrl,
       currentVariantValue,
@@ -620,6 +676,7 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
 }
 
 async function captureNavisImport(tabId, tabUrl) {
+  throwIfImportCancelled();
   const urlMode = getNavisActionModeFromUrl(tabUrl);
   let context = null;
 
@@ -699,6 +756,7 @@ async function captureNavisImport(tabId, tabUrl) {
   });
 
   for (const [chapterIndex, chapterTarget] of chapterTargets.entries()) {
+    throwIfImportCancelled();
     logInfo("Capturing Navis chapter.", {
       tabId,
       chapterIndex: chapterIndex + 1,
@@ -758,6 +816,7 @@ async function discoverNavisRootChapterTargets(tabId) {
 }
 
 async function captureNavisChapter(tabId, options) {
+  throwIfImportCancelled();
   const chapterUrl = buildNavisDocumentUrl(options.baseUrl, options.chapterRefId);
   await navigateTabToUrl(tabId, chapterUrl, options.chapterRefId);
   await sleepMs(NAVIS_SECTION_LOAD_DELAY_MS);
@@ -788,6 +847,7 @@ async function captureNavisChapter(tabId, options) {
     pageFragments.push(fragment);
   } else {
     for (const [pageIndex, pageTarget] of pageTargets.entries()) {
+      throwIfImportCancelled();
       logInfo("Capturing Navis page fragment.", {
         tabId,
         chapterRefId: options.chapterRefId,
@@ -874,6 +934,7 @@ function buildNavisChapterBundleHtml(sidecar, pageFragments) {
 }
 
 async function downloadCaptureArtifacts(result) {
+  throwIfImportCancelled();
   const basename = buildCaptureBasename(result);
   const htmlPartFilename = `${ROOT_PREFIX}/${basename}.html.part`;
   const jsonPartFilename = `${ROOT_PREFIX}/${basename}.json.part`;
@@ -951,6 +1012,7 @@ async function executeIfrsPageTask(tabId, task) {
 async function executeIfrsPageTaskWithRetry(tabId, task) {
   let lastError = null;
   for (let attempt = 1; attempt <= IFRS_PAGE_TASK_MAX_ATTEMPTS; attempt += 1) {
+    throwIfImportCancelled();
     try {
       const result = await executeIfrsPageTask(tabId, task);
       if (result !== null && result !== undefined) {
@@ -990,6 +1052,7 @@ async function executeNavisPageTask(tabId, task) {
 async function executeNavisPageTaskWithRetry(tabId, task) {
   let lastError = null;
   for (let attempt = 1; attempt <= NAVIS_PAGE_TASK_MAX_ATTEMPTS; attempt += 1) {
+    throwIfImportCancelled();
     try {
       const result = await executeNavisPageTask(tabId, task);
       if (result !== null && result !== undefined) {

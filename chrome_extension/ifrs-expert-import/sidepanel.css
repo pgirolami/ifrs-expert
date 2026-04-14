@@ -20,16 +20,14 @@ body {
 .panel__header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
-.panel__eyebrow {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #64748b;
+.panel__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 h1,
@@ -115,6 +113,28 @@ h2 {
   color: #b91c1c;
 }
 
+.status--cancelled {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.button {
+  appearance: none;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .progress-bar {
   margin-top: 10px;
   height: 10px;
@@ -166,7 +186,6 @@ h2 {
     box-shadow: none;
   }
 
-  .panel__eyebrow,
   .muted,
   .metric__label,
   .list__time {
@@ -200,5 +219,16 @@ h2 {
   .status--error {
     background: rgba(185, 28, 28, 0.25);
     color: #fca5a5;
+  }
+
+  .status--cancelled {
+    background: rgba(100, 116, 139, 0.25);
+    color: #cbd5e1;
+  }
+
+  .button {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
   }
 }

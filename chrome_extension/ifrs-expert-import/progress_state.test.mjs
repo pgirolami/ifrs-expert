@@ -120,6 +120,31 @@ test("page skips advance progress without failures", () => {
   assert.equal(state.logs.at(-1)?.message, "Skipped Conceptual Framework for Financial Reporting");
 });
 
+test("cancel requests move the run to cancelled when finished", () => {
+  let state = reduceImportProgressState(createImportProgressState(), {
+    type: "jobStarted",
+    sourceFamily: "ifrs",
+    jobType: "ifrs-corpus",
+    title: "IFRS corpus import",
+    totalPages: 2,
+    startedAt: "2026-04-14T12:00:00Z",
+  });
+
+  state = reduceImportProgressState(state, {
+    type: "cancelRequested",
+    logMessage: "Stop requested by user",
+  });
+  state = reduceImportProgressState(state, {
+    type: "jobCancelled",
+    finishedAt: "2026-04-14T12:02:00Z",
+    summary: "Import cancelled by user",
+  });
+
+  assert.equal(state.status, "cancelled");
+  assert.equal(state.cancelRequested, false);
+  assert.equal(state.logs.at(-1)?.message, "Import cancelled by user");
+});
+
 test("job failures preserve the error state", () => {
   const state = reduceImportProgressState(
     reduceImportProgressState(createImportProgressState(), {

@@ -9,9 +9,11 @@
   <body>
     <main class="panel">
       <header class="panel__header">
-        <p class="panel__eyebrow">IFRS Expert Import</p>
         <h1 id="job-title">No active import</h1>
-        <p id="job-status" class="status status--idle">Idle</p>
+        <div class="panel__header-row">
+          <p id="job-status" class="status status--idle">Idle</p>
+          <button id="stop-button" class="button" type="button" disabled>Stop import</button>
+        </div>
       </header>
 
       <section class="card">

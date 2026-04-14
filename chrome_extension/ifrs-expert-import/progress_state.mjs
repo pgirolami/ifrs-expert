@@ -17,6 +17,7 @@ export function createImportProgressState() {
     currentVariantIndex: 0,
     currentVariantCount: 0,
     currentPhaseLabel: "",
+    cancelRequested: false,
     startedAt: "",
     finishedAt: "",
     logs: [],
@@ -36,6 +37,7 @@ export function reduceImportProgressState(currentState, event) {
           jobType: event.jobType,
           title: event.title,
           totalPages: event.totalPages,
+          cancelRequested: false,
           startedAt: event.startedAt,
         },
         {
@@ -89,6 +91,18 @@ export function reduceImportProgressState(currentState, event) {
             ...state,
             currentPhaseLabel: event.phaseLabel,
           };
+    case "cancelRequested":
+      return appendLog(
+        {
+          ...state,
+          cancelRequested: true,
+          currentPhaseLabel: "Stopping…",
+        },
+        {
+          level: event.level ?? "info",
+          message: event.logMessage ?? "Stop requested by user",
+        },
+      );
     case "artifactSaved":
       return appendLog(
         {
@@ -171,6 +185,7 @@ export function reduceImportProgressState(currentState, event) {
           currentVariantIndex: 0,
           currentVariantCount: 0,
           currentPhaseLabel: "",
+          cancelRequested: false,
         },
         {
           level: finalStatus === "success" ? "info" : "error",
@@ -178,6 +193,20 @@ export function reduceImportProgressState(currentState, event) {
         },
       );
     }
+    case "jobCancelled":
+      return appendLog(
+        {
+          ...state,
+          status: "cancelled",
+          finishedAt: event.finishedAt,
+          currentPhaseLabel: "",
+          cancelRequested: false,
+        },
+        {
+          level: "info",
+          message: event.logMessage ?? event.summary ?? "Import cancelled by user",
+        },
+      );
     case "jobFailed":
       return appendLog(
         {
@@ -185,6 +214,7 @@ export function reduceImportProgressState(currentState, event) {
           status: "error",
           finishedAt: event.finishedAt,
           currentPhaseLabel: "",
+          cancelRequested: false,
         },
         {
           level: "error",
