@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Self
 import faiss
 import numpy as np
 
-from src.vector.model_cache import EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
+from src.vector.model_cache import BATCH_SIZE, EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
 
 if TYPE_CHECKING:
     from src.interfaces import DocumentSearchResult
@@ -208,7 +208,7 @@ class DocumentVectorStore:
 
         model = self._get_model()
         logger.info(f"Computing embeddings for {len(texts)} documents")
-        embeddings = model.encode(texts, batch_size=4, show_progress_bar=True)
+        embeddings = model.encode(texts, batch_size=BATCH_SIZE, show_progress_bar=True)
         embeddings = embeddings.astype("float32")
         embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
         start_id = self._index.ntotal  # type: ignore[union-attr]
@@ -217,6 +217,10 @@ class DocumentVectorStore:
             self._id_map[start_id + index_offset] = doc_uid
             self._added_doc_uids.add(doc_uid)
         logger.info(f"Added {len(texts)} document embeddings to index")
+
+    def has_embedding_for_doc(self, doc_uid: str) -> bool:
+        """Return whether a document embedding already exists for the given doc_uid."""
+        return any(existing_doc_uid == doc_uid for existing_doc_uid in self._id_map.values())
 
     def search_all(self, query: str) -> list[DocumentSearchResult]:
         """Search across the full document index and return ranked results."""

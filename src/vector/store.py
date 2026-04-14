@@ -12,7 +12,7 @@ import faiss
 import numpy as np
 
 from src.interfaces import SearchResult
-from src.vector.model_cache import EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
+from src.vector.model_cache import BATCH_SIZE, EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
 
 # Suppress sentence-transformers logging
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -253,7 +253,7 @@ class VectorStore:
         logger.info(f"Computing embeddings for {len(texts)} chunks")
 
         # Compute embeddings in batches
-        embeddings = model.encode(texts, batch_size=4, show_progress_bar=True)
+        embeddings = model.encode(texts, batch_size=BATCH_SIZE, show_progress_bar=True)
 
         # Convert to float32 (FAISS requirement)
         embeddings = embeddings.astype("float32")

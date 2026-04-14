@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Self
 import faiss
 import numpy as np
 
-from src.vector.model_cache import EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
+from src.vector.model_cache import BATCH_SIZE, EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
 
 if TYPE_CHECKING:
     from src.interfaces import TitleSearchResult
@@ -200,7 +200,7 @@ class TitleVectorStore:
             return
         model = self._get_model()
         logger.info(f"Computing embeddings for {len(texts)} section titles")
-        embeddings = model.encode(texts, batch_size=4, show_progress_bar=True)
+        embeddings = model.encode(texts, batch_size=BATCH_SIZE, show_progress_bar=True)
         embeddings = embeddings.astype("float32")
         embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
         start_id = self._index.ntotal  # type: ignore[union-attr]

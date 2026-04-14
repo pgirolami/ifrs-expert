@@ -151,27 +151,15 @@ class InMemorySectionStore:
 
     def delete_sections_by_doc(self, doc_uid: str) -> int:
         keys_to_delete = [key for key, section in self._sections_by_key.items() if section.doc_uid == doc_uid]
-        deleted_db_ids = {
-            section.db_id
-            for key, section in self._sections_by_key.items()
-            if key in keys_to_delete and section.db_id is not None
-        }
+        deleted_db_ids = {section.db_id for key, section in self._sections_by_key.items() if key in keys_to_delete and section.db_id is not None}
         for key in keys_to_delete:
             self._sections_by_key.pop(key, None)
         self._descendant_db_ids_by_ancestor_db_id = {
-            ancestor_db_id: [
-                descendant_db_id
-                for descendant_db_id in descendant_db_ids
-                if descendant_db_id not in deleted_db_ids
-            ]
+            ancestor_db_id: [descendant_db_id for descendant_db_id in descendant_db_ids if descendant_db_id not in deleted_db_ids]
             for ancestor_db_id, descendant_db_ids in self._descendant_db_ids_by_ancestor_db_id.items()
             if ancestor_db_id not in deleted_db_ids
         }
-        self._closure_rows = [
-            row
-            for row in self._closure_rows
-            if row.ancestor_section_db_id not in deleted_db_ids and row.descendant_section_db_id not in deleted_db_ids
-        ]
+        self._closure_rows = [row for row in self._closure_rows if row.ancestor_section_db_id not in deleted_db_ids and row.descendant_section_db_id not in deleted_db_ids]
         return len(keys_to_delete)
 
     def add_descendant_mapping(
@@ -198,11 +186,7 @@ class InMemorySectionStore:
     def _resolve_doc_uid(self, section_id: str, doc_uid: str | None) -> str:
         if doc_uid is not None:
             return doc_uid
-        matching_doc_uids = sorted(
-            stored_doc_uid
-            for stored_doc_uid, stored_section_id in self._sections_by_key
-            if stored_section_id == section_id
-        )
+        matching_doc_uids = sorted(stored_doc_uid for stored_doc_uid, stored_section_id in self._sections_by_key if stored_section_id == section_id)
         if len(matching_doc_uids) != 1:
             msg = f"Ambiguous section id without doc_uid: section_id={section_id}"
             raise ValueError(msg)
@@ -284,9 +268,10 @@ class RecordingTitleVectorStore:
 class RecordingDocumentVectorStore:
     """Document vector store fake that records document embedding operations."""
 
-    def __init__(self) -> None:
+    def __init__(self, existing_doc_uids: set[str] | None = None) -> None:
         self.deleted_doc_uids: list[str] = []
         self.added_embeddings: list[tuple[list[str], list[str]]] = []
+        self._existing_doc_uids = set(existing_doc_uids or set())
 
     def __enter__(self) -> Self:
         return self
@@ -298,9 +283,16 @@ class RecordingDocumentVectorStore:
         del query
         return []
 
+    def has_embedding_for_doc(self, doc_uid: str) -> bool:
+        return doc_uid in self._existing_doc_uids
+
     def delete_by_doc(self, doc_uid: str) -> int:
         self.deleted_doc_uids.append(doc_uid)
+        if doc_uid in self._existing_doc_uids:
+            self._existing_doc_uids.remove(doc_uid)
+            return 1
         return 0
 
     def add_embeddings(self, doc_uids: list[str], texts: list[str]) -> None:
         self.added_embeddings.append((doc_uids, texts))
+        self._existing_doc_uids.update(doc_uids)

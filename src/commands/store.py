@@ -46,6 +46,14 @@ StoreTitleVectorStore = TitleVectorStoreProtocol
 StoreDocumentVectorStore = DocumentVectorStoreProtocol
 StoreInitDb = Callable[[], None]
 
+_DOCUMENT_EMBEDDING_REPAIR_METRICS: dict[str, int] = {"count": 0}
+
+
+def _increment_document_embedding_repair_count() -> int:
+    """Increment and return the process-local repaired document embedding count."""
+    _DOCUMENT_EMBEDDING_REPAIR_METRICS["count"] += 1
+    return _DOCUMENT_EMBEDDING_REPAIR_METRICS["count"]
+
 
 @dataclass(frozen=True)
 class StoreDependencies:
@@ -222,6 +230,7 @@ class StoreCommand:
                 chunks=chunks,
                 sections=extracted_document.sections,
                 document=extracted_document.document,
+                document_embedding_text=built_document_profile.embedding_text,
             )
             if skip_result is not None:
                 return skip_result
@@ -258,6 +267,7 @@ class StoreCommand:
         chunks: list[Chunk],
         sections: list[SectionRecord],
         document: DocumentRecord,
+        document_embedding_text: str,
     ) -> StoreCommandResult | None:
         existing_chunks = self._get_existing_chunks(doc_uid) if self._stores_chunks() else []
         existing_sections = self._get_existing_sections(doc_uid) if self._stores_sections() else []
@@ -281,6 +291,13 @@ class StoreCommand:
             ),
         )
         if should_skip:
+            repaired_result = self._repair_missing_document_embedding_if_needed(
+                doc_uid=doc_uid,
+                chunk_count=len(chunks),
+                embedding_text=document_embedding_text,
+            )
+            if repaired_result is not None:
+                return repaired_result
             logger.info(f"Skipping unchanged source for doc_uid={doc_uid}")
             return StoreCommandResult(
                 status="skipped",
@@ -414,6 +431,30 @@ class StoreCommand:
             logger.info(f"Storing document embedding for doc_uid={doc_uid} with embedding_chars={len(embedding_text)}")
             document_vector_store.add_embeddings([doc_uid], [embedding_text])
             logger.info(f"Stored 1 document embedding for doc_uid={doc_uid}")
+
+    def _repair_missing_document_embedding_if_needed(
+        self,
+        doc_uid: str,
+        chunk_count: int,
+        embedding_text: str,
+    ) -> StoreCommandResult | None:
+        if not self._stores_documents() or self._dependencies.document_vector_store is None:
+            return None
+        with self._dependencies.document_vector_store as document_vector_store:
+            if document_vector_store.has_embedding_for_doc(doc_uid):
+                logger.info(f"Found existing document embedding for unchanged doc_uid={doc_uid}")
+                return None
+        repair_count = _increment_document_embedding_repair_count()
+        logger.warning(f"Detected missing document embedding for unchanged doc_uid={doc_uid}; retrying document embedding storage; repair_count={repair_count}")
+        self._store_document_embeddings(doc_uid=doc_uid, embedding_text=embedding_text)
+        logger.info(f"Repaired missing document embedding for unchanged doc_uid={doc_uid}; repair_count={repair_count}")
+        return StoreCommandResult(
+            status="stored",
+            doc_uid=doc_uid,
+            chunk_count=chunk_count,
+            embedding_count=0,
+            reason="repaired missing document embedding",
+        )
 
     def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
         truncated_count = 0

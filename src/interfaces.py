@@ -182,6 +182,9 @@ class TitleVectorStoreProtocol(SearchTitleVectorStoreProtocol, Protocol):
 class DocumentVectorStoreProtocol(SearchDocumentVectorStoreProtocol, Protocol):
     """Protocol for full document-vector-store operations."""
 
+    def has_embedding_for_doc(self, doc_uid: str) -> bool:
+        """Return whether a document embedding already exists for the given doc_uid."""
+
     def delete_by_doc(self, doc_uid: str) -> int:
         """Delete all embeddings for a document."""
 

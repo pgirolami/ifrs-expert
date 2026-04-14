@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 EMBEDDING_MODEL = "BAAI/bge-m3"
+BATCH_SIZE = 1
 
 
 class EmbeddingModelProtocol(Protocol):
