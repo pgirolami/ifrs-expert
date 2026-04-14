@@ -183,6 +183,11 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 ### 2026-04-14
 - Review meeting with SME ([Notes](./sme-reviews/20260414-SME-REVIEW.md))
-- Investigate ingestion freeze on Naxis documents
+- Improvement to Chrome extension
+    - Extract IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion)
+        - To implement later: Supporting Materials, Refs annotation
+- Extracted all IFRS and all Lefebvre
+- Fix ingestion freeze on Naxis documents
+- Implemented new markdown output in FAQ style
 
 
