@@ -2,6 +2,17 @@ export function normalizeIfrsVariantPathStem(variantValue) {
   return String(variantValue).trim().replace(/\.html?$/i, "").replace(/\/$/, "");
 }
 
+export function extractIfrsDocumentNavigationToken(url) {
+  try {
+    const pathname = new URL(String(url)).pathname;
+    const lastSegment = pathname.split("/").filter(Boolean).at(-1) ?? "";
+    return normalizeIfrsVariantPathStem(lastSegment);
+  } catch {
+    const lastSegment = String(url).split("/").filter(Boolean).at(-1) ?? "";
+    return normalizeIfrsVariantPathStem(lastSegment);
+  }
+}
+
 export function normalizeIfrsVariantPathForNavigation(variantValue) {
   return `${normalizeIfrsVariantPathStem(variantValue)}/`;
 }
@@ -9,6 +20,18 @@ export function normalizeIfrsVariantPathForNavigation(variantValue) {
 export function selectIfrsCaptureTargets(availableDocuments) {
   return availableDocuments.filter((documentOption) => {
     return Boolean(documentOption?.value) && documentOption.disabled !== true;
+  });
+}
+
+export function selectIfrsCorpusTargets(corpusTargets) {
+  const seenUrls = new Set();
+  return corpusTargets.filter((corpusTarget) => {
+    const url = String(corpusTarget?.url ?? "").trim();
+    if (!url || seenUrls.has(url)) {
+      return false;
+    }
+    seenUrls.add(url);
+    return true;
   });
 }
 

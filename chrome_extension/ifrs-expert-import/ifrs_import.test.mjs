@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 
 import {
   buildIfrsVariantNavigationUrl,
+  extractIfrsDocumentNavigationToken,
   selectIfrsCaptureTargets,
+  selectIfrsCorpusTargets,
 } from "./ifrs_import.mjs";
 
 test("selectIfrsCaptureTargets keeps selectable IFRS variants in DOM order", () => {
@@ -71,6 +73,53 @@ test("buildIfrsVariantNavigationUrl swaps the active IFRS variant in the pretty 
     targetUrl,
     "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9-bc/",
   );
+});
+
+test("extractIfrsDocumentNavigationToken handles content and pretty IFRS URLs", () => {
+  assert.equal(
+    extractIfrsDocumentNavigationToken(
+      "https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifrs-1.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs1.html",
+    ),
+    "ifrs1",
+  );
+  assert.equal(
+    extractIfrsDocumentNavigationToken(
+      "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-1.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs1/",
+    ),
+    "ifrs1",
+  );
+});
+
+test("selectIfrsCorpusTargets keeps unique document links in order", () => {
+  const targets = selectIfrsCorpusTargets([
+    {
+      url: "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-1.html",
+      title: "IFRS 1",
+    },
+    {
+      url: "",
+      title: "Broken tile",
+    },
+    {
+      url: "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-2.html",
+      title: "IFRS 2",
+    },
+    {
+      url: "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-1.html",
+      title: "Duplicate IFRS 1",
+    },
+  ]);
+
+  assert.deepEqual(targets, [
+    {
+      url: "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-1.html",
+      title: "IFRS 1",
+    },
+    {
+      url: "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-2.html",
+      title: "IFRS 2",
+    },
+  ]);
 });
 
 test("buildIfrsVariantNavigationUrl falls back to shell canonical when the current URL cannot be rewritten", () => {

@@ -1,7 +1,9 @@
 import {
   buildIfrsVariantNavigationUrl,
+  extractIfrsDocumentNavigationToken,
   normalizeIfrsVariantPathStem,
   selectIfrsCaptureTargets,
+  selectIfrsCorpusTargets,
 } from "./ifrs_import.mjs";
 
 const LOG_PREFIX = "[IFRS Expert Import]";
@@ -10,6 +12,7 @@ const HTML_MIME_TYPE = "text/html;charset=utf-8";
 const JSON_MIME_TYPE = "application/json;charset=utf-8";
 const PAGE_TOAST_DURATION_MS = 4000;
 const ACTION_TITLE = "Import to IFRS Expert";
+const IFRS_CORPUS_ACTION_TITLE = "Import IFRS corpus to IFRS Expert";
 const UNSUPPORTED_ACTION_TITLE = "Import to IFRS Expert (available only on supported sources)";
 const NAVIS_ROOT_ACTION_TITLE = "Import all chapters to IFRS Expert";
 const NAVIS_CHAPTER_ACTION_TITLE = "Import this chapter to IFRS Expert";
@@ -81,7 +84,7 @@ chrome.action.onClicked.addListener(async (tab) => {
       return;
     }
 
-    await captureIfrsImport(tab.id, tab.url ?? "");
+    await captureIfrsSource(tab.id, tab.url ?? "");
   } catch (error) {
     const errorMessage = formatErrorMessage(error);
     logError("IFRS Expert import failed.", {
@@ -159,13 +162,29 @@ async function resolveActionState(tabId, tabUrl) {
 
   const sourceFamily = getSourceFamily(tabUrl);
   if (sourceFamily === "ifrs") {
-    return {
-      enabled: true,
-      title: ACTION_TITLE,
-      iconPaths: SUPPORTED_ACTION_ICON_PATHS,
-      sourceFamily,
-      mode: "page",
-    };
+    try {
+      const context = await executeIfrsPageTask(tabId, { type: "inspectContext" });
+      return {
+        enabled: true,
+        title: context.mode === "corpus" ? IFRS_CORPUS_ACTION_TITLE : ACTION_TITLE,
+        iconPaths: SUPPORTED_ACTION_ICON_PATHS,
+        sourceFamily,
+        mode: context.mode,
+      };
+    } catch (error) {
+      logWarn("Unable to inspect IFRS page state while resolving action state.", {
+        tabId,
+        tabUrl,
+        error: formatErrorMessage(error),
+      });
+      return {
+        enabled: true,
+        title: ACTION_TITLE,
+        iconPaths: SUPPORTED_ACTION_ICON_PATHS,
+        sourceFamily,
+        mode: "page",
+      };
+    }
   }
 
   const urlMode = getNavisActionModeFromUrl(tabUrl);
@@ -226,8 +245,91 @@ async function resolveActionState(tabId, tabUrl) {
   };
 }
 
-async function captureIfrsImport(tabId, tabUrl) {
-  logInfo("Starting IFRS import.", { tabId, url: tabUrl });
+async function captureIfrsSource(tabId, tabUrl) {
+  const context = await executeIfrsPageTaskWithRetry(tabId, { type: "inspectContext" });
+  if (context.mode === "corpus") {
+    await captureIfrsCorpus(tabId, tabUrl, context);
+    return;
+  }
+  await captureIfrsImport(tabId, tabUrl);
+}
+
+async function captureIfrsCorpus(tabId, tabUrl, context) {
+  const corpusTargets = selectIfrsCorpusTargets(context.corpusTargets ?? []);
+  if (corpusTargets.length === 0) {
+    throw new Error("No IFRS document links were found on the corpus page");
+  }
+
+  const savedBasenames = [];
+  const failedTargets = [];
+  logInfo("Starting IFRS corpus capture.", {
+    tabId,
+    url: tabUrl,
+    documentCount: corpusTargets.length,
+    corpusTargets,
+  });
+  await showToastInTab(tabId, `Starting IFRS corpus import: 0/${corpusTargets.length} pages`, "info");
+
+  for (const [documentIndex, corpusTarget] of corpusTargets.entries()) {
+    logInfo("Capturing IFRS document page from corpus.", {
+      tabId,
+      documentIndex: documentIndex + 1,
+      documentCount: corpusTargets.length,
+      documentTitle: corpusTarget.title,
+      documentUrl: corpusTarget.url,
+    });
+
+    try {
+      await navigateTabToUrl(tabId, corpusTarget.url);
+      await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
+      await waitForTabComplete(tabId);
+      await showToastInTab(
+        tabId,
+        `Importing IFRS page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
+        "info",
+      );
+      const documentBasenames = await captureIfrsImport(tabId, corpusTarget.url, {
+        showCompletionToast: false,
+        corpusProgress: {
+          documentIndex: documentIndex + 1,
+          documentCount: corpusTargets.length,
+          documentTitle: corpusTarget.title,
+        },
+      });
+      savedBasenames.push(...documentBasenames);
+    } catch (error) {
+      const errorMessage = formatErrorMessage(error);
+      failedTargets.push({
+        title: corpusTarget.title,
+        url: corpusTarget.url,
+        error: errorMessage,
+      });
+      logError("IFRS corpus document capture failed.", {
+        tabId,
+        documentTitle: corpusTarget.title,
+        documentUrl: corpusTarget.url,
+        error: errorMessage,
+      });
+      await showToastInTab(
+        tabId,
+        `Skipped IFRS page ${documentIndex + 1}/${corpusTargets.length}: ${corpusTarget.title}`,
+        "error",
+      );
+    }
+  }
+
+  if (savedBasenames.length === 0) {
+    throw new Error("IFRS corpus capture did not save any documents");
+  }
+
+  const summaryMessage = failedTargets.length === 0
+    ? `Saved ${savedBasenames.length} IFRS captures from ${corpusTargets.length} pages`
+    : `Saved ${savedBasenames.length} IFRS captures; ${failedTargets.length} pages failed`;
+  await showToastInTab(tabId, summaryMessage, failedTargets.length === 0 ? "success" : "error");
+}
+
+async function captureIfrsImport(tabId, tabUrl, options = {}) {
+  logInfo("Starting IFRS import.", { tabId, url: tabUrl, corpusProgress: options.corpusProgress });
   const captureContext = await executeIfrsPageTaskWithRetry(tabId, { type: "inspectCaptureTargets" });
   const captureTargets = selectIfrsCaptureTargets(captureContext.availableDocuments ?? []);
 
@@ -264,7 +366,16 @@ async function captureIfrsImport(tabId, tabUrl) {
       targetLabel: captureTarget.label,
       targetVariantValue: captureTarget.value,
       targetUrl,
+      corpusProgress: options.corpusProgress,
     });
+    const corpusPrefix = options.corpusProgress
+      ? `${options.corpusProgress.documentIndex}/${options.corpusProgress.documentCount} ${options.corpusProgress.documentTitle} — `
+      : "";
+    await showToastInTab(
+      tabId,
+      `Importing ${corpusPrefix}${captureTarget.label} (${documentIndex + 1}/${captureTargets.length})`,
+      "info",
+    );
 
     try {
       const selectionResult = await executeIfrsPageTaskWithRetry(tabId, {
@@ -296,10 +407,31 @@ async function captureIfrsImport(tabId, tabUrl) {
       currentVariantValue = captureTarget.value;
     }
 
-    const result = await executeIfrsPageTaskWithRetry(tabId, {
-      type: "captureCurrentVariant",
-      expectedVariantValue: captureTarget.value,
-    });
+    let result;
+    try {
+      result = await executeIfrsPageTaskWithRetry(tabId, {
+        type: "captureCurrentVariant",
+        expectedVariantValue: captureTarget.value,
+      });
+    } catch (error) {
+      logWarn("IFRS variant capture failed; retrying after hard reload.", {
+        tabId,
+        targetLabel: captureTarget.label,
+        targetVariantValue: captureTarget.value,
+        targetUrl,
+        error: formatErrorMessage(error),
+      });
+      await reloadTab(tabId);
+      await waitForTabComplete(tabId);
+      await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
+      await navigateTabToIfrsVariant(tabId, targetUrl, captureTarget.value);
+      await waitForTabComplete(tabId);
+      await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
+      result = await executeIfrsPageTaskWithRetry(tabId, {
+        type: "captureCurrentVariant",
+        expectedVariantValue: captureTarget.value,
+      });
+    }
 
     currentUrl = result.sidecar.url || currentUrl;
     currentVariantValue = captureTarget.value;
@@ -320,7 +452,10 @@ async function captureIfrsImport(tabId, tabUrl) {
   const summaryMessage = savedBasenames.length === 1
     ? `Saved ${savedBasenames[0]}.html and ${savedBasenames[0]}.json`
     : `Saved ${savedBasenames.length} IFRS captures to ${ROOT_PREFIX}/`;
-  await showToastInTab(tabId, summaryMessage, "success");
+  if (options.showCompletionToast !== false) {
+    await showToastInTab(tabId, summaryMessage, "success");
+  }
+  return savedBasenames;
 }
 
 async function captureNavisImport(tabId, tabUrl) {
@@ -687,6 +822,10 @@ function sleepMs(durationMs) {
   });
 }
 
+async function reloadTab(tabId) {
+  await chrome.tabs.reload(tabId);
+}
+
 async function waitForTabComplete(tabId, timeoutMs = 15000) {
   const currentTab = await chrome.tabs.get(tabId);
   if (currentTab.status === "complete") {
@@ -899,6 +1038,27 @@ async function runIfrsPageTask(task) {
       }));
   }
 
+  function getCorpusTargets() {
+    return Array.from(document.querySelectorAll("div.ifrs-cmp-standards__group__tile"))
+      .map((tile, index) => {
+        const anchor = tile.querySelector("a[href]");
+        if (!(anchor instanceof HTMLAnchorElement)) {
+          return null;
+        }
+        const rawHref = normalizeWhitespace(anchor.getAttribute("href") || "");
+        if (!rawHref || rawHref.startsWith("#") || rawHref.toLowerCase().startsWith("javascript:")) {
+          return null;
+        }
+        const url = new URL(rawHref, window.location.href).toString();
+        const title = normalizeWhitespace(anchor.textContent || tile.textContent || `document-${index + 1}`);
+        return {
+          url,
+          title,
+        };
+      })
+      .filter((target) => target !== null);
+  }
+
   function getAnnotationCheckbox() {
     const checkbox = document.querySelector("#annotation-checkbox");
     return checkbox instanceof HTMLInputElement ? checkbox : null;
@@ -1096,6 +1256,20 @@ async function runIfrsPageTask(task) {
   }
 
   switch (task.type) {
+    case "inspectContext": {
+      const corpusTargets = getCorpusTargets();
+      if (corpusTargets.length > 1) {
+        return {
+          mode: "corpus",
+          currentUrl: window.location.href,
+          corpusTargets,
+        };
+      }
+      return {
+        mode: "page",
+        currentUrl: window.location.href,
+      };
+    }
     case "inspectCaptureTargets": {
       await waitForStablePage();
       const checkedVariantInput = getCheckedVariantInput();
@@ -1674,6 +1848,19 @@ function isNavigationTargetReached(currentUrl, targetUrl, expectedRefId = null) 
     return getQueryParamValue(currentUrl, "refId") === expectedRefId;
   }
 
+  if (getSourceFamily(currentUrl) === "ifrs" && getSourceFamily(targetUrl) === "ifrs") {
+    const targetToken = extractIfrsDocumentNavigationToken(targetUrl);
+    if (!targetToken) {
+      return currentUrl === targetUrl;
+    }
+    try {
+      const currentPathname = new URL(currentUrl).pathname;
+      return currentPathname.includes(`/${targetToken}/`) || currentPathname.includes(`/${targetToken}.html`);
+    } catch {
+      return currentUrl.includes(`/${targetToken}/`) || currentUrl.includes(`/${targetToken}.html`);
+    }
+  }
+
   return currentUrl === targetUrl;
 }
 
@@ -1841,7 +2028,11 @@ function showPageToast(message, tone, durationMs) {
   toast.setAttribute("aria-live", "polite");
   toast.textContent = message;
 
-  const backgroundColor = tone === "success" ? "#166534" : "#b91c1c";
+  const backgroundColor = tone === "success"
+    ? "#166534"
+    : tone === "info"
+      ? "#1d4ed8"
+      : "#b91c1c";
   toast.style.position = "fixed";
   toast.style.top = "20px";
   toast.style.right = "20px";

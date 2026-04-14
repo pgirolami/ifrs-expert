@@ -13,7 +13,11 @@ The toolbar icon is grey and disabled on unsupported pages and switches to IFRS 
 
 ### IFRS pages
 
-When clicked on an authenticated IFRS page, it now captures **all selectable document variants for the current standard**.
+The extension supports two IFRS page modes.
+
+#### Standard page mode
+
+When clicked on an authenticated IFRS standard page, it captures **all selectable document variants for the current standard**.
 
 The behavior is:
 
@@ -26,6 +30,15 @@ The behavior is:
 - in free mode, capture only the Standard when that is the only selectable option
 - switch **Annotation** on before each capture
 - save one HTML + JSON pair per captured variant
+
+#### Corpus page mode
+
+When clicked on an IFRS listing page that contains multiple `div.ifrs-cmp-standards__group__tile` cards, it:
+
+- discovers one link per tile
+- navigates to each linked standard page in order
+- runs the standard page import flow for that page
+- saves all emitted HTML + JSON pairs under `Downloads/ifrs-expert/`
 
 For each captured IFRS variant, the extension records:
 
@@ -102,9 +115,11 @@ Chrome extensions do not expose a true filesystem rename primitive for arbitrary
 ### IFRS workflow
 
 1. Sign in to the IFRS site in Chrome.
-2. Open any IFRS variant page for the target standard.
+2. Either:
+   - open any IFRS variant page for one standard, or
+   - open an IFRS listing page containing multiple standard tiles
 3. Click **Import to IFRS Expert**.
-4. Wait for the extension to batch through every selectable document variant and save one file pair per variant.
+4. Wait for the extension to batch through the detected standard page(s) and save the emitted file pairs.
 5. Run:
 
 ```bash
