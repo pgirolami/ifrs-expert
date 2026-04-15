@@ -6,9 +6,12 @@ They ingest the IFRS 16 leases document and query it to ensure expected results.
 
 import json
 import tempfile
+from pathlib import Path
 
 import pytest
-from pathlib import Path
+
+import src.db.connection as connection_module
+from tests.policy import load_test_policy_config
 
 # PDF path for testing
 IFRS16_LEASES_PDF = Path("examples/ifrs-16-leases_38-39.pdf")
@@ -16,14 +19,26 @@ DOC_UID = "ifrs-16-leases_38-39"
 
 
 @pytest.fixture(scope="module")
-def temp_index_dir():
+def temp_index_dir() -> Path:
     """Create a temporary directory for the FAISS index."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)
 
 
 @pytest.fixture(scope="module")
-def ingested_ifrs16(temp_index_dir):
+def temp_db_path() -> Path:
+    """Patch the global DB path to an isolated temporary database."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+
+        original_path = connection_module.DB_PATH
+        connection_module.DB_PATH = db_path
+        yield db_path
+        connection_module.DB_PATH = original_path
+
+
+@pytest.fixture(scope="module")
+def ingested_ifrs16(temp_index_dir: Path, temp_db_path: Path):
     """Ingest the IFRS 16 leases PDF for testing.
 
     This fixture runs once per test module and cleans up after all tests.
@@ -31,12 +46,14 @@ def ingested_ifrs16(temp_index_dir):
     if not IFRS16_LEASES_PDF.exists():
         pytest.skip(f"PDF not found: {IFRS16_LEASES_PDF}")
 
+    del temp_db_path
+
     # Import here to ensure app is configured
     from src.commands.store import create_store_command
+    from src.db import ChunkStore
     from src.db import init_db
     from src.vector import VectorStore
     from src.vector.store import set_index_path
-    from src.db import ChunkStore
 
     # Set temp index path for this test
     index_path = temp_index_dir / "faiss.index"
@@ -46,7 +63,7 @@ def ingested_ifrs16(temp_index_dir):
     init_db()
 
     # Ingest the PDF
-    command = create_store_command(pdf_path=IFRS16_LEASES_PDF, doc_uid=DOC_UID)
+    command = create_store_command(pdf_path=IFRS16_LEASES_PDF, doc_uid=DOC_UID, scope="chunks")
     result = command.execute()
     assert not result.startswith("Error:"), f"Failed to ingest PDF: {result}"
 
@@ -80,7 +97,7 @@ def run_query(query: str, k: int = 5, min_score: float | None = None, expand: in
 
     command = create_query_command(
         query=query,
-        options=QueryOptions(k=k, min_score=min_score, verbose=False, expand=expand),
+        options=QueryOptions(policy=load_test_policy_config(), k=k, min_score=min_score, verbose=False, expand=expand),
     )
     result = command.execute()
 
@@ -112,9 +129,7 @@ class TestIFRS16Retrieval:
 
         # Should be in the B43-B50 range (the leases paragraphs)
         section = top["chunk_number"]
-        assert section == "B44", (
-            f"Expected section B44, got {section}"
-        )
+        assert section == "B44", f"Expected section B44, got {section}"
 
     def test_query_has_low_relevance_when_non_sensical(self, ingested_ifrs16):
         # Use min_score=0 to get all results and verify they're low-scoring
