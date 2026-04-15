@@ -8,6 +8,7 @@ from typing import cast
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol
 from src.models.document import DocumentRecord
 from tests.fakes import InMemoryDocumentStore
+from tests.policy import load_test_policy_config, load_test_retrieval_policy, make_retrieval_policy
 
 
 class MockDocumentVectorStore(SearchDocumentVectorStoreProtocol):
@@ -79,7 +80,7 @@ def test_query_documents_returns_top_d_documents_for_selected_type_as_json() -> 
                 source_url="https://www.ifrs.org/ifrs9.html",
                 canonical_url="https://www.ifrs.org/ifrs9.html",
                 captured_at="2026-04-05T10:00:00Z",
-                document_type="IFRS",
+                document_type="IFRS-S",
                 intro_text="IFRS intro",
             )
         )
@@ -137,7 +138,11 @@ def test_query_documents_returns_top_d_documents_for_selected_type_as_json() -> 
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(document_type="IFRIC", d=2, min_score=0.6, verbose=False),
+        options=QueryDocumentsOptions(
+            policy=make_retrieval_policy(per_type_d={"IFRIC": 2}),
+            document_type="IFRIC",
+            verbose=False,
+        ),
     )
 
     result = command.execute()
@@ -163,12 +168,12 @@ def test_query_documents_returns_error_for_unsupported_document_type() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(document_type="CUSTOM", d=5, min_score=0.6, verbose=False),
+        options=QueryDocumentsOptions(policy=load_test_retrieval_policy(), document_type="CUSTOM", verbose=False),
     )
 
     result = command.execute()
 
-    assert result == "Error: document_type must be one of IFRS, IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC, PS, NAVIS"
+    assert result == "Error: document_type must be one of IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC, PS, NAVIS"
 
 
 def test_query_documents_returns_error_when_index_missing() -> None:
@@ -183,7 +188,7 @@ def test_query_documents_returns_error_when_index_missing() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=False),
         ),
-        options=QueryDocumentsOptions(document_type="IFRS", d=5, min_score=0.6, verbose=False),
+        options=QueryDocumentsOptions(policy=load_test_retrieval_policy(), document_type="IFRS-S", verbose=False),
     )
 
     result = command.execute()
@@ -237,7 +242,7 @@ def test_query_documents_returns_ifrs_variant_documents() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(document_type="IFRS-BC", d=2, min_score=0.6, verbose=False),
+        options=QueryDocumentsOptions(policy=make_retrieval_policy(per_type_d={"IFRS-BC": 2}), document_type="IFRS-BC", verbose=False),
     )
 
     result = command.execute()
@@ -279,7 +284,7 @@ def test_query_documents_returns_navis_documents() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(document_type="NAVIS", d=2, min_score=0.6, verbose=False),
+        options=QueryDocumentsOptions(policy=make_retrieval_policy(per_type_d={"NAVIS": 2}), document_type="NAVIS", verbose=False),
     )
 
     result = command.execute()
@@ -326,7 +331,7 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(document_type="IFRIC", d=5, min_score=None, verbose=True),
+        options=QueryDocumentsOptions(policy=load_test_retrieval_policy(), document_type="IFRIC", verbose=True),
     )
 
     result = command.execute()
@@ -334,7 +339,7 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
     expected_background_preview = ("B" * VERBOSE_TEXT_PREVIEW_CHARS) + "..."
     expected_scope_preview = ("S" * VERBOSE_TEXT_PREVIEW_CHARS) + "..."
 
-    assert result.startswith("QueryDocumentsOptions(document_type='IFRIC', d=5, min_score=None, verbose=True)")
+    assert result.startswith("QueryDocumentsOptions(policy=")
     assert f"Snippet: {expected_background_preview}" in result
     assert "Type: IFRIC" in result
     assert "Document representation:" in result

@@ -1,4 +1,4 @@
-"""Tests for the Promptfoo config generator."""
+"""Tests for Promptfoo config generator."""
 
 from __future__ import annotations
 
@@ -9,17 +9,17 @@ from types import ModuleType
 
 
 def _repo_root() -> Path:
-    """Return the repository root."""
+    """Return repository root."""
     return Path(__file__).resolve().parents[2]
 
 
 def _script_path() -> Path:
-    """Return the Promptfoo config generator path."""
+    """Return Promptfoo config generator path."""
     return _repo_root() / "scripts" / "build_promptfoo_config.py"
 
 
-def _load_build_promptfoo_module() -> ModuleType:
-    """Load scripts/build_promptfoo_config.py as a module for unit tests."""
+def _load_module() -> ModuleType:
+    """Load scripts/build_promptfoo_config.py as module."""
     spec = importlib.util.spec_from_file_location("tests_build_promptfoo_config_module", _script_path())
     assert spec is not None
     assert spec.loader is not None
@@ -30,8 +30,8 @@ def _load_build_promptfoo_module() -> ModuleType:
     return module
 
 
-def test_promptfoo_config_builder_renders_family_anchor_and_alias(tmp_path: Path) -> None:
-    """The builder should anchor family assertions once and reuse them for later variants."""
+def test_builder_renders_family_anchor_and_alias(tmp_path: Path) -> None:
+    """Builder should anchor family assertions once and reuse alias."""
     base_path = tmp_path / "promptfoo_src" / "base.yaml"
     base_path.parent.mkdir(parents=True)
     base_path.write_text(
@@ -45,6 +45,7 @@ providers:
     label: 'Provider'
     config:
       llm_provider: 'openai'
+      policy-config: '../../../../config/policy.default.yaml'
 readme: |
   Demo suite
 """.lstrip(),
@@ -76,75 +77,24 @@ variants:
         encoding="utf-8",
     )
 
-    build_promptfoo_config = _load_build_promptfoo_module()
-    builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=tmp_path)
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=tmp_path)
 
     output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "latest" / "promptfooconfig.yaml"
     output_path.parent.mkdir(parents=True)
     output = builder.build_text(output_path=output_path)
 
     assert "assert: &q1_assertions" in output
-    assert output.count("&q1_assertions") == 1, "Expected one Q1 assertion anchor"
+    assert output.count("&q1_assertions") == 1
     assert "assert: *q1_assertions" in output
     assert "family: 'Q1¤'" in output
     assert "variant: 'Q1.0¤'" in output
-    assert "description: 'Q1.0 - Variant zero'" in output
 
 
-def test_promptfoo_config_builder_omits_options_when_family_has_no_defaults(tmp_path: Path) -> None:
-    """The builder should omit test options when a family does not define them."""
-    base_path = tmp_path / "promptfoo_src" / "base.yaml"
-    base_path.parent.mkdir(parents=True)
-    base_path.write_text(
-        """
-evaluateOptions:
-  cache: false
-prompts:
-  - '{{question}}'
-providers:
-  - id: 'exec:test'
-    label: 'Provider'
-    config:
-      llm_provider: 'openai'
-readme: |
-  Demo suite
-""".lstrip(),
-        encoding="utf-8",
-    )
-
-    family_dir = tmp_path / "experiments" / "00_QUESTIONS" / "Q2"
-    family_dir.mkdir(parents=True)
-    (family_dir / "Q2.0.txt").write_text("Question 0", encoding="utf-8")
-    (family_dir / "family.yaml").write_text(
-        """
-family_id: Q2
-assert:
-  - type: is-json
-    value: file://./prompts/schema.json
-    description: JSON schema
-variants:
-  - id: Q2.0
-    file: Q2.0.txt
-    description: Variant zero
-""".lstrip(),
-        encoding="utf-8",
-    )
-
-    build_promptfoo_config = _load_build_promptfoo_module()
-    builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=tmp_path)
-
-    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "latest" / "promptfooconfig.yaml"
-    output_path.parent.mkdir(parents=True)
-    output = builder.build_text(output_path=output_path)
-
-    assert "options:" not in output
-    assert "description: 'Q2.0 - Variant zero'" in output
-
-
-def test_promptfoo_config_builder_writes_requested_output_path(tmp_path: Path) -> None:
-    """The builder should render config relative to the requested output path."""
-    build_promptfoo_config = _load_build_promptfoo_module()
-    builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=_repo_root())
+def test_builder_writes_requested_output_path(tmp_path: Path) -> None:
+    """Builder should render config relative to requested output path."""
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=_repo_root())
 
     output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
     output_path.parent.mkdir(parents=True)
@@ -158,34 +108,14 @@ def test_promptfoo_config_builder_writes_requested_output_path(tmp_path: Path) -
     assert "file://" in generated
 
 
-def test_promptfoo_config_builder_includes_q1_answer_command_defaults(tmp_path: Path) -> None:
-    """The checked-in Q1 family should emit the tuned answer-command defaults."""
-    build_promptfoo_config = _load_build_promptfoo_module()
-    builder = build_promptfoo_config.PromptfooConfigBuilder(project_root=_repo_root())
+def test_builder_includes_policy_config_reference(tmp_path: Path) -> None:
+    """Generated config should carry policy-config provider option."""
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=_repo_root())
 
     output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
     output_path.parent.mkdir(parents=True)
-
     generated = builder.build_text(output_path=output_path)
 
-    assert "k: 5" in generated
-    assert "min-score: 0.53" in generated
-    assert "d: 25" in generated
-    assert "doc-min-score: null" in generated
-    assert "ifrs-d: 4" in generated
-    assert "ias-d: 4" in generated
-    assert "ifric-d: 6" in generated
-    assert "sic-d: 6" in generated
-    assert "ps-d: 1" in generated
-    assert "ifrs-min-score: 0.53" in generated
-    assert "ias-min-score: 0.4" in generated
-    assert "ifric-min-score: 0.48" in generated
-    assert "sic-min-score: 0.4" in generated
-    assert "ps-min-score: 0.4" in generated
-    assert "content-min-score: 0.53" in generated
-    assert "expand-to-section: true" in generated
-    assert "expand: 0" in generated
-    assert "full-doc-threshold: 0" in generated
-    assert "retrieval-mode: 'documents'" in generated
-    assert "output-dir: null" not in generated
-    assert "save-all: false" not in generated
+    assert "policy-config" in generated
+    assert "effective/policy.default.yaml" in generated

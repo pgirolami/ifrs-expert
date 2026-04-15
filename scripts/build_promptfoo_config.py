@@ -36,14 +36,12 @@ def get_default_output_path() -> Path:
     """
     config_dir_env = os.environ.get(PROMPTFOO_CONFIG_DIR_ENV)
     if not config_dir_env:
-        raise EnvironmentError(
-            f"{PROMPTFOO_CONFIG_DIR_ENV} environment variable is not set. "
-            "This script must be run with PROMPTFOO_CONFIG_DIR pointing to a directory."
-        )
+        raise EnvironmentError(f"{PROMPTFOO_CONFIG_DIR_ENV} environment variable is not set. This script must be run with PROMPTFOO_CONFIG_DIR pointing to a directory.")
     config_dir = Path(config_dir_env)
     if config_dir.is_absolute():
         return config_dir / "promptfooconfig.yaml"
     return PROJECT_ROOT / config_dir / "promptfooconfig.yaml"
+
 
 YamlScalar: TypeAlias = str | int | float | bool | None
 YamlValue: TypeAlias = YamlScalar | dict[str, "YamlValue"] | list["YamlValue"]
@@ -426,9 +424,7 @@ def parse_args() -> argparse.Namespace:
         "--output",
         type=Path,
         default=None,
-        help="Path to write the generated promptfooconfig.yaml file. "
-        f"Defaults to $PROMPTFOO_CONFIG_DIR/promptfooconfig.yaml if set, "
-        f"otherwise {PROJECT_ROOT / 'promptfooconfig.yaml'}",
+        help=f"Path to write the generated promptfooconfig.yaml file. Defaults to $PROMPTFOO_CONFIG_DIR/promptfooconfig.yaml if set, otherwise {PROJECT_ROOT / 'promptfooconfig.yaml'}",
     )
     return parser.parse_args()
 

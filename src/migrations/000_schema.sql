@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS documents (
     captured_at TEXT,
     source_domain TEXT,
     document_type TEXT,
+    document_kind TEXT,
     background_text TEXT,
     issue_text TEXT,
     objective_text TEXT,

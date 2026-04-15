@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
-
-from src.commands.constants import DEFAULT_EXPAND, DEFAULT_FULL_DOC_THRESHOLD, DEFAULT_RETRIEVAL_K, DEFAULT_RETRIEVE_CONTENT_MIN_SCORE, DEFAULT_RETRIEVE_DOCUMENT_D, get_default_document_d_by_type, get_default_document_min_score_by_type
 
 if TYPE_CHECKING:
     from src.interfaces import SearchResult
@@ -17,16 +15,16 @@ class RetrievalRequest:
     """One retrieval request passed into the shared pipeline."""
 
     query: str
-    retrieval_mode: str = "text"
-    k: int = DEFAULT_RETRIEVAL_K
-    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
-    doc_min_score: float | None = None
-    document_d_by_type: dict[str, int] = field(default_factory=get_default_document_d_by_type)
-    document_min_score_by_type: dict[str, float] = field(default_factory=get_default_document_min_score_by_type)
-    content_min_score: float = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-    expand_to_section: bool = False
-    expand: int = DEFAULT_EXPAND
-    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
+    retrieval_mode: str
+    k: int
+    d: int
+    document_d_by_type: dict[str, int]
+    document_min_score_by_type: dict[str, float]
+    document_expand_to_section_by_type: dict[str, bool]
+    chunk_min_score: float
+    expand_to_section: bool
+    expand: int
+    full_doc_threshold: int
 
 
 @dataclass(frozen=True)
@@ -35,6 +33,7 @@ class DocumentHit:
 
     doc_uid: str
     score: float
+    document_type: str
 
 
 @dataclass(frozen=True)

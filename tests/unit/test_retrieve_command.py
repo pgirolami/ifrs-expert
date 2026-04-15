@@ -9,6 +9,7 @@ from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtoc
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
+from tests.policy import load_test_retrieval_policy, make_retrieval_policy
 
 
 class MockVectorStore(SearchVectorStoreProtocol):
@@ -98,13 +99,7 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
             ),
             document_index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=RetrieveOptions(
-            retrieval_mode="documents",
-            k=5,
-            d=3,
-            content_min_score=0.5,
-            verbose=False,
-            expand=0,
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, d=3, chunk_min_score=0.5, expand=0, mode="documents"), verbose=False,
         ),
     )
 
@@ -113,9 +108,9 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
     data = json.loads(result)
     assert data["retrieval_mode"] == "documents"
     assert data["document_hits"] == [
-        {"doc_uid": "ifric16", "score": 0.6},
-        {"doc_uid": "ifrs9", "score": 0.595},
-        {"doc_uid": "ias21", "score": 0.56},
+        {"doc_uid": "ifric16", "score": 0.6, "document_type": "IFRIC", "document_kind": "interpretation"},
+        {"doc_uid": "ifrs9", "score": 0.595, "document_type": "IFRS-S", "document_kind": "standard"},
+        {"doc_uid": "ias21", "score": 0.56, "document_type": "IAS", "document_kind": "standard"},
     ]
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifric16", "ifrs9", "ias21"]
     assert [chunk["text"] for chunk in data["chunks"]] == ["ifric chunk", "ifrs chunk", "ias chunk"]
@@ -159,13 +154,8 @@ def test_retrieve_documents_mode_respects_per_type_document_caps() -> None:
             document_index_path_fn=lambda: MockIndexPath(exists=True),
         ),
         options=RetrieveOptions(
-            retrieval_mode="documents",
-            k=5,
-            d=5,
-            ifric_d=1,
-            content_min_score=0.5,
+            policy=make_retrieval_policy(k=5, d=5, chunk_min_score=0.5, expand=0, per_type_d={"IFRIC": 1}, mode="documents"),
             verbose=False,
-            expand=0,
         ),
     )
 
@@ -173,8 +163,8 @@ def test_retrieve_documents_mode_respects_per_type_document_caps() -> None:
 
     data = json.loads(result)
     assert data["document_hits"] == [
-        {"doc_uid": "ifric16", "score": 0.6},
-        {"doc_uid": "ifrs9", "score": 0.595},
+        {"doc_uid": "ifric16", "score": 0.6, "document_type": "IFRIC", "document_kind": "interpretation"},
+        {"doc_uid": "ifrs9", "score": 0.595, "document_type": "IFRS-S", "document_kind": "standard"},
     ]
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifric16", "ifrs9"]
 
@@ -227,7 +217,7 @@ def test_retrieve_expand_to_section_includes_descendant_section_chunks() -> None
             index_path_fn=lambda: MockIndexPath(exists=True),
             section_store=section_store,
         ),
-        options=RetrieveOptions(retrieval_mode="text", k=5, content_min_score=0.5, expand_to_section=True, verbose=False, expand=0),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand_to_section=True, expand=0, mode="text"), verbose=False),
     )
 
     result = command.execute()
@@ -258,11 +248,11 @@ def test_retrieve_verbose_output_starts_with_options() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=RetrieveOptions(retrieval_mode="text", k=5, verbose=True, expand=0),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, expand=0, mode="text"), verbose=True),
     )
 
     result = command.execute()
 
-    assert result.startswith("RetrieveOptions(k=5, d=25, doc_min_score=None, ifrs_d=4")
+    assert result.startswith("RetrieveOptions(policy=")
     assert "Retrieved chunks:" in result
     assert "Document: ifrs9" in result

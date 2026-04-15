@@ -14,6 +14,7 @@ from src.models.chunk import Chunk
 from src.models.section import SectionRecord
 from src.retrieval.models import RetrievalResult
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
+from tests.policy import load_test_policy_config, load_test_retrieval_policy, make_retrieval_policy
 
 VALID_PROMPT_B_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
@@ -100,12 +101,10 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="test",
             config=config,
-            options=AnswerOptions(expand=0, output_dir=output_dir, save_all=True, retrieval_mode="text"),
+            options=AnswerOptions(policy=make_retrieval_policy(mode="text"), output_dir=output_dir),
         )
 
-        assert command.expand == 0
         assert command.output_dir == output_dir
-        assert command.save_all is True
 
     def test_answer_no_index(self, caplog) -> None:
         """Test answer command logs and fails clearly when no index exists."""
@@ -116,7 +115,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=False),
             send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with caplog.at_level(logging.INFO):
             result = command.execute()
@@ -157,7 +156,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text")))
 
         with (
             unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
@@ -189,7 +188,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -228,7 +227,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5, expand=0, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", chunk_min_score=0.5)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -267,14 +266,16 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, expand=1, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
 
         assert result.success is True
         prompt_a = captured_prompts[0]
-        assert '<Document name="doc1">' in prompt_a
+        assert '<Document name="doc1"' in prompt_a
+        assert 'document_type="' in prompt_a
+        assert 'document_kind="' in prompt_a
         assert 'id="1"' in prompt_a
         assert 'id="2"' in prompt_a
         assert 'id="3"' in prompt_a
@@ -308,7 +309,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, full_doc_threshold=10, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", full_doc_threshold=2000)))
 
         with (
             unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
@@ -356,7 +357,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -424,7 +425,7 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="recognition",
             config=config,
-            options=AnswerOptions(k=5, content_min_score=0.5, expand_to_section=True, expand=0, retrieval_mode="text"),
+            options=AnswerOptions(policy=make_retrieval_policy(mode="text")),
         )
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
@@ -475,14 +476,7 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="foreign operation",
             config=config,
-            options=AnswerOptions(
-                retrieval_mode="documents",
-                k=5,
-                d=1,
-                doc_min_score=0.5,
-                content_min_score=0.5,
-                expand=0,
-            ),
+            options=AnswerOptions(policy=make_retrieval_policy(d=1, chunk_min_score=0.5, expand=0, mode="documents")),
         )
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
@@ -549,28 +543,31 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="foreign operation",
             config=config,
-            options=AnswerOptions(
-                retrieval_mode="documents",
+            options=AnswerOptions(policy=make_retrieval_policy(
                 k=3,
                 d=9,
-                doc_min_score=0.2,
-                ifrs_d=7,
-                ias_d=6,
-                ifric_d=4,
-                sic_d=3,
-                ps_d=2,
-                navis_d=5,
-                ifrs_min_score=0.61,
-                ias_min_score=0.54,
-                ifric_min_score=0.50,
-                sic_min_score=0.49,
-                ps_min_score=0.48,
-                navis_min_score=0.47,
-                content_min_score=0.1,
-                expand_to_section=True,
+                chunk_min_score=0.1,
                 expand=1,
                 full_doc_threshold=2000,
-            ),
+                expand_to_section=True,
+                per_type_d={
+                    "IFRS-S": 7,
+                    "IAS": 6,
+                    "IFRIC": 4,
+                    "SIC": 3,
+                    "PS": 2,
+                    "NAVIS": 5,
+                },
+                per_type_min_score={
+                    "IFRS-S": 0.61,
+                    "IAS": 0.54,
+                    "IFRIC": 0.50,
+                    "SIC": 0.49,
+                    "PS": 0.48,
+                    "NAVIS": 0.47,
+                },
+                mode="documents",
+            )),
         )
 
         with (
@@ -585,24 +582,21 @@ class TestAnswerCommand:
         assert getattr(request, "retrieval_mode") == "documents"
         assert getattr(request, "k") == 3
         assert getattr(request, "d") == 9
-        assert getattr(request, "doc_min_score") == 0.2
-        assert getattr(request, "document_d_by_type") == {
-            "IFRS": 7,
-            "IAS": 6,
-            "IFRIC": 4,
-            "SIC": 3,
-            "PS": 2,
-            "NAVIS": 5,
-        }
-        assert getattr(request, "document_min_score_by_type") == {
-            "IFRS": 0.61,
-            "IAS": 0.54,
-            "IFRIC": 0.50,
-            "SIC": 0.49,
-            "PS": 0.48,
-            "NAVIS": 0.47,
-        }
-        assert getattr(request, "content_min_score") == 0.1
+        document_d_by_type = getattr(request, "document_d_by_type")
+        document_min_score_by_type = getattr(request, "document_min_score_by_type")
+        assert document_d_by_type["IFRS-S"] == 7
+        assert document_d_by_type["IAS"] == 6
+        assert document_d_by_type["IFRIC"] == 4
+        assert document_d_by_type["SIC"] == 3
+        assert document_d_by_type["PS"] == 2
+        assert document_d_by_type["NAVIS"] == 5
+        assert document_min_score_by_type["IFRS-S"] == 0.61
+        assert document_min_score_by_type["IAS"] == 0.54
+        assert document_min_score_by_type["IFRIC"] == 0.50
+        assert document_min_score_by_type["SIC"] == 0.49
+        assert document_min_score_by_type["PS"] == 0.48
+        assert document_min_score_by_type["NAVIS"] == 0.47
+        assert getattr(request, "chunk_min_score") == 0.1
         assert getattr(request, "expand_to_section") is True
         assert getattr(request, "expand") == 1
         assert getattr(request, "full_doc_threshold") == 2000
@@ -637,7 +631,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -707,7 +701,7 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="initial recognition",
             config=config,
-            options=AnswerOptions(k=5, retrieval_mode="titles"),
+            options=AnswerOptions(policy=make_retrieval_policy(mode="titles")),
         )
 
         with (
@@ -744,7 +738,7 @@ class TestBuildPromptBContext:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=lambda prompt: "result",
         )
-        return AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        return AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text")))
 
     def _make_formatted_chunks(self, chunks: list[Chunk]) -> list[str]:
         """Helper to format chunks as they would appear in the prompt."""
@@ -1039,7 +1033,7 @@ class TestAnswerCommandAuthorityFiltering:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()

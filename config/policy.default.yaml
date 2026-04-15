@@ -1,0 +1,49 @@
+retrieval:
+  mode: documents
+  k: 5
+  expand: 0
+  full_doc_threshold: 0
+  expand_to_section: true
+  text:
+    min_score: 0.53
+  titles:
+    min_score: 0.6
+  documents:
+    global_d: 25
+    by_document_type:
+      IFRS-S:
+        d: 4
+        min_score: 0.53
+        expand_to_section: true
+      IFRS-BC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
+      IFRS-IE:
+        d: 1
+        min_score: 0.53
+        expand_to_section: false
+      IFRS-IG:
+        d: 1
+        min_score: 0.53
+        expand_to_section: true
+      IAS:
+        d: 4
+        min_score: 0.4
+        expand_to_section: true
+      IFRIC:
+        d: 6
+        min_score: 0.48
+        expand_to_section: true
+      SIC:
+        d: 6
+        min_score: 0.4
+        expand_to_section: true
+      NAVIS:
+        d: 2
+        min_score: 0.6
+        expand_to_section: true
+      PS:
+        d: 1
+        min_score: 0.4
+        expand_to_section: true

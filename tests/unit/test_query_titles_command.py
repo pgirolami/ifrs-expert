@@ -10,6 +10,7 @@ from src.interfaces import SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
+from tests.policy import load_test_policy_config, load_test_retrieval_policy
 
 
 class MockTitleVectorStore(SearchVectorStoreProtocol):
@@ -92,7 +93,7 @@ def test_query_titles_returns_all_chunks_in_matched_section_subtree() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryTitlesOptions(k=5, min_score=None, verbose=False),
+        options=QueryTitlesOptions(policy=load_test_retrieval_policy(), verbose=False),
     )
 
     result = command.execute()
@@ -156,7 +157,7 @@ def test_query_titles_preserves_chunks_for_overlapping_section_matches() -> None
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryTitlesOptions(k=5, min_score=None, verbose=False),
+        options=QueryTitlesOptions(policy=load_test_retrieval_policy(), verbose=False),
     )
 
     result = command.execute()
@@ -242,7 +243,7 @@ def test_query_titles_uses_doc_uid_to_resolve_overlapping_source_section_ids() -
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryTitlesOptions(k=5, min_score=None, verbose=False),
+        options=QueryTitlesOptions(policy=load_test_retrieval_policy(), verbose=False),
     )
 
     result = command.execute()
@@ -295,9 +296,9 @@ def test_query_titles_verbose_output_starts_with_options() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryTitlesOptions(k=5, min_score=None, verbose=True),
+        options=QueryTitlesOptions(policy=load_test_retrieval_policy(), verbose=True),
     )
 
     result = command.execute()
 
-    assert result.startswith("QueryTitlesOptions(k=5, min_score=None, verbose=True)")
+    assert result.startswith("QueryTitlesOptions(policy=")

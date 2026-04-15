@@ -19,20 +19,20 @@ class TestDocumentFamilyGrouping:
         doc_uids = ["ifrs15", "ifrs9", "ias21"]
         grouped = _group_by_family(doc_uids)
 
-        assert "IFRS" in grouped
-        assert grouped["IFRS"] == ["ifrs15", "ifrs9"]
-        assert "IAS" in grouped
-        assert grouped["IAS"] == ["ias21"]
+        assert "IFRS-S (standard)" in grouped
+        assert grouped["IFRS-S (standard)"] == ["ifrs15", "ifrs9"]
+        assert "IAS (standard)" in grouped
+        assert grouped["IAS (standard)"] == ["ias21"]
 
     def test_group_by_family_mixed_documents(self) -> None:
         """Test grouping a mix of IFRS, IAS, and unknown documents."""
         doc_uids = ["ifrs15", "ifrs9", "ias21", "unknown_doc", "ias12"]
         grouped = _group_by_family(doc_uids)
 
-        assert "IFRS" in grouped
-        assert grouped["IFRS"] == ["ifrs15", "ifrs9"]
-        assert "IAS" in grouped
-        assert grouped["IAS"] == ["ias21", "ias12"]
+        assert "IFRS-S (standard)" in grouped
+        assert grouped["IFRS-S (standard)"] == ["ifrs15", "ifrs9"]
+        assert "IAS (standard)" in grouped
+        assert grouped["IAS (standard)"] == ["ias21", "ias12"]
         assert "Autres" in grouped
         assert grouped["Autres"] == ["unknown_doc"]
 
@@ -54,8 +54,8 @@ class TestDocumentFamilyGrouping:
         doc_uids = ["ifrs15", "ifrs16", "ifrs17"]
         grouped = _group_by_family(doc_uids)
 
-        assert "IFRS" in grouped
-        assert grouped["IFRS"] == ["ifrs15", "ifrs16", "ifrs17"]
+        assert "IFRS-S (standard)" in grouped
+        assert grouped["IFRS-S (standard)"] == ["ifrs15", "ifrs16", "ifrs17"]
         assert "Autres" not in grouped
 
 

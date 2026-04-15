@@ -6,25 +6,7 @@ evaluateOptions:
 
 
 answer_command_defaults: &answer_command_defaults
-  k: 5
-  min-score: 0.53
-  d: 25
-  doc-min-score: null
-  ifrs-d: 4
-  ias-d: 4
-  ifric-d: 6
-  sic-d: 6
-  ps-d: 1
-  ifrs-min-score: 0.53
-  ias-min-score: 0.4
-  ifric-min-score: 0.48
-  sic-min-score: 0.4
-  ps-min-score: 0.4
-  content-min-score: 0.53
-  expand-to-section: true
-  expand: 0
-  full-doc-threshold: 0
-  retrieval-mode: 'documents'
+  policy-config: './effective/policy.default.yaml'
 
 prompts:
   - '{{question}}'
@@ -56,8 +38,8 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Promptfoo providers now use one shared answer-command config block for the
-  retrieval and prompting options that should be fixed across eval runs.
+  Promptfoo providers now pass one policy-config path. Retrieval tuning lives
+  in YAML policy files, not inline Promptfoo provider knobs.
   Artifact/output handling is controlled separately by scripts/run_promptfoo_eval.py.
 
   Run Q1: make eval EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1

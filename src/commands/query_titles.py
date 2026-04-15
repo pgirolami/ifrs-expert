@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_QUERY_TITLES_MIN_SCORE, DEFAULT_RETRIEVAL_K, DEFAULT_VERBOSE
+from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, SectionStore, init_db
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalHit, TitleRetrievalOptions, retrieve_title_hits
 from src.vector.title_store import TitleVectorStore, get_title_index_path
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchTitleVectorStoreProtocol
+    from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -36,26 +37,25 @@ class QueryTitlesConfig:
 class QueryTitlesOptions:
     """Options for the query-titles command."""
 
-    k: int = DEFAULT_RETRIEVAL_K
-    min_score: float | None = DEFAULT_QUERY_TITLES_MIN_SCORE
+    policy: RetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
 
 
 class QueryTitlesCommand:
     """Search for similar section titles and expand results to matching chunks."""
 
-    def __init__(self, query: str, config: QueryTitlesConfig, options: QueryTitlesOptions | None = None) -> None:
+    def __init__(self, query: str, config: QueryTitlesConfig, options: QueryTitlesOptions) -> None:
         """Initialize the query-titles command."""
         self.query = query
         self._config = config
-        self._options = options or QueryTitlesOptions()
+        self._options = options
 
     def execute(self) -> str:
         """Execute the title-search workflow and return formatted results."""
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
 
-        min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_QUERY_TITLES_MIN_SCORE
+        retrieval_policy = self._options.policy
         error, hits = retrieve_title_hits(
             query=self.query,
             config=TitleRetrievalConfig(
@@ -65,7 +65,7 @@ class QueryTitlesCommand:
                 init_db_fn=self._config.init_db_fn,
                 index_path_fn=self._config.index_path_fn,
             ),
-            options=TitleRetrievalOptions(k=self._options.k, min_score=min_score),
+            options=TitleRetrievalOptions(k=retrieval_policy.k, min_score=retrieval_policy.titles.min_score),
         )
         if error is not None:
             return error
@@ -109,7 +109,7 @@ class QueryTitlesCommand:
         return "\n".join(lines)
 
 
-def create_query_titles_command(query: str, options: QueryTitlesOptions | None = None) -> QueryTitlesCommand:
+def create_query_titles_command(query: str, options: QueryTitlesOptions) -> QueryTitlesCommand:
     """Create QueryTitlesCommand with real dependencies."""
     config = QueryTitlesConfig(
         title_vector_store=TitleVectorStore(),

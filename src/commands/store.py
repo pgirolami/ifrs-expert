@@ -21,7 +21,7 @@ from src.interfaces import (
     TitleVectorStoreProtocol,
     VectorStoreProtocol,
 )
-from src.models.document import resolve_document_type_from_doc_uid
+from src.models.document import resolve_document_kind_from_document_type, resolve_document_type_from_doc_uid
 from src.retrieval.document_profile_builder import DocumentProfileBuilder
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 from src.vector.document_store import DocumentVectorStore
@@ -325,6 +325,16 @@ class StoreCommand:
         doc_uid = extracted_document.document.doc_uid
         if extracted_document.document.document_type is None:
             extracted_document.document.document_type = resolve_document_type_from_doc_uid(doc_uid)
+        if extracted_document.document.document_type is None:
+            message = f"Could not resolve exact document_type for doc_uid={doc_uid}"
+            raise ValueError(message)
+        if extracted_document.document.document_kind is None:
+            extracted_document.document.document_kind = resolve_document_kind_from_document_type(
+                extracted_document.document.document_type,
+            )
+        if extracted_document.document.document_kind is None:
+            message = f"Could not resolve document_kind for doc_uid={doc_uid}, document_type={extracted_document.document.document_type}"
+            raise ValueError(message)
         return doc_uid
 
     def _store_sections(self, doc_uid: str, extracted_document: ExtractedDocument) -> dict[str, int]:
@@ -532,7 +542,7 @@ class StoreCommand:
     def _document_payload(
         self,
         document: DocumentRecord,
-    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
+    ) -> tuple[str, str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str | None]:
         return (
             document.source_type,
             document.source_title,
@@ -540,6 +550,7 @@ class StoreCommand:
             document.canonical_url,
             document.source_domain,
             document.document_type,
+            document.document_kind,
             document.background_text,
             document.issue_text,
             document.objective_text,

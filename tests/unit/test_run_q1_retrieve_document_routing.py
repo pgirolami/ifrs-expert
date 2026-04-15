@@ -19,12 +19,7 @@ def _repo_root() -> Path:
 
 def _script_path() -> Path:
     """Return the experiment script path."""
-    return (
-        _repo_root()
-        / "experiments"
-        / "22_manual_experiment_on_document_routing"
-        / "run_q1_retrieve_document_routing.py"
-    )
+    return _repo_root() / "experiments" / "22_manual_experiment_on_document_routing" / "run_q1_retrieve_document_routing.py"
 
 
 def _load_module() -> ModuleType:
@@ -105,8 +100,8 @@ def test_run_includes_document_type_rank_line_and_summary(tmp_path: Path) -> Non
     _, _, markdown = experiment.run()
 
     expected_fragments = (
-        "1/4<br>IFRS 1/2<br>0.9000",
-        "2/4<br>IFRS 2/2<br>0.8400",
+        "1/4<br>IFRS-S 1/2<br>0.9000",
+        "2/4<br>IFRS-S 2/2<br>0.8400",
         "2/4<br>IAS 1/1<br>0.8000",
         "**Type rank**",
         "1.5000/2.0000",
@@ -161,7 +156,7 @@ def test_run_persists_type_rank_metadata_in_json(tmp_path: Path) -> None:
 
     if first_hit != {
         "doc_uid": "ifrs9",
-        "document_type": "IFRS",
+        "document_type": "IFRS-S",
         "score": 0.9,
         "global_rank": 1,
         "global_total": 3,
@@ -185,7 +180,7 @@ def test_run_persists_type_rank_metadata_in_json(tmp_path: Path) -> None:
 
     if third_hit != {
         "doc_uid": "ifrs7",
-        "document_type": "IFRS",
+        "document_type": "IFRS-S",
         "score": 0.7,
         "global_rank": 3,
         "global_total": 3,

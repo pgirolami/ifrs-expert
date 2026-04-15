@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, TypedDict
 import fitz
 
 from src.models.chunk import Chunk
-from src.models.document import DocumentRecord
+from src.models.document import DocumentRecord, resolve_document_kind_from_document_type, resolve_document_type_from_doc_uid
 from src.models.extraction import ExtractedDocument
 
 if TYPE_CHECKING:
@@ -567,6 +567,15 @@ class PdfExtractor:
         for chunk in chunks:
             chunk.doc_uid = doc_uid
 
+        document_type = resolve_document_type_from_doc_uid(doc_uid)
+        if document_type is None:
+            message = f"Could not resolve exact document_type for doc_uid={doc_uid}"
+            raise ValueError(message)
+        document_kind = resolve_document_kind_from_document_type(document_type)
+        if document_kind is None:
+            message = f"Could not resolve document_kind for doc_uid={doc_uid}, document_type={document_type}"
+            raise ValueError(message)
+
         return ExtractedDocument(
             document=DocumentRecord(
                 doc_uid=doc_uid,
@@ -575,6 +584,8 @@ class PdfExtractor:
                 source_url=None,
                 canonical_url=None,
                 captured_at=None,
+                document_type=document_type,
+                document_kind=document_kind,
             ),
             chunks=chunks,
         )

@@ -37,11 +37,7 @@ def test_generate_text_posts_streaming_request_and_parses_sse_output() -> None:
     fake_client = RecordingHTTPClient(
         FakeHTTPResponse(
             status_code=200,
-            text=(
-                'data: {"type":"response.output_text.delta","delta":"Codex"}\n\n'
-                'data: {"type":"response.output_text.delta","delta":" answer"}\n\n'
-                'data: {"type":"response.completed","response":{"status":"completed"}}\n\n'
-            ),
+            text=('data: {"type":"response.output_text.delta","delta":"Codex"}\n\ndata: {"type":"response.output_text.delta","delta":" answer"}\n\ndata: {"type":"response.completed","response":{"status":"completed"}}\n\n'),
         )
     )
     client = OpenAICodexClient(model="gpt-5.1", auth_context=AUTH_CONTEXT, http_client=fake_client)
@@ -68,10 +64,7 @@ def test_generate_json_requests_json_object_output_and_parses_response() -> None
     fake_client = RecordingHTTPClient(
         FakeHTTPResponse(
             status_code=200,
-            text=(
-                'data: {"type":"response.output_text.delta","delta":"{\\"answer\\": \\\"yes\\\"}"}\n\n'
-                'data: {"type":"response.completed","response":{"status":"completed"}}\n\n'
-            ),
+            text=('data: {"type":"response.output_text.delta","delta":"{\\"answer\\": \\"yes\\"}"}\n\ndata: {"type":"response.completed","response":{"status":"completed"}}\n\n'),
         )
     )
     client = OpenAICodexClient(model="gpt-5.1", auth_context=AUTH_CONTEXT, http_client=fake_client)
@@ -103,10 +96,7 @@ def test_generate_text_falls_back_to_output_item_done_when_no_delta_events_exist
     fake_client = RecordingHTTPClient(
         FakeHTTPResponse(
             status_code=200,
-            text=(
-                'data: {"type":"response.output_item.done","item":{"type":"message","content":[{"type":"output_text","text":"Codex answer"}]}}\n\n'
-                'data: {"type":"response.completed","response":{"status":"completed"}}\n\n'
-            ),
+            text=('data: {"type":"response.output_item.done","item":{"type":"message","content":[{"type":"output_text","text":"Codex answer"}]}}\n\ndata: {"type":"response.completed","response":{"status":"completed"}}\n\n'),
         )
     )
     client = OpenAICodexClient(model="gpt-5.1", auth_context=AUTH_CONTEXT, http_client=fake_client)

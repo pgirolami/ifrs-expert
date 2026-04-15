@@ -52,7 +52,14 @@ def init_db() -> None:
             if migration_file.name in applied_migrations:
                 continue
             logger.debug(f"Running migration: {migration_file.name}")
-            conn.executescript(migration_file.read_text(encoding="utf-8"))
+            migration_sql = migration_file.read_text(encoding="utf-8")
+            try:
+                conn.executescript(migration_sql)
+            except sqlite3.OperationalError as error:
+                should_ignore_duplicate_document_kind = migration_file.name == "011_add_document_kind.sql" and "duplicate column name: document_kind" in str(error).lower()
+                if not should_ignore_duplicate_document_kind:
+                    raise
+                logger.warning(f"Skipping duplicate document_kind column operation in {migration_file.name}")
             conn.execute(
                 "INSERT INTO schema_migrations (name) VALUES (?)",
                 (migration_file.name,),

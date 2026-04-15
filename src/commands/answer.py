@@ -10,30 +10,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
-from src.commands.constants import (
-    DEFAULT_D_FOR_IAS_DOCUMENTS,
-    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_D_FOR_IFRS_DOCUMENTS,
-    DEFAULT_D_FOR_NAVIS_DOCUMENTS,
-    DEFAULT_D_FOR_PS_DOCUMENTS,
-    DEFAULT_D_FOR_SIC_DOCUMENTS,
-    DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
-    DEFAULT_RETRIEVAL_K,
-    DEFAULT_RETRIEVAL_MODE,
-    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
-    DEFAULT_RETRIEVE_DOCUMENT_D,
-    DEFAULT_RETRIEVE_EXPAND,
-    DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
-)
+from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
+from src.models.document import infer_document_kind, infer_exact_document_type
 from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
@@ -52,6 +33,7 @@ if TYPE_CHECKING:
         SearchVectorStoreProtocol,
     )
     from src.models.chunk import Chunk
+    from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -80,29 +62,9 @@ class AnswerConfig:
 class AnswerOptions:
     """Options for answer command."""
 
-    k: int = DEFAULT_RETRIEVAL_K
-    min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
-    doc_min_score: float | None = None
-    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
-    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
-    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
-    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
-    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
-    navis_d: int = DEFAULT_D_FOR_NAVIS_DOCUMENTS
-    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
-    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
-    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
-    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
-    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
-    navis_min_score: float = DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS
-    content_min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-    expand_to_section: bool = DEFAULT_RETRIEVE_EXPAND_TO_SECTION
-    expand: int = DEFAULT_RETRIEVE_EXPAND
-    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
+    policy: RetrievalPolicy
+    verbose: bool = DEFAULT_VERBOSE
     output_dir: Path | None = None
-    save_all: bool = False
-    retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
@@ -246,38 +208,20 @@ class AnswerCommand:
         options: AnswerOptions | None = None,
     ) -> None:
         """Initialize the answer command."""
-        resolved_options = options or AnswerOptions()
+        if options is None:
+            message = "AnswerCommand requires options with a loaded policy"
+            raise ValueError(message)
         self.query = query
-        self.k = resolved_options.k
-        self.d = resolved_options.d
-        self.min_score = resolved_options.min_score if resolved_options.min_score is not None else DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-        self.doc_min_score = resolved_options.doc_min_score
-        self.ifrs_d = resolved_options.ifrs_d
-        self.ias_d = resolved_options.ias_d
-        self.ifric_d = resolved_options.ifric_d
-        self.sic_d = resolved_options.sic_d
-        self.ps_d = resolved_options.ps_d
-        self.navis_d = resolved_options.navis_d
-        self.ifrs_min_score = resolved_options.ifrs_min_score
-        self.ias_min_score = resolved_options.ias_min_score
-        self.ifric_min_score = resolved_options.ifric_min_score
-        self.sic_min_score = resolved_options.sic_min_score
-        self.ps_min_score = resolved_options.ps_min_score
-        self.navis_min_score = resolved_options.navis_min_score
-        self.content_min_score = resolved_options.content_min_score if resolved_options.content_min_score is not None else self.min_score
-        self.expand_to_section = resolved_options.expand_to_section
-        self.expand = resolved_options.expand
-        self.full_doc_threshold = resolved_options.full_doc_threshold
-        self.retrieval_mode = resolved_options.retrieval_mode
-        self.output_dir = resolved_options.output_dir
-        self.save_all = resolved_options.save_all
-
-        self._retrieved_doc_uids: list[str] = []
         self._config = config
+        self._options = options
+        self.output_dir = options.output_dir
+        self.verbose = options.verbose
+        self._retrieved_doc_uids: list[str] = []
 
     def execute(self) -> AnswerCommandResult:
         """Execute the answer command and return the run artifacts."""
-        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={self.k}, expand={self.expand}, f={self.full_doc_threshold}, min-score={self.min_score})")
+        policy = self._options.policy
+        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={policy.k}, expand={policy.expand}, f={policy.full_doc_threshold}, min-score={policy.text.min_score})")
 
         validation_error = self._get_validation_error()
         if validation_error:
@@ -294,72 +238,38 @@ class AnswerCommand:
             return AnswerCommandResult.failure(query=self.query, error=f"Error: {e}", error_stage="workflow")
 
     def _get_validation_error(self) -> str | None:
-        """Get validation error or None."""
-        validators = (
-            self._get_query_validation_error,
-            self._get_range_validation_error,
-            self._get_core_numeric_validation_error,
-            self._get_per_type_d_validation_error,
-            self._get_retrieval_mode_validation_error,
-        )
-        for validator in validators:
-            error = validator()
-            if error is not None:
-                return error
-        return None
-
-    def _get_query_validation_error(self) -> str | None:
-        """Validate the query string."""
-        if self.query and self.query.strip():
-            return None
-        return "Error: Query cannot be empty"
-
-    def _get_range_validation_error(self) -> str | None:
-        """Validate numeric range options."""
-        if self.expand < 0:
-            return "Error: expand must be >= 0"
-        if self.full_doc_threshold < 0:
-            return "Error: full_doc_threshold must be >= 0"
-        return None
-
-    def _get_core_numeric_validation_error(self) -> str | None:
-        """Validate top-level numeric options."""
-        if self.k <= 0:
-            return "Error: k must be > 0"
-        if self.d <= 0:
-            return "Error: d must be > 0"
-        return None
-
-    def _get_per_type_d_validation_error(self) -> str | None:
-        """Validate per-document-type caps."""
-        per_type_d_values = {
-            "ifrs_d": self.ifrs_d,
-            "ias_d": self.ias_d,
-            "ifric_d": self.ifric_d,
-            "sic_d": self.sic_d,
-            "ps_d": self.ps_d,
-            "navis_d": self.navis_d,
-        }
-        for option_name, option_value in per_type_d_values.items():
-            if option_value <= 0:
-                return f"Error: {option_name} must be > 0"
-        return None
-
-    def _get_retrieval_mode_validation_error(self) -> str | None:
-        """Validate retrieval mode."""
-        if self.retrieval_mode in {"text", "titles", "documents"}:
-            return None
-        return "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
+        """Validate query and policy; return the first error or None."""
+        if not self.query or not self.query.strip():
+            return "Error: Query cannot be empty"
+        policy = self._options.policy
+        first_error: str | None = None
+        if policy.expand < 0:
+            first_error = "Error: expand must be >= 0"
+        elif policy.full_doc_threshold < 0:
+            first_error = "Error: full_doc_threshold must be >= 0"
+        elif policy.k <= 0:
+            first_error = "Error: retrieval.k in policy must be > 0"
+        elif policy.documents.global_d <= 0:
+            first_error = "Error: retrieval.documents.global_d in policy must be > 0"
+        elif not all(cap.d > 0 for document_type, cap in policy.documents.by_document_type.items()):
+            for document_type, cap in policy.documents.by_document_type.items():
+                if cap.d <= 0:
+                    first_error = f"Error: per-type document cap for {document_type} must be > 0"
+                    break
+        elif policy.mode not in {"text", "titles", "documents"}:
+            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'"
+        return first_error
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
+        policy = self._options.policy
         prompt_error = self._get_prompt_template_error()
         if prompt_error is not None:
             return prompt_error
 
-        if self.retrieval_mode == "titles":
+        if policy.mode == "titles":
             return self._get_title_prerequisite_error()
-        if self.retrieval_mode == "documents":
+        if policy.mode == "documents":
             document_prerequisite_error = self._get_document_prerequisite_error()
             if document_prerequisite_error is not None:
                 return document_prerequisite_error
@@ -402,33 +312,20 @@ class AnswerCommand:
 
     def _execute_workflow(self) -> AnswerCommandResult:
         """Execute the main workflow."""
+        policy = self._options.policy
         error, retrieval_result = execute_retrieval(
             request=RetrievalRequest(
                 query=self.query,
-                retrieval_mode=self.retrieval_mode,
-                k=self.k,
-                d=self.d,
-                doc_min_score=self.doc_min_score,
-                document_d_by_type={
-                    "IFRS": self.ifrs_d,
-                    "IAS": self.ias_d,
-                    "IFRIC": self.ifric_d,
-                    "SIC": self.sic_d,
-                    "PS": self.ps_d,
-                    "NAVIS": self.navis_d,
-                },
-                document_min_score_by_type={
-                    "IFRS": self.ifrs_min_score,
-                    "IAS": self.ias_min_score,
-                    "IFRIC": self.ifric_min_score,
-                    "SIC": self.sic_min_score,
-                    "PS": self.ps_min_score,
-                    "NAVIS": self.navis_min_score,
-                },
-                content_min_score=self.content_min_score,
-                expand_to_section=self.expand_to_section,
-                expand=self.expand,
-                full_doc_threshold=self.full_doc_threshold,
+                retrieval_mode=policy.mode,
+                k=policy.k,
+                d=policy.documents.global_d,
+                document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
+                document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
+                document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+                chunk_min_score=policy.titles.min_score if policy.mode == "titles" else policy.text.min_score,
+                expand_to_section=policy.expand_to_section if policy.mode != "documents" else True,
+                expand=policy.expand,
+                full_doc_threshold=policy.full_doc_threshold,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,
@@ -580,7 +477,11 @@ class AnswerCommand:
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
-            document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
+            document_type = infer_exact_document_type(doc_uid)
+            document_kind = infer_document_kind(doc_uid)
+            document_type_attr = self._escape_xml(document_type or "")
+            document_kind_attr = self._escape_xml(document_kind or "")
+            document_xml = f'<Document name="{self._escape_xml(doc_uid)}" document_type="{document_type_attr}" document_kind="{document_kind_attr}">\n{joined_chunks}\n</Document>'
             formatted_documents.append(document_xml)
 
         return formatted_documents
@@ -658,16 +559,20 @@ class AnswerCommand:
             if not isinstance(doc_xml, str):
                 continue
 
-            doc_match = re.search(r'<Document name="([^"]+)">', doc_xml)
+            doc_match = re.search(r'<Document\s+[^>]*name="([^"]+)"[^>]*>', doc_xml)
             if not doc_match:
                 continue
             doc_uid = doc_match.group(1)
+            document_type_match = re.search(r'document_type="([^"]*)"', doc_xml)
+            document_kind_match = re.search(r'document_kind="([^"]*)"', doc_xml)
+            document_type = document_type_match.group(1) if document_type_match else ""
+            document_kind = document_kind_match.group(1) if document_kind_match else ""
 
             filtered_chunk_xmls = [match.group(0) for match in chunk_pattern.finditer(doc_xml) if (doc_uid, match.group(2)) in authority_refs]
 
             if filtered_chunk_xmls:
                 joined_chunks = "\n\n".join(filtered_chunk_xmls)
-                document_xml = f'<Document name="{self._escape_xml(doc_uid)}">\n{joined_chunks}\n</Document>'
+                document_xml = f'<Document name="{self._escape_xml(doc_uid)}" document_type="{self._escape_xml(document_type)}" document_kind="{self._escape_xml(document_kind)}">\n{joined_chunks}\n</Document>'
                 filtered_documents.append(document_xml)
 
         if not filtered_documents:
@@ -687,7 +592,7 @@ class AnswerCommand:
         actually used in Prompt B (after authority filtering).
         """
         doc_uids: list[str] = []
-        for match in re.finditer(r'<Document name="([^"]+)">', context):
+        for match in re.finditer(r'<Document\s+[^>]*name="([^"]+)"[^>]*>', context):
             doc_uid = match.group(1)
             if doc_uid not in doc_uids:
                 doc_uids.append(doc_uid)
@@ -786,7 +691,7 @@ def _default_send_to_llm(prompt: str) -> str:
 
 def create_answer_command(
     query: str,
-    options: AnswerOptions | None = None,
+    options: AnswerOptions,
 ) -> AnswerCommand:
     """Create AnswerCommand with real dependencies."""
     config = AnswerConfig(

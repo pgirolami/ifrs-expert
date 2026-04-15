@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DOCUMENT_TYPES: tuple[str, ...] = (
-    "IFRS",
     "IFRS-S",
     "IFRS-BC",
     "IFRS-IE",
@@ -20,6 +19,24 @@ DOCUMENT_TYPES: tuple[str, ...] = (
     "NAVIS",
 )
 DOCUMENT_TYPE_FAMILIES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS", "NAVIS")
+DOCUMENT_KIND_BY_TYPE: dict[str, str] = {
+    "IFRS-S": "standard",
+    "IAS": "standard",
+    "IFRIC": "interpretation",
+    "SIC": "interpretation",
+    "NAVIS": "interpretation",
+    "IFRS-IG": "implementation_guidance",
+    "IFRS-IE": "illustrative_examples",
+    "IFRS-BC": "basis_for_conclusions",
+    "PS": "standard",
+}
+DOCUMENT_KINDS: tuple[str, ...] = (
+    "standard",
+    "interpretation",
+    "implementation_guidance",
+    "illustrative_examples",
+    "basis_for_conclusions",
+)
 DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
 
@@ -35,9 +52,9 @@ def resolve_document_type_from_doc_uid(doc_uid: str) -> str | None:
             ("-ie", "IFRS-IE"),
             ("-ig", "IFRS-IG"),
         ):
-            if normalized_doc_uid.startswith("ifrs") and suffix in normalized_doc_uid:
+            if suffix in normalized_doc_uid:
                 return document_type
-        return "IFRS"
+        return "IFRS-S"
 
     for document_type in DOCUMENT_TYPE_FAMILIES:
         if normalized_doc_uid.startswith(document_type.lower()):
@@ -47,13 +64,29 @@ def resolve_document_type_from_doc_uid(doc_uid: str) -> str | None:
 
 def resolve_document_type(doc_uid: str, explicit_document_type: str | None = None) -> str | None:
     """Resolve a document type from explicit metadata first, then doc_uid fallback."""
-    if explicit_document_type is not None and explicit_document_type in DOCUMENT_TYPES:
-        return explicit_document_type
+    if explicit_document_type is not None:
+        normalized_document_type = explicit_document_type.strip().upper()
+        if normalized_document_type and normalized_document_type in DOCUMENT_TYPES:
+            return normalized_document_type
     return resolve_document_type_from_doc_uid(doc_uid)
 
 
+def resolve_document_kind_from_document_type(document_type: str | None) -> str | None:
+    """Resolve a document kind from an exact document type."""
+    if document_type is None:
+        return None
+    return DOCUMENT_KIND_BY_TYPE.get(document_type)
+
+
+def resolve_document_kind(document_type: str | None, explicit_document_kind: str | None = None) -> str | None:
+    """Resolve a document kind from explicit metadata first, then document type mapping."""
+    if explicit_document_kind is not None and explicit_document_kind in DOCUMENT_KINDS:
+        return explicit_document_kind
+    return resolve_document_kind_from_document_type(document_type)
+
+
 def document_type_to_family(document_type: str | None) -> str | None:
-    """Map exact document types to the retrieval family used by the pipeline."""
+    """Map exact document types to retrieval families."""
     if document_type is None:
         return None
     if document_type.startswith("IFRS"):
@@ -63,40 +96,16 @@ def document_type_to_family(document_type: str | None) -> str | None:
     return None
 
 
-def infer_document_type(doc_uid: str) -> str | None:
-    """Infer the exact document type from the doc_uid fallback, or from a non-default database path."""
+def _get_persisted_document_type(doc_uid: str, *, use_default_db_guard: bool) -> str | None:
     normalized_doc_uid = doc_uid.strip()
     if not normalized_doc_uid:
         return None
 
     connection_module = importlib.import_module("src.db.connection")
-    if connection_module.DB_PATH != DEFAULT_DB_PATH:
-        try:
-            with connection_module.get_connection(read_only=True) as connection:
-                connection.row_factory = sqlite3.Row
-                row = connection.execute(
-                    "SELECT document_type FROM documents WHERE doc_uid = ?",
-                    (normalized_doc_uid,),
-                ).fetchone()
-        except sqlite3.OperationalError:
-            row = None
-
-        if row is not None:
-            document_type = row["document_type"]
-            if isinstance(document_type, str) and document_type.strip():
-                return document_type
-
-    return resolve_document_type_from_doc_uid(normalized_doc_uid)
-
-
-def infer_persisted_document_type(doc_uid: str) -> str | None:
-    """Infer the exact document type from persisted metadata when available."""
-    normalized_doc_uid = doc_uid.strip()
-    if not normalized_doc_uid:
+    if use_default_db_guard and connection_module.DB_PATH == DEFAULT_DB_PATH:
         return None
 
     try:
-        connection_module = importlib.import_module("src.db.connection")
         with connection_module.get_connection(read_only=True) as connection:
             connection.row_factory = sqlite3.Row
             row = connection.execute(
@@ -106,12 +115,42 @@ def infer_persisted_document_type(doc_uid: str) -> str | None:
     except sqlite3.OperationalError:
         row = None
 
-    if row is not None:
-        document_type = row["document_type"]
-        if isinstance(document_type, str) and document_type.strip():
-            return document_type
+    if row is None:
+        return None
 
-    return resolve_document_type_from_doc_uid(normalized_doc_uid)
+    document_type = row["document_type"]
+    if isinstance(document_type, str) and document_type.strip():
+        return document_type.strip()
+    return None
+
+
+def infer_document_type(doc_uid: str) -> str | None:
+    """Infer exact document type from persisted metadata, then doc_uid fallback."""
+    persisted_document_type = _get_persisted_document_type(doc_uid, use_default_db_guard=True)
+    if persisted_document_type is not None:
+        return persisted_document_type
+    return resolve_document_type_from_doc_uid(doc_uid)
+
+
+def infer_persisted_document_type(doc_uid: str) -> str | None:
+    """Infer exact document type from persisted metadata when available."""
+    persisted_document_type = _get_persisted_document_type(doc_uid, use_default_db_guard=False)
+    if persisted_document_type is not None:
+        return persisted_document_type
+    return resolve_document_type_from_doc_uid(doc_uid)
+
+
+def infer_exact_document_type(doc_uid: str) -> str | None:
+    """Infer exact document type and ensure it is supported."""
+    document_type = infer_persisted_document_type(doc_uid)
+    if document_type in DOCUMENT_TYPES:
+        return document_type
+    return None
+
+
+def infer_document_kind(doc_uid: str) -> str | None:
+    """Infer document kind from persisted or fallback document type."""
+    return resolve_document_kind_from_document_type(infer_exact_document_type(doc_uid))
 
 
 def infer_document_family(doc_uid: str) -> str | None:
@@ -131,6 +170,7 @@ class DocumentRecord:
     captured_at: str | None
     source_domain: str | None = None
     document_type: str | None = None
+    document_kind: str | None = None
     background_text: str | None = None
     issue_text: str | None = None
     objective_text: str | None = None

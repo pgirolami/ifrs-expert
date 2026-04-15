@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.models.document import DOCUMENT_TYPE_FAMILIES, infer_document_family
+from src.models.document import DOCUMENT_TYPES, infer_exact_document_type
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 
@@ -41,6 +41,7 @@ class ExpansionConfig:
 
     section_store: ReadSectionStoreProtocol | None
     expand_to_section: bool
+    expand_to_section_doc_uids: set[str] | None
     expand: int
     full_doc_threshold: int
 
@@ -72,10 +73,10 @@ def _execute_text_retrieval(
     selected_results = _select_top_k_per_document(
         ranked_results=ranked_results,
         k=request.k,
-        min_score=request.content_min_score,
+        min_score=request.chunk_min_score,
     )
     if not selected_results:
-        return f"Error: No chunks found with score >= {request.content_min_score}", None
+        return f"Error: No chunks found with score >= {request.chunk_min_score}", None
 
     doc_chunks = _fetch_chunks(selected_results=selected_results, config=config)
     expanded_results = _expand_chunks(
@@ -84,6 +85,7 @@ def _execute_text_retrieval(
         expansion_config=ExpansionConfig(
             section_store=config.section_store,
             expand_to_section=request.expand_to_section,
+            expand_to_section_doc_uids=None,
             expand=request.expand,
             full_doc_threshold=request.full_doc_threshold,
         ),
@@ -115,7 +117,7 @@ def _execute_title_retrieval(
             init_db_fn=config.init_db_fn,
             index_path_fn=config.title_index_path_fn,
         ),
-        options=TitleRetrievalOptions(k=request.k, min_score=request.content_min_score),
+        options=TitleRetrievalOptions(k=request.k, min_score=request.chunk_min_score),
     )
     if error is not None:
         return error, None
@@ -148,7 +150,7 @@ def _execute_title_retrieval(
     )
 
 
-def _execute_document_retrieval(
+def _execute_document_retrieval(  # noqa: PLR0911
     request: RetrievalRequest,
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
@@ -167,13 +169,14 @@ def _execute_document_retrieval(
     if not ranked_document_results:
         return "Error: No documents retrieved", None
 
-    document_hits = _select_top_d_documents(
+    document_selection_error, document_hits = _select_top_d_documents(
         ranked_results=ranked_document_results,
         d=request.d,
-        global_min_score=request.doc_min_score,
         document_d_by_type=request.document_d_by_type,
         document_min_score_by_type=request.document_min_score_by_type,
     )
+    if document_selection_error is not None:
+        return document_selection_error, None
     if not document_hits:
         return "Error: No documents found with the configured per-type score thresholds", None
 
@@ -186,21 +189,23 @@ def _execute_document_retrieval(
     selected_results = _select_top_k_per_document(
         ranked_results=filtered_ranked_chunk_results,
         k=request.k,
-        min_score=request.content_min_score,
+        min_score=request.chunk_min_score,
     )
     if not selected_results:
         return (
-            f"Error: No chunks found in selected documents with score >= {request.content_min_score}",
+            f"Error: No chunks found in selected documents with score >= {request.chunk_min_score}",
             None,
         )
 
     doc_chunks = _fetch_chunks(selected_results=selected_results, config=config)
+    docs_to_expand_to_section = {document_hit.doc_uid for document_hit in document_hits if request.document_expand_to_section_by_type.get(document_hit.document_type, False)}
     expanded_results = _expand_chunks(
         results=selected_results,
         doc_chunks=doc_chunks,
         expansion_config=ExpansionConfig(
             section_store=config.section_store,
             expand_to_section=request.expand_to_section,
+            expand_to_section_doc_uids=docs_to_expand_to_section,
             expand=request.expand,
             full_doc_threshold=request.full_doc_threshold,
         ),
@@ -283,40 +288,32 @@ def _select_top_k_per_document(
 def _select_top_d_documents(
     ranked_results: list[DocumentSearchResult],
     d: int,
-    global_min_score: float | None,
     document_d_by_type: dict[str, int],
     document_min_score_by_type: dict[str, float],
-) -> list[DocumentHit]:
+) -> tuple[str | None, list[DocumentHit]]:
     document_hits: list[DocumentHit] = []
-    selected_count_by_type = dict.fromkeys(DOCUMENT_TYPE_FAMILIES, 0)
-    effective_min_score_by_type = _build_effective_document_min_score_by_type(
-        global_min_score=global_min_score,
-        document_min_score_by_type=document_min_score_by_type,
-    )
+    selected_count_by_type = dict.fromkeys(DOCUMENT_TYPES, 0)
+    for document_type in DOCUMENT_TYPES:
+        if document_type not in document_min_score_by_type:
+            return f"Error: Missing per-type document min score for {document_type}", []
+
     for result in ranked_results:
         doc_uid = str(result["doc_uid"])
         score = float(result["score"])
-        document_type = infer_document_family(doc_uid)
+        document_type = infer_exact_document_type(doc_uid)
         if document_type is None:
+            return f"Error: Could not resolve exact document_type for candidate doc_uid={doc_uid}", []
+        if document_type not in document_d_by_type:
+            return f"Error: Missing per-type document cap for {document_type}", []
+        if score < document_min_score_by_type[document_type]:
             continue
-        if score < effective_min_score_by_type[document_type]:
+        if selected_count_by_type[document_type] >= document_d_by_type[document_type]:
             continue
-        if selected_count_by_type[document_type] >= document_d_by_type.get(document_type, 0):
-            continue
-        document_hits.append(DocumentHit(doc_uid=doc_uid, score=score))
+        document_hits.append(DocumentHit(doc_uid=doc_uid, score=score, document_type=document_type))
         selected_count_by_type[document_type] += 1
         if len(document_hits) >= d:
             break
-    return document_hits
-
-
-def _build_effective_document_min_score_by_type(
-    global_min_score: float | None,
-    document_min_score_by_type: dict[str, float],
-) -> dict[str, float]:
-    if global_min_score is not None:
-        return dict.fromkeys(DOCUMENT_TYPE_FAMILIES, global_min_score)
-    return {document_type: document_min_score_by_type[document_type] for document_type in DOCUMENT_TYPE_FAMILIES}
+    return None, document_hits
 
 
 def _init_expansion_state(
@@ -358,6 +355,7 @@ def _expand_to_section_subtrees(
     doc_chunks: dict[str, list[Chunk]],
     section_store: ReadSectionStoreProtocol | None,
     selected_ids_by_doc: dict[str, set[int]],
+    expand_to_section_doc_uids: set[str] | None,
 ) -> None:
     if section_store is None:
         logger.info("Skipping section expansion because no section store is configured")
@@ -368,6 +366,8 @@ def _expand_to_section_subtrees(
     with section_store as active_section_store:
         for result in results:
             doc_uid = result["doc_uid"]
+            if expand_to_section_doc_uids is not None and doc_uid not in expand_to_section_doc_uids:
+                continue
             if doc_uid not in section_db_id_by_source_id_by_doc:
                 section_db_id_by_source_id_by_doc[doc_uid] = {section.section_id: section.db_id for section in active_section_store.get_sections_by_doc(doc_uid) if section.db_id is not None}
             matching_chunk = _find_chunk_by_id(
@@ -473,6 +473,7 @@ def _expand_chunks(
             doc_chunks=doc_chunks,
             section_store=expansion_config.section_store,
             selected_ids_by_doc=selected_ids_by_doc,
+            expand_to_section_doc_uids=expansion_config.expand_to_section_doc_uids,
         )
     full_doc_docs = _include_full_documents(
         doc_chunks=doc_chunks,

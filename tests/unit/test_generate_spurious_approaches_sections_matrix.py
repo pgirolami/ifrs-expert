@@ -189,31 +189,19 @@ def test_matrix_builder_uses_only_observed_retrieved_sections() -> None:
         raise AssertionError(error_message)
 
     if row.section_cells["ifrs9::std_ifrs9-sec-63"].retrieved_display_text != "0.58-0.61":
-        error_message = (
-            "Expected IFRS 9 section score range 0.58-0.61, got "
-            f"{row.section_cells['ifrs9::std_ifrs9-sec-63'].retrieved_display_text!r}"
-        )
+        error_message = f"Expected IFRS 9 section score range 0.58-0.61, got {row.section_cells['ifrs9::std_ifrs9-sec-63'].retrieved_display_text!r}"
         raise AssertionError(error_message)
 
     if row.section_cells["ias21::std_ias21-sec-15"].retrieved_display_text != "0.49":
-        error_message = (
-            "Expected IAS 21 section score display 0.49, got "
-            f"{row.section_cells['ias21::std_ias21-sec-15'].retrieved_display_text!r}"
-        )
+        error_message = f"Expected IAS 21 section score display 0.49, got {row.section_cells['ias21::std_ias21-sec-15'].retrieved_display_text!r}"
         raise AssertionError(error_message)
 
     if row.section_cells["ifric16::std_ifric16-sec-13"].visible_display_text != "0.00":
-        error_message = (
-            "Expected IFRIC 16 visible-context score display 0.00, got "
-            f"{row.section_cells['ifric16::std_ifric16-sec-13'].visible_display_text!r}"
-        )
+        error_message = f"Expected IFRIC 16 visible-context score display 0.00, got {row.section_cells['ifric16::std_ifric16-sec-13'].visible_display_text!r}"
         raise AssertionError(error_message)
 
     if row.section_cells["ifric16::std_ifric16-sec-13"].retrieved_display_text != "":
-        error_message = (
-            "Expected IFRIC 16 retrieved-only display to be blank, got "
-            f"{row.section_cells['ifric16::std_ifric16-sec-13'].retrieved_display_text!r}"
-        )
+        error_message = f"Expected IFRIC 16 retrieved-only display to be blank, got {row.section_cells['ifric16::std_ifric16-sec-13'].retrieved_display_text!r}"
         raise AssertionError(error_message)
 
 

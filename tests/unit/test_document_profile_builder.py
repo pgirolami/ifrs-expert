@@ -200,9 +200,7 @@ def test_document_profile_builder_extracts_navis_intro_from_essentiel_generalite
         section_closure_rows=closure_rows,
     )
 
-    assert built_profile.document.intro_text == (
-        "Premier paragraphe d'introduction.\nDeuxième paragraphe d'introduction."
-    )
+    assert built_profile.document.intro_text == ("Premier paragraphe d'introduction.\nDeuxième paragraphe d'introduction.")
     assert "Introduction: Premier paragraphe d'introduction." in built_profile.embedding_text
 
 

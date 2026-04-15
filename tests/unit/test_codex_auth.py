@@ -13,9 +13,7 @@ from src.llm.codex_auth import CodexAuthContext, CodexAuthLoader
 
 def _create_access_token(account_id: str) -> str:
     header = base64.urlsafe_b64encode(json.dumps({"alg": "none"}).encode("utf-8")).decode("utf-8").rstrip("=")
-    payload = base64.urlsafe_b64encode(
-        json.dumps({"https://api.openai.com/auth": {"chatgpt_account_id": account_id}}).encode("utf-8")
-    ).decode("utf-8").rstrip("=")
+    payload = base64.urlsafe_b64encode(json.dumps({"https://api.openai.com/auth": {"chatgpt_account_id": account_id}}).encode("utf-8")).decode("utf-8").rstrip("=")
     return f"{header}.{payload}.signature"
 
 

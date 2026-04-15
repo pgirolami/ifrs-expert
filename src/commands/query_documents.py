@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_D, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_VERBOSE
+from src.commands.constants import DEFAULT_VERBOSE
 from src.db import DocumentStore, init_db
 from src.models.document import DOCUMENT_TYPES, infer_persisted_document_type
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
     from src.interfaces import DocumentSearchResult, DocumentStoreProtocol, SearchDocumentVectorStoreProtocol
     from src.models.document import DocumentRecord
+    from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -46,9 +47,8 @@ class QueryDocumentsConfig:
 class QueryDocumentsOptions:
     """Options for the query-documents command."""
 
+    policy: RetrievalPolicy
     document_type: str
-    d: int = DEFAULT_D
-    min_score: float | None = DEFAULT_MIN_SCORE_FOR_DOCUMENTS
     verbose: bool = DEFAULT_VERBOSE
 
 
@@ -76,18 +76,18 @@ class QueryDocumentsCommand:
         if prerequisite_error is not None:
             return prerequisite_error
 
-        min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_MIN_SCORE_FOR_DOCUMENTS
+        document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
         with self._config.document_vector_store as document_vector_store:
             ranked_results = document_vector_store.search_all(self.query)
 
         selected_results = _select_top_documents(
             ranked_results=ranked_results,
             document_type=self._options.document_type,
-            d=self._options.d,
-            min_score=min_score,
+            d=document_policy.d,
+            min_score=document_policy.min_score,
         )
         if not selected_results:
-            return f"Error: No {self._options.document_type} documents found with score >= {min_score}"
+            return f"Error: No {self._options.document_type} documents found with score >= {document_policy.min_score}"
 
         self._config.init_db_fn()
         documents = self._fetch_documents(selected_results)
@@ -101,7 +101,10 @@ class QueryDocumentsCommand:
         if self._options.document_type not in DOCUMENT_TYPES:
             supported_document_types = ", ".join(DOCUMENT_TYPES)
             return f"Error: document_type must be one of {supported_document_types}"
-        if self._options.d <= 0:
+        document_policy = self._options.policy.documents.by_document_type.get(self._options.document_type)
+        if document_policy is None:
+            return f"Error: Missing policy entry for document_type={self._options.document_type}"
+        if document_policy.d <= 0:
             return "Error: d must be > 0"
         return None
 
@@ -158,6 +161,7 @@ def _build_json_output(
                 "canonical_url": document.canonical_url,
                 "captured_at": document.captured_at,
                 "document_type": document.document_type,
+                "document_kind": document.document_kind,
                 "background_text": document.background_text,
                 "issue_text": document.issue_text,
                 "objective_text": document.objective_text,
@@ -188,6 +192,8 @@ def _build_verbose_output(
         output_lines.append(f"Document: {document.doc_uid}")
         if document.document_type is not None:
             output_lines.append(f"Type: {document.document_type}")
+        if document.document_kind is not None:
+            output_lines.append(f"Kind: {document.document_kind}")
         output_lines.append(f"Title: {document.source_title}")
         if snippet:
             output_lines.append(f"Snippet: {snippet}")

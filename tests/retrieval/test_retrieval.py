@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 import src.db.connection as connection_module
-from tests.policy import load_test_policy_config
+from tests.policy import load_test_policy_config, make_retrieval_policy, load_test_retrieval_policy
 
 # PDF path for testing
 IFRS16_LEASES_PDF = Path("examples/ifrs-16-leases_38-39.pdf")
@@ -86,7 +86,7 @@ def run_query(query: str, k: int = 5, min_score: float | None = None, expand: in
     Args:
         query: Query text
         k: Number of results
-        min_score: Minimum score threshold
+        min_score: Minimum score threshold (None uses policy default)
         expand: Number of neighboring chunks to include
 
     Returns:
@@ -95,9 +95,18 @@ def run_query(query: str, k: int = 5, min_score: float | None = None, expand: in
     from src.commands.query import create_query_command
     from src.commands import QueryOptions
 
+    policy_kwargs: dict[str, object] = {}
+    if k != 5:
+        policy_kwargs["k"] = k
+    if min_score is not None:
+        policy_kwargs["chunk_min_score"] = min_score
+    if expand != 0:
+        policy_kwargs["expand"] = expand
+    policy = make_retrieval_policy(**policy_kwargs) if policy_kwargs else load_test_retrieval_policy()
+
     command = create_query_command(
         query=query,
-        options=QueryOptions(policy=load_test_policy_config(), k=k, min_score=min_score, verbose=False, expand=expand),
+        options=QueryOptions(policy=policy, verbose=False),
     )
     result = command.execute()
 

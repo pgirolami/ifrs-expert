@@ -129,9 +129,7 @@ class TestExtractChunks:
         assert b47 is not None, "Section B47 should exist"
         assert "Lessee disclosures (paragraph 59)" not in b47.text
 
-    def test_ifrs9_appendix_issue_extracts_correctly(
-        self, ifrs9_appendix_issue_pdf, ifrs9_appendix_issue_expected
-    ):
+    def test_ifrs9_appendix_issue_extracts_correctly(self, ifrs9_appendix_issue_pdf, ifrs9_appendix_issue_expected):
         """Test that section 7.3.2 does not contain 'Appendix A' and ends at A427.
 
         This is the main bug being fixed - section 7.3.2 ends at the bottom of A427,
@@ -150,13 +148,8 @@ class TestExtractChunks:
             assert chunk is not None, f"Section {section} should exist"
 
             # Check page_end
-            assert chunk.page_end == expected["page_end"], (
-                f"Section {section} should end at {expected['page_end']}, "
-                f"got {chunk.page_end}"
-            )
+            assert chunk.page_end == expected["page_end"], f"Section {section} should end at {expected['page_end']}, got {chunk.page_end}"
 
             # Check text doesn't contain title from next section
             if "Appendix A" in expected["text"]:
-                assert "Appendix A" not in chunk.text, (
-                    f"Section {section} should not contain 'Appendix A'"
-                )
+                assert "Appendix A" not in chunk.text, f"Section {section} should not contain 'Appendix A'"

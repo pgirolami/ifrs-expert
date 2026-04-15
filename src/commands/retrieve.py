@@ -7,29 +7,10 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import (
-    DEFAULT_D_FOR_IAS_DOCUMENTS,
-    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_D_FOR_IFRS_DOCUMENTS,
-    DEFAULT_D_FOR_NAVIS_DOCUMENTS,
-    DEFAULT_D_FOR_PS_DOCUMENTS,
-    DEFAULT_D_FOR_SIC_DOCUMENTS,
-    DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
-    DEFAULT_RETRIEVAL_K,
-    DEFAULT_RETRIEVAL_MODE,
-    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
-    DEFAULT_RETRIEVE_DOCUMENT_D,
-    DEFAULT_RETRIEVE_EXPAND,
-    DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
-    DEFAULT_VERBOSE,
-)
+from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, SectionStore, init_db
+from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
+from src.policy import RetrievalPolicy
 from src.retrieval.models import RetrievalRequest, RetrievalResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
@@ -42,6 +23,7 @@ if TYPE_CHECKING:
 
     from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
+    from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -67,27 +49,8 @@ class RetrieveConfig:
 class RetrieveOptions:
     """Options for the retrieve command."""
 
-    k: int = DEFAULT_RETRIEVAL_K
-    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
-    doc_min_score: float | None = None
-    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
-    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
-    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
-    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
-    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
-    navis_d: int = DEFAULT_D_FOR_NAVIS_DOCUMENTS
-    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
-    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
-    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
-    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
-    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
-    navis_min_score: float = DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS
-    content_min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-    expand_to_section: bool = DEFAULT_RETRIEVE_EXPAND_TO_SECTION
+    policy: RetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
-    expand: int = DEFAULT_RETRIEVE_EXPAND
-    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
-    retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
 
 
 class RetrieveCommand:
@@ -102,7 +65,10 @@ class RetrieveCommand:
         """Initialize the retrieve command."""
         self.query = query
         self._config = config
-        self._options = options or RetrieveOptions()
+        if options is None:
+            message = "RetrieveCommand requires options with a loaded policy"
+            raise ValueError(message)
+        self._options = options
 
     def execute(self) -> str:
         """Execute retrieval and return formatted output."""
@@ -110,33 +76,7 @@ class RetrieveCommand:
         if validation_error is not None:
             return validation_error
 
-        retrieval_request = RetrievalRequest(
-            query=self.query,
-            retrieval_mode=self._options.retrieval_mode,
-            k=self._options.k,
-            d=self._options.d,
-            doc_min_score=self._options.doc_min_score,
-            document_d_by_type={
-                "IFRS": self._options.ifrs_d,
-                "IAS": self._options.ias_d,
-                "IFRIC": self._options.ifric_d,
-                "SIC": self._options.sic_d,
-                "PS": self._options.ps_d,
-                "NAVIS": self._options.navis_d,
-            },
-            document_min_score_by_type={
-                "IFRS": self._options.ifrs_min_score,
-                "IAS": self._options.ias_min_score,
-                "IFRIC": self._options.ifric_min_score,
-                "SIC": self._options.sic_min_score,
-                "PS": self._options.ps_min_score,
-                "NAVIS": self._options.navis_min_score,
-            },
-            content_min_score=(self._options.content_min_score if self._options.content_min_score is not None else DEFAULT_RETRIEVE_CONTENT_MIN_SCORE),
-            expand_to_section=self._options.expand_to_section,
-            expand=self._options.expand,
-            full_doc_threshold=self._options.full_doc_threshold,
-        )
+        retrieval_request = self._build_retrieval_request()
         error, retrieval_result = execute_retrieval(
             request=retrieval_request,
             config=RetrievalPipelineConfig(
@@ -160,12 +100,29 @@ class RetrieveCommand:
             return f"{self._options}\n{self._build_verbose_output(retrieval_result)}"
         return json.dumps(self._build_json_output(retrieval_result), indent=2, ensure_ascii=False)
 
+    def _build_retrieval_request(self) -> RetrievalRequest:
+        policy = self._options.policy
+        chunk_min_score = policy.titles.min_score if policy.mode == "titles" else policy.text.min_score
+        expand_to_section = policy.expand_to_section if policy.mode != "documents" else True
+
+        return RetrievalRequest(
+            query=self.query,
+            retrieval_mode=policy.mode,
+            k=policy.k,
+            d=policy.documents.global_d,
+            document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
+            document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
+            document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+            chunk_min_score=chunk_min_score,
+            expand_to_section=expand_to_section,
+            expand=policy.expand,
+            full_doc_threshold=policy.full_doc_threshold,
+        )
+
     def _get_validation_error(self) -> str | None:
         validators = (
             self._get_query_validation_error,
-            self._get_core_numeric_validation_error,
-            self._get_per_type_d_validation_error,
-            self._get_range_validation_error,
+            self._get_numeric_validation_error,
             self._get_retrieval_mode_validation_error,
         )
         for validator in validators:
@@ -179,43 +136,36 @@ class RetrieveCommand:
             return None
         return "Error: Query cannot be empty"
 
-    def _get_core_numeric_validation_error(self) -> str | None:
-        if self._options.k <= 0:
-            return "Error: k must be > 0"
-        if self._options.d <= 0:
-            return "Error: d must be > 0"
-        return None
-
-    def _get_per_type_d_validation_error(self) -> str | None:
-        per_type_d_values = {
-            "ifrs_d": self._options.ifrs_d,
-            "ias_d": self._options.ias_d,
-            "ifric_d": self._options.ifric_d,
-            "sic_d": self._options.sic_d,
-            "ps_d": self._options.ps_d,
-            "navis_d": self._options.navis_d,
-        }
-        for option_name, option_value in per_type_d_values.items():
-            if option_value <= 0:
-                return f"Error: {option_name} must be > 0"
-        return None
-
-    def _get_range_validation_error(self) -> str | None:
-        if self._options.expand < 0:
-            return "Error: expand must be >= 0"
-        if self._options.full_doc_threshold < 0:
-            return "Error: full_doc_threshold must be >= 0"
+    def _get_numeric_validation_error(self) -> str | None:
+        policy = self._options.policy
+        checks: tuple[tuple[str, int, int], ...] = (
+            ("expand", policy.expand, 0),
+            ("full_doc_threshold", policy.full_doc_threshold, 0),
+        )
+        for name, value, minimum in checks:
+            if value >= minimum:
+                continue
+            operator = ">=" if minimum == 0 else ">"
+            return f"Error: {name} must be {operator} {minimum}"
         return None
 
     def _get_retrieval_mode_validation_error(self) -> str | None:
-        if self._options.retrieval_mode in {"text", "titles", "documents"}:
+        if self._options.policy.mode in {"text", "titles", "documents"}:
             return None
-        return "Error: retrieval_mode must be 'text', 'titles', or 'documents'"
+        return "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'"
 
     def _build_json_output(self, retrieval_result: RetrievalResult) -> dict[str, object]:
         return {
             "retrieval_mode": retrieval_result.retrieval_mode,
-            "document_hits": [{"doc_uid": document_hit.doc_uid, "score": round(document_hit.score, 4)} for document_hit in retrieval_result.document_hits],
+            "document_hits": [
+                {
+                    "doc_uid": document_hit.doc_uid,
+                    "score": round(document_hit.score, 4),
+                    "document_type": document_hit.document_type,
+                    "document_kind": resolve_document_kind_from_document_type(document_hit.document_type),
+                }
+                for document_hit in retrieval_result.document_hits
+            ],
             "chunks": _build_chunk_json_output(
                 results=retrieval_result.chunk_results,
                 doc_chunks=retrieval_result.doc_chunks,
@@ -226,7 +176,7 @@ class RetrieveCommand:
         lines: list[str] = []
         if retrieval_result.document_hits:
             lines.append("Selected documents:")
-            lines.extend(f"- {document_hit.doc_uid}: {document_hit.score:.4f}" for document_hit in retrieval_result.document_hits)
+            lines.extend(f"- {document_hit.doc_uid}: {document_hit.score:.4f} ({document_hit.document_type})" for document_hit in retrieval_result.document_hits)
         chunk_lines = _build_chunk_verbose_output(
             results=retrieval_result.chunk_results,
             doc_chunks=retrieval_result.doc_chunks,
@@ -246,6 +196,8 @@ def _build_chunk_json_output(
         doc_uid = str(result["doc_uid"])
         chunk_id = int(result["chunk_id"])
         score = float(result["score"])
+        document_type = infer_exact_document_type(doc_uid)
+        document_kind = infer_document_kind(doc_uid)
         for chunk in doc_chunks.get(doc_uid, []):
             if chunk.id != chunk_id:
                 continue
@@ -254,6 +206,8 @@ def _build_chunk_json_output(
                 {
                     "id": chunk.id,
                     "doc_uid": chunk.doc_uid,
+                    "document_type": document_type,
+                    "document_kind": document_kind,
                     "chunk_number": chunk.chunk_number,
                     "chunk_id": chunk.chunk_id,
                     "containing_section_id": chunk.containing_section_id,
@@ -278,6 +232,8 @@ def _build_chunk_verbose_output(
         doc_uid = str(result["doc_uid"])
         chunk_id = int(result["chunk_id"])
         score = float(result["score"])
+        document_type = infer_exact_document_type(doc_uid)
+        document_kind = infer_document_kind(doc_uid)
         for chunk in doc_chunks.get(doc_uid, []):
             if chunk.id != chunk_id:
                 continue
@@ -285,6 +241,8 @@ def _build_chunk_verbose_output(
             snippet = chunk.text[:200].replace("\n", " ")
             output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
             output_lines.append(f"Document: {chunk.doc_uid}")
+            output_lines.append(f"Document type: {document_type}")
+            output_lines.append(f"Document kind: {document_kind}")
             output_lines.append(f"Chunk number: {chunk.chunk_number}")
             output_lines.append(f"Page: {chunk.page_start}-{chunk.page_end}")
             output_lines.append(f"Snippet: {snippet}...")
@@ -294,7 +252,7 @@ def _build_chunk_verbose_output(
 
 def create_retrieve_command(
     query: str,
-    options: RetrieveOptions | None = None,
+    options: RetrieveOptions,
 ) -> RetrieveCommand:
     """Create RetrieveCommand with real dependencies."""
     config = RetrieveConfig(

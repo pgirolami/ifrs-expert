@@ -23,9 +23,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from statistics import mean, median
 
-logger = logging.getLogger(__name__)
+from src.models.document import infer_exact_document_type
 
-DOCUMENT_TYPES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS")
+logger = logging.getLogger(__name__)
 
 DEFAULT_RETRIEVE_COMMAND: tuple[str, ...] = (
     "uv",
@@ -237,14 +237,8 @@ class RetrieveDocumentRoutingExperiment:
             check=False,
         )
         if completed_process.returncode != 0:
-            logger.error(
-                f"retrieve failed for {question.question_id} with return code "
-                f"{completed_process.returncode}: {completed_process.stderr.strip()}"
-            )
-            error_message = (
-                f"retrieve failed for {question.question_id}: "
-                f"{completed_process.stderr.strip()}"
-            )
+            logger.error(f"retrieve failed for {question.question_id} with return code {completed_process.returncode}: {completed_process.stderr.strip()}")
+            error_message = f"retrieve failed for {question.question_id}: {completed_process.stderr.strip()}"
             raise RuntimeError(error_message)
 
         try:
@@ -446,9 +440,7 @@ class RetrieveDocumentRoutingExperiment:
             json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
-        logger.info(
-            f"Wrote experiment artifacts to {self._artifacts.markdown_path} and {self._artifacts.json_path}"
-        )
+        logger.info(f"Wrote experiment artifacts to {self._artifacts.markdown_path} and {self._artifacts.json_path}")
 
     def _build_hit_placements(self, result: QuestionResult) -> dict[str, HitPlacement]:
         """Build global and per-type rank metadata for one question result."""
@@ -478,13 +470,8 @@ class RetrieveDocumentRoutingExperiment:
 
 
 def _infer_document_type(doc_uid: str) -> str | None:
-    """Infer the document type from the stored document UID."""
-    normalized_doc_uid = doc_uid.strip().lower()
-    for document_type in DOCUMENT_TYPES:
-        if normalized_doc_uid.startswith(document_type.lower()):
-            return document_type
-    return None
-
+    """Infer the exact document type from persisted metadata or UID fallback."""
+    return infer_exact_document_type(doc_uid)
 
 
 def _reduce_stat(values: list[float] | list[int], reducer: object) -> float:
@@ -504,13 +491,11 @@ def _reduce_stat(values: list[float] | list[int], reducer: object) -> float:
     raise ValueError(error_message)
 
 
-
 def _format_stat(values: list[float] | list[int], reducer: object) -> str:
     """Format one numeric statistic for markdown output."""
     if not values:
         return ""
     return f"{_reduce_stat(values, reducer):.4f}"
-
 
 
 def _format_ratio_stat(
@@ -526,16 +511,10 @@ def _format_ratio_stat(
     return f"{left_value:.4f}/{right_value:.4f}"
 
 
-
 def _format_hit_cell(placement: HitPlacement) -> str:
     """Format one markdown cell for a returned document hit."""
     document_type = placement.document_type or "UNKNOWN"
-    return (
-        f"{placement.global_rank}/{placement.global_total}"
-        f"<br>{document_type} {placement.type_rank}/{placement.type_total}"
-        f"<br>{placement.score:.4f}"
-    )
-
+    return f"{placement.global_rank}/{placement.global_total}<br>{document_type} {placement.type_rank}/{placement.type_total}<br>{placement.score:.4f}"
 
 
 def _parse_document_hit(payload: object) -> DocumentHit:
@@ -554,14 +533,12 @@ def _parse_document_hit(payload: object) -> DocumentHit:
     return DocumentHit(doc_uid=doc_uid, score=float(score))
 
 
-
 def _question_sort_key(path: Path) -> tuple[int, str]:
     """Sort `Q1.<n>.txt` paths numerically, then lexicographically."""
     suffix = path.stem.removeprefix("Q1.")
     if suffix.isdigit():
         return int(suffix), path.name
     return 10**9, path.name
-
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -581,7 +558,6 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-
 def _build_experiment_config(preset: str) -> ExperimentConfig:
     """Build the experiment config for the selected preset."""
     if preset == "loose-docs":
@@ -594,7 +570,6 @@ def _build_experiment_config(preset: str) -> ExperimentConfig:
         retrieve_command=retrieve_command,
         command_preview=f"printf '<question>' | {' '.join(retrieve_command)}",
     )
-
 
 
 def main() -> None:

@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 import src.cli as cli
-from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result
+from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
 from src.models.answer_command_result import AnswerCommandResult
 
 VALID_PROMPT_B_RESPONSE = """{
@@ -83,11 +83,10 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
 
     args = argparse.Namespace(
         command="answer",
+        policy_config=Path("config/policy.default.yaml"),
         k=5,
         d=25,
         min_score=None,
-        doc_min_score=None,
-        content_min_score=0.53,
         ifrs_d=4,
         ias_d=4,
         ifric_d=6,
@@ -104,7 +103,6 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
         expand_to_section=True,
         full_doc_threshold=0,
         output_dir=tmp_path,
-        save_all=False,
         retrieval_mode="documents",
     )
 
@@ -129,11 +127,10 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
 
     args = argparse.Namespace(
         command="answer",
+        policy_config=Path("config/policy.default.yaml"),
         k=5,
         d=25,
         min_score=None,
-        doc_min_score=None,
-        content_min_score=None,
         ifrs_d=4,
         ias_d=100,
         ifric_d=6,
@@ -150,7 +147,6 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
         expand_to_section=True,
         full_doc_threshold=0,
         output_dir=output_dir,
-        save_all=False,
         retrieval_mode="text",
     )
 
@@ -160,42 +156,9 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
     assert (output_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
-def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
-    """Answer CLI should reject --save-all without --output-dir."""
-    args = argparse.Namespace(
-        command="answer",
-        k=5,
-        d=25,
-        min_score=None,
-        doc_min_score=None,
-        content_min_score=0.53,
-        ifrs_d=4,
-        ias_d=4,
-        ifric_d=6,
-        sic_d=6,
-        ps_d=1,
-        navis_d=2,
-        ifrs_min_score=0.53,
-        ias_min_score=0.4,
-        ifric_min_score=0.48,
-        sic_min_score=0.4,
-        ps_min_score=0.4,
-        navis_min_score=0.6,
-        expand=0,
-        expand_to_section=True,
-        full_doc_threshold=0,
-        output_dir=None,
-        save_all=True,
-        retrieval_mode="documents",
-    )
 
-    output = _execute_answer_command(args)
-
-    assert output == "Error: --save-all requires --output-dir to be specified"
-
-
-def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Answer CLI should pass retrieval options through to AnswerOptions."""
+def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Answer CLI should pass the policy and output options to AnswerCommand."""
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
@@ -213,29 +176,9 @@ def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytes
 
     args = argparse.Namespace(
         command="answer",
-        k=3,
-        d=9,
-        min_score=0.4,
-        doc_min_score=0.2,
-        content_min_score=0.1,
-        ifrs_d=7,
-        ias_d=6,
-        ifric_d=4,
-        sic_d=3,
-        ps_d=2,
-        navis_d=1,
-        ifrs_min_score=0.61,
-        ias_min_score=0.54,
-        ifric_min_score=0.50,
-        sic_min_score=0.49,
-        ps_min_score=0.48,
-        navis_min_score=0.47,
-        expand=1,
-        expand_to_section=True,
-        full_doc_threshold=2000,
+        policy_config=Path("config/policy.default.yaml"),
+        json=False,
         output_dir=None,
-        save_all=False,
-        retrieval_mode="documents",
     )
 
     output = _execute_answer_command(args)
@@ -243,26 +186,10 @@ def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytes
     assert output == VALID_PROMPT_B_RESPONSE
     assert len(captured_options) == 1
     options = captured_options[0]
-    assert getattr(options, "k") == 3
-    assert getattr(options, "d") == 9
-    assert getattr(options, "doc_min_score") == 0.2
-    assert getattr(options, "content_min_score") == 0.1
-    assert getattr(options, "ifrs_d") == 7
-    assert getattr(options, "ias_d") == 6
-    assert getattr(options, "ifric_d") == 4
-    assert getattr(options, "sic_d") == 3
-    assert getattr(options, "ps_d") == 2
-    assert getattr(options, "ifrs_min_score") == 0.61
-    assert getattr(options, "ias_min_score") == 0.54
-    assert getattr(options, "ifric_min_score") == 0.50
-    assert getattr(options, "sic_min_score") == 0.49
-    assert getattr(options, "ps_min_score") == 0.48
-    assert getattr(options, "navis_d") == 1
-    assert getattr(options, "navis_min_score") == 0.47
-    assert getattr(options, "expand_to_section") is True
-    assert getattr(options, "expand") == 1
-    assert getattr(options, "full_doc_threshold") == 2000
-    assert getattr(options, "retrieval_mode") == "documents"
+    assert hasattr(options, "policy")
+    assert options.policy is not None
+    assert options.verbose is True
+    assert options.output_dir is None
 
 
 def test_execute_command_dispatches_store_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -350,6 +277,7 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
 
     args = argparse.Namespace(
         command="query-titles",
+        policy_config=Path("config/policy.default.yaml"),
         k=5,
         min_score=None,
         json=True,
@@ -362,17 +290,11 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
 
 def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the retrieve subcommand."""
-    captured_modes: list[str] = []
-    captured_ifrs_ds: list[int] = []
-    captured_ifrs_min_scores: list[float] = []
-    captured_expand_to_section: list[bool] = []
+    captured_policies: list[object] = []
 
     def _create_retrieve_command(query: str, options: object) -> FakeTextCommand:
         del query
-        captured_modes.append(getattr(options, "retrieval_mode"))
-        captured_ifrs_ds.append(getattr(options, "ifrs_d"))
-        captured_ifrs_min_scores.append(getattr(options, "ifrs_min_score"))
-        captured_expand_to_section.append(getattr(options, "expand_to_section"))
+        captured_policies.append(options.policy)
         return FakeTextCommand("retrieve output")
 
     monkeypatch.setattr("src.cli.create_retrieve_command", _create_retrieve_command)
@@ -380,36 +302,15 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
 
     args = argparse.Namespace(
         command="retrieve",
-        k=3,
-        d=2,
-        doc_min_score=None,
-        content_min_score=None,
-        ifrs_d=7,
-        ias_d=5,
-        ifric_d=5,
-        sic_d=5,
-        ps_d=5,
-        navis_d=3,
-        ifrs_min_score=0.61,
-        ias_min_score=0.55,
-        ifric_min_score=0.51,
-        sic_min_score=0.51,
-        ps_min_score=0.50,
-        navis_min_score=0.49,
-        expand_to_section=True,
-        expand=0,
-        full_doc_threshold=0,
-        retrieval_mode="documents",
+        policy_config=Path("config/policy.default.yaml"),
         json=True,
     )
 
     output = _execute_command(args)
 
     assert output == "retrieve output"
-    assert captured_modes == ["documents"]
-    assert captured_ifrs_ds == [7]
-    assert captured_ifrs_min_scores == [0.61]
-    assert captured_expand_to_section == [True]
+    assert len(captured_policies) == 1
+    assert captured_policies[0] is not None
 
 
 def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -426,6 +327,7 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
 
     args = argparse.Namespace(
         command="query-documents",
+        policy_config=Path("config/policy.default.yaml"),
         document_type="IFRIC",
         d=3,
         min_score=None,
@@ -436,6 +338,21 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
 
     assert output == "document output"
     assert captured_document_types == ["IFRIC"]
+
+
+def test_execute_command_dispatches_llm(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CLI should dispatch the llm subcommand and pass raw stdin prompt."""
+
+    class _FakeClient:
+        def generate_text(self, prompt: str) -> str:
+            return f"reply:{prompt}"
+
+    monkeypatch.setattr("src.cli.get_client", lambda: _FakeClient())
+    monkeypatch.setattr("sys.stdin", io.StringIO("Raw prompt"))
+
+    output = _execute_command(argparse.Namespace(command="llm"))
+
+    assert output == "reply:Raw prompt"
 
 
 def test_answer_stdout_text_prefers_raw_response() -> None:
@@ -450,45 +367,77 @@ def test_answer_stdout_text_prefers_raw_response() -> None:
     assert _answer_stdout_text(result) == "raw response"
 
 
-def test_retrieve_parser_uses_tuned_document_retrieval_defaults() -> None:
-    """Retrieve parser should expose the tuned document-retrieval defaults."""
+def test_answer_stdout_text_uses_markdown_when_raw_missing() -> None:
+    """CLI stdout should fall back to markdown when raw response is absent."""
+    result = AnswerCommandResult(query="test", success=True, prompt_b_memo_markdown="markdown response")
+    assert _answer_stdout_text(result) == "markdown response"
+
+
+def test_answer_stdout_text_returns_empty_string_when_no_payload() -> None:
+    """CLI stdout should be empty when no answer payload is present."""
+    result = AnswerCommandResult(query="test", success=False)
+    assert _answer_stdout_text(result) == ""
+
+
+def test_execute_command_returns_unknown_command_error() -> None:
+    """CLI dispatcher should return explicit error for unsupported commands."""
+    output = _execute_command(argparse.Namespace(command="nope"))
+    assert output == "Error: Unknown command: nope"
+
+
+def test_execute_answer_command_returns_policy_load_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Answer execution should fail fast when policy loading fails."""
+    monkeypatch.setattr("src.cli._build_answer_options", lambda args, policy: (_ for _ in ()).throw(ValueError("bad policy")))
+    monkeypatch.setattr("src.cli._read_stdin_text", lambda: "What is IFRS?")
+
+    args = argparse.Namespace(
+        command="answer",
+        policy_config=Path("config/policy.default.yaml"),
+        output_dir=None,
+    )
+
+    output = _execute_answer_command(args)
+
+    assert output == "Error: bad policy"
+
+
+def test_retrieve_parser_requires_policy_config_and_no_inline_defaults() -> None:
+    """Retrieve parser should require policy config and leave inline overrides unset."""
     parser = _build_parser()
 
-    args = parser.parse_args(["retrieve"])
+    args = parser.parse_args(["retrieve", "--policy-config", "config/policy.default.yaml"])
 
-    assert args.d == 25
-    assert args.ifrs_d == 4
-    assert args.ias_d == 4
-    assert args.ifric_d == 6
-    assert args.sic_d == 6
-    assert args.ps_d == 1
-    assert args.navis_d == 2
-    assert args.ifrs_min_score == 0.53
-    assert args.ias_min_score == 0.4
-    assert args.ifric_min_score == 0.48
-    assert args.sic_min_score == 0.4
-    assert args.ps_min_score == 0.4
-    assert args.navis_min_score == 0.6
-    assert args.content_min_score == 0.53
+    assert args.policy_config == Path("config/policy.default.yaml")
+    assert args.json is False
+    assert not hasattr(args, "d")
+    assert not hasattr(args, "ifrs_d")
+    assert not hasattr(args, "content_min_score")
 
 
-def test_answer_parser_uses_tuned_document_retrieval_defaults() -> None:
-    """Answer parser should expose the tuned document-retrieval defaults."""
+def test_answer_parser_requires_policy_config_and_no_inline_defaults() -> None:
+    """Answer parser should require policy config and leave inline overrides unset."""
     parser = _build_parser()
 
-    args = parser.parse_args(["answer"])
+    args = parser.parse_args(["answer", "--policy-config", "config/policy.default.yaml"])
 
-    assert args.d == 25
-    assert args.ifrs_d == 4
-    assert args.ias_d == 4
-    assert args.ifric_d == 6
-    assert args.sic_d == 6
-    assert args.ps_d == 1
-    assert args.navis_d == 2
-    assert args.ifrs_min_score == 0.53
-    assert args.ias_min_score == 0.4
-    assert args.ifric_min_score == 0.48
-    assert args.sic_min_score == 0.4
-    assert args.ps_min_score == 0.4
-    assert args.navis_min_score == 0.6
-    assert args.content_min_score == 0.53
+    assert args.policy_config == Path("config/policy.default.yaml")
+    assert args.output_dir is None
+    assert not hasattr(args, "d")
+    assert not hasattr(args, "ifrs_d")
+    assert not hasattr(args, "content_min_score")
+
+
+def test_query_command_returns_error_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:
+    """query_command should return non-zero when command output is an error."""
+    monkeypatch.setattr("src.cli._execute_command", lambda args: "Error: failed")
+    exit_code = query_command(argparse.Namespace(command="query"))
+    assert exit_code == 1
+
+
+def test_query_command_writes_utf8_output(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    """query_command should write UTF-8 output when execution succeeds."""
+    monkeypatch.setattr("src.cli._execute_command", lambda args: "succès")
+    exit_code = query_command(argparse.Namespace(command="query"))
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "succès" in captured.out

@@ -28,7 +28,7 @@ from src.extraction.html import (
     _tag_classes,
 )
 from src.models.chunk import Chunk
-from src.models.document import DocumentRecord, resolve_document_type
+from src.models.document import DocumentRecord, resolve_document_kind_from_document_type, resolve_document_type
 from src.models.extraction import ExtractedDocument
 from src.models.section import SectionRecord
 
@@ -86,6 +86,7 @@ class IfrsHtmlExtractor:
                 captured_at=sidecar.captured_at,
                 source_domain=sidecar.source_domain,
                 document_type=resolved_document_type,
+                document_kind=resolve_document_kind_from_document_type(resolved_document_type),
             ),
             chunks=chunks,
             sections=sections,

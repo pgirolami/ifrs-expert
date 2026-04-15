@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TypeAlias
 
-from src.models.document import infer_document_family
+from src.models.document import infer_document_kind, infer_exact_document_type
 
 JSONValue: TypeAlias = "str | int | float | bool | None | list[JSONValue] | dict[str, JSONValue]"
 
@@ -21,21 +21,18 @@ def _format_applicability(value: str) -> str:
 
 
 def _group_by_family(doc_uids: list[str]) -> dict[str, list[str]]:
-    """Group document UIDs by their family type.
-
-    Returns a dict mapping family name -> list of doc_uids in that family.
-    Uses document-family inference from persisted metadata or doc_uid fallback.
-    Documents with unknown type are grouped under "Autres".
-    """
+    """Group document UIDs by exact document_type with document_kind labels."""
     families: dict[str, list[str]] = defaultdict(list)
     other_docs: list[str] = []
 
     for doc_uid in doc_uids:
-        doc_type = infer_document_family(doc_uid)
-        if doc_type:
-            families[doc_type].append(doc_uid)
-        else:
-            other_docs.append(doc_uid)
+        document_type = infer_exact_document_type(doc_uid)
+        document_kind = infer_document_kind(doc_uid)
+        if document_type is not None:
+            bucket = f"{document_type} ({document_kind})" if document_kind is not None else document_type
+            families[bucket].append(doc_uid)
+            continue
+        other_docs.append(doc_uid)
 
     if other_docs:
         families["Autres"].extend(other_docs)

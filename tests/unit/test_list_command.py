@@ -12,9 +12,7 @@ class TestListCommand:
 
     def test_list_command_show_docs(self):
         """Test list command shows all documents."""
-        with patch("src.commands.list.init_db"), patch(
-            "src.commands.list.ChunkStore"
-        ) as mock_cs_class:
+        with patch("src.commands.list.init_db"), patch("src.commands.list.ChunkStore") as mock_cs_class:
             mock_cs = MagicMock()
             mock_cs.get_all_docs.return_value = ["doc1", "doc2"]
             mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
@@ -29,13 +27,9 @@ class TestListCommand:
 
     def test_list_command_show_chunks(self):
         """Test list command shows chunks for a doc."""
-        with patch("src.commands.list.init_db"), patch(
-            "src.commands.list.ChunkStore"
-        ) as mock_cs_class:
+        with patch("src.commands.list.init_db"), patch("src.commands.list.ChunkStore") as mock_cs_class:
             mock_cs = MagicMock()
-            mock_cs.get_chunks_by_doc.return_value = [
-                Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test")
-            ]
+            mock_cs.get_chunks_by_doc.return_value = [Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test")]
             mock_cs_class.return_value.__enter__ = MagicMock(return_value=mock_cs)
             mock_cs_class.return_value.__exit__ = MagicMock(return_value=None)
 

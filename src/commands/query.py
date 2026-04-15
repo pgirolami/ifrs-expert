@@ -6,16 +6,11 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.commands.constants import (
-    DEFAULT_EXPAND,
-    DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE,
-    DEFAULT_RETRIEVAL_K,
-    DEFAULT_VERBOSE,
-)
+from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
+from src.policy import RetrievalPolicy
 from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.store import VectorStore, get_index_path
@@ -39,11 +34,8 @@ class QueryConfig:
 class QueryOptions:
     """Options for query command."""
 
-    k: int = DEFAULT_RETRIEVAL_K
-    min_score: float | None = DEFAULT_MIN_SCORE
+    policy: RetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
-    expand: int = DEFAULT_EXPAND
-    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
 
 
 # Helper functions for chunk expansion (extracted to reduce complexity)
@@ -148,22 +140,18 @@ class QueryCommand:
         self,
         query: str,
         config: QueryConfig,
-        options: QueryOptions | None = None,
+        options: QueryOptions,
     ) -> None:
         """Initialize the query command."""
         self.query = query
-        self._options = options or QueryOptions()
-        self.k = self._options.k
-        self.min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_MIN_SCORE
-        self.verbose = self._options.verbose
-        self.expand = self._options.expand
-        self.full_doc_threshold = self._options.full_doc_threshold
-
+        self._options = options
+        self.verbose = options.verbose
         self._config = config
 
     def execute(self) -> str:
         """Execute the query command and return search results."""
-        logger.info(f"QueryCommand(query='{self.query[:50]}', k={self.k})")
+        policy = self._options.policy
+        logger.info(f"QueryCommand(query='{self.query[:50]}', k={policy.k})")
 
         # Validate inputs - collect errors first
         validation_error = self._get_validation_error()
@@ -185,9 +173,10 @@ class QueryCommand:
         """Get validation error or None."""
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
-        if self.expand < 0:
+        policy = self._options.policy
+        if policy.expand < 0:
             return "Error: expand must be >= 0"
-        if self.full_doc_threshold < 0:
+        if policy.full_doc_threshold < 0:
             return "Error: full_doc_threshold must be >= 0"
         return None
 
@@ -201,14 +190,20 @@ class QueryCommand:
 
     def _execute_search(self) -> str:
         """Execute the search workflow."""
+        policy = self._options.policy
         error, retrieval_result = execute_retrieval(
             request=RetrievalRequest(
                 query=self.query,
                 retrieval_mode="text",
-                k=self.k,
-                content_min_score=self.min_score,
-                expand=self.expand,
-                full_doc_threshold=self.full_doc_threshold,
+                k=policy.k,
+                d=policy.documents.global_d,
+                document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
+                document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
+                document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+                chunk_min_score=policy.text.min_score,
+                expand_to_section=policy.expand_to_section,
+                expand=policy.expand,
+                full_doc_threshold=policy.full_doc_threshold,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,
@@ -232,19 +227,6 @@ class QueryCommand:
         verbose_output = self._build_verbose_output(results, doc_chunks)
         return f"{self._options}\n{verbose_output}"
 
-    def _validate_inputs(self) -> str | None:
-        """Validate input parameters."""
-        if not self.query or not self.query.strip():
-            return "Error: Query cannot be empty"
-
-        if self.expand < 0:
-            return "Error: expand must be >= 0"
-
-        if self.full_doc_threshold < 0:
-            return "Error: full_doc_threshold must be >= 0"
-
-        return None
-
     def _check_prerequisites(self) -> str | None:
         """Check that required indexes exist."""
         index_path = self._config.index_path_fn()
@@ -253,44 +235,6 @@ class QueryCommand:
             return "Error: No index found. Please run 'store' command first."
 
         return None
-
-    def _search_chunks(self) -> list[SearchResult]:
-        """Search for relevant chunks."""
-        with self._config.vector_store as vector_store:
-            ranked_results = vector_store.search_all(self.query)
-
-        logger.info(f"Search returned {len(ranked_results)} raw results")
-        return ranked_results
-
-    def _select_results(self, ranked_results: list[SearchResult]) -> list[SearchResult]:
-        """Select top-k results per document."""
-        selected_results = self._select_top_k_per_document(ranked_results, self.k, self.min_score)
-        logger.info(f"Per-document selection: {len(selected_results)} chunks")
-
-        return selected_results
-
-    def _select_top_k_per_document(
-        self,
-        ranked_results: list[SearchResult],
-        k: int,
-        min_score: float,
-    ) -> list[SearchResult]:
-        """Select up to k chunks per document above the score threshold."""
-        selected_results: list[SearchResult] = []
-        counts_by_doc: dict[str, int] = {}
-
-        for result in ranked_results:
-            if result["score"] < min_score:
-                continue
-
-            doc_uid = result["doc_uid"]
-            if counts_by_doc.get(doc_uid, 0) >= k:
-                continue
-
-            selected_results.append(result)
-            counts_by_doc[doc_uid] = counts_by_doc.get(doc_uid, 0) + 1
-
-        return selected_results
 
     def _fetch_chunks(self, selected_results: list[SearchResult]) -> dict[str, list[Chunk]]:
         """Fetch chunk details from database."""
@@ -313,17 +257,18 @@ class QueryCommand:
         """Expand results by including surrounding chunks from each document."""
         result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_data(results)
 
-        full_doc_docs = _include_full_document(doc_chunks, selected_ids_by_doc, self.full_doc_threshold)
+        policy = self._options.policy
+        full_doc_docs = _include_full_document(doc_chunks, selected_ids_by_doc, policy.full_doc_threshold)
 
-        if self.expand > 0:
-            _expand_with_neighbour_chunks(results, doc_chunks, selected_ids_by_doc, self.expand)
+        if policy.expand > 0:
+            _expand_with_neighbour_chunks(results, doc_chunks, selected_ids_by_doc, policy.expand)
 
         expanded_results = _build_expanded_results(doc_order, doc_chunks, selected_ids_by_doc, result_score_by_chunk)
 
-        if self.full_doc_threshold > 0:
+        if policy.full_doc_threshold > 0:
             for doc_uid in full_doc_docs:
                 doc_size = sum(len(c.text) for c in doc_chunks.get(doc_uid, []))
-                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={self.full_doc_threshold})")
+                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={policy.full_doc_threshold})")
 
         return expanded_results
 
@@ -378,7 +323,7 @@ class QueryCommand:
 
 def create_query_command(
     query: str,
-    options: QueryOptions | None = None,
+    options: QueryOptions,
 ) -> QueryCommand:
     """Create QueryCommand with real dependencies."""
     config = QueryConfig(

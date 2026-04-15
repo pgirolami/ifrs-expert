@@ -19,12 +19,7 @@ def _repo_root() -> Path:
 
 def _script_path() -> Path:
     """Return the experiment script path."""
-    return (
-        _repo_root()
-        / "experiments"
-        / "22_manual_experiment_on_document_routing"
-        / "run_q1_retrieve_chunk_stats.py"
-    )
+    return _repo_root() / "experiments" / "22_manual_experiment_on_document_routing" / "run_q1_retrieve_chunk_stats.py"
 
 
 def _load_module() -> ModuleType:
@@ -157,10 +152,7 @@ def test_run_persists_chunk_statistics_in_json(tmp_path: Path) -> None:
         error_message = f"Unexpected context size: {payload['results'][0]['context_size_kb']!r}"
         raise AssertionError(error_message)
 
-    stats_by_doc_uid = {
-        item["doc_uid"]: item
-        for item in payload["results"][0]["documents"]
-    }
+    stats_by_doc_uid = {item["doc_uid"]: item for item in payload["results"][0]["documents"]}
 
     expected_ifrs9 = {
         "doc_uid": "ifrs9",

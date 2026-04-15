@@ -68,7 +68,7 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
 
 def test_infer_document_type_returns_supported_prefixes() -> None:
     """Document types should fall back to supported doc_uid prefixes when no DB row exists."""
-    assert infer_document_type("ifrs9") == "IFRS"
+    assert infer_document_type("ifrs9") == "IFRS-S"
     assert infer_document_type("ifrs9-bc") == "IFRS-BC"
     assert infer_document_type("ifrs9-ie") == "IFRS-IE"
     assert infer_document_type("ifrs9-ig") == "IFRS-IG"
@@ -151,7 +151,7 @@ def test_document_store_upserts_and_reads_document_records(temp_db: Path) -> Non
     assert fetched.source_type == "html"
     assert fetched.canonical_url == "https://www.ifrs.org/ifrs9.html"
     assert fetched.source_domain == "www.ifrs.org"
-    assert fetched.document_type == "IFRS"
+    assert fetched.document_type == "IFRS-S"
     assert fetched.background_text == "Background text"
     assert fetched.issue_text == "Issue text"
     assert fetched.objective_text == "Objective text"

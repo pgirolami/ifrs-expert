@@ -7,7 +7,7 @@ import sqlite3
 from typing import Self
 
 from src.db.connection import get_connection
-from src.models.document import DocumentRecord, resolve_document_type
+from src.models.document import DocumentRecord, resolve_document_kind, resolve_document_type
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +30,15 @@ class DocumentStore:
     def upsert_document(self, document: DocumentRecord) -> None:
         """Insert or update a document record keyed by doc_uid."""
         document_type = resolve_document_type(document.doc_uid, document.document_type)
+        if document_type is None:
+            message = f"Could not resolve document_type for doc_uid={document.doc_uid}"
+            raise ValueError(message)
+
+        document_kind = resolve_document_kind(document_type, document.document_kind)
+        if document_kind is None:
+            message = f"Could not resolve document_kind for doc_uid={document.doc_uid}, document_type={document_type}"
+            raise ValueError(message)
+
         self._conn.execute(
             """
             INSERT INTO documents (
@@ -41,13 +50,14 @@ class DocumentStore:
                 captured_at,
                 source_domain,
                 document_type,
+                document_kind,
                 background_text,
                 issue_text,
                 objective_text,
                 scope_text,
                 intro_text,
                 toc_text
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(doc_uid) DO UPDATE SET
                 source_type = excluded.source_type,
                 source_title = excluded.source_title,
@@ -56,6 +66,7 @@ class DocumentStore:
                 captured_at = excluded.captured_at,
                 source_domain = excluded.source_domain,
                 document_type = excluded.document_type,
+                document_kind = excluded.document_kind,
                 background_text = excluded.background_text,
                 issue_text = excluded.issue_text,
                 objective_text = excluded.objective_text,
@@ -73,6 +84,7 @@ class DocumentStore:
                 document.captured_at,
                 document.source_domain,
                 document_type,
+                document_kind,
                 document.background_text,
                 document.issue_text,
                 document.objective_text,
@@ -97,6 +109,7 @@ class DocumentStore:
                 captured_at,
                 source_domain,
                 document_type,
+                document_kind,
                 background_text,
                 issue_text,
                 objective_text,
@@ -121,6 +134,7 @@ class DocumentStore:
             captured_at=row["captured_at"],
             source_domain=row["source_domain"],
             document_type=row["document_type"],
+            document_kind=row["document_kind"],
             background_text=row["background_text"],
             issue_text=row["issue_text"],
             objective_text=row["objective_text"],

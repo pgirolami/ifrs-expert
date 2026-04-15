@@ -5,8 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.commands.constants import DEFAULT_MIN_SCORE, DEFAULT_RETRIEVAL_K
-
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
@@ -31,8 +29,8 @@ class TitleRetrievalConfig:
 class TitleRetrievalOptions:
     """Options for title retrieval."""
 
-    k: int = DEFAULT_RETRIEVAL_K
-    min_score: float = DEFAULT_MIN_SCORE
+    k: int = 5
+    min_score: float = 0.55
 
 
 @dataclass(frozen=True)

@@ -11,6 +11,7 @@ from src.commands.query import QueryCommand, QueryConfig, QueryOptions
 from src.interfaces import SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from tests.fakes import InMemoryChunkStore
+from tests.policy import load_test_policy_config, load_test_retrieval_policy, make_retrieval_policy
 
 
 class MockVectorStore(SearchVectorStoreProtocol):
@@ -53,7 +54,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
         )
 
         result = command.execute()
@@ -86,7 +87,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test query",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
         )
 
         result = command.execute()
@@ -131,7 +132,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test query",
             config=config,
-            options=QueryOptions(k=2, min_score=None, verbose=False, expand=0),
+            options=QueryOptions(policy=make_retrieval_policy(k=2), verbose=False),
         )
 
         result = command.execute()
@@ -139,8 +140,8 @@ class TestQueryCommand:
         data = json.loads(result)
         assert [(item["doc_uid"], item["id"]) for item in data] == [
             ("doc1", 1),
-            ("doc2", 10),
             ("doc1", 2),
+            ("doc2", 10),
             ("doc2", 11),
         ]
 
@@ -155,7 +156,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
         )
 
         result = command.execute()
@@ -188,7 +189,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
         )
 
         result = command.execute()
@@ -221,7 +222,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=0.5, verbose=False, expand=0),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
         )
 
         result = command.execute()
@@ -255,12 +256,12 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=True, expand=0),
+            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=True),
         )
 
         result = command.execute()
 
-        assert result.startswith("QueryOptions(k=5, min_score=None, verbose=True, expand=0, full_doc_threshold=0)")
+        assert result.startswith("QueryOptions(policy=")
         # Both High-relevance chunks are in output; Low is filtered
         assert "(High)" in result
         assert "(Low)" not in result
@@ -290,7 +291,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False, expand=1),
+            options=QueryOptions(policy=make_retrieval_policy(expand=1), verbose=False),
         )
 
         result = command.execute()
@@ -326,7 +327,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(k=5, min_score=None, verbose=False, expand=0, full_doc_threshold=10),
+            options=QueryOptions(policy=make_retrieval_policy(expand=1), verbose=False),
         )
 
         result = command.execute()

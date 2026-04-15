@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import os
 import re
+import shutil
 import subprocess
 from dataclasses import dataclass
+
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
@@ -23,6 +26,9 @@ EXPERIMENTS_ROOT: Final[Path] = PROJECT_ROOT / "experiments"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 PROMPTFOO_CONFIG_DIR_ENV: Final[str] = "PROMPTFOO_CONFIG_DIR"
 DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
+DEFAULT_POLICY_PATH: Final[Path] = PROJECT_ROOT / "config" / "policy.default.yaml"
+DEFAULT_PROMPT_A_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
+DEFAULT_PROMPT_B_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 
 
 @dataclass(frozen=True)
@@ -33,6 +39,7 @@ class PromptfooRunLayout:
     artifacts_dir: Path
     metadata_path: Path
     promptfoo_config_dir: Path
+    effective_config_dir: Path
     description: str
 
 
@@ -60,12 +67,16 @@ class PromptfooEvalRunner:
         run_layout.run_dir.mkdir(parents=True, exist_ok=False)
         run_layout.artifacts_dir.mkdir(parents=True, exist_ok=True)
         run_layout.promptfoo_config_dir.mkdir(parents=True, exist_ok=True)
-        self._write_run_metadata(run_layout=run_layout, promptfoo_args=list(promptfoo_args))
+        self._write_run_metadata(run_layout=run_layout, promptfoo_args=list(promptfoo_args), archived_artifacts={})
 
         env = os.environ.copy()
         env[PROMPTFOO_ARTIFACTS_DIR_ENV] = str(run_layout.artifacts_dir)
         env[PROMPTFOO_CONFIG_DIR_ENV] = str(run_layout.promptfoo_config_dir)
 
+        # Stage policy and prompts next to the config so relative paths resolve
+        self._stage_effective_config(run_layout=run_layout)
+
+        # Write promptfooconfig into the same directory as the staged files
         promptfoo_config_path = run_layout.run_dir / "promptfooconfig.yaml"
 
         logger.info(f"Building promptfooconfig.yaml to {promptfoo_config_path}")
@@ -77,6 +88,16 @@ class PromptfooEvalRunner:
         if build_result.returncode != 0:
             logger.error(f"Promptfoo config build failed with exit code {build_result.returncode}")
             return build_result.returncode
+
+        archived_artifacts = self._archive_effective_artifacts(
+            run_layout=run_layout,
+            promptfoo_config_path=promptfoo_config_path,
+        )
+        self._write_run_metadata(
+            run_layout=run_layout,
+            promptfoo_args=list(promptfoo_args),
+            archived_artifacts=archived_artifacts,
+        )
 
         eval_command = [
             "npm",
@@ -107,10 +128,16 @@ class PromptfooEvalRunner:
             artifacts_dir=run_dir / "artifacts",
             metadata_path=run_dir / "run.json",
             promptfoo_config_dir=self._promptfoo_config_dir,
+            effective_config_dir=run_dir / "effective",
             description=resolved_description,
         )
 
-    def _write_run_metadata(self, run_layout: PromptfooRunLayout, promptfoo_args: list[str]) -> None:
+    def _write_run_metadata(
+        self,
+        run_layout: PromptfooRunLayout,
+        promptfoo_args: list[str],
+        archived_artifacts: dict[str, object],
+    ) -> None:
         """Write run metadata for reproducibility."""
         metadata = {
             "description": run_layout.description,
@@ -118,8 +145,67 @@ class PromptfooEvalRunner:
             "promptfoo_config_dir": str(run_layout.promptfoo_config_dir.relative_to(self._project_root)),
             "promptfoo_args": promptfoo_args,
             "created_at_utc": self._now_fn().astimezone(UTC).isoformat(),
+            "archived_artifacts": archived_artifacts,
         }
         run_layout.metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+
+    def _stage_effective_config(self, run_layout: PromptfooRunLayout) -> None:
+        """Copy effective policy and prompts next to the promptfooconfig.
+
+        The promptfooconfig and the staged files live in the same directory so
+        relative paths in the config resolve correctly at runtime.
+        """
+        effective_dir = run_layout.effective_config_dir
+        effective_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(DEFAULT_POLICY_PATH, effective_dir / DEFAULT_POLICY_PATH.name)
+        shutil.copy2(DEFAULT_PROMPT_A_PATH, effective_dir / DEFAULT_PROMPT_A_PATH.name)
+        shutil.copy2(DEFAULT_PROMPT_B_PATH, effective_dir / DEFAULT_PROMPT_B_PATH.name)
+
+    def _archive_effective_artifacts(
+        self,
+        run_layout: PromptfooRunLayout,
+        promptfoo_config_path: Path,
+    ) -> dict[str, object]:
+        """Copy effective policy and prompt templates into run directory with hashes.
+
+        Files are already staged next to the config. This adds SHA256 hashes for
+        reproducibility tracking only.
+        """
+        archived_dir = run_layout.effective_config_dir
+
+        artifacts: dict[str, object] = {}
+        artifacts["policy"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_POLICY_PATH.name,
+            destination_path=archived_dir / DEFAULT_POLICY_PATH.name,
+        )
+        artifacts["prompt_a"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_PROMPT_A_PATH.name,
+            destination_path=archived_dir / DEFAULT_PROMPT_A_PATH.name,
+        )
+        artifacts["prompt_b"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_PROMPT_B_PATH.name,
+            destination_path=archived_dir / DEFAULT_PROMPT_B_PATH.name,
+        )
+        return artifacts
+
+    def _copy_with_hash(self, source_path: Path, destination_path: Path) -> dict[str, str]:
+        """Copy one file and return metadata including SHA256 hash.
+
+        If source and destination are the same path (already staged), skips the copy
+        and computes the hash from the existing file.
+        """
+        if not source_path.exists():
+            message = f"Missing artifact source file: {source_path}"
+            raise FileNotFoundError(message)
+        if source_path != destination_path:
+            shutil.copy2(source_path, destination_path)
+        file_bytes = destination_path.read_bytes()
+        digest = hashlib.sha256(file_bytes).hexdigest()
+        return {
+            "source_path": str(source_path.relative_to(self._project_root)),
+            "archived_path": str(destination_path.relative_to(self._project_root)),
+            "sha256": digest,
+        }
 
 
 def _slugify(value: str) -> str:

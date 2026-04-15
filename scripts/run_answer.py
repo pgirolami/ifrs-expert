@@ -31,23 +31,7 @@ from dotenv import load_dotenv  # noqa: E402
 from src.answer_artifacts import save_answer_command_result  # noqa: E402
 from src.commands import AnswerOptions  # noqa: E402
 from src.commands.answer import create_answer_command  # noqa: E402
-from src.commands.constants import (  # noqa: E402
-    DEFAULT_D_FOR_IAS_DOCUMENTS,
-    DEFAULT_D_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_D_FOR_IFRS_DOCUMENTS,
-    DEFAULT_D_FOR_PS_DOCUMENTS,
-    DEFAULT_D_FOR_SIC_DOCUMENTS,
-    DEFAULT_EXPAND,
-    DEFAULT_FULL_DOC_THRESHOLD,
-    DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
-    DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
-    DEFAULT_RETRIEVAL_K,
-    DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
-    DEFAULT_RETRIEVE_DOCUMENT_D,
-)
+from src.policy import load_policy_config  # noqa: E402
 from src.logging_config import setup_logging  # noqa: E402
 
 if TYPE_CHECKING:
@@ -60,9 +44,6 @@ PROVIDER_OPTIONS_ARG_INDEX: Final[int] = 2
 CONTEXT_ARG_INDEX: Final[int] = 3
 MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS: Final[int] = 3
 MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
-DEFAULT_K: Final[int] = DEFAULT_RETRIEVAL_K
-DEFAULT_MIN_SCORE: Final[float] = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-DEFAULT_RETRIEVAL_MODE: Final[str] = "text"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 
 CANNED_JUSTIFICATION: Final[str] = (
@@ -185,28 +166,8 @@ def _extract_question(prompt: str, mode: str) -> str:
 class ExtractionOptions:
     """Options extracted from Promptfoo provider options or context mappings."""
 
-    k: int = DEFAULT_K
-    min_score: float = DEFAULT_MIN_SCORE
-    d: int = DEFAULT_RETRIEVE_DOCUMENT_D
-    doc_min_score: float | None = None
-    ifrs_d: int = DEFAULT_D_FOR_IFRS_DOCUMENTS
-    ias_d: int = DEFAULT_D_FOR_IAS_DOCUMENTS
-    ifric_d: int = DEFAULT_D_FOR_IFRIC_DOCUMENTS
-    sic_d: int = DEFAULT_D_FOR_SIC_DOCUMENTS
-    ps_d: int = DEFAULT_D_FOR_PS_DOCUMENTS
-    ifrs_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
-    ias_min_score: float = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
-    ifric_min_score: float = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
-    sic_min_score: float = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
-    ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
-    content_min_score: float | None = None
-    expand_to_section: bool = False
-    expand: int = DEFAULT_EXPAND
-    full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
-    retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
+    policy_config: str
     output_dir: str | None = None
-    save_all: bool = False
-    # Key-value pairs for artifact directory naming
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
 
 
@@ -307,131 +268,43 @@ def _build_effective_config_kv(
     options: ExtractionOptions,
     llm_provider: str | None,
 ) -> dict[str, str]:
-    """Build concise artifact config metadata from effective non-default options."""
-    default_options = ExtractionOptions()
-    result: dict[str, str] = {}
+    """Build concise artifact config metadata from effective options."""
+    result: dict[str, str] = {"policy-config": options.policy_config}
     if llm_provider is not None:
         result["llm_provider"] = llm_provider
-
-    option_pairs: tuple[tuple[str, object | None, object | None], ...] = (
-        ("k", options.k, default_options.k),
-        ("min-score", options.min_score, default_options.min_score),
-        ("d", options.d, default_options.d),
-        ("doc-min-score", options.doc_min_score, default_options.doc_min_score),
-        ("ifrs-d", options.ifrs_d, default_options.ifrs_d),
-        ("ias-d", options.ias_d, default_options.ias_d),
-        ("ifric-d", options.ifric_d, default_options.ifric_d),
-        ("sic-d", options.sic_d, default_options.sic_d),
-        ("ps-d", options.ps_d, default_options.ps_d),
-        ("ifrs-min-score", options.ifrs_min_score, default_options.ifrs_min_score),
-        ("ias-min-score", options.ias_min_score, default_options.ias_min_score),
-        ("ifric-min-score", options.ifric_min_score, default_options.ifric_min_score),
-        ("sic-min-score", options.sic_min_score, default_options.sic_min_score),
-        ("ps-min-score", options.ps_min_score, default_options.ps_min_score),
-        ("content-min-score", options.content_min_score, default_options.content_min_score),
-        ("expand-to-section", options.expand_to_section, default_options.expand_to_section),
-        ("expand", options.expand, default_options.expand),
-        ("full-doc-threshold", options.full_doc_threshold, default_options.full_doc_threshold),
-        ("retrieval-mode", options.retrieval_mode, default_options.retrieval_mode),
-        ("save-all", options.save_all, default_options.save_all),
-    )
-
-    for key, value, default_value in option_pairs:
-        if value is None or value == default_value:
-            continue
-        if isinstance(value, bool):
-            result[key] = "true" if value else "false"
-            continue
-        result[key] = str(value)
-
     return result
+
+
+def _extract_required_policy_config(mapping: dict[str, object]) -> str | None:
+    """Extract policy-config value from one mapping when present."""
+    raw_value = _extract_raw_value_from_mapping(mapping, ("policy-config", "policy_config"))
+    if isinstance(raw_value, str):
+        policy_config = raw_value.strip()
+        if policy_config:
+            return policy_config
+    return None
 
 
 def _extract_options(
     provider_options: dict[str, object],
     context: dict[str, object],
 ) -> ExtractionOptions:
-    """Extract AnswerOptions overrides from Promptfoo provider options and context."""
-    k = DEFAULT_K
-    min_score = DEFAULT_MIN_SCORE
-    d = DEFAULT_RETRIEVE_DOCUMENT_D
-    doc_min_score: float | None = None
-    ifrs_d = DEFAULT_D_FOR_IFRS_DOCUMENTS
-    ias_d = DEFAULT_D_FOR_IAS_DOCUMENTS
-    ifric_d = DEFAULT_D_FOR_IFRIC_DOCUMENTS
-    sic_d = DEFAULT_D_FOR_SIC_DOCUMENTS
-    ps_d = DEFAULT_D_FOR_PS_DOCUMENTS
-    ifrs_min_score = DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS
-    ias_min_score = DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS
-    ifric_min_score = DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS
-    sic_min_score = DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS
-    ps_min_score = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
-    content_min_score: float | None = None
-    expand_to_section = False
-    expand = DEFAULT_EXPAND
-    full_doc_threshold = DEFAULT_FULL_DOC_THRESHOLD
-    retrieval_mode = DEFAULT_RETRIEVAL_MODE
+    """Extract mandatory policy-config and runtime options."""
     output_dir: str | None = None
-    save_all = False
+    policy_config: str | None = None
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
-        k = _extract_int_from_mapping(mapping, "k", k)
-        min_score = _extract_float_from_mapping(mapping, ("min-score", "min_score"), min_score)
-        d = _extract_int_from_mapping(mapping, "d", d)
-        doc_min_score = _extract_optional_float_from_mapping(mapping, ("doc-min-score", "doc_min_score"), doc_min_score)
-        ifrs_d = _extract_int_from_mapping(mapping, ("ifrs-d", "ifrs_d"), ifrs_d)
-        ias_d = _extract_int_from_mapping(mapping, ("ias-d", "ias_d"), ias_d)
-        ifric_d = _extract_int_from_mapping(mapping, ("ifric-d", "ifric_d"), ifric_d)
-        sic_d = _extract_int_from_mapping(mapping, ("sic-d", "sic_d"), sic_d)
-        ps_d = _extract_int_from_mapping(mapping, ("ps-d", "ps_d"), ps_d)
-        ifrs_min_score = _extract_float_from_mapping(mapping, ("ifrs-min-score", "ifrs_min_score"), ifrs_min_score)
-        ias_min_score = _extract_float_from_mapping(mapping, ("ias-min-score", "ias_min_score"), ias_min_score)
-        ifric_min_score = _extract_float_from_mapping(mapping, ("ifric-min-score", "ifric_min_score"), ifric_min_score)
-        sic_min_score = _extract_float_from_mapping(mapping, ("sic-min-score", "sic_min_score"), sic_min_score)
-        ps_min_score = _extract_float_from_mapping(mapping, ("ps-min-score", "ps_min_score"), ps_min_score)
-        content_min_score = _extract_optional_float_from_mapping(
-            mapping,
-            ("content-min-score", "content_min_score"),
-            content_min_score,
-        )
-        expand_to_section = _extract_bool_from_mapping(
-            mapping,
-            ("expand-to-section", "expand_to_section"),
-            fallback=expand_to_section,
-        )
-        # Support both 'e' and 'expand' keys.
-        expand = _extract_int_from_mapping(mapping, "e", _extract_int_from_mapping(mapping, "expand", expand))
-        full_doc_threshold = _extract_int_from_mapping(
-            mapping,
-            ("f", "full-doc-threshold", "full_doc_threshold"),
-            full_doc_threshold,
-        )
-        retrieval_mode = _extract_retrieval_mode_from_mapping(mapping, retrieval_mode)
+        if policy_config is None:
+            policy_config = _extract_required_policy_config(mapping)
         output_dir = _extract_optional_string_from_mapping(mapping, ("output-dir", "output_dir"), output_dir)
-        save_all = _extract_bool_from_mapping(mapping, ("save-all", "save_all"), fallback=save_all)
+
+    if policy_config is None:
+        message = "Missing required provider option: policy-config"
+        raise ValueError(message)
 
     options = ExtractionOptions(
-        k=k,
-        min_score=min_score,
-        d=d,
-        doc_min_score=doc_min_score,
-        ifrs_d=ifrs_d,
-        ias_d=ias_d,
-        ifric_d=ifric_d,
-        sic_d=sic_d,
-        ps_d=ps_d,
-        ifrs_min_score=ifrs_min_score,
-        ias_min_score=ias_min_score,
-        ifric_min_score=ifric_min_score,
-        sic_min_score=sic_min_score,
-        ps_min_score=ps_min_score,
-        content_min_score=content_min_score,
-        expand_to_section=expand_to_section,
-        expand=expand,
-        full_doc_threshold=full_doc_threshold,
-        retrieval_mode=retrieval_mode,
+        policy_config=policy_config,
         output_dir=output_dir,
-        save_all=save_all,
     )
     options.config_kv = _build_effective_config_kv(
         options=options,
@@ -576,30 +449,12 @@ def _run_live(
     _apply_llm_provider_override(llm_provider)
     setup_logging()
 
+    policy = load_policy_config(Path(options.policy_config))
     command = create_answer_command(
         query=question,
         options=AnswerOptions(
-            k=options.k,
-            min_score=options.min_score,
-            d=options.d,
-            doc_min_score=options.doc_min_score,
-            ifrs_d=options.ifrs_d,
-            ias_d=options.ias_d,
-            ifric_d=options.ifric_d,
-            sic_d=options.sic_d,
-            ps_d=options.ps_d,
-            ifrs_min_score=options.ifrs_min_score,
-            ias_min_score=options.ias_min_score,
-            ifric_min_score=options.ifric_min_score,
-            sic_min_score=options.sic_min_score,
-            ps_min_score=options.ps_min_score,
-            content_min_score=options.content_min_score,
-            expand_to_section=options.expand_to_section,
-            expand=options.expand,
-            full_doc_threshold=options.full_doc_threshold,
-            retrieval_mode=options.retrieval_mode,
+            policy=policy,
             output_dir=(Path(options.output_dir) if options.output_dir is not None else None),
-            save_all=options.save_all,
         ),
     )
     result = command.execute()
@@ -638,7 +493,11 @@ def main() -> int:
         return 0
 
     llm_provider = _extract_llm_provider(provider_options, context)
-    extraction_options = _extract_options(provider_options, context)
+    try:
+        extraction_options = _extract_options(provider_options, context)
+    except ValueError as error:
+        _write_stdout(_error_payload(f"Error: {error}"))
+        return 1
     exit_code, payload = _run_live(question, llm_provider, context, extraction_options)
     _write_stdout(payload)
     return exit_code
