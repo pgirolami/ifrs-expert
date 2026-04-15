@@ -126,9 +126,9 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
 
 def _build_grounded_context(result: AnswerCommandResult) -> tuple[str, str]:
     """Build later-turn context from the grounded first answer."""
-    if result.prompt_b_markdown:
+    if result.prompt_b_memo_markdown:
         logger.info("ChatService: using grounded markdown context for follow-up prompt")
-        return result.prompt_b_markdown, "markdown"
+        return result.prompt_b_memo_markdown, "markdown"
     if result.prompt_b_json is not None:
         logger.info("ChatService: using grounded JSON context for follow-up prompt")
         return _serialize_json_value(result.prompt_b_json), "json"

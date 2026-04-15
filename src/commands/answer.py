@@ -519,7 +519,7 @@ class AnswerCommand:
                         primary_accounting_issue=result.prompt_a_json.get("primary_accounting_issue") if isinstance(result.prompt_a_json, dict) else None,
                         chunk_data=chunk_data,
                     )
-                    result.prompt_b_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
+                    result.prompt_b_memo_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
 
                     # Generate FAQ-style markdown from the same JSON
                     result.prompt_b_faq_markdown = convert_json_to_faq_markdown(

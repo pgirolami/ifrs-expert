@@ -22,7 +22,7 @@ class AnswerCommandResult:
     prompt_b_text: str | None = None
     prompt_b_raw_response: str | None = None
     prompt_b_json: JSONValue | None = None
-    prompt_b_markdown: str | None = None
+    prompt_b_memo_markdown: str | None = None
     prompt_b_faq_markdown: str | None = None
     error: str | None = None
     error_stage: str | None = None

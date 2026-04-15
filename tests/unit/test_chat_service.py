@@ -13,14 +13,14 @@ def test_answer_first_turn_uses_answer_command_result() -> None:
 
     def run_first_turn(question: str) -> AnswerCommandResult:
         calls.append(question)
-        return AnswerCommandResult(query=question, success=True, prompt_b_markdown="# Grounded answer")
+        return AnswerCommandResult(query=question, success=True, prompt_b_memo_markdown="# Grounded answer")
 
     service = ChatService(run_first_turn_fn=run_first_turn, generate_follow_up_fn=lambda prompt: "unused")
 
     result = service.answer_first_turn("What is IFRS 9?")
 
     assert calls == ["What is IFRS 9?"]
-    assert result.prompt_b_markdown == "# Grounded answer"
+    assert result.prompt_b_memo_markdown == "# Grounded answer"
 
 
 def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
@@ -38,7 +38,7 @@ def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
     first_turn_result = AnswerCommandResult(
         query="Can we apply hedge accounting?",
         success=True,
-        prompt_b_markdown="# Grounded first answer",
+        prompt_b_memo_markdown="# Grounded first answer",
     )
     follow_up_turns = [FollowUpTurn(user_question="Under which conditions?", assistant_answer="Conditions answer")]
 

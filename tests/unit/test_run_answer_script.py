@@ -123,7 +123,7 @@ def test_write_promptfoo_artifacts_persists_historical_answer_files(
         prompt_b_text="Prompt B",
         prompt_b_raw_response='{"answer": "oui"}',
         prompt_b_json={"answer": "oui"},
-        prompt_b_markdown="# Markdown",
+        prompt_b_memo_markdown="# Markdown",
     )
 
     run_answer._write_promptfoo_artifacts(

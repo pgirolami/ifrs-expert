@@ -177,7 +177,7 @@ class TestAnswerCommand:
         assert result.prompt_b_text is not None
         assert result.prompt_b_raw_response == VALID_PROMPT_B_RESPONSE
         assert result.prompt_b_json is not None
-        assert result.prompt_b_markdown is not None
+        assert result.prompt_b_memo_markdown is not None
         assert result.retrieved_doc_uids == ["doc1"]
 
     def test_answer_no_results(self) -> None:

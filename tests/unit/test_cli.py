@@ -47,7 +47,7 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
             "recommendation": {"answer": "oui", "justification": "Justification de test"},
             "approaches": [],
         },
-        prompt_b_markdown="# Markdown answer",
+        prompt_b_memo_markdown="# Markdown answer",
     )
 
     _save_answer_command_result(result, tmp_path)
@@ -75,7 +75,7 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
         query="What is IFRS?",
         success=True,
         prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
-        prompt_b_markdown="# Markdown answer",
+        prompt_b_memo_markdown="# Markdown answer",
     )
 
     monkeypatch.setattr("src.cli.create_answer_command", lambda query, options: FakeAnswerCommand(result))
@@ -120,7 +120,7 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
         query="What is IFRS?",
         success=True,
         prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
-        prompt_b_markdown="# Markdown answer",
+        prompt_b_memo_markdown="# Markdown answer",
     )
     output_dir = tmp_path / "new-output-dir"
 
@@ -444,7 +444,7 @@ def test_answer_stdout_text_prefers_raw_response() -> None:
         query="test",
         success=True,
         prompt_b_raw_response="raw response",
-        prompt_b_markdown="markdown response",
+        prompt_b_memo_markdown="markdown response",
     )
 
     assert _answer_stdout_text(result) == "raw response"

@@ -27,8 +27,8 @@ def save_answer_command_result(result: AnswerCommandResult, output_dir: Path) ->
     if result.prompt_b_raw_response is not None:
         _write_b_response_json(output_dir / "B-response.json", result)
 
-    if result.prompt_b_markdown is not None:
-        _write_text_file(output_dir / "B-response_memo.md", result.prompt_b_markdown)
+    if result.prompt_b_memo_markdown is not None:
+        _write_text_file(output_dir / "B-response_memo.md", result.prompt_b_memo_markdown)
 
     if result.prompt_b_faq_markdown is not None:
         _write_text_file(output_dir / "B-response_faq.md", result.prompt_b_faq_markdown)

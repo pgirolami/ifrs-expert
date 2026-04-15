@@ -11,7 +11,7 @@ def test_get_assistant_display_text_prefers_markdown() -> None:
     result = AnswerCommandResult(
         query="test",
         success=True,
-        prompt_b_markdown="# Markdown answer",
+        prompt_b_memo_markdown="# Markdown answer",
         prompt_b_raw_response="raw answer",
     )
 

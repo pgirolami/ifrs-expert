@@ -612,8 +612,8 @@ def _run_live(
     if result.prompt_b_raw_response is not None:
         return 0, result.prompt_b_raw_response
 
-    if result.prompt_b_markdown is not None:
-        return 0, result.prompt_b_markdown
+    if result.prompt_b_memo_markdown is not None:
+        return 0, result.prompt_b_memo_markdown
 
     return 1, _error_payload("Error: Empty response from CLI")
 

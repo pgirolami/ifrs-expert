@@ -109,7 +109,7 @@ def _handle_first_turn(service: ChatService, session_state: SessionStateProtocol
         return
 
     assistant_content = _get_assistant_display_text(result)
-    assistant_format = "markdown" if result.prompt_b_markdown else "text"
+    assistant_format = "markdown" if result.prompt_b_memo_markdown else "text"
     prompt_a_chars = len(result.prompt_a_text) if result.prompt_a_text else 0
     prompt_b_chars = len(result.prompt_b_text) if result.prompt_b_text else 0
     assistant_chars = len(assistant_content)
@@ -158,9 +158,9 @@ def _handle_follow_up_turn(
 
 def _get_assistant_display_text(result: AnswerCommandResult) -> str:
     """Return the text displayed for the grounded first-turn answer."""
-    if result.prompt_b_markdown:
+    if result.prompt_b_memo_markdown:
         logger.info("Streamlit UI: displaying grounded markdown answer")
-        return result.prompt_b_markdown
+        return result.prompt_b_memo_markdown
     if result.prompt_b_raw_response:
         logger.info("Streamlit UI: displaying grounded raw response")
         return result.prompt_b_raw_response
