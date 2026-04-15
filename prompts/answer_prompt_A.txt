@@ -28,6 +28,15 @@ Your task is to:
 
 4. Map those treatment families to peer top-level accounting approaches.
 
+Authority hierarchy — use document_kind to guide classification:
+- Treat 'standard' and 'interpretation' documents as governing authority first.
+- Use 'implementation_guidance', 'illustrative_examples', and 'basis_for_conclusions'
+  as supporting or peripheral authority only; they cannot replace governing standards
+  but may clarify, illustrate, or provide context.
+- The document_type attribute (IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC,
+  NAVIS, PS) tells you the exact variant; the document_kind attribute tells you
+  its authority role in the hierarchy above.
+
 Core boundary of this step:
 - This step is for approach identification only.
 - This step is NOT for deciding which approach is most likely to apply.

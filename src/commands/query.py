@@ -10,6 +10,7 @@ from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
+from src.models.document import infer_document_kind, infer_exact_document_type
 from src.policy import RetrievalPolicy
 from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
@@ -282,11 +283,15 @@ class QueryCommand:
 
             for chunk in doc_chunks.get(doc_uid, []):
                 if chunk.id == chunk_id:
+                    document_type = infer_exact_document_type(doc_uid)
+                    document_kind = infer_document_kind(doc_uid)
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     chunks_output.append(
                         {
                             "id": chunk.id,
                             "doc_uid": chunk.doc_uid,
+                            "document_type": document_type,
+                            "document_kind": document_kind,
                             "chunk_number": chunk.chunk_number,
                             "chunk_id": chunk.chunk_id,
                             "containing_section_id": chunk.containing_section_id,
@@ -310,9 +315,13 @@ class QueryCommand:
 
             for chunk in doc_chunks.get(doc_uid, []):
                 if chunk.id == chunk_id:
+                    document_type = infer_exact_document_type(doc_uid)
+                    document_kind = infer_document_kind(doc_uid)
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
                     output_lines.append(f"Document: {chunk.doc_uid}")
+                    output_lines.append(f"Document type: {document_type}")
+                    output_lines.append(f"Document kind: {document_kind}")
                     output_lines.append(f"Chunk number: {chunk.chunk_number}")
                     output_lines.append(f"Page: {chunk.page_start}-{chunk.page_end}")
                     snippet = chunk.text[:200].replace("\n", " ")
