@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib
 import sqlite3
 from dataclasses import dataclass
+from pathlib import Path
 
 DOCUMENT_TYPES: tuple[str, ...] = (
     "IFRS",
@@ -19,6 +20,7 @@ DOCUMENT_TYPES: tuple[str, ...] = (
     "NAVIS",
 )
 DOCUMENT_TYPE_FAMILIES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS", "NAVIS")
+DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
 
 def resolve_document_type_from_doc_uid(doc_uid: str) -> str | None:
@@ -62,7 +64,33 @@ def document_type_to_family(document_type: str | None) -> str | None:
 
 
 def infer_document_type(doc_uid: str) -> str | None:
-    """Infer the exact document type from persisted metadata, with a doc_uid fallback."""
+    """Infer the exact document type from the doc_uid fallback, or from a non-default database path."""
+    normalized_doc_uid = doc_uid.strip()
+    if not normalized_doc_uid:
+        return None
+
+    connection_module = importlib.import_module("src.db.connection")
+    if connection_module.DB_PATH != DEFAULT_DB_PATH:
+        try:
+            with connection_module.get_connection(read_only=True) as connection:
+                connection.row_factory = sqlite3.Row
+                row = connection.execute(
+                    "SELECT document_type FROM documents WHERE doc_uid = ?",
+                    (normalized_doc_uid,),
+                ).fetchone()
+        except sqlite3.OperationalError:
+            row = None
+
+        if row is not None:
+            document_type = row["document_type"]
+            if isinstance(document_type, str) and document_type.strip():
+                return document_type
+
+    return resolve_document_type_from_doc_uid(normalized_doc_uid)
+
+
+def infer_persisted_document_type(doc_uid: str) -> str | None:
+    """Infer the exact document type from persisted metadata when available."""
     normalized_doc_uid = doc_uid.strip()
     if not normalized_doc_uid:
         return None
@@ -88,7 +116,7 @@ def infer_document_type(doc_uid: str) -> str | None:
 
 def infer_document_family(doc_uid: str) -> str | None:
     """Infer the retrieval family from persisted metadata or doc_uid fallback."""
-    return document_type_to_family(infer_document_type(doc_uid))
+    return document_type_to_family(infer_persisted_document_type(doc_uid))
 
 
 @dataclass

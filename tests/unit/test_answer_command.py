@@ -100,7 +100,7 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="test",
             config=config,
-            options=AnswerOptions(expand=0, output_dir=output_dir, save_all=True),
+            options=AnswerOptions(expand=0, output_dir=output_dir, save_all=True, retrieval_mode="text"),
         )
 
         assert command.expand == 0
@@ -116,7 +116,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=False),
             send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with caplog.at_level(logging.INFO):
             result = command.execute()
@@ -157,7 +157,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="What is the scope?", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with (
             unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
@@ -189,7 +189,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=lambda prompt: "result",
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -228,7 +228,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5, expand=0))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, min_score=0.5, expand=0, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -267,7 +267,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, expand=1))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, expand=1, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -308,7 +308,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, full_doc_threshold=10))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, full_doc_threshold=10, retrieval_mode="text"))
 
         with (
             unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
@@ -356,7 +356,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -424,7 +424,7 @@ class TestAnswerCommand:
         command = AnswerCommand(
             query="recognition",
             config=config,
-            options=AnswerOptions(k=5, content_min_score=0.5, expand_to_section=True, expand=0),
+            options=AnswerOptions(k=5, content_min_score=0.5, expand_to_section=True, expand=0, retrieval_mode="text"),
         )
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
@@ -637,7 +637,7 @@ class TestAnswerCommand:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()
@@ -744,7 +744,7 @@ class TestBuildPromptBContext:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=lambda prompt: "result",
         )
-        return AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        return AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
     def _make_formatted_chunks(self, chunks: list[Chunk]) -> list[str]:
         """Helper to format chunks as they would appear in the prompt."""
@@ -1039,7 +1039,7 @@ class TestAnswerCommandAuthorityFiltering:
             index_path_fn=lambda: MockIndexPath(exists=True),
             send_to_llm_fn=mock_send_to_llm,
         )
-        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5))
+        command = AnswerCommand(query="test", config=config, options=AnswerOptions(k=5, retrieval_mode="text"))
 
         with unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True):
             result = command.execute()

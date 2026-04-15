@@ -21,7 +21,7 @@ from src.interfaces import (
     TitleVectorStoreProtocol,
     VectorStoreProtocol,
 )
-from src.models.document import infer_document_type
+from src.models.document import resolve_document_type_from_doc_uid
 from src.retrieval.document_profile_builder import DocumentProfileBuilder
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 from src.vector.document_store import DocumentVectorStore
@@ -158,8 +158,7 @@ class StoreCommand:
                 source_path=self.source_path,
                 explicit_doc_uid=self._explicit_doc_uid,
             )
-            doc_uid = extracted_document.document.doc_uid
-            extracted_document.document.document_type = extracted_document.document.document_type or infer_document_type(doc_uid)
+            doc_uid = self._finalize_extracted_document(extracted_document)
             logger.info(
                 f"Extraction completed for source_path={self.source_path} in {_elapsed_ms(extraction_started_at):.2f}ms; "
                 f"doc_uid={doc_uid}, document_type={extracted_document.document.document_type}, "
@@ -320,6 +319,13 @@ class StoreCommand:
             chunk_store.insert_chunks(chunks)
             logger.info(f"Stored {len(chunks)} chunks with doc_uid={doc_uid}")
         return None
+
+    def _finalize_extracted_document(self, extracted_document: ExtractedDocument) -> str:
+        """Apply late extraction normalization before persistence."""
+        doc_uid = extracted_document.document.doc_uid
+        if extracted_document.document.document_type is None:
+            extracted_document.document.document_type = resolve_document_type_from_doc_uid(doc_uid)
+        return doc_uid
 
     def _store_sections(self, doc_uid: str, extracted_document: ExtractedDocument) -> dict[str, int]:
         if self._dependencies.section_store is None:

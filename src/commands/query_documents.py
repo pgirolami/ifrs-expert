@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 from src.commands.constants import DEFAULT_D, DEFAULT_MIN_SCORE_FOR_DOCUMENTS, DEFAULT_VERBOSE
 from src.db import DocumentStore, init_db
-from src.models.document import DOCUMENT_TYPES, infer_document_type
+from src.models.document import DOCUMENT_TYPES, infer_persisted_document_type
 from src.vector.document_store import DocumentVectorStore, get_document_index_path
 
 if TYPE_CHECKING:
@@ -132,7 +132,7 @@ def _select_top_documents(
     for result in ranked_results:
         if result["score"] < min_score:
             continue
-        if infer_document_type(result["doc_uid"]) != document_type:
+        if infer_persisted_document_type(result["doc_uid"]) != document_type:
             continue
         selected_results.append(result)
         if len(selected_results) >= d:
