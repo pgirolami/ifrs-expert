@@ -84,12 +84,28 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
     args = argparse.Namespace(
         command="answer",
         k=5,
+        d=25,
         min_score=None,
+        doc_min_score=None,
+        content_min_score=0.53,
+        ifrs_d=4,
+        ias_d=4,
+        ifric_d=6,
+        sic_d=6,
+        ps_d=1,
+        navis_d=2,
+        ifrs_min_score=0.53,
+        ias_min_score=0.4,
+        ifric_min_score=0.48,
+        sic_min_score=0.4,
+        ps_min_score=0.4,
+        navis_min_score=0.6,
         expand=0,
+        expand_to_section=True,
         full_doc_threshold=0,
         output_dir=tmp_path,
         save_all=False,
-        retrieval_mode="titles",
+        retrieval_mode="documents",
     )
 
     output = _execute_answer_command(args)
@@ -123,13 +139,15 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
         ifric_d=6,
         sic_d=100,
         ps_d=100,
+        navis_d=2,
         ifrs_min_score=0.53,
         ias_min_score=0.0,
         ifric_min_score=0.48,
         sic_min_score=0.0,
         ps_min_score=0.0,
+        navis_min_score=0.6,
         expand=0,
-        expand_to_section=False,
+        expand_to_section=True,
         full_doc_threshold=0,
         output_dir=output_dir,
         save_all=False,
@@ -147,12 +165,28 @@ def test_execute_answer_command_requires_output_dir_for_save_all() -> None:
     args = argparse.Namespace(
         command="answer",
         k=5,
+        d=25,
         min_score=None,
+        doc_min_score=None,
+        content_min_score=0.53,
+        ifrs_d=4,
+        ias_d=4,
+        ifric_d=6,
+        sic_d=6,
+        ps_d=1,
+        navis_d=2,
+        ifrs_min_score=0.53,
+        ias_min_score=0.4,
+        ifric_min_score=0.48,
+        sic_min_score=0.4,
+        ps_min_score=0.4,
+        navis_min_score=0.6,
         expand=0,
+        expand_to_section=True,
         full_doc_threshold=0,
         output_dir=None,
         save_all=True,
-        retrieval_mode="text",
+        retrieval_mode="documents",
     )
 
     output = _execute_answer_command(args)
@@ -189,11 +223,13 @@ def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytes
         ifric_d=4,
         sic_d=3,
         ps_d=2,
+        navis_d=1,
         ifrs_min_score=0.61,
         ias_min_score=0.54,
         ifric_min_score=0.50,
         sic_min_score=0.49,
         ps_min_score=0.48,
+        navis_min_score=0.47,
         expand=1,
         expand_to_section=True,
         full_doc_threshold=2000,
@@ -221,6 +257,8 @@ def test_execute_answer_command_passes_retrieve_style_options(monkeypatch: pytes
     assert getattr(options, "ifric_min_score") == 0.50
     assert getattr(options, "sic_min_score") == 0.49
     assert getattr(options, "ps_min_score") == 0.48
+    assert getattr(options, "navis_d") == 1
+    assert getattr(options, "navis_min_score") == 0.47
     assert getattr(options, "expand_to_section") is True
     assert getattr(options, "expand") == 1
     assert getattr(options, "full_doc_threshold") == 2000
@@ -351,11 +389,13 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
         ifric_d=5,
         sic_d=5,
         ps_d=5,
+        navis_d=3,
         ifrs_min_score=0.61,
         ias_min_score=0.55,
         ifric_min_score=0.51,
         sic_min_score=0.51,
         ps_min_score=0.50,
+        navis_min_score=0.49,
         expand_to_section=True,
         expand=0,
         full_doc_threshold=0,
@@ -422,12 +462,14 @@ def test_retrieve_parser_uses_tuned_document_retrieval_defaults() -> None:
     assert args.ifric_d == 6
     assert args.sic_d == 6
     assert args.ps_d == 1
+    assert args.navis_d == 2
     assert args.ifrs_min_score == 0.53
     assert args.ias_min_score == 0.4
     assert args.ifric_min_score == 0.48
     assert args.sic_min_score == 0.4
     assert args.ps_min_score == 0.4
-    assert args.content_min_score is None
+    assert args.navis_min_score == 0.6
+    assert args.content_min_score == 0.53
 
 
 def test_answer_parser_uses_tuned_document_retrieval_defaults() -> None:
@@ -442,9 +484,11 @@ def test_answer_parser_uses_tuned_document_retrieval_defaults() -> None:
     assert args.ifric_d == 6
     assert args.sic_d == 6
     assert args.ps_d == 1
+    assert args.navis_d == 2
     assert args.ifrs_min_score == 0.53
     assert args.ias_min_score == 0.4
     assert args.ifric_min_score == 0.48
     assert args.sic_min_score == 0.4
     assert args.ps_min_score == 0.4
-    assert args.content_min_score is None
+    assert args.navis_min_score == 0.6
+    assert args.content_min_score == 0.53

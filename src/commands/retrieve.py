@@ -14,7 +14,6 @@ from src.commands.constants import (
     DEFAULT_D_FOR_NAVIS_DOCUMENTS,
     DEFAULT_D_FOR_PS_DOCUMENTS,
     DEFAULT_D_FOR_SIC_DOCUMENTS,
-    DEFAULT_EXPAND,
     DEFAULT_FULL_DOC_THRESHOLD,
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
@@ -23,8 +22,11 @@ from src.commands.constants import (
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
     DEFAULT_RETRIEVAL_K,
+    DEFAULT_RETRIEVAL_MODE,
     DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
     DEFAULT_RETRIEVE_DOCUMENT_D,
+    DEFAULT_RETRIEVE_EXPAND,
+    DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
     DEFAULT_VERBOSE,
 )
 from src.db import ChunkStore, SectionStore, init_db
@@ -81,11 +83,11 @@ class RetrieveOptions:
     ps_min_score: float = DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS
     navis_min_score: float = DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS
     content_min_score: float | None = DEFAULT_RETRIEVE_CONTENT_MIN_SCORE
-    expand_to_section: bool = False
+    expand_to_section: bool = DEFAULT_RETRIEVE_EXPAND_TO_SECTION
     verbose: bool = DEFAULT_VERBOSE
-    expand: int = DEFAULT_EXPAND
+    expand: int = DEFAULT_RETRIEVE_EXPAND
     full_doc_threshold: int = DEFAULT_FULL_DOC_THRESHOLD
-    retrieval_mode: str = "text"
+    retrieval_mode: str = DEFAULT_RETRIEVAL_MODE
 
 
 class RetrieveCommand:

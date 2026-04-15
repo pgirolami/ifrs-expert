@@ -7,6 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from src.commands.constants import DEFAULT_QUERY_TITLES_MIN_SCORE, DEFAULT_RETRIEVAL_K, DEFAULT_VERBOSE
 from src.db import ChunkStore, SectionStore, init_db
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalHit, TitleRetrievalOptions, retrieve_title_hits
 from src.vector.title_store import TitleVectorStore, get_title_index_path
@@ -35,9 +36,9 @@ class QueryTitlesConfig:
 class QueryTitlesOptions:
     """Options for the query-titles command."""
 
-    k: int = 5
-    min_score: float | None = 0.6
-    verbose: bool = True
+    k: int = DEFAULT_RETRIEVAL_K
+    min_score: float | None = DEFAULT_QUERY_TITLES_MIN_SCORE
+    verbose: bool = DEFAULT_VERBOSE
 
 
 class QueryTitlesCommand:
@@ -54,7 +55,7 @@ class QueryTitlesCommand:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
 
-        min_score = self._options.min_score if self._options.min_score is not None else 0.6
+        min_score = self._options.min_score if self._options.min_score is not None else DEFAULT_QUERY_TITLES_MIN_SCORE
         error, hits = retrieve_title_hits(
             query=self.query,
             config=TitleRetrievalConfig(

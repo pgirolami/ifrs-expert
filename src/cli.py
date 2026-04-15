@@ -23,19 +23,31 @@ from src.commands import (
 )
 from src.commands.answer import create_answer_command
 from src.commands.constants import (
+    DEFAULT_D,
     DEFAULT_D_FOR_IAS_DOCUMENTS,
     DEFAULT_D_FOR_IFRIC_DOCUMENTS,
     DEFAULT_D_FOR_IFRS_DOCUMENTS,
+    DEFAULT_D_FOR_NAVIS_DOCUMENTS,
     DEFAULT_D_FOR_PS_DOCUMENTS,
     DEFAULT_D_FOR_SIC_DOCUMENTS,
+    DEFAULT_EXPAND,
+    DEFAULT_FULL_DOC_THRESHOLD,
+    DEFAULT_MIN_SCORE,
+    DEFAULT_MIN_SCORE_FOR_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
+    DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS,
     DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS,
+    DEFAULT_QUERY_TITLES_MIN_SCORE,
     DEFAULT_RETRIEVAL_K,
+    DEFAULT_RETRIEVAL_MODE,
     DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
     DEFAULT_RETRIEVE_DOCUMENT_D,
+    DEFAULT_RETRIEVE_EXPAND,
+    DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
+    DEFAULT_SCOPE,
 )
 from src.commands.query import create_query_command
 from src.commands.query_documents import create_query_documents_command
@@ -90,8 +102,8 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
     store_parser.add_argument(
         "--scope",
         choices=STORE_SCOPES,
-        default="all",
-        help="Ingestion scope: all, chunks, sections, or documents (default: all)",
+        default=DEFAULT_SCOPE,
+        help=f"Ingestion scope: all, chunks, sections, or documents (default: {DEFAULT_SCOPE})",
     )
 
 
@@ -103,8 +115,8 @@ def _add_ingest_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
     ingest_parser.add_argument(
         "--scope",
         choices=STORE_SCOPES,
-        default="all",
-        help="Ingestion scope: all, chunks, sections, or documents (default: all)",
+        default=DEFAULT_SCOPE,
+        help=f"Ingestion scope: all, chunks, sections, or documents (default: {DEFAULT_SCOPE})",
     )
 
 
@@ -118,27 +130,33 @@ def _add_query_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
         "query",
         help="Search for similar chunks using text query (reads query from stdin)",
     )
-    query_parser.add_argument("-k", "--k", type=int, default=5, help="Number of results to return (default: 5)")
+    query_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=DEFAULT_RETRIEVAL_K,
+        help=f"Number of results to return (default: {DEFAULT_RETRIEVAL_K})",
+    )
     query_parser.add_argument("--json", action="store_true", help="Output results as JSON (default is verbose text)")
     query_parser.add_argument(
         "--min-score",
         type=float,
-        default=None,
-        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.6.",
+        default=DEFAULT_MIN_SCORE,
+        help=f"Minimum relevance score (0-1). Results below this are excluded. Default: {DEFAULT_MIN_SCORE}.",
     )
     query_parser.add_argument(
         "-e",
         "--expand",
         type=int,
-        default=0,
-        help="Number of chunks before/after to expand with (default: 0)",
+        default=DEFAULT_EXPAND,
+        help=f"Number of chunks before/after to expand with (default: {DEFAULT_EXPAND})",
     )
     query_parser.add_argument(
         "-f",
         "--full-doc-threshold",
         type=int,
-        default=0,
-        help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
+        default=DEFAULT_FULL_DOC_THRESHOLD,
+        help=(f"Include the full document during expansion when its total chunk text size is below this threshold (default: {DEFAULT_FULL_DOC_THRESHOLD})"),
     )
 
 
@@ -157,15 +175,15 @@ def _add_query_documents_parser(subparsers: argparse._SubParsersAction[argparse.
         "-d",
         "--d",
         type=int,
-        default=5,
-        help="Number of documents to return for the selected document type (default: 5)",
+        default=DEFAULT_D,
+        help=f"Number of documents to return for the selected document type (default: {DEFAULT_D})",
     )
     query_documents_parser.add_argument("--json", action="store_true", help="Output results as JSON (default is verbose text)")
     query_documents_parser.add_argument(
         "--min-score",
         type=float,
-        default=None,
-        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.55.",
+        default=DEFAULT_MIN_SCORE_FOR_DOCUMENTS,
+        help=(f"Minimum relevance score (0-1). Results below this are excluded. Default: {DEFAULT_MIN_SCORE_FOR_DOCUMENTS}."),
     )
 
 
@@ -225,6 +243,12 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         help=f"Maximum PS documents to keep before overall capping (default: {DEFAULT_D_FOR_PS_DOCUMENTS})",
     )
     retrieve_parser.add_argument(
+        "--navis-d",
+        type=int,
+        default=DEFAULT_D_FOR_NAVIS_DOCUMENTS,
+        help=f"Maximum NAVIS documents to keep before overall capping (default: {DEFAULT_D_FOR_NAVIS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
         "--ifrs-min-score",
         type=float,
         default=DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
@@ -255,6 +279,12 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
         help=f"Minimum PS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS})",
     )
     retrieve_parser.add_argument(
+        "--navis-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS,
+        help=f"Minimum NAVIS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS})",
+    )
+    retrieve_parser.add_argument(
         "--content-min-score",
         type=float,
         default=DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
@@ -263,28 +293,28 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
     retrieve_parser.add_argument(
         "--expand-to-section",
         action="store_true",
-        default=True,
-        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default=True).",
+        default=DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
+        help=(f"Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default={DEFAULT_RETRIEVE_EXPAND_TO_SECTION})."),
     )
     retrieve_parser.add_argument(
         "-e",
         "--expand",
         type=int,
-        default=0,
-        help="Number of chunks before/after to expand with (default: 0)",
+        default=DEFAULT_RETRIEVE_EXPAND,
+        help=f"Number of chunks before/after to expand with (default: {DEFAULT_RETRIEVE_EXPAND})",
     )
     retrieve_parser.add_argument(
         "-f",
         "--full-doc-threshold",
         type=int,
-        default=0,
-        help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
+        default=DEFAULT_FULL_DOC_THRESHOLD,
+        help=(f"Include the full document during expansion when its total chunk text size is below this threshold (default: {DEFAULT_FULL_DOC_THRESHOLD})"),
     )
     retrieve_parser.add_argument(
         "--retrieval-mode",
         choices=["text", "titles", "documents"],
-        default="documents",
-        help="Retrieval mode to use (default: documents)",
+        default=DEFAULT_RETRIEVAL_MODE,
+        help=f"Retrieval mode to use (default: {DEFAULT_RETRIEVAL_MODE})",
     )
     retrieve_parser.add_argument("--json", action="store_true", help="Output results as JSON (default is verbose text)")
 
@@ -294,13 +324,19 @@ def _add_query_titles_parser(subparsers: argparse._SubParsersAction[argparse.Arg
         "query-titles",
         help="Search for similar section titles (reads query from stdin)",
     )
-    query_titles_parser.add_argument("-k", "--k", type=int, default=5, help="Number of results to return (default: 5)")
+    query_titles_parser.add_argument(
+        "-k",
+        "--k",
+        type=int,
+        default=DEFAULT_RETRIEVAL_K,
+        help=f"Number of results to return (default: {DEFAULT_RETRIEVAL_K})",
+    )
     query_titles_parser.add_argument("--json", action="store_true", help="Output results as JSON (default is verbose text)")
     query_titles_parser.add_argument(
         "--min-score",
         type=float,
-        default=None,
-        help="Minimum relevance score (0-1). Results below this are excluded. Default: 0.6.",
+        default=DEFAULT_QUERY_TITLES_MIN_SCORE,
+        help=(f"Minimum relevance score (0-1). Results below this are excluded. Default: {DEFAULT_QUERY_TITLES_MIN_SCORE}."),
     )
 
 
@@ -313,15 +349,15 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         "-e",
         "--expand",
         type=int,
-        default=0,
-        help="Number of chunks before/after to expand with (default: 0)",
+        default=DEFAULT_RETRIEVE_EXPAND,
+        help=f"Number of chunks before/after to expand with (default: {DEFAULT_RETRIEVE_EXPAND})",
     )
     answer_parser.add_argument(
         "-f",
         "--full-doc-threshold",
         type=int,
-        default=0,
-        help="Include the full document during expansion when its total chunk text size is below this threshold (default: 0)",
+        default=DEFAULT_FULL_DOC_THRESHOLD,
+        help=(f"Include the full document during expansion when its total chunk text size is below this threshold (default: {DEFAULT_FULL_DOC_THRESHOLD})"),
     )
     answer_parser.add_argument(
         "-k",
@@ -333,7 +369,7 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
     answer_parser.add_argument(
         "--min-score",
         type=float,
-        default=None,
+        default=DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
         help=(f"Legacy alias for the content-stage minimum score. Results below this are excluded. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}."),
     )
     answer_parser.add_argument(
@@ -380,6 +416,12 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         help=f"Maximum PS documents to keep before overall capping (default: {DEFAULT_D_FOR_PS_DOCUMENTS})",
     )
     answer_parser.add_argument(
+        "--navis-d",
+        type=int,
+        default=DEFAULT_D_FOR_NAVIS_DOCUMENTS,
+        help=f"Maximum NAVIS documents to keep before overall capping (default: {DEFAULT_D_FOR_NAVIS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
         "--ifrs-min-score",
         type=float,
         default=DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS,
@@ -410,22 +452,28 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         help=f"Minimum PS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS})",
     )
     answer_parser.add_argument(
+        "--navis-min-score",
+        type=float,
+        default=DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS,
+        help=f"Minimum NAVIS document score before overall capping (default: {DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS})",
+    )
+    answer_parser.add_argument(
         "--content-min-score",
         type=float,
-        default=None,
+        default=DEFAULT_RETRIEVE_CONTENT_MIN_SCORE,
         help=f"Minimum chunk/title-stage score. Default: {DEFAULT_RETRIEVE_CONTENT_MIN_SCORE}.",
     )
     answer_parser.add_argument(
         "--expand-to-section",
         action="store_true",
-        default=True,
-        help="Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default True).",
+        default=DEFAULT_RETRIEVE_EXPAND_TO_SECTION,
+        help=(f"Expand each selected chunk to its containing section subtree before neighbor/full-doc expansion (default {DEFAULT_RETRIEVE_EXPAND_TO_SECTION})."),
     )
     answer_parser.add_argument(
         "--retrieval-mode",
         choices=["text", "titles", "documents"],
-        default="documents",
-        help="Retrieval mode to use before prompting the LLM (default: documents)",
+        default=DEFAULT_RETRIEVAL_MODE,
+        help=f"Retrieval mode to use before prompting the LLM (default: {DEFAULT_RETRIEVAL_MODE})",
     )
     answer_parser.add_argument(
         "--output-dir",
@@ -542,11 +590,13 @@ def _execute_retrieve_command(args: argparse.Namespace) -> str:
             ifric_d=args.ifric_d,
             sic_d=args.sic_d,
             ps_d=args.ps_d,
+            navis_d=args.navis_d,
             ifrs_min_score=args.ifrs_min_score,
             ias_min_score=args.ias_min_score,
             ifric_min_score=args.ifric_min_score,
             sic_min_score=args.sic_min_score,
             ps_min_score=args.ps_min_score,
+            navis_min_score=args.navis_min_score,
             content_min_score=args.content_min_score,
             expand_to_section=args.expand_to_section,
             verbose=verbose,
@@ -603,13 +653,15 @@ def _execute_answer_command(args: argparse.Namespace) -> str:
             ifric_d=getattr(args, "ifric_d", DEFAULT_D_FOR_IFRIC_DOCUMENTS),
             sic_d=getattr(args, "sic_d", DEFAULT_D_FOR_SIC_DOCUMENTS),
             ps_d=getattr(args, "ps_d", DEFAULT_D_FOR_PS_DOCUMENTS),
+            navis_d=getattr(args, "navis_d", DEFAULT_D_FOR_NAVIS_DOCUMENTS),
             ifrs_min_score=getattr(args, "ifrs_min_score", DEFAULT_MIN_SCORE_FOR_IFRS_DOCUMENTS),
             ias_min_score=getattr(args, "ias_min_score", DEFAULT_MIN_SCORE_FOR_IAS_DOCUMENTS),
             ifric_min_score=getattr(args, "ifric_min_score", DEFAULT_MIN_SCORE_FOR_IFRIC_DOCUMENTS),
             sic_min_score=getattr(args, "sic_min_score", DEFAULT_MIN_SCORE_FOR_SIC_DOCUMENTS),
             ps_min_score=getattr(args, "ps_min_score", DEFAULT_MIN_SCORE_FOR_PS_DOCUMENTS),
-            content_min_score=getattr(args, "content_min_score", None),
-            expand_to_section=getattr(args, "expand_to_section", False),
+            navis_min_score=getattr(args, "navis_min_score", DEFAULT_MIN_SCORE_FOR_NAVIS_DOCUMENTS),
+            content_min_score=getattr(args, "content_min_score", DEFAULT_RETRIEVE_CONTENT_MIN_SCORE),
+            expand_to_section=getattr(args, "expand_to_section", DEFAULT_RETRIEVE_EXPAND_TO_SECTION),
             expand=args.expand,
             full_doc_threshold=args.full_doc_threshold,
             output_dir=args.output_dir,
