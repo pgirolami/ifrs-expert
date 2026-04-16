@@ -8,27 +8,55 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DOCUMENT_TYPES: tuple[str, ...] = (
+    # IFRS Standards and variants
     "IFRS-S",
     "IFRS-BC",
     "IFRS-IE",
     "IFRS-IG",
-    "IAS",
+    # IAS Standards and variants
+    "IAS-S",
+    "IAS-BC",
+    "IAS-IE",
+    "IAS-IG",
+    # IFRIC Interpretations and variants
     "IFRIC",
+    "IFRIC-BC",
+    "IFRIC-IE",
+    # SIC Interpretations and variants
     "SIC",
+    "SIC-BC",
+    "SIC-IE",
+    # Practice Statements and variants
     "PS",
+    "PS-BC",
+    # Other
     "NAVIS",
 )
 DOCUMENT_TYPE_FAMILIES: tuple[str, ...] = ("IFRS", "IAS", "IFRIC", "SIC", "PS", "NAVIS")
 DOCUMENT_KIND_BY_TYPE: dict[str, str] = {
+    # IFRS Standards and variants
     "IFRS-S": "standard",
-    "IAS": "standard",
-    "IFRIC": "interpretation",
-    "SIC": "interpretation",
-    "NAVIS": "interpretation",
     "IFRS-IG": "implementation_guidance",
     "IFRS-IE": "illustrative_examples",
     "IFRS-BC": "basis_for_conclusions",
+    # IAS Standards and variants
+    "IAS-S": "standard",
+    "IAS-IG": "implementation_guidance",
+    "IAS-IE": "illustrative_examples",
+    "IAS-BC": "basis_for_conclusions",
+    # IFRIC Interpretations and variants
+    "IFRIC": "interpretation",
+    "IFRIC-IE": "illustrative_examples",
+    "IFRIC-BC": "basis_for_conclusions",
+    # SIC Interpretations and variants
+    "SIC": "interpretation",
+    "SIC-IE": "illustrative_examples",
+    "SIC-BC": "basis_for_conclusions",
+    # Practice Statements and variants
     "PS": "standard",
+    "PS-BC": "basis_for_conclusions",
+    # Other
+    "NAVIS": "interpretation",
 }
 DOCUMENT_KINDS: tuple[str, ...] = (
     "standard",
@@ -40,22 +68,48 @@ DOCUMENT_KINDS: tuple[str, ...] = (
 DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
 
+# Family configuration for doc_uid resolution
+# Each entry: (prefix, [(suffix, variant_type), ...], base_type)
+_FAMILY_VARIANT_CONFIG: tuple[tuple[str, tuple[tuple[str, str], ...], str], ...] = (
+    ("ifrs", (("-bc", "IFRS-BC"), ("-ie", "IFRS-IE"), ("-ig", "IFRS-IG")), "IFRS-S"),
+    ("ias", (("-bc", "IAS-BC"), ("-ie", "IAS-IE"), ("-ig", "IAS-IG")), "IAS-S"),
+    ("ifric", (("-bc", "IFRIC-BC"), ("-ie", "IFRIC-IE")), "IFRIC"),
+    ("sic", (("-bc", "SIC-BC"), ("-ie", "SIC-IE")), "SIC"),
+    ("ps", (("-bc", "PS-BC"),), "PS"),
+)
+
+
+def _resolve_type_from_family(normalized_doc_uid: str, prefix: str, variants: tuple[tuple[str, str], ...], base_type: str) -> str:
+    """Check if doc_uid matches a family prefix and resolve variant or base type."""
+    if not normalized_doc_uid.startswith(prefix):
+        return ""
+    for suffix, variant_type in variants:
+        if suffix in normalized_doc_uid:
+            return variant_type
+    return base_type
+
+
 def resolve_document_type_from_doc_uid(doc_uid: str) -> str | None:
-    """Resolve a document type from doc_uid as a fallback for non-HTML sources."""
+    """Resolve a document type from doc_uid as a fallback for non-HTML sources.
+
+    Handles all standard families and their variant suffixes:
+    - IFRS: -bc (Basis for Conclusions), -ie (Illustrative Examples), -ig (Implementation Guidance)
+    - IAS: -bc, -ie, -ig (same variants as IFRS)
+    - IFRIC: -bc, -ie
+    - SIC: -bc, -ie
+    - PS: -bc
+    """
     normalized_doc_uid = doc_uid.strip().lower()
     if not normalized_doc_uid:
         return None
 
-    if normalized_doc_uid.startswith("ifrs"):
-        for suffix, document_type in (
-            ("-bc", "IFRS-BC"),
-            ("-ie", "IFRS-IE"),
-            ("-ig", "IFRS-IG"),
-        ):
-            if suffix in normalized_doc_uid:
-                return document_type
-        return "IFRS-S"
+    # Check each configured family
+    for prefix, variants, base_type in _FAMILY_VARIANT_CONFIG:
+        result = _resolve_type_from_family(normalized_doc_uid, prefix, variants, base_type)
+        if result:
+            return result
 
+    # Fallback for other families (NAVIS, etc.)
     for document_type in DOCUMENT_TYPE_FAMILIES:
         if normalized_doc_uid.startswith(document_type.lower()):
             return document_type

@@ -40,28 +40,42 @@ def make_retrieval_policy(
 ) -> RetrievalPolicy:
     """Build a RetrievalPolicy with specific numeric values for targeted tests."""
     if per_type_d is None:
-        per_type_d = {"IFRS-S": 4, "IAS": 4, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
+        per_type_d = {"IFRS-S": 4, "IAS-S": 10, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
     if per_type_min_score is None:
         per_type_min_score = {
             "IFRS-S": 0.53,
-            "IAS": 0.4,
+            "IAS-S": 0.4,
             "IFRIC": 0.48,
             "SIC": 0.4,
             "PS": 0.4,
             "NAVIS": 0.6,
         }
     by_document_type = {
-        doc_type: DocumentTypeRetrievalPolicy(d=d_val, min_score=ms_val, expand_to_section=True)
-        for doc_type, d_val, ms_val in [
-            ("IFRS-S", per_type_d.get("IFRS-S", 4), per_type_min_score.get("IFRS-S", 0.53)),
-            ("IFRS-BC", per_type_d.get("IFRS-BC", 2), per_type_min_score.get("IFRS-BC", 0.5)),
-            ("IFRS-IE", per_type_d.get("IFRS-IE", 2), per_type_min_score.get("IFRS-IE", 0.5)),
-            ("IFRS-IG", per_type_d.get("IFRS-IG", 2), per_type_min_score.get("IFRS-IG", 0.5)),
-            ("IAS", per_type_d.get("IAS", 4), per_type_min_score.get("IAS", 0.4)),
-            ("IFRIC", per_type_d.get("IFRIC", 6), per_type_min_score.get("IFRIC", 0.48)),
-            ("SIC", per_type_d.get("SIC", 6), per_type_min_score.get("SIC", 0.4)),
-            ("PS", per_type_d.get("PS", 1), per_type_min_score.get("PS", 0.4)),
-            ("NAVIS", per_type_d.get("NAVIS", 2), per_type_min_score.get("NAVIS", 0.6)),
+        doc_type: DocumentTypeRetrievalPolicy(d=d_val, min_score=ms_val, expand_to_section=expand_to_section_val)
+        for doc_type, d_val, ms_val, expand_to_section_val in [
+            # IFRS Standards and variants
+            ("IFRS-S", per_type_d.get("IFRS-S", 4), per_type_min_score.get("IFRS-S", 0.53), True),
+            ("IFRS-BC", per_type_d.get("IFRS-BC", 1), per_type_min_score.get("IFRS-BC", 0.62), False),
+            ("IFRS-IE", per_type_d.get("IFRS-IE", 1), per_type_min_score.get("IFRS-IE", 0.6), False),
+            ("IFRS-IG", per_type_d.get("IFRS-IG", 1), per_type_min_score.get("IFRS-IG", 0.56), True),
+            # IAS Standards and variants
+            ("IAS-S", per_type_d.get("IAS-S", 10), per_type_min_score.get("IAS-S", 0.4), True),
+            ("IAS-BC", per_type_d.get("IAS-BC", 1), per_type_min_score.get("IAS-BC", 0.62), False),
+            ("IAS-IE", per_type_d.get("IAS-IE", 1), per_type_min_score.get("IAS-IE", 0.6), False),
+            ("IAS-IG", per_type_d.get("IAS-IG", 1), per_type_min_score.get("IAS-IG", 0.56), True),
+            # IFRIC Interpretations and variants
+            ("IFRIC", per_type_d.get("IFRIC", 6), per_type_min_score.get("IFRIC", 0.48), True),
+            ("IFRIC-BC", per_type_d.get("IFRIC-BC", 1), per_type_min_score.get("IFRIC-BC", 0.62), False),
+            ("IFRIC-IE", per_type_d.get("IFRIC-IE", 1), per_type_min_score.get("IFRIC-IE", 0.6), False),
+            # SIC Interpretations and variants
+            ("SIC", per_type_d.get("SIC", 6), per_type_min_score.get("SIC", 0.4), True),
+            ("SIC-BC", per_type_d.get("SIC-BC", 1), per_type_min_score.get("SIC-BC", 0.62), False),
+            ("SIC-IE", per_type_d.get("SIC-IE", 1), per_type_min_score.get("SIC-IE", 0.6), False),
+            # Practice Statements and variants
+            ("PS", per_type_d.get("PS", 1), per_type_min_score.get("PS", 0.4), True),
+            ("PS-BC", per_type_d.get("PS-BC", 1), per_type_min_score.get("PS-BC", 0.62), False),
+            # Other
+            ("NAVIS", per_type_d.get("NAVIS", 2), per_type_min_score.get("NAVIS", 0.6), True),
         ]
     }
     return RetrievalPolicy(

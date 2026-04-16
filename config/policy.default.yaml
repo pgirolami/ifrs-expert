@@ -21,24 +21,52 @@ retrieval:
         expand_to_section: false
       IFRS-IE:
         d: 1
-        min_score: 0.53
+        min_score: 0.6
         expand_to_section: false
       IFRS-IG:
         d: 1
-        min_score: 0.53
+        min_score: 0.56
         expand_to_section: true
-      IAS:
-        d: 4
+      IAS-S:
+        d: 104
         min_score: 0.4
+        expand_to_section: true
+      IAS-BC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
+      IAS-IE:
+        d: 1
+        min_score: 0.6
+        expand_to_section: false
+      IAS-IG:
+        d: 1
+        min_score: 0.56
         expand_to_section: true
       IFRIC:
         d: 6
         min_score: 0.48
         expand_to_section: true
+      IFRIC-BC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
+      IFRIC-IE:
+        d: 1
+        min_score: 0.6
+        expand_to_section: false
       SIC:
         d: 6
         min_score: 0.4
         expand_to_section: true
+      SIC-BC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
+      SIC-IE:
+        d: 1
+        min_score: 0.6
+        expand_to_section: false
       NAVIS:
         d: 2
         min_score: 0.6
@@ -47,3 +75,7 @@ retrieval:
         d: 1
         min_score: 0.4
         expand_to_section: true
+      PS-BC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
