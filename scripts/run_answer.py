@@ -449,11 +449,11 @@ def _run_live(
     _apply_llm_provider_override(llm_provider)
     setup_logging()
 
-    policy = load_policy_config(Path(options.policy_config))
+    policy_config = load_policy_config(Path(options.policy_config))
     command = create_answer_command(
         query=question,
         options=AnswerOptions(
-            policy=policy,
+            policy=policy_config.retrieval,
             output_dir=(Path(options.output_dir) if options.output_dir is not None else None),
         ),
     )
