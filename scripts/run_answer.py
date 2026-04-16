@@ -31,8 +31,8 @@ from dotenv import load_dotenv  # noqa: E402
 from src.answer_artifacts import save_answer_command_result  # noqa: E402
 from src.commands import AnswerOptions  # noqa: E402
 from src.commands.answer import create_answer_command  # noqa: E402
-from src.policy import load_policy_config  # noqa: E402
 from src.logging_config import setup_logging  # noqa: E402
+from src.policy import load_policy_config  # noqa: E402
 
 if TYPE_CHECKING:
     from src.models.answer_command_result import AnswerCommandResult
@@ -98,52 +98,73 @@ def _error_payload(message: str) -> str:
 def _load_provider_options() -> dict[str, object]:
     """Load Promptfoo provider options from argv when available."""
     if len(sys.argv) < MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS:
+        logger.debug("No provider options argv, using empty config")
         return {}
 
     try:
         raw_provider_options = json.loads(sys.argv[PROVIDER_OPTIONS_ARG_INDEX])
-    except json.JSONDecodeError:
-        return {}
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Failed to parse provider options JSON: {e}")
 
-    return raw_provider_options if isinstance(raw_provider_options, dict) else {}
+    if not isinstance(raw_provider_options, dict):
+        raise ValueError(f"Provider options must be a JSON object, got {type(raw_provider_options).__name__}")
+
+    return raw_provider_options
 
 
 def _load_context() -> dict[str, object]:
     """Load Promptfoo context from argv when available."""
     if len(sys.argv) < MIN_ARG_COUNT_FOR_CONTEXT:
+        logger.debug("No context argv, using empty context")
         return {}
 
     try:
         raw_context = json.loads(sys.argv[CONTEXT_ARG_INDEX])
-    except json.JSONDecodeError:
-        return {}
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Failed to parse context JSON: {e}")
 
-    return raw_context if isinstance(raw_context, dict) else {}
+    if not isinstance(raw_context, dict):
+        raise ValueError(f"Context must be a JSON object, got {type(raw_context).__name__}")
+
+    return raw_context
 
 
-def _as_object_mapping(value: object) -> dict[str, object] | None:
+def _as_object_mapping(value: object) -> dict[str, object]:
     """Return a dict[str, object] view when the value is a string-keyed dict."""
     if not isinstance(value, dict):
-        return None
+        raise ValueError(f"Expected dict, got {type(value).__name__}")
     for key in value:
         if not isinstance(key, str):
-            return None
+            raise ValueError(f"Dict keys must be str, got {type(key).__name__}")
     return cast("dict[str, object]", value)
 
 
 def _extract_mode(context: dict[str, object]) -> str:
     """Extract the eval mode from Promptfoo context, defaulting to live."""
-    test_data = _as_object_mapping(context.get("test"))
+    try:
+        test_data = _as_object_mapping(context.get("test"))
+    except ValueError:
+        test_data = None
+
     if test_data is not None:
-        options = _as_object_mapping(test_data.get("options"))
+        try:
+            options = _as_object_mapping(test_data.get("options"))
+        except ValueError:
+            options = None
         if options is not None:
             mode = options.get("mode")
             if isinstance(mode, str) and mode in {"canned", "live"}:
                 return mode
 
-    prompt_data = _as_object_mapping(context.get("prompt"))
+    try:
+        prompt_data = _as_object_mapping(context.get("prompt"))
+    except ValueError:
+        prompt_data = None
     if prompt_data is not None:
-        prompt_config = _as_object_mapping(prompt_data.get("config"))
+        try:
+            prompt_config = _as_object_mapping(prompt_data.get("config"))
+        except ValueError:
+            prompt_config = None
         if prompt_config is not None:
             mode = prompt_config.get("mode")
             if isinstance(mode, str) and mode in {"canned", "live"}:
@@ -181,44 +202,61 @@ def _iter_alias_keys(keys: AliasKey) -> tuple[str, ...]:
     return keys
 
 
-def _extract_raw_value_from_mapping(mapping: dict[str, object], keys: AliasKey) -> object | None:
-    """Extract the first matching raw value from a mapping using alias keys."""
+def _extract_raw_value_from_mapping(mapping: dict[str, object], keys: AliasKey) -> tuple[object | None, bool]:
+    """Extract the first matching raw value from a mapping using alias keys.
+
+    Returns (value, found). found=False means the key is absent.
+    """
     for key in _iter_alias_keys(keys):
         if key in mapping:
-            return mapping[key]
-    return None
+            return mapping[key], True
+    return None, False
 
 
 def _extract_int_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: int) -> int:
     """Extract an integer override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, key)
-    if isinstance(value, int | float) and value >= 0:
-        return int(value)
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, key)
+    if not found:
+        return fallback
+    if not isinstance(value, int | float):
+        raise ValueError(f"Expected int for {key}, got {type(value).__name__}")
+    if value < 0:
+        raise ValueError(f"Expected non-negative int for {key}, got {value}")
+    return int(value)
 
 
 def _extract_float_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: float) -> float:
     """Extract a float override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, key)
-    if isinstance(value, int | float) and 0.0 <= value <= 1.0:
-        return float(value)
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, key)
+    if not found:
+        return fallback
+    if not isinstance(value, int | float):
+        raise ValueError(f"Expected float for {key}, got {type(value).__name__}")
+    if not (0.0 <= float(value) <= 1.0):
+        raise ValueError(f"Expected float in [0, 1] for {key}, got {value}")
+    return float(value)
 
 
 def _extract_optional_float_from_mapping(mapping: dict[str, object], key: AliasKey, fallback: float | None) -> float | None:
     """Extract an optional float override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, key)
-    if isinstance(value, int | float) and 0.0 <= value <= 1.0:
-        return float(value)
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, key)
+    if not found:
+        return fallback
+    if not isinstance(value, int | float):
+        raise ValueError(f"Expected float for {key}, got {type(value).__name__}")
+    if not (0.0 <= float(value) <= 1.0):
+        raise ValueError(f"Expected float in [0, 1] for {key}, got {value}")
+    return float(value)
 
 
 def _extract_bool_from_mapping(mapping: dict[str, object], key: AliasKey, *, fallback: bool) -> bool:
     """Extract a boolean override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, key)
-    if isinstance(value, bool):
-        return value
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, key)
+    if not found:
+        return fallback
+    if not isinstance(value, bool):
+        raise ValueError(f"Expected bool for {key}, got {type(value).__name__}")
+    return value
 
 
 def _extract_optional_string_from_mapping(
@@ -227,20 +265,27 @@ def _extract_optional_string_from_mapping(
     fallback: str | None,
 ) -> str | None:
     """Extract an optional non-empty string override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, key)
-    if isinstance(value, str):
-        stripped_value = value.strip()
-        if stripped_value:
-            return stripped_value
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, key)
+    if not found:
+        return fallback
+    if not isinstance(value, str):
+        raise ValueError(f"Expected str for {key}, got {type(value).__name__}")
+    stripped_value = value.strip()
+    if not stripped_value:
+        raise ValueError(f"Expected non-empty string for {key}")
+    return stripped_value
 
 
 def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: str) -> str:
     """Extract a retrieval mode override from one mapping."""
-    value = _extract_raw_value_from_mapping(mapping, ("retrieval-mode", "retrieval_mode"))
-    if isinstance(value, str) and value in {"text", "titles", "documents"}:
-        return value
-    return fallback
+    value, found = _extract_raw_value_from_mapping(mapping, ("retrieval-mode", "retrieval_mode"))
+    if not found:
+        return fallback
+    if not isinstance(value, str):
+        raise ValueError(f"Expected str for retrieval-mode, got {type(value).__name__}")
+    if value not in {"text", "titles", "documents"}:
+        raise ValueError(f"Invalid retrieval-mode '{value}', expected one of: text, titles, documents")
+    return value
 
 
 def _build_config_kv(mapping: dict[str, object]) -> dict[str, str]:
@@ -277,12 +322,15 @@ def _build_effective_config_kv(
 
 def _extract_required_policy_config(mapping: dict[str, object]) -> str | None:
     """Extract policy-config value from one mapping when present."""
-    raw_value = _extract_raw_value_from_mapping(mapping, ("policy-config", "policy_config"))
-    if isinstance(raw_value, str):
-        policy_config = raw_value.strip()
-        if policy_config:
-            return policy_config
-    return None
+    raw_value, found = _extract_raw_value_from_mapping(mapping, ("policy-config", "policy_config"))
+    if not found:
+        return None
+    if not isinstance(raw_value, str):
+        raise ValueError(f"Expected str for policy-config, got {type(raw_value).__name__}")
+    policy_config = raw_value.strip()
+    if not policy_config:
+        raise ValueError("Expected non-empty string for policy-config")
+    return policy_config
 
 
 def _extract_options(
@@ -328,10 +376,14 @@ def _append_mapping_if_dict(
     mappings: list[dict[str, object]],
     value: object,
 ) -> None:
-    """Append a value when it is a dict[str, object]."""
-    mapping = _as_object_mapping(value)
-    if mapping is not None:
-        mappings.append(mapping)
+    """Append a value when it is a dict[str, object]; skip silently otherwise."""
+    if value is None:
+        return
+    try:
+        mapping = _as_object_mapping(value)
+    except ValueError:
+        return
+    mappings.append(mapping)
 
 
 def _candidate_llm_provider_mappings(
@@ -345,11 +397,25 @@ def _candidate_llm_provider_mappings(
 
     test_data = _as_object_mapping(context.get("test"))
     if test_data is not None:
-        _append_mapping_if_dict(mappings, test_data.get("options"))
+        options_value = test_data.get("options")
+        if options_value is not None:
+            try:
+                _as_object_mapping(options_value)
+            except ValueError:
+                pass
+            else:
+                mappings.append(cast("dict[str, object]", options_value))
 
     prompt_data = _as_object_mapping(context.get("prompt"))
     if prompt_data is not None:
-        _append_mapping_if_dict(mappings, prompt_data.get("config"))
+        config_value = prompt_data.get("config")
+        if config_value is not None:
+            try:
+                _as_object_mapping(config_value)
+            except ValueError:
+                pass
+            else:
+                mappings.append(cast("dict[str, object]", config_value))
 
     return mappings
 
@@ -393,11 +459,11 @@ def _build_config_dirname(config_kv: dict[str, str]) -> str:
 def _artifact_output_dir(
     context: dict[str, object],
     config_kv: dict[str, str],
-) -> Path | None:
+) -> Path:
     """Build the Promptfoo artifact output directory from context metadata and config kv."""
     base_dir = os.environ.get(PROMPTFOO_ARTIFACTS_DIR_ENV)
     if base_dir is None or not base_dir.strip():
-        return None
+        raise ValueError(f"Missing required environment variable: {PROMPTFOO_ARTIFACTS_DIR_ENV}")
 
     family = "unknown-family"
     variant = "unknown-variant"
@@ -431,9 +497,6 @@ def _write_promptfoo_artifacts(
 ) -> None:
     """Persist answer artifacts when Promptfoo archiving is enabled."""
     output_dir = _artifact_output_dir(context=context, config_kv=config_kv)
-    if output_dir is None:
-        return
-
     save_answer_command_result(result=result, output_dir=output_dir)
     logger.info(f"Saved Promptfoo answer artifacts to {output_dir}")
 
@@ -449,11 +512,11 @@ def _run_live(
     _apply_llm_provider_override(llm_provider)
     setup_logging()
 
-    policy = load_policy_config(Path(options.policy_config))
+    policy_config = load_policy_config(Path(options.policy_config))
     command = create_answer_command(
         query=question,
         options=AnswerOptions(
-            policy=policy,
+            policy=policy_config.retrieval,
             output_dir=(Path(options.output_dir) if options.output_dir is not None else None),
         ),
     )
@@ -492,13 +555,24 @@ def main() -> int:
         _write_stdout(CANNED_RESPONSE)
         return 0
 
-    llm_provider = _extract_llm_provider(provider_options, context)
+    try:
+        llm_provider = _extract_llm_provider(provider_options, context)
+    except ValueError as e:
+        _write_stdout(_error_payload(f"Error: {e}"))
+        return 1
+
     try:
         extraction_options = _extract_options(provider_options, context)
     except ValueError as error:
         _write_stdout(_error_payload(f"Error: {error}"))
         return 1
-    exit_code, payload = _run_live(question, llm_provider, context, extraction_options)
+
+    try:
+        exit_code, payload = _run_live(question, llm_provider, context, extraction_options)
+    except ValueError as e:
+        _write_stdout(_error_payload(f"Error: {e}"))
+        return 1
+
     _write_stdout(payload)
     return exit_code
 

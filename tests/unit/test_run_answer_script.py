@@ -113,9 +113,13 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
         captured["options"] = options
         return _FakeCommand()
 
-    loaded_policy = object()
+    loaded_retrieval_policy = object()
+
+    class _FakePolicyConfig:
+        retrieval = loaded_retrieval_policy
+
     monkeypatch.setattr(run_answer, "create_answer_command", _fake_create_answer_command)
-    monkeypatch.setattr(run_answer, "load_policy_config", lambda path: loaded_policy)
+    monkeypatch.setattr(run_answer, "load_policy_config", lambda path: _FakePolicyConfig())
     monkeypatch.setattr(run_answer, "setup_logging", lambda: None)
     monkeypatch.setattr(run_answer, "load_dotenv", lambda: None)
 
@@ -134,5 +138,5 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
     assert captured["query"] == "Question?"
     answer_options = captured["options"]
     assert isinstance(answer_options, run_answer.AnswerOptions)
-    assert answer_options.policy is loaded_policy
+    assert answer_options.policy is loaded_retrieval_policy
     assert answer_options.output_dir == Path("tmp/promptfoo")

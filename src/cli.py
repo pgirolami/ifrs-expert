@@ -213,11 +213,7 @@ def main() -> int:
         return 1
 
     logger.info(f"CLI command received: {args.command}")
-    try:
-        result = _execute_command(args)
-    except Exception:
-        logger.exception(f"CLI command failed: {args.command}")
-        raise
+    result = _execute_command(args)
 
     if result.startswith("Error:"):
         logger.error(result)
@@ -383,12 +379,8 @@ def _execute_llm_command(args: argparse.Namespace) -> str:
     """Execute the raw LLM command."""
     del args
     prompt = _read_stdin_text(strip=False)
-    try:
-        client = get_client()
-        return client.generate_text(prompt=prompt)
-    except Exception as e:
-        logger.exception("LLM command failed")
-        return f"Error: {e}"
+    client = get_client()
+    return client.generate_text(prompt=prompt)
 
 
 def _execute_answer_command(args: argparse.Namespace) -> str:

@@ -164,11 +164,7 @@ class QueryCommand:
         if prereq_error:
             return prereq_error
 
-        try:
-            return self._execute_search()
-        except Exception as e:
-            logger.exception("QueryCommand exception")
-            return f"Error: {e}"
+        return self._execute_search()
 
     def _get_validation_error(self) -> str | None:
         """Get validation error or None."""

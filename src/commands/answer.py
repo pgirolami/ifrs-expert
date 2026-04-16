@@ -231,11 +231,7 @@ class AnswerCommand:
         if prerequisite_error:
             return AnswerCommandResult.failure(query=self.query, error=prerequisite_error, error_stage="prerequisite")
 
-        try:
-            return self._execute_workflow()
-        except Exception as e:
-            logger.exception("Error executing answer command")
-            return AnswerCommandResult.failure(query=self.query, error=f"Error: {e}", error_stage="workflow")
+        return self._execute_workflow()
 
     def _get_validation_error(self) -> str | None:
         """Validate query and policy; return the first error or None."""
