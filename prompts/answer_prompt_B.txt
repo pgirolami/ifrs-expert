@@ -115,8 +115,9 @@ Field rules:
 - recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
 - applicability must use the same enum
 - All text fields must be in French
-- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document chunks with their name and chuk number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
-- references.excerpt must be short and verbatim. Every reference found in reasoning_fr must be in references.excerpt
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
 - conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
 </instructions>
 
@@ -143,7 +144,7 @@ Field rules:
       "references": [
         {
           "document": "document name",
-          "section": "chunk section number",
+          "section": "paragraph attribute",
           "excerpt": "short verbatim excerpt"
         }
       ]
