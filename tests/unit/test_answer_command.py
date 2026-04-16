@@ -744,7 +744,7 @@ class TestBuildPromptBContext:
         """Helper to format chunks as they would appear in the prompt."""
         formatted: list[str] = []
         for chunk in chunks:
-            chunk_xml = f'<chunk id="{chunk.id}" doc_uid="{chunk.doc_uid}" chunk_number="{chunk.chunk_number}" score="0.9000">\n{chunk.text}\n</chunk>'
+            chunk_xml = f'<chunk id="{chunk.id}" doc_uid="{chunk.doc_uid}" paragraph="{chunk.chunk_number}" score="0.9000">\n{chunk.text}\n</chunk>'
             formatted.append(f'<Document name="{chunk.doc_uid}">\n{chunk_xml}\n</Document>')
         return formatted
 

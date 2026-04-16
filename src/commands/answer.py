@@ -469,7 +469,7 @@ class AnswerCommand:
                     continue
 
                 score = score_by_chunk.get((doc_uid, chunk_id), 0.0)
-                chunk_xml = f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" chunk_number="{self._escape_xml(chunk.chunk_number)}" score="{score:.4f}">\n{chunk.text}\n</chunk>'
+                chunk_xml = f'<chunk id="{chunk_id}" doc_uid="{self._escape_xml(doc_uid)}" paragraph="{self._escape_xml(chunk.chunk_number)}" score="{score:.4f}">\n{chunk.text}\n</chunk>'
                 formatted_chunks.append(chunk_xml)
 
             joined_chunks = "\n\n".join(formatted_chunks)
@@ -546,7 +546,7 @@ class AnswerCommand:
     ) -> str:
         """Filter formatted chunks to only include those matching authority references."""
         chunk_pattern = re.compile(
-            r'<chunk id="(\d+)" doc_uid="[^"]*" chunk_number="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
+            r'<chunk id="(\d+)" doc_uid="[^"]*" paragraph="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
             re.DOTALL,
         )
 
@@ -608,9 +608,9 @@ class AnswerCommand:
         """
         chunk_data: dict[str, str] = {}
 
-        # Pattern to match <chunk ... chunk_number="...">text</chunk>
+        # Pattern to match <chunk ... paragraph="...">text</chunk>
         chunk_pattern = re.compile(
-            r'<chunk id="\d+" doc_uid="([^"]*)" chunk_number="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
+            r'<chunk id="\d+" doc_uid="([^"]*)" paragraph="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
             re.DOTALL,
         )
 
