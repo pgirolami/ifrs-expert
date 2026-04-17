@@ -1,0 +1,46 @@
+>Éligibilité, en comptes consolidés, du risque de change sur un dividende intragroupe comptabilisé en créance à recevoir comme élément couvert dans une relation de couverture
+
+Pour cette réponse, on considère que
+  - Le dividende intragroupe a déjà été déclaré et comptabilisé en créance à recevoir chez une entité du groupe et en dette correspondante chez une autre entité du groupe.
+  - La créance et la dette intragroupe sont libellées dans une monnaie étrangère par rapport à la monnaie fonctionnelle d’au moins l’une des entités concernées.
+  - La question porte sur les états financiers consolidés du groupe, et non sur des états financiers individuels ou séparés.
+  - Le risque visé est uniquement le risque de change attaché à cette créance intragroupe, et non une couverture d’investissement net dans une activité à l’étranger.
+
+**Oui**, Oui, mais seulement si la créance de dividende intragroupe constitue un élément monétaire intragroupe générant des écarts de change non totalement éliminés en consolidation. Dans ce cas, la désignation est envisageable en consolidation principalement comme couverture de juste valeur, sous réserve de la documentation formelle et des autres critères d’IAS 39.
+
+En consolidation, la règle générale d’IAS 39 80 exclut les éléments intragroupe, mais prévoit une exception pour le risque de change d’un élément monétaire intragroupe lorsque les gains ou pertes de change ne sont pas totalement éliminés. IAS 21 45 confirme qu’un actif/passif monétaire intragroupe ne peut pas être éliminé sans faire apparaître les effets de change en comptes consolidés. Si la créance de dividende est bien un élément monétaire de ce type, une relation documentée peut donc être envisagée comme couverture de juste valeur au sens d’IAS 39 86(a) et 88(IAS 39 80, IAS 21 45, IAS 39 86, IAS 39 88).
+Couverture de flux de trésorerie ne s'applique donc pas (IAS 39 80, IAS 39 86).
+Couverture d’un investissement net dans une activité à l’étranger ne s'applique donc pas (IAS 39 86, IFRIC 16 10, IFRIC 16 12).
+
+**Citations**:
+ - [IAS 39 80](https://www.ifrs.org/issued-standards/list-of-standards/ias39/content/dam/ifrs/publications/html-standards/english/2026/issued/ias39/#/IAS39_80)
+
+    >For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions that involve a party external to the entity can be designated as hedged items. It follows that hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group, except for the consolidated financial statements of an investment entity, as defined in IFRS 10, where transactions between an investment entity and its subsidiaries measured at fair value through profit or loss will not be eliminated in the consolidated financial statements. **As an exception, the foreign currency risk of an intragroup monetary item (eg a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates. In accordance with IAS 21, foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies.** In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.
+
+ - [IAS 21 45](https://www.ifrs.org/issued-standards/list-of-standards/ias-21-the-effects-of-changes-in-foreign-exchange-rates/content/dam/ifrs/publications/html-standards/english/2026/issued/ias-21-the-effects-of-changes-in-foreign-exchange-rates/#/IAS21_45)
+
+    >The incorporation of the results and financial position of a foreign operation with those of the reporting entity follows normal consolidation procedures, [Refer: IFRS 10 paragraph B86]such as the elimination of intragroup balances and intragroup transactions of a subsidiary (see IFRS 10 Consolidated Financial Statements). **However, an intragroup monetary asset (or liability), whether short‑term or long‑term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements.** This is because the monetary item represents a commitment to convert one currency into another and exposes the reporting entity to a gain or loss through currency fluctuations. Accordingly, in the consolidated financial statements of the reporting entity, such an exchange difference is recognised in profit or loss or, if it arises from the circumstances described in paragraph 32, it is recognised in other comprehensive income and accumulated in a separate component of equity until the disposal of the foreign operation.
+
+ - [IAS 39 86](https://www.ifrs.org/issued-standards/list-of-standards/ias39/content/dam/ifrs/publications/html-standards/english/2026/issued/ias39/#/IAS39_86)
+
+    >Hedging relationships are of three types:
+**(a)fair value hedge : a hedge of the exposure to changes in fair value of a recognised asset or liability or an unrecognised firm commitment, or an identified portion of such an asset, liability or firm commitment, that is attributable to a particular risk and could affect profit or loss.**
+(b)cash flow hedge : a hedge of the exposure to variability in cash flows that (i) is attributable to a particular risk associated with a recognised asset or liability (such as all or some future interest payments on variable rate debt) or a highly probable forecast transaction and (ii) could affect profit or loss.
+(c)hedge of a net investment in a foreign operation as defined in IAS 21.
+
+ - [IAS 39 88](https://www.ifrs.org/issued-standards/list-of-standards/ias39/content/dam/ifrs/publications/html-standards/english/2026/issued/ias39/#/IAS39_88)
+
+    >A hedging relationship qualifies for hedge accounting under paragraphs 89⁠–⁠102 if, and only if, all of the following conditions are met. E6
+**(a)At the inception of the hedge there is formal designation and documentation of the hedging relationship and the entity’s risk management objective and strategy for undertaking the hedge.** That documentation shall include identification of the hedging instrument, the hedged item or transaction, the nature of the risk being hedged and how the entity will assess the hedging instrument’s effectiveness in offsetting the exposure to changes in the hedged item’s fair value or cash flows attributable to the hedged risk.
+(b)The hedge is expected to be highly effective (see Appendix A paragraphs AG105⁠–⁠AG113A) in achieving offsetting changes in fair value or cash flows attributable to the hedged risk, consistently with the originally documented risk management strategy for that particular hedging relationship.
+(c)For cash flow hedges, a forecast transaction that is the subject of the hedge must be highly probable and must present an exposure to variations in cash flows that could ultimately affect profit or loss. E7
+(d)The effectiveness of the hedge can be reliably measured, ie the fair value or cash flows of the hedged item that are attributable to the hedged risk and the fair value of the hedging instrument can be reliably measured.
+(e)The hedge is assessed on an ongoing basis [Refer: paragraph AG106]and determined actually to have been highly effective throughout the financial reporting periods for which the hedge was designated. E8, E9
+
+ - [IFRIC 16 10](https://www.ifrs.org/issued-standards/list-of-standards/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation/content/dam/ifrs/publications/html-standards/english/2026/issued/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation/#/IFRIC16_10)
+
+    >**Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.**
+
+ - [IFRIC 16 12](https://www.ifrs.org/issued-standards/list-of-standards/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation/content/dam/ifrs/publications/html-standards/english/2026/issued/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation/#/IFRIC16_12)
+
+    >**The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity** (the immediate, intermediate or ultimate parent entity) of that foreign operation. The fact that the net investment is held through an intermediate parent does not affect the nature of the economic risk arising from the foreign currency exposure to the ultimate parent entity.

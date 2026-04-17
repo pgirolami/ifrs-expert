@@ -1,0 +1,192 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Éligibilité, dans les comptes consolidés, d’un dividende intragroupe comptabilisé en créance comme élément couvert au titre du risque de change en comptabilité de couverture",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias39", "ias21"],
+    "selected_primary_document": "ias39",
+    "selection_reason": "I applied the strict precedence rule to overlapping governing guidance by selecting the single document that directly addresses hedge accounting eligibility and designation; IAS 39 governs whether an item can be designated as a hedged item or hedging instrument, while IAS 21 only provides supporting foreign-currency mechanics rather than the governing hedge-accounting eligibility model.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low—IAS 39 is the only document in the provided context that directly sets the eligibility rules for hedged items and hedge accounting models, although IAS 21 is still relevant to understand whether exchange differences survive consolidation."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias39",
+        "references": ["72", "73", "78", "80", "89", "93", "95", "101"],
+        "reason": "These paragraphs directly govern hedge accounting models and the eligibility of external versus intragroup hedged items in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["28", "32", "45"],
+        "reason": "These paragraphs clarify when exchange differences on monetary items, including intragroup items, are recognised and not fully eliminated in consolidation."
+      },
+      {
+        "document": "ifric16",
+        "references": ["14", "15"],
+        "reason": "This Interpretation supports identification of the distinct hedge accounting model for a net investment in a foreign operation."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias12",
+        "references": ["7", "11", "38", "39", "44", "79", "81"],
+        "reason": "Income tax consequences do not help identify peer hedge accounting approaches for this issue."
+      },
+      {
+        "document": "ias32",
+        "references": ["35", "36", "40"],
+        "reason": "Financial instrument presentation of dividends does not determine hedge accounting eligibility of an intragroup dividend receivable."
+      },
+      {
+        "document": "ias7",
+        "references": ["10", "14", "16", "17", "31", "33A", "34A"],
+        "reason": "Cash flow statement classification is unrelated to identifying hedge accounting models for the questioned item."
+      },
+      {
+        "document": "ias27",
+        "references": ["10", "12"],
+        "reason": "Separate-financial-statement accounting for investments and dividends does not govern consolidated hedge accounting eligibility."
+      },
+      {
+        "document": "ias10",
+        "references": ["12", "13"],
+        "reason": "Post-reporting-period dividend liability recognition is not relevant to hedge accounting model identification."
+      },
+      {
+        "document": "ifric17",
+        "references": ["9", "11", "13", "14"],
+        "reason": "Non-cash distributions to owners are outside the issue of FX hedge designation for intragroup dividend receivables."
+      },
+      {
+        "document": "ias24",
+        "references": ["2", "3", "4"],
+        "reason": "Related party disclosure requirements do not affect hedge accounting treatment families."
+      },
+      {
+        "document": "ias33",
+        "references": ["12", "13", "33"],
+        "reason": "Earnings per share effects of dividends are not relevant to hedge accounting eligibility."
+      },
+      {
+        "document": "ifric2",
+        "references": ["5", "6", "11"],
+        "reason": "Classification of members’ shares and distributions is unrelated to the hedge accounting issue."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["2"],
+        "reason": "Business combination and asset acquisition guidance does not contribute to identifying hedge accounting approaches here."
+      },
+      {
+        "document": "ias19",
+        "references": ["51", "120", "122"],
+        "reason": "Employee benefit accounting is unrelated to the issue."
+      },
+      {
+        "document": "ias37",
+        "references": ["1", "5"],
+        "reason": "Provision guidance does not identify peer hedge accounting models for FX on intragroup dividends."
+      },
+      {
+        "document": "sic25",
+        "references": ["3", "4"],
+        "reason": "Tax-status-change accounting is unrelated to hedge accounting eligibility."
+      },
+      {
+        "document": "ias29",
+        "references": ["32"],
+        "reason": "Hyperinflation-related deferred tax consequences are not relevant to the issue."
+      },
+      {
+        "document": "ias38",
+        "references": ["27", "29"],
+        "reason": "Intangible asset cost guidance does not help identify hedge accounting approaches."
+      },
+      {
+        "document": "ias20",
+        "references": ["24", "28"],
+        "reason": "Government grant presentation is unrelated to the issue."
+      },
+      {
+        "document": "ifrs19",
+        "references": ["2", "4", "138", "162"],
+        "reason": "Reduced-disclosure requirements do not bear on hedge accounting eligibility."
+      },
+      {
+        "document": "ias40-bciasc",
+        "references": ["B21", "B24"],
+        "reason": "Basis for conclusions on intragroup investment property is topically similar on consolidation but not relevant to hedge accounting model identification."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Designation of a recognised monetary item as a hedged item in a fair value hedge",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80", "89", "93"]
+        },
+        {
+          "document": "ias21",
+          "references": ["28", "45"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Designation of forecast foreign-currency cash flows as a hedged item in a cash flow hedge",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80", "95", "101"]
+        },
+        {
+          "document": "ias21",
+          "references": ["27", "28"]
+        }
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Designation of foreign currency exposure relating to a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78"]
+        },
+        {
+          "document": "ifric16",
+          "references": ["14", "15"]
+        },
+        {
+          "document": "ias21",
+          "references": ["32"]
+        }
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies fair value hedge accounting as a distinct hedge accounting model for recognised items and firm commitments."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies cash flow hedge accounting as a distinct model for variability in future cash flows, including forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 39 and IFRIC 16 support net investment hedging as a separate hedge accounting model for foreign exchange exposure."
+    }
+  ]
+}

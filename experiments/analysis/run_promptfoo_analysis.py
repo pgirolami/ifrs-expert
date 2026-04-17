@@ -79,6 +79,7 @@ class QuestionScore:
     structural_valid: bool
     rec_dist: dict
     label_counts: dict[str, int]  # normalized_label -> count
+    citation_counts: dict[str, int]  # citation_key (doc+section) -> count across all runs
     retrieval_context: dict[str, list[tuple[str, float]]]  # doc_uid -> [(section_path, score), ...]
 
 
@@ -196,6 +197,29 @@ def is_structurally_valid(run: dict) -> bool:
         return False
     answer = extract_recommendation_answer(run)
     return answer in VALID_RECOMMENDATION_ANSWERS
+
+
+def extract_citations_from_run(run: dict) -> set[str]:
+    """Extract citation keys from a run's approaches.
+    
+    Returns a set of citation keys in format 'doc_uid:section'.
+    """
+    approaches = extract_approaches(run)
+    citations: set[str] = set()
+    
+    for approach in approaches:
+        references = approach.get("references")
+        if not isinstance(references, list):
+            continue
+        
+        for ref in references:
+            document = ref.get("document")
+            section = ref.get("section")
+            if isinstance(document, str) and isinstance(section, str):
+                citation_key = f"{document}:{section}"
+                citations.add(citation_key)
+    
+    return citations
 
 
 # =============================================================================
@@ -757,6 +781,12 @@ def analyze_question_for_provider(
     # Compute retrieval context across all runs
     retrieval_context = aggregate_retrieval_context(provider_dir, repetitions)
     
+    # Compute citation counts across all runs
+    citation_counts: dict[str, int] = defaultdict(int)
+    for run in runs:
+        for citation in extract_citations_from_run(run):
+            citation_counts[citation] += 1
+    
     return QuestionScore(
         question_id=question_id,
         runs=len(runs),
@@ -771,6 +801,7 @@ def analyze_question_for_provider(
         structural_valid=result.diagnostics.structural_validity_flag,
         rec_dist=result.diagnostics.recommendation_distribution,
         label_counts=dict(label_counts),
+        citation_counts=dict(citation_counts),
         retrieval_context=retrieval_context,
     )
 
@@ -810,13 +841,17 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
     core_labels.sort(key=lambda x: x[1], reverse=True)
     spurious_labels_list.sort(key=lambda x: x[1], reverse=True)
     
-    question_ids = [r.question_id for r in sorted_results]
+    # Sort labels alphabetically
+    core_labels.sort(key=lambda x: x[0])
+    spurious_labels_list.sort(key=lambda x: x[0])
+    
+    question_ids = sorted([r.question_id for r in sorted_results])
     
     # Core labels table
     print("### Core Labels (>= 10% of runs)\n")
     
     # Build header cells
-    header_cells = ["Label"] + list(question_ids) + ["Total"]
+    header_cells = ["Label", "Relevant", "Total"] + list(question_ids)
     
     # Simple markdown table without space padding
     print("| " + " | ".join(header_cells) + " |")
@@ -824,31 +859,112 @@ def print_label_frequency_table(results: list[QuestionScore]) -> None:
     
     # Data rows for core labels
     for label, _ in core_labels:
-        row = [label]
+        row = [label, "", ""]
         total = 0
         for r in sorted_results:
             count = r.label_counts.get(label, 0)
-            row.append(str(count))
             total += count
-        row.append(str(total))
+        row[2] = str(total)
+        for r in sorted_results:
+            count = r.label_counts.get(label, 0)
+            row.append(str(count))
         print("| " + " | ".join(row) + " |")
     
     # Spurious labels table
     if spurious_labels_list:
         print(f"\n### Spurious Labels (< 10% of runs)\n")
         
-        # For spurious labels, put Total first, then questions, then Label at end
-        spurious_header = ["Total"] + list(question_ids) + ["Label"]
+        spurious_header = ["Label", "Correct", "Total"] + list(question_ids)
         print("| " + " | ".join(spurious_header) + " |")
         print("|" + "|".join("---" for _ in spurious_header) + "|")
         
         for label, _ in spurious_labels_list:
             total = sum(r.label_counts.get(label, 0) for r in sorted_results)
-            row = [str(total)]
+            row = [label, "", str(total)]
             for r in sorted_results:
                 count = r.label_counts.get(label, 0)
                 row.append(str(count))
-            row.append(label)
+            print("| " + " | ".join(row) + " |")
+
+
+def print_citation_frequency_table(results: list[QuestionScore]) -> None:
+    """Print citation frequency by question table in markdown format.
+    
+    1 row per citation (document + section), 1 column per question,
+    each cell contains the number of times the citation was used.
+    """
+    print("\n## Citation Frequency by Question\n")
+    
+    if not results:
+        print("No data available.\n")
+        return
+    
+    sorted_results = sorted(results, key=lambda x: question_sort_key(x.question_id))
+    total_runs = sum(r.runs for r in sorted_results)
+    
+    # Collect all unique citations
+    all_citations: set[str] = set()
+    for r in results:
+        all_citations.update(r.citation_counts.keys())
+    
+    if not all_citations:
+        print("No citations found.\n")
+        return
+    
+    # Separate core citations (>= 10% of runs) from spurious (< 10%)
+    core_citations: list[tuple[str, int]] = []
+    spurious_citations: list[tuple[str, int]] = []
+    
+    for citation in sorted(all_citations):
+        total_count = sum(r.citation_counts.get(citation, 0) for r in sorted_results)
+        if total_count >= total_runs * 0.1:  # >= 10% threshold
+            core_citations.append((citation, total_count))
+        elif total_count > 0:
+            spurious_citations.append((citation, total_count))
+    
+    # Sort by total count descending within each group
+    core_citations.sort(key=lambda x: x[1], reverse=True)
+    spurious_citations.sort(key=lambda x: x[1], reverse=True)
+    
+    # Sort citations alphabetically
+    core_citations.sort(key=lambda x: x[0])
+    spurious_citations.sort(key=lambda x: x[0])
+    
+    question_ids = sorted([r.question_id for r in sorted_results])
+    
+    # Core citations table
+    print("### Core Citations (>= 10% of runs)\n")
+    
+    header_cells = ["Citation", "Correct", "Total"] + list(question_ids)
+    print("| " + " | ".join(header_cells) + " |")
+    print("|" + "|".join("---" for _ in header_cells) + "|")
+    
+    for citation, _ in core_citations:
+        row = [citation, "", ""]
+        total = 0
+        for r in sorted_results:
+            count = r.citation_counts.get(citation, 0)
+            total += count
+        row[2] = str(total)
+        for r in sorted_results:
+            count = r.citation_counts.get(citation, 0)
+            row.append(str(count))
+        print("| " + " | ".join(row) + " |")
+    
+    # Spurious citations table
+    if spurious_citations:
+        print(f"\n### Spurious Citations (< 10% of runs)\n")
+        
+        spurious_header = ["Citation", "Correct", "Total"] + list(question_ids)
+        print("| " + " | ".join(spurious_header) + " |")
+        print("|" + "|".join("---" for _ in spurious_header) + "|")
+        
+        for citation, _ in spurious_citations:
+            total = sum(r.citation_counts.get(citation, 0) for r in sorted_results)
+            row = [citation, "", str(total)]
+            for r in sorted_results:
+                count = r.citation_counts.get(citation, 0)
+                row.append(str(count))
             print("| " + " | ".join(row) + " |")
 
 
@@ -1109,6 +1225,9 @@ def print_results(
     
     # Label Frequency by Question
     print_label_frequency_table(results)
+    
+    # Citation Frequency by Question
+    print_citation_frequency_table(results)
     
     # Top vs Low Performers
     print_top_vs_low_performers(results)

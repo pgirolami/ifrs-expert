@@ -1,0 +1,110 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Éligibilité, dans les comptes consolidés, du risque de change lié à un dividende intragroupe / à une créance intragroupe comme élément couvert dans une relation de comptabilité de couverture",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias39", "ias21"],
+    "selected_primary_document": "ias39",
+    "selection_reason": "I applied the required precedence rule by selecting the single document that directly governs hedge-accounting eligibility questions: IAS 39 governs designation of hedging instruments and hedged items, while IAS 21 expressly excludes hedge accounting for foreign currency items from its scope and therefore does not compete as the governing lineage.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the core question is an eligibility question for hedge accounting in consolidated financial statements, and the context provided points directly to IAS 39 paragraphs on hedged items and intragroup transactions."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias39",
+        "references": ["73", "78", "80"],
+        "reason": "These paragraphs directly govern whether an item can be designated as a hedged item or hedging instrument in consolidated financial statements, including intragroup items and foreign currency exceptions."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["3", "5", "32", "45"],
+        "reason": "These paragraphs clarify that hedge accounting is outside IAS 21, while explaining how intragroup monetary items and exchange differences behave in consolidation, which constrains the hedge-accounting analysis."
+      },
+      {
+        "document": "ifric16",
+        "references": ["2", "8", "10", "12", "14"],
+        "reason": "This interpretation supports the identification of net investment hedging as a distinct hedge-accounting model for foreign currency risk within consolidated financial statements."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias24",
+        "references": ["3", "4", "18", "19"],
+        "reason": "It addresses related party disclosures, not hedge-accounting eligibility or peer hedge-accounting models."
+      },
+      {
+        "document": "ias12",
+        "references": ["38", "39", "40", "57A"],
+        "reason": "It addresses income tax consequences of dividends and investments, not hedge-accounting models for foreign currency risk."
+      },
+      {
+        "document": "ias32",
+        "references": ["35", "36", "40", "42"],
+        "reason": "It concerns classification, presentation and offsetting of financial instruments, not designation of hedged items in hedge accounting."
+      },
+      {
+        "document": "ifrs17",
+        "references": ["30", "44", "45"],
+        "reason": "It concerns insurance contract measurement and foreign currency denomination under IFRS 17, which is unrelated to the hedge-accounting issue raised."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting using a recognised asset or liability as the hedged item",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Hedge accounting using a highly probable forecast transaction as the hedged item",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80"]
+        }
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Hedge accounting of foreign currency risk arising from a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78"]
+        },
+        {
+          "document": "ifric16",
+          "references": ["2", "10", "12", "14"]
+        }
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies recognised assets and liabilities as eligible categories of hedged items, making fair value hedge a peer top-level hedge-accounting model relevant to a recognised receivable scenario."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies highly probable forecast transactions as eligible hedged items, so cash flow hedge is a distinct top-level model relevant to a dividend-related foreign currency exposure before recognition."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 39 and IFRIC 16 treat net investment hedging as a separate hedge-accounting model for foreign currency risk in consolidated financial statements."
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Éligibilité, en comptes consolidés, d’un dividende intragroupe ou de la créance de dividende correspondante comme élément couvert au titre du risque de change",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias39", "ias21"],
+    "selected_primary_document": "ias39",
+    "selection_reason": "I applied the stated precedence rule by selecting the single document that directly governs hedge-accounting eligibility and hedged items for foreign currency risk in consolidated financial statements; IAS 39 addresses that issue explicitly, whereas IAS 21 only provides supporting foreign-exchange translation mechanics.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — IAS 39 is the only document in the provided context that directly addresses whether intragroup items can qualify as hedged items in consolidated financial statements."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias39",
+        "references": ["72", "73", "78", "80"],
+        "reason": "These paragraphs directly govern hedge-accounting designation of hedging instruments and hedged items, including intragroup foreign currency exposures in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["23", "45"],
+        "reason": "These paragraphs clarify when intragroup monetary items create exchange differences that remain in consolidated financial statements and therefore can create genuine FX exposure."
+      },
+      {
+        "document": "ifric16",
+        "references": ["7", "9", "10", "12", "14"],
+        "reason": "This interpretation supports the distinct hedge-accounting model for net investments in foreign operations and clarifies the nature of the hedged FX risk."
+      },
+      {
+        "document": "ifrs10",
+        "references": ["B86"],
+        "reason": "This paragraph supports the consolidation backdrop by requiring elimination of intragroup balances and transactions, subject to the separate FX consequences addressed by IAS 21 and IAS 39."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias12",
+        "references": ["38", "39", "40", "41"],
+        "reason": "These paragraphs concern deferred tax consequences of investments and FX differences, not hedge-accounting eligibility for intragroup dividends."
+      },
+      {
+        "document": "ias24",
+        "references": ["3", "4", "18", "19"],
+        "reason": "These paragraphs concern related-party disclosures and elimination of intragroup balances, not hedge-accounting models."
+      },
+      {
+        "document": "ias7",
+        "references": ["10", "14", "16", "17", "44A", "44B"],
+        "reason": "These paragraphs address cash-flow classification and financing-liability disclosures, not designation of hedged items."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for a recognised foreign-currency asset or liability",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80"]
+        },
+        {
+          "document": "ias21",
+          "references": ["23", "45"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Hedge accounting for foreign-currency variability in future cash flows from a forecast transaction",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78", "80"]
+        }
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Hedge accounting for foreign-currency exposure arising from a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ias39",
+          "references": ["78"]
+        },
+        {
+          "document": "ifric16",
+          "references": ["7", "9", "10", "12", "14"]
+        }
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies a recognised asset or liability as a hedged item, which makes this a peer hedge-accounting model once a dividend receivable exists."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IAS 39 identifies a highly probable forecast transaction as a hedged item, including certain intragroup foreign-currency transactions in consolidated financial statements."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IAS 39 and IFRIC 16 identify net investment hedging as a distinct hedge-accounting model for foreign currency exposure in consolidated financial statements."
+    }
+  ]
+}

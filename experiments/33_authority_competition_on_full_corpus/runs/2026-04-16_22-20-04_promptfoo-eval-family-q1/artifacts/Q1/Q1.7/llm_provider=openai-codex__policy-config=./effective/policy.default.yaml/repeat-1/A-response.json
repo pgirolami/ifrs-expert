@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Qualification IFRS du traitement d’un risque de change portant sur un dividende intragroupe devenu une créance monétaire dans les comptes consolidés, et identification des modèles comptables de couverture ou de réévaluation de change potentiellement pertinents.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias21", "ifric16"],
+    "selected_primary_document": "ias21",
+    "selection_reason": "I selected IAS 21 as the primary document because it directly governs foreign-currency monetary items and specifically states that intragroup monetary balances are not eliminated without recognising exchange differences in consolidated financial statements; IFRIC 16 was retained as supporting authority because it addresses a distinct hedge-accounting model rather than superseding IAS 21 on the core monetary-item issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Medium: IAS 21 clearly governs the existence and accounting of the FX exposure on an intragroup monetary receivable, but the context does not include the main hedge-accounting standard text, so the full hedge-model landscape is only partially evidenced here."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias21",
+        "references": ["45"],
+        "reason": "It directly governs exchange differences on intragroup monetary assets and liabilities in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifric16",
+        "references": ["10", "12", "13", "14", "15"],
+        "reason": "It clarifies the distinct hedge-accounting model for foreign currency risk on a net investment in a foreign operation."
+      },
+      {
+        "document": "ias27",
+        "references": ["12"],
+        "reason": "It supports the dividend-recognition lineage by stating when dividends are recognised in separate financial statements."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias24",
+        "references": ["3", "4"],
+        "reason": "It concerns related-party disclosures and elimination of intragroup balances generally, not the identification of the relevant FX accounting models."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Foreign-currency remeasurement of an intragroup monetary receivable in consolidation",
+      "authority_basis": [
+        {
+          "document": "ias21",
+          "references": ["23", "24", "45"]
+        }
+      ],
+      "mapped_approaches": ["monetary_item_remeasurement"]
+    },
+    {
+      "family": "Hedge accounting for foreign currency risk on a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ifric16",
+          "references": ["10", "12", "13", "14", "15"]
+        }
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Monetary item remeasurement",
+      "normalized_label": "monetary_item_remeasurement",
+      "rationale_for_inclusion": "IAS 21 provides the default accounting model for a foreign-currency intragroup receivable recognised in consolidated financial statements, with exchange differences recognised rather than eliminated away."
+    },
+    {
+      "id": "approach_2",
+      "label": "Net investment hedge",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRIC 16 identifies a distinct hedge-accounting model for foreign currency exposure linked to a net investment in a foreign operation, which is the main peer hedge model evidenced in the provided context."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Possibilité d’appliquer une comptabilité de couverture en consolidation sur le risque de change d’un dividende intragroupe comptabilisé en créance",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias21"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the required precedence rule strictly and selected IFRS 9 as the governing lineage because hedge accounting models and hedged-item eligibility are directly governed by IFRS 9, while IAS 21 is relevant only as supporting authority on the consolidation consequences of foreign currency monetary items.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — IFRS 9 directly governs hedge accounting models and eligibility, and IAS 21 complements rather than overlaps that model."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.3", "6.3.5", "6.3.6"],
+        "reason": "These paragraphs directly govern hedge accounting and identify which items, including certain intragroup foreign currency exposures, can be designated as hedged items in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["45"],
+        "reason": "This paragraph explains that exchange differences on intragroup monetary assets and liabilities are not fully eliminated on consolidation when group entities have different functional currencies."
+      },
+      {
+        "document": "ias21",
+        "references": ["23"],
+        "reason": "This paragraph confirms the foreign currency translation treatment for monetary items, which frames the underlying FX exposure."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting models available for foreign currency exposures in consolidated financial statements",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge", "cash_flow_hedge", "net_investment_hedge"]
+    },
+    {
+      "family": "Recognised intragroup monetary item exposure versus forecast intragroup foreign currency exposure",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.3", "6.3.6"]
+        },
+        {
+          "document": "ias21",
+          "references": ["45"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge", "cash_flow_hedge", "net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge accounting as a top-level hedge accounting model and it is relevant for recognised foreign currency monetary exposures."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge accounting as a top-level hedge accounting model and it is relevant where the FX exposure is linked to a highly probable forecast intragroup transaction."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a hedge of a net investment in a foreign operation as a distinct top-level hedge accounting model for foreign currency exposures in consolidated financial statements."
+    }
+  ]
+}

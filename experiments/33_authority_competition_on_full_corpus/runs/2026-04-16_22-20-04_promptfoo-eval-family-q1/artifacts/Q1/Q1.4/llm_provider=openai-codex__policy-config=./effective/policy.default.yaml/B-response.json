@@ -1,0 +1,100 @@
+{
+  "assumptions_fr": [
+    "Le dividende intragroupe a été formellement déclaré et une créance de dividende libellée en devise étrangère a été comptabilisée chez une entité du groupe.",
+    "La question vise les comptes consolidés du groupe, et non les comptes individuels ou séparés.",
+    "La créance et la dette intragroupe correspondante sont entre deux entités du groupe ayant des monnaies fonctionnelles différentes, de sorte que l'écart de change sur l'élément monétaire n'est pas entièrement éliminé en consolidation."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, en consolidation, si le dividende déclaré a donné naissance à une créance intragroupe monétaire en devise entre entités à monnaies fonctionnelles différentes. Dans ce cas, l'exception d'IAS 39.80, lue avec IAS 21.45, permet en principe de désigner le risque de change de cette créance comme élément couvert."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_hedge",
+      "label_fr": "Couverture de juste valeur",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, la créance de dividende déjà reconnue est un actif monétaire intragroupe. IAS 39.78 permet de couvrir un actif ou passif comptabilisé, et IAS 39.80 prévoit expressément qu'un élément monétaire intragroupe peut être un élément couvert en consolidation si son risque de change n'est pas entièrement éliminé. IAS 21.45 précise justement que les écarts de change sur un actif/passif monétaire intragroupe entre entités à monnaies fonctionnelles différentes ne sont pas entièrement éliminés en consolidation.",
+      "conditions_fr": [
+        "La créance de dividende doit être un élément monétaire libellé en devise étrangère déjà comptabilisé.",
+        "Les deux entités intragroupe concernées doivent avoir des monnaies fonctionnelles différentes.",
+        "Le risque de change doit générer des écarts de change non entièrement éliminés dans les comptes consolidés."
+      ],
+      "practical_implication_fr": "La documentation de couverture peut viser le risque de change de la créance de dividende reconnue, si l'exposition subsiste réellement en consolidation.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "78",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a highly probable forecast transaction or a net investment in a foreign operation. **The hedged item can be (a) a single asset, liability**, firm commitment, highly probable forecast transaction or net investment in a foreign operation..."
+        },
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions that involve a party external to the entity can be designated as hedged items. It follows that hedge accounting can be applied to transactions between entities in the same group only in the individual or separate financial statements of those entities and not in the consolidated financial statements of the group... **As an exception, the foreign currency risk of an intragroup monetary item (eg a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21**... **foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies**."
+        },
+        {
+          "document": "ias21",
+          "section": "45",
+          "excerpt": "The incorporation of the results and financial position of a foreign operation with those of the reporting entity follows normal consolidation procedures... However, **an intragroup monetary asset (or liability), whether short-term or long-term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements**. This is because the monetary item represents a commitment to convert one currency into another and exposes the reporting entity to a gain or loss through currency fluctuations. Accordingly, in the consolidated financial statements of the reporting entity, **such an exchange difference is recognised in profit or loss**..."
+        },
+        {
+          "document": "ifrs10",
+          "section": "B86",
+          "excerpt": "Consolidated financial statements : ... (c) **eliminate in full intragroup assets and liabilities, equity, income, expenses and cash flows relating to transactions between entities of the group**..."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "cash_flow_hedge",
+      "label_fr": "Couverture de flux de trésorerie",
+      "applicability": "non",
+      "reasoning_fr": "La question porte sur un dividende intragroupe pour lequel une créance a déjà été reconnue ; on n'est donc plus au stade d'une transaction future hautement probable mais d'un actif monétaire existant. Même avant reconnaissance, IAS 39.80 n'admet les transactions intragroupe prévues en couverture que si le risque de change affecte le résultat consolidé ; un dividende intragroupe éliminé en consolidation ne répond pas naturellement à ce schéma.",
+      "conditions_fr": [],
+      "practical_implication_fr": "Ce modèle n'est pas le bon véhicule pour un dividende déjà déclaré ayant donné naissance à une créance.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "78",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a **highly probable forecast transaction** or a net investment in a foreign operation..."
+        },
+        {
+          "document": "ias39",
+          "section": "80",
+          "excerpt": "For hedge accounting purposes, only assets, liabilities, firm commitments or highly probable forecast transactions that involve a party external to the entity can be designated as hedged items... **In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss**."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_investment_hedge",
+      "label_fr": "Couverture d'un investissement net dans une activité à l'étranger",
+      "applicability": "non",
+      "reasoning_fr": "La situation décrite ne concerne pas l'exposition de conversion attachée à un investissement net dans une activité à l'étranger, mais la composante change d'une créance de dividende intragroupe reconnue. IAS 39.78 et IFRIC 16.10-12 réservent ce modèle au risque de change entre la monnaie fonctionnelle de l'activité étrangère et celle de l'entité mère sur l'investissement net, ce qui est distinct d'une créance de dividende.",
+      "conditions_fr": [],
+      "practical_implication_fr": "La documentation doit être analysée comme couverture d'un élément monétaire reconnu, et non comme couverture d'investissement net.",
+      "references": [
+        {
+          "document": "ias39",
+          "section": "78",
+          "excerpt": "A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a highly probable forecast transaction or **a net investment in a foreign operation**."
+        },
+        {
+          "document": "ifric16",
+          "section": "10",
+          "excerpt": "**Hedge accounting may be applied only to the foreign exchange differences arising between the functional currency of the foreign operation and the parent entity’s functional currency.**"
+        },
+        {
+          "document": "ifric16",
+          "section": "12",
+          "excerpt": "The hedged risk may be designated as the foreign currency exposure arising between the functional currency of the foreign operation and the functional currency of any parent entity... **The fact that the net investment is held through an intermediate parent does not affect the nature of the economic risk** arising from the foreign currency exposure to the ultimate parent entity."
+        },
+        {
+          "document": "ifric16",
+          "section": "14",
+          "excerpt": "A derivative or a non-derivative instrument (or a combination of derivative and non-derivative instruments) may be designated as a hedging instrument **in a hedge of a net investment in a foreign operation**..."
+        }
+      ]
+    }
+  ]
+}

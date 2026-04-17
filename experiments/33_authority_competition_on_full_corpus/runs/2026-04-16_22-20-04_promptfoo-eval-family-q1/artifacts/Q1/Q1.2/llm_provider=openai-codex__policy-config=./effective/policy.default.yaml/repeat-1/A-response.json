@@ -1,0 +1,94 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Possibilités de documentation de couverture en comptes consolidés pour le risque de change lié à un dividende intragroupe comptabilisé en créance",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias21"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the stated precedence and governing-lineage rule by selecting IFRS 9 as the single governing standard for hedge-accounting models and hedged-item eligibility, while IAS 21 is retained only as supporting authority because it clarifies when intragroup foreign-currency exposures are not fully eliminated in consolidation.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the hedge-accounting question is directly governed by IFRS 9, and the remaining uncertainty is only about which specific hedge model might fit the fact pattern rather than which standard governs."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.5", "6.3.6"],
+        "reason": "This standard directly governs hedge accounting models and whether intragroup items can be designated as hedged items in consolidated financial statements."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["45"],
+        "reason": "This standard clarifies that intragroup monetary items can generate exchange differences not fully eliminated on consolidation, which supports the identification of hedgeable FX exposure."
+      },
+      {
+        "document": "ias27",
+        "references": ["12"],
+        "reason": "This standard helps frame the underlying dividend as a recognized item in separate financial statements before considering its treatment in consolidation."
+      },
+      {
+        "document": "ias32",
+        "references": ["35", "36"],
+        "reason": "This standard supports the characterization of dividends and distributions, helping distinguish owner distributions from liability-related amounts."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting for a recognized foreign-currency monetary exposure that remains exposed in consolidation",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.5", "6.3.6"]
+        },
+        {
+          "document": "ias21",
+          "references": ["45"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Hedge accounting for a highly probable forecast intragroup foreign-currency transaction affecting consolidated profit or loss",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1", "6.3.3", "6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Hedge accounting for foreign-currency exposure linked to a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.3.1"]
+        }
+      ],
+      "mapped_approaches": ["net_investment_hedge"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies recognized assets and liabilities as possible hedged items, which captures a recognized dividend receivable if the FX exposure remains relevant in consolidation."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 separately permits highly probable forecast transactions, including certain intragroup foreign-currency transactions, as hedged items when they affect consolidated profit or loss."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "net_investment_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies a net investment in a foreign operation as a distinct top-level hedge accounting model for foreign-currency exposures."
+    }
+  ]
+}
