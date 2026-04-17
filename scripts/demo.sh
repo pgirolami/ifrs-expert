@@ -54,6 +54,16 @@ validate_llm_configuration() {
       required_model_name="MISTRAL_MODEL"
       required_model_value="${MISTRAL_MODEL:-}"
       ;;
+    minimax)
+      required_api_key_name="MINIMAX_API_KEY"
+      required_api_key_value="${MINIMAX_API_KEY:-}"
+      required_model_name="MINIMAX_MODEL"
+      required_model_value="${MINIMAX_MODEL:-}"
+      ;;
+    ollama)
+      required_model_name="OLLAMA_MODEL"
+      required_model_value="${OLLAMA_MODEL:-}"
+      ;;
     "")
       echo "Error: LLM_PROVIDER is not set. Set it in the environment or .env to one of: openai, openai-codex, anthropic, mistral." >&2
       exit 1
@@ -99,13 +109,12 @@ stop_log_tail() {
 
 wait_for_enter() {
   if [ -r /dev/tty ]; then
-    printf '\nPress Enter to launch the Streamlit app...' > /dev/tty
     read -r _ < /dev/tty
     return
   fi
 
   echo
-  echo "No interactive terminal detected. Launching the Streamlit app immediately."
+  echo "No interactive terminal detected: not waiting"
 }
 
 main() {
@@ -131,10 +140,16 @@ main() {
 
   echo "Asking demo question via the CLI..."
   start_log_tail
-  printf '%s\n' "${DEMO_QUESTION}" | uv run python -m src.cli answer
+  printf '%s\n' "${DEMO_QUESTION}" | uv run python -m src.cli answer --policy-config=config/policy.default.yaml --output-dir=/tmp/demo/
   stop_log_tail
   TAIL_PID=""
 
+  echo "Above is the JSON response, see the generated markdown in /tmp/demo\nPress Enter when done"
+  ls -lah /tmp/demo/
+
+
+  wait_for_enter
+  echo 'Press Enter to launch the Streamlit app...'
   wait_for_enter
   exec uv run streamlit run streamlit_app.py
 }

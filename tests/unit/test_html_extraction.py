@@ -221,6 +221,39 @@ class TestHtmlExtractor:
             assert expected["section_name"] in section.title
             assert section.parent_section_id == expected.get("section_parent_id")
 
+    @pytest.mark.parametrize(
+        ("relative_html_path", "expected_doc_uid", "expected_document_type"),
+        [
+            (
+                "www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html",
+                "ifrs9",
+                "IFRS-S",
+            ),
+            (
+                "www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html",
+                "ifric16",
+                "IFRIC",
+            ),
+        ],
+    )
+    def test_demo_fixture_sidecars_remain_ingestable(
+        self,
+        relative_html_path: str,
+        expected_doc_uid: str,
+        expected_document_type: str,
+    ) -> None:
+        """Demo HTML fixtures should keep sidecars aligned with the saved HTML metadata."""
+        examples_dir = Path(__file__).parent.parent.parent / "examples"
+        html_path = examples_dir / relative_html_path
+        sidecar_path = html_path.with_suffix(".json")
+
+        extractor = HtmlExtractor(sidecar_path=sidecar_path)
+
+        extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+        assert extracted_document.document.doc_uid == expected_doc_uid
+        assert extracted_document.document.document_type == expected_document_type
+
     def test_extract_builds_recursive_section_closure_rows(self, tmp_path: Path) -> None:
         """Section closure rows should include recursive descendants for subtree expansion."""
         html_path = _example_html_path("ifrs9")
