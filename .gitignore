@@ -9,5 +9,5 @@ examples/
 experiments/**/.promptfoo/logs
 .env
 .DS_Store
-.cache/
-corpus/
+.cache
+corpus

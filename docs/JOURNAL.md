@@ -183,13 +183,22 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 ### 2026-04-14
 - Review meeting with SME ([Notes](./sme-reviews/20260414-SME-REVIEW.md))
-- Increase Corpus to all of IFRS & Lefebvre
-    - Extend extraction through Chrome extension to all of IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion)
+- Increased Corpus to all of IFRS & Lefebvre
+    - Extended extraction through Chrome extension to all of IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion) [(plan)](../plans/2026-04-14--ifrs-multi-document-types-and-annotations-plan.md)
         - To implement later: Supporting Materials, Refs annotation
     - Extracted all IFRS and all Lefebvre
-    - Fix ingestion freeze on Naxis documents
+    - Fixed ingestion freeze on Naxis documents
     - Ran a full ingestion on all extracted documents
         - intro_text is still missing for some NAVIS docs
-    - Uncovered authority competition with a manual test of Q1.0 because IFRS9 wasn't surfaced and IAS 39 was used as the governing standard: we need to guide the LLM towards choosing IFRS over IAS (and IFRIC over SIC) when in doubt and to surface that as a hypothesis.
+    - Uncovered new problems created by the larger corpus with a manual test of Q1.0
+        - The A prompt has doubled in size to 200kB. That's a big impact on cost.
+        - IFRS 9 wasn't surfaced but IAS 39 was so it was used as the governing standard. This probably because IFRS document-types are not distinguished when applying top-d limits so Basis For Conclusions are taking up most of the d slots for IFRS. 
+        - We should also anticipate on the fact that some content will be in competition (ex: IFRS 9 vs IAS 39, or standards vs FAQ) so we need to guide the LLM towards choosing IFRS over IAS (and IFRIC over SIC) when in doubt and to surface that as a hypothesis
 - Implemented new markdown output in FAQ style
+- Made default values for parameters consistent across all commands and command Configs [(plan)](../plans/2026-04-14b--cli-default-alignment-plan.md) 
+- Changed top-d and min-score configuration to be per document type rather than family[ (plan)](../plans/2026-04-14--ifrs-multi-document-types-and-annotations-plan.md) : it's now possible to be stricter on "implementation guidelines" than on "standards"
 
+### 2026-04-15 - 2026-04-16
+- Replaced all CLI arguments by a YAML config file [(plan)](../plans/2026-04-15--authority-competition-plan.md) to be able to tune retrieval more subtely
+- New prompt A to prefer IFRS to IAS and IFRIC to SIC when there is overlap
+    - Evaluated in [Experiment 33](../experiments/33_authority_competition_on_full_corpus/EXPERIMENTS.md): the one case where IAS39 and IFRS 9 were retrieved, IFRS was indeed chosen but IFRS9 wasn't surfaced in 100% of the questions !

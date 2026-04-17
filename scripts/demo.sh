@@ -123,6 +123,12 @@ main() {
   echo "Ingesting IFRIC 16..."
   uv run python -m src.cli store "${DEMO_IFRIC16_HTML}" --doc-uid ifric16
 
+
+  echo "Ingesting NAXIS (1/2)..."
+  uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190013Z--document.html
+  echo "Ingesting NAXIS (2/2)..."
+  uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190029Z--document.html
+
   echo "Asking demo question via the CLI..."
   start_log_tail
   printf '%s\n' "${DEMO_QUESTION}" | uv run python -m src.cli answer

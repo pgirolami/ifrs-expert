@@ -23,12 +23,12 @@ Focused runs against the same experiment database:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
-make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="Mistral Large 3"
-make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 mistral smoke"
+make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="OpenAI GPT 5.4 through Codex current answer defaults"
+make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 codex smoke"
 make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
 ```
 
-The checked-in base config currently enables one MiniMax provider stanza. Uncomment or add provider blocks in `promptfoo_src/base.yaml` when you want cross-provider comparisons.
+The checked-in base config currently enables one OpenAI Codex provider stanza (`OpenAI GPT 5.4 through Codex current answer defaults`). Uncomment or add provider blocks in `promptfoo_src/base.yaml` when you want cross-provider comparisons.
 
 ## Operator rules
 
@@ -70,16 +70,18 @@ experiments/<experiment_subdir>/
                 ├── A-response.json
                 ├── B-prompt.txt
                 ├── B-response.json
-                └── B-response.md
+                ├── B-response.md
+                └── B-response_faq.md
 ```
 
 The `<config>` path component is derived from the effective Promptfoo provider
-configuration. In practice this usually includes `llm_provider` and any
-non-default answer-command settings that were overridden for that run.
+configuration. In practice this includes the staged `policy-config` path and,
+when explicitly overridden for the run, `llm_provider` and other answer-command
+settings.
 
 Each archived run contains:
 - `run.json` — run metadata and forwarded Promptfoo arguments
-- `artifacts/` — per-test prompt/response files written by `scripts/run_answer.py`
+- `artifacts/` — per-test Prompt A/B inputs plus structured JSON, memo markdown, and FAQ markdown written by `scripts/run_answer.py`
 
 ## Config generation
 
@@ -101,8 +103,9 @@ stable across eval runs, such as:
 - `full-doc-threshold`
 - `retrieval-mode`
 
-The checked-in defaults currently run the answer command in document-first mode
-with section expansion enabled:
+The checked-in defaults currently run the answer command through a staged policy
+file (`./effective/policy.default.yaml`, copied from `config/policy.default.yaml`)
+in document-first mode with section expansion enabled:
 - `retrieval-mode: documents`
 - `expand-to-section: true`
 
@@ -125,8 +128,8 @@ The direct runner remains available when you want to bypass the Makefile shortcu
 uv run python scripts/run_promptfoo_eval.py \
   --experiment-dir promptfoo_regression \
   --family Q1 \
-  --provider "MiniMax 2.7 High current answer defaults" \
-  --description "Q1 minimax"
+  --provider "OpenAI GPT 5.4 through Codex current answer defaults" \
+  --description "Q1 codex"
 ```
 
 If you need raw Promptfoo flags, append them after `--`. In normal project usage,
@@ -149,4 +152,4 @@ LLM-graded rubric assertions are currently commented out in the checked-in famil
 - Methodology: [`docs/METHODOLOGY.md`](./METHODOLOGY.md)
 - Experiment directory overview: [`experiments/EXPERIMENTS.md`](../experiments/EXPERIMENTS.md)
 
-![Example PromptFoo run comparing 2 models](./PromptFoo-run.png)
+![Example PromptFoo run comparing 2 models](./images/PromptFoo-run.png)

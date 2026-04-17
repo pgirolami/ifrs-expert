@@ -26,9 +26,9 @@ The SME signs off on answers produced in a repeatable way for multiple out-of-sa
 **Mechanics**
 
 ### 1.1 Get to a good answer on one question
-- Start with one real question and a correct answer provided by the SME
-- Limit the corpus to the minimal set of standards containing the answer (IFRS 9, IFRIC 16)
-- Iterate on prompts and grounding data with the SME until the answer is acceptable in:
+- ✅ Start with one real question and a correct answer provided by the SME
+- ✅ Limit the corpus to the minimal set of standards containing the answer (IFRS 9, IFRIC 16)
+- ✅ Iterate on prompts and grounding data with the SME until the answer is acceptable in:
   - content
   - structure
   - presentation
@@ -39,8 +39,8 @@ This phase defines the scope and expectations of the assistant.
 ---
 
 ### 1.2 Generalize across question variants
-- Test multiple formulations of the same question
-- Identify whether failures come from:
+- ✅ Test multiple formulations of the same question
+- ✅ Identify whether failures come from:
   - retrieval
   - generation
 
@@ -54,10 +54,10 @@ Typical improvements include:
 ---
 
 ### 1.3 Expand evaluation scope
-- Add new questions from the SME
-- Add more standards documents to test robustness to noise
+- ✅ Add new questions from the SME
+- ✅ Add more standards documents to test robustness to noise
+- ✅ Introduce overlapping and potentially conflicting sources
 - Evaluate generalization across topics
-- Introduce overlapping and potentially conflicting sources
 
 ---
 
