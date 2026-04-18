@@ -202,3 +202,9 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - Replaced all CLI arguments by a YAML config file [(plan)](../plans/2026-04-15--authority-competition-plan.md) to be able to tune retrieval more subtely
 - New prompt A to prefer IFRS to IAS and IFRIC to SIC when there is overlap
     - Evaluated in [Experiment 33](../experiments/33_authority_competition_on_full_corpus/EXPERIMENTS.md): the one case where IAS39 and IFRS 9 were retrieved, IFRS was indeed chosen but IFRS9 wasn't surfaced in 100% of the questions !
+
+### 2026-04-18
+- Adjusted retrieval to ensure IFRS9 and IFRIC16 are consistently retrieved on the Q1 family:
+    - Fixed an ingestion bug where IFRIC & SIC documents with section title "Issue**s**" were ignored for document representation. This contributed strongly to bad IFRIC retrieval performance ([plan](../plans/2026-04-18--issues-section-fix-and-document-index-repair.md))
+    - [Experiment 34](../experiments/34_retrieval_alternatives/EXPERIMENTS.md) looked at alternative ways to do the document routing and identfied a path forward
+    - [Experiment 35](../experiments/35_compare_bge_m3_retrieval_methods/EXPERIMENTS.md) looked at alernative ways to use the BGE3 embedding since it also has sparse embeddings and multi-vector.
