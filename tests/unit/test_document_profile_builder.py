@@ -77,6 +77,95 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
     assert "Introduction:" not in built_profile.embedding_text
 
 
+def test_document_profile_builder_extracts_plural_issues_and_excludes_it_from_toc() -> None:
+    """Plural Issues headings should populate issue_text and be excluded from TOC output."""
+    document = DocumentRecord(
+        doc_uid="ifric16",
+        source_type="html",
+        source_title="IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+        source_url="https://www.ifrs.org/ifric16.html",
+        canonical_url="https://www.ifrs.org/ifric16.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-background",
+            doc_uid="ifric16",
+            parent_section_id=None,
+            level=2,
+            title="Background",
+            section_lineage=["Background"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-scope",
+            doc_uid="ifric16",
+            parent_section_id=None,
+            level=2,
+            title="Scope",
+            section_lineage=["Scope"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-issues",
+            doc_uid="ifric16",
+            parent_section_id=None,
+            level=2,
+            title="Issues",
+            section_lineage=["Issues"],
+            position=3,
+        ),
+        SectionRecord(
+            section_id="sec-issues-child",
+            doc_uid="ifric16",
+            parent_section_id="sec-issues",
+            level=3,
+            title="Foreign currency exposures",
+            section_lineage=["Issues", "Foreign currency exposures"],
+            position=4,
+        ),
+        SectionRecord(
+            section_id="sec-consensus",
+            doc_uid="ifric16",
+            parent_section_id=None,
+            level=2,
+            title="Consensus",
+            section_lineage=["Consensus"],
+            position=5,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-background", "sec-background", 0),
+        SectionClosureRow("sec-scope", "sec-scope", 0),
+        SectionClosureRow("sec-issues", "sec-issues", 0),
+        SectionClosureRow("sec-issues", "sec-issues-child", 1),
+        SectionClosureRow("sec-issues-child", "sec-issues-child", 0),
+        SectionClosureRow("sec-consensus", "sec-consensus", 0),
+    ]
+    chunks = [
+        Chunk(doc_uid="ifric16", chunk_number="1", page_start="", page_end="", chunk_id="c1", containing_section_id="sec-background", text="This Interpretation addresses hedges of net investments."),
+        Chunk(doc_uid="ifric16", chunk_number="2", page_start="", page_end="", chunk_id="c2", containing_section_id="sec-scope", text="This Interpretation applies to IFRS 9 hedges of net investments."),
+        Chunk(doc_uid="ifric16", chunk_number="3", page_start="", page_end="", chunk_id="c3", containing_section_id="sec-issues", text="The issues are which entity may hold the hedging instrument."),
+        Chunk(doc_uid="ifric16", chunk_number="4", page_start="", page_end="", chunk_id="c4", containing_section_id="sec-issues-child", text="It also considers how the hedged risk is identified in consolidated financial statements."),
+        Chunk(doc_uid="ifric16", chunk_number="5", page_start="", page_end="", chunk_id="c5", containing_section_id="sec-consensus", text="The consensus sets out the interpretation outcome."),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.issue_text == ("The issues are which entity may hold the hedging instrument.\nIt also considers how the hedged risk is identified in consolidated financial statements.")
+    assert built_profile.document.toc_text == "Consensus"
+    assert "Issue: The issues are which entity may hold the hedging instrument." in built_profile.embedding_text
+    assert "It also considers how the hedged risk is identified in consolidated financial statements." in built_profile.embedding_text
+    assert "TOC: Consensus" in built_profile.embedding_text
+    assert "Issues" not in built_profile.document.toc_text
+    assert "Foreign currency exposures" not in built_profile.document.toc_text
+
+
 def test_document_profile_builder_uses_pdf_fallback_intro() -> None:
     """PDF documents should fall back to leading chunk text when headings are unavailable."""
     document = DocumentRecord(

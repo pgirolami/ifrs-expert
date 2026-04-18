@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 SECTION_FIELD_BY_NORMALIZED_TITLE: dict[str, str] = {
     "background": "background_text",
     "issue": "issue_text",
+    "issues": "issue_text",
     "objective": "objective_text",
     "scope": "scope_text",
     "introduction": "intro_text",
