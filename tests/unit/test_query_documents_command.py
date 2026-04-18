@@ -173,7 +173,11 @@ def test_query_documents_returns_error_for_unsupported_document_type() -> None:
 
     result = command.execute()
 
-    assert result == "Error: document_type must be one of IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, IAS, IFRIC, SIC, PS, NAVIS"
+    assert result == (
+        "Error: document_type must be one of IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, "
+        "IAS-S, IAS-BC, IAS-IE, IAS-IG, IFRIC, IFRIC-BC, IFRIC-IE, IFRIC-IG, "
+        "SIC, SIC-BC, SIC-IE, PS, PS-BC, NAVIS"
+    )
 
 
 def test_query_documents_returns_error_when_index_missing() -> None:

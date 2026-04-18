@@ -77,9 +77,19 @@ def _extract_ifrs_variant_metadata(html_path: Path) -> dict[str, str]:
             "Implementation Guidance": "IFRS-IG",
         }[variant_label]
     elif doc_uid.startswith("ias"):
-        document_type = "IAS"
+        document_type = {
+            "Standard": "IAS-S",
+            "Basis for Conclusions": "IAS-BC",
+            "Illustrative Examples": "IAS-IE",
+            "Implementation Guidance": "IAS-IG",
+        }[variant_label]
     elif doc_uid.startswith("ifric"):
-        document_type = "IFRIC"
+        document_type = {
+            "Standard": "IFRIC",
+            "Basis for Conclusions": "IFRIC-BC",
+            "Illustrative Examples": "IFRIC-IE",
+            "Implementation Guidance": "IFRIC-IG",
+        }[variant_label]
     elif doc_uid.startswith("sic"):
         document_type = "SIC"
     else:

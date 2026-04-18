@@ -55,6 +55,10 @@ retrieval:
         d: 1
         min_score: 0.6
         expand_to_section: false
+      IFRIC-IG:
+        d: 1
+        min_score: 0.56
+        expand_to_section: true
       SIC:
         d: 6
         min_score: 0.4

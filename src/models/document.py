@@ -22,6 +22,7 @@ DOCUMENT_TYPES: tuple[str, ...] = (
     "IFRIC",
     "IFRIC-BC",
     "IFRIC-IE",
+    "IFRIC-IG",
     # SIC Interpretations and variants
     "SIC",
     "SIC-BC",
@@ -47,6 +48,7 @@ DOCUMENT_KIND_BY_TYPE: dict[str, str] = {
     # IFRIC Interpretations and variants
     "IFRIC": "interpretation",
     "IFRIC-IE": "illustrative_examples",
+    "IFRIC-IG": "implementation_guidance",
     "IFRIC-BC": "basis_for_conclusions",
     # SIC Interpretations and variants
     "SIC": "interpretation",
@@ -73,7 +75,7 @@ DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" 
 _FAMILY_VARIANT_CONFIG: tuple[tuple[str, tuple[tuple[str, str], ...], str], ...] = (
     ("ifrs", (("-bc", "IFRS-BC"), ("-ie", "IFRS-IE"), ("-ig", "IFRS-IG")), "IFRS-S"),
     ("ias", (("-bc", "IAS-BC"), ("-ie", "IAS-IE"), ("-ig", "IAS-IG")), "IAS-S"),
-    ("ifric", (("-bc", "IFRIC-BC"), ("-ie", "IFRIC-IE")), "IFRIC"),
+    ("ifric", (("-bc", "IFRIC-BC"), ("-ie", "IFRIC-IE"), ("-ig", "IFRIC-IG")), "IFRIC"),
     ("sic", (("-bc", "SIC-BC"), ("-ie", "SIC-IE")), "SIC"),
     ("ps", (("-bc", "PS-BC"),), "PS"),
 )

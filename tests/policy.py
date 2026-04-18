@@ -67,6 +67,7 @@ def make_retrieval_policy(
             ("IFRIC", per_type_d.get("IFRIC", 6), per_type_min_score.get("IFRIC", 0.48), True),
             ("IFRIC-BC", per_type_d.get("IFRIC-BC", 1), per_type_min_score.get("IFRIC-BC", 0.62), False),
             ("IFRIC-IE", per_type_d.get("IFRIC-IE", 1), per_type_min_score.get("IFRIC-IE", 0.6), False),
+            ("IFRIC-IG", per_type_d.get("IFRIC-IG", 1), per_type_min_score.get("IFRIC-IG", 0.56), True),
             # SIC Interpretations and variants
             ("SIC", per_type_d.get("SIC", 6), per_type_min_score.get("SIC", 0.4), True),
             ("SIC-BC", per_type_d.get("SIC-BC", 1), per_type_min_score.get("SIC-BC", 0.62), False),

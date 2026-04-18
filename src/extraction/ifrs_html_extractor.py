@@ -147,6 +147,16 @@ class IfrsHtmlExtractor:
                 return IFRS_VARIANT_LABEL_TO_DOCUMENT_TYPE[variant.label]
             except KeyError as error:
                 _fail_validation(f"Unsupported IFRS documentType label: {variant.label}", cause=error)
+        if normalized_doc_uid.startswith("ifric"):
+            try:
+                return IFRIC_VARIANT_LABEL_TO_DOCUMENT_TYPE[variant.label]
+            except KeyError as error:
+                _fail_validation(f"Unsupported IFRIC documentType label: {variant.label}", cause=error)
+        if normalized_doc_uid.startswith("ias"):
+            try:
+                return IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE[variant.label]
+            except KeyError as error:
+                _fail_validation(f"Unsupported IAS documentType label: {variant.label}", cause=error)
         return resolve_document_type(doc_uid)
 
     def _extract_structure(self, doc_uid: str, content_root: Tag) -> tuple[list[Chunk], list[SectionRecord]]:
@@ -516,4 +526,16 @@ IFRS_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
     "Basis for Conclusions": "IFRS-BC",
     "Illustrative Examples": "IFRS-IE",
     "Implementation Guidance": "IFRS-IG",
+}
+IFRIC_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
+    "Standard": "IFRIC",
+    "Basis for Conclusions": "IFRIC-BC",
+    "Illustrative Examples": "IFRIC-IE",
+    "Implementation Guidance": "IFRIC-IG",
+}
+IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
+    "Standard": "IAS-S",
+    "Basis for Conclusions": "IAS-BC",
+    "Illustrative Examples": "IAS-IE",
+    "Implementation Guidance": "IAS-IG",
 }
