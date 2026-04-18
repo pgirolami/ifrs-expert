@@ -126,6 +126,8 @@ def rerank_per_type(
     score_normalization: str,
     top_k_per_type: int,
     k_per_type: int,
+    k_per_type_overrides: dict[str, int] | None = None,
+    chunk_limit_per_type: int | None = None,
 ) -> dict:
     """Run BGE-M3 reranking separately for each document type, then merge results.
 
@@ -166,6 +168,17 @@ def rerank_per_type(
         sorted_type = sorted(by_type[doc_type], key=lambda r: r["score"], reverse=True)
         per_type_candidates[doc_type] = sorted_type[:top_k_per_type]
 
+    # STEP 1: Dense retrieval summary
+    _log: list[str] = []
+    _log.append("[Step 1 - Dense retrieval] "
+                f"{len(ranked_results)} total chunks from {len({r['doc_uid'] for r in ranked_results})} docs")
+    for dt in document_types:
+        chunks = by_type.get(dt, [])
+        docs = sorted({r["doc_uid"] for r in chunks})
+        top = max((r["score"] for r in chunks), default=None)
+        top_str = f"top={top:.4f}" if top is not None else "no chunks"
+        _log.append(f"  {dt}: {len(chunks)} chunks, {len(docs)} docs ({top_str})")
+
     # Build doc_chunks as Chunk objects
     doc_chunks: dict[str, list[Chunk]] = {
         du: [
@@ -182,83 +195,151 @@ def rerank_per_type(
         for du, chunk_dicts in doc_chunks_override.items()
     }
 
-    # Run BGE-M3 reranker once with all per-type candidates
-    # (the reranker will score all candidates, no top_k filtering needed here)
-    all_candidates: list[dict] = []
-    for dt in document_types:
-        all_candidates.extend(per_type_candidates[dt])
-
-    if not all_candidates:
-        return {
-            "status": "ok",
-            "reranked": [],
-            "per_type_results": {},
-            "doc_chunks": {},
-        }
-
+    # Run BGE-M3 reranker SEPARATELY for each document type.
+    # Each type's chunks are scored only against other chunks from the same type,
+    # giving rarer document types a fair shot rather than letting NAVIS dominate
+    # a global ranking.
     reranker = BgeM3TextReranker()
-    reranked = reranker.rerank(
-        query=_QUERY,
-        candidates=all_candidates,
-        doc_chunks=doc_chunks,
-        options=TextRerankingOptions(
-            mode=mode,
-            top_k_initial=len(all_candidates),
-            top_k_final=len(all_candidates),
-            dense_weight=dense_weight,
-            sparse_weight=sparse_weight,
-            multivector_weight=multivector_weight,
-            score_normalization=score_normalization,
-            document_types=document_types,  # tell reranker to filter per-type
-        ),
+    per_type_reranked: dict[str, list[dict]] = {}
+    _log.append(
+        f"\n[Step 2 - Candidates to BGE-M3] top_k_per_type={top_k_per_type}:"
     )
+    for doc_type in document_types:
+        type_candidates = per_type_candidates.get(doc_type, [])
+        _log.append(
+            f"  {doc_type}: {len(type_candidates)} chunks "
+            f"({len({c['doc_uid'] for c in type_candidates})} docs)"
+        )
+        if not type_candidates:
+            _log.append(f"    -> SKIPPED (no candidates)")
+            continue
+
+        _log.append(f"    -> Running BGE-M3 reranking for {doc_type}...")
+        reranked_for_type = reranker.rerank(
+            query=_QUERY,
+            candidates=type_candidates,
+            doc_chunks=doc_chunks,
+            options=TextRerankingOptions(
+                mode=mode,
+                top_k_initial=len(type_candidates),
+                top_k_final=len(type_candidates),
+                dense_weight=dense_weight,
+                sparse_weight=sparse_weight,
+                multivector_weight=multivector_weight,
+                score_normalization=score_normalization,
+                document_types=None,  # no per-type filter within a single-type pass
+            ),
+        )
+        per_type_reranked[doc_type] = reranked_for_type
+        # Log top 3 docs after BGE-M3 reranking
+        by_doc: dict[str, dict] = {}
+        for r in reranked_for_type:
+            du = r["doc_uid"]
+            if du not in by_doc:
+                by_doc[du] = {"doc_uid": du, "top_score": r["score"], "n": 0}
+            by_doc[du]["top_score"] = max(by_doc[du]["top_score"], r["score"])
+            by_doc[du]["n"] += 1
+        top3 = sorted(by_doc.values(), key=lambda d: d["top_score"], reverse=True)[:3]
+        _log.append(
+            f"    Top 3 after BGE-M3: "
+            + ", ".join(f"{d['doc_uid']}({d['top_score']:.4f})" for d in top3)
+        )
+
+    _log.append("\n[Step 3 - Per-type selection] (after BGE-M3 reranking)")
 
     # Now apply per-type selection: for each document type, take its best k_per_type chunks
-    # Group reranked results by doc_uid → doc_type
-    by_doc: dict[str, dict] = {}
-    for r in reranked:
-        du = r["doc_uid"]
-        doc_type = doc_type_by_uid.get(du)
-        if doc_type not in by_doc:
-            by_doc[du] = {"doc_uid": du, "doc_type": doc_type, "chunks": [], "top_score": 0.0}
-        by_doc[du]["chunks"].append(r)
-        by_doc[du]["top_score"] = max(by_doc[du]["top_score"], r["score"])
-
-    # Group documents by type
-    docs_by_type: dict[str, list[dict]] = {dt: [] for dt in document_types}
-    for doc_data in by_doc.values():
-        dt = doc_data["doc_type"]
-        if dt in docs_by_type:
-            docs_by_type[dt].append(doc_data)
-
-    # Per-type selection: for each type, sort docs by score, take top chunks
+    # Group per-type reranked results by doc_uid
     selected_per_type: dict[str, list[dict]] = {}
     for doc_type in document_types:
-        docs = sorted(docs_by_type[doc_type], key=lambda d: d["top_score"], reverse=True)
+        reranked_for_type = per_type_reranked.get(doc_type, [])
+
+        # Group by doc_uid within this type
+        by_doc: dict[str, dict] = {}
+        for r in reranked_for_type:
+            du = r["doc_uid"]
+            if du not in by_doc:
+                by_doc[du] = {"doc_uid": du, "chunks": [], "top_score": 0.0}
+            by_doc[du]["chunks"].append(r)
+            by_doc[du]["top_score"] = max(by_doc[du]["top_score"], r["score"])
+
+        docs = sorted(by_doc.values(), key=lambda d: d["top_score"], reverse=True)
+
+        # Per-type k: use override if set, else default
+        k_this_type = (k_per_type_overrides or {}).get(doc_type, k_per_type)
+        chunk_limit = chunk_limit_per_type if chunk_limit_per_type is not None else k_this_type * 3
+
+        # STEP 4 LOG: per-type selection
+        _log.append(
+            f"  [Step 4 - Per-type selection] {doc_type}: k_per_type={k_this_type}, "
+            f"chunk_limit={chunk_limit} | {len(docs)} docs compete: "
+            + ", ".join(f"{d['doc_uid']}(top={d['top_score']:.4f}, {len(d['chunks'])} chunks)" for d in docs)
+        )
+
         type_selected: list[dict] = []
         for doc_data in docs:
-            if len(type_selected) >= k_per_type * 3:  # reasonable limit
+            if len(type_selected) >= chunk_limit:
+                _log.append(
+                    f"    DROPPED doc={doc_data['doc_uid']} "
+                    f"(limit reached at {chunk_limit} chunks)"
+                )
                 break
             for chunk in sorted(doc_data["chunks"], key=lambda c: c["score"], reverse=True):
-                if len(type_selected) >= k_per_type * 3:
+                if len(type_selected) >= chunk_limit:
                     break
                 type_selected.append(chunk)
-        selected_per_type[doc_type] = type_selected
 
-    # Merge all per-type selected chunks, sort globally, apply min_score filter
+        # Log which docs were dropped
+        kept_docs = {c["doc_uid"] for c in type_selected}
+        for d in docs:
+            if d["doc_uid"] not in kept_docs:
+                _log.append(f"    DROPPED doc={d['doc_uid']} (top={d['top_score']:.4f}, {len(d['chunks'])} chunks)")
+
+        selected_per_type[doc_type] = type_selected
+        _log.append(
+            f"  [Step 4 - Kept] {doc_type}: "
+            f"{len(type_selected)} chunks from {len(kept_docs)} docs: "
+            + ", ".join(f"{c['doc_uid']}({c['score']:.4f})" for c in type_selected[:3])
+            + (" ..." if len(type_selected) > 3 else "")
+        )
+
+    # STEP 5: Merge + global sort
     all_selected: list[dict] = []
     for chunks in selected_per_type.values():
         all_selected.extend(chunks)
     all_selected_sorted = sorted(all_selected, key=lambda r: r["score"], reverse=True)
+    _log.append(f"\n  [Step 5 - Merge] {len(all_selected_sorted)} chunks total from "
+                f"{len({c['doc_uid'] for c in all_selected_sorted})} docs, sorted by BGE score")
+    _log.append("    Top 5 after merge: "
+                + ", ".join(f"{c['doc_uid']}({c['score']:.4f})" for c in all_selected_sorted[:5]))
 
-    # Final per-doc selection
+    # STEP 6: Final per-doc selection (k=5 per doc)
     from src.retrieval.pipeline import _select_top_k_per_document
 
     final_selected = _select_top_k_per_document(
         ranked_results=all_selected_sorted,
-        k=5,  # global k
-        min_score=0.0,  # no min_score filter at this stage
+        k=5,
+        min_score=0.0,
     )
+    _log.append(f"\n  [Step 6 - Final per-doc] {len(final_selected)} chunks from "
+                f"{len({c['doc_uid'] for c in final_selected})} docs: "
+                + ", ".join(f"{c['doc_uid']}({c['score']:.4f})" for c in final_selected))
+
+    # Build step log for return
+    step_log = list(_log)
+
+    # Build per-type debug scores
+    per_type_debug: dict[str, list[dict]] = {}
+    for doc_type in document_types:
+        reranked_for_type = per_type_reranked.get(doc_type, [])
+        by_doc = {}
+        for r in reranked_for_type:
+            du = r["doc_uid"]
+            if du not in by_doc:
+                by_doc[du] = {"doc_uid": du, "top_score": r["score"], "n_chunks": 0}
+            by_doc[du]["top_score"] = max(by_doc[du]["top_score"], r["score"])
+            by_doc[du]["n_chunks"] += 1
+        docs = sorted(by_doc.values(), key=lambda d: d["top_score"], reverse=True)
+        per_type_debug[doc_type] = docs
 
     return {
         "status": "ok",
@@ -268,6 +349,8 @@ def rerank_per_type(
             for dt, chunks in selected_per_type.items()
             if chunks
         },
+        "per_type_debug": per_type_debug,
+        "step_log": step_log,
         "doc_chunks": {
             du: [
                 {
@@ -370,8 +453,10 @@ if __name__ == "__main__":
             sparse_weight=payload["sparse_weight"],
             multivector_weight=payload["multivector_weight"],
             score_normalization=payload["score_normalization"],
-            top_k_per_type=payload.get("top_k_per_type", 100),
-            k_per_type=payload.get("k_per_type", 3),
+            top_k_per_type=payload.get("top_k_per_type", 500),
+            k_per_type=payload.get("k_per_type", 10),
+            k_per_type_overrides=payload.get("k_per_type_overrides"),
+            chunk_limit_per_type=payload.get("chunk_limit_per_type"),
         )
     else:
         result = rerank(

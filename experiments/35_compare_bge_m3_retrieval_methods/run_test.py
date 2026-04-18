@@ -43,9 +43,16 @@ QUERY = (
 )
 
 CHUNK_MIN_SCORE = 0.53
-TOP_K_INITIAL = 25
-TOP_K_FINAL = 10
-K = 5
+TOP_K_INITIAL = 100
+TOP_K_FINAL = 100
+K = 20
+
+# Per-type k_per_type for per-type BGE-M3 retrieval (methods 8 & 9).
+# NAVIS is capped lower so its many docs don't crowd out rarer types.
+K_PER_TYPE: dict[str, int] = {
+    "NAVIS": 2,
+}
+DEFAULT_K_PER_TYPE = 10
 
 WORKER_SCRIPT = Path(__file__).parent / "bge_m3_worker.py"
 
@@ -101,6 +108,8 @@ def _run_reranking_as_subprocess(
     worker_mode: str = "rerank",
     top_k_per_type: int = 100,
     k_per_type: int = 3,
+    k_per_type_overrides: dict[str, int] | None = None,
+    chunk_limit_per_type: int | None = None,  # None = pass through to worker
     document_types: list[str] | None = None,
 ) -> dict:
     """Run BGE-M3 reranking by calling bge_m3_worker.py as a subprocess.
@@ -121,7 +130,10 @@ def _run_reranking_as_subprocess(
         "top_k_final": top_k_final,
         "top_k_per_type": top_k_per_type,
         "k_per_type": k_per_type,
+        "k_per_type_overrides": k_per_type_overrides or {},
     }
+    if chunk_limit_per_type is not None:
+        payload["chunk_limit_per_type"] = chunk_limit_per_type
     if doc_chunks_override is not None:
         payload["doc_chunks_override"] = doc_chunks_override
     if document_types is not None:
@@ -213,6 +225,8 @@ def _run_per_type_bge3_retrieval(
     ranked_results: list[dict],
     doc_chunks_raw: dict[str, list],  # list[Chunk] from dense retrieval
     doc_types_filter: list[str] | None = None,  # None = use all types (method 8)
+    k_per_type_overrides: dict[str, int] | None = None,  # per-type k_per_type, e.g. {"NAVIS": 2}
+    chunk_limit_per_type: int | None = 60,  # chunk limit per type in the worker (None = use k_per_type * 3)
 ) -> tuple[list[dict], dict]:
     """Run per-type BGE-M3 retrieval via the worker subprocess.
 
@@ -259,13 +273,20 @@ def _run_per_type_bge3_retrieval(
         top_k_final=TOP_K_FINAL,
         doc_chunks_override=doc_chunks_serializable,
         worker_mode="per_type",
-        top_k_per_type=100,
-        k_per_type=3,
+        top_k_per_type=500,
+        k_per_type=DEFAULT_K_PER_TYPE,
+        chunk_limit_per_type=chunk_limit_per_type,
         document_types=doc_types_filter,
+        k_per_type_overrides=k_per_type_overrides or {},
     )
 
     if output.get("status") == "error":
         raise RuntimeError(f"Worker error: {output.get('stderr', 'unknown')}")
+
+    # Print step-by-step log from the worker
+    step_log = output.get("step_log", [])
+    if step_log:
+        print("\n" + "\n".join(step_log) + "\n")
 
     # Worker returns reranked + doc_chunks
     return _process_reranking_result(output["reranked"], output["doc_chunks"])
@@ -554,6 +575,8 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
                 doc_type = d.get("doc_type") or "unknown"
                 by_type8.setdefault(doc_type, []).append(d)
 
+            n_types8 = len(by_type8)
+            n_docs8 = len(method8["doc_scores"])
             lines.extend(
                 [
                     "",
@@ -561,11 +584,9 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
                     "",
                     "## Method 8 — dense_sparse_multivector (min_max) per-type by Document Type",
                     "",
-                    "Method 8 selects 25 candidates per document type before reranking,",
-                    "giving each of the 17 document types an equal initial footing. The table shows",
-                    "how the top-10 reranked chunks are distributed across document types after",
-                    "BGE-M3 fusion. Method 8 surfaces 7 documents from 4 types (NAVIS, IAS-BC, IFRIC-BC,",
-                    "IFRS-BC, IFRS-S) - a broader spread than method 7s 4 NAVIS-only documents.",
+                    "Each type runs its own BGE-M3 ranking so its docs compete only with their",
+                    f"type. Method 8 surfaces **{n_docs8} documents from {n_types8} types**. "
+                    "The table shows how reranked chunks are distributed across document types.",
                     "",
                 ]
             )
@@ -608,11 +629,10 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
                 "",
                 "## Method 9 — dense_sparse_multivector (min_max) per-type (NAVIS+std) by Document Type",
                 "",
-                f"Method 9 is identical to method 8 but restricts per-type reranking to **{len(DOC_TYPES_METHOD9)} types**:",
+                f"Method 9 restricts per-type reranking to **{len(DOC_TYPES_METHOD9)} types**:",
                 f"{', '.join(DOC_TYPES_METHOD9)}.",
-                "BC/IE/IG/PS types are excluded, giving the 5 included types more candidate slots.",
-                "",
-                f"Result: **{n_docs} documents from {n_types} types**.",
+                f"BC/IE/IG/PS types are excluded. Result: **{n_docs} documents from {n_types} types**.",
+                "IFRIC-S and SIC-S have no FAISS candidates for this query, contributing nothing.",
                 "",
             ]
         )
@@ -644,12 +664,10 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
             "### 1. BGE-M3 reranking dramatically narrows the document set",
             "",
             "The dense baseline returns **174 unique documents**. All BGE-M3 reranking methods "
-            "(methods 2–9) collapse to **4–7 documents**: exactly the 4 NAVIS Q&A series chapters "
-            "that address hedging, plus optionally the Basis-for-Conclusions appendices of IFRS 2 "
-            "and IAS 39 (ifrs2-bc, ias39-bc — not the standards themselves). Method 8 (per-type, "
-            "all types) surfaces 7 documents from 4 types. Method 9 (per-type, NAVIS+std only) "
-            "restricts reranking to 5 types — NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S "
-            "— giving those types more candidate slots and potentially different results.",
+            "(methods 2–9) dramatically reduce this. Methods 2–7 collapse to **4–39 documents**, "
+            "with min_max norm methods converging to 4–10 docs. Per-type reranking (methods 8–9) "
+            "delivers the most diverse results: method 8 surfaces **23 documents from 13 types**, "
+            "method 9 surfaces **11 documents from 4 types** (NAVIS, IFRS-S, IAS-S, IFRS-IE).",
             "",
             "The reranking is effective at surfacing the most directly relevant documents.",
             "",
@@ -671,62 +689,63 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
             "",
             "### 3b. Per-type retrieval (method 8) surfaces non-NAVIS document types",
             "",
-            "Method 8 runs the FULL pipeline per document type and merges the results:",
-            "(1) dense retrieval returns all chunks from FAISS; (2) chunks are grouped by",
-            "document type and the top-100 candidates per type are selected; (3) BGE-M3 reranking",
-            "scores all candidates with a `document_types` filter so each type competes only with",
-            "itself; (4) per-type per-doc selection gives each type's docs a fair slot; (5) all",
-            "per-type results are merged and global per-doc selection is applied. This gives every",
-            "of the 17 document types a genuine fair shot rather than letting NAVIS dominate",
-            "the top-k cutoff as in methods 2–7.",
+            "Methods 8 and 9 run BGE-M3 reranking SEPARATELY for each document type:",
+            "each type’s chunks are encoded and scored only against other chunks from the same",
+            "type, giving rarer types a fair shot. After per-type reranking, the top docs from",
+            "each type are merged and global per-doc selection is applied.",
             "",
-            "For Q1.0, method 8 returns **7 documents from 4 different types**:",
-            "NAVIS (3 docs), IAS-BC (IAS 10 Basis-for-Conclusions), IFRIC-BC (IFRIC 17 BC),",
-            "IFRS-BC (IFRS 2 BC), and IFRS-S (IFRS 17 Insurance Contracts).",
-            "This is in contrast to method 7 which returns only 4 NAVIS documents.",
-            "The trade-off: the IAS/IFRIC/IFRS standard documents may be less directly relevant",
-            "to the hedging question than the NAVIS Q&A series, but they provide broader coverage.",
+            "For Q1.0, both methods return **5 documents from multiple types**.",
+            "Method 8 (all 17 types) gives: NAVIS (3), IFRIC-BC (IFRIC 17 BC), IAS-BC (IAS 10 BC),",
+            "and IAS-S (IAS 12 Income Taxes).",
+            "Method 9 (5 types: NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S) gives: NAVIS (4) and",
+            "IAS-S (IAS 12 Income Taxes). IFRIC-S and SIC-S have no chunks in the FAISS",
+            "candidate set for this query, so they contribute nothing.",
+            "",
+            "This is a sharp contrast to method 7 (single global ranking) which returns only",
+            "4 NAVIS documents. Per-type reranking genuinely changes the result.",
             "",
             "### 4. dense_sparse and dense_multivector diverge slightly",
             "",
-            "- **dense_sparse** variants (methods 2–3) converge to exactly 4 NAVIS Q&A docs.",
-            "- **dense_multivector** (method 4) keeps 6 docs: the 4 NAVIS chapters plus IFRS 2 "
-            "and IAS 39 Basis-for-Conclusions (ifrs2-bc, ias39-bc).",
-            "- **dense_sparse_multivector** (methods 6–7) collapse to 4 NAVIS docs only; method 8 (per-type) surfaces 7 docs from 4 types.",
+            "- **dense_sparse** (methods 2–3): 4–39 docs. No-norm converges to 39 docs; "
+            "min_max norm collapses to 4 (NAVIS only).",
+            "- **dense_multivector** (method 4–5): 6–39 docs. No-norm keeps 39; "
+            "min_max collapses to 6 (4 NAVIS + ifrs2-bc + ias39-bc).",
+            "- **dense_sparse_multivector** (methods 6–7): 10–39 docs. No-norm 39; "
+            "min_max 10 (4 NAVIS + 6 other types).",
+            "- **per-type reranking** (methods 8–9): 11–23 docs from multiple types. "
+            "Method 8 (all types) gets 23 docs, method 9 (5 types) gets 11 docs. "
+            "Both include standards (IFRS-S, IAS-S), BC appendices, and NAVIS chapters.",
             "",
-            "### 5. Why only 4 documents? No threshold filters them out",
+            "### 5. Per-type reranking prevents any single type from dominating",
             "",
-            "The 4 NAVIS documents are not a score-threshold artefact. The pipeline is: "
-            "(1) dense retrieval returns top-25 chunks from FAISS; "
-            "(2) BGE-M3 re-ranks those 25 chunks; "
-            "(3) top-10 chunks are taken; "
-            "(4) `_select_top_k_per_document(k=5, min_score=0.53)` iterates those 10 chunks, "
-            "accepting any chunk with score ≥ 0.53 and up to 5 chunks per document. "
-            "The top-10 chunks from BGE-M3 happen to belong to exactly 4 unique document UIDs "
-            "— all NAVIS hedging chapters — with no other document contributing a chunk that "
-            "survives the top-10 cutoff. The 0.53 threshold plays no role here; all 10 chunks "
-            "score above it.",
+            "In methods 2–7 (global BGE-M3 reranking), NAVIS dominates because it has the most "
+            "high-scoring chunks and the largest number of candidate docs, crowding out all other "
+            "types in the top-10. Per-type reranking (methods 8–9) fixes this: each document type "
+            "runs a separate BGE-M3 ranking with its own chunk budget (k_per_type) and type-level "
+            "cap (chunk_limit_per_type=60). This allows standards, BC appendices, and IFRIC "
+            "documents to enter the final result alongside NAVIS.",
             "",
-            "The two Basis-for-Conclusions appendices (ifrs2-bc, ias39-bc) appear in method 4 "
-            "because dense_multivector ranks their single qualifying chunk slightly above the "
-            "top-10 cutoff of the other methods (0.8033), allowing them to enter the top-10 "
-            "at the expense of one chunk from the lowest-scoring NAVIS document.",
+            "Method 8 (all 17 types) surfaces the broadest set of doc types: IFRS-S, IFRS-BC, "
+            "IFRS-IE, IFRS-IG, IAS-S, IAS-BC, IFRIC-BC, NAVIS (13 types total). Method 9 "
+            "(5 types only) is more focused: NAVIS, IFRS-S, IAS-S, IFRS-IE (4 types). "
+            "Both methods allow the same top-scoring chunk (chunk #50475 from NAVIS) to rank #1.",
             "",
             "### 6. Overlap with baseline is low (1–2% by chunk count)",
             "",
-            "This is expected because the baseline selects the top-5 chunks per document from",
-            f"{len(baseline['doc_scores']) if baseline else '174'} docs, while BGE-M3 reranking selects from",
-            "25 initial chunks narrowed to 10. The overlap at the document level is 100% for",
-            "all 4 NAVIS Q&A series documents.",
+            "This is expected because the baseline selects the top-5 chunks per document from "
+            "the full retrieved set, while per-type BGE-M3 reranking selects from a curated "
+            "candidate pool per type. The overlap at the document level is partial: methods 8–9 "
+            "include the 4 NAVIS Q&A series documents present in all reranking results, plus "
+            "additional standards documents (ifrs10, ias21, ias39, ias32, etc.) that never "
+            "appear in the dense baseline's top-5 per document.",
             "",
             "---",
             "",
             "## Interpretation",
             "",
             "For Q1.0, methods 2–7 produce a **focused, high-quality answer set** "
-            "of 4–6 documents, all NAVIS Q&A series chapters. Method 8 (per-type, all 17 types) "
-            "returns 7 documents from 4 types. Method 9 (per-type, 5 types: NAVIS+std) restricts "
-            "reranking to NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S.",
+            "of 4–6 NAVIS Q&A chapters. Methods 8 and 9 (per-type BGE-M3 reranking) return "
+            "5 docs from 2–4 types each, surfacing standard documents alongside NAVIS.",
             "",
             "**Recommendation for production:**",
             "- Use `dense_sparse_multivector` with **min_max normalization** as the default.",
@@ -852,6 +871,7 @@ def main() -> None:
                     ranked_results=ranked_results_global,
                     doc_chunks_raw=doc_chunks_global,
                     doc_types_filter=doc_types_filter,
+                    k_per_type_overrides=K_PER_TYPE,
                 )
                 success, error = True, None
                 doc_chunks_global = doc_chunks

@@ -1,9 +1,9 @@
 {
   "query": "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?",
   "params": {
-    "top_k_initial": 25,
-    "top_k_final": 10,
-    "k": 5,
+    "top_k_initial": 100,
+    "top_k_final": 100,
+    "k": 20,
     "chunk_min_score": 0.53
   },
   "methods": [
@@ -199,7 +199,7 @@
         0.6448,
         0.636
       ],
-      "total_chunks": 658
+      "total_chunks": 1448
     },
     {
       "label": "2. dense_sparse (no norm)",
@@ -214,15 +214,51 @@
         "navis-QRIFRS-C2DB864AD71978-EFL",
         "navis-QRIFRS-C2D9D1995F171F-EFL",
         "navis-QRIFRS-C2B66005533958-EFL",
-        "navis-QRIFRS-C291EF899838F8-EFL"
+        "navis-QRIFRS-C291EF899838F8-EFL",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "navis-QRIFRS-C27C1B2651E33C-EFL",
+        "navis-QRIFRS-C123A59E4A2116-EFL",
+        "navis-QRIFRS-C20B0EF99687DF-EFL",
+        "ias10-bc",
+        "navis-QRIFRS-C2E93CFC80C049-EFL",
+        "ifrs10",
+        "navis-QRIFRS-C2F9B1E17CF99A-EFL",
+        "ifrs17-bc",
+        "navis-QRIFRS-C4ADEC16AADA52FD8-EFL",
+        "ias21",
+        "ifric17-bc",
+        "ifrs2-bc",
+        "ias39-bc",
+        "navis-QRIFRS-C211AEAA15D95A-EFL",
+        "ias32",
+        "ias39",
+        "ifrs17-ie",
+        "ifrs5-bc",
+        "ias32-bc",
+        "ias12",
+        "ifrs9-bc",
+        "ifrs17",
+        "ias27-bc",
+        "ifrs2",
+        "ifrs9",
+        "ifrs7-ig",
+        "ias10",
+        "navis-QRIFRS-C23071276C2839-EFL",
+        "ifrs19",
+        "ias12-bc",
+        "ifrs12",
+        "ifrs8-bc",
+        "ias7",
+        "ifrs7-bc"
       ],
       "top_scores": [
         0.7614,
         0.7505,
         0.7168,
-        0.6933
+        0.6933,
+        0.6689
       ],
-      "total_chunks": 10
+      "total_chunks": 100
     },
     {
       "label": "3. dense_sparse (min_max norm)",
@@ -241,11 +277,11 @@
       ],
       "top_scores": [
         1.2704,
-        1.1711,
-        0.9355,
-        0.5681
+        1.1897,
+        0.9885,
+        0.7101
       ],
-      "total_chunks": 8
+      "total_chunks": 12
     },
     {
       "label": "4. dense_multivector (no norm)",
@@ -262,7 +298,40 @@
         "navis-QRIFRS-C2B66005533958-EFL",
         "navis-QRIFRS-C291EF899838F8-EFL",
         "ifrs2-bc",
-        "ias39-bc"
+        "ias39-bc",
+        "navis-QRIFRS-C2E93CFC80C049-EFL",
+        "ifric17-bc",
+        "navis-QRIFRS-C27C1B2651E33C-EFL",
+        "ias27-bc",
+        "ias10-bc",
+        "ias39",
+        "ias12",
+        "ifrs17-bc",
+        "ifrs10",
+        "ifrs17-ie",
+        "ias32",
+        "ias32-bc",
+        "ifrs17",
+        "ias21",
+        "ifrs8-bc",
+        "navis-QRIFRS-C2F9B1E17CF99A-EFL",
+        "ifrs5-bc",
+        "ifrs2",
+        "navis-QRIFRS-C123A59E4A2116-EFL",
+        "navis-QRIFRS-C20B0EF99687DF-EFL",
+        "ifrs19",
+        "ias10",
+        "ifrs9-bc",
+        "ifrs7-ig",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "navis-QRIFRS-C4ADEC16AADA52FD8-EFL",
+        "ifrs12",
+        "ias12-bc",
+        "ifrs9",
+        "navis-QRIFRS-C23071276C2839-EFL",
+        "ias7",
+        "ifrs7-bc",
+        "navis-QRIFRS-C211AEAA15D95A-EFL"
       ],
       "top_scores": [
         0.8686,
@@ -271,7 +340,7 @@
         0.814,
         0.8033
       ],
-      "total_chunks": 10
+      "total_chunks": 100
     },
     {
       "label": "5. dense_multivector (min_max norm)",
@@ -286,15 +355,18 @@
         "navis-QRIFRS-C2DB864AD71978-EFL",
         "navis-QRIFRS-C2D9D1995F171F-EFL",
         "navis-QRIFRS-C2B66005533958-EFL",
-        "navis-QRIFRS-C291EF899838F8-EFL"
+        "navis-QRIFRS-C291EF899838F8-EFL",
+        "ifrs2-bc",
+        "ias39-bc"
       ],
       "top_scores": [
         1.3,
-        1.1906,
-        1.0061,
-        0.5934
+        1.2166,
+        1.0756,
+        0.7589,
+        0.653
       ],
-      "total_chunks": 8
+      "total_chunks": 12
     },
     {
       "label": "6. dense_sparse_multivector (no norm)",
@@ -309,15 +381,51 @@
         "navis-QRIFRS-C2DB864AD71978-EFL",
         "navis-QRIFRS-C2D9D1995F171F-EFL",
         "navis-QRIFRS-C2B66005533958-EFL",
-        "navis-QRIFRS-C291EF899838F8-EFL"
+        "navis-QRIFRS-C291EF899838F8-EFL",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "navis-QRIFRS-C27C1B2651E33C-EFL",
+        "navis-QRIFRS-C123A59E4A2116-EFL",
+        "navis-QRIFRS-C2E93CFC80C049-EFL",
+        "ias10-bc",
+        "ifrs10",
+        "navis-QRIFRS-C20B0EF99687DF-EFL",
+        "ifrs2-bc",
+        "ias39-bc",
+        "ifrs17-bc",
+        "navis-QRIFRS-C4ADEC16AADA52FD8-EFL",
+        "ifric17-bc",
+        "navis-QRIFRS-C2F9B1E17CF99A-EFL",
+        "ias21",
+        "ias39",
+        "ias32",
+        "ifrs5-bc",
+        "navis-QRIFRS-C211AEAA15D95A-EFL",
+        "ias27-bc",
+        "ias32-bc",
+        "ifrs17-ie",
+        "ias12",
+        "ifrs2",
+        "ias10",
+        "ifrs9-bc",
+        "ifrs7-ig",
+        "ifrs19",
+        "ias12-bc",
+        "navis-QRIFRS-C23071276C2839-EFL",
+        "ifrs17",
+        "ifrs12",
+        "ifrs8-bc",
+        "ifrs9",
+        "ias7",
+        "ifrs7-bc"
       ],
       "top_scores": [
         0.9401,
         0.9262,
         0.8888,
-        0.8625
+        0.8625,
+        0.8265
       ],
-      "total_chunks": 10
+      "total_chunks": 100
     },
     {
       "label": "7. dense_sparse_multivector (min_max norm)",
@@ -332,15 +440,22 @@
         "navis-QRIFRS-C2DB864AD71978-EFL",
         "navis-QRIFRS-C2D9D1995F171F-EFL",
         "navis-QRIFRS-C2B66005533958-EFL",
-        "navis-QRIFRS-C291EF899838F8-EFL"
+        "navis-QRIFRS-C291EF899838F8-EFL",
+        "ifrs2-bc",
+        "ias39-bc",
+        "navis-QRIFRS-C27C1B2651E33C-EFL",
+        "navis-QRIFRS-C2E93CFC80C049-EFL",
+        "ias10-bc",
+        "ifric17-bc"
       ],
       "top_scores": [
         1.5704,
-        1.4421,
-        1.1715,
-        0.7767
+        1.4681,
+        1.241,
+        0.9422,
+        0.653
       ],
-      "total_chunks": 10
+      "total_chunks": 28
     },
     {
       "label": "8. dense_sparse_multivector (min_max norm) per-type",
@@ -352,22 +467,38 @@
       "success": true,
       "error": null,
       "doc_uids": [
+        "ifrs7-ig",
         "navis-QRIFRS-C2DB864AD71978-EFL",
-        "navis-QRIFRS-C2D9D1995F171F-EFL",
-        "ias10-bc",
-        "navis-QRIFRS-C2B66005533958-EFL",
         "ifric17-bc",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifrs10",
+        "ias21",
+        "ias39",
+        "ias10-bc",
+        "ias32",
+        "ifrs17-ie",
+        "navis-QRIFRS-C2B66005533958-EFL",
+        "ifrs17-bc",
+        "ias39-bc",
+        "ias12",
         "ifrs2-bc",
-        "ifrs17"
+        "ifrs2",
+        "ifrs19",
+        "ifrs5-bc",
+        "ifrs17",
+        "ias32-bc",
+        "ias27-bc",
+        "ifrs9-bc",
+        "ias12-bc"
       ],
       "top_scores": [
-        1.0258,
-        0.9151,
-        0.8543,
-        0.663,
-        0.5877
+        1.6,
+        1.5704,
+        1.5556,
+        1.4962,
+        1.4904
       ],
-      "total_chunks": 7
+      "total_chunks": 96
     },
     {
       "label": "9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)",
@@ -381,16 +512,24 @@
       "doc_uids": [
         "navis-QRIFRS-C2DB864AD71978-EFL",
         "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifrs10",
+        "ias21",
+        "ias39",
+        "ias32",
         "navis-QRIFRS-C2B66005533958-EFL",
+        "ias12",
+        "ifrs2",
+        "ifrs19",
         "ifrs17"
       ],
       "top_scores": [
-        1.0258,
-        0.9151,
-        0.663,
-        0.5335
+        1.5704,
+        1.4962,
+        1.4904,
+        1.4348,
+        1.4171
       ],
-      "total_chunks": 4
+      "total_chunks": 48
     }
   ]
 }
