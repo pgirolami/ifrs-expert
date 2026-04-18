@@ -1,0 +1,1231 @@
+{
+  "label": "1. dense (baseline)",
+  "mode": "dense",
+  "dense_weight": 1.0,
+  "sparse_weight": 0.0,
+  "multivector_weight": 0.0,
+  "score_normalization": "none",
+  "success": true,
+  "error": null,
+  "doc_scores": [
+    {
+      "doc_uid": "navis-QRIFRS-C2DB864AD71978-EFL",
+      "doc_title": "CHAPITRE 44 Comptabilité de couverture (IAS 39)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6899,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2D9D1995F171F-EFL",
+      "doc_title": "CHAPITRE 43 Comptabilité de couverture (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.684,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2B66005533958-EFL",
+      "doc_title": "CHAPITRE 46 Instruments financiers - Informations en annexe (IFRS 7)",
+      "doc_type": "NAVIS",
+      "top_score": 0.673,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C291EF899838F8-EFL",
+      "doc_title": "CHAPITRE 38 Classement et évaluation des passifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6448,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "ifrs2-bc",
+      "doc_title": "IFRS - IFRS 2 Share-based Payment - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.636,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias39-bc",
+      "doc_title": "IFRS - IAS 39 Financial Instruments: Recognition and Measurement - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.6357,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C27C1B2651E33C-EFL",
+      "doc_title": "CHAPITRE 31 Coûts d'emprunt (IAS 23)",
+      "doc_type": "NAVIS",
+      "top_score": 0.624,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifric17-bc",
+      "doc_title": "IFRS - IFRIC 17 Distributions of Non-cash Assets to Owners - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.6223,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias10-bc",
+      "doc_title": "IFRS - IAS 10 Events after the Reporting Period - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.6206,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs17-ie",
+      "doc_title": "IFRS - IFRS 17 Insurance Contracts - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.6191,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs17",
+      "doc_title": "IFRS - IFRS 17 Insurance Contracts",
+      "doc_type": "IFRS-S",
+      "top_score": 0.6184,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias27-bc",
+      "doc_title": "IFRS - IAS 27 Separate Financial Statements - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.6183,
+      "n_chunks": 18
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2E93CFC80C049-EFL",
+      "doc_title": "CHAPITRE 47 Présentation des états financiers annuels IFRS (IAS 1)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6167,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ias12",
+      "doc_title": "IFRS - IAS 12 Income Taxes",
+      "doc_type": "IAS-S",
+      "top_score": 0.6166,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias39",
+      "doc_title": "IFRS - IAS 39 Financial Instruments: Recognition and Measurement",
+      "doc_type": "IAS-S",
+      "top_score": 0.6131,
+      "n_chunks": 10
+    },
+    {
+      "doc_uid": "ias32",
+      "doc_title": "IFRS - IAS 32 Financial Instruments: Presentation",
+      "doc_type": "IAS-S",
+      "top_score": 0.6131,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs17-bc",
+      "doc_title": "IFRS - IFRS 17 Insurance Contracts - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.6121,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias32-bc",
+      "doc_title": "IFRS - IAS 32 Financial Instruments: Presentation - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.6108,
+      "n_chunks": 15
+    },
+    {
+      "doc_uid": "ifrs10",
+      "doc_title": "IFRS - IFRS 10 Consolidated Financial Statements",
+      "doc_type": "IFRS-S",
+      "top_score": 0.6098,
+      "n_chunks": 17
+    },
+    {
+      "doc_uid": "ias21",
+      "doc_title": "IFRS - IAS 21 The Effects of Changes in Foreign Exchange Rates",
+      "doc_type": "IAS-S",
+      "top_score": 0.6093,
+      "n_chunks": 10
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2F9B1E17CF99A-EFL",
+      "doc_title": "CHAPITRE 53 Informations relatives aux parties liées (IAS 24)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6084,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifrs9",
+      "doc_title": "IFRS - IFRS 9 Financial Instruments",
+      "doc_type": "IFRS-S",
+      "top_score": 0.6079,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C4ADEC16AADA52FD8-EFL",
+      "doc_title": "CHAPITRE 54 Contrats d'assurance (IFRS 17)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6067,
+      "n_chunks": 10
+    },
+    {
+      "doc_uid": "ifrs8-bc",
+      "doc_title": "IFRS - IFRS 8 Operating Segments - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.6064,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs5-bc",
+      "doc_title": "IFRS - IFRS 5 Non-current Assets Held for Sale and Discontinued Operations - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.6026,
+      "n_chunks": 15
+    },
+    {
+      "doc_uid": "ias7",
+      "doc_title": "IFRS - IAS 7 Statement of Cash Flows",
+      "doc_type": "IAS-S",
+      "top_score": 0.6025,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C20B0EF99687DF-EFL",
+      "doc_title": "CHAPITRE 22 Paiement fondé sur des actions (IFRS 2)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6022,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C123A59E4A2116-EFL",
+      "doc_title": "CHAPITRE 36 Distinction Dettes/Capitaux propres (IAS 32)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6021,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "ifrs2",
+      "doc_title": "IFRS - IFRS 2 Share-based Payment",
+      "doc_type": "IFRS-S",
+      "top_score": 0.6012,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs9-bc",
+      "doc_title": "IFRS - IFRS 9 Financial Instruments - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.601,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs12",
+      "doc_title": "IFRS - IFRS 12 Disclosure of Interests in Other Entities",
+      "doc_type": "IFRS-S",
+      "top_score": 0.6008,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C22416FFEABA0B-EFL",
+      "doc_title": "CHAPITRE 12 Conversion des états financiers des entreprises étrangères et hyperinflation (IAS 21, IAS 29)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6,
+      "n_chunks": 9
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C23071276C2839-EFL",
+      "doc_title": "CHAPITRE 13 Regroupements d'entreprises (IFRS 3)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5999,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias10",
+      "doc_title": "IFRS - IAS 10 Events after the Reporting Period",
+      "doc_type": "IAS-S",
+      "top_score": 0.5997,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifrs7-ig",
+      "doc_title": "IFRS - IFRS 7 Financial Instruments: Disclosures - Implementation Guidance",
+      "doc_type": "IFRS-IG",
+      "top_score": 0.5978,
+      "n_chunks": 9
+    },
+    {
+      "doc_uid": "ias12-bc",
+      "doc_title": "IFRS - IAS 12 Income Taxes - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5974,
+      "n_chunks": 14
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C211AEAA15D95A-EFL",
+      "doc_title": "CHAPITRE 45 Présentation des instruments financiers dans les états financiers (IAS 32)",
+      "doc_type": "NAVIS",
+      "top_score": 0.597,
+      "n_chunks": 18
+    },
+    {
+      "doc_uid": "ifrs19",
+      "doc_title": "IFRS - IFRS 19 Subsidiaries without Public Accountability: Disclosures",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5962,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs7-bc",
+      "doc_title": "IFRS - IFRS 7 Financial Instruments: Disclosures - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5959,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias24-bc",
+      "doc_title": "IFRS - IAS 24 Related Party Disclosures - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5927,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifrs5",
+      "doc_title": "IFRS - IFRS 5 Non-current Assets Held for Sale and Discontinued Operations",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5924,
+      "n_chunks": 14
+    },
+    {
+      "doc_uid": "ifrs14-bc",
+      "doc_title": "IFRS - IFRS 14 Regulatory Deferral Accounts - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5915,
+      "n_chunks": 15
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C434E11D0E1019456-EFL",
+      "doc_title": "CHAPITRE 56 Enjeux climatiques dans les états financiers",
+      "doc_type": "NAVIS",
+      "top_score": 0.5915,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifrs18-bc",
+      "doc_title": "IFRS - IFRS 18 Presentation and Disclosure in Financial Statements - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5911,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias7-ie",
+      "doc_title": "IFRS - IAS 7 Statement of Cash Flows - Illustrative Examples",
+      "doc_type": "IAS-IE",
+      "top_score": 0.5907,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifric1-ie",
+      "doc_title": "IFRS - IFRIC 1 Changes in Existing Decommissioning, Restoration and Similar Liabilities - Illustrative Examples",
+      "doc_type": "IFRIC-IE",
+      "top_score": 0.5906,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs1-bc",
+      "doc_title": "IFRS - IFRS 1 First-time Adoption of International Financial Reporting Standards - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.59,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias36",
+      "doc_title": "IFRS - IAS 36 Impairment of Assets",
+      "doc_type": "IAS-S",
+      "top_score": 0.5898,
+      "n_chunks": 15
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C213575C0C205C-EFL",
+      "doc_title": "CHAPITRE 7 Transactions en monnaies étrangères (IAS 21)",
+      "doc_type": "NAVIS",
+      "top_score": 0.588,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias24",
+      "doc_title": "IFRS - IAS 24 Related Party Disclosures",
+      "doc_type": "IAS-S",
+      "top_score": 0.5872,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifrs1-ig",
+      "doc_title": "IFRS - IFRS 1 First-time Adoption of International Financial Reporting Standards - Implementation Guidance",
+      "doc_type": "IFRS-IG",
+      "top_score": 0.5868,
+      "n_chunks": 16
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C21DD16059A201-EFL",
+      "doc_title": "CHAPITRE 49 Annexe IFRS (IAS 1)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5867,
+      "n_chunks": 9
+    },
+    {
+      "doc_uid": "ifric16-bc",
+      "doc_title": "IFRS - IFRIC 16 Hedges of a Net Investment in a Foreign Operation - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5866,
+      "n_chunks": 14
+    },
+    {
+      "doc_uid": "ifrs18",
+      "doc_title": "IFRS - IFRS 18 Presentation and Disclosure in Financial Statements",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5866,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifric17",
+      "doc_title": "IFRS - IFRIC 17 Distributions of Non-cash Assets to Owners",
+      "doc_type": "IFRIC",
+      "top_score": 0.5863,
+      "n_chunks": 10
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C267C0AB493DEF-EFL",
+      "doc_title": "CHAPITRE 17 Options sur titres consolidés ou mis en équivalence (IFRS 3, IFRS 10, IAS 32, IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5862,
+      "n_chunks": 8
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2FCBD5D27C68A-EFL",
+      "doc_title": "CHAPITRE 9 Etats financiers consolidés (IFRS 10)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5862,
+      "n_chunks": 9
+    },
+    {
+      "doc_uid": "ifrs14-ie",
+      "doc_title": "IFRS - IFRS 14 Regulatory Deferral Accounts - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5856,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifrs8-ig",
+      "doc_title": "IFRS - IFRS 8 Operating Segments - Implementation Guidance",
+      "doc_type": "IFRS-IG",
+      "top_score": 0.5837,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ias7-bc",
+      "doc_title": "IFRS - IAS 7 Statement of Cash Flows - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5835,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifric2",
+      "doc_title": "IFRS - IFRIC 2 Members’ Shares in Co-operative Entities and Similar Instruments",
+      "doc_type": "IFRIC",
+      "top_score": 0.5825,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ias2",
+      "doc_title": "IFRS - IAS 2 Inventories",
+      "doc_type": "IAS-S",
+      "top_score": 0.5821,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ifrs18-ie",
+      "doc_title": "IFRS - IFRS 18 Presentation and Disclosure in Financial Statements - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5813,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias27",
+      "doc_title": "IFRS - IAS 27 Separate Financial Statements",
+      "doc_type": "IAS-S",
+      "top_score": 0.5812,
+      "n_chunks": 11
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C21A352205D05B-EFL",
+      "doc_title": "CHAPITRE 16 Variations de périmètre et/ou du pourcentage d'intérêts dans une filiale (IFRS 3, IFRS 10)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5807,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "ifrs1",
+      "doc_title": "IFRS - IFRS 1 First-time Adoption of International Financial Reporting Standards",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5807,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C25C1EA2C787A3-EFL",
+      "doc_title": "CHAPITRE 14 Regroupements entre entreprises (activités) sous contrôle commun (IFRS 3)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5805,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs10-bc",
+      "doc_title": "IFRS - IFRS 10 Consolidated Financial Statements - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5797,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2194AA9CE08FB-EFL",
+      "doc_title": "CHAPITRE 39 Bases d'évaluation des instruments financiers : juste valeur et coût amorti (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5795,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifrs3",
+      "doc_title": "IFRS - IFRS 3 Business Combinations",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5794,
+      "n_chunks": 13
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2C547F9992C97-EFL",
+      "doc_title": "CHAPITRE 40 Dépréciation des actifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5793,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifrs12-bc",
+      "doc_title": "IFRS - IFRS 12 Disclosure of Interests in Other Entities - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5793,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C294CB54EFC9EA-EFL",
+      "doc_title": "CHAPITRE 50 Etat des flux de trésorerie (IAS 7)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5789,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifrs15-bc",
+      "doc_title": "IFRS - IFRS 15 Revenue from Contracts with Customers - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5789,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs14",
+      "doc_title": "IFRS - IFRS 14 Regulatory Deferral Accounts",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5786,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs3-bc",
+      "doc_title": "IFRS - IFRS 3 Business Combinations - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5775,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2F1C444C04F75-EFL",
+      "doc_title": "CHAPITRE 42 Produits dérivés et dérivés incorporés (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5773,
+      "n_chunks": 7
+    },
+    {
+      "doc_uid": "ias21-bc",
+      "doc_title": "IFRS - IAS 21 The Effects of Changes in Foreign Exchange Rates - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5772,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "ias40-bciasc",
+      "doc_title": "IFRS - IAS 40 Investment Property - Basis for Conclusions IASC",
+      "doc_type": "IAS-S",
+      "top_score": 0.5769,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C247CD27834EAC-EFL",
+      "doc_title": "CHAPITRE 41 Décomptabilisation d'actifs et de passifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5768,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifrs9-ig",
+      "doc_title": "IFRS - IFRS 9 Financial Instruments - Implementation Guidance",
+      "doc_type": "IFRS-IG",
+      "top_score": 0.5766,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ias19-bc",
+      "doc_title": "IFRS - IAS 19 Employee Benefits - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5754,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ias34",
+      "doc_title": "IFRS - IAS 34 Interim Financial Reporting",
+      "doc_type": "IAS-S",
+      "top_score": 0.5752,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifrs19-bc",
+      "doc_title": "IFRS - IFRS 19 Subsidiaries without Public Accountability: Disclosures - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5744,
+      "n_chunks": 17
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2C34B50998096-EFL",
+      "doc_title": "CHAPITRE 35 Instruments financiers : définitions et champ d'application (IAS 32, IFRS 9, IFRS 7)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5728,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias8",
+      "doc_title": "IFRS - IAS 8 Basis of Preparation of Financial Statements",
+      "doc_type": "IAS-S",
+      "top_score": 0.5715,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifrs2-ig",
+      "doc_title": "IFRS - IFRS 2 Share-based Payment - Implementation Guidance",
+      "doc_type": "IFRS-IG",
+      "top_score": 0.5711,
+      "n_chunks": 8
+    },
+    {
+      "doc_uid": "ifrs7",
+      "doc_title": "IFRS - IFRS 7 Financial Instruments: Disclosures",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5701,
+      "n_chunks": 20
+    },
+    {
+      "doc_uid": "ifric5-bc",
+      "doc_title": "IFRS - IFRIC 5 Rights to Interests arising from Decommissioning, Restoration and Environmental Rehabilitation Funds - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.57,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias12-ie",
+      "doc_title": "IFRS - IAS 12 Income Taxes - Illustrative Examples",
+      "doc_type": "IAS-IE",
+      "top_score": 0.5675,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ias37",
+      "doc_title": "IFRS - IAS 37 Provisions, Contingent Liabilities and Contingent Assets",
+      "doc_type": "IAS-S",
+      "top_score": 0.5669,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifric23",
+      "doc_title": "IFRS - IFRIC 23 Uncertainty over Income Tax Treatments",
+      "doc_type": "IFRIC",
+      "top_score": 0.5661,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C215C672AB032A-EFL",
+      "doc_title": "CHAPITRE 2 Les IFRS applicables pour les comptes 2025",
+      "doc_type": "NAVIS",
+      "top_score": 0.5661,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2C2AD0F1AE5E4-EFL",
+      "doc_title": "CHAPITRE 48 Présentation des états financiers intermédiaires (spécificités uniquement) (IAS 34)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5655,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifrs16-bc",
+      "doc_title": "IFRS - IFRS 16 Leases - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5642,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ias28-bc",
+      "doc_title": "IFRS - IAS 28 Investments in Associates and Joint Ventures - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5636,
+      "n_chunks": 16
+    },
+    {
+      "doc_uid": "ifrs8",
+      "doc_title": "IFRS - IFRS 8 Operating Segments",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5634,
+      "n_chunks": 8
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C23EB742C2A95C-EFL",
+      "doc_title": "CHAPITRE 57 Principales divergences France/IFRS",
+      "doc_type": "NAVIS",
+      "top_score": 0.5626,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ifrs11",
+      "doc_title": "IFRS - IFRS 11 Joint Arrangements",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5622,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ias38-bc",
+      "doc_title": "IFRS - IAS 38 Intangible Assets - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5621,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C22F9094BA470F-EFL",
+      "doc_title": "CHAPITRE 29 Actifs immobilisés (ou groupes d'actifs) détenus en vue de la vente et abandons d'activités (IFRS 5)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5615,
+      "n_chunks": 7
+    },
+    {
+      "doc_uid": "ifrs15-ie",
+      "doc_title": "IFRS - IFRS 15 Revenue from Contracts with Customers - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5614,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C203BC276F2DC4-EFL",
+      "doc_title": "CHAPITRE 6 Evénements postérieurs à la période de reporting (IAS 10)",
+      "doc_type": "NAVIS",
+      "top_score": 0.561,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias28",
+      "doc_title": "IFRS - IAS 28 Investments in Associates and Joint Ventures",
+      "doc_type": "IAS-S",
+      "top_score": 0.5608,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "ifrs13-bc",
+      "doc_title": "IFRS - IFRS 13 Fair Value Measurement - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5607,
+      "n_chunks": 9
+    },
+    {
+      "doc_uid": "ifric22-bc",
+      "doc_title": "IFRS - IFRIC 22 Foreign Currency Transactions and Advance Consideration - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5606,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifric14-bc",
+      "doc_title": "IFRS - IFRIC 14 IAS 19—The Limit on a Defined Benefit Asset, Minimum Funding Requirements and their Interaction - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5603,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias33-bc",
+      "doc_title": "IFRS - IAS 33 Earnings per Share - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5595,
+      "n_chunks": 8
+    },
+    {
+      "doc_uid": "ias20",
+      "doc_title": "IFRS - IAS 20 Accounting for Government Grants and Disclosure of Government Assistance",
+      "doc_type": "IAS-S",
+      "top_score": 0.5589,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifrs11-bc",
+      "doc_title": "IFRS - IFRS 11 Joint Arrangements - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5587,
+      "n_chunks": 11
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C278BCB5D3B52B-EFL",
+      "doc_title": "CHAPITRE 28 Dépréciation des actifs immobilisés (hors actifs financiers) (IAS 36)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5582,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias33",
+      "doc_title": "IFRS - IAS 33 Earnings per Share",
+      "doc_type": "IAS-S",
+      "top_score": 0.5574,
+      "n_chunks": 13
+    },
+    {
+      "doc_uid": "ps2",
+      "doc_title": "IFRS - IFRS Practice Statement 2: Making Materiality Judgements - Practice Statement",
+      "doc_type": "PS",
+      "top_score": 0.5572,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C28188444711BB-EFL",
+      "doc_title": "CHAPITRE 11 Participations dans des entreprises associées et des joint ventures (IAS 28)",
+      "doc_type": "NAVIS",
+      "top_score": 0.557,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ias16-bc",
+      "doc_title": "IFRS - IAS 16 Property, Plant and Equipment - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5564,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifric1",
+      "doc_title": "IFRS - IFRIC 1 Changes in Existing Decommissioning, Restoration and Similar Liabilities",
+      "doc_type": "IFRIC",
+      "top_score": 0.5548,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias19",
+      "doc_title": "IFRS - IAS 19 Employee Benefits",
+      "doc_type": "IAS-S",
+      "top_score": 0.5544,
+      "n_chunks": 16
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C23F486954C5CA-EFL",
+      "doc_title": "CHAPITRE 15 Variations de périmètre et/ou du pourcentage d'intérêts dans une entreprise mise en équivalence : entreprise associée ou joint venture (IAS 28)",
+      "doc_type": "NAVIS",
+      "top_score": 0.554,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifric14",
+      "doc_title": "IFRS - IFRIC 14 IAS 19—The Limit on a Defined Benefit Asset, Minimum Funding Requirements and their Interaction",
+      "doc_type": "IFRIC",
+      "top_score": 0.5531,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias36-bc",
+      "doc_title": "IFRS - IAS 36 Impairment of Assets - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.553,
+      "n_chunks": 11
+    },
+    {
+      "doc_uid": "ias29",
+      "doc_title": "IFRS - IAS 29 Financial Reporting in Hyperinflationary Economies",
+      "doc_type": "IAS-S",
+      "top_score": 0.5529,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifric19-bc",
+      "doc_title": "IFRS - IFRIC 19 Extinguishing Financial Liabilities with Equity Instruments - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5524,
+      "n_chunks": 7
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C26FF689BEEA37-EFL",
+      "doc_title": "CHAPITRE 18 Informations à fournir sur les intérêts détenus dans d'autres entités (IFRS 12)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5519,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C24AFDF54BCEDD-EFL",
+      "doc_title": "CHAPITRE 1 Les IFRS aujourd'hui",
+      "doc_type": "NAVIS",
+      "top_score": 0.5511,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifrs11-ie",
+      "doc_title": "IFRS - IFRS 11 Joint Arrangements - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5511,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs15",
+      "doc_title": "IFRS - IFRS 15 Revenue from Contracts with Customers",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5507,
+      "n_chunks": 7
+    },
+    {
+      "doc_uid": "ifric23-bc",
+      "doc_title": "IFRS - IFRIC 23 Uncertainty over Income Tax Treatments - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5507,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2F2779C596A05-EFL",
+      "doc_title": "CHAPITRE 34 Provisions, passifs éventuels et actifs éventuels (IAS 37)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5503,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ias16",
+      "doc_title": "IFRS - IAS 16 Property, Plant and Equipment",
+      "doc_type": "IAS-S",
+      "top_score": 0.5496,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias8-bc",
+      "doc_title": "IFRS - IAS 8 Basis of Preparation of Financial Statements - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5492,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "sic25",
+      "doc_title": "IFRS - SIC-25 Income Taxes—Changes in the Tax Status of an Entity or its Shareholders",
+      "doc_type": "SIC",
+      "top_score": 0.5492,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias23-bc",
+      "doc_title": "IFRS - IAS 23 Borrowing Costs - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5489,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifrs16-ie",
+      "doc_title": "IFRS - IFRS 16 Leases - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5489,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ias34-bc",
+      "doc_title": "IFRS - IAS 34 Interim Financial Reporting - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5488,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ias40",
+      "doc_title": "IFRS - IAS 40 Investment Property",
+      "doc_type": "IAS-S",
+      "top_score": 0.5486,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C20213390B37F9-EFL",
+      "doc_title": "CHAPITRE 26 Contrats de location (IFRS 16)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5483,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2C54015186759-EFL",
+      "doc_title": "CHAPITRE 37 Classement et évaluation des actifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5475,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias38",
+      "doc_title": "IFRS - IAS 38 Intangible Assets",
+      "doc_type": "IAS-S",
+      "top_score": 0.5474,
+      "n_chunks": 10
+    },
+    {
+      "doc_uid": "ifrs3-ie",
+      "doc_title": "IFRS - IFRS 3 Business Combinations - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5473,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias40-bc",
+      "doc_title": "IFRS - IAS 40 Investment Property - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5473,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C22CDDB26C4A8C-EFL",
+      "doc_title": "CHAPITRE 23 Immobilisations incorporelles (IAS 38)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5471,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ias32-ie",
+      "doc_title": "IFRS - IAS 32 Financial Instruments: Presentation - Illustrative Examples",
+      "doc_type": "IAS-IE",
+      "top_score": 0.5463,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "ias39-ie",
+      "doc_title": "IFRS - IAS 39 Financial Instruments: Recognition and Measurement - Illustrative Examples",
+      "doc_type": "IAS-IE",
+      "top_score": 0.5451,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ifrs16",
+      "doc_title": "IFRS - IFRS 16 Leases",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5449,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ps2-bc",
+      "doc_title": "IFRS - IFRS Practice Statement 2: Making Materiality Judgements - Basis for Conclusions",
+      "doc_type": "PS-BC",
+      "top_score": 0.5449,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifric1-bc",
+      "doc_title": "IFRS - IFRIC 1 Changes in Existing Decommissioning, Restoration and Similar Liabilities - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5445,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "ifric2-bc",
+      "doc_title": "IFRS - IFRIC 2 Members’ Shares in Co-operative Entities and Similar Instruments - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5444,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ifrs13",
+      "doc_title": "IFRS - IFRS 13 Fair Value Measurement",
+      "doc_type": "IFRS-S",
+      "top_score": 0.5443,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ifric12",
+      "doc_title": "IFRS - IFRIC 12 Service Concession Arrangements",
+      "doc_type": "IFRIC",
+      "top_score": 0.5441,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric16",
+      "doc_title": "IFRS - IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+      "doc_type": "IFRIC",
+      "top_score": 0.5435,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ias23",
+      "doc_title": "IFRS - IAS 23 Borrowing Costs",
+      "doc_type": "IAS-S",
+      "top_score": 0.5431,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "sic25-bc",
+      "doc_title": "IFRS - SIC-25 Income Taxes—Changes in the Tax Status of an Entity or its Shareholders - Basis for Conclusions",
+      "doc_type": "SIC-BC",
+      "top_score": 0.5429,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C25305FB4F52CB-EFL",
+      "doc_title": "CHAPITRE 8 Evaluation de la juste valeur (IFRS 13)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5427,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2A8E6F292F99E-EFL",
+      "doc_title": "CHAPITRE 4 Cadre conceptuel de l'information financière (Cadre conceptuel de l'IASB)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5426,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C253ED45AF7BDB-EFL",
+      "doc_title": "CHAPITRE 21 Avantages du personnel (retraites et autres avantages) (IAS 19)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5421,
+      "n_chunks": 5
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C3E1C11D0E1019456-EFL",
+      "doc_title": "CHAPITRE 49R Annexe IFRS (IFRS 18)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5416,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs13-ie",
+      "doc_title": "IFRS - IFRS 13 Fair Value Measurement - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5415,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C281F5127D7A60-EFL",
+      "doc_title": "CHAPITRE 20 Impôts (IAS 12)",
+      "doc_type": "NAVIS",
+      "top_score": 0.541,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric7-bc",
+      "doc_title": "IFRS - IFRIC 7 Applying the Restatement Approach under IAS 29 Financial Reporting in Hyperinflationary Economies - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5408,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C3A7511D0E1019456-EFL",
+      "doc_title": "CHAPITRE 47R Présentation des états financiers annuels IFRS (IFRS 18)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5407,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "ifric7",
+      "doc_title": "IFRS - IFRIC 7 Applying the Restatement Approach under IAS 29 Financial Reporting in Hyperinflationary Economies",
+      "doc_type": "IFRIC",
+      "top_score": 0.5407,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs9-ie",
+      "doc_title": "IFRS - IFRS 9 Financial Instruments - Illustrative Examples",
+      "doc_type": "IFRS-IE",
+      "top_score": 0.5406,
+      "n_chunks": 4
+    },
+    {
+      "doc_uid": "ifric21-bc",
+      "doc_title": "IFRS - IFRIC 21 Levies - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5398,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "sic29",
+      "doc_title": "IFRS - SIC-29 Service Concession Arrangements: Disclosures",
+      "doc_type": "SIC",
+      "top_score": 0.5388,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs6-bc",
+      "doc_title": "IFRS - IFRS 6 Exploration for and Evaluation of Mineral Resources - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.5387,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "ifric17-ie",
+      "doc_title": "IFRS - IFRIC 17 Distributions of Non-cash Assets to Owners - Illustrative Examples",
+      "doc_type": "IFRIC-IE",
+      "top_score": 0.5383,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2E6024F1CC155-EFL",
+      "doc_title": "CHAPITRE 5 Méthodes comptables, changements d'estimations comptables et erreurs (IAS 8)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5352,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric19",
+      "doc_title": "IFRS - IFRIC 19 Extinguishing Financial Liabilities with Equity Instruments",
+      "doc_type": "IFRIC",
+      "top_score": 0.5352,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C25DAE5599BCAE-EFL",
+      "doc_title": "CHAPITRE 30 Distribution d'actifs non monétaires aux actionnaires (IFRIC 17)",
+      "doc_type": "NAVIS",
+      "top_score": 0.5347,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric21",
+      "doc_title": "IFRS - IFRIC 21 Levies",
+      "doc_type": "IFRIC",
+      "top_score": 0.5344,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias29-bc",
+      "doc_title": "IFRS - IAS 29 Financial Reporting in Hyperinflationary Economies - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5339,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric12-bc",
+      "doc_title": "IFRS - IFRIC 12 Service Concession Arrangements - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5329,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias37-bc",
+      "doc_title": "IFRS - IAS 37 Provisions, Contingent Liabilities and Contingent Assets - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5327,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2491D0CB426E3-EFL",
+      "doc_title": "CHAPITRE 32 Accords de concession de services (IFRIC 12)",
+      "doc_type": "NAVIS",
+      "top_score": 0.532,
+      "n_chunks": 1
+    }
+  ],
+  "total_chunks": 1448
+}
