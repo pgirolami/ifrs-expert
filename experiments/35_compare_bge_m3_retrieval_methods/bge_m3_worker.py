@@ -364,7 +364,7 @@ if __name__ == "__main__":
         result = rerank_per_type(
             ranked_results=payload["ranked_results"],
             doc_chunks_override=payload.get("doc_chunks_override"),
-            document_types=list(DOCUMENT_TYPES),
+            document_types=payload.get("document_types") or list(DOCUMENT_TYPES),
             mode=payload["mode"],
             dense_weight=payload["dense_weight"],
             sparse_weight=payload["sparse_weight"],

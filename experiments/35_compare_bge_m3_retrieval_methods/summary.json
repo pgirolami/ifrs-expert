@@ -368,6 +368,29 @@
         0.5877
       ],
       "total_chunks": 7
+    },
+    {
+      "label": "9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)",
+      "mode": "dense_sparse_multivector",
+      "dense_weight": 1.0,
+      "sparse_weight": 0.3,
+      "multivector_weight": 0.3,
+      "score_normalization": "min_max",
+      "success": true,
+      "error": null,
+      "doc_uids": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "navis-QRIFRS-C2B66005533958-EFL",
+        "ifrs17"
+      ],
+      "top_scores": [
+        1.0258,
+        0.9151,
+        0.663,
+        0.5335
+      ],
+      "total_chunks": 4
     }
   ]
 }

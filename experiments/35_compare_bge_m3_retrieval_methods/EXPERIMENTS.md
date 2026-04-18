@@ -36,6 +36,7 @@ the import order is reversed.
 | 6 | no norm | 0.9401 | 4 | 10 |
 | 7 | min_max norm | 1.5704 | 4 | 10 |
 | 8 | min_max norm) per-type | 1.0258 | 7 | 7 |
+| 9 | min_max norm) per-type (NAVIS+std | 1.0258 | 4 | 4 |
 
 ---
 
@@ -123,6 +124,17 @@ the import order is reversed.
 | `ifrs2-bc` | IFRS - IFRS 2 Share-based Payment - Basis for Conclusions | IFRS-BC | 0.5472 | 1 |
 | `ifrs17` | IFRS - IFRS 17 Insurance Contracts | IFRS-S | 0.5335 | 1 |
 
+### 9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)
+
+**Mode:** `dense_sparse_multivector` | dense_w=1.0 | sparse_w=0.3 | multivector_w=0.3 | norm=min_max
+
+| Doc UID | Title | Type | Top Score | Chunks |
+|--------|-------|------|-----------|--------|
+| `navis-QRIFRS-C2DB864AD71978-EFL` | CHAPITRE 44 Comptabilité de couverture (IAS 39) | NAVIS | 1.0258 | 1 |
+| `navis-QRIFRS-C2D9D1995F171F-EFL` | CHAPITRE 43 Comptabilité de couverture (IFRS 9) | NAVIS | 0.9151 | 1 |
+| `navis-QRIFRS-C2B66005533958-EFL` | CHAPITRE 46 Instruments financiers - Informations en anne... | NAVIS | 0.6630 | 1 |
+| `ifrs17` | IFRS - IFRS 17 Insurance Contracts | IFRS-S | 0.5335 | 1 |
+
 
 ---
 
@@ -165,11 +177,29 @@ IFRS-BC, IFRS-S) - a broader spread than method 7s 4 NAVIS-only documents.
 
 ---
 
+## Method 9 — dense_sparse_multivector (min_max) per-type (NAVIS+std) by Document Type
+
+Method 9 is identical to method 8 but restricts per-type reranking to **5 types**:
+NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S.
+BC/IE/IG/PS types are excluded, giving the 5 included types more candidate slots.
+
+Result: **4 documents from 2 types**.
+
+| Doc Type | Doc UID | Title | Top Score | Chunks |
+|---------|---------|-------|-----------|--------|
+| IFRS-S | `ifrs17` | IFRS - IFRS 17 Insurance Contracts | 0.5335 | 1 |
+| NAVIS | `navis-QRIFRS-C2DB864AD71978-EFL` | CHAPITRE 44 Comptabilité de couverture (IAS 39) | 1.0258 | 1 |
+|  | `navis-QRIFRS-C2D9D1995F171F-EFL` | CHAPITRE 43 Comptabilité de couverture (IFRS 9) | 0.9151 | 1 |
+|  | `navis-QRIFRS-C2B66005533958-EFL` | CHAPITRE 46 Instruments financiers - Informatio... | 0.6630 | 1 |
+
+
+---
+
 ## Key Findings
 
 ### 1. BGE-M3 reranking dramatically narrows the document set
 
-The dense baseline returns **174 unique documents**. All BGE-M3 reranking methods (methods 2–8) collapse to **4–6 documents**: exactly the 4 NAVIS Q&A series chapters that address hedging, plus optionally the Basis-for-Conclusions appendices of IFRS 2 and IAS 39 (ifrs2-bc, ias39-bc — not the standards themselves). Method 8 (per-type) may surface additional non-NAVIS documents that rank highly within their own type.
+The dense baseline returns **174 unique documents**. All BGE-M3 reranking methods (methods 2–9) collapse to **4–7 documents**: exactly the 4 NAVIS Q&A series chapters that address hedging, plus optionally the Basis-for-Conclusions appendices of IFRS 2 and IAS 39 (ifrs2-bc, ias39-bc — not the standards themselves). Method 8 (per-type, all types) surfaces 7 documents from 4 types. Method 9 (per-type, NAVIS+std only) restricts reranking to 5 types — NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S — giving those types more candidate slots and potentially different results.
 
 The reranking is effective at surfacing the most directly relevant documents.
 
@@ -183,7 +213,7 @@ Within each method class, the relative ordering is stable. The min_max
 normalization scales scores to a wider range, making them easier to interpret,
 but does not change which chunk is ranked first.
 
-### 3. Top-1 chunk is identical across all 8 methods
+### 3. Top-1 chunk is identical across all 9 methods
 
 Chunk #50475 (NAVIS Q&A: "Est-il possible de couvrir des redevances intragroupe contre le risque de change ?") is ranked #1 in every method.
 This chunk is a near-perfect match for Q1.0.
@@ -229,11 +259,12 @@ all 4 NAVIS Q&A series documents.
 
 ## Interpretation
 
-For Q1.0, methods 2–7 produce a **focused, high-quality answer set** of 4–6 documents, all NAVIS Q&A series chapters. Method 8 (per-type) returns 7 documents from 4 document types (NAVIS, IAS-BC, IFRIC-BC, IFRS-BC, IFRS-S), giving every document type a fair shot rather than letting NAVIS dominate.
+For Q1.0, methods 2–7 produce a **focused, high-quality answer set** of 4–6 documents, all NAVIS Q&A series chapters. Method 8 (per-type, all 17 types) returns 7 documents from 4 types. Method 9 (per-type, 5 types: NAVIS+std) restricts reranking to NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S.
 
 **Recommendation for production:**
 - Use `dense_sparse_multivector` with **min_max normalization** as the default.
 - Use method 8 (per-type) when broader document-type coverage is desired: it surfaces IAS/IFRIC/IFRS standard documents that method 7 excludes.
+- Use method 9 (per-type, NAVIS+std) to restrict reranking to NAVIS and standard bodies (IFRS/IAS/IFRIC/SIC) — excludes BC, IE, IG, PS types.
 - Use `dense_multivector no_norm` to retain IFRS 2 and IAS 39 Basis-for-Conclusions (ifrs2-bc, ias39-bc) alongside the NAVIS Q&A series.
 - The added latency from BGE-M3 reranking (~10–20s per call on CPU) is justified only if the narrowing meaningfully improves answer quality for complex queries.
 

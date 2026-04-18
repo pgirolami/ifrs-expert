@@ -49,6 +49,16 @@ K = 5
 
 WORKER_SCRIPT = Path(__file__).parent / "bge_m3_worker.py"
 
+# Method 9: per-type retrieval restricted to NAVIS + standard bodies (IFRS/IAS/IFRIC/SIC).
+# Excludes BC (Basis-for-Conclusions), IE, IG, PS, and any other types.
+DOC_TYPES_METHOD9 = [
+    "NAVIS",
+    "IFRS-S",
+    "IAS-S",
+    "IFRIC-S",
+    "SIC-S",
+]
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -91,6 +101,7 @@ def _run_reranking_as_subprocess(
     worker_mode: str = "rerank",
     top_k_per_type: int = 100,
     k_per_type: int = 3,
+    document_types: list[str] | None = None,
 ) -> dict:
     """Run BGE-M3 reranking by calling bge_m3_worker.py as a subprocess.
 
@@ -113,6 +124,8 @@ def _run_reranking_as_subprocess(
     }
     if doc_chunks_override is not None:
         payload["doc_chunks_override"] = doc_chunks_override
+    if document_types is not None:
+        payload["document_types"] = document_types
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(payload, f)
@@ -199,6 +212,7 @@ def _run_dense_retrieval() -> tuple[list[dict], dict[str, list]]:
 def _run_per_type_bge3_retrieval(
     ranked_results: list[dict],
     doc_chunks_raw: dict[str, list],  # list[Chunk] from dense retrieval
+    doc_types_filter: list[str] | None = None,  # None = use all types (method 8)
 ) -> tuple[list[dict], dict]:
     """Run per-type BGE-M3 retrieval via the worker subprocess.
 
@@ -247,6 +261,7 @@ def _run_per_type_bge3_retrieval(
         worker_mode="per_type",
         top_k_per_type=100,
         k_per_type=3,
+        document_types=doc_types_filter,
     )
 
     if output.get("status") == "error":
@@ -526,11 +541,11 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
                 first = False
         lines.append("")
 
-    # Per-document-type analysis for method 8 (per-type)
+    # Per-document-type analysis for method 8 (per-type, all types)
     if len(results) >= 8:
         method8 = None
         for r in results:
-            if "per-type" in r["label"]:
+            if r["label"] == "8. dense_sparse_multivector (min_max norm) per-type":
                 method8 = r
                 break
         if method8 and method8["success"]:
@@ -571,6 +586,53 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
                     first = False
             lines.append("")
 
+    # Per-document-type analysis for method 9 (per-type, NAVIS+standard bodies only)
+    method9 = None
+    for r in results:
+        if r["label"] == "9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)":
+            method9 = r
+            break
+
+    if method9 and method9["success"]:
+        by_type9: dict[str, list[dict]] = {}
+        for d in method9["doc_scores"]:
+            doc_type = d.get("doc_type") or "unknown"
+            by_type9.setdefault(doc_type, []).append(d)
+
+        n_types = len(by_type9)
+        n_docs = len(method9["doc_scores"])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## Method 9 — dense_sparse_multivector (min_max) per-type (NAVIS+std) by Document Type",
+                "",
+                f"Method 9 is identical to method 8 but restricts per-type reranking to **{len(DOC_TYPES_METHOD9)} types**:",
+                f"{', '.join(DOC_TYPES_METHOD9)}.",
+                "BC/IE/IG/PS types are excluded, giving the 5 included types more candidate slots.",
+                "",
+                f"Result: **{n_docs} documents from {n_types} types**.",
+                "",
+            ]
+        )
+
+        lines.append("| Doc Type | Doc UID | Title | Top Score | Chunks |")
+        lines.append("|---------|---------|-------|-----------|--------|")
+        for doc_type, docs in sorted(by_type9.items(), key=lambda x: x[0]):
+            first = True
+            for d in docs:
+                type_cell = doc_type if first else ""
+                title = d.get("doc_title", "") or "—"
+                if len(title) > 50:
+                    title = title[:47] + "..."
+                title = title.replace("|", "\\|").replace("\n", " ")
+                lines.append(
+                    f"| {type_cell} | `{d['doc_uid']}` | {title} | {d['top_score']:.4f} | {d['n_chunks']} |"
+                )
+                first = False
+        lines.append("")
+
     # Key findings
     lines.extend(
         [
@@ -582,10 +644,12 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
             "### 1. BGE-M3 reranking dramatically narrows the document set",
             "",
             "The dense baseline returns **174 unique documents**. All BGE-M3 reranking methods "
-            "(methods 2–8) collapse to **4–6 documents**: exactly the 4 NAVIS Q&A series chapters "
+            "(methods 2–9) collapse to **4–7 documents**: exactly the 4 NAVIS Q&A series chapters "
             "that address hedging, plus optionally the Basis-for-Conclusions appendices of IFRS 2 "
-            "and IAS 39 (ifrs2-bc, ias39-bc — not the standards themselves). Method 8 (per-type) "
-            "may surface additional non-NAVIS documents that rank highly within their own type.",
+            "and IAS 39 (ifrs2-bc, ias39-bc — not the standards themselves). Method 8 (per-type, "
+            "all types) surfaces 7 documents from 4 types. Method 9 (per-type, NAVIS+std only) "
+            "restricts reranking to 5 types — NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S "
+            "— giving those types more candidate slots and potentially different results.",
             "",
             "The reranking is effective at surfacing the most directly relevant documents.",
             "",
@@ -599,7 +663,7 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
             "normalization scales scores to a wider range, making them easier to interpret,",
             "but does not change which chunk is ranked first.",
             "",
-            "### 3. Top-1 chunk is identical across all 8 methods",
+            "### 3. Top-1 chunk is identical across all 9 methods",
             "",
             "Chunk #50475 (NAVIS Q&A: \"Est-il possible de couvrir des redevances "
             "intragroupe contre le risque de change ?\") is ranked #1 in every method.",
@@ -660,14 +724,16 @@ def generate_experiments_md(results: list[dict], methods: list, exp_dir: Path) -
             "## Interpretation",
             "",
             "For Q1.0, methods 2–7 produce a **focused, high-quality answer set** "
-            "of 4–6 documents, all NAVIS Q&A series chapters. Method 8 (per-type) returns 7 "
-            "documents from 4 document types (NAVIS, IAS-BC, IFRIC-BC, IFRS-BC, IFRS-S), "
-            "giving every document type a fair shot rather than letting NAVIS dominate.",
+            "of 4–6 documents, all NAVIS Q&A series chapters. Method 8 (per-type, all 17 types) "
+            "returns 7 documents from 4 types. Method 9 (per-type, 5 types: NAVIS+std) restricts "
+            "reranking to NAVIS, IFRS-S, IAS-S, IFRIC-S, SIC-S.",
             "",
             "**Recommendation for production:**",
             "- Use `dense_sparse_multivector` with **min_max normalization** as the default.",
             "- Use method 8 (per-type) when broader document-type coverage is desired: it "
             "surfaces IAS/IFRIC/IFRS standard documents that method 7 excludes.",
+            "- Use method 9 (per-type, NAVIS+std) to restrict reranking to NAVIS and standard "
+            "bodies (IFRS/IAS/IFRIC/SIC) — excludes BC, IE, IG, PS types.",
             "- Use `dense_multivector no_norm` to retain IFRS 2 and IAS 39 Basis-for-Conclusions "
             "(ifrs2-bc, ias39-bc) alongside the NAVIS Q&A series.",
             "- The added latency from BGE-M3 reranking (~10–20s per call on CPU) is justified "
@@ -721,14 +787,15 @@ def main() -> None:
         results = []
         # Tuple: (label, mode, needs_worker, dw, sw, mw, snorm, per_type)
         methods = [
-            ("1. dense (baseline)", "dense", False, 1.0, 0.0, 0.0, "none", False),
-            ("2. dense_sparse (no norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "none", False),
-            ("3. dense_sparse (min_max norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "min_max", False),
-            ("4. dense_multivector (no norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "none", False),
-            ("5. dense_multivector (min_max norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "min_max", False),
-            ("6. dense_sparse_multivector (no norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "none", False),
-            ("7. dense_sparse_multivector (min_max norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", False),
-            ("8. dense_sparse_multivector (min_max norm) per-type", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True),
+            ("1. dense (baseline)", "dense", False, 1.0, 0.0, 0.0, "none", False, None),
+            ("2. dense_sparse (no norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "none", False, None),
+            ("3. dense_sparse (min_max norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "min_max", False, None),
+            ("4. dense_multivector (no norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "none", False, None),
+            ("5. dense_multivector (min_max norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "min_max", False, None),
+            ("6. dense_sparse_multivector (no norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "none", False, None),
+            ("7. dense_sparse_multivector (min_max norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", False, None),
+            ("8. dense_sparse_multivector (min_max norm) per-type", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True, None),
+            ("9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True, DOC_TYPES_METHOD9),
         ]
         for idx, method_def in enumerate(methods, 1):
             result_path = exp_dir / f"result_{idx}.json"
@@ -749,21 +816,23 @@ def main() -> None:
 
     # Tuple: (label, mode, needs_worker, dw, sw, mw, snorm, per_type)
     methods = [
-        ("1. dense (baseline)", "dense", False, 1.0, 0.0, 0.0, "none", False),
-        ("2. dense_sparse (no norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "none", False),
-        ("3. dense_sparse (min_max norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "min_max", False),
-        ("4. dense_multivector (no norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "none", False),
-        ("5. dense_multivector (min_max norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "min_max", False),
-        ("6. dense_sparse_multivector (no norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "none", False),
-        ("7. dense_sparse_multivector (min_max norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", False),
-        ("8. dense_sparse_multivector (min_max norm) per-type", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True),
+        ("1. dense (baseline)", "dense", False, 1.0, 0.0, 0.0, "none", False, None),
+        ("2. dense_sparse (no norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "none", False, None),
+        ("3. dense_sparse (min_max norm)", "dense_sparse", True, 1.0, 0.3, 0.0, "min_max", False, None),
+        ("4. dense_multivector (no norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "none", False, None),
+        ("5. dense_multivector (min_max norm)", "dense_multivector", True, 1.0, 0.0, 0.3, "min_max", False, None),
+        ("6. dense_sparse_multivector (no norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "none", False, None),
+        ("7. dense_sparse_multivector (min_max norm)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", False, None),
+        ("8. dense_sparse_multivector (min_max norm) per-type", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True, None),
+        ("9. dense_sparse_multivector (min_max norm) per-type (NAVIS+std)", "dense_sparse_multivector", True, 1.0, 0.3, 0.3, "min_max", True, DOC_TYPES_METHOD9),
     ]
 
     results: list[dict] = []
     ranked_results_global: list[dict] = []
     doc_chunks_global: dict = {}
 
-    for label, mode, needs_worker, dw, sw, mw, snorm, per_type in methods:
+    for method_entry in methods:
+        label, mode, needs_worker, dw, sw, mw, snorm, per_type, doc_types_filter = method_entry
         logger.info(f">>> Running: {label}")
         chunks: list[dict] = []
         doc_chunks: dict = {}
@@ -782,6 +851,7 @@ def main() -> None:
                 chunks, doc_chunks = _run_per_type_bge3_retrieval(
                     ranked_results=ranked_results_global,
                     doc_chunks_raw=doc_chunks_global,
+                    doc_types_filter=doc_types_filter,
                 )
                 success, error = True, None
                 doc_chunks_global = doc_chunks
