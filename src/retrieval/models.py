@@ -32,6 +32,7 @@ class RetrievalRequest:
     sparse_weight: float
     multivector_weight: float
     score_normalization: str
+    document_types: list[str] | None = None
 
 
 @dataclass(frozen=True)

@@ -136,6 +136,7 @@ def _execute_text_reranking_retrieval(
             sparse_weight=request.sparse_weight,
             multivector_weight=request.multivector_weight,
             score_normalization=request.score_normalization,
+            document_types=request.document_types,
         ),
     )
     narrowed_results = reranked_results[: request.top_k_final]

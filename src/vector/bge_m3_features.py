@@ -1,4 +1,12 @@
-"""BGE-M3 feature extraction for sparse and late-interaction reranking."""
+"""BGE-M3 feature extraction for sparse and late-interaction reranking.
+
+On Apple Silicon (M2 MacBook Air), M3Embedder's encode() can crash in multiprocessing
+subprocess workers unless FlagEmbedding is imported BEFORE the multiprocessing context
+is created. This module therefore pre-imports FlagEmbedding at the top level so that
+its init-time pool creation happens safely in the main process. Subprocess workers
+(e.g. bge_m3_worker.py) must also pre-import FlagEmbedding before importing this
+module to maintain the same safe ordering.
+"""
 
 from __future__ import annotations
 
@@ -13,6 +21,7 @@ from threading import Lock
 from typing import TYPE_CHECKING, Protocol, cast
 
 import numpy as np
+from FlagEmbedding.inference.embedder.encoder_only.m3 import M3Embedder
 
 from src.vector.model_cache import EMBEDDING_MODEL
 
@@ -189,7 +198,11 @@ class CachedBgeM3FeatureModel:
 
 
 def get_bge_m3_feature_model(model_name: str = EMBEDDING_MODEL) -> BgeM3FeatureModelProtocol:
-    """Return a cached BGE-M3 feature model."""
+    """Return a cached BGE-M3 feature model.
+
+    Performs a warmup encode on first creation to avoid Apple Silicon MPS
+    SIGSEGV crashes on first encode call (triggered by MLP layer init).
+    """
     with _FEATURE_MODEL_CACHE_LOCK:
         cached_model = _FEATURE_MODEL_CACHE.get(model_name)
         if cached_model is not None:
@@ -198,8 +211,81 @@ def get_bge_m3_feature_model(model_name: str = EMBEDDING_MODEL) -> BgeM3FeatureM
         logger.info(f"Loading BGE-M3 feature model: {model_name}")
         model_factory = _FEATURE_MODEL_CACHE_STATE.factory or _default_bge_m3_feature_model_factory
         model = model_factory(model_name)
+
+        # Warmup: encode a dummy string to trigger PyTorch weight initialization
+        # before any caller tries to encode. Without this, the first encode call
+        # in a fresh Python process (e.g. multiprocessing spawn) can SIGSEGV
+        # on Apple Silicon due to MLP layer lazy initialization with MPS backend.
+        # Only warmup with return_dense=True to minimize crash surface.
+        _warmup_bge_m3_model(model)
+
         _FEATURE_MODEL_CACHE[model_name] = model
         return model
+
+
+class _BgeM3CpuModel:
+    """BGE-M3 feature model that runs encoding on CPU only (no multiprocessing).
+
+    Wraps FlagEmbedding's M3Embedder and overrides encode() to use
+    encode_single_device instead of encode(), bypassing the multi-process
+    pool that causes SIGSEGV on Apple Silicon.
+    """
+
+    def __init__(self, model_name: str) -> None:
+        self._model = M3Embedder(
+            model_name,
+            normalize_embeddings=True,
+            use_fp16=False,
+            devices=["cpu"],
+            return_dense=True,
+            return_sparse=False,
+            return_colbert_vecs=False,
+        )
+
+    def encode(
+        self,
+        texts: list[str],
+        *,
+        return_dense: bool,
+        return_sparse: bool,
+        return_colbert_vecs: bool,
+    ) -> BgeM3BatchFeatures:
+        # Use encode_single_device to avoid the multi-process pool on Apple Silicon
+        raw_output = self._model.encode_single_device(
+            texts,
+            device="cpu",
+            return_dense=return_dense,
+            return_sparse=return_sparse,
+            return_colbert_vecs=return_colbert_vecs,
+        )
+        dense_vecs = _coerce_dense_vectors(raw_output.get("dense_vecs")) if return_dense else None
+        lexical_weights = _coerce_lexical_weights(raw_output.get("lexical_weights")) if return_sparse else None
+        colbert_vecs = _coerce_colbert_vectors(raw_output.get("colbert_vecs")) if return_colbert_vecs else None
+        return BgeM3BatchFeatures(
+            dense_vecs=dense_vecs,
+            lexical_weights=lexical_weights,
+            colbert_vecs=colbert_vecs,
+        )
+
+
+def _warmup_bge_m3_model(model: BgeM3FeatureModelProtocol) -> None:
+    """Run a minimal dummy encode to trigger PyTorch lazy weight initialization.
+
+    Only requests return_dense=True to minimize memory/CPU load on Apple Silicon.
+    A single warmup encode is sufficient to prevent SIGSEGV on first real encode.
+    """
+    try:
+        model.encode(
+            ["warmup"],
+            return_dense=True,
+            return_sparse=False,
+            return_colbert_vecs=False,
+        )
+        logger.info("BGE-M3 warmup encode completed successfully")
+    except OSError as e:
+        logger.warning(f"BGE-M3 warmup encode failed (OSError): {e}")
+    except RuntimeError as e:
+        logger.warning(f"BGE-M3 warmup encode failed (RuntimeError): {e}")
 
 
 def clear_bge_m3_feature_model_cache() -> None:
@@ -215,7 +301,7 @@ def set_bge_m3_feature_model_factory(factory: BgeM3FeatureModelFactory | None) -
 
 
 def _default_bge_m3_feature_model_factory(model_name: str) -> BgeM3FeatureModelProtocol:
-    return _FlagEmbeddingBgeM3Model(model_name)
+    return _BgeM3CpuModel(model_name)
 
 
 def _load_flag_embedding_module() -> FlagEmbeddingModuleProtocol:
@@ -277,10 +363,11 @@ def _coerce_lexical_weights(value: object) -> list[LexicalWeights]:
         normalized_row: LexicalWeights = {}
         for token_id, weight in row.items():
             token_text = str(token_id)
-            if not isinstance(weight, int | float):
+            if isinstance(weight, np.floating | int | float):
+                normalized_row[token_text] = float(weight)
+            else:
                 message = "BGE-M3 lexical_weights values must be numeric"
                 raise TypeError(message)
-            normalized_row[token_text] = float(weight)
         normalized_weights.append(normalized_row)
     return normalized_weights
 

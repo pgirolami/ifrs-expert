@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import logging
+import sqlite3
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol
 
 import numpy as np
 
+from src.db.connection import DB_PATH
 from src.vector.bge_m3_features import BgeM3BatchFeatures, BgeM3FeatureModelProtocol, CachedBgeM3FeatureModel, LexicalWeights
 
 if TYPE_CHECKING:
@@ -33,6 +35,7 @@ class TextRerankingOptions:
     sparse_weight: float
     multivector_weight: float
     score_normalization: str
+    document_types: list[str] | None = None
 
 
 @dataclass(frozen=True)
@@ -102,6 +105,7 @@ class BgeM3TextReranker:
         """Initialize the reranker with an optional feature model and cache hook."""
         self._feature_model = feature_model or CachedBgeM3FeatureModel()
         self._feature_cache = feature_cache or InMemoryFeatureCache()
+        self._doc_type_cache: dict[str, str | None] = {}
 
     def rerank(
         self,
@@ -110,8 +114,21 @@ class BgeM3TextReranker:
         doc_chunks: dict[str, list[Chunk]],
         options: TextRerankingOptions,
     ) -> list[SearchResult]:
-        """Rerank one narrowed candidate set using the configured BGE-M3 signals."""
+        """Rerank one narrowed candidate set using the configured BGE-M3 signals.
+
+        If options.document_types is set, only candidates whose doc_uid maps to one of
+        those document types are included. The top_k_initial limit is applied per type,
+        so at most len(document_types) * top_k_initial candidates are considered.
+        """
         validate_text_reranking_options(options)
+
+        candidates = self._filter_candidates_by_document_types(
+            candidates=candidates,
+            document_types=options.document_types,
+            top_k_per_type=options.top_k_initial,
+        )
+        if not candidates:
+            return []
 
         resolved_candidates = _resolve_candidate_texts(candidates=candidates, doc_chunks=doc_chunks)
         if not resolved_candidates:
@@ -224,6 +241,55 @@ class BgeM3TextReranker:
             lexical_weights=lexical_weights if run_sparse else None,
             colbert_vecs=colbert_vecs if run_multivector else None,
         )
+
+    def _filter_candidates_by_document_types(
+        self,
+        candidates: list[SearchResult],
+        document_types: list[str] | None,
+        top_k_per_type: int,
+    ) -> list[SearchResult]:
+        """Return at most top_k_per_type candidates per document type.
+
+        When document_types is None, returns all candidates unchanged.
+        When set, groups candidates by the document_type of their doc_uid and
+        returns the top_k_per_type from each group, then concatenates the groups.
+        Unknown doc_uids (not in the DB) are excluded.
+        """
+        if not document_types:
+            return candidates
+
+        # Look up doc_type for each candidate's doc_uid (cached in-process)
+        for candidate in candidates:
+            du = candidate["doc_uid"]
+            if du not in self._doc_type_cache:
+                self._doc_type_cache[du] = None  # placeholder
+
+        # Batch-fetch from DB
+        all_doc_uids = [c["doc_uid"] for c in candidates]
+        placeholders = ",".join("?" * len(all_doc_uids))
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                f"SELECT doc_uid, document_type FROM documents WHERE doc_uid IN ({placeholders})",  # noqa: S608
+                all_doc_uids,
+            ).fetchall()
+            for row in rows:
+                self._doc_type_cache[str(row["doc_uid"])] = row["document_type"]
+
+        # Group by document_type
+        by_type: dict[str, list[SearchResult]] = {dt: [] for dt in document_types}
+        for candidate in candidates:
+            doc_type = self._doc_type_cache.get(candidate["doc_uid"])
+            if doc_type in by_type:
+                by_type[doc_type].append(candidate)
+
+        # Take top_k_per_type from each group, preserving score order
+        filtered: list[SearchResult] = []
+        for doc_type in document_types:
+            type_candidates = sorted(by_type[doc_type], key=lambda r: r["score"], reverse=True)
+            filtered.extend(type_candidates[:top_k_per_type])
+
+        return filtered
 
 
 def validate_text_reranking_options(options: TextRerankingOptions) -> None:
