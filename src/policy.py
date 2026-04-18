@@ -38,6 +38,13 @@ class TextStageRetrievalPolicy:
     """Text-stage retrieval settings."""
 
     min_score: float
+    mode: str = "dense"
+    top_k_initial: int = 5
+    top_k_final: int = 5
+    score_normalization: str = "none"
+    dense_weight: float = 1.0
+    sparse_weight: float = 0.0
+    multivector_weight: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -125,6 +132,17 @@ def _parse_retrieval_policy(retrieval_mapping: dict[str, object]) -> RetrievalPo
         _require_key(text_mapping, "min_score", context="retrieval.text"),
         context="retrieval.text.min_score",
     )
+    text_mode = _require_text_retrieval_mode(text_mapping.get("mode", "dense"))
+    top_k_initial = _require_positive_int(text_mapping.get("top_k_initial", k), context="retrieval.text.top_k_initial")
+    top_k_final = _require_positive_int(text_mapping.get("top_k_final", k), context="retrieval.text.top_k_final")
+    if top_k_initial < top_k_final:
+        message = "retrieval.text.top_k_initial must be >= retrieval.text.top_k_final"
+        raise ValueError(message)
+    score_normalization = _require_score_normalization(text_mapping.get("score_normalization", "none"))
+    fusion_mapping = _require_optional_mapping(text_mapping.get("fusion"), context="retrieval.text.fusion")
+    dense_weight = _require_non_negative_number(fusion_mapping.get("dense", 1.0), context="retrieval.text.fusion.dense")
+    sparse_weight = _require_non_negative_number(fusion_mapping.get("sparse", 0.0), context="retrieval.text.fusion.sparse")
+    multivector_weight = _require_non_negative_number(fusion_mapping.get("multivector", 0.0), context="retrieval.text.fusion.multivector")
 
     titles_mapping = _require_mapping(_require_key(retrieval_mapping, "titles", context="retrieval"), context="retrieval.titles")
     title_min_score = _require_score(
@@ -147,7 +165,16 @@ def _parse_retrieval_policy(retrieval_mapping: dict[str, object]) -> RetrievalPo
         expand=expand,
         full_doc_threshold=full_doc_threshold,
         expand_to_section=expand_to_section,
-        text=TextStageRetrievalPolicy(min_score=text_min_score),
+        text=TextStageRetrievalPolicy(
+            min_score=text_min_score,
+            mode=text_mode,
+            top_k_initial=top_k_initial,
+            top_k_final=top_k_final,
+            score_normalization=score_normalization,
+            dense_weight=dense_weight,
+            sparse_weight=sparse_weight,
+            multivector_weight=multivector_weight,
+        ),
         titles=TitleStageRetrievalPolicy(min_score=title_min_score),
         documents=DocumentStageRetrievalPolicy(
             global_d=global_d,
@@ -228,6 +255,12 @@ def _require_mapping(value: object, context: str) -> dict[str, object]:
     return {str(key): item for key, item in value.items()}
 
 
+def _require_optional_mapping(value: object, context: str) -> dict[str, object]:
+    if value is None:
+        return {}
+    return _require_mapping(value, context=context)
+
+
 def _require_positive_int(value: object, context: str) -> int:
     if isinstance(value, int) and value > 0:
         return value
@@ -248,6 +281,15 @@ def _require_score(value: object, context: str) -> float:
         if 0.0 <= score <= 1.0:
             return score
     message = f"{context} must be a number between 0.0 and 1.0"
+    raise ValueError(message)
+
+
+def _require_non_negative_number(value: object, context: str) -> float:
+    if isinstance(value, int | float):
+        parsed_value = float(value)
+        if parsed_value >= 0.0:
+            return parsed_value
+    message = f"{context} must be a number >= 0.0"
     raise ValueError(message)
 
 
@@ -273,4 +315,18 @@ def _require_retrieval_mode(value: object) -> str:
     if isinstance(value, str) and value in {"text", "titles", "documents"}:
         return value
     message = "retrieval.mode must be one of: text, titles, documents"
+    raise ValueError(message)
+
+
+def _require_text_retrieval_mode(value: object) -> str:
+    if isinstance(value, str) and value in {"dense", "dense_sparse", "dense_multivector", "dense_sparse_multivector"}:
+        return value
+    message = "retrieval.text.mode must be one of: dense, dense_sparse, dense_multivector, dense_sparse_multivector"
+    raise ValueError(message)
+
+
+def _require_score_normalization(value: object) -> str:
+    if isinstance(value, str) and value in {"none", "min_max"}:
+        return value
+    message = "retrieval.text.score_normalization must be one of: none, min_max"
     raise ValueError(message)

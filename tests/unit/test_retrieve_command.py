@@ -110,7 +110,7 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
     assert data["document_hits"] == [
         {"doc_uid": "ifric16", "score": 0.6, "document_type": "IFRIC", "document_kind": "interpretation"},
         {"doc_uid": "ifrs9", "score": 0.595, "document_type": "IFRS-S", "document_kind": "standard"},
-        {"doc_uid": "ias21", "score": 0.56, "document_type": "IAS", "document_kind": "standard"},
+        {"doc_uid": "ias21", "score": 0.56, "document_type": "IAS-S", "document_kind": "standard"},
     ]
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifric16", "ifrs9", "ias21"]
     assert [chunk["text"] for chunk in data["chunks"]] == ["ifric chunk", "ifrs chunk", "ias chunk"]

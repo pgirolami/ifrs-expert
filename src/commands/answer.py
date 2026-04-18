@@ -238,23 +238,47 @@ class AnswerCommand:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
         policy = self._options.policy
-        first_error: str | None = None
-        if policy.expand < 0:
-            first_error = "Error: expand must be >= 0"
-        elif policy.full_doc_threshold < 0:
-            first_error = "Error: full_doc_threshold must be >= 0"
-        elif policy.k <= 0:
-            first_error = "Error: retrieval.k in policy must be > 0"
-        elif policy.documents.global_d <= 0:
-            first_error = "Error: retrieval.documents.global_d in policy must be > 0"
-        elif not all(cap.d > 0 for document_type, cap in policy.documents.by_document_type.items()):
-            for document_type, cap in policy.documents.by_document_type.items():
-                if cap.d <= 0:
-                    first_error = f"Error: per-type document cap for {document_type} must be > 0"
-                    break
-        elif policy.mode not in {"text", "titles", "documents"}:
-            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'"
-        return first_error
+        checks: tuple[tuple[bool, str], ...] = (
+            (policy.expand < 0, "Error: expand must be >= 0"),
+            (policy.full_doc_threshold < 0, "Error: full_doc_threshold must be >= 0"),
+            (policy.k <= 0, "Error: retrieval.k in policy must be > 0"),
+            (policy.documents.global_d <= 0, "Error: retrieval.documents.global_d in policy must be > 0"),
+            (
+                policy.mode not in {"text", "titles", "documents"},
+                "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'",
+            ),
+        )
+        for is_invalid, error_message in checks:
+            if is_invalid:
+                return error_message
+
+        text_reranking_error = self._get_text_reranking_validation_error()
+        if text_reranking_error is not None:
+            return text_reranking_error
+        return self._get_document_cap_validation_error()
+
+    def _get_text_reranking_validation_error(self) -> str | None:
+        """Validate text-stage candidate narrowing and reranking settings."""
+        text_policy = self._options.policy.text
+        checks: tuple[tuple[bool, str], ...] = (
+            (text_policy.top_k_initial <= 0, "Error: retrieval.text.top_k_initial must be > 0"),
+            (text_policy.top_k_final <= 0, "Error: retrieval.text.top_k_final must be > 0"),
+            (
+                text_policy.top_k_initial < text_policy.top_k_final,
+                "Error: retrieval.text.top_k_initial must be >= retrieval.text.top_k_final",
+            ),
+        )
+        for is_invalid, error_message in checks:
+            if is_invalid:
+                return error_message
+        return None
+
+    def _get_document_cap_validation_error(self) -> str | None:
+        """Validate per-type document caps from the retrieval policy."""
+        for document_type, cap in self._options.policy.documents.by_document_type.items():
+            if cap.d <= 0:
+                return f"Error: per-type document cap for {document_type} must be > 0"
+        return None
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
@@ -313,6 +337,7 @@ class AnswerCommand:
             request=RetrievalRequest(
                 query=self.query,
                 retrieval_mode=policy.mode,
+                text_search_mode=policy.text.mode,
                 k=policy.k,
                 d=policy.documents.global_d,
                 document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
@@ -322,6 +347,12 @@ class AnswerCommand:
                 expand_to_section=policy.expand_to_section if policy.mode != "documents" else True,
                 expand=policy.expand,
                 full_doc_threshold=policy.full_doc_threshold,
+                top_k_initial=policy.text.top_k_initial,
+                top_k_final=policy.text.top_k_final,
+                dense_weight=policy.text.dense_weight,
+                sparse_weight=policy.text.sparse_weight,
+                multivector_weight=policy.text.multivector_weight,
+                score_normalization=policy.text.score_normalization,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,

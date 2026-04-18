@@ -5,7 +5,15 @@ retrieval:
   full_doc_threshold: 0
   expand_to_section: true
   text:
+    mode: dense
     min_score: 0.53
+    top_k_initial: 25
+    top_k_final: 10
+    score_normalization: none
+    fusion:
+      dense: 1.0
+      sparse: 0.3
+      multivector: 0.3
   titles:
     min_score: 0.6
   documents:

@@ -35,10 +35,25 @@ def make_retrieval_policy(
     full_doc_threshold: int = 0,
     expand_to_section: bool = True,
     mode: str = "text",
+    text_mode: str = "dense",
+    top_k_initial: int | None = None,
+    top_k_final: int | None = None,
+    score_normalization: str = "none",
+    dense_weight: float = 1.0,
+    sparse_weight: float = 0.0,
+    multivector_weight: float = 0.0,
     per_type_d: dict[str, int] | None = None,
     per_type_min_score: dict[str, float] | None = None,
 ) -> RetrievalPolicy:
     """Build a RetrievalPolicy with specific numeric values for targeted tests."""
+    def _lookup_per_type_value(values: dict[str, int] | dict[str, float], exact_key: str, fallback: int | float) -> int | float:
+        if exact_key in values:
+            return values[exact_key]
+        family_alias = exact_key.removesuffix("-S")
+        if family_alias in values:
+            return values[family_alias]
+        return fallback
+
     if per_type_d is None:
         per_type_d = {"IFRS-S": 4, "IAS-S": 10, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
     if per_type_min_score is None:
@@ -54,12 +69,12 @@ def make_retrieval_policy(
         doc_type: DocumentTypeRetrievalPolicy(d=d_val, min_score=ms_val, expand_to_section=expand_to_section_val)
         for doc_type, d_val, ms_val, expand_to_section_val in [
             # IFRS Standards and variants
-            ("IFRS-S", per_type_d.get("IFRS-S", 4), per_type_min_score.get("IFRS-S", 0.53), True),
+            ("IFRS-S", int(_lookup_per_type_value(per_type_d, "IFRS-S", 4)), float(_lookup_per_type_value(per_type_min_score, "IFRS-S", 0.53)), True),
             ("IFRS-BC", per_type_d.get("IFRS-BC", 1), per_type_min_score.get("IFRS-BC", 0.62), False),
             ("IFRS-IE", per_type_d.get("IFRS-IE", 1), per_type_min_score.get("IFRS-IE", 0.6), False),
             ("IFRS-IG", per_type_d.get("IFRS-IG", 1), per_type_min_score.get("IFRS-IG", 0.56), True),
             # IAS Standards and variants
-            ("IAS-S", per_type_d.get("IAS-S", 10), per_type_min_score.get("IAS-S", 0.4), True),
+            ("IAS-S", int(_lookup_per_type_value(per_type_d, "IAS-S", 10)), float(_lookup_per_type_value(per_type_min_score, "IAS-S", 0.4)), True),
             ("IAS-BC", per_type_d.get("IAS-BC", 1), per_type_min_score.get("IAS-BC", 0.62), False),
             ("IAS-IE", per_type_d.get("IAS-IE", 1), per_type_min_score.get("IAS-IE", 0.6), False),
             ("IAS-IG", per_type_d.get("IAS-IG", 1), per_type_min_score.get("IAS-IG", 0.56), True),
@@ -84,7 +99,16 @@ def make_retrieval_policy(
         expand=expand,
         full_doc_threshold=full_doc_threshold,
         expand_to_section=expand_to_section,
-        text=TextStageRetrievalPolicy(min_score=chunk_min_score),
+        text=TextStageRetrievalPolicy(
+            min_score=chunk_min_score,
+            mode=text_mode,
+            top_k_initial=top_k_initial or k,
+            top_k_final=top_k_final or k,
+            score_normalization=score_normalization,
+            dense_weight=dense_weight,
+            sparse_weight=sparse_weight,
+            multivector_weight=multivector_weight,
+        ),
         titles=TitleStageRetrievalPolicy(min_score=0.6),
         documents=DocumentStageRetrievalPolicy(global_d=d, by_document_type=by_document_type),
     )

@@ -171,10 +171,19 @@ class QueryCommand:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
         policy = self._options.policy
-        if policy.expand < 0:
-            return "Error: expand must be >= 0"
-        if policy.full_doc_threshold < 0:
-            return "Error: full_doc_threshold must be >= 0"
+        checks: tuple[tuple[bool, str], ...] = (
+            (policy.expand < 0, "Error: expand must be >= 0"),
+            (policy.full_doc_threshold < 0, "Error: full_doc_threshold must be >= 0"),
+            (policy.text.top_k_initial <= 0, "Error: retrieval.text.top_k_initial must be > 0"),
+            (policy.text.top_k_final <= 0, "Error: retrieval.text.top_k_final must be > 0"),
+            (
+                policy.text.top_k_initial < policy.text.top_k_final,
+                "Error: retrieval.text.top_k_initial must be >= retrieval.text.top_k_final",
+            ),
+        )
+        for is_invalid, error_message in checks:
+            if is_invalid:
+                return error_message
         return None
 
     def _get_prerequisite_error(self) -> str | None:
@@ -188,27 +197,38 @@ class QueryCommand:
     def _execute_search(self) -> str:
         """Execute the search workflow."""
         policy = self._options.policy
-        error, retrieval_result = execute_retrieval(
-            request=RetrievalRequest(
-                query=self.query,
-                retrieval_mode="text",
-                k=policy.k,
-                d=policy.documents.global_d,
-                document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
-                chunk_min_score=policy.text.min_score,
-                expand_to_section=policy.expand_to_section,
-                expand=policy.expand,
-                full_doc_threshold=policy.full_doc_threshold,
-            ),
-            config=RetrievalPipelineConfig(
-                vector_store=self._config.vector_store,
-                chunk_store=self._config.chunk_store,
-                init_db_fn=self._config.init_db_fn,
-                index_path_fn=self._config.index_path_fn,
-            ),
-        )
+        try:
+            error, retrieval_result = execute_retrieval(
+                request=RetrievalRequest(
+                    query=self.query,
+                    retrieval_mode="text",
+                    text_search_mode=policy.text.mode,
+                    k=policy.k,
+                    d=policy.documents.global_d,
+                    document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
+                    document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
+                    document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+                    chunk_min_score=policy.text.min_score,
+                    expand_to_section=policy.expand_to_section,
+                    expand=policy.expand,
+                    full_doc_threshold=policy.full_doc_threshold,
+                    top_k_initial=policy.text.top_k_initial,
+                    top_k_final=policy.text.top_k_final,
+                    dense_weight=policy.text.dense_weight,
+                    sparse_weight=policy.text.sparse_weight,
+                    multivector_weight=policy.text.multivector_weight,
+                    score_normalization=policy.text.score_normalization,
+                ),
+                config=RetrievalPipelineConfig(
+                    vector_store=self._config.vector_store,
+                    chunk_store=self._config.chunk_store,
+                    init_db_fn=self._config.init_db_fn,
+                    index_path_fn=self._config.index_path_fn,
+                ),
+            )
+        except RuntimeError as error:
+            logger.exception("Query search failed")
+            return f"Error: {error}"
         if error is not None:
             return error
         if retrieval_result is None:

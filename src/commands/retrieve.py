@@ -108,6 +108,7 @@ class RetrieveCommand:
         return RetrievalRequest(
             query=self.query,
             retrieval_mode=policy.mode,
+            text_search_mode=policy.text.mode,
             k=policy.k,
             d=policy.documents.global_d,
             document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
@@ -117,6 +118,12 @@ class RetrieveCommand:
             expand_to_section=expand_to_section,
             expand=policy.expand,
             full_doc_threshold=policy.full_doc_threshold,
+            top_k_initial=policy.text.top_k_initial,
+            top_k_final=policy.text.top_k_final,
+            dense_weight=policy.text.dense_weight,
+            sparse_weight=policy.text.sparse_weight,
+            multivector_weight=policy.text.multivector_weight,
+            score_normalization=policy.text.score_normalization,
         )
 
     def _get_validation_error(self) -> str | None:
@@ -141,12 +148,16 @@ class RetrieveCommand:
         checks: tuple[tuple[str, int, int], ...] = (
             ("expand", policy.expand, 0),
             ("full_doc_threshold", policy.full_doc_threshold, 0),
+            ("retrieval.text.top_k_initial", policy.text.top_k_initial, 1),
+            ("retrieval.text.top_k_final", policy.text.top_k_final, 1),
         )
         for name, value, minimum in checks:
             if value >= minimum:
                 continue
-            operator = ">=" if minimum == 0 else ">"
+            operator = ">="
             return f"Error: {name} must be {operator} {minimum}"
+        if policy.text.top_k_initial < policy.text.top_k_final:
+            return "Error: retrieval.text.top_k_initial must be >= retrieval.text.top_k_final"
         return None
 
     def _get_retrieval_mode_validation_error(self) -> str | None:

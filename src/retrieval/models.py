@@ -16,6 +16,7 @@ class RetrievalRequest:
 
     query: str
     retrieval_mode: str
+    text_search_mode: str
     k: int
     d: int
     document_d_by_type: dict[str, int]
@@ -25,6 +26,12 @@ class RetrievalRequest:
     expand_to_section: bool
     expand: int
     full_doc_threshold: int
+    top_k_initial: int
+    top_k_final: int
+    dense_weight: float
+    sparse_weight: float
+    multivector_weight: float
+    score_normalization: str
 
 
 @dataclass(frozen=True)

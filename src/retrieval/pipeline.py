@@ -16,6 +16,9 @@ if TYPE_CHECKING:
 
     from src.interfaces import DocumentSearchResult, ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
+    from src.retrieval.reranking import TextRerankerProtocol
+
+from src.retrieval.reranking import BgeM3TextReranker, TextRerankingOptions
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +36,7 @@ class RetrievalPipelineConfig:
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
     document_index_path_fn: Callable[[], Path] | None = None
+    text_reranker: TextRerankerProtocol | None = None
 
 
 @dataclass(frozen=True)
@@ -66,9 +70,17 @@ def _execute_text_retrieval(
     if index_error is not None:
         return index_error, None
 
+    logger.info(f"Executing text retrieval mode={request.text_search_mode}; top_k_initial={request.top_k_initial}; top_k_final={request.top_k_final}")
     ranked_results = _search_chunks(query=request.query, config=config)
     if not ranked_results:
         return "Error: No chunks retrieved", None
+
+    if request.text_search_mode != "dense":
+        return _execute_text_reranking_retrieval(
+            request=request,
+            config=config,
+            ranked_results=ranked_results,
+        )
 
     selected_results = _select_top_k_per_document(
         ranked_results=ranked_results,
@@ -97,6 +109,62 @@ def _execute_text_retrieval(
             document_hits=[],
             chunk_results=expanded_results,
             doc_chunks=doc_chunks,
+        ),
+    )
+
+
+def _execute_text_reranking_retrieval(
+    request: RetrievalRequest,
+    config: RetrievalPipelineConfig,
+    ranked_results: list[SearchResult],
+) -> tuple[str | None, RetrievalResult | None]:
+    initial_candidates = ranked_results[: request.top_k_initial]
+    if not initial_candidates:
+        return "Error: No chunks retrieved", None
+
+    candidate_doc_chunks = _fetch_chunks(selected_results=initial_candidates, config=config)
+    reranker = config.text_reranker or BgeM3TextReranker()
+    reranked_results = reranker.rerank(
+        query=request.query,
+        candidates=initial_candidates,
+        doc_chunks=candidate_doc_chunks,
+        options=TextRerankingOptions(
+            mode=request.text_search_mode,
+            top_k_initial=request.top_k_initial,
+            top_k_final=request.top_k_final,
+            dense_weight=request.dense_weight,
+            sparse_weight=request.sparse_weight,
+            multivector_weight=request.multivector_weight,
+            score_normalization=request.score_normalization,
+        ),
+    )
+    narrowed_results = reranked_results[: request.top_k_final]
+    selected_results = _select_top_k_per_document(
+        ranked_results=narrowed_results,
+        k=request.k,
+        min_score=request.chunk_min_score,
+    )
+    if not selected_results:
+        return f"Error: No chunks found with score >= {request.chunk_min_score}", None
+
+    expanded_results = _expand_chunks(
+        results=selected_results,
+        doc_chunks=candidate_doc_chunks,
+        expansion_config=ExpansionConfig(
+            section_store=config.section_store,
+            expand_to_section=request.expand_to_section,
+            expand_to_section_doc_uids=None,
+            expand=request.expand,
+            full_doc_threshold=request.full_doc_threshold,
+        ),
+    )
+    return (
+        None,
+        RetrievalResult(
+            retrieval_mode="text",
+            document_hits=[],
+            chunk_results=expanded_results,
+            doc_chunks=candidate_doc_chunks,
         ),
     )
 
