@@ -40,11 +40,13 @@ def make_retrieval_policy(
 ) -> RetrievalPolicy:
     """Build a RetrievalPolicy with specific numeric values for targeted tests."""
     if per_type_d is None:
-        per_type_d = {"IFRS-S": 4, "IAS-S": 10, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
+        per_type_d = {"IFRS-S": 4, "IAS-S": 10, "IAS-BCIASC": 1, "IAS-SM": 1, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
     if per_type_min_score is None:
         per_type_min_score = {
             "IFRS-S": 0.53,
             "IAS-S": 0.4,
+            "IAS-BCIASC": 0.62,
+            "IAS-SM": 0.62,
             "IFRIC": 0.48,
             "SIC": 0.4,
             "PS": 0.4,
@@ -61,8 +63,10 @@ def make_retrieval_policy(
             # IAS Standards and variants
             ("IAS-S", per_type_d.get("IAS-S", 10), per_type_min_score.get("IAS-S", 0.4), True),
             ("IAS-BC", per_type_d.get("IAS-BC", 1), per_type_min_score.get("IAS-BC", 0.62), False),
+            ("IAS-BCIASC", per_type_d.get("IAS-BCIASC", 1), per_type_min_score.get("IAS-BCIASC", 0.62), False),
             ("IAS-IE", per_type_d.get("IAS-IE", 1), per_type_min_score.get("IAS-IE", 0.6), False),
             ("IAS-IG", per_type_d.get("IAS-IG", 1), per_type_min_score.get("IAS-IG", 0.56), True),
+            ("IAS-SM", per_type_d.get("IAS-SM", 1), per_type_min_score.get("IAS-SM", 0.62), False),
             # IFRIC Interpretations and variants
             ("IFRIC", per_type_d.get("IFRIC", 6), per_type_min_score.get("IFRIC", 0.48), True),
             ("IFRIC-BC", per_type_d.get("IFRIC-BC", 1), per_type_min_score.get("IFRIC-BC", 0.62), False),

@@ -11,22 +11,15 @@ from typing import TYPE_CHECKING, Protocol, TypeVar
 from dotenv import load_dotenv
 
 from src.answer_artifacts import save_answer_command_result
-from src.commands import (
-    AnswerOptions,
-    ChunkCommand,
-    IngestCommand,
-    ListCommand,
-    QueryDocumentsOptions,
-    QueryOptions,
-    QueryTitlesOptions,
-    RetrieveOptions,
-)
-from src.commands.answer import create_answer_command
+from src.commands.answer import AnswerOptions, create_answer_command
+from src.commands.chunk import ChunkCommand
 from src.commands.constants import DEFAULT_SCOPE
-from src.commands.query import create_query_command
-from src.commands.query_documents import create_query_documents_command
-from src.commands.query_titles import create_query_titles_command
-from src.commands.retrieve import create_retrieve_command
+from src.commands.ingest import IngestCommand
+from src.commands.list import ListCommand
+from src.commands.query import QueryOptions, create_query_command
+from src.commands.query_documents import QueryDocumentsOptions, create_query_documents_command
+from src.commands.query_titles import QueryTitlesOptions, create_query_titles_command
+from src.commands.retrieve import RetrieveOptions, create_retrieve_command
 from src.commands.store import STORE_SCOPES, create_store_command
 from src.llm.client import get_client
 from src.logging_config import setup_logging
@@ -213,7 +206,11 @@ def main() -> int:
         return 1
 
     logger.info(f"CLI command received: {args.command}")
-    result = _execute_command(args)
+    try:
+        result = _execute_command(args)
+    except Exception:
+        logger.exception(f"CLI command failed: {args.command}")
+        raise
 
     if result.startswith("Error:"):
         logger.error(result)

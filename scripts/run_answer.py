@@ -395,27 +395,23 @@ def _candidate_llm_provider_mappings(
     _append_mapping_if_dict(mappings, provider_options.get("config"))
     _append_mapping_if_dict(mappings, provider_options.get("env"))
 
-    test_data = _as_object_mapping(context.get("test"))
+    test_data = context.get("test")
     if test_data is not None:
-        options_value = test_data.get("options")
-        if options_value is not None:
-            try:
-                _as_object_mapping(options_value)
-            except ValueError:
-                pass
-            else:
-                mappings.append(cast("dict[str, object]", options_value))
+        try:
+            test_mapping = _as_object_mapping(test_data)
+        except ValueError:
+            test_mapping = None
+        if test_mapping is not None:
+            _append_mapping_if_dict(mappings, test_mapping.get("options"))
 
-    prompt_data = _as_object_mapping(context.get("prompt"))
+    prompt_data = context.get("prompt")
     if prompt_data is not None:
-        config_value = prompt_data.get("config")
-        if config_value is not None:
-            try:
-                _as_object_mapping(config_value)
-            except ValueError:
-                pass
-            else:
-                mappings.append(cast("dict[str, object]", config_value))
+        try:
+            prompt_mapping = _as_object_mapping(prompt_data)
+        except ValueError:
+            prompt_mapping = None
+        if prompt_mapping is not None:
+            _append_mapping_if_dict(mappings, prompt_mapping.get("config"))
 
     return mappings
 
@@ -496,7 +492,11 @@ def _write_promptfoo_artifacts(
     config_kv: dict[str, str],
 ) -> None:
     """Persist answer artifacts when Promptfoo archiving is enabled."""
-    output_dir = _artifact_output_dir(context=context, config_kv=config_kv)
+    try:
+        output_dir = _artifact_output_dir(context=context, config_kv=config_kv)
+    except ValueError as error:
+        logger.info(f"Skipping Promptfoo answer artifact export: {error}")
+        return
     save_answer_command_result(result=result, output_dir=output_dir)
     logger.info(f"Saved Promptfoo answer artifacts to {output_dir}")
 

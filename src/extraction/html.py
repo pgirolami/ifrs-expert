@@ -496,6 +496,7 @@ def _get_highest_level_section(active_sections_by_level: dict[int, SectionRecord
 
 def _extract_navis_chunk_text(node: Tag) -> str:
     fragment = BeautifulSoup(str(node), "html.parser")
+    _remove_reference_only_educational_notes(fragment)
     for hidden_node in fragment.select('[style*="display: none"], [hidden], [aria-hidden="true"]'):
         hidden_node.decompose()
 
@@ -614,11 +615,17 @@ def _tag_attribute_as_string(node: Tag, attribute_name: str) -> str:
 
 def _flatten_inline_text(node: Tag) -> str:
     fragment = BeautifulSoup(str(node), "html.parser")
+    _remove_reference_only_educational_notes(fragment)
     for hidden_node in fragment.select('[style*="display: none"], [hidden], [aria-hidden="true"]'):
         hidden_node.decompose()
 
     text = fragment.get_text(" ", strip=True)
     return _normalize_whitespace(text)
+
+
+def _remove_reference_only_educational_notes(fragment: BeautifulSoup) -> None:
+    for note_node in fragment.select('[class~="note"][class~="edu"]'):
+        note_node.decompose()
 
 
 def _normalize_whitespace(text: str) -> str:

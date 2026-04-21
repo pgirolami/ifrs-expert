@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
+from src.extraction.html import HtmlExtractor
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.section import SectionClosureRow, SectionRecord
 from src.retrieval.document_profile_builder import DocumentProfileBuilder
+
+
+def _example_ifrs_path(filename: str) -> Path:
+    return Path(__file__).parent.parent.parent / "examples" / "IFRS" / filename
 
 
 def test_document_profile_builder_extracts_background_issue_and_scope_without_html_intro_fallback() -> None:
@@ -75,6 +82,173 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
     assert "Issue: The issue is which entity may hold the hedging instrument." in built_profile.embedding_text
     assert "TOC:" not in built_profile.embedding_text
     assert "Introduction:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_populates_ias10_objective_and_scope_from_example_files() -> None:
+    """The IAS 10 example should populate Objective and Scope from the real extracted file set."""
+    html_path = _example_ifrs_path("20260414T141833Z--ias10.html")
+    sidecar_path = _example_ifrs_path("20260414T141833Z--ias10.json")
+    extractor = HtmlExtractor(sidecar_path=sidecar_path)
+    extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+    built_profile = DocumentProfileBuilder().build(
+        document=extracted_document.document,
+        chunks=extracted_document.chunks,
+        sections=extracted_document.sections,
+        section_closure_rows=extracted_document.section_closure_rows,
+    )
+
+    assert built_profile.document.objective_text is not None
+    assert built_profile.document.objective_text.startswith("The objective of this Standard is to prescribe:")
+    assert built_profile.document.scope_text is not None
+    assert built_profile.document.scope_text.startswith("This Standard shall be applied in the accounting for, and disclosure of, events")
+    assert "Objective: The objective of this Standard is to prescribe:" in built_profile.embedding_text
+    assert "Scope: This Standard shall be applied in the accounting for, and disclosure of, events" in built_profile.embedding_text
+
+
+def test_document_profile_builder_ignores_nested_background_scope_sections() -> None:
+    """Only top-level Background/Scope sections should populate document fields."""
+    document = DocumentRecord(
+        doc_uid="ifric16",
+        source_type="html",
+        source_title="IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+        source_url="https://www.ifrs.org/ifric16.html",
+        canonical_url="https://www.ifrs.org/ifric16.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-overview",
+            doc_uid="ifric16",
+            parent_section_id=None,
+            level=2,
+            title="Overview",
+            section_lineage=["Overview"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-background",
+            doc_uid="ifric16",
+            parent_section_id="sec-overview",
+            level=3,
+            title="Background",
+            section_lineage=["Overview", "Background"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-scope",
+            doc_uid="ifric16",
+            parent_section_id="sec-overview",
+            level=3,
+            title="Scope",
+            section_lineage=["Overview", "Scope"],
+            position=3,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-overview", "sec-overview", 0),
+        SectionClosureRow("sec-overview", "sec-background", 1),
+        SectionClosureRow("sec-overview", "sec-scope", 1),
+        SectionClosureRow("sec-background", "sec-background", 0),
+        SectionClosureRow("sec-scope", "sec-scope", 0),
+    ]
+    chunks = [
+        Chunk(doc_uid="ifric16", chunk_number="1", page_start="", page_end="", chunk_id="c1", containing_section_id="sec-background", text="Nested background text."),
+        Chunk(doc_uid="ifric16", chunk_number="2", page_start="", page_end="", chunk_id="c2", containing_section_id="sec-scope", text="Nested scope text."),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.background_text is None
+    assert built_profile.document.scope_text is None
+    assert "Background:" not in built_profile.embedding_text
+    assert "Scope:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_uses_first_content_level_not_document_title() -> None:
+    """Document fields should come from the first content level, not the document title section."""
+    document = DocumentRecord(
+        doc_uid="ifrs9",
+        source_type="html",
+        source_title="IFRS 9",
+        source_url="https://www.ifrs.org/ifrs9.html",
+        canonical_url="https://www.ifrs.org/ifrs9.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-title",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=1,
+            title="IFRS 9 Financial Instruments",
+            section_lineage=["IFRS 9 Financial Instruments"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-intro",
+            doc_uid="ifrs9",
+            parent_section_id="sec-title",
+            level=2,
+            title="Introduction",
+            section_lineage=["IFRS 9 Financial Instruments", "Introduction"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-background",
+            doc_uid="ifrs9",
+            parent_section_id="sec-intro",
+            level=3,
+            title="Background",
+            section_lineage=["IFRS 9 Financial Instruments", "Introduction", "Background"],
+            position=3,
+        ),
+        SectionRecord(
+            section_id="sec-scope",
+            doc_uid="ifrs9",
+            parent_section_id="sec-intro",
+            level=3,
+            title="Scope",
+            section_lineage=["IFRS 9 Financial Instruments", "Introduction", "Scope"],
+            position=4,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-title", "sec-title", 0),
+        SectionClosureRow("sec-title", "sec-intro", 1),
+        SectionClosureRow("sec-title", "sec-background", 2),
+        SectionClosureRow("sec-title", "sec-scope", 2),
+        SectionClosureRow("sec-intro", "sec-intro", 0),
+        SectionClosureRow("sec-intro", "sec-background", 1),
+        SectionClosureRow("sec-intro", "sec-scope", 1),
+        SectionClosureRow("sec-background", "sec-background", 0),
+        SectionClosureRow("sec-scope", "sec-scope", 0),
+    ]
+    chunks = [
+        Chunk(doc_uid="ifrs9", chunk_number="1", page_start="", page_end="", chunk_id="c1", containing_section_id="sec-intro", text="Intro text."),
+        Chunk(doc_uid="ifrs9", chunk_number="2", page_start="", page_end="", chunk_id="c2", containing_section_id="sec-background", text="Background text."),
+        Chunk(doc_uid="ifrs9", chunk_number="3", page_start="", page_end="", chunk_id="c3", containing_section_id="sec-scope", text="Scope text."),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.intro_text is not None
+    assert built_profile.document.intro_text.startswith("Intro text.")
+    assert built_profile.document.background_text is None
+    assert built_profile.document.scope_text is None
+    assert "Introduction: Intro text." in built_profile.embedding_text
+    assert "Background:" not in built_profile.embedding_text
+    assert "Scope:" not in built_profile.embedding_text
 
 
 def test_document_profile_builder_extracts_plural_issues_and_excludes_it_from_toc() -> None:
@@ -388,6 +562,67 @@ def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided()
 
     assert built_profile.document.toc_text is None
     assert "TOC:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_includes_top_level_sections_with_children_in_toc() -> None:
+    """TOC should keep top-level sections even when they have subsections."""
+    document = DocumentRecord(
+        doc_uid="ifrs9",
+        source_type="html",
+        source_title="IFRS 9",
+        source_url="https://www.ifrs.org/ifrs9.html",
+        canonical_url="https://www.ifrs.org/ifrs9.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-top",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=1,
+            title="Top level overview",
+            section_lineage=["Top level overview"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-child",
+            doc_uid="ifrs9",
+            parent_section_id="sec-top",
+            level=2,
+            title="Child topic",
+            section_lineage=["Top level overview", "Child topic"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-toc-ignore",
+            doc_uid="ifrs9",
+            parent_section_id=None,
+            level=1,
+            title="Table of Concordance",
+            section_lineage=["Table of Concordance"],
+            position=3,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-top", "sec-top", 0),
+        SectionClosureRow("sec-top", "sec-child", 1),
+        SectionClosureRow("sec-child", "sec-child", 0),
+        SectionClosureRow("sec-toc-ignore", "sec-toc-ignore", 0),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=[
+            Chunk(doc_uid="ifrs9", chunk_number="1", page_start="", page_end="", chunk_id="c1", containing_section_id="sec-top", text="Top level text."),
+            Chunk(doc_uid="ifrs9", chunk_number="2", page_start="", page_end="", chunk_id="c2", containing_section_id="sec-child", text="Child text."),
+        ],
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.toc_text == "Top level overview\nChild topic"
+    assert "Table of Concordance" not in built_profile.document.toc_text
+    assert "TOC: Top level overview\nChild topic" in built_profile.embedding_text
 
 
 def test_document_profile_builder_does_not_extract_navis_intro_without_matching_essentiel_parent() -> None:

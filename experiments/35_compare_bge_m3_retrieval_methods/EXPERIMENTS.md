@@ -4,6 +4,8 @@
 **Query:** Q1.0 (French, hedging documentation for intragroup dividends FX risk)
 **Commit:** `f7c1442` ("Introduce sparse & multi-vector retrieval using BGE3")
 
+This branch contains only the experiment folder for this experiment because the results were unconclusive and it changed a lot of code. The code was left on the `more-retrieval-paths` branch.
+
 ---
 
 ## Setup

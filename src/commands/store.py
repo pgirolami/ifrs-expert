@@ -182,22 +182,6 @@ class StoreCommand:
                 f"excluded_chunks={filter_result.excluded_chunk_count}, excluded_sections={filter_result.excluded_section_count}"
             )
 
-            profile_started_at = perf_counter()
-            logger.info(f"Building document profile for doc_uid={doc_uid}")
-            built_document_profile = self._document_profile_builder.build(
-                document=extracted_document.document,
-                chunks=extracted_document.chunks,
-                sections=extracted_document.sections,
-                section_closure_rows=extracted_document.section_closure_rows,
-                toc_sections=filter_result.sections,
-            )
-            extracted_document.document = built_document_profile.document
-            logger.info(f"Built document profile for doc_uid={doc_uid} in {_elapsed_ms(profile_started_at):.2f}ms")
-
-            # Build the document representation from the unfiltered extraction, except
-            # for the TOC field which should reflect the filtered section set used for
-            # persistence and downstream retrieval.
-
             if filter_result.excluded_section_count > 0:
                 sample_titles = filter_result.excluded_section_titles[:10]
                 logger.info(f"Excluded {filter_result.excluded_section_count} section(s) based on title filters: {sample_titles}")
@@ -208,6 +192,18 @@ class StoreCommand:
             chunks = filter_result.chunks
             sections = filter_result.sections
             closure_rows = filter_result.closure_rows
+
+            profile_started_at = perf_counter()
+            logger.info(f"Building document profile for doc_uid={doc_uid} from filtered chunks and sections")
+            built_document_profile = self._document_profile_builder.build(
+                document=extracted_document.document,
+                chunks=chunks,
+                sections=sections,
+                section_closure_rows=closure_rows,
+                toc_sections=sections,
+            )
+            extracted_document.document = built_document_profile.document
+            logger.info(f"Built document profile for doc_uid={doc_uid} in {_elapsed_ms(profile_started_at):.2f}ms")
 
             # Update the extracted document with filtered data for persistence.
             extracted_document.sections = sections

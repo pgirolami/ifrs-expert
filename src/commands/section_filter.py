@@ -23,6 +23,9 @@ EXCLUDED_SECTION_TITLES: frozenset[str] = frozenset(
         "Effective date",
         "Date of consensus",
         "Transition",
+        "Table of Concordance",
+        "Dissenting opinion",
+        "Dissenting opinions",
     }
 )
 
@@ -135,14 +138,16 @@ def _find_excluded_section_ids(sections: list[SectionRecord]) -> set[str]:
     return excluded_ids
 
 
-def _is_section_excluded(title: str) -> bool:
-    """Check if a section title should be excluded."""
-    # Check exact match
+def is_section_title_excluded(title: str) -> bool:
+    """Check whether a section title should be excluded from storage and TOC generation."""
     if title in EXCLUDED_SECTION_TITLES:
         return True
-
-    # Check prefix match
     return any(title.startswith(prefix) for prefix in EXCLUDED_SECTION_TITLE_PREFIXES)
+
+
+def _is_section_excluded(title: str) -> bool:
+    """Backward-compatible internal alias for section-title exclusion checks."""
+    return is_section_title_excluded(title)
 
 
 def _find_descendant_section_ids(

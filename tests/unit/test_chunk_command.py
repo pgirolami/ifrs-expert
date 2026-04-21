@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from src.commands import ChunkCommand
+from src.commands.chunk import ChunkCommand
 from src.models.chunk import Chunk
 
 

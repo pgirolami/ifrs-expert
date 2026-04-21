@@ -7,6 +7,7 @@ import {
   selectIfrsCaptureTargets,
   selectIfrsCorpusTargets,
 } from "./ifrs_import.mjs";
+import { resolveIfrsDocumentType } from "./ifrs_document_types.mjs";
 
 test("selectIfrsCaptureTargets keeps selectable IFRS variants in DOM order", () => {
   const targets = selectIfrsCaptureTargets([
@@ -120,6 +121,27 @@ test("selectIfrsCorpusTargets keeps unique document links in order", () => {
       title: "IFRS 2",
     },
   ]);
+});
+
+test("resolveIfrsDocumentType maps IAS document UIDs to exact IAS variants", () => {
+  assert.equal(resolveIfrsDocumentType("ias21", "Standard"), "IAS-S");
+  assert.equal(resolveIfrsDocumentType("ias21-bc", "Basis for Conclusions"), "IAS-BC");
+  assert.equal(resolveIfrsDocumentType("ias21-bc", "Basis for Conclusions IASC"), "IAS-BCIASC");
+  assert.equal(resolveIfrsDocumentType("ias21-ie", "Illustrative Examples"), "IAS-IE");
+  assert.equal(resolveIfrsDocumentType("ias21-ig", "Implementation Guidance"), "IAS-IG");
+  assert.equal(resolveIfrsDocumentType("ias28-sm", "Supporting Materials"), "IAS-SM");
+});
+
+test("resolveIfrsDocumentType maps IFRIC, SIC, and PS variants to the same types as Python", () => {
+  assert.equal(resolveIfrsDocumentType("ifric16", "Standard"), "IFRIC");
+  assert.equal(resolveIfrsDocumentType("ifric16-bc", "Basis for Conclusions"), "IFRIC-BC");
+  assert.equal(resolveIfrsDocumentType("ifric16-ie", "Illustrative Examples"), "IFRIC-IE");
+  assert.equal(resolveIfrsDocumentType("ifric16-ig", "Implementation Guidance"), "IFRIC-IG");
+  assert.equal(resolveIfrsDocumentType("sic25", "Standard"), "SIC");
+  assert.equal(resolveIfrsDocumentType("sic25-bc", "Basis for Conclusions"), "SIC-BC");
+  assert.equal(resolveIfrsDocumentType("sic25-ie", "Illustrative Examples"), "SIC-IE");
+  assert.equal(resolveIfrsDocumentType("ps1", "Standard"), "PS");
+  assert.equal(resolveIfrsDocumentType("ps1-bc", "Basis for Conclusions"), "PS-BC");
 });
 
 test("buildIfrsVariantNavigationUrl falls back to shell canonical when the current URL cannot be rewritten", () => {

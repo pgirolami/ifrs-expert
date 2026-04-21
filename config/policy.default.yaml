@@ -35,6 +35,10 @@ retrieval:
         d: 1
         min_score: 0.62
         expand_to_section: false
+      IAS-BCIASC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
       IAS-IE:
         d: 1
         min_score: 0.6
@@ -43,6 +47,10 @@ retrieval:
         d: 1
         min_score: 0.56
         expand_to_section: true
+      IAS-SM:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
       IFRIC:
         d: 6
         min_score: 0.48

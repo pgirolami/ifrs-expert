@@ -99,7 +99,14 @@ def _extract_ifrs_sidecar_payload(html_path: Path) -> dict[str, str]:
             "Implementation Guidance": "IFRS-IG",
         }[variant_label]
     elif doc_uid.startswith("ias"):
-        document_type = "IAS"
+        document_type = {
+            "Standard": "IAS-S",
+            "Basis for Conclusions": "IAS-BC",
+            "Basis for Conclusions IASC": "IAS-BCIASC",
+            "Supporting Materials": "IAS-SM",
+            "Illustrative Examples": "IAS-IE",
+            "Implementation Guidance": "IAS-IG",
+        }[variant_label]
     elif doc_uid.startswith("ifric"):
         document_type = "IFRIC"
     elif doc_uid.startswith("sic"):

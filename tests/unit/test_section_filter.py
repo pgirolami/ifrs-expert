@@ -22,6 +22,9 @@ def test_excluded_section_titles_constant_contains_expected_values() -> None:
         "Effective date",
         "Date of consensus",
         "Transition",
+        "Table of Concordance",
+        "Dissenting opinion",
+        "Dissenting opinions",
     }
     assert EXCLUDED_SECTION_TITLES == expected_titles
 
@@ -272,6 +275,36 @@ def test_filter_case_sensitive_matching() -> None:
     assert len(result.sections) == 2
     assert {s.section_id for s in result.sections} == {"sec1", "sec2"}
     assert len(result.chunks) == 2
+
+
+def test_filter_ignores_table_of_concordance_and_dissenting_sections_with_descendants() -> None:
+    """Table of Concordance and dissenting opinion sections should be excluded with their children."""
+    sections = [
+        _make_section("sec1", "Table of Concordance"),
+        _make_section("sec2", "Appendix A"),
+        _make_section("sec3", "Dissenting opinions"),
+        _make_section("sec4", "Child dissenting note"),
+        _make_section("sec5", "Main Content"),
+    ]
+    chunks = [
+        _make_chunk("chunk1", "sec1"),
+        _make_chunk("chunk2", "sec2"),
+        _make_chunk("chunk3", "sec3"),
+        _make_chunk("chunk4", "sec4"),
+        _make_chunk("chunk5", "sec5"),
+    ]
+    closure_rows = [
+        _make_closure("sec1", "sec2", 1),
+        _make_closure("sec3", "sec4", 1),
+    ]
+
+    result = filter_extraction(chunks, sections, closure_rows)
+
+    assert len(result.sections) == 1
+    assert result.sections[0].section_id == "sec5"
+    assert len(result.chunks) == 1
+    assert result.chunks[0].chunk_id == "chunk5"
+    assert result.excluded_section_count == 2
 
 
 def test_filter_empty_input() -> None:

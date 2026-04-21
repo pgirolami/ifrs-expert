@@ -14,7 +14,7 @@ from typing import cast
 
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
-from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
+from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type, resolve_document_type_from_doc_uid
 from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, InMemorySectionStore
 from tests.policy import make_retrieval_policy
 
@@ -79,7 +79,7 @@ def test_infer_document_kind_maps_all_supported_types() -> None:
     """Every supported exact document_type should map to a known document_kind."""
     type_kind_pairs = [
         ("IFRS-S", "standard"),
-        ("IAS", "standard"),
+        ("IAS-S", "standard"),
         ("PS", "standard"),
         ("IFRIC", "interpretation"),
         ("SIC", "interpretation"),
@@ -87,6 +87,8 @@ def test_infer_document_kind_maps_all_supported_types() -> None:
         ("IFRS-IG", "implementation_guidance"),
         ("IFRS-IE", "illustrative_examples"),
         ("IFRS-BC", "basis_for_conclusions"),
+        ("IAS-BCIASC", "basis_for_conclusions"),
+        ("IAS-SM", "supporting_materials"),
     ]
     for doc_type, expected_kind in type_kind_pairs:
         kind = resolve_document_kind_from_document_type(doc_type)
@@ -108,13 +110,26 @@ def test_infer_exact_document_type_from_doc_uid() -> None:
         ("ifrs9-bc", "IFRS-BC"),
         ("ifrs9-ie", "IFRS-IE"),
         ("ifrs9-ig", "IFRS-IG"),
-        ("ias21", "IAS"),
+        ("ias21", "IAS-S"),
+        ("ias28-bc", "IAS-BC"),
+        ("ias28-bciasc", "IAS-BCIASC"),
         ("ifric16", "IFRIC"),
         ("sic25", "SIC"),
         ("ps1", "PS"),
     ]
     for doc_uid, expected_type in cases:
         actual = infer_exact_document_type(doc_uid)
+        assert actual == expected_type, f"{doc_uid} → expected {expected_type}, got {actual}"
+
+
+def test_resolve_document_type_from_doc_uid_supports_ias_variant_labels() -> None:
+    """The pure doc_uid resolver should handle IAS supporting-material and IASC BC variants."""
+    cases = [
+        ("ias28-sm", "IAS-SM"),
+        ("ias28-bciasc", "IAS-BCIASC"),
+    ]
+    for doc_uid, expected_type in cases:
+        actual = resolve_document_type_from_doc_uid(doc_uid)
         assert actual == expected_type, f"{doc_uid} → expected {expected_type}, got {actual}"
 
 
@@ -225,8 +240,8 @@ def test_mixed_corpus_applies_per_type_limits() -> None:
                 chunk_min_score=0.5,
                 expand=0,
                 mode="documents",
-                per_type_d={"IFRS-S": 1, "IFRS-BC": 1, "IFRS-IE": 1, "IFRS-IG": 1, "IAS": 1, "IFRIC": 1, "SIC": 1},
-                per_type_min_score={"IFRS-S": 0.5, "IFRS-BC": 0.5, "IFRS-IE": 0.5, "IFRS-IG": 0.5, "IAS": 0.5, "IFRIC": 0.5, "SIC": 0.5},
+                per_type_d={"IFRS-S": 1, "IFRS-BC": 1, "IFRS-IE": 1, "IFRS-IG": 1, "IAS-S": 1, "IFRIC": 1, "SIC": 1},
+                per_type_min_score={"IFRS-S": 0.5, "IFRS-BC": 0.5, "IFRS-IE": 0.5, "IFRS-IG": 0.5, "IAS-S": 0.5, "IFRIC": 0.5, "SIC": 0.5},
             ),
             verbose=False,
         ),
@@ -300,8 +315,8 @@ def test_mixed_corpus_global_d_truncates_total() -> None:
                 chunk_min_score=0.5,
                 expand=0,
                 mode="documents",
-                per_type_d={"IFRS-S": 5, "IFRS-BC": 5, "IFRS-IE": 5, "IAS": 5, "IFRIC": 5},
-                per_type_min_score={"IFRS-S": 0.5, "IFRS-BC": 0.5, "IFRS-IE": 0.5, "IAS": 0.5, "IFRIC": 0.5},
+                per_type_d={"IFRS-S": 5, "IFRS-BC": 5, "IFRS-IE": 5, "IAS-S": 5, "IFRIC": 5},
+                per_type_min_score={"IFRS-S": 0.5, "IFRS-BC": 0.5, "IFRS-IE": 0.5, "IAS-S": 0.5, "IFRIC": 0.5},
             ),
             verbose=False,
         ),

@@ -21,8 +21,8 @@ class TestDocumentFamilyGrouping:
 
         assert "IFRS-S (standard)" in grouped
         assert grouped["IFRS-S (standard)"] == ["ifrs15", "ifrs9"]
-        assert "IAS (standard)" in grouped
-        assert grouped["IAS (standard)"] == ["ias21"]
+        assert "IAS-S (standard)" in grouped
+        assert grouped["IAS-S (standard)"] == ["ias21"]
 
     def test_group_by_family_mixed_documents(self) -> None:
         """Test grouping a mix of IFRS, IAS, and unknown documents."""
@@ -31,8 +31,8 @@ class TestDocumentFamilyGrouping:
 
         assert "IFRS-S (standard)" in grouped
         assert grouped["IFRS-S (standard)"] == ["ifrs15", "ifrs9"]
-        assert "IAS (standard)" in grouped
-        assert grouped["IAS (standard)"] == ["ias21", "ias12"]
+        assert "IAS-S (standard)" in grouped
+        assert grouped["IAS-S (standard)"] == ["ias21", "ias12"]
         assert "Autres" in grouped
         assert grouped["Autres"] == ["unknown_doc"]
 

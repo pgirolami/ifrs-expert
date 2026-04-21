@@ -3,6 +3,7 @@ import {
   selectIfrsCaptureTargets,
   selectIfrsCorpusTargets,
 } from "./ifrs_import.mjs";
+import { resolveIfrsDocumentType } from "./ifrs_document_types.mjs";
 import {
   ACTION_TITLE,
   downloadCaptureArtifacts,
@@ -501,39 +502,6 @@ async function runIfrsPageTask(task) {
     return label;
   }
 
-  function resolveDocumentType(docUid, variantLabel) {
-    const normalizedDocUid = normalizeWhitespace(docUid).toLowerCase();
-    if (!normalizedDocUid) {
-      throw new Error("IFRS page is missing meta[name=\"DC.Identifier\"] content");
-    }
-    if (normalizedDocUid.startsWith("ifrs")) {
-      const variantDocumentTypes = {
-        Standard: "IFRS-S",
-        "Basis for Conclusions": "IFRS-BC",
-        "Illustrative Examples": "IFRS-IE",
-        "Implementation Guidance": "IFRS-IG",
-      };
-      const resolvedDocumentType = variantDocumentTypes[variantLabel];
-      if (!resolvedDocumentType) {
-        throw new Error(`Unsupported IFRS variant label: ${variantLabel}`);
-      }
-      return resolvedDocumentType;
-    }
-    if (normalizedDocUid.startsWith("ias")) {
-      return "IAS";
-    }
-    if (normalizedDocUid.startsWith("ifric")) {
-      return "IFRIC";
-    }
-    if (normalizedDocUid.startsWith("sic")) {
-      return "SIC";
-    }
-    if (normalizedDocUid.startsWith("ps")) {
-      return "PS";
-    }
-    throw new Error(`Unsupported IFRS-side document identifier: ${docUid}`);
-  }
-
   function getAvailableDocuments() {
     return Array.from(document.querySelectorAll('input[name="documentType"]'))
       .filter((input) => input instanceof HTMLInputElement)
@@ -742,7 +710,7 @@ async function runIfrsPageTask(task) {
 
     const variantLabel = resolveVariantLabel(checkedVariantInput);
     const dcIdentifier = getDcIdentifier();
-    const documentType = resolveDocumentType(dcIdentifier, variantLabel);
+    const documentType = resolveIfrsDocumentType(dcIdentifier, variantLabel);
     const canonicalUrl = `${shellCanonicalUrl}${variantValue}`;
     const baseTitle = normalizeWhitespace(document.title || shellCanonicalUrl);
     const title = variantLabel === "Standard" ? baseTitle : `${baseTitle} - ${variantLabel}`;

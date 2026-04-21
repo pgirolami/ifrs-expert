@@ -552,7 +552,7 @@ class TestAnswerCommand:
                 expand_to_section=True,
                 per_type_d={
                     "IFRS-S": 7,
-                    "IAS": 6,
+                    "IAS-S": 6,
                     "IFRIC": 4,
                     "SIC": 3,
                     "PS": 2,
@@ -560,7 +560,7 @@ class TestAnswerCommand:
                 },
                 per_type_min_score={
                     "IFRS-S": 0.61,
-                    "IAS": 0.54,
+                    "IAS-S": 0.54,
                     "IFRIC": 0.50,
                     "SIC": 0.49,
                     "PS": 0.48,
@@ -585,13 +585,13 @@ class TestAnswerCommand:
         document_d_by_type = getattr(request, "document_d_by_type")
         document_min_score_by_type = getattr(request, "document_min_score_by_type")
         assert document_d_by_type["IFRS-S"] == 7
-        assert document_d_by_type["IAS"] == 6
+        assert document_d_by_type["IAS-S"] == 6
         assert document_d_by_type["IFRIC"] == 4
         assert document_d_by_type["SIC"] == 3
         assert document_d_by_type["PS"] == 2
         assert document_d_by_type["NAVIS"] == 5
         assert document_min_score_by_type["IFRS-S"] == 0.61
-        assert document_min_score_by_type["IAS"] == 0.54
+        assert document_min_score_by_type["IAS-S"] == 0.54
         assert document_min_score_by_type["IFRIC"] == 0.50
         assert document_min_score_by_type["SIC"] == 0.49
         assert document_min_score_by_type["PS"] == 0.48

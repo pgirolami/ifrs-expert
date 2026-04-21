@@ -190,6 +190,11 @@ class IfrsHtmlExtractor:
                 continue
 
             self._register_section(node=node, section=section, traversal_state=traversal_state, sections=sections)
+
+            section_body_chunk = self._extract_section_body_chunk(doc_uid=doc_uid, node=node, section=section)
+            if section_body_chunk is not None:
+                chunks.append(section_body_chunk)
+
             if doc_uid.endswith("-ig"):
                 guidance_chunk = self._extract_guidance_chunk(doc_uid=doc_uid, node=node, section=section)
                 if guidance_chunk is not None:
@@ -266,9 +271,6 @@ class IfrsHtmlExtractor:
         if title is None:
             return None
 
-        if nested_level == 1:
-            return None
-
         section_id = _tag_attribute_as_string(node, "id")
         if not section_id:
             return None
@@ -327,6 +329,35 @@ class IfrsHtmlExtractor:
             chunk_id=_tag_attribute_as_string(paragraph, "id"),
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
+        )
+
+    def _extract_section_body_chunk(self, doc_uid: str, node: Tag, section: SectionRecord) -> Chunk | None:
+        normalized_title = _normalize_whitespace(section.title).lower()
+        if normalized_title not in {"objective", "scope", "background", "issue", "issues", "introduction"}:
+            return None
+        if self._has_topic_paragraph_descendant(node):
+            return None
+
+        show_hide = node.find("div", class_="show-hide", recursive=False)
+        if not isinstance(show_hide, Tag):
+            return None
+        body_container = show_hide.find("div", class_="body", recursive=False)
+        if not isinstance(body_container, Tag):
+            body_container = show_hide
+
+        text_lines = self._extract_body_lines(body_container, include_hidden=True)
+        text = "\n".join(line for line in text_lines if line)
+        if not text:
+            return None
+
+        return Chunk(
+            doc_uid=doc_uid,
+            chunk_number=section.section_id,
+            page_start="",
+            page_end="",
+            chunk_id=f"{section.section_id}__BODY",
+            text=text,
+            containing_section_id=section.section_id,
         )
 
     def _extract_guidance_chunk(self, doc_uid: str, node: Tag, section: SectionRecord) -> Chunk | None:
@@ -388,6 +419,13 @@ class IfrsHtmlExtractor:
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
         )
+
+    def _has_topic_paragraph_descendant(self, node: Tag) -> bool:
+        for descendant in node.find_all("div"):
+            classes = _tag_classes(descendant)
+            if "topic" in classes and "paragraph" in classes:
+                return True
+        return False
 
     def _extract_body_lines(
         self,
@@ -536,6 +574,8 @@ IFRIC_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
 IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
     "Standard": "IAS-S",
     "Basis for Conclusions": "IAS-BC",
+    "Basis for Conclusions IASC": "IAS-BCIASC",
     "Illustrative Examples": "IAS-IE",
     "Implementation Guidance": "IAS-IG",
+    "Supporting Materials": "IAS-SM",
 }

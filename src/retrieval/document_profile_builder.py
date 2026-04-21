@@ -8,6 +8,7 @@ import unicodedata
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
+from src.commands.section_filter import is_section_title_excluded
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 
 if TYPE_CHECKING:
@@ -74,11 +75,13 @@ class DocumentProfileBuilder:
         """Build one enriched document record and its embedding text."""
         logger.info(f"Building document representation for doc_uid={document.doc_uid}, source_type={document.source_type}, chunk_count={len(chunks)}, section_count={len(sections)}")
         descendant_ids_by_ancestor = _build_descendant_ids_by_ancestor(section_closure_rows)
+        title_like_root_section_id = _find_title_like_root_section_id(sections, document.source_title)
         field_values = _extract_section_field_values(
             doc_uid=document.doc_uid,
             chunks=chunks,
             sections=sections,
             descendant_ids_by_ancestor=descendant_ids_by_ancestor,
+            title_like_root_section_id=title_like_root_section_id,
         )
 
         if field_values.get("intro_text") is None:
@@ -137,6 +140,7 @@ def _extract_section_field_values(
     chunks: list[Chunk],
     sections: list[SectionRecord],
     descendant_ids_by_ancestor: dict[str, set[str]],
+    title_like_root_section_id: str | None,
 ) -> dict[str, str]:
     field_values: dict[str, str] = {}
     for section in sorted(sections, key=lambda item: item.position):
@@ -147,8 +151,17 @@ def _extract_section_field_values(
         if field_name in field_values:
             logger.info(f"Skipping section title={section.title!r} for doc_uid={doc_uid} because field {field_name} is already populated")
             continue
+        if title_like_root_section_id is None:
+            if section.parent_section_id is not None:
+                logger.info(f"Skipping nested section title={section.title!r} for doc_uid={doc_uid} because no title-like root section was detected")
+                continue
+            descendant_ids = descendant_ids_by_ancestor.get(section.section_id, {section.section_id})
+        else:
+            if section.parent_section_id != title_like_root_section_id:
+                logger.info(f"Skipping nested section title={section.title!r} for doc_uid={doc_uid} because title-like root section_id={title_like_root_section_id} is present")
+                continue
+            descendant_ids = {section.section_id}
 
-        descendant_ids = descendant_ids_by_ancestor.get(section.section_id, {section.section_id})
         matching_text = _collect_section_text(
             doc_uid=doc_uid,
             field_name=field_name,
@@ -165,8 +178,75 @@ def _extract_section_field_values(
     return field_values
 
 
+def _find_title_like_root_section_id(sections: list[SectionRecord], source_title: str | None) -> str | None:
+    if source_title is None:
+        return None
+
+    for section in sections:
+        if section.parent_section_id is not None:
+            continue
+        if _is_title_like_root_section(section.title, source_title):
+            logger.info(f"Detected title-like root section_id={section.section_id} for document representation")
+            return section.section_id
+
+    logger.info("No title-like root section detected for document representation")
+    return None
+
+
 def _normalize_section_title(title: str) -> str:
     return " ".join(title.strip().lower().split())
+
+
+TITLE_ROOT_MIN_SHARED_TOKENS = 3
+TITLE_ROOT_MIN_SHARED_TOKENS_WITH_DIGIT = 2
+
+
+def _is_title_like_root_section(title: str, source_title: str | None) -> bool:
+    if source_title is None:
+        return False
+
+    normalized_title = _normalize_section_title(title)
+    normalized_source_title = _normalize_section_title(source_title)
+    if not normalized_title or not normalized_source_title:
+        return False
+    if normalized_title.startswith(normalized_source_title) or normalized_source_title.startswith(normalized_title):
+        return True
+
+    title_tokens = _title_tokens(title)
+    source_tokens = _title_tokens(source_title)
+    if not title_tokens or not source_tokens:
+        return False
+
+    shared_tokens = title_tokens & source_tokens
+    return len(shared_tokens) >= TITLE_ROOT_MIN_SHARED_TOKENS or (len(shared_tokens) >= TITLE_ROOT_MIN_SHARED_TOKENS_WITH_DIGIT and any(token.isdigit() for token in shared_tokens))
+
+
+_TITLE_STOP_TOKENS: set[str] = {
+    "a",
+    "after",
+    "and",
+    "an",
+    "for",
+    "financial",
+    "in",
+    "international",
+    "of",
+    "on",
+    "period",
+    "reporting",
+    "standard",
+    "the",
+    "to",
+    "accounting",
+    "ifrs",
+    "ias",
+}
+
+
+def _title_tokens(title: str) -> set[str]:
+    normalized_title = _normalize_section_title(title).replace("-", " ")
+    tokens = set(re.findall(r"[a-z0-9]+", normalized_title))
+    return {token for token in tokens if token not in _TITLE_STOP_TOKENS}
 
 
 def _collect_section_text(
@@ -186,30 +266,25 @@ def _collect_section_text(
 
 
 def _build_toc_text(doc_uid: str, sections: list[SectionRecord]) -> str | None:
-    parent_ids_with_children = {section.parent_section_id for section in sections if section.parent_section_id is not None}
     child_ids_by_parent: dict[str, list[str]] = {}
     for section in sections:
         if section.parent_section_id is None:
             continue
         child_ids_by_parent.setdefault(section.parent_section_id, []).append(section.section_id)
 
-    directly_excluded_section_ids = {section.section_id for section in sections if _normalize_section_title(section.title) in SECTION_FIELD_BY_NORMALIZED_TITLE}
+    directly_excluded_section_ids = {section.section_id for section in sections if _should_exclude_from_toc(section.title)}
     toc_excluded_section_ids = _find_descendant_section_ids(
         excluded_ids=directly_excluded_section_ids,
         child_ids_by_parent=child_ids_by_parent,
     )
 
     ordered_titles: list[str] = []
-    skipped_top_level_count = 0
     skipped_representation_section_count = len(toc_excluded_section_ids)
     for section in sorted(sections, key=lambda section: section.position):
         title = section.title.strip()
         if not title:
             continue
         if section.section_id in toc_excluded_section_ids:
-            continue
-        if section.parent_section_id is None and section.section_id in parent_ids_with_children:
-            skipped_top_level_count += 1
             continue
         ordered_titles.append(title)
 
@@ -218,11 +293,7 @@ def _build_toc_text(doc_uid: str, sections: list[SectionRecord]) -> str | None:
         return None
 
     toc_text = "\n".join(ordered_titles)
-    logger.info(
-        f"Built title-only TOC for doc_uid={doc_uid} with section_count={len(ordered_titles)}, "
-        f"skipped_top_level_count={skipped_top_level_count}, "
-        f"skipped_representation_section_count={skipped_representation_section_count}, chars={len(toc_text)}"
-    )
+    logger.info(f"Built title-only TOC for doc_uid={doc_uid} with section_count={len(ordered_titles)}, skipped_representation_section_count={skipped_representation_section_count}, chars={len(toc_text)}")
     return toc_text
 
 
@@ -240,6 +311,11 @@ def _find_descendant_section_ids(
             descendant_ids.add(child_section_id)
             to_process.append(child_section_id)
     return descendant_ids
+
+
+def _should_exclude_from_toc(title: str) -> bool:
+    normalized_title = _normalize_section_title(title)
+    return normalized_title in SECTION_FIELD_BY_NORMALIZED_TITLE or is_section_title_excluded(title)
 
 
 def _build_navis_intro_text(

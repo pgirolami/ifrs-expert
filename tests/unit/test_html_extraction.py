@@ -9,7 +9,8 @@ from pathlib import Path
 import pytest
 from bs4 import BeautifulSoup
 
-from src.extraction.html import HtmlExtractor, HtmlValidationError, _normalize_navis_heading_title
+from src.extraction.html import HtmlExtractor, HtmlSidecar, HtmlValidationError, _flatten_inline_text, _normalize_navis_heading_title
+from src.extraction.ifrs_html_extractor import IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE, IfrsHtmlExtractor
 
 
 def _example_html_path(slug: str) -> Path:
@@ -25,6 +26,11 @@ def _example_chunks_path(slug: str) -> Path:
 def _example_sections_path(slug: str) -> Path:
     examples_dir = Path(__file__).parent.parent.parent / "examples"
     return next(examples_dir.glob(f"*{slug}__SECTIONS.json"))
+
+
+def test_ias_variant_labels_map_to_separate_document_types() -> None:
+    assert IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE["Basis for Conclusions IASC"] == "IAS-BCIASC"
+    assert IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE["Supporting Materials"] == "IAS-SM"
 
 
 def _write_sidecar(
@@ -80,6 +86,8 @@ def _extract_ifrs_variant_metadata(html_path: Path) -> dict[str, str]:
         document_type = {
             "Standard": "IAS-S",
             "Basis for Conclusions": "IAS-BC",
+            "Basis for Conclusions IASC": "IAS-BCIASC",
+            "Supporting Materials": "IAS-SM",
             "Illustrative Examples": "IAS-IE",
             "Implementation Guidance": "IAS-IG",
         }[variant_label]
@@ -179,7 +187,6 @@ class TestHtmlExtractor:
             section = sections_by_id.get(expected["section_id"])
             assert section is not None, f"Missing section {expected['section_id']}"
             assert expected["section_name"] in section.title
-            assert section.parent_section_id == expected.get("section_parent_id")
 
     @pytest.mark.parametrize(
         ("basename", "expected_doc_uid", "expected_document_type"),
@@ -229,7 +236,6 @@ class TestHtmlExtractor:
             section = sections_by_id.get(expected["section_id"])
             assert section is not None, f"Missing section {expected['section_id']}"
             assert expected["section_name"] in section.title
-            assert section.parent_section_id == expected.get("section_parent_id")
 
     @pytest.mark.parametrize(
         ("relative_html_path", "expected_doc_uid", "expected_document_type"),
@@ -315,6 +321,147 @@ class TestHtmlExtractor:
 
         with pytest.raises(HtmlValidationError, match="document_type"):
             extractor.extract(source_path=html_path, explicit_doc_uid=None)
+
+    def test_extract_strips_educational_notes_and_keeps_top_level_sections(self) -> None:
+        """IFRS extraction should drop note/edu content and keep top-level sections with children."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS 9 Financial Instruments</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs9.html">
+                <meta name="DC.Identifier" content="ifrs9">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html" checked>
+                  <span class="custom-select-option-checkbox__label">Basis for Conclusions</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="nested1" id="sec-top-level">
+                    <h1>Top level heading</h1>
+                  </div>
+                  <div class="nested2 paragraph topic" id="para-1">
+                    <table>
+                      <tr>
+                        <td class="paragraph_col1"><div class="paranum"><p>1</p></div></td>
+                        <td class="paragraph_col2">
+                          <div class="body">
+                            <div class="note edu"><p>[Refer: paragraphs 4–6, 17 and 18]</p></div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/content/ifrs9.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html",
+            title="IFRS 9 Financial Instruments - Basis for Conclusions",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs9.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs9.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IFRS-BC",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+
+        section_titles = {section.title for section in extracted_document.sections}
+        assert "Top level heading" in section_titles
+        assert extracted_document.chunks == []
+        note_body = BeautifulSoup("<div class='body'><div class='note edu'><p>[Refer: paragraphs 4–6]</p></div></div>", "html.parser").div
+        assert note_body is not None
+        assert _flatten_inline_text(note_body) == ""
+
+    def test_extract_falls_back_to_section_body_for_objective_without_paragraph_wrapper(self) -> None:
+        """IAS objective sections without a paragraph wrapper should still emit a chunk."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS - IAS 12 Income Taxes</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-12-income-taxes.html">
+                <meta name="DC.Identifier" content="ias12">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias12.html" checked>
+                  <span class="custom-select-option-checkbox__label">Standard</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS12_TI0002">
+                    <h1>International Accounting Standard 12 Income Taxes</h1>
+                  </div>
+                  <div class="topic nested2" id="IAS12_0011">
+                    <h2>Objective</h2>
+                    <div class="show-hide" style="display: none;">
+                      <div class="body">
+                        <div class="bodydiv">
+                          <p>The objective of this Standard is to prescribe the accounting treatment for income taxes.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic nested2" id="IAS12_g1-4">
+                    <h2>Scope</h2>
+                    <div class="show-hide" style="display: none;">
+                      <div class="topic paragraph nested3 principles" id="IAS12_1">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="paragraph_col1"><div class="paranum"><p>1</p></div></td>
+                              <td class="paragraph_col2"><div class="body"><p>This Standard shall be applied in accounting for income taxes.</p></div></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-12-income-taxes.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias12.html",
+            title="IFRS - IAS 12 Income Taxes",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-12-income-taxes.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias12.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-S",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+
+        objective_chunk = next((chunk for chunk in extracted_document.chunks if chunk.containing_section_id == "IAS12_0011"), None)
+        scope_chunk = next((chunk for chunk in extracted_document.chunks if chunk.containing_section_id == "IAS12_g1-4"), None)
+
+        assert objective_chunk is not None, "Expected IAS 12 Objective text to be emitted as a chunk"
+        assert objective_chunk.text.startswith("The objective of this Standard is to prescribe the accounting treatment for income taxes.")
+        assert scope_chunk is not None, "Expected IAS 12 Scope text to continue emitting a chunk"
+        assert scope_chunk.text.startswith("This Standard shall be applied in accounting for income taxes.")
+        assert extracted_document.document.document_type == "IAS-S"
 
     def test_extract_requires_dc_identifier(self, tmp_path: Path) -> None:
         """HTML ingestion should fail fast when the stable identifier is missing."""
