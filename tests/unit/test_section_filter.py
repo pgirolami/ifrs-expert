@@ -8,6 +8,7 @@ from src.commands.section_filter import (
     EXCLUDED_SECTION_TITLE_PREFIXES,
     filter_extraction,
 )
+from src.retrieval.document_profile_builder import _build_toc_text
 from src.models.chunk import Chunk
 from src.models.section import SectionClosureRow, SectionRecord
 
@@ -17,12 +18,12 @@ def test_excluded_section_titles_constant_contains_expected_values() -> None:
     expected_titles = {
         "References",
         "Contents",
-        "Board Approvals",
         "Effective Date and transition",
         "Effective date",
         "Date of consensus",
         "Transition",
         "Table of Concordance",
+        "Board Approvals",
         "Dissenting opinion",
         "Dissenting opinions",
     }
@@ -77,11 +78,40 @@ def test_filter_excludes_sections_with_prefix_match() -> None:
 
     result = filter_extraction(chunks, sections, closure_rows)
 
-    assert len(result.sections) == 2
-    assert {s.section_id for s in result.sections} == {"sec3", "sec4"}
-    assert result.excluded_section_count == 2
-    assert len(result.chunks) == 1
-    assert result.chunks[0].chunk_id == "chunk3"
+    assert len(result.sections) == 3
+    assert {s.section_id for s in result.sections} == {"sec2", "sec3", "sec4"}
+    assert result.excluded_section_count == 1
+    assert len(result.chunks) == 2
+    assert {c.chunk_id for c in result.chunks} == {"chunk2", "chunk3"}
+
+
+def test_filter_excludes_amendment_titles_only_within_appendix() -> None:
+    """Amendment titles should be excluded when they appear inside Appendix sections."""
+    sections = [
+        _make_section("sec-appendix", "Appendix A"),
+        _make_section("sec-amendment-in-appendix", "Amendments to IFRS 3"),
+        _make_section("sec-amendment-child", "Background of appendix amendment"),
+        _make_section("sec-amendment-outside", "Amendments to IAS 1"),
+        _make_section("sec-main", "Main Content"),
+    ]
+    chunks = [
+        _make_chunk("chunk-appendix", "sec-appendix"),
+        _make_chunk("chunk-appendix-amendment", "sec-amendment-in-appendix"),
+        _make_chunk("chunk-appendix-child", "sec-amendment-child"),
+        _make_chunk("chunk-outside-amendment", "sec-amendment-outside"),
+        _make_chunk("chunk-main", "sec-main"),
+    ]
+    closure_rows = [
+        _make_closure("sec-appendix", "sec-amendment-in-appendix", 1),
+        _make_closure("sec-amendment-in-appendix", "sec-amendment-child", 2),
+    ]
+
+    result = filter_extraction(chunks, sections, closure_rows)
+
+    assert {section.section_id for section in result.sections} == {"sec-appendix", "sec-amendment-outside", "sec-main"}
+    assert {chunk.chunk_id for chunk in result.chunks} == {"chunk-appendix", "chunk-outside-amendment", "chunk-main"}
+    assert result.excluded_section_count == 1
+    assert result.excluded_section_titles == ("Amendments to IFRS 3",)
 
 
 def test_filter_excludes_descendant_sections() -> None:
@@ -158,6 +188,130 @@ def test_filter_excludes_chunks_with_pending_amendment_text() -> None:
     assert len(result.chunks) == 2
     assert {c.chunk_id for c in result.chunks} == {"chunk1", "chunk4"}
     assert result.excluded_chunk_count == 2
+
+
+def test_filter_excludes_descendants_of_withdrawal_wrappers() -> None:
+    """Withdrawal wrapper sections should remove their descendants too."""
+    sections = [
+        _make_section("sec-withdrawal", "Withdrawal of IAS 36 (issued 1998)"),
+        _make_section("sec-appendix-a", "Appendix A"),
+        _make_section("sec-main", "Main Content"),
+    ]
+    chunks = [
+        _make_chunk("chunk-withdrawal", "sec-withdrawal"),
+        _make_chunk("chunk-appendix-a", "sec-appendix-a"),
+        _make_chunk("chunk-main", "sec-main"),
+    ]
+    closure_rows = [
+        _make_closure("sec-withdrawal", "sec-appendix-a", 1),
+    ]
+
+    result = filter_extraction(chunks, sections, closure_rows)
+
+    assert {section.section_id for section in result.sections} == {"sec-main"}
+    assert {chunk.chunk_id for chunk in result.chunks} == {"chunk-main"}
+    assert result.excluded_section_count == 1
+    assert result.excluded_section_titles == ("Withdrawal of IAS 36 (issued 1998)",)
+
+
+def test_filter_excludes_board_approvals_sections() -> None:
+    """Board Approvals should be excluded from stored sections and chunks."""
+    sections = [
+        _make_section("sec-board", "Board Approvals"),
+        _make_section("sec-main", "Main Content"),
+    ]
+    chunks = [_make_chunk("chunk-board", "sec-board"), _make_chunk("chunk-main", "sec-main")]
+
+    result = filter_extraction(chunks, sections, [])
+
+    assert {section.section_id for section in result.sections} == {"sec-main"}
+    assert {chunk.chunk_id for chunk in result.chunks} == {"chunk-main"}
+    assert result.excluded_section_count == 1
+    assert result.excluded_section_titles == ("Board Approvals",)
+
+
+def test_toc_exclusions_match_storage_exclusions_for_representative_sections() -> None:
+    """The TOC and storage filters should exclude the same representative section titles."""
+    sections = [
+        _make_section("sec-main", "Main Content"),
+        _make_section("sec-board", "Board Approvals"),
+        _make_section("sec-ref", "References"),
+        SectionRecord(
+            section_id="sec-appendix",
+            doc_uid="test-doc",
+            parent_section_id=None,
+            level=1,
+            title="Appendix A",
+            section_lineage=["Appendix A"],
+            position=3,
+        ),
+        SectionRecord(
+            section_id="sec-amendment-in-appendix",
+            doc_uid="test-doc",
+            parent_section_id="sec-appendix",
+            level=2,
+            title="Amendments to IFRS 3",
+            section_lineage=["Appendix A", "Amendments to IFRS 3"],
+            position=4,
+        ),
+        SectionRecord(
+            section_id="sec-amendment-child",
+            doc_uid="test-doc",
+            parent_section_id="sec-amendment-in-appendix",
+            level=3,
+            title="Background of appendix amendment",
+            section_lineage=["Appendix A", "Amendments to IFRS 3", "Background of appendix amendment"],
+            position=5,
+        ),
+        _make_section("sec-amendment-outside", "Amendments to IAS 1"),
+    ]
+    closure_rows = [
+        _make_closure("sec-appendix", "sec-amendment-in-appendix", 1),
+        _make_closure("sec-amendment-in-appendix", "sec-amendment-child", 2),
+    ]
+
+    filtered = filter_extraction(chunks=[], sections=sections, closure_rows=closure_rows)
+    toc_text = _build_toc_text("ias-test", sections, closure_rows)
+
+    assert toc_text is not None
+    assert {section.title for section in filtered.sections} == set(toc_text.splitlines())
+    assert {section.title for section in sections} - {section.title for section in filtered.sections} == {
+        "Board Approvals",
+        "References",
+        "Amendments to IFRS 3",
+        "Background of appendix amendment",
+    }
+
+
+def test_toc_exclusions_match_storage_exclusions_for_withdrawal_wrappers() -> None:
+    """Withdrawal wrappers should be excluded from both storage and TOC without dropping their descendants."""
+    sections = [
+        _make_section("sec-main", "Main Content"),
+        _make_section("sec-withdrawal", "Withdrawal of IAS 36 (issued 1998)"),
+        SectionRecord(
+            section_id="sec-appendix",
+            doc_uid="test-doc",
+            parent_section_id="sec-withdrawal",
+            level=2,
+            title="Appendix A",
+            section_lineage=["Withdrawal of IAS 36 (issued 1998)", "Appendix A"],
+            position=2,
+        ),
+    ]
+    closure_rows = [
+        _make_closure("sec-withdrawal", "sec-appendix", 1),
+    ]
+
+    filtered = filter_extraction(chunks=[], sections=sections, closure_rows=closure_rows)
+    toc_text = _build_toc_text("ias-test", sections, closure_rows)
+
+    assert toc_text is not None
+    assert {section.title for section in filtered.sections} == set(toc_text.splitlines())
+    assert {section.title for section in filtered.sections} == {"Main Content"}
+    assert {section.title for section in sections} - {section.title for section in filtered.sections} == {
+        "Withdrawal of IAS 36 (issued 1998)",
+        "Appendix A",
+    }
 
 
 def test_filter_excludes_chunks_from_excluded_sections() -> None:

@@ -34,7 +34,8 @@ REQUIRED_SIDECAR_FIELDS: Final[tuple[str, ...]] = (
 )
 TABLE_ROW_WITH_LABEL_CELL_COUNT: Final[int] = 2
 HEADING_TAG_NAMES: Final[tuple[str, ...]] = ("h1", "h2", "h3", "h4", "h5", "h6")
-HEADING_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^(?:Chapter\s+[A-Za-z0-9.]+|[A-Z]?\d+(?:\.\d+)*)\s+")
+HEADING_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^(?:Chapter\s+[A-Za-z0-9.]+|[A-Z]?\d+(?:\.\d+)+)\s+")
+SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"\s+E\d+(?:\s*,\s*E\d+)*$", re.IGNORECASE)
 SUBSECTION_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(r"^[A-Z]?\d+\.\d+")
 NAVIS_DOC_UID_TOKEN_PATTERN: Final[re.Pattern[str]] = re.compile(r"[^A-Za-z0-9-]+")
 NAVIS_TITLE_PREFIX_PATTERN: Final[re.Pattern[str]] = re.compile(
@@ -286,7 +287,11 @@ def _extract_direct_heading(node: Tag) -> Tag | None:
 
 
 def _extract_raw_heading_text(heading: Tag) -> str:
-    text_parts = [_normalize_whitespace(text) for text in heading.stripped_strings]
+    fragment = BeautifulSoup(str(heading), "html.parser")
+    for marker in fragment.select(".fn_ref, .expand"):
+        marker.decompose()
+
+    text_parts = [_normalize_whitespace(text) for text in fragment.stripped_strings]
     meaningful_parts = [part for part in text_parts if part and part != "+"]
     return _normalize_whitespace(" ".join(meaningful_parts))
 
@@ -296,11 +301,10 @@ def _extract_heading_title(heading: Tag) -> str | None:
     if not raw_heading_text:
         return None
 
-    if raw_heading_text.startswith("Appendix"):
-        return "Appendix"
-
-    heading_text = re.sub(r"\s*\+\s*$", "", raw_heading_text).strip()
+    heading_text = re.sub(r"\s*([+\-\u2013\u2014])\s*$", "", raw_heading_text).strip()
     heading_text = HEADING_PREFIX_PATTERN.sub("", heading_text)
+    heading_text = SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN.sub("", heading_text).strip()
+    heading_text = re.sub(r"\s*([+\-\u2013\u2014])\s*$", "", heading_text).strip()
     return heading_text or None
 
 

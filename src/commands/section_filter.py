@@ -18,12 +18,12 @@ EXCLUDED_SECTION_TITLES: frozenset[str] = frozenset(
     {
         "References",
         "Contents",
-        "Board Approvals",
         "Effective Date and transition",
         "Effective date",
         "Date of consensus",
         "Transition",
         "Table of Concordance",
+        "Board Approvals",
         "Dissenting opinion",
         "Dissenting opinions",
     }
@@ -85,6 +85,7 @@ def filter_extraction(
     """
     # Build a set of section IDs that directly matched a section filter
     directly_excluded_section_ids = _find_excluded_section_ids(sections)
+    directly_excluded_section_ids |= _find_contextual_excluded_section_ids(sections, closure_rows)
 
     # Count of sections that directly matched a filter (for logging)
     excluded_section_count = len(directly_excluded_section_ids)
@@ -92,8 +93,11 @@ def filter_extraction(
     # Track excluded section titles for logging
     excluded_section_titles = tuple(section.title for section in sections if section.section_id in directly_excluded_section_ids)
 
+    section_by_id = {section.section_id: section for section in sections}
+    descendant_excluded_section_ids = {section_id for section_id in directly_excluded_section_ids if _should_cascade_section_exclusion(section_by_id.get(section_id))}
+
     # Find all descendant section IDs of excluded sections
-    descendant_ids = _find_descendant_section_ids(directly_excluded_section_ids, closure_rows)
+    descendant_ids = _find_descendant_section_ids(descendant_excluded_section_ids, closure_rows)
     excluded_section_ids = directly_excluded_section_ids | descendant_ids
 
     # Filter sections
@@ -132,10 +136,36 @@ def _find_excluded_section_ids(sections: list[SectionRecord]) -> set[str]:
     excluded_ids: set[str] = set()
 
     for section in sections:
-        if _is_section_excluded(section.title):
+        if _is_directly_excluded_section_title(section.title):
             excluded_ids.add(section.section_id)
 
     return excluded_ids
+
+
+def _find_contextual_excluded_section_ids(
+    sections: list[SectionRecord],
+    closure_rows: list[SectionClosureRow],
+) -> set[str]:
+    """Find amendment section IDs that only belong in the TOC when outside appendices."""
+    section_by_id = {section.section_id: section for section in sections}
+    ancestor_ids_by_descendant: dict[str, set[str]] = {}
+    for row in closure_rows:
+        ancestor_ids_by_descendant.setdefault(row.descendant_section_id, set()).add(row.ancestor_section_id)
+
+    contextual_excluded_ids: set[str] = set()
+    for section in sections:
+        if not _is_appendix_amendment_title(section.title):
+            continue
+        ancestor_ids = ancestor_ids_by_descendant.get(section.section_id, set())
+        for ancestor_id in ancestor_ids:
+            if ancestor_id == section.section_id:
+                continue
+            ancestor = section_by_id.get(ancestor_id)
+            if ancestor is not None and _is_appendix_title(ancestor.title):
+                contextual_excluded_ids.add(section.section_id)
+                break
+
+    return contextual_excluded_ids
 
 
 def is_section_title_excluded(title: str) -> bool:
@@ -145,9 +175,31 @@ def is_section_title_excluded(title: str) -> bool:
     return any(title.startswith(prefix) for prefix in EXCLUDED_SECTION_TITLE_PREFIXES)
 
 
+def _is_directly_excluded_section_title(title: str) -> bool:
+    """Check whether a section title is excluded without applying amendment appendix context."""
+    if title in EXCLUDED_SECTION_TITLES:
+        return True
+    return title.startswith("Withdrawal of")
+
+
 def _is_section_excluded(title: str) -> bool:
     """Backward-compatible internal alias for section-title exclusion checks."""
     return is_section_title_excluded(title)
+
+
+def _is_appendix_title(title: str) -> bool:
+    """Check whether a title refers to an appendix container."""
+    return title.startswith("Appendix") or title == "Appendices"
+
+
+def _should_cascade_section_exclusion(_section: SectionRecord | None) -> bool:
+    """Check whether a directly excluded section should also exclude its descendants."""
+    return True
+
+
+def _is_appendix_amendment_title(title: str) -> bool:
+    """Check whether a title is an amendment heading that should be excluded in appendices."""
+    return title.startswith(("Amendments to", "Amendment to"))
 
 
 def _find_descendant_section_ids(

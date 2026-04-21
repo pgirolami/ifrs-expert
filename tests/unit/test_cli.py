@@ -193,11 +193,12 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
 
 
 def test_execute_command_dispatches_store_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
-    """CLI should pass the store scope through to the store command factory."""
-    captured_scopes: list[str] = []
+    """CLI should pass the store scope and force flag through to the store command factory."""
+    captured_kwargs: list[tuple[str, bool]] = []
 
     def _create_store_command(**kwargs: object) -> FakeTextCommand:
-        captured_scopes.append(str(kwargs["scope"]))
+        options = kwargs["options"]
+        captured_kwargs.append((str(options.scope), bool(options.force_store)))
         return FakeTextCommand("store output")
 
     monkeypatch.setattr("src.cli.create_store_command", _create_store_command)
@@ -207,21 +208,22 @@ def test_execute_command_dispatches_store_with_scope(monkeypatch: pytest.MonkeyP
         source="/tmp/test.html",
         doc_uid=None,
         scope="documents",
+        force_store=True,
     )
 
     output = _execute_command(args)
 
     assert output == "store output"
-    assert captured_scopes == ["documents"]
+    assert captured_kwargs == [("documents", True)]
 
 
 def test_execute_command_dispatches_ingest_with_scope(monkeypatch: pytest.MonkeyPatch) -> None:
-    """CLI should construct IngestCommand with the requested scope."""
-    captured_scopes: list[str] = []
+    """CLI should construct IngestCommand with the requested scope and force flag."""
+    captured_args: list[tuple[str, bool]] = []
 
     class FakeIngestCommand:
-        def __init__(self, scope: str) -> None:
-            captured_scopes.append(scope)
+        def __init__(self, store_options: object) -> None:
+            captured_args.append((str(store_options.scope), bool(store_options.force_store)))
 
         def execute(self) -> str:
             return "ingest output"
@@ -231,12 +233,13 @@ def test_execute_command_dispatches_ingest_with_scope(monkeypatch: pytest.Monkey
     args = argparse.Namespace(
         command="ingest",
         scope="sections",
+        force_store=True,
     )
 
     output = _execute_command(args)
 
     assert output == "ingest output"
-    assert captured_scopes == ["sections"]
+    assert captured_args == [("sections", True)]
 
 
 def test_main_logs_and_reraises_unhandled_command_exceptions(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -425,6 +428,26 @@ def test_answer_parser_requires_policy_config_and_no_inline_defaults() -> None:
     assert not hasattr(args, "d")
     assert not hasattr(args, "ifrs_d")
     assert not hasattr(args, "content_min_score")
+
+
+def test_store_parser_accepts_force_flag() -> None:
+    """Store parser should expose the force flag for re-storing unchanged payloads."""
+    parser = _build_parser()
+
+    args = parser.parse_args(["store", "--force-store", "./doc.html"])
+
+    assert args.force_store is True
+    assert args.scope == "all"
+
+
+def test_ingest_parser_accepts_force_flag() -> None:
+    """Ingest parser should expose the force flag for re-storing unchanged payloads."""
+    parser = _build_parser()
+
+    args = parser.parse_args(["ingest", "--force-store"])
+
+    assert args.force_store is True
+    assert args.scope == "all"
 
 
 def test_query_command_returns_error_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -26,6 +26,7 @@ SECTION_FIELD_BY_NORMALIZED_TITLE: dict[str, str] = {
     "scope": "scope_text",
     "introduction": "intro_text",
 }
+SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN = re.compile(r"\s+E\d+(?:\s*,\s*E\d+)*$", re.IGNORECASE)
 EMBEDDING_LABEL_BY_FIELD: dict[str, str] = {
     "source_title": "Title",
     "background_text": "Background",
@@ -103,6 +104,7 @@ class DocumentProfileBuilder:
         toc_text = _build_toc_text(
             doc_uid=document.doc_uid,
             sections=toc_sections or sections,
+            section_closure_rows=section_closure_rows,
         )
         if toc_text is not None:
             field_values["toc_text"] = toc_text
@@ -120,7 +122,18 @@ class DocumentProfileBuilder:
             document=enriched_document,
             max_embedding_chars=self._max_embedding_chars,
         )
-        populated_fields = [field_name for field_name in ("background_text", "issue_text", "objective_text", "scope_text", "intro_text", "toc_text") if getattr(enriched_document, field_name) is not None]
+        populated_fields = [
+            field_name
+            for field_name in (
+                "background_text",
+                "issue_text",
+                "objective_text",
+                "scope_text",
+                "intro_text",
+                "toc_text",
+            )
+            if getattr(enriched_document, field_name) is not None
+        ]
         logger.info(f"Built document representation for doc_uid={document.doc_uid}; populated_fields={populated_fields}, embedding_chars={len(embedding_text)}")
         return BuiltDocumentProfile(document=enriched_document, embedding_text=embedding_text)
 
@@ -144,7 +157,7 @@ def _extract_section_field_values(
 ) -> dict[str, str]:
     field_values: dict[str, str] = {}
     for section in sorted(sections, key=lambda item: item.position):
-        normalized_title = _normalize_section_title(section.title)
+        normalized_title = _normalize_section_title_for_matching(section.title)
         field_name = SECTION_FIELD_BY_NORMALIZED_TITLE.get(normalized_title)
         if field_name is None:
             continue
@@ -160,7 +173,7 @@ def _extract_section_field_values(
             if section.parent_section_id != title_like_root_section_id:
                 logger.info(f"Skipping nested section title={section.title!r} for doc_uid={doc_uid} because title-like root section_id={title_like_root_section_id} is present")
                 continue
-            descendant_ids = {section.section_id}
+            descendant_ids = descendant_ids_by_ancestor.get(section.section_id, {section.section_id})
 
         matching_text = _collect_section_text(
             doc_uid=doc_uid,
@@ -197,6 +210,11 @@ def _normalize_section_title(title: str) -> str:
     return " ".join(title.strip().lower().split())
 
 
+def _normalize_section_title_for_matching(title: str) -> str:
+    normalized_title = _normalize_section_title(title)
+    return SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN.sub("", normalized_title).strip()
+
+
 TITLE_ROOT_MIN_SHARED_TOKENS = 3
 TITLE_ROOT_MIN_SHARED_TOKENS_WITH_DIGIT = 2
 
@@ -209,7 +227,7 @@ def _is_title_like_root_section(title: str, source_title: str | None) -> bool:
     normalized_source_title = _normalize_section_title(source_title)
     if not normalized_title or not normalized_source_title:
         return False
-    if normalized_title.startswith(normalized_source_title) or normalized_source_title.startswith(normalized_title):
+    if normalized_title.startswith(normalized_source_title) or normalized_source_title.startswith(normalized_title) or normalized_source_title.endswith(normalized_title) or normalized_title.endswith(normalized_source_title):
         return True
 
     title_tokens = _title_tokens(title)
@@ -265,14 +283,24 @@ def _collect_section_text(
     return section_text
 
 
-def _build_toc_text(doc_uid: str, sections: list[SectionRecord]) -> str | None:
+def _build_toc_text(doc_uid: str, sections: list[SectionRecord], section_closure_rows: list[SectionClosureRow]) -> str | None:
     child_ids_by_parent: dict[str, list[str]] = {}
     for section in sections:
         if section.parent_section_id is None:
             continue
         child_ids_by_parent.setdefault(section.parent_section_id, []).append(section.section_id)
 
-    directly_excluded_section_ids = {section.section_id for section in sections if _should_exclude_from_toc(section.title)}
+    ancestor_ids_by_descendant = _build_ancestor_ids_by_descendant(section_closure_rows)
+    appendix_section_ids = {section.section_id for section in sections if _is_appendix_title(section.title)}
+    directly_excluded_section_ids = {
+        section.section_id
+        for section in sections
+        if _should_exclude_from_toc(
+            section=section,
+            ancestor_ids_by_descendant=ancestor_ids_by_descendant,
+            appendix_section_ids=appendix_section_ids,
+        )
+    }
     toc_excluded_section_ids = _find_descendant_section_ids(
         excluded_ids=directly_excluded_section_ids,
         child_ids_by_parent=child_ids_by_parent,
@@ -313,9 +341,39 @@ def _find_descendant_section_ids(
     return descendant_ids
 
 
-def _should_exclude_from_toc(title: str) -> bool:
-    normalized_title = _normalize_section_title(title)
-    return normalized_title in SECTION_FIELD_BY_NORMALIZED_TITLE or is_section_title_excluded(title)
+def _should_exclude_from_toc(
+    section: SectionRecord,
+    ancestor_ids_by_descendant: dict[str, set[str]],
+    appendix_section_ids: set[str],
+) -> bool:
+    normalized_title = _normalize_section_title(section.title)
+    if normalized_title in SECTION_FIELD_BY_NORMALIZED_TITLE:
+        return True
+    if normalized_title.startswith("dissent"):
+        return True
+    if section.title.startswith("Amendments to") or section.title.startswith("Amendment to"):
+        return _is_within_appendix(section.section_id, ancestor_ids_by_descendant, appendix_section_ids)
+    return is_section_title_excluded(section.title)
+
+
+def _build_ancestor_ids_by_descendant(section_closure_rows: list[SectionClosureRow]) -> dict[str, set[str]]:
+    ancestor_ids_by_descendant: dict[str, set[str]] = {}
+    for row in section_closure_rows:
+        ancestor_ids_by_descendant.setdefault(row.descendant_section_id, set()).add(row.ancestor_section_id)
+    return ancestor_ids_by_descendant
+
+
+def _is_within_appendix(
+    section_id: str,
+    ancestor_ids_by_descendant: dict[str, set[str]],
+    appendix_section_ids: set[str],
+) -> bool:
+    ancestor_ids = ancestor_ids_by_descendant.get(section_id, set())
+    return any(ancestor_id in appendix_section_ids and ancestor_id != section_id for ancestor_id in ancestor_ids)
+
+
+def _is_appendix_title(title: str) -> bool:
+    return title.startswith("Appendix") or title == "Appendices"
 
 
 def _build_navis_intro_text(

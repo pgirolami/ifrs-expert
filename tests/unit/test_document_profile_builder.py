@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from src.commands.section_filter import filter_extraction
 from src.extraction.html import HtmlExtractor
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
@@ -104,6 +105,77 @@ def test_document_profile_builder_populates_ias10_objective_and_scope_from_examp
     assert built_profile.document.scope_text.startswith("This Standard shall be applied in the accounting for, and disclosure of, events")
     assert "Objective: The objective of this Standard is to prescribe:" in built_profile.embedding_text
     assert "Scope: This Standard shall be applied in the accounting for, and disclosure of, events" in built_profile.embedding_text
+
+
+def test_document_profile_builder_populates_intro_from_descendant_chunks_under_title_like_root() -> None:
+    """Introduction text should include descendant chunks when the section has no direct chunk."""
+    document = DocumentRecord(
+        doc_uid="ias21-ie",
+        source_type="html",
+        source_title="IFRS - IAS 21 The Effects of Changes in Foreign Exchange Rates - Illustrative Examples",
+        source_url="https://www.ifrs.org/ias21-ie.html",
+        canonical_url="https://www.ifrs.org/ias21-ie.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-title",
+            doc_uid="ias21-ie",
+            parent_section_id=None,
+            level=1,
+            title="Illustrative Examples",
+            section_lineage=["Illustrative Examples"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-intro-root",
+            doc_uid="ias21-ie",
+            parent_section_id="sec-title",
+            level=2,
+            title="Introduction",
+            section_lineage=["Illustrative Examples", "Introduction"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-intro-detail",
+            doc_uid="ias21-ie",
+            parent_section_id="sec-intro-root",
+            level=3,
+            title="Example 1",
+            section_lineage=["Illustrative Examples", "Introduction", "Example 1"],
+            position=3,
+        ),
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-title", "sec-title", 0),
+        SectionClosureRow("sec-title", "sec-intro-root", 1),
+        SectionClosureRow("sec-title", "sec-intro-detail", 2),
+        SectionClosureRow("sec-intro-root", "sec-intro-root", 0),
+        SectionClosureRow("sec-intro-root", "sec-intro-detail", 1),
+        SectionClosureRow("sec-intro-detail", "sec-intro-detail", 0),
+    ]
+    chunks = [
+        Chunk(
+            doc_uid="ias21-ie",
+            chunk_number="IE1",
+            page_start="",
+            page_end="",
+            chunk_id="c1",
+            containing_section_id="sec-intro-detail",
+            text="These examples illustrate how an entity might apply some of the requirements in IAS 21 in hypothetical situations.",
+        )
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=chunks,
+        sections=sections,
+        section_closure_rows=closure_rows,
+    )
+
+    assert built_profile.document.intro_text is not None, "Expected intro_text to populate from descendant chunks"
+    assert built_profile.document.intro_text.startswith("These examples illustrate how an entity might apply some of the requirements in IAS 21")
+    assert "Introduction: These examples illustrate how an entity might apply some of the requirements in IAS 21" in built_profile.embedding_text
 
 
 def test_document_profile_builder_ignores_nested_background_scope_sections() -> None:
@@ -562,6 +634,194 @@ def test_document_profile_builder_uses_filtered_sections_for_toc_when_provided()
 
     assert built_profile.document.toc_text is None
     assert "TOC:" not in built_profile.embedding_text
+
+
+def test_document_profile_builder_excludes_amendments_to_titles_inside_appendices_from_toc() -> None:
+    """Amendment titles inside appendices should be excluded from the TOC."""
+    document = DocumentRecord(
+        doc_uid="ias32-bc",
+        source_type="html",
+        source_title="IAS 32 Financial Instruments: Presentation - Basis for Conclusions",
+        source_url="https://www.ifrs.org/ias32-bc.html",
+        canonical_url="https://www.ifrs.org/ias32-bc.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-appendix",
+            doc_uid="ias32-bc",
+            parent_section_id=None,
+            level=2,
+            title="Appendix",
+            section_lineage=["Appendix"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-amendment-appendix",
+            doc_uid="ias32-bc",
+            parent_section_id="sec-appendix",
+            level=3,
+            title="Amendments to the application guidance for offsetting financial assets and financial liabilities",
+            section_lineage=["Appendix", "Amendments to the application guidance for offsetting financial assets and financial liabilities"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-requirements",
+            doc_uid="ias32-bc",
+            parent_section_id="sec-amendment-appendix",
+            level=4,
+            title="Requirements for offsetting financial assets and financial liabilities",
+            section_lineage=["Appendix", "Amendments to the application guidance for offsetting financial assets and financial liabilities", "Requirements for offsetting financial assets and financial liabilities"],
+            position=3,
+        ),
+        SectionRecord(
+            section_id="sec-main",
+            doc_uid="ias32-bc",
+            parent_section_id=None,
+            level=2,
+            title="Main Content",
+            section_lineage=["Main Content"],
+            position=4,
+        ),
+    ]
+    chunks = [
+        Chunk(
+            doc_uid="ias32-bc",
+            chunk_number="BC75",
+            page_start="",
+            page_end="",
+            chunk_id="c1",
+            containing_section_id="sec-amendment-appendix",
+            text="Following requests from users of financial statements and recommendations from the Financial Stability Board, the Board added a project to improve the requirements for offsetting financial assets and financial liabilities.",
+        )
+    ]
+    closure_rows = [
+        SectionClosureRow("sec-appendix", "sec-appendix", 0),
+        SectionClosureRow("sec-appendix", "sec-amendment-appendix", 1),
+        SectionClosureRow("sec-appendix", "sec-requirements", 2),
+        SectionClosureRow("sec-amendment-appendix", "sec-amendment-appendix", 0),
+        SectionClosureRow("sec-amendment-appendix", "sec-requirements", 1),
+        SectionClosureRow("sec-requirements", "sec-requirements", 0),
+        SectionClosureRow("sec-main", "sec-main", 0),
+    ]
+
+    filtered = filter_extraction(chunks=chunks, sections=sections, closure_rows=closure_rows)
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=filtered.chunks,
+        sections=filtered.sections,
+        section_closure_rows=filtered.closure_rows,
+    )
+
+    assert {section.section_id for section in filtered.sections} == {"sec-appendix", "sec-main"}
+    assert {chunk.chunk_id for chunk in filtered.chunks} == set()
+    assert built_profile.document.toc_text == "Appendix\nMain Content"
+    assert "Amendments to the application guidance for offsetting financial assets and financial liabilities" not in built_profile.document.toc_text
+
+
+def test_document_profile_builder_keeps_amendments_to_titles_outside_appendices_in_toc() -> None:
+    """Amendment titles outside appendices should remain in the TOC."""
+    document = DocumentRecord(
+        doc_uid="ias32-bc",
+        source_type="html",
+        source_title="IAS 32 Financial Instruments: Presentation - Basis for Conclusions",
+        source_url="https://www.ifrs.org/ias32-bc.html",
+        canonical_url="https://www.ifrs.org/ias32-bc.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-amendment",
+            doc_uid="ias32-bc",
+            parent_section_id=None,
+            level=2,
+            title="Amendments to the application guidance for offsetting financial assets and financial liabilities",
+            section_lineage=["Amendments to the application guidance for offsetting financial assets and financial liabilities"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-background",
+            doc_uid="ias32-bc",
+            parent_section_id="sec-amendment",
+            level=3,
+            title="Background",
+            section_lineage=["Amendments to the application guidance for offsetting financial assets and financial liabilities", "Background"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-requirements",
+            doc_uid="ias32-bc",
+            parent_section_id="sec-amendment",
+            level=3,
+            title="Requirements for offsetting financial assets and financial liabilities",
+            section_lineage=["Amendments to the application guidance for offsetting financial assets and financial liabilities", "Requirements for offsetting financial assets and financial liabilities"],
+            position=3,
+        ),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=[],
+        sections=sections,
+        section_closure_rows=[],
+    )
+
+    assert built_profile.document.toc_text is not None
+    assert "Amendments to the application guidance for offsetting financial assets and financial liabilities" in built_profile.document.toc_text
+    assert "Background" not in built_profile.document.toc_text
+    assert "Requirements for offsetting financial assets and financial liabilities" in built_profile.document.toc_text
+
+
+def test_document_profile_builder_excludes_board_approvals_from_toc() -> None:
+    """Board Approvals should be hidden from the TOC while keeping the surrounding document content."""
+    document = DocumentRecord(
+        doc_uid="ias36",
+        source_type="html",
+        source_title="IFRS - IAS 36 Impairment of Assets",
+        source_url="https://www.ifrs.org/ias36.html",
+        canonical_url="https://www.ifrs.org/ias36.html",
+        captured_at="2026-04-05T10:00:00Z",
+    )
+    sections = [
+        SectionRecord(
+            section_id="sec-main",
+            doc_uid="ias36",
+            parent_section_id=None,
+            level=1,
+            title="Main Content",
+            section_lineage=["Main Content"],
+            position=1,
+        ),
+        SectionRecord(
+            section_id="sec-board",
+            doc_uid="ias36",
+            parent_section_id=None,
+            level=1,
+            title="Board Approvals",
+            section_lineage=["Board Approvals"],
+            position=2,
+        ),
+        SectionRecord(
+            section_id="sec-board-child",
+            doc_uid="ias36",
+            parent_section_id="sec-board",
+            level=2,
+            title="Approval by the Board of IAS 36 issued in March 2004",
+            section_lineage=["Board Approvals", "Approval by the Board of IAS 36 issued in March 2004"],
+            position=3,
+        ),
+    ]
+
+    built_profile = DocumentProfileBuilder().build(
+        document=document,
+        chunks=[],
+        sections=sections,
+        section_closure_rows=[],
+    )
+
+    assert built_profile.document.toc_text == "Main Content"
+    assert "Board Approvals" not in built_profile.document.toc_text
+    assert "Approval by the Board of IAS 36 issued in March 2004" not in built_profile.document.toc_text
 
 
 def test_document_profile_builder_includes_top_level_sections_with_children_in_toc() -> None:

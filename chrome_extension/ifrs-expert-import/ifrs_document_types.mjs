@@ -28,6 +28,7 @@ export function resolveIfrsDocumentType(docUid, variantLabel) {
       "basis for conclusions iasc": "IAS-BCIASC",
       "illustrative examples": "IAS-IE",
       "implementation guidance": "IAS-IG",
+      "supporting material": "IAS-SM",
       "supporting materials": "IAS-SM",
     };
     const resolvedDocumentType = variantDocumentTypes[normalizedVariantLabel];

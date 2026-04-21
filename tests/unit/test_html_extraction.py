@@ -9,8 +9,15 @@ from pathlib import Path
 import pytest
 from bs4 import BeautifulSoup
 
-from src.extraction.html import HtmlExtractor, HtmlSidecar, HtmlValidationError, _flatten_inline_text, _normalize_navis_heading_title
+from src.extraction.html import HtmlExtractor, HtmlSidecar, HtmlValidationError, _extract_heading_title, _flatten_inline_text, _normalize_navis_heading_title
 from src.extraction.ifrs_html_extractor import IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE, IfrsHtmlExtractor
+from src.retrieval.document_profile_builder import DocumentProfileBuilder
+
+SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN = re.compile(r"\s+E\d+(?:\s*,\s*E\d+)*$", re.IGNORECASE)
+
+
+def _normalize_section_title_for_test(title: str) -> str:
+    return SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN.sub("", title).strip()
 
 
 def _example_html_path(slug: str) -> Path:
@@ -186,7 +193,7 @@ class TestHtmlExtractor:
         for expected in expected_sections:
             section = sections_by_id.get(expected["section_id"])
             assert section is not None, f"Missing section {expected['section_id']}"
-            assert expected["section_name"] in section.title
+            assert _normalize_section_title_for_test(expected["section_name"]) in section.title
 
     @pytest.mark.parametrize(
         ("basename", "expected_doc_uid", "expected_document_type"),
@@ -235,7 +242,7 @@ class TestHtmlExtractor:
         for expected in expected_sections:
             section = sections_by_id.get(expected["section_id"])
             assert section is not None, f"Missing section {expected['section_id']}"
-            assert expected["section_name"] in section.title
+            assert _normalize_section_title_for_test(expected["section_name"]) in section.title
 
     @pytest.mark.parametrize(
         ("relative_html_path", "expected_doc_uid", "expected_document_type"),
@@ -462,6 +469,355 @@ class TestHtmlExtractor:
         assert scope_chunk is not None, "Expected IAS 12 Scope text to continue emitting a chunk"
         assert scope_chunk.text.startswith("This Standard shall be applied in accounting for income taxes.")
         assert extracted_document.document.document_type == "IAS-S"
+
+    def test_extract_strips_educational_references_from_ias_section_titles(self) -> None:
+        """IAS section titles should ignore inline educational references like E1/E2."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS - IAS 19 Employee Benefits</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-19-employee-benefits.html">
+                <meta name="DC.Identifier" content="ias19">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias19.html" checked>
+                  <span class="custom-select-option-checkbox__label">Standard</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS19_rubric">
+                    <h1>International Accounting Standard 19 Employee Benefits</h1>
+                  </div>
+                  <div class="topic nested2" id="IAS19_g2-7">
+                    <h2 class="title topictitle2 expand_cursor" id="IAS19_g2-7__IAS19_g2-7_TI">Scope<span class="ph"><a href="javascript:;"><span class="fn_eduref" style="">E1,</span></a><a href="javascript:;"><span class="fn_eduref" style="">E2</span></a></span><span class="expand">+</span></h2>
+                    <div class="show-hide">
+                      <div class="body">
+                        <div class="bodydiv">
+                          <p>This Standard shall be applied by an employer in accounting for all employee benefits, except those to which IFRS 2 applies.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-19-employee-benefits.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias19.html",
+            title="IFRS - IAS 19 Employee Benefits",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-19-employee-benefits.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias19.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-S",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+        built_profile = DocumentProfileBuilder().build(
+            document=extracted_document.document,
+            chunks=extracted_document.chunks,
+            sections=extracted_document.sections,
+            section_closure_rows=extracted_document.section_closure_rows,
+        )
+
+        scope_section_titles = [section.title for section in extracted_document.sections if section.section_id == "IAS19_g2-7"]
+        assert scope_section_titles == ["Scope"], f"Expected the section title to be normalized without the inline references, got {scope_section_titles}"
+        assert built_profile.document.scope_text is not None, "Expected IAS 19 scope_text to populate from the scope section body"
+        assert built_profile.document.scope_text.startswith("This Standard shall be applied by an employer in accounting for all employee benefits")
+        assert "Scope: This Standard shall be applied by an employer" in built_profile.embedding_text
+
+    def test_extract_populates_scope_from_descendant_chunks_under_title_like_root(self) -> None:
+        """Basis for Conclusions scope text should include descendant chunks when the scope section has no direct chunks."""
+        html = """
+            <html>
+              <head>
+                <title>IAS 2 Inventories - Basis for Conclusions</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-2-inventories.html">
+                <meta name="DC.Identifier" content="ias2-bc">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html" checked>
+                  <span class="custom-select-option-checkbox__label">Basis for Conclusions</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS02_rubric">
+                    <h1>Basis for Conclusions on IAS 2 Inventories</h1>
+                  </div>
+                  <div class="topic nested2" id="IAS02_gBC4-BC8">
+                    <h2 class="title topictitle2 expand_cursor" id="IAS02_gBC4-BC8__IAS02_gBC4-BC8_TI">Scope<span class="expand">–</span></h2>
+                    <div class="show-hide" style="display: block;">
+                      <div class="body"></div>
+                      <div class="topic nested3" id="IAS02_gBC4-BC5">
+                        <h3 class="title topictitle3 indented expand_cursor" id="IAS02_gBC4-BC5__IAS02_gBC4-BC5_TI">Reference to historical cost system<span class="expand">–</span></h3>
+                        <div class="show-hide" style="display: block;">
+                          <div class="topic paragraph nested4" id="IAS02_BC4">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td class="paragraph_col1"><div class="paranum"><p>BC4</p></div></td>
+                                  <td class="paragraph_col2"><div class="body"><p class="p">Both the objective and the scope of the previous version of IAS 2 referred to the accounting treatment for inventories under the historical cost system.</p></div></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="topic nested3" id="IAS02_gBC6-BC8">
+                        <h3 class="title topictitle3 indented expand_cursor" id="IAS02_gBC6-BC8__IAS02_gBC6-BC8_TI">Inventories of broker-traders<span class="expand">–</span></h3>
+                        <div class="show-hide" style="display: block;">
+                          <div class="topic paragraph nested4" id="IAS02_BC6">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td class="paragraph_col1"><div class="paranum"><p>BC6</p></div></td>
+                                  <td class="paragraph_col2"><div class="body"><p class="p">The Board decided that the Standard should not apply to the measurement of inventories of broker-traders when measured at fair value less costs to sell.</p></div></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-2-inventories.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html",
+            title="IAS 2 Inventories - Basis for Conclusions",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-2-inventories.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-BC",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+        built_profile = DocumentProfileBuilder().build(
+            document=extracted_document.document,
+            chunks=extracted_document.chunks,
+            sections=extracted_document.sections,
+            section_closure_rows=extracted_document.section_closure_rows,
+        )
+
+        scope_section_titles = [section.title for section in extracted_document.sections if section.section_id == "IAS02_gBC4-BC8"]
+        assert scope_section_titles == ["Scope"], f"Expected the scope title to normalize cleanly, got {scope_section_titles}"
+        assert built_profile.document.scope_text is not None, "Expected IAS 2 BC scope_text to populate from descendant chunks"
+        assert "historical cost system" in built_profile.document.scope_text
+        assert "broker-traders" in built_profile.document.scope_text
+
+    def test_extract_normalizes_educational_note_suffixes_with_different_markup(self) -> None:
+        """IAS titles should normalize trailing educational-note suffixes even when markup differs."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS - IAS 2 Inventories</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-2-inventories.html">
+                <meta name="DC.Identifier" content="ias2">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html" checked>
+                  <span class="custom-select-option-checkbox__label">Standard</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS2_rubric">
+                    <h1>International Accounting Standard 2 Inventories</h1>
+                  </div>
+                  <div class="topic nested2" id="IAS02_g28-33">
+                    <h3 class="title topictitle3 indented expand_cursor" id="IAS02_g28-33__IAS02_g28-33_TI">Net realisable value<span class="ph"><a href="javascript:;"><span class="fn_eduref" style="">E8</span></a></span><span class="expand">–</span></h3>
+                    <div class="show-hide">
+                      <div class="body">
+                        <div class="bodydiv">
+                          <p>Inventories should be measured at the lower of cost and net realisable value.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-2-inventories.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html",
+            title="IFRS - IAS 2 Inventories",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-2-inventories.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias2.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-S",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+        section_titles = [section.title for section in extracted_document.sections if section.section_id == "IAS02_g28-33"]
+        assert section_titles == ["Net realisable value"], f"Expected the section title to be normalized without the E8 suffix, got {section_titles}"
+
+    def test_extract_registers_board_approvals_as_section_without_id(self) -> None:
+        """Board Approvals should be extracted as a section so descendants can be linked to it."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS - IAS 28 Investments in Associates and Joint Ventures - Basis for Conclusions</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-28-investments-in-associates-and-joint-ventures.html">
+                <meta name="DC.Identifier" content="ias28">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias28.html" checked>
+                  <span class="custom-select-option-checkbox__label">Basis for Conclusions</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS28_rubric">
+                    <h1>Basis for Conclusions on IAS 28 Investments in Associates and Joint Ventures</h1>
+                  </div>
+                  <div class="nested2 backmatter">
+                    <h2 class="title topictitle2 expand_cursor">Board Approvals<span class="expand">–</span></h2>
+                    <div class="show-hide" style="display: block;">
+                      <div class="topic nested3" id="IAS28_gDO1-DO3">
+                        <h4 class="title topictitle4" id="ariaid-title130"><span class="ph variant">Dissenting opinion on amendment issued in May 2008</span></h4>
+                        <div class="show-hide">
+                          <div class="body"></div>
+                          <div class="topic paragraph nested6 noprinciples" id="IAS28_DO1">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td class="paragraph_col1"><div class="paranum"><p>DO1</p></div></td>
+                                  <td class="paragraph_col2"><div class="body"><p class="p">Mr Yamada voted against one of the amendments to IAS 28.</p></div></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-28-investments-in-associates-and-joint-ventures.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias28.html",
+            title="IFRS - IAS 28 Investments in Associates and Joint Ventures - Basis for Conclusions",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-28-investments-in-associates-and-joint-ventures.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias28.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-BC",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+
+        board_approvals_sections = [section for section in extracted_document.sections if section.title == "Board Approvals"]
+        dissent_sections = [section for section in extracted_document.sections if "Dissent" in section.title]
+        dissent_chunk_ids = [chunk.chunk_id for chunk in extracted_document.chunks if chunk.chunk_number == "DO1"]
+
+        assert board_approvals_sections, "Expected Board Approvals to be extracted as a section"
+        assert dissent_sections, "Expected dissent subsection(s) to remain linked under Board Approvals"
+        assert dissent_chunk_ids == ["IAS28_DO1"], f"Expected the dissent chunk to be preserved, got {dissent_chunk_ids}"
+        assert dissent_sections[0].parent_section_id == board_approvals_sections[0].section_id
+
+    def test_extract_preserves_years_in_heading_titles(self) -> None:
+        """Heading titles like 2003 revision should keep the year instead of stripping it."""
+        html = """
+            <html>
+              <head>
+                <title>IFRS - IAS 27 Consolidated and Separate Financial Statements - Basis for Conclusions</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-27-consolidated-and-separate-financial-statements.html">
+                <meta name="DC.Identifier" content="ias27">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ias27.html" checked>
+                  <span class="custom-select-option-checkbox__label">Basis for Conclusions</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IAS27_rubric">
+                    <h1>Basis for Conclusions on IAS 27 Consolidated and Separate Financial Statements</h1>
+                  </div>
+                  <div class="topic nested2" id="IAS27_gBC9-BC10">
+                    <h3 class="title topictitle3 indented expand_cursor" id="IAS27_gBC9-BC10__IAS27_gBC9-BC10_TI">2003 revision<span class="expand">+</span></h3>
+                    <div class="show-hide">
+                      <div class="topic paragraph nested4" id="IAS27_BC9">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="paragraph_col1"><div class="paranum"><p>BC9</p></div></td>
+                              <td class="paragraph_col2"><div class="body"><p class="p">The Board made revisions in 2003 to clarify the accounting requirements.</p></div></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/issued-standards/list-of-standards/ias-27-consolidated-and-separate-financial-statements.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias27.html",
+            title="IFRS - IAS 27 Consolidated and Separate Financial Statements - Basis for Conclusions",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ias-27-consolidated-and-separate-financial-statements.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ias27.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IAS-BC",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+        section_titles = [section.title for section in extracted_document.sections if section.section_id == "IAS27_gBC9-BC10"]
+        assert section_titles == ["2003 revision"], f"Expected the year to be preserved in the title, got {section_titles}"
 
     def test_extract_requires_dc_identifier(self, tmp_path: Path) -> None:
         """HTML ingestion should fail fast when the stable identifier is missing."""
@@ -735,6 +1091,33 @@ class TestHtmlExtractor:
     ) -> None:
         """Navis heading normalization should strip leading list markers from section titles."""
         assert _normalize_navis_heading_title(raw_title) == expected_title
+
+    def test_extract_heading_title_strips_inline_footnote_markers(self) -> None:
+        """Heading titles should drop inline footnote references such as fn_ref markers."""
+        heading = BeautifulSoup(
+            '<h2 class="title topictitle2 expand_cursor" id="IAS33_ex6__IAS33_ex6_TI">'
+            'Example&nbsp;6 Convertible bonds'
+            '<span class="ph"><a href="javascript:;">'
+            '<span class="fn_ref" title="This example does not illustrate the classification of the components of convertible financial instruments as liabilities and equity or the classification of related interest and dividends as expenses and equity as required by&nbsp;IAS&nbsp;32.">1</span>'
+            '</a></span>'
+            '<span class="expand">+</span>'
+            '</h2>',
+            "html.parser",
+        ).h2
+        assert heading is not None
+        assert _extract_heading_title(heading) == "Example 6 Convertible bonds"
+
+    def test_extract_heading_title_preserves_appendix_subtitles(self) -> None:
+        """Appendix headings should keep their subtitles instead of collapsing to a generic label."""
+        heading = BeautifulSoup(
+            '<h3 class="title topictitle3 expand_cursor" id="IAS36_APPA__IAS36_APPA_TI">'
+            'Appendix&nbsp;A<span class="ph linebreak"></span>Using present value techniques to measure value in use'
+            '<span class="expand">+</span>'
+            '</h3>',
+            "html.parser",
+        ).h3
+        assert heading is not None
+        assert _extract_heading_title(heading) == "Appendix A Using present value techniques to measure value in use"
 
     def test_extract_rejects_navis_sidecars_with_mismatched_ref_ids(self, tmp_path: Path) -> None:
         """Navis sidecar url and canonical_url must point to the same refId."""

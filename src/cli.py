@@ -20,7 +20,7 @@ from src.commands.query import QueryOptions, create_query_command
 from src.commands.query_documents import QueryDocumentsOptions, create_query_documents_command
 from src.commands.query_titles import QueryTitlesOptions, create_query_titles_command
 from src.commands.retrieve import RetrieveOptions, create_retrieve_command
-from src.commands.store import STORE_SCOPES, create_store_command
+from src.commands.store import STORE_SCOPES, StoreCommandOptions, create_store_command
 from src.llm.client import get_client
 from src.logging_config import setup_logging
 from src.models.document import DOCUMENT_TYPES
@@ -113,13 +113,33 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
         "--doc-uid",
         help="Document UID to use for PDF ingestion (default: filename stem)",
     )
+    store_parser.add_argument(
+        "--force-store",
+        action="store_true",
+        help="Force store even when the extracted payload is unchanged",
+    )
+    store_parser.add_argument(
+        "--force",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
 
 
 def _add_ingest_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    subparsers.add_parser(
+    ingest_parser = subparsers.add_parser(
         "ingest",
         help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs plus PDFs",
         parents=[_build_scope_parent_parser()],
+    )
+    ingest_parser.add_argument(
+        "--force-store",
+        action="store_true",
+        help="Force store even when the extracted payload is unchanged",
+    )
+    ingest_parser.add_argument(
+        "--force",
+        action="store_true",
+        help=argparse.SUPPRESS,
     )
 
 
@@ -321,14 +341,22 @@ def _execute_store_command(args: argparse.Namespace) -> str:
     """Execute the store command."""
     return create_store_command(
         source_path=Path(args.source),
-        doc_uid=args.doc_uid,
-        scope=args.scope,
+        options=StoreCommandOptions(
+            explicit_doc_uid=args.doc_uid,
+            scope=args.scope,
+            force_store=getattr(args, "force_store", False) or getattr(args, "force", False),
+        ),
     ).execute()
 
 
 def _execute_ingest_command(args: argparse.Namespace) -> str:
     """Execute the ingest command."""
-    return IngestCommand(scope=args.scope).execute()
+    return IngestCommand(
+        store_options=StoreCommandOptions(
+            scope=args.scope,
+            force_store=getattr(args, "force_store", False) or getattr(args, "force", False),
+        ),
+    ).execute()
 
 
 def _execute_list_command(args: argparse.Namespace) -> str:

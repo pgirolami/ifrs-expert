@@ -130,6 +130,7 @@ test("resolveIfrsDocumentType maps IAS document UIDs to exact IAS variants", () 
   assert.equal(resolveIfrsDocumentType("ias21-ie", "Illustrative Examples"), "IAS-IE");
   assert.equal(resolveIfrsDocumentType("ias21-ig", "Implementation Guidance"), "IAS-IG");
   assert.equal(resolveIfrsDocumentType("ias28-sm", "Supporting Materials"), "IAS-SM");
+  assert.equal(resolveIfrsDocumentType("ias28-sm", "Supporting material"), "IAS-SM");
 });
 
 test("resolveIfrsDocumentType maps IFRIC, SIC, and PS variants to the same types as Python", () => {
