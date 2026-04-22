@@ -1,5 +1,5 @@
 retrieval:
-  mode: documents2
+  mode: documents2-through-chunks
   query_embedding_mode: enriched
   k: 5
   expand: 0

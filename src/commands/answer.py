@@ -11,11 +11,12 @@ from typing import TYPE_CHECKING
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.commands.constants import DEFAULT_VERBOSE
+from src.commands.document_output import build_output_document_sections
+from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
 from src.models.document import infer_document_kind, infer_exact_document_type
-from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
@@ -253,8 +254,8 @@ class AnswerCommand:
                 if cap.d <= 0:
                     first_error = f"Error: per-type document cap for {document_type} must be > 0"
                     break
-        elif policy.mode not in {"text", "titles", "documents", "documents2"}:
-            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', or 'documents2'"
+        elif policy.mode not in {"text", "titles", "documents", "documents2", "documents2-through-chunks"}:
+            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', 'documents2', or 'documents2-through-chunks'"
         return first_error
 
     def _get_prerequisite_error(self) -> str | None:
@@ -317,20 +318,12 @@ class AnswerCommand:
         """Execute the main workflow."""
         policy = self._options.policy
         error, retrieval_result = execute_retrieval(
-            request=RetrievalRequest(
+            request=build_retrieval_request(
                 query=self.query,
-                query_embedding_mode=policy.query_embedding_mode,
+                policy=policy,
                 retrieval_mode=policy.mode,
-                k=policy.k,
-                d=policy.documents.global_d,
-                document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
                 chunk_min_score=policy.titles.min_score if policy.mode == "titles" else policy.text.min_score,
-                expand_to_section=policy.expand_to_section if policy.mode not in {"documents", "documents2"} else True,
-                expand=policy.expand,
-                full_doc_threshold=policy.full_doc_threshold,
+                expand_to_section=policy.expand_to_section if policy.mode not in {"documents", "documents2", "documents2-through-chunks"} else True,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,
@@ -639,34 +632,11 @@ class AnswerCommand:
         if not results:
             return "Retrieved chunks:\n- none"
 
-        doc_order: list[str] = []
-        chunk_ids_by_doc: dict[str, set[int]] = {}
-        for result in results:
-            doc_uid = result["doc_uid"]
-            chunk_id = result["chunk_id"]
-            if doc_uid not in chunk_ids_by_doc:
-                chunk_ids_by_doc[doc_uid] = set()
-                doc_order.append(doc_uid)
-            chunk_ids_by_doc[doc_uid].add(chunk_id)
-
+        summaries = build_output_document_sections(results=results, doc_chunks=doc_chunks, logger=logger)
         lines: list[str] = ["Retrieved chunks:"]
-        for doc_uid in doc_order:
-            seen_sections: set[str] = set()
-            ordered_sections: list[str] = []
-            for chunk in doc_chunks.get(doc_uid, []):
-                chunk_id = chunk.id
-                if chunk_id is None:
-                    continue
-                if chunk_id not in chunk_ids_by_doc.get(doc_uid, set()):
-                    continue
-                section_label = chunk.chunk_number or f"chunk {chunk_id}"
-                if section_label in seen_sections:
-                    continue
-                seen_sections.add(section_label)
-                ordered_sections.append(section_label)
-
-            sections_text = ", ".join(ordered_sections) if ordered_sections else "(no sections)"
-            lines.append(f"- {doc_uid}: {sections_text}")
+        for summary in summaries:
+            sections_text = ", ".join(summary.section_labels) if summary.section_labels else "(no sections)"
+            lines.append(f"- {summary.doc_uid}: {sections_text}")
 
         return "\n".join(lines)
 

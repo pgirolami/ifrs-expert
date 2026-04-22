@@ -8,10 +8,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.commands.constants import DEFAULT_VERBOSE
+from src.commands.document_output import build_output_document_sections
+from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, SectionStore, init_db
 from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
 from src.policy import RetrievalPolicy
-from src.retrieval.models import RetrievalRequest, RetrievalResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
     from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
     from src.policy import RetrievalPolicy
+    from src.retrieval.models import RetrievalRequest, RetrievalResult
 
 logger = logging.getLogger(__name__)
 
@@ -105,22 +107,13 @@ class RetrieveCommand:
     def _build_retrieval_request(self) -> RetrievalRequest:
         policy = self._options.policy
         chunk_min_score = policy.titles.min_score if policy.mode == "titles" else policy.text.min_score
-        expand_to_section = policy.expand_to_section if policy.mode not in {"documents", "documents2"} else True
-
-        return RetrievalRequest(
+        expand_to_section = policy.expand_to_section if policy.mode not in {"documents", "documents2", "documents2-through-chunks"} else True
+        return build_retrieval_request(
             query=self.query,
-            query_embedding_mode=policy.query_embedding_mode,
+            policy=policy,
             retrieval_mode=policy.mode,
-            k=policy.k,
-            d=policy.documents.global_d,
-            document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
-            document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
-            document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
-            document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
             chunk_min_score=chunk_min_score,
             expand_to_section=expand_to_section,
-            expand=policy.expand,
-            full_doc_threshold=policy.full_doc_threshold,
         )
 
     def _get_validation_error(self) -> str | None:
@@ -154,11 +147,16 @@ class RetrieveCommand:
         return None
 
     def _get_retrieval_mode_validation_error(self) -> str | None:
-        if self._options.policy.mode in {"text", "titles", "documents", "documents2"}:
+        if self._options.policy.mode in {"text", "titles", "documents", "documents2", "documents2-through-chunks"}:
             return None
-        return "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', or 'documents2'"
+        return "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', 'documents2', or 'documents2-through-chunks'"
 
     def _build_json_output(self, retrieval_result: RetrievalResult) -> dict[str, object]:
+        build_output_document_sections(
+            results=retrieval_result.chunk_results,
+            doc_chunks=retrieval_result.doc_chunks,
+            logger=logger,
+        )
         return {
             "retrieval_mode": retrieval_result.retrieval_mode,
             "document_hits": [
@@ -181,6 +179,11 @@ class RetrieveCommand:
         if retrieval_result.document_hits:
             lines.append("Selected documents:")
             lines.extend(f"- {document_hit.doc_uid}: {document_hit.score:.4f} ({document_hit.document_type})" for document_hit in retrieval_result.document_hits)
+        build_output_document_sections(
+            results=retrieval_result.chunk_results,
+            doc_chunks=retrieval_result.doc_chunks,
+            logger=logger,
+        )
         chunk_lines = _build_chunk_verbose_output(
             results=retrieval_result.chunk_results,
             doc_chunks=retrieval_result.doc_chunks,

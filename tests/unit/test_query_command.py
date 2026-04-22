@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock
 
+import unittest.mock
+
 import pytest
 
 from src.commands.query import QueryCommand, QueryConfig, QueryOptions
@@ -42,6 +44,34 @@ class MockIndexPath:
 
 class TestQueryCommand:
     """Tests for query command using dependency injection."""
+
+    def test_query_uses_policy_query_embedding_mode(self) -> None:
+        """Query should pass the policy query embedding mode through to retrieval."""
+        captured_requests: list[object] = []
+
+        def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, None]:
+            del config
+            captured_requests.append(request)
+            return None, None
+
+        config = QueryConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=InMemoryChunkStore(),
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(mode="text", query_embedding_mode="enriched"), verbose=False),
+        )
+
+        with unittest.mock.patch("src.commands.query.execute_retrieval", side_effect=mock_execute_retrieval):
+            command.execute()
+
+        assert len(captured_requests) == 1
+        request = captured_requests[0]
+        assert getattr(request, "query_embedding_mode") == "enriched"
 
     def test_query_no_index(self):
         """Test query command when no index exists."""

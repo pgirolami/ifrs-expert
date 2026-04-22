@@ -7,12 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.commands.constants import DEFAULT_VERBOSE
+from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.policy import RetrievalPolicy
-from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.store import VectorStore, get_index_path
 
@@ -193,20 +193,12 @@ class QueryCommand:
         """Execute the search workflow."""
         policy = self._options.policy
         error, retrieval_result = execute_retrieval(
-            request=RetrievalRequest(
+            request=build_retrieval_request(
                 query=self.query,
-                query_embedding_mode="raw",
+                policy=policy,
                 retrieval_mode="text",
-                k=policy.k,
-                d=policy.documents.global_d,
-                document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
-                document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
                 chunk_min_score=policy.text.min_score,
                 expand_to_section=policy.expand_to_section,
-                expand=policy.expand,
-                full_doc_threshold=policy.full_doc_threshold,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,

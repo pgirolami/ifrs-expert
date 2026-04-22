@@ -73,8 +73,9 @@ Ideas to test that do not require extra steps in the retrieval pipeline or durin
         receivable
         recognized
     ```
-2. Match the query on section titles or document titles and deduplicate the documents across chunks. This might solve IAS 39/IFRS 9 that are very broad and don't necessarily match perfectly to hedging
-3. Add hybrid dense + sparse retrieval on authoritative docs only, especially on title, TOC and scope / objective / issue / background
+2. Match on chunks & derive the documents from the matching chunks
+3. Match the query on section titles or document titles and deduplicate the documents across chunks. This might solve IAS 39/IFRS 9 that are very broad and don't necessarily match perfectly to hedging
+4. Add hybrid dense + sparse retrieval on authoritative docs only, especially on title, TOC and scope / objective / issue / background
 5. Add weighting by child document class in the `documents2` retrieval mode
 
 

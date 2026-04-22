@@ -8,6 +8,7 @@ from typing import cast
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
+from src.policy import RetrievalPolicy
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
 from tests.policy import make_retrieval_policy
 
@@ -338,8 +339,130 @@ def test_retrieve_documents2_mode_consolidates_variants_to_standard_doc_uid() ->
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9"]
 
 
-def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]):
-    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, RetrievalPolicy
+def test_retrieve_documents2_through_chunks_mode_routes_and_scores_by_chunk_similarity() -> None:
+    """documents2-through-chunks should route on chunk scores and collapse to the standard bundle."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="bc.1", page_start="A1", page_end="A1", text="supporting chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="1.1", page_start="B1", page_end="B1", text="standard chunk"),
+                Chunk(id=3, doc_uid="ifric16", chunk_number="1.1", page_start="C1", page_end="C1", text="other standard chunk"),
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="hedges",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.98},
+                    {"doc_uid": "ifrs9", "chunk_id": 2, "score": 0.94},
+                    {"doc_uid": "ifric16", "chunk_id": 3, "score": 0.96},
+                ]
+            ),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=RetrieveOptions(
+            policy=make_retrieval_policy(
+                k=5,
+                d=1,
+                chunk_min_score=0.5,
+                expand=0,
+                mode="documents2-through-chunks",
+                per_type_d={"IFRS-S": 1, "IFRIC": 1},
+                per_type_min_score={"IFRS-S": 0.5, "IFRIC": 0.5},
+            ),
+            verbose=False,
+        ),
+    )
+
+    result = command.execute()
+    data = json.loads(result)
+
+    assert data["retrieval_mode"] == "documents2-through-chunks"
+    assert data["document_hits"] == [
+        {"doc_uid": "ifrs9", "score": 0.98, "document_type": "IFRS-S", "document_kind": "standard"},
+    ]
+    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc", "ifrs9"]
+    assert [chunk["score"] for chunk in data["chunks"]] == [0.98, 0.94]
+
+
+def test_retrieve_logs_top_chunk_per_output_document(caplog) -> None:
+    """Retrieve should log the top chunk section number and section preview for each output document."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="doc1", chunk_number="5.1", page_start="A1", page_end="A1", text="This is the first section text and it keeps going."),
+                Chunk(id=2, doc_uid="doc1", chunk_number="5.2", page_start="A2", page_end="A2", text="Another section."),
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="leases",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "doc1", "chunk_id": 1, "score": 0.96}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, expand=0, mode="text"), verbose=False),
+    )
+
+    with caplog.at_level("INFO"):
+        command.execute()
+
+    assert "section_number=5.1" in caplog.text
+    assert "score=0.9600" in caplog.text
+    assert "section_text_preview='This is the first section text'" in caplog.text
+
+
+def test_retrieve_logs_highest_scoring_chunk_for_each_output_document(caplog) -> None:
+    """Retrieve should log the highest-scoring selected chunk, not the first chunk in document order."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="6.3.1", page_start="A1", page_end="A1", text="A lower-scoring selected chunk."),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="6.3.2", page_start="A2", page_end="A2", text="A higher-scoring selected chunk."),
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="hedges",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9", "chunk_id": 2, "score": 0.6376},
+                    {"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.0},
+                ]
+            ),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, expand=0, mode="text"), verbose=False),
+    )
+
+    with caplog.at_level("INFO"):
+        command.execute()
+
+    assert "section_number=6.3.2" in caplog.text
+    assert "score=0.6376" in caplog.text
+    assert "section_number=6.3.1" not in caplog.text or "score=0.0000" not in caplog.text
+
+
+def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]) -> RetrievalPolicy:
+    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy
 
     base_policy = make_retrieval_policy(mode="documents")
     by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)

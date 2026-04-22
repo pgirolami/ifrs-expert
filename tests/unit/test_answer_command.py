@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 import logging
 import unittest.mock
+
+import pytest
 from pathlib import Path
 from typing import cast
 
@@ -668,6 +670,71 @@ class TestAnswerCommand:
         assert getattr(request, "retrieval_mode") == "documents2"
         assert getattr(request, "expand_to_section") is True
 
+    def test_answer_documents2_through_chunks_mode_passes_through_retrieval_mode(self) -> None:
+        """Answer command should allow documents2-through-chunks mode and pass it to retrieval."""
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs chunk text"),
+                ]
+            )
+
+        captured_requests: list[object] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            del prompt
+            return '{"status": "pass", "approaches": []}'
+
+        def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
+            del config
+            captured_requests.append(request)
+            return (
+                None,
+                RetrievalResult(
+                    retrieval_mode="documents2-through-chunks",
+                    document_hits=[],
+                    chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
+                    doc_chunks={
+                        "ifrs9": [
+                            Chunk(
+                                id=1,
+                                doc_uid="ifrs9",
+                                chunk_number="1.1",
+                                page_start="A1",
+                                page_end="A1",
+                                text="ifrs chunk text",
+                            )
+                        ]
+                    },
+                ),
+            )
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="foreign operation",
+            config=config,
+            options=AnswerOptions(policy=make_retrieval_policy(k=3, d=9, chunk_min_score=0.1, expand=1, full_doc_threshold=2000, expand_to_section=True, mode="documents2-through-chunks")),
+        )
+
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch("src.commands.answer.execute_retrieval", side_effect=mock_execute_retrieval),
+        ):
+            result = command.execute()
+
+        assert result.success is True
+        assert len(captured_requests) == 1
+        request = captured_requests[0]
+        assert getattr(request, "retrieval_mode") == "documents2-through-chunks"
+        assert getattr(request, "expand_to_section") is True
+
     def test_answer_prompt_b_contains_context(self) -> None:
         """Test that prompt B contains the retrieved chunk content (the bug fix verification)."""
         search_results = [
@@ -1056,6 +1123,55 @@ class TestBuildPromptBContext:
 
 class TestAnswerCommandAuthorityFiltering:
     """Integration tests for full answer pipeline with authority-based Prompt B filtering."""
+
+    def test_build_chunk_summary_logs_top_chunk_preview(self, caplog: pytest.LogCaptureFixture) -> None:
+        """Chunk summary should log the top chunk section number and a short text preview per document."""
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="doc1", chunk_number="5.1", page_start="A1", page_end="A1", text="This is the first section text and it continues."),
+                    Chunk(id=2, doc_uid="doc1", chunk_number="5.2", page_start="A2", page_end="A2", text="This is not the top chunk."),
+                    Chunk(id=3, doc_uid="doc2", chunk_number="8.3", page_start="B1", page_end="B1", text="Secondary document section text for logging."),
+                ]
+            )
+
+        command = AnswerCommand(
+            query="test",
+            config=AnswerConfig(
+                vector_store=MockVectorStore([]),
+                chunk_store=chunk_store,
+                init_db_fn=lambda: None,
+                index_path_fn=lambda: MockIndexPath(exists=True),
+                send_to_llm_fn=lambda _prompt: "result",
+            ),
+            options=AnswerOptions(policy=make_retrieval_policy(mode="text")),
+        )
+        results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+            {"doc_uid": "doc2", "chunk_id": 3, "score": 0.8},
+        ]
+        doc_chunks = {
+            "doc1": [
+                Chunk(id=1, doc_uid="doc1", chunk_number="5.1", page_start="A1", page_end="A1", text="This is the first section text and it continues."),
+                Chunk(id=2, doc_uid="doc1", chunk_number="5.2", page_start="A2", page_end="A2", text="This is not the top chunk."),
+            ],
+            "doc2": [
+                Chunk(id=3, doc_uid="doc2", chunk_number="8.3", page_start="B1", page_end="B1", text="Secondary document section text for logging."),
+            ],
+        }
+
+        with caplog.at_level(logging.INFO):
+            summary = command._build_chunk_summary(results, doc_chunks)
+
+        assert summary.startswith("Retrieved chunks:")
+        assert "doc1" in caplog.text
+        assert "section_number=5.1" in caplog.text
+        assert "score=0.9000" in caplog.text
+        assert "section_text_preview='This is the first section text'" in caplog.text
+        assert "section_number=8.3" in caplog.text
+        assert "score=0.8000" in caplog.text
+        assert "section_text_preview='Secondary document section tex'" in caplog.text
 
     def test_answer_prompt_b_context_filtered_by_authority(self) -> None:
         """End-to-end test: Prompt B should contain only primary/supporting chunks."""
