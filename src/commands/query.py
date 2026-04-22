@@ -164,7 +164,11 @@ class QueryCommand:
         if prereq_error:
             return prereq_error
 
-        return self._execute_search()
+        try:
+            return self._execute_search()
+        except (RuntimeError, ValueError) as error:
+            logger.exception(f"Query command failed for query={self.query[:50]}")
+            return f"Error: {error}"
 
     def _get_validation_error(self) -> str | None:
         """Get validation error or None."""

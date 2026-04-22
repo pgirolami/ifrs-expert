@@ -102,7 +102,7 @@ def test_run_includes_document_type_rank_line_and_summary(tmp_path: Path) -> Non
     expected_fragments = (
         "1/4<br>IFRS-S 1/2<br>0.9000",
         "2/4<br>IFRS-S 2/2<br>0.8400",
-        "2/4<br>IAS 1/1<br>0.8000",
+        "2/4<br>IAS-S 1/1<br>0.8000",
         "**Type rank**",
         "1.5000/2.0000",
         "1.0000/1.0000",
@@ -168,7 +168,7 @@ def test_run_persists_type_rank_metadata_in_json(tmp_path: Path) -> None:
 
     if second_hit != {
         "doc_uid": "ias7",
-        "document_type": "IAS",
+        "document_type": "IAS-S",
         "score": 0.8,
         "global_rank": 2,
         "global_total": 3,

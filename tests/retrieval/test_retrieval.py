@@ -92,8 +92,7 @@ def run_query(query: str, k: int = 5, min_score: float | None = None, expand: in
     Returns:
         List of result dictionaries
     """
-    from src.commands.query import create_query_command
-    from src.commands import QueryOptions
+    from src.commands.query import QueryOptions, create_query_command
 
     policy_kwargs: dict[str, object] = {}
     if k != 5:

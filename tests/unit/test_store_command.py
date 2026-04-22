@@ -803,6 +803,85 @@ class TestStoreCommand:
         assert stored_document is not None
         assert stored_document.toc_text is None
 
+    def test_store_command_forces_restore_when_requested(self, tmp_path: Path) -> None:
+        """Force restore should re-store unchanged payloads."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore(existing_doc_uids={"ifrs9"})
+
+        existing_chunk = Chunk(
+            doc_uid="ifrs9",
+            chunk_number="2.4",
+            page_start="",
+            page_end="",
+            chunk_id="IFRS09_2.4",
+            text="existing content",
+        )
+        chunk_store.insert_chunks([existing_chunk])
+        document_store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS 9",
+                source_url="https://www.ifrs.org/original.html",
+                canonical_url="https://www.ifrs.org/original.html",
+                captured_at="2026-04-04T14:23:10Z",
+            )
+        )
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/original.html",
+                    canonical_url="https://www.ifrs.org/original.html",
+                    captured_at="2026-04-04T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="2.4",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_2.4",
+                        text="existing content",
+                    )
+                ],
+            ),
+            skip_if_unchanged=True,
+        )
+
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            document_vector_store=document_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+            force_store=True,
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        stored_document = document_store.get_document("ifrs9")
+        assert stored_document is not None
+        assert stored_document.source_title == "IFRS 9"
+        assert stored_document.intro_text is None
+        assert vector_store.deleted_doc_uids == ["ifrs9"]
+        assert document_vector_store.deleted_doc_uids == ["ifrs9"]
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9"])]
+
     def test_store_command_rebuilds_when_document_representation_changes(self, tmp_path: Path) -> None:
         """Changed document-representation fields should force a re-store even if chunks are unchanged."""
         source_path = tmp_path / "test.html"

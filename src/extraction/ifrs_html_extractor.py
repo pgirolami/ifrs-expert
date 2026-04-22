@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
@@ -31,6 +32,8 @@ from src.models.chunk import Chunk
 from src.models.document import DocumentRecord, resolve_document_kind_from_document_type, resolve_document_type
 from src.models.extraction import ExtractedDocument
 from src.models.section import SectionRecord
+
+SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN = re.compile(r"\s+E\d+(?:\s*,\s*E\d+)*$", re.IGNORECASE)
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -167,6 +170,7 @@ class IfrsHtmlExtractor:
         for node in content_root.find_all(["div", "table"]):
             if not isinstance(node, Tag):
                 continue
+
             annotation_chunk = self._maybe_extract_annotation_chunk(
                 doc_uid=doc_uid,
                 node=node,
@@ -190,6 +194,11 @@ class IfrsHtmlExtractor:
                 continue
 
             self._register_section(node=node, section=section, traversal_state=traversal_state, sections=sections)
+
+            section_body_chunk = self._extract_section_body_chunk(doc_uid=doc_uid, node=node, section=section)
+            if section_body_chunk is not None:
+                chunks.append(section_body_chunk)
+
             if doc_uid.endswith("-ig"):
                 guidance_chunk = self._extract_guidance_chunk(doc_uid=doc_uid, node=node, section=section)
                 if guidance_chunk is not None:
@@ -266,12 +275,12 @@ class IfrsHtmlExtractor:
         if title is None:
             return None
 
-        if nested_level == 1:
-            return None
-
         section_id = _tag_attribute_as_string(node, "id")
         if not section_id:
-            return None
+            if title in {"Board Approvals", "Appendices"}:
+                section_id = self._build_synthetic_section_id(doc_uid=doc_uid, title=title, position=traversal_state.position)
+            else:
+                return None
 
         parent_section = _get_parent_section(
             active_sections_by_level=traversal_state.active_sections_by_level,
@@ -290,6 +299,10 @@ class IfrsHtmlExtractor:
             section_lineage=section_lineage,
             position=traversal_state.position,
         )
+
+    def _build_synthetic_section_id(self, doc_uid: str, title: str, position: int) -> str:
+        slug = re.sub(r"[^A-Za-z0-9]+", "_", title).strip("_").lower()
+        return f"{doc_uid}_{position}_{slug}"
 
     def _extract_chunk(
         self,
@@ -327,6 +340,36 @@ class IfrsHtmlExtractor:
             chunk_id=_tag_attribute_as_string(paragraph, "id"),
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
+        )
+
+    def _extract_section_body_chunk(self, doc_uid: str, node: Tag, section: SectionRecord) -> Chunk | None:
+        normalized_title = _normalize_whitespace(section.title).lower()
+        normalized_title = SECTION_TITLE_EDU_REFERENCE_SUFFIX_PATTERN.sub("", normalized_title).strip()
+        if normalized_title not in {"objective", "scope", "background", "issue", "issues", "introduction"}:
+            return None
+        if self._has_topic_paragraph_descendant(node):
+            return None
+
+        show_hide = node.find("div", class_="show-hide", recursive=False)
+        if not isinstance(show_hide, Tag):
+            return None
+        body_container = show_hide.find("div", class_="body", recursive=False)
+        if not isinstance(body_container, Tag):
+            body_container = show_hide
+
+        text_lines = self._extract_body_lines(body_container, include_hidden=True)
+        text = "\n".join(line for line in text_lines if line)
+        if not text:
+            return None
+
+        return Chunk(
+            doc_uid=doc_uid,
+            chunk_number=section.section_id,
+            page_start="",
+            page_end="",
+            chunk_id=f"{section.section_id}__BODY",
+            text=text,
+            containing_section_id=section.section_id,
         )
 
     def _extract_guidance_chunk(self, doc_uid: str, node: Tag, section: SectionRecord) -> Chunk | None:
@@ -388,6 +431,13 @@ class IfrsHtmlExtractor:
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
         )
+
+    def _has_topic_paragraph_descendant(self, node: Tag) -> bool:
+        for descendant in node.find_all("div"):
+            classes = _tag_classes(descendant)
+            if "topic" in classes and "paragraph" in classes:
+                return True
+        return False
 
     def _extract_body_lines(
         self,
@@ -536,6 +586,8 @@ IFRIC_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
 IAS_VARIANT_LABEL_TO_DOCUMENT_TYPE: dict[str, str] = {
     "Standard": "IAS-S",
     "Basis for Conclusions": "IAS-BC",
+    "Basis for Conclusions IASC": "IAS-BCIASC",
     "Illustrative Examples": "IAS-IE",
     "Implementation Guidance": "IAS-IG",
+    "Supporting Materials": "IAS-SM",
 }

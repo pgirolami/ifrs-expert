@@ -203,8 +203,25 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - New prompt A to prefer IFRS to IAS and IFRIC to SIC when there is overlap
     - Evaluated in [Experiment 33](../experiments/33_authority_competition_on_full_corpus/EXPERIMENTS.md): the one case where IAS39 and IFRS 9 were retrieved, IFRS was indeed chosen but IFRS9 wasn't surfaced in 100% of the questions !
 
-### 2026-04-18
-- Adjusted retrieval to ensure IFRS9 and IFRIC16 are consistently retrieved on the Q1 family:
+### 2026-04-18 - 2026-04-19
+- Worked on getting authoritative IFRS9 and IFRIC16 standards into the context because they were not consistently retrieved on the Q1 family of questions:
     - Fixed an ingestion bug where IFRIC & SIC documents with section title "Issue**s**" were ignored for document representation. This contributed strongly to bad IFRIC retrieval performance ([plan](../plans/2026-04-18--issues-section-fix-and-document-index-repair.md))
     - [Experiment 34](../experiments/34_retrieval_alternatives/EXPERIMENTS.md) looked at alternative ways to do the document routing and identfied a path forward
-    - [Experiment 35](../experiments/35_compare_bge_m3_retrieval_methods/EXPERIMENTS.md) looked at alernative ways to use the BGE3 embedding since it also has sparse embeddings and multi-vector.
+    - [Experiment 35](../experiments/35_compare_bge_m3_retrieval_methods/EXPERIMENTS.md) looked at alernative ways to use the BGE3 embedding since it also has sparse embeddings and multi-vector. No clear path forward despite trying a number of combinations.
+    - [Experiment 36](../experiments/36_q1_target_recall_d_min_score_tuning/EXPERIMENTS.md) is a followup to experiment 34 that tuned the parameters in policy.yaml to ensure IFRIC 16 and IFRS 9 were retrieved on all Q1 variants. We found some parameters that matched but when we included IAS 39 in the target, it required returning 80 documents which is too much for document routing
+    - [Experiment 37](../experiments/37_ias_representation_tuning_q1/EXPERIMENTS.md) is similar to experiment 34 but focused on IAS : are there representations of IAS-S that would better retrieve IAS 39 on the Q1 family, than what we have today. The answer is ... slightly (the TOC!)
+    - [Experiment 38](../experiments/38_q1_toc_ias_target_recall_tuning/EXPERIMENTS.md) attempted to find the best parameters to retrieve IAS consistently using the TOC
+- Considered retrieving per document family (if S, IG, IE or BC match semantically, retrieve S) because the authority is really the standard but perhaps there is some semantic matching in the secondary documents.
+    - At this point, discovered a bug in the IAS-BC representation: its scope & background were populated from sub sections in the middle of the document. Will need to fix it and verify all documents for other similar bugs.
+- Learning: Early prototypes can look good partly because the corpus is artificially clean. As corpus realism increases, authority overlap becomes a first-class systems problem.
+
+### 2026-04-21
+- Fixed ingestion bugs affecting multiple documents (IAS 19, IAS 21...) which might make retrieval less efficient, manual review of each standard document. Added non-regression test cases for them. 
+    - Fixes included
+        - TOC representation was missing sections
+        - Scope or Objective was missing in the documents table for some IAS documents
+        - Appendices were being renamed to "Appendix"
+        - Not all "Dissenting opinions" were being removed
+        - Filter out "Table of Concordance"
+        - others...
+    - [Verification table](../experiments/39_exhaustive_ifrs_ingestion_verification/EXPERIMENTS.md)

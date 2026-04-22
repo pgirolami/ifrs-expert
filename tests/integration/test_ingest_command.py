@@ -11,7 +11,7 @@ import pytest
 from bs4 import BeautifulSoup
 
 from src.commands.ingest import IngestCommand
-from src.commands.store import StoreDependencies, create_store_command
+from src.commands.store import StoreCommandOptions, StoreDependencies, create_store_command
 from tests.fakes import InMemoryChunkStore, InMemoryDocumentStore, InMemorySectionStore, RecordingTitleVectorStore, RecordingVectorStore
 
 
@@ -99,7 +99,14 @@ def _extract_ifrs_sidecar_payload(html_path: Path) -> dict[str, str]:
             "Implementation Guidance": "IFRS-IG",
         }[variant_label]
     elif doc_uid.startswith("ias"):
-        document_type = "IAS"
+        document_type = {
+            "Standard": "IAS-S",
+            "Basis for Conclusions": "IAS-BC",
+            "Basis for Conclusions IASC": "IAS-BCIASC",
+            "Supporting Materials": "IAS-SM",
+            "Illustrative Examples": "IAS-IE",
+            "Implementation Guidance": "IAS-IG",
+        }[variant_label]
     elif doc_uid.startswith("ifric"):
         document_type = "IFRIC"
     elif doc_uid.startswith("sic"):
@@ -115,7 +122,13 @@ def _extract_ifrs_sidecar_payload(html_path: Path) -> dict[str, str]:
     }
 
 
-def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str | None, scope: str):
+def _store_factory(
+    source_path: Path,
+    extractor: object,
+    options: StoreCommandOptions | None = None,
+    **legacy_kwargs: object,
+):
+    del legacy_kwargs
     global chunk_store, document_store
     _stores.setdefault("chunk_store", InMemoryChunkStore())
     _stores.setdefault("document_store", InMemoryDocumentStore())
@@ -135,9 +148,8 @@ def _store_factory(source_path: Path, extractor: object, explicit_doc_uid: str |
     return create_store_command(
         source_path=source_path,
         extractor=extractor,
-        doc_uid=explicit_doc_uid,
         dependencies=dependencies,
-        scope=scope,
+        options=options,
     )
 
 

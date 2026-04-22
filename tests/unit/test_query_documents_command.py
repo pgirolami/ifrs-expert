@@ -92,7 +92,7 @@ def test_query_documents_returns_top_d_documents_for_selected_type_as_json() -> 
                 source_url="https://www.ifrs.org/ias21.html",
                 canonical_url="https://www.ifrs.org/ias21.html",
                 captured_at="2026-04-05T10:00:00Z",
-                document_type="IAS",
+                document_type="IAS-S",
                 intro_text="IAS intro",
             )
         )
@@ -175,7 +175,7 @@ def test_query_documents_returns_error_for_unsupported_document_type() -> None:
 
     assert result == (
         "Error: document_type must be one of IFRS-S, IFRS-BC, IFRS-IE, IFRS-IG, "
-        "IAS-S, IAS-BC, IAS-IE, IAS-IG, IFRIC, IFRIC-BC, IFRIC-IE, IFRIC-IG, "
+        "IAS-S, IAS-BC, IAS-BCIASC, IAS-IE, IAS-IG, IAS-SM, IFRIC, IFRIC-BC, IFRIC-IE, IFRIC-IG, "
         "SIC, SIC-BC, SIC-IE, PS, PS-BC, NAVIS"
     )
 

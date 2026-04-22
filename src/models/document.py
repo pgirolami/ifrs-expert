@@ -16,8 +16,10 @@ DOCUMENT_TYPES: tuple[str, ...] = (
     # IAS Standards and variants
     "IAS-S",
     "IAS-BC",
+    "IAS-BCIASC",
     "IAS-IE",
     "IAS-IG",
+    "IAS-SM",
     # IFRIC Interpretations and variants
     "IFRIC",
     "IFRIC-BC",
@@ -45,6 +47,8 @@ DOCUMENT_KIND_BY_TYPE: dict[str, str] = {
     "IAS-IG": "implementation_guidance",
     "IAS-IE": "illustrative_examples",
     "IAS-BC": "basis_for_conclusions",
+    "IAS-BCIASC": "basis_for_conclusions",
+    "IAS-SM": "supporting_materials",
     # IFRIC Interpretations and variants
     "IFRIC": "interpretation",
     "IFRIC-IE": "illustrative_examples",
@@ -66,6 +70,7 @@ DOCUMENT_KINDS: tuple[str, ...] = (
     "implementation_guidance",
     "illustrative_examples",
     "basis_for_conclusions",
+    "supporting_materials",
 )
 DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
@@ -74,7 +79,7 @@ DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" 
 # Each entry: (prefix, [(suffix, variant_type), ...], base_type)
 _FAMILY_VARIANT_CONFIG: tuple[tuple[str, tuple[tuple[str, str], ...], str], ...] = (
     ("ifrs", (("-bc", "IFRS-BC"), ("-ie", "IFRS-IE"), ("-ig", "IFRS-IG")), "IFRS-S"),
-    ("ias", (("-bc", "IAS-BC"), ("-ie", "IAS-IE"), ("-ig", "IAS-IG")), "IAS-S"),
+    ("ias", (("-bciasc", "IAS-BCIASC"), ("-bc", "IAS-BC"), ("-ie", "IAS-IE"), ("-ig", "IAS-IG"), ("-sm", "IAS-SM")), "IAS-S"),
     ("ifric", (("-bc", "IFRIC-BC"), ("-ie", "IFRIC-IE"), ("-ig", "IFRIC-IG")), "IFRIC"),
     ("sic", (("-bc", "SIC-BC"), ("-ie", "SIC-IE")), "SIC"),
     ("ps", (("-bc", "PS-BC"),), "PS"),
@@ -96,7 +101,7 @@ def resolve_document_type_from_doc_uid(doc_uid: str) -> str | None:
 
     Handles all standard families and their variant suffixes:
     - IFRS: -bc (Basis for Conclusions), -ie (Illustrative Examples), -ig (Implementation Guidance)
-    - IAS: -bc, -ie, -ig (same variants as IFRS)
+    - IAS: -bciasc, -bc, -ie, -ig, -sm (same variants as IFRS plus Supporting Materials)
     - IFRIC: -bc, -ie
     - SIC: -bc, -ie
     - PS: -bc
@@ -145,10 +150,18 @@ def document_type_to_family(document_type: str | None) -> str | None:
     """Map exact document types to retrieval families."""
     if document_type is None:
         return None
-    if document_type.startswith("IFRS"):
-        return "IFRS"
-    if document_type in DOCUMENT_TYPE_FAMILIES:
-        return document_type
+
+    family_prefixes: tuple[tuple[str, str], ...] = (
+        ("IFRS", "IFRS"),
+        ("IAS", "IAS"),
+        ("IFRIC", "IFRIC"),
+        ("SIC", "SIC"),
+        ("PS", "PS"),
+        ("NAVIS", "NAVIS"),
+    )
+    for prefix, family in family_prefixes:
+        if document_type.startswith(prefix):
+            return family
     return None
 
 

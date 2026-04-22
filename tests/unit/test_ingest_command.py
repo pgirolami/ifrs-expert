@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.commands.ingest import IngestCommand, SharedDependenciesStoreCommandFactory
-from src.commands.store import StoreCommandResult, StoreDependencies
+from src.commands.store import StoreCommandOptions, StoreCommandResult, StoreDependencies
 
 
 @dataclass
@@ -25,11 +25,12 @@ class RecordingStoreFactory:
 
     def __init__(self, results_by_name: dict[str, StoreCommandResult]) -> None:
         self._results_by_name = results_by_name
-        self.calls: list[tuple[str, str, str]] = []
+        self.calls: list[tuple[str, str, str, bool]] = []
 
-    def __call__(self, source_path: Path, extractor: object, explicit_doc_uid: str | None, scope: str) -> FakeStoreCommand:
-        del explicit_doc_uid
-        self.calls.append((source_path.name, type(extractor).__name__, scope))
+    def __call__(self, source_path: Path, extractor: object, options: object | None = None, **legacy_kwargs: object) -> FakeStoreCommand:
+        del legacy_kwargs
+        assert options is not None, "Expected store options to be provided"
+        self.calls.append((source_path.name, type(extractor).__name__, options.scope, options.force_store))
         return FakeStoreCommand(result=self._results_by_name[source_path.name])
 
 
@@ -42,17 +43,16 @@ class FakeCreateStoreCommand:
     def __call__(
         self,
         source_path: Path | None = None,
-        doc_uid: str | None = None,
         extractor: object | None = None,
         dependencies: StoreDependencies | None = None,
-        pdf_path: Path | None = None,
-        scope: str = "all",
+        options: object | None = None,
+        **legacy_kwargs: object,
     ) -> FakeStoreCommand:
-        del doc_uid, extractor, pdf_path
-        assert scope in {"all", "chunks", "sections", "documents"}
+        del extractor, legacy_kwargs
+        assert options is not None, "Expected store options to be provided"
         assert source_path is not None, "Expected a source path"
         assert dependencies is not None, "Expected shared dependencies to be provided"
-        self.dependencies_by_source_name.append((source_path.name, dependencies, scope))
+        self.dependencies_by_source_name.append((source_path.name, dependencies, options.scope))
         return FakeStoreCommand(result=StoreCommandResult(status="stored", doc_uid=source_path.stem, chunk_count=1, embedding_count=1))
 
 
@@ -135,8 +135,8 @@ class TestIngestCommand:
 
         assert "Processed 2 item(s): 2 imported, 0 skipped, 0 failed" in output
         assert store_factory.calls == [
-            (html_path.name, "HtmlExtractor", "all"),
-            (pdf_path.name, "PdfExtractor", "all"),
+            (html_path.name, "HtmlExtractor", "all", False),
+            (pdf_path.name, "PdfExtractor", "all", False),
         ]
         assert (capture_root / "ignore-me.html.part").exists(), "The command must not move .part files"
         assert (capture_root / "processed" / html_path.name).exists()
@@ -208,12 +208,58 @@ class TestIngestCommand:
                 )
             }
         )
-        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, scope="documents")
+        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, store_options=StoreCommandOptions(scope="documents"))
 
         output = command.execute()
 
         assert "Processed 1 item(s): 0 imported, 1 skipped, 0 failed" in output
         assert "Skipped: https://www.ifrs.org/ifrs9.html (unchanged content)" in output
-        assert store_factory.calls == [(html_path.name, "HtmlExtractor", "documents")]
+        assert store_factory.calls == [(html_path.name, "HtmlExtractor", "documents", False)]
         assert (capture_root / "skipped" / html_path.name).exists()
         assert (capture_root / "skipped" / json_path.name).exists()
+
+    def test_ingest_force_stores_unchanged_html_capture(self, tmp_path: Path) -> None:
+        """Force store should route unchanged HTML captures through processed/ instead of skipped/."""
+        capture_root = tmp_path / "ifrs-expert"
+        capture_root.mkdir(parents=True)
+        (capture_root / "processed").mkdir()
+        (capture_root / "failed").mkdir()
+        (capture_root / "skipped").mkdir()
+
+        html_path = capture_root / "20260404T142310Z--ifrs-9.html"
+        json_path = capture_root / "20260404T142310Z--ifrs-9.json"
+        html_path.write_text(
+            '<html><head><link rel="canonical" href="https://www.ifrs.org/ifrs9.html"><meta name="DC.Identifier" content="ifrs9"></head><body><section class="ifrs-cmp-htmlviewer__section"></section></body></html>',
+            encoding="utf-8",
+        )
+        json_path.write_text(
+            json.dumps(
+                {
+                    "url": "https://www.ifrs.org/ifrs9.html",
+                    "title": "IFRS 9",
+                    "captured_at": "2026-04-04T14:23:10Z",
+                    "source_domain": "www.ifrs.org",
+                    "canonical_url": "https://www.ifrs.org/ifrs9.html",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        store_factory = RecordingStoreFactory(
+            results_by_name={
+                html_path.name: StoreCommandResult(
+                    status="stored",
+                    doc_uid="ifrs9",
+                    chunk_count=12,
+                    embedding_count=0,
+                )
+            }
+        )
+        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, store_options=None, scope="documents", force_store=True)
+
+        output = command.execute()
+
+        assert "Processed 1 item(s): 1 imported, 0 skipped, 0 failed" in output
+        assert store_factory.calls == [(html_path.name, "HtmlExtractor", "documents", True)]
+        assert (capture_root / "processed" / html_path.name).exists()
+        assert (capture_root / "processed" / json_path.name).exists()

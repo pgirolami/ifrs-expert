@@ -41,6 +41,11 @@ retrieval:
         min_score: 0 #.62
         expand_to_section: false
         similarity_representation: full
+      IAS-BCIASC:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
+        similarity_representation: full
       IAS-IE:
         d: 1
         min_score: 0 #.6
@@ -50,6 +55,11 @@ retrieval:
         d: 10
         min_score: 0 #.56
         expand_to_section: true
+        similarity_representation: full
+      IAS-SM:
+        d: 1
+        min_score: 0.62
+        expand_to_section: false
         similarity_representation: full
       IFRIC:
         d: 6

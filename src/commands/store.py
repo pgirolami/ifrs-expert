@@ -16,7 +16,6 @@ from src.interfaces import (
     ChunkStoreProtocol,
     DocumentStoreProtocol,
     DocumentVectorStoreProtocol,
-    ExtractorProtocol,
     SectionStoreProtocol,
     TitleVectorStoreProtocol,
     VectorStoreProtocol,
@@ -34,6 +33,7 @@ from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
 if TYPE_CHECKING:
+    from src.interfaces import ExtractorProtocol
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
@@ -76,6 +76,15 @@ class StoreDependencies:
 
 
 @dataclass(frozen=True)
+class StoreCommandOptions:
+    """Options that control how one source is stored."""
+
+    explicit_doc_uid: str | None = None
+    scope: str = "all"
+    force_store: bool = False
+
+
+@dataclass(frozen=True)
 class StorePayloadSnapshot:
     """Scoped payload snapshot used for skip-if-unchanged comparisons."""
 
@@ -113,15 +122,17 @@ class StoreCommand:
         source_path: Path,
         extractor: ExtractorProtocol,
         dependencies: StoreDependencies,
-        explicit_doc_uid: str | None = None,
-        scope: str = "all",
+        options: StoreCommandOptions | None = None,
+        **legacy_kwargs: object,
     ) -> None:
         """Initialize the store command with its source, extractor, and storage dependencies."""
+        resolved_options = _resolve_store_command_options(options=options, legacy_kwargs=legacy_kwargs)
         self.source_path = source_path
         self._extractor = extractor
         self._dependencies = dependencies
-        self._explicit_doc_uid = explicit_doc_uid
-        self._scope = scope
+        self._explicit_doc_uid = resolved_options.explicit_doc_uid
+        self._scope = resolved_options.scope
+        self._force_store = resolved_options.force_store
         self._document_profile_builder = DocumentProfileBuilder()
 
     def execute(self) -> str:
@@ -189,22 +200,6 @@ class StoreCommand:
                 f"excluded_chunks={filter_result.excluded_chunk_count}, excluded_sections={filter_result.excluded_section_count}"
             )
 
-            profile_started_at = perf_counter()
-            logger.info(f"Building document profile for doc_uid={doc_uid}")
-            built_document_profile = self._document_profile_builder.build(
-                document=extracted_document.document,
-                chunks=extracted_document.chunks,
-                sections=extracted_document.sections,
-                section_closure_rows=extracted_document.section_closure_rows,
-                toc_sections=filter_result.sections,
-            )
-            extracted_document.document = built_document_profile.document
-            logger.info(f"Built document profile for doc_uid={doc_uid} in {_elapsed_ms(profile_started_at):.2f}ms")
-
-            # Build the document representation from the unfiltered extraction, except
-            # for the TOC field which should reflect the filtered section set used for
-            # persistence and downstream retrieval.
-
             if filter_result.excluded_section_count > 0:
                 sample_titles = filter_result.excluded_section_titles[:10]
                 logger.info(f"Excluded {filter_result.excluded_section_count} section(s) based on title filters: {sample_titles}")
@@ -215,6 +210,18 @@ class StoreCommand:
             chunks = filter_result.chunks
             sections = filter_result.sections
             closure_rows = filter_result.closure_rows
+
+            profile_started_at = perf_counter()
+            logger.info(f"Building document profile for doc_uid={doc_uid} from filtered chunks and sections")
+            built_document_profile = self._document_profile_builder.build(
+                document=extracted_document.document,
+                chunks=chunks,
+                sections=sections,
+                section_closure_rows=closure_rows,
+                toc_sections=sections,
+            )
+            extracted_document.document = built_document_profile.document
+            logger.info(f"Built document profile for doc_uid={doc_uid} in {_elapsed_ms(profile_started_at):.2f}ms")
 
             # Update the extracted document with filtered data for persistence.
             extracted_document.sections = sections
@@ -530,6 +537,9 @@ class StoreCommand:
         existing_snapshot: StorePayloadSnapshot,
         new_snapshot: StorePayloadSnapshot,
     ) -> bool:
+        if self._force_store:
+            logger.info(f"Force store enabled for doc_uid={existing_snapshot.document.doc_uid if existing_snapshot.document is not None else 'unknown'}; bypassing unchanged-content skip check")
+            return False
         if not self._extractor.skip_if_unchanged:
             return False
         if self._stores_chunks() and not self._payloads_match(existing_snapshot.chunks, new_snapshot.chunks):
@@ -539,9 +549,7 @@ class StoreCommand:
         if not self._stores_documents():
             return True
         new_document = new_snapshot.document
-        if new_document is None:
-            return False
-        return self._document_payloads_match(existing_snapshot.document, new_document)
+        return new_document is not None and self._document_payloads_match(existing_snapshot.document, new_document)
 
     def _payloads_match(self, existing_chunks: list[Chunk], new_chunks: list[Chunk]) -> bool:
         return [self._payload(chunk) for chunk in existing_chunks] == [self._payload(chunk) for chunk in new_chunks]
@@ -624,6 +632,75 @@ def build_store_dependencies() -> StoreDependencies:
     )
 
 
+def _resolve_store_command_options(
+    options: StoreCommandOptions | None,
+    legacy_kwargs: dict[str, object],
+) -> StoreCommandOptions:
+    resolved_explicit_doc_uid = options.explicit_doc_uid if options is not None else None
+    resolved_scope = options.scope if options is not None else "all"
+    resolved_force_store = options.force_store if options is not None else False
+
+    resolved_explicit_doc_uid = _pop_legacy_optional_string(legacy_kwargs, "doc_uid", resolved_explicit_doc_uid)
+    resolved_explicit_doc_uid = _pop_legacy_optional_string(
+        legacy_kwargs,
+        "explicit_doc_uid",
+        resolved_explicit_doc_uid,
+    )
+    resolved_scope = _pop_legacy_string(legacy_kwargs, "scope", resolved_scope)
+    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_store", resolved_force_store)
+    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_restore", resolved_force_store)
+
+    return StoreCommandOptions(
+        explicit_doc_uid=resolved_explicit_doc_uid,
+        scope=resolved_scope,
+        force_store=resolved_force_store,
+    )
+
+
+def _pop_legacy_optional_string(
+    legacy_kwargs: dict[str, object],
+    key: str,
+    current_value: str | None,
+) -> str | None:
+    if key not in legacy_kwargs:
+        return current_value
+    value = legacy_kwargs.pop(key)
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        message = f"{key} must be a string or None, got {type(value).__name__}"
+        raise TypeError(message)
+    return value
+
+
+def _pop_legacy_string(
+    legacy_kwargs: dict[str, object],
+    key: str,
+    current_value: str,
+) -> str:
+    if key not in legacy_kwargs:
+        return current_value
+    value = legacy_kwargs.pop(key)
+    if not isinstance(value, str):
+        message = f"{key} must be a string, got {type(value).__name__}"
+        raise TypeError(message)
+    return value
+
+
+def _pop_legacy_bool(
+    legacy_kwargs: dict[str, object],
+    key: str,
+    current_value: object,
+) -> bool:
+    if key not in legacy_kwargs:
+        return bool(current_value)
+    value = legacy_kwargs.pop(key)
+    if not isinstance(value, bool):
+        message = f"{key} must be a bool, got {type(value).__name__}"
+        raise TypeError(message)
+    return value
+
+
 def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
     """Select the default extractor for a source path based on its file suffix."""
     suffix = source_path.suffix.lower()
@@ -638,16 +715,16 @@ def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
 
 def create_store_command(
     source_path: Path | None = None,
-    doc_uid: str | None = None,
     extractor: ExtractorProtocol | None = None,
     dependencies: StoreDependencies | None = None,
-    scope: str = "all",
+    options: StoreCommandOptions | None = None,
     **legacy_kwargs: object,
 ) -> StoreCommand:
     """Create StoreCommand with real dependencies by default.
 
     The pdf_path keyword parameter is preserved for backward compatibility.
     """
+    resolved_options = _resolve_store_command_options(options=options, legacy_kwargs=legacy_kwargs)
     pdf_path = legacy_kwargs.pop("pdf_path", None)
     if legacy_kwargs:
         unexpected_keys = ", ".join(sorted(legacy_kwargs))
@@ -668,6 +745,5 @@ def create_store_command(
         source_path=resolved_source_path,
         extractor=resolved_extractor,
         dependencies=resolved_dependencies,
-        explicit_doc_uid=doc_uid,
-        scope=scope,
+        options=resolved_options,
     )

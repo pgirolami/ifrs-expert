@@ -1,0 +1,83 @@
+{
+  "label": "7. dense_sparse_multivector (min_max norm)",
+  "mode": "dense_sparse_multivector",
+  "dense_weight": 1.0,
+  "sparse_weight": 0.3,
+  "multivector_weight": 0.3,
+  "score_normalization": "min_max",
+  "success": true,
+  "error": null,
+  "doc_scores": [
+    {
+      "doc_uid": "navis-QRIFRS-C2DB864AD71978-EFL",
+      "doc_title": "CHAPITRE 44 Comptabilité de couverture (IAS 39)",
+      "doc_type": "NAVIS",
+      "top_score": 1.5704,
+      "n_chunks": 12
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2D9D1995F171F-EFL",
+      "doc_title": "CHAPITRE 43 Comptabilité de couverture (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 1.4681,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2B66005533958-EFL",
+      "doc_title": "CHAPITRE 46 Instruments financiers - Informations en annexe (IFRS 7)",
+      "doc_type": "NAVIS",
+      "top_score": 1.241,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C291EF899838F8-EFL",
+      "doc_title": "CHAPITRE 38 Classement et évaluation des passifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.9422,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifrs2-bc",
+      "doc_title": "IFRS - IFRS 2 Share-based Payment - Basis for Conclusions",
+      "doc_type": "IFRS-BC",
+      "top_score": 0.653,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias39-bc",
+      "doc_title": "IFRS - IAS 39 Financial Instruments: Recognition and Measurement - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.6516,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C27C1B2651E33C-EFL",
+      "doc_title": "CHAPITRE 31 Coûts d'emprunt (IAS 23)",
+      "doc_type": "NAVIS",
+      "top_score": 0.6255,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2E93CFC80C049-EFL",
+      "doc_title": "CHAPITRE 47 Présentation des états financiers annuels IFRS (IAS 1)",
+      "doc_type": "NAVIS",
+      "top_score": 0.574,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ias10-bc",
+      "doc_title": "IFRS - IAS 10 Events after the Reporting Period - Basis for Conclusions",
+      "doc_type": "IAS-BC",
+      "top_score": 0.5456,
+      "n_chunks": 1
+    },
+    {
+      "doc_uid": "ifric17-bc",
+      "doc_title": "IFRS - IFRIC 17 Distributions of Non-cash Assets to Owners - Basis for Conclusions",
+      "doc_type": "IFRIC-BC",
+      "top_score": 0.5327,
+      "n_chunks": 1
+    }
+  ],
+  "total_chunks": 28
+}

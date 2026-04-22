@@ -1,9 +1,4 @@
 import {
-  buildIfrsVariantNavigationUrl,
-  selectIfrsCaptureTargets,
-  selectIfrsCorpusTargets,
-} from "./ifrs_import.mjs";
-import {
   ACTION_TITLE,
   downloadCaptureArtifacts,
   formatErrorMessage,
@@ -18,9 +13,18 @@ import {
   updateImportProgress,
   waitForTabComplete,
 } from "./background_common.mjs";
+import { resolveIfrsDocumentType } from "./ifrs_document_types.mjs";
+import {
+  buildIfrsVariantNavigationUrl,
+  selectIfrsCaptureTargets,
+  selectIfrsCorpusTargets,
+} from "./ifrs_import.mjs";
 
 const IFRS_CORPUS_ACTION_TITLE = "Extract IFRS corpus";
 const IFRS_SECTION_LOAD_DELAY_MS = 1000;
+// 256 KiB keeps the page-task payload comfortably below the structured-clone limits
+// we observed while still reducing the number of round-trips compared with 32 KiB.
+const IFRS_HTML_CHUNK_SIZE = 262_144;
 const IFRS_PAGE_TASK_MAX_ATTEMPTS = 3;
 const IFRS_PAGE_TASK_RETRY_DELAY_MS = 750;
 const IFRS_CORPUS_SKIPPED_PAGE_TITLES = new Set([
@@ -183,6 +187,17 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
   const captureContext = await executeIfrsPageTaskWithRetry(tabId, { type: "inspectCaptureTargets" });
   const captureTargets = selectIfrsCaptureTargets(captureContext.availableDocuments ?? []);
 
+  logInfo("Inspect IFRS capture targets returned.", {
+    tabId,
+    currentUrl: captureContext.currentUrl,
+    shellCanonicalUrl: captureContext.shellCanonicalUrl,
+    currentVariantValue: captureContext.currentVariantValue,
+    availableDocumentCount: captureContext.availableDocuments?.length ?? 0,
+    captureTargetCount: captureTargets.length,
+    availableDocuments: captureContext.availableDocuments,
+    captureTargets,
+  });
+
   if (captureTargets.length === 0) {
     throw new Error("No selectable IFRS documents were found on the current page");
   }
@@ -282,16 +297,35 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
       currentVariantValue = captureTarget.value;
     }
 
+    async function captureCurrentVariantFromPage() {
+      const probe = await executeIfrsPageTaskWithRetry(tabId, {
+        type: "captureCurrentVariant",
+        expectedVariantValue: captureTarget.value,
+      });
+      const html = await fetchIfrsHtmlChunks(tabId, captureTarget.value, probe.htmlLength);
+      return {
+        html,
+        htmlLength: probe.htmlLength,
+        sidecar: {
+          url: probe.url,
+          title: probe.title,
+          captured_at: probe.capturedAt,
+          source_domain: probe.sourceDomain,
+          canonical_url: probe.canonicalUrl,
+          document_type: resolveIfrsDocumentType(probe.dcIdentifier, probe.variantLabel),
+          extension_version: chrome.runtime.getManifest().version,
+          content_type: probe.contentType,
+        },
+      };
+    }
+
     let result;
     await updateImportProgress({
       type: "phaseUpdated",
       phaseLabel: "Parsing…",
     });
     try {
-      result = await executeIfrsPageTaskWithRetry(tabId, {
-        type: "captureCurrentVariant",
-        expectedVariantValue: captureTarget.value,
-      });
+      result = await captureCurrentVariantFromPage();
     } catch (error) {
       logWarn("IFRS variant capture failed; retrying after hard reload.", {
         tabId,
@@ -305,16 +339,32 @@ async function captureIfrsImport(tabId, tabUrl, options = {}) {
         phaseLabel: "Retrying after reload…",
         logMessage: `Retrying ${captureTarget.label} after reload`,
       });
+      const diagnostics = await executeIfrsPageTaskWithRetry(tabId, {
+        type: "captureCurrentVariantDiagnostics",
+      });
+      logInfo("IFRS capture diagnostics before reload.", {
+        tabId,
+        targetLabel: captureTarget.label,
+        targetVariantValue: captureTarget.value,
+        diagnostics,
+      });
+      const probe = await executeIfrsPageTaskWithRetry(tabId, {
+        type: "captureCurrentVariantProbe",
+        expectedVariantValue: captureTarget.value,
+      });
+      logInfo("IFRS capture probe before reload.", {
+        tabId,
+        targetLabel: captureTarget.label,
+        targetVariantValue: captureTarget.value,
+        probe,
+      });
       await reloadTab(tabId);
       await waitForTabComplete(tabId);
       await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
       await navigateTabToIfrsVariant(tabId, targetUrl, captureTarget.value);
       await waitForTabComplete(tabId);
       await sleepMs(IFRS_SECTION_LOAD_DELAY_MS);
-      result = await executeIfrsPageTaskWithRetry(tabId, {
-        type: "captureCurrentVariant",
-        expectedVariantValue: captureTarget.value,
-      });
+      result = await captureCurrentVariantFromPage();
     }
 
     currentUrl = result.sidecar.url || currentUrl;
@@ -372,6 +422,21 @@ async function executeIfrsPageTask(tabId, task) {
     func: runIfrsPageTask,
     args: [task],
   });
+
+  logInfo("IFRS page task injection results.", {
+    tabId,
+    taskType: task.type,
+    injectionResultCount: injectionResults.length,
+    injectionResults: injectionResults.map((injectionResult) => ({
+      frameId: injectionResult.frameId,
+      resultType: injectionResult.result === null ? "null" : typeof injectionResult.result,
+      resultKeys: injectionResult.result !== null && typeof injectionResult.result === "object"
+        ? Object.keys(injectionResult.result)
+        : [],
+      hasResult: injectionResult.result !== undefined,
+    })),
+  });
+
   const firstResult = injectionResults.at(0);
   if (firstResult === undefined) {
     throw new Error(`IFRS page task returned no injection result for task=${task.type}`);
@@ -404,6 +469,54 @@ async function executeIfrsPageTaskWithRetry(tabId, task) {
     }
   }
   throw lastError;
+}
+
+async function fetchIfrsHtmlChunks(tabId, expectedVariantValue, htmlLength) {
+  const numericHtmlLength = Number(htmlLength);
+  const totalLength = Number.isFinite(numericHtmlLength) ? Math.max(0, Math.trunc(numericHtmlLength)) : 0;
+  if (totalLength === 0) {
+    return "";
+  }
+
+  const chunks = [];
+  let startOffset = 0;
+  let chunkCount = 0;
+  logInfo("Starting IFRS HTML chunk capture.", {
+    tabId,
+    expectedVariantValue,
+    htmlLength: totalLength,
+    chunkSize: IFRS_HTML_CHUNK_SIZE,
+  });
+
+  while (startOffset < totalLength) {
+    const chunkResult = await executeIfrsPageTaskWithRetry(tabId, {
+      type: "captureCurrentVariantHtmlChunk",
+      expectedVariantValue,
+      startOffset,
+      chunkSize: IFRS_HTML_CHUNK_SIZE,
+    });
+    const chunk = typeof chunkResult.chunk === "string" ? chunkResult.chunk : "";
+    if (!chunk) {
+      throw new Error(`IFRS HTML chunk capture returned an empty chunk at startOffset=${startOffset}`);
+    }
+    chunks.push(chunk);
+    const nextOffset = typeof chunkResult.nextOffset === "number"
+      ? chunkResult.nextOffset
+      : startOffset + chunk.length;
+    if (nextOffset <= startOffset) {
+      throw new Error(`IFRS HTML chunk capture did not advance at startOffset=${startOffset}`);
+    }
+    startOffset = nextOffset;
+    chunkCount += 1;
+  }
+
+  logInfo("Completed IFRS HTML chunk capture.", {
+    tabId,
+    expectedVariantValue,
+    htmlLength: totalLength,
+    chunkCount,
+  });
+  return chunks.join("");
 }
 
 async function navigateTabToIfrsVariant(tabId, url, targetVariantValue) {
@@ -475,6 +588,28 @@ async function runIfrsPageTask(task) {
     return (value ?? "").replace(/\s+/g, " ").trim();
   }
 
+  function logPageDiagnostics(event, details) {
+    console.info("[IFRS Expert Extract]", event, details);
+  }
+
+  function summarizeDocumentTypeInputs() {
+    return Array.from(document.querySelectorAll('input[name="documentType"]'))
+      .filter((input) => input instanceof HTMLInputElement)
+      .map((input) => {
+        const labelNode = input.nextElementSibling;
+        const labelText = labelNode instanceof HTMLElement ? normalizeWhitespace(labelNode.textContent || "") : "";
+        const closestLabel = input.closest("label");
+        const closestLabelText = closestLabel instanceof HTMLElement ? normalizeWhitespace(closestLabel.textContent || "") : "";
+        return {
+          value: normalizeWhitespace(input.value),
+          checked: input.checked,
+          disabled: input.disabled,
+          labelText,
+          closestLabelText,
+        };
+      });
+  }
+
   function getShellCanonicalUrl() {
     const shellCanonicalUrl = document.querySelector('link[rel="canonical"]')?.href;
     if (!shellCanonicalUrl) {
@@ -490,48 +625,29 @@ async function runIfrsPageTask(task) {
   }
 
   function resolveVariantLabel(checkedInput) {
-    const labelNode = checkedInput.nextElementSibling;
-    if (!(labelNode instanceof HTMLElement)) {
-      throw new Error("IFRS page is missing the checked documentType label element");
-    }
-    const label = normalizeWhitespace(labelNode.textContent || "");
-    if (!label) {
-      throw new Error("IFRS page is missing the checked documentType label text");
-    }
-    return label;
-  }
+    const candidateNodes = [
+      checkedInput.nextElementSibling,
+      ...(checkedInput.labels ? Array.from(checkedInput.labels) : []),
+      checkedInput.closest("label"),
+    ];
 
-  function resolveDocumentType(docUid, variantLabel) {
-    const normalizedDocUid = normalizeWhitespace(docUid).toLowerCase();
-    if (!normalizedDocUid) {
-      throw new Error("IFRS page is missing meta[name=\"DC.Identifier\"] content");
-    }
-    if (normalizedDocUid.startsWith("ifrs")) {
-      const variantDocumentTypes = {
-        Standard: "IFRS-S",
-        "Basis for Conclusions": "IFRS-BC",
-        "Illustrative Examples": "IFRS-IE",
-        "Implementation Guidance": "IFRS-IG",
-      };
-      const resolvedDocumentType = variantDocumentTypes[variantLabel];
-      if (!resolvedDocumentType) {
-        throw new Error(`Unsupported IFRS variant label: ${variantLabel}`);
+    const candidateTexts = candidateNodes
+      .filter((candidateNode) => candidateNode instanceof HTMLElement)
+      .map((candidateNode) => normalizeWhitespace(candidateNode.textContent || ""))
+      .filter((label) => label.length > 0);
+
+    logPageDiagnostics("Resolved documentType label candidates.", {
+      checkedValue: normalizeWhitespace(checkedInput.value),
+      candidateTexts,
+    });
+
+    for (const label of candidateTexts) {
+      if (label) {
+        return label;
       }
-      return resolvedDocumentType;
     }
-    if (normalizedDocUid.startsWith("ias")) {
-      return "IAS";
-    }
-    if (normalizedDocUid.startsWith("ifric")) {
-      return "IFRIC";
-    }
-    if (normalizedDocUid.startsWith("sic")) {
-      return "SIC";
-    }
-    if (normalizedDocUid.startsWith("ps")) {
-      return "PS";
-    }
-    throw new Error(`Unsupported IFRS-side document identifier: ${docUid}`);
+
+    throw new Error(`IFRS page is missing the checked documentType label text for value=${normalizeWhitespace(checkedInput.value)}; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
   }
 
   function getAvailableDocuments() {
@@ -685,13 +801,18 @@ async function runIfrsPageTask(task) {
 
   async function selectVariant(targetVariantValue) {
     const normalizedTargetVariantValue = normalizeWhitespace(targetVariantValue);
+    const documentTypeInputs = summarizeDocumentTypeInputs();
+    logPageDiagnostics("selectVariant requested.", {
+      targetVariantValue: normalizedTargetVariantValue,
+      documentTypeInputs,
+    });
     const targetInput = Array.from(document.querySelectorAll('input[name="documentType"]'))
       .find((input) => input instanceof HTMLInputElement && normalizeWhitespace(input.value) === normalizedTargetVariantValue);
     if (!(targetInput instanceof HTMLInputElement)) {
-      throw new Error(`IFRS page is missing documentType option ${normalizedTargetVariantValue}`);
+      throw new Error(`IFRS page is missing documentType option ${normalizedTargetVariantValue}; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
     }
     if (targetInput.disabled) {
-      throw new Error(`IFRS documentType option is disabled: ${normalizedTargetVariantValue}`);
+      throw new Error(`IFRS documentType option is disabled: ${normalizedTargetVariantValue}; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
     }
     if (!targetInput.checked) {
       const optionContainer = targetInput.closest(".custom-select-option");
@@ -728,43 +849,127 @@ async function runIfrsPageTask(task) {
     };
   }
 
-  function captureCurrentVariant() {
+  function buildCurrentVariantPayload(includeHtml) {
     const shellCanonicalUrl = getShellCanonicalUrl();
     const checkedVariantInput = getCheckedVariantInput();
     if (!(checkedVariantInput instanceof HTMLInputElement)) {
-      throw new Error("IFRS page is missing a checked documentType input");
+      throw new Error(`IFRS page is missing a checked documentType input; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
     }
 
     const variantValue = normalizeWhitespace(checkedVariantInput.value);
     if (!variantValue) {
-      throw new Error("IFRS page has an empty checked documentType value");
+      throw new Error(`IFRS page has an empty checked documentType value; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
     }
 
     const variantLabel = resolveVariantLabel(checkedVariantInput);
     const dcIdentifier = getDcIdentifier();
-    const documentType = resolveDocumentType(dcIdentifier, variantLabel);
     const canonicalUrl = `${shellCanonicalUrl}${variantValue}`;
     const baseTitle = normalizeWhitespace(document.title || shellCanonicalUrl);
     const title = variantLabel === "Standard" ? baseTitle : `${baseTitle} - ${variantLabel}`;
+    const htmlLength = document.documentElement.outerHTML.length;
+    const capturedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+    const contentType = document.contentType || "text/html";
 
-    return {
-      html: document.documentElement.outerHTML,
-      sidecar: {
-        url: window.location.href,
-        title,
-        captured_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
-        source_domain: window.location.hostname,
-        canonical_url: canonicalUrl,
-        document_type: documentType,
-        extension_version: chrome.runtime.getManifest().version,
-        content_type: document.contentType || "text/html",
-      },
+    logPageDiagnostics("Captured IFRS variant payload.", {
+      currentUrl: window.location.href,
+      shellCanonicalUrl,
+      dcIdentifier,
+      variantValue,
+      variantLabel,
+      canonicalUrl,
+      title,
+      htmlLength,
+      includeHtml,
+      inputs: summarizeDocumentTypeInputs(),
+    });
+
+    const payload = {
+      url: window.location.href,
+      title,
+      capturedAt,
+      sourceDomain: window.location.hostname,
+      canonicalUrl,
+      variantValue,
+      variantLabel,
+      dcIdentifier,
+      contentType,
+      htmlLength,
     };
+
+    if (includeHtml) {
+      return {
+        ...payload,
+        html: document.documentElement.outerHTML,
+      };
+    }
+
+    return payload;
+  }
+
+  function captureCurrentVariant() {
+    return buildCurrentVariantPayload(false);
+  }
+
+  function captureCurrentVariantProbe() {
+    return buildCurrentVariantPayload(false);
+  }
+
+  function captureCurrentVariantHtmlChunk(task) {
+    const expectedVariantValue = normalizeWhitespace(task.expectedVariantValue ?? "");
+    if (expectedVariantValue) {
+      const checkedVariantInput = getCheckedVariantInput();
+      const currentVariantValue = checkedVariantInput instanceof HTMLInputElement ? normalizeWhitespace(checkedVariantInput.value) : "";
+      if (currentVariantValue !== expectedVariantValue) {
+        throw new Error(`IFRS page changed while capturing HTML chunk: expected ${expectedVariantValue}, found ${currentVariantValue || "<missing>"}`);
+      }
+    }
+
+    const html = document.documentElement.outerHTML;
+    const startOffsetValue = Number(task.startOffset ?? 0);
+    const chunkSizeValue = Number(task.chunkSize ?? IFRS_HTML_CHUNK_SIZE);
+    const startOffset = Number.isFinite(startOffsetValue) ? Math.max(0, Math.trunc(startOffsetValue)) : 0;
+    const chunkSize = Number.isFinite(chunkSizeValue) ? Math.max(1, Math.trunc(chunkSizeValue)) : IFRS_HTML_CHUNK_SIZE;
+    const chunk = html.slice(startOffset, startOffset + chunkSize);
+    return {
+      chunk,
+      startOffset,
+      nextOffset: startOffset + chunk.length,
+      htmlLength: html.length,
+    };
+  }
+
+  function captureCurrentVariantDiagnostics() {
+    const checkedVariantInput = getCheckedVariantInput();
+    const variantValue = checkedVariantInput instanceof HTMLInputElement ? normalizeWhitespace(checkedVariantInput.value) : null;
+    const variantLabel = checkedVariantInput instanceof HTMLInputElement ? resolveVariantLabel(checkedVariantInput) : null;
+    const dcIdentifier = getDcIdentifier();
+    const shellCanonicalUrl = document.querySelector('link[rel="canonical"]')?.href ?? null;
+    const diagnostics = {
+      currentUrl: window.location.href,
+      documentTitle: document.title,
+      readyState: document.readyState,
+      dcIdentifier,
+      shellCanonicalUrl,
+      variantValue,
+      variantLabel,
+      checkedInputPresent: checkedVariantInput instanceof HTMLInputElement,
+      htmlLength: document.documentElement.outerHTML.length,
+      annotationCheckboxPresent: document.querySelector("#annotation-checkbox") instanceof HTMLInputElement,
+      inputs: summarizeDocumentTypeInputs(),
+    };
+    logPageDiagnostics("captureCurrentVariant diagnostics.", diagnostics);
+    return diagnostics;
   }
 
   switch (task.type) {
     case "inspectContext": {
       const corpusTargets = getCorpusTargets();
+      logPageDiagnostics("inspectContext", {
+        currentUrl: window.location.href,
+        corpusTargetCount: corpusTargets.length,
+        corpusTargets,
+        documentTypeInputs: summarizeDocumentTypeInputs(),
+      });
       if (corpusTargets.length > 1) {
         return {
           mode: "corpus",
@@ -780,14 +985,23 @@ async function runIfrsPageTask(task) {
     case "inspectCaptureTargets": {
       await waitForStablePage();
       const checkedVariantInput = getCheckedVariantInput();
+      const availableDocuments = getAvailableDocuments();
+      logPageDiagnostics("inspectCaptureTargets", {
+        currentUrl: window.location.href,
+        shellCanonicalUrl: getShellCanonicalUrl(),
+        checkedValue: checkedVariantInput instanceof HTMLInputElement ? normalizeWhitespace(checkedVariantInput.value) : null,
+        availableDocumentCount: availableDocuments.length,
+        availableDocuments,
+        documentTypeInputs: summarizeDocumentTypeInputs(),
+      });
       if (checkedVariantInput === null) {
-        throw new Error("IFRS page is missing a checked documentType input");
+        throw new Error(`IFRS page is missing a checked documentType input; inputs=${JSON.stringify(summarizeDocumentTypeInputs())}`);
       }
       return {
         currentUrl: window.location.href,
         shellCanonicalUrl: getShellCanonicalUrl(),
         currentVariantValue: normalizeWhitespace(checkedVariantInput.value),
-        availableDocuments: getAvailableDocuments(),
+        availableDocuments,
       };
     }
     case "selectVariant":
@@ -796,15 +1010,14 @@ async function runIfrsPageTask(task) {
       await waitForStablePage(task.expectedVariantValue ?? "");
       await ensureAnnotationsEnabled();
       await waitForStablePage(task.expectedVariantValue ?? "");
-      const capture = captureCurrentVariant();
-      console.info("[IFRS Expert Extract] Capturing IFRS page in tab.", {
-        url: capture.sidecar.url,
-        canonicalUrl: capture.sidecar.canonical_url,
-        title: capture.sidecar.title,
-        documentType: capture.sidecar.document_type,
-      });
-      return capture;
+      return captureCurrentVariant();
     }
+    case "captureCurrentVariantProbe":
+      return captureCurrentVariantProbe();
+    case "captureCurrentVariantHtmlChunk":
+      return captureCurrentVariantHtmlChunk(task);
+    case "captureCurrentVariantDiagnostics":
+      return captureCurrentVariantDiagnostics();
     default:
       throw new Error(`Unsupported IFRS page task: ${task.type}`);
   }

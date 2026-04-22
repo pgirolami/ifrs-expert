@@ -3,7 +3,7 @@
 import json
 from unittest.mock import MagicMock, patch
 
-from src.commands import ListCommand
+from src.commands.list import ListCommand
 from src.db.chunks import Chunk
 
 

@@ -1,0 +1,41 @@
+{
+  "label": "3. dense_sparse (min_max norm)",
+  "mode": "dense_sparse",
+  "dense_weight": 1.0,
+  "sparse_weight": 0.3,
+  "multivector_weight": 0.0,
+  "score_normalization": "min_max",
+  "success": true,
+  "error": null,
+  "doc_scores": [
+    {
+      "doc_uid": "navis-QRIFRS-C2DB864AD71978-EFL",
+      "doc_title": "CHAPITRE 44 Comptabilité de couverture (IAS 39)",
+      "doc_type": "NAVIS",
+      "top_score": 1.2704,
+      "n_chunks": 6
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2D9D1995F171F-EFL",
+      "doc_title": "CHAPITRE 43 Comptabilité de couverture (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 1.1897,
+      "n_chunks": 3
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C2B66005533958-EFL",
+      "doc_title": "CHAPITRE 46 Instruments financiers - Informations en annexe (IFRS 7)",
+      "doc_type": "NAVIS",
+      "top_score": 0.9885,
+      "n_chunks": 2
+    },
+    {
+      "doc_uid": "navis-QRIFRS-C291EF899838F8-EFL",
+      "doc_title": "CHAPITRE 38 Classement et évaluation des passifs financiers (IFRS 9)",
+      "doc_type": "NAVIS",
+      "top_score": 0.7101,
+      "n_chunks": 1
+    }
+  ],
+  "total_chunks": 12
+}
