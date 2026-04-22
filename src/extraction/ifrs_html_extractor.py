@@ -277,7 +277,7 @@ class IfrsHtmlExtractor:
 
         section_id = _tag_attribute_as_string(node, "id")
         if not section_id:
-            if title == "Board Approvals":
+            if title in {"Board Approvals", "Appendices"}:
                 section_id = self._build_synthetic_section_id(doc_uid=doc_uid, title=title, position=traversal_state.position)
             else:
                 return None

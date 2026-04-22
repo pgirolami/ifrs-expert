@@ -758,6 +758,78 @@ class TestHtmlExtractor:
         assert dissent_chunk_ids == ["IAS28_DO1"], f"Expected the dissent chunk to be preserved, got {dissent_chunk_ids}"
         assert dissent_sections[0].parent_section_id == board_approvals_sections[0].section_id
 
+    def test_extract_registers_appendices_as_section_without_id(self) -> None:
+        """Appendices should be extracted as a real section so appendix content is not parented to Transition."""
+        html = """
+            <html>
+              <head>
+                <title>IFRIC 16 Hedges of a Net Investment in a Foreign Operation</title>
+                <link rel="canonical" href="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html">
+                <meta name="DC.Identifier" content="ifric16">
+              </head>
+              <body>
+                <div class="custom-select-option">
+                  <input name="documentType" type="radio" value="/content/dam/ifrs/publications/html-standards/english/2026/issued/ifric16.html" checked>
+                  <span class="custom-select-option-checkbox__label">Standard</span>
+                </div>
+                <section class="ifrs-cmp-htmlviewer__section">
+                  <div class="topic nested1" id="IFRIC16_rubric">
+                    <h1>IFRIC Interpretation 16 Hedges of a Net Investment in a Foreign Operation</h1>
+                  </div>
+                  <div class="topic nested2" id="IFRIC16_g18-19">
+                    <h2 class="title topictitle2">Transition</h2>
+                    <div class="show-hide" style="display: block;">
+                      <div class="body"></div>
+                    </div>
+                  </div>
+                  <div class="nested2 appendices">
+                    <h2 class="title topictitle2 expand_cursor">Appendices<span class="expand">–</span></h2>
+                    <div class="show-hide" style="display: block;">
+                      <div class="topic nested3" aria-labelledby="IFRIC16_APP__IFRIC16_APP_TI" id="IFRIC16_APP">
+                        <h3 class="title topictitle3 expand_cursor" id="IFRIC16_APP__IFRIC16_APP_TI">Appendix<span class="ph linebreak"></span>Application guidance<span class="expand">–</span></h3>
+                        <div class="show-hide" style="display: block;">
+                          <div class="topic paragraph nested4" id="IFRIC16_AG1">
+                            <table><tbody><tr><td class="paragraph_col1"><div class="paranum"><p>AG1</p></div></td><td class="paragraph_col2"><div class="body"><p class="p">Example appendix content.</p></div></td></tr></tbody></table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </body>
+            </html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        sidecar = HtmlSidecar(
+            url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifric16.html",
+            title="IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+            captured_at="2026-04-04T14:23:10Z",
+            source_domain="www.ifrs.org",
+            canonical_url="https://www.ifrs.org/content/ifrs/home/issued-standards/list-of-standards/ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html/content/dam/ifrs/publications/html-standards/english/2026/issued/ifric16.html",
+            extension_version=None,
+            content_type=None,
+            capture_format=None,
+            capture_mode=None,
+            product_key=None,
+            root_ref_id=None,
+            chapter_ref_id=None,
+            chapter_title=None,
+            document_type="IFRIC",
+            page_ref_ids=(),
+            page_titles=(),
+        )
+
+        extracted_document = IfrsHtmlExtractor().extract_from_soup(soup=soup, sidecar=sidecar, explicit_doc_uid=None)
+        appendix_sections = [section for section in extracted_document.sections if section.title == "Appendices"]
+        appendix_heading_sections = [section for section in extracted_document.sections if section.title == "Appendix Application guidance"]
+        appendix_chunks = [chunk for chunk in extracted_document.chunks if chunk.chunk_id == "IFRIC16_AG1"]
+
+        assert appendix_sections, "Expected Appendices to be extracted as a section"
+        assert appendix_heading_sections, "Expected appendix guidance to be extracted"
+        assert appendix_chunks, "Expected appendix content to be extracted"
+        assert appendix_heading_sections[0].parent_section_id == appendix_sections[0].section_id
+        assert appendix_chunks[0].containing_section_id == appendix_heading_sections[0].section_id
+
     def test_extract_preserves_years_in_heading_titles(self) -> None:
         """Heading titles like 2003 revision should keep the year instead of stripping it."""
         html = """
