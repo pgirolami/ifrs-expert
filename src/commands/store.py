@@ -22,9 +22,14 @@ from src.interfaces import (
     VectorStoreProtocol,
 )
 from src.models.document import resolve_document_kind_from_document_type, resolve_document_type_from_doc_uid
-from src.retrieval.document_profile_builder import DocumentProfileBuilder
+from src.retrieval.document_profile_builder import (
+    DOCUMENT_SIMILARITY_REPRESENTATIONS,
+    DocumentProfileBuilder,
+    DocumentSimilarityRepresentation,
+    build_document_similarity_texts,
+)
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
-from src.vector.document_store import DocumentVectorStore
+from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
@@ -45,6 +50,7 @@ StoreVectorStore = VectorStoreProtocol
 StoreTitleVectorStore = TitleVectorStoreProtocol
 StoreDocumentVectorStore = DocumentVectorStoreProtocol
 StoreInitDb = Callable[[], None]
+StoreDocumentVectorStoreFactory = Callable[[str], StoreDocumentVectorStore]
 
 _DOCUMENT_EMBEDDING_REPAIR_METRICS: dict[str, int] = {"count": 0}
 
@@ -66,6 +72,7 @@ class StoreDependencies:
     section_store: StoreSectionStore | None = None
     title_vector_store: StoreTitleVectorStore | None = None
     document_vector_store: StoreDocumentVectorStore | None = None
+    document_vector_store_factory: StoreDocumentVectorStoreFactory | None = None
 
 
 @dataclass(frozen=True)
@@ -224,12 +231,13 @@ class StoreCommand:
             )
 
             logger.info(f"Preparing persistence for doc_uid={doc_uid}; stores_chunks={self._stores_chunks()}, stores_sections={self._stores_sections()}, stores_documents={self._stores_documents()}")
+            document_similarity_texts = build_document_similarity_texts(extracted_document.document)
             skip_result = self._store_chunks(
                 doc_uid=doc_uid,
                 chunks=chunks,
                 sections=extracted_document.sections,
                 document=extracted_document.document,
-                document_embedding_text=built_document_profile.embedding_text,
+                document_similarity_texts=document_similarity_texts,
             )
             if skip_result is not None:
                 return skip_result
@@ -239,7 +247,7 @@ class StoreCommand:
                 doc_uid=doc_uid,
                 extracted_document=extracted_document,
                 chunks=chunks,
-                document_embedding_text=built_document_profile.embedding_text,
+                document_similarity_texts=document_similarity_texts,
             )
             logger.info(f"Finished persistence for doc_uid={doc_uid} in {_elapsed_ms(persistence_started_at):.2f}ms; stored_chunks={len(chunks)}, stored_sections={len(extracted_document.sections)}, stored_embeddings={embeddings_stored}")
 
@@ -266,7 +274,7 @@ class StoreCommand:
         chunks: list[Chunk],
         sections: list[SectionRecord],
         document: DocumentRecord,
-        document_embedding_text: str,
+        document_similarity_texts: dict[DocumentSimilarityRepresentation, str],
     ) -> StoreCommandResult | None:
         existing_chunks = self._get_existing_chunks(doc_uid) if self._stores_chunks() else []
         existing_sections = self._get_existing_sections(doc_uid) if self._stores_sections() else []
@@ -293,7 +301,7 @@ class StoreCommand:
             repaired_result = self._repair_missing_document_embedding_if_needed(
                 doc_uid=doc_uid,
                 chunk_count=len(chunks),
-                embedding_text=document_embedding_text,
+                document_similarity_texts=document_similarity_texts,
             )
             if repaired_result is not None:
                 return repaired_result
@@ -375,7 +383,7 @@ class StoreCommand:
         doc_uid: str,
         extracted_document: ExtractedDocument,
         chunks: list[Chunk],
-        document_embedding_text: str,
+        document_similarity_texts: dict[DocumentSimilarityRepresentation, str],
     ) -> int:
         if self._stores_documents():
             with self._dependencies.document_store as document_store:
@@ -397,7 +405,7 @@ class StoreCommand:
         if self._stores_sections():
             self._store_title_embeddings(doc_uid=doc_uid, sections=extracted_document.sections)
         if self._stores_documents():
-            self._store_document_embeddings(doc_uid=doc_uid, embedding_text=document_embedding_text)
+            self._store_document_embeddings(doc_uid=doc_uid, texts_by_representation=document_similarity_texts)
         return embeddings_stored
 
     def _store_chunk_embeddings(self, doc_uid: str, chunks: list[Chunk]) -> int:
@@ -433,36 +441,46 @@ class StoreCommand:
                 )
                 logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
 
-    def _store_document_embeddings(self, doc_uid: str, embedding_text: str) -> None:
-        if self._dependencies.document_vector_store is None:
+    def _store_document_embeddings(
+        self,
+        doc_uid: str,
+        texts_by_representation: dict[DocumentSimilarityRepresentation, str],
+    ) -> None:
+        if self._dependencies.document_vector_store is None and self._dependencies.document_vector_store_factory is None:
             logger.info(f"Skipping document embeddings for doc_uid={doc_uid} because no document vector store is configured")
             return
-        if not embedding_text:
-            logger.warning(f"Skipping document embedding for doc_uid={doc_uid} because the embedding text is empty")
-            return
-        with self._dependencies.document_vector_store as document_vector_store:
-            deleted_count = document_vector_store.delete_by_doc(doc_uid)
-            if deleted_count > 0:
-                logger.info(f"Deleted {deleted_count} existing document embeddings for {doc_uid}")
-            logger.info(f"Storing document embedding for doc_uid={doc_uid} with embedding_chars={len(embedding_text)}")
-            document_vector_store.add_embeddings([doc_uid], [embedding_text])
-            logger.info(f"Stored 1 document embedding for doc_uid={doc_uid}")
+
+        representations = DOCUMENT_SIMILARITY_REPRESENTATIONS if self._dependencies.document_vector_store_factory is not None else ("full",)
+        for representation in representations:
+            embedding_text = texts_by_representation.get(representation, "")
+            with self._get_document_vector_store(representation) as document_vector_store:
+                deleted_count = document_vector_store.delete_by_doc(doc_uid)
+                if deleted_count > 0:
+                    logger.info(f"Deleted {deleted_count} existing document embeddings for doc_uid={doc_uid}, representation={representation}")
+                if not embedding_text:
+                    logger.info(f"Skipping document embedding insert for doc_uid={doc_uid}, representation={representation} because representation text is empty")
+                    continue
+                logger.info(f"Storing document embedding for doc_uid={doc_uid}, representation={representation}, embedding_chars={len(embedding_text)}")
+                document_vector_store.add_embeddings([doc_uid], [embedding_text])
+                logger.info(f"Stored 1 document embedding for doc_uid={doc_uid}, representation={representation}")
 
     def _repair_missing_document_embedding_if_needed(
         self,
         doc_uid: str,
         chunk_count: int,
-        embedding_text: str,
+        document_similarity_texts: dict[DocumentSimilarityRepresentation, str],
     ) -> StoreCommandResult | None:
-        if not self._stores_documents() or self._dependencies.document_vector_store is None:
+        if not self._stores_documents() or (self._dependencies.document_vector_store is None and self._dependencies.document_vector_store_factory is None):
             return None
-        with self._dependencies.document_vector_store as document_vector_store:
+
+        with self._get_document_vector_store("full") as document_vector_store:
             if document_vector_store.has_embedding_for_doc(doc_uid):
-                logger.info(f"Found existing document embedding for unchanged doc_uid={doc_uid}")
+                logger.info(f"Found existing full document embedding for unchanged doc_uid={doc_uid}")
                 return None
+
         repair_count = _increment_document_embedding_repair_count()
         logger.warning(f"Detected missing document embedding for unchanged doc_uid={doc_uid}; retrying document embedding storage; repair_count={repair_count}")
-        self._store_document_embeddings(doc_uid=doc_uid, embedding_text=embedding_text)
+        self._store_document_embeddings(doc_uid=doc_uid, texts_by_representation=document_similarity_texts)
         logger.info(f"Repaired missing document embedding for unchanged doc_uid={doc_uid}; repair_count={repair_count}")
         return StoreCommandResult(
             status="stored",
@@ -471,6 +489,16 @@ class StoreCommand:
             embedding_count=0,
             reason="repaired missing document embedding",
         )
+
+    def _get_document_vector_store(self, representation: str) -> StoreDocumentVectorStore:
+        document_vector_store_factory = self._dependencies.document_vector_store_factory
+        if document_vector_store_factory is not None:
+            return document_vector_store_factory(representation)
+        document_vector_store = self._dependencies.document_vector_store
+        if document_vector_store is None:
+            message = f"No document vector store configured for representation={representation}"
+            raise RuntimeError(message)
+        return document_vector_store
 
     def _truncate_oversized_chunks(self, chunks: list[Chunk]) -> None:
         truncated_count = 0
@@ -589,6 +617,10 @@ def build_store_dependencies() -> StoreDependencies:
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
         document_vector_store=DocumentVectorStore(),
+        document_vector_store_factory=lambda representation: DocumentVectorStore(
+            index_path=get_document_index_path(representation),
+            id_map_path=get_document_id_map_path(representation),
+        ),
     )
 
 

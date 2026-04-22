@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from src.commands.constants import DEFAULT_VERBOSE
 from src.db import DocumentStore, init_db
 from src.models.document import DOCUMENT_TYPES, infer_persisted_document_type
-from src.vector.document_store import DocumentVectorStore, get_document_index_path
+from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -37,10 +37,11 @@ DOCUMENT_REPRESENTATION_FIELDS: tuple[tuple[str, str], ...] = (
 class QueryDocumentsConfig:
     """Configuration for QueryDocumentsCommand."""
 
-    document_vector_store: SearchDocumentVectorStoreProtocol
     document_store: DocumentStoreProtocol
     init_db_fn: Callable[[], None]
-    index_path_fn: Callable[[], Path]
+    index_path_fn: Callable[[str], Path]
+    document_vector_store_factory: Callable[[str], SearchDocumentVectorStoreProtocol] | None = None
+    document_vector_store: SearchDocumentVectorStoreProtocol | None = None
 
 
 @dataclass(frozen=True)
@@ -77,7 +78,9 @@ class QueryDocumentsCommand:
             return prerequisite_error
 
         document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
-        with self._config.document_vector_store as document_vector_store:
+        similarity_representation = document_policy.similarity_representation
+        vector_store = self._get_document_vector_store(similarity_representation)
+        with vector_store as document_vector_store:
             ranked_results = document_vector_store.search_all(self.query)
 
         selected_results = _select_top_documents(
@@ -109,7 +112,11 @@ class QueryDocumentsCommand:
         return None
 
     def _get_prerequisite_error(self) -> str | None:
-        index_path = self._config.index_path_fn()
+        document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
+        try:
+            index_path = self._config.index_path_fn(document_policy.similarity_representation)
+        except TypeError:
+            index_path = self._config.index_path_fn()  # type: ignore[call-arg]
         if not index_path.exists():
             logger.error(f"Missing document vector index at {index_path}; corpus must be built before running queries")
             return "Error: No document index found. Please run 'store' command first."
@@ -123,6 +130,16 @@ class QueryDocumentsCommand:
                 if document is not None:
                     documents_by_uid[result["doc_uid"]] = document
         return documents_by_uid
+
+    def _get_document_vector_store(self, representation: str) -> SearchDocumentVectorStoreProtocol:
+        document_vector_store_factory = self._config.document_vector_store_factory
+        if document_vector_store_factory is not None:
+            return document_vector_store_factory(representation)
+        document_vector_store = self._config.document_vector_store
+        if document_vector_store is not None:
+            return document_vector_store
+        message = "Error: Document retrieval is not configured."
+        raise RuntimeError(message)
 
 
 def _select_top_documents(
@@ -227,7 +244,10 @@ def create_query_documents_command(
 ) -> QueryDocumentsCommand:
     """Create QueryDocumentsCommand with real dependencies."""
     config = QueryDocumentsConfig(
-        document_vector_store=DocumentVectorStore(),
+        document_vector_store_factory=lambda representation: DocumentVectorStore(
+            index_path=get_document_index_path(representation),
+            id_map_path=get_document_id_map_path(representation),
+        ),
         document_store=DocumentStore(),
         init_db_fn=init_db,
         index_path_fn=get_document_index_path,

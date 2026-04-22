@@ -13,7 +13,7 @@ from src.models.document import infer_document_kind, infer_exact_document_type, 
 from src.policy import RetrievalPolicy
 from src.retrieval.models import RetrievalRequest, RetrievalResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
-from src.vector.document_store import DocumentVectorStore, get_document_index_path
+from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
 from src.vector.title_store import TitleVectorStore, get_title_index_path
 
@@ -42,7 +42,8 @@ class RetrieveConfig:
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
-    document_index_path_fn: Callable[[], Path] | None = None
+    document_vector_store_factory: Callable[[str], SearchDocumentVectorStoreProtocol] | None = None
+    document_index_path_fn: Callable[[str], Path] | None = None
 
 
 @dataclass(frozen=True)
@@ -88,6 +89,7 @@ class RetrieveCommand:
                 title_vector_store=self._config.title_vector_store,
                 title_index_path_fn=self._config.title_index_path_fn,
                 document_vector_store=self._config.document_vector_store,
+                document_vector_store_factory=self._config.document_vector_store_factory,
                 document_index_path_fn=self._config.document_index_path_fn,
             ),
         )
@@ -113,6 +115,7 @@ class RetrieveCommand:
             document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
             document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
             document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+            document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
             chunk_min_score=chunk_min_score,
             expand_to_section=expand_to_section,
             expand=policy.expand,
@@ -264,6 +267,10 @@ def create_retrieve_command(
         title_vector_store=TitleVectorStore(),
         title_index_path_fn=get_title_index_path,
         document_vector_store=DocumentVectorStore(),
+        document_vector_store_factory=lambda representation: DocumentVectorStore(
+            index_path=get_document_index_path(representation),
+            id_map_path=get_document_id_map_path(representation),
+        ),
         document_index_path_fn=get_document_index_path,
     )
     return RetrieveCommand(query=query, config=config, options=options)

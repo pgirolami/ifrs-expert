@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, cast
 
 import yaml
 
@@ -15,6 +15,9 @@ from src.models.document import DOCUMENT_TYPES
 
 logger = logging.getLogger(__name__)
 
+DocumentSimilarityRepresentation = Literal["full", "background_and_issue", "scope", "toc"]
+SIMILARITY_REPRESENTATIONS: tuple[DocumentSimilarityRepresentation, ...] = ("full", "background_and_issue", "scope", "toc")
+
 
 @dataclass(frozen=True)
 class DocumentTypeRetrievalPolicy:
@@ -23,6 +26,7 @@ class DocumentTypeRetrievalPolicy:
     d: int
     min_score: float
     expand_to_section: bool
+    similarity_representation: DocumentSimilarityRepresentation
 
 
 @dataclass(frozen=True)
@@ -189,6 +193,10 @@ def _parse_document_type_policies(by_document_type_mapping: dict[str, object]) -
                 _require_key(entry, "expand_to_section", context=f"retrieval.documents.by_document_type.{document_type}"),
                 context=f"retrieval.documents.by_document_type.{document_type}.expand_to_section",
             ),
+            similarity_representation=_require_document_similarity_representation(
+                _require_key(entry, "similarity_representation", context=f"retrieval.documents.by_document_type.{document_type}"),
+                context=f"retrieval.documents.by_document_type.{document_type}.similarity_representation",
+            ),
         )
     return parsed
 
@@ -273,4 +281,15 @@ def _require_retrieval_mode(value: object) -> str:
     if isinstance(value, str) and value in {"text", "titles", "documents"}:
         return value
     message = "retrieval.mode must be one of: text, titles, documents"
+    raise ValueError(message)
+
+
+def _require_document_similarity_representation(
+    value: object,
+    context: str,
+) -> DocumentSimilarityRepresentation:
+    if isinstance(value, str) and value in SIMILARITY_REPRESENTATIONS:
+        return cast("DocumentSimilarityRepresentation", value)
+    supported_representations = ", ".join(SIMILARITY_REPRESENTATIONS)
+    message = f"{context} must be one of: {supported_representations}"
     raise ValueError(message)

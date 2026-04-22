@@ -1,5 +1,4 @@
 """Document vector store for document-level retrieval."""
-# ruff: noqa: PLW0603
 
 from __future__ import annotations
 
@@ -9,12 +8,18 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Self, cast
 
 import faiss
 import numpy as np
 
-from src.vector.model_cache import BATCH_SIZE, EMBEDDING_MODEL, EmbeddingModelProtocol, get_embedding_model
+from src.policy import SIMILARITY_REPRESENTATIONS, DocumentSimilarityRepresentation
+from src.vector.model_cache import (
+    BATCH_SIZE,
+    EMBEDDING_MODEL,
+    EmbeddingModelProtocol,
+    get_embedding_model,
+)
 
 if TYPE_CHECKING:
     from src.interfaces import DocumentSearchResult
@@ -28,32 +33,48 @@ logger = logging.getLogger(__name__)
 QUERY_EMBEDDING_CACHE_VERSION = "v1"
 QUERY_EMBEDDING_NDIM = 2
 
-_document_index_path: Path | None = None
-_document_id_map_path: Path | None = None
+_document_index_path_by_representation: dict[DocumentSimilarityRepresentation, Path] = {}
+_document_id_map_path_by_representation: dict[DocumentSimilarityRepresentation, Path] = {}
 
 
-def _default_document_index_path() -> Path:
-    return Path(__file__).parent.parent.parent / "corpus" / "data" / "index" / "faiss_documents.index"
+def _require_representation(
+    representation: str,
+) -> DocumentSimilarityRepresentation:
+    if representation in SIMILARITY_REPRESENTATIONS:
+        return cast("DocumentSimilarityRepresentation", representation)
+    supported_representations = ", ".join(SIMILARITY_REPRESENTATIONS)
+    message = f"Unsupported document similarity representation: {representation}. Expected one of: {supported_representations}"
+    raise ValueError(message)
 
 
-def get_document_index_path() -> Path:
+def _default_document_index_path(representation: DocumentSimilarityRepresentation) -> Path:
+    index_dir = Path(__file__).parent.parent.parent / "corpus" / "data" / "index"
+    if representation == "full":
+        return index_dir / "faiss_documents.index"
+    return index_dir / f"faiss_documents_{representation}.index"
+
+
+def get_document_index_path(representation: str = "full") -> Path:
     """Return the persisted FAISS index path for document embeddings."""
-    global _document_index_path
-    if _document_index_path is None:
-        _document_index_path = _default_document_index_path()
-    _document_index_path.parent.mkdir(parents=True, exist_ok=True)
-    return _document_index_path
+    validated_representation = _require_representation(representation)
+    cached_path = _document_index_path_by_representation.get(validated_representation)
+    if cached_path is None:
+        cached_path = _default_document_index_path(validated_representation)
+        _document_index_path_by_representation[validated_representation] = cached_path
+    cached_path.parent.mkdir(parents=True, exist_ok=True)
+    return cached_path
 
 
-def get_document_id_map_path() -> Path:
+def get_document_id_map_path(representation: str = "full") -> Path:
     """Return the persisted id-map path for document embeddings."""
-    global _document_id_map_path, _document_index_path
-    if _document_id_map_path is None:
-        if _document_index_path is None:
-            _document_index_path = _default_document_index_path()
-        _document_id_map_path = _document_index_path.parent / "id_map_documents.json"
-    _document_id_map_path.parent.mkdir(parents=True, exist_ok=True)
-    return _document_id_map_path
+    validated_representation = _require_representation(representation)
+    cached_path = _document_id_map_path_by_representation.get(validated_representation)
+    if cached_path is None:
+        index_path = get_document_index_path(validated_representation)
+        cached_path = index_path.parent / "id_map_documents.json" if validated_representation == "full" else index_path.parent / f"id_map_documents_{validated_representation}.json"
+        _document_id_map_path_by_representation[validated_representation] = cached_path
+    cached_path.parent.mkdir(parents=True, exist_ok=True)
+    return cached_path
 
 
 def _default_query_cache_dir() -> Path:

@@ -9,7 +9,7 @@ from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtoc
 from src.models.chunk import Chunk
 from src.models.section import SectionRecord
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
-from tests.policy import load_test_retrieval_policy, make_retrieval_policy
+from tests.policy import make_retrieval_policy
 
 
 class MockVectorStore(SearchVectorStoreProtocol):
@@ -44,6 +44,18 @@ class MockDocumentVectorStore(SearchDocumentVectorStoreProtocol):
     def search_all(self, query: str) -> list[DocumentSearchResult]:
         del query
         return self._search_results
+
+
+class RepresentationAwareDocumentVectorStoreFactory:
+    """Factory returning per-representation mock stores and recording calls."""
+
+    def __init__(self, results_by_representation: dict[str, list[dict[str, str | float]]]) -> None:
+        self._results_by_representation = results_by_representation
+        self.called_representations: list[str] = []
+
+    def __call__(self, representation: str) -> MockDocumentVectorStore:
+        self.called_representations.append(representation)
+        return MockDocumentVectorStore(self._results_by_representation.get(representation, []))
 
 
 class MockIndexPath:
@@ -110,7 +122,7 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
     assert data["document_hits"] == [
         {"doc_uid": "ifric16", "score": 0.6, "document_type": "IFRIC", "document_kind": "interpretation"},
         {"doc_uid": "ifrs9", "score": 0.595, "document_type": "IFRS-S", "document_kind": "standard"},
-        {"doc_uid": "ias21", "score": 0.56, "document_type": "IAS", "document_kind": "standard"},
+        {"doc_uid": "ias21", "score": 0.56, "document_type": "IAS-S", "document_kind": "standard"},
     ]
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifric16", "ifrs9", "ias21"]
     assert [chunk["text"] for chunk in data["chunks"]] == ["ifric chunk", "ifrs chunk", "ias chunk"]
@@ -226,6 +238,88 @@ def test_retrieve_expand_to_section_includes_descendant_section_chunks() -> None
     assert [chunk["id"] for chunk in data["chunks"]] == [1, 2]
     assert data["chunks"][0]["score"] == 0.96
     assert data["chunks"][1]["score"] == 0.0
+
+
+def test_retrieve_documents_mode_routes_document_search_by_similarity_representation() -> None:
+    """Documents mode should search each configured similarity representation index."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs chunk"),
+                Chunk(id=2, doc_uid="ifric16", chunk_number="2.1", page_start="B1", page_end="B1", text="ifric chunk"),
+            ]
+        )
+
+    factory = RepresentationAwareDocumentVectorStoreFactory(
+        {
+            "background_and_issue": [{"doc_uid": "ifrs9", "score": 0.91}],
+            "scope": [{"doc_uid": "ifric16", "score": 0.9}],
+            "full": [],
+        }
+    )
+
+    command = RetrieveCommand(
+        query="hedges",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.95},
+                    {"doc_uid": "ifric16", "chunk_id": 2, "score": 0.94},
+                ]
+            ),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            document_vector_store_factory=factory,
+            document_index_path_fn=lambda _representation: MockIndexPath(exists=True),
+        ),
+        options=RetrieveOptions(
+            policy=_build_policy_with_similarity_representation_overrides(
+                {
+                    "IFRS-S": "background_and_issue",
+                    "IFRIC": "scope",
+                }
+            ),
+            verbose=False,
+        ),
+    )
+
+    result = command.execute()
+    data = json.loads(result)
+
+    assert [document_hit["doc_uid"] for document_hit in data["document_hits"]] == ["ifrs9", "ifric16"]
+    assert sorted(factory.called_representations) == ["background_and_issue", "full", "scope"]
+
+
+def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]):
+    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, RetrievalPolicy
+
+    base_policy = make_retrieval_policy(mode="documents")
+    by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)
+    for document_type, representation in overrides.items():
+        existing_policy = by_document_type[document_type]
+        by_document_type[document_type] = DocumentTypeRetrievalPolicy(
+            d=existing_policy.d,
+            min_score=existing_policy.min_score,
+            expand_to_section=existing_policy.expand_to_section,
+            similarity_representation=representation,
+        )
+    return RetrievalPolicy(
+        mode=base_policy.mode,
+        k=base_policy.k,
+        expand=base_policy.expand,
+        full_doc_threshold=base_policy.full_doc_threshold,
+        expand_to_section=base_policy.expand_to_section,
+        text=base_policy.text,
+        titles=base_policy.titles,
+        documents=DocumentStageRetrievalPolicy(
+            global_d=base_policy.documents.global_d,
+            by_document_type=by_document_type,
+        ),
+    )
 
 
 def test_retrieve_verbose_output_starts_with_options() -> None:

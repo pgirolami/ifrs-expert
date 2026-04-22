@@ -1,0 +1,86 @@
+[
+  {
+    "representation": "toc",
+    "fields": [
+      "toc_text"
+    ],
+    "max_rank": 12,
+    "median_rank": 7,
+    "min_score": 0.4433172345161438,
+    "median_score": 0.47986334562301636
+  },
+  {
+    "representation": "scope_plus_toc",
+    "fields": [
+      "scope_text",
+      "toc_text"
+    ],
+    "max_rank": 16,
+    "median_rank": 12,
+    "min_score": 0.4930720925331116,
+    "median_score": 0.5166071653366089
+  },
+  {
+    "representation": "full",
+    "fields": [
+      "source_title",
+      "background_text",
+      "issue_text",
+      "objective_text",
+      "scope_text",
+      "intro_text",
+      "toc_text"
+    ],
+    "max_rank": 18,
+    "median_rank": 12,
+    "min_score": 0.4731404483318329,
+    "median_score": 0.5057991743087769
+  },
+  {
+    "representation": "scope",
+    "fields": [
+      "scope_text"
+    ],
+    "max_rank": 19,
+    "median_rank": 14,
+    "min_score": 0.48914897441864014,
+    "median_score": 0.5096312761306763
+  },
+  {
+    "representation": "scope_plus_objective",
+    "fields": [
+      "scope_text",
+      "objective_text"
+    ],
+    "max_rank": 19,
+    "median_rank": 12,
+    "min_score": 0.48914897441864014,
+    "median_score": 0.5096312761306763
+  },
+  {
+    "representation": "scope_plus_title",
+    "fields": [
+      "source_title",
+      "scope_text"
+    ],
+    "max_rank": 20,
+    "median_rank": 17,
+    "min_score": 0.4672974944114685,
+    "median_score": 0.4809446632862091
+  },
+  {
+    "representation": "full_no_toc",
+    "fields": [
+      "source_title",
+      "background_text",
+      "issue_text",
+      "objective_text",
+      "scope_text",
+      "intro_text"
+    ],
+    "max_rank": 21,
+    "median_rank": 16,
+    "min_score": 0.4672974944114685,
+    "median_score": 0.4809446632862091
+  }
+]

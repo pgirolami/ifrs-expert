@@ -6,16 +6,21 @@ import logging
 import re
 import unicodedata
 from dataclasses import dataclass, replace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
     from src.models.section import SectionClosureRow, SectionRecord
 
 logger = logging.getLogger(__name__)
+
+DocumentSimilarityRepresentation = Literal["full", "background_and_issue", "scope", "toc"]
+DOCUMENT_SIMILARITY_REPRESENTATIONS: tuple[DocumentSimilarityRepresentation, ...] = ("full", "background_and_issue", "scope", "toc")
 
 SECTION_FIELD_BY_NORMALIZED_TITLE: dict[str, str] = {
     "background": "background_text",
@@ -113,7 +118,7 @@ class DocumentProfileBuilder:
             intro_text=field_values.get("intro_text"),
             toc_text=field_values.get("toc_text"),
         )
-        embedding_text = _build_embedding_text(
+        embedding_text = build_full_document_similarity_text(
             document=enriched_document,
             max_embedding_chars=self._max_embedding_chars,
         )
@@ -314,6 +319,58 @@ def _build_intro_fallback(doc_uid: str, source_type: str, chunks: list[Chunk]) -
 
     logger.info(f"Built PDF introduction fallback for doc_uid={doc_uid} with raw_chars={len(intro_text)}")
     return intro_text
+
+
+def build_full_document_similarity_text(document: DocumentRecord, max_embedding_chars: int = MAX_EMBEDDING_TEXT_CHARS) -> str:
+    """Build the full document similarity representation text."""
+    return _build_embedding_text(document=document, max_embedding_chars=max_embedding_chars)
+
+
+def _build_background_and_issue_similarity_text(document: DocumentRecord) -> str:
+    parts: list[str] = []
+    if document.background_text is not None and document.background_text.strip():
+        parts.append(f"Background: {document.background_text}")
+    if document.issue_text is not None and document.issue_text.strip():
+        parts.append(f"Issue: {document.issue_text}")
+    return "\n".join(parts)
+
+
+def _build_scope_similarity_text(document: DocumentRecord) -> str:
+    if document.scope_text is None or not document.scope_text.strip():
+        return ""
+    return f"Scope: {document.scope_text}"
+
+
+def _build_toc_similarity_text(document: DocumentRecord) -> str:
+    if document.toc_text is None or not document.toc_text.strip():
+        return ""
+    return f"TOC: {document.toc_text}"
+
+
+DOCUMENT_SIMILARITY_TEXT_BUILDERS: dict[DocumentSimilarityRepresentation, Callable[[DocumentRecord], str]] = {
+    "full": build_full_document_similarity_text,
+    "background_and_issue": _build_background_and_issue_similarity_text,
+    "scope": _build_scope_similarity_text,
+    "toc": _build_toc_similarity_text,
+}
+
+
+def build_document_similarity_texts(document: DocumentRecord) -> dict[DocumentSimilarityRepresentation, str]:
+    """Build all configured similarity texts for one document."""
+    texts_by_representation: dict[DocumentSimilarityRepresentation, str] = {}
+    for representation, builder in DOCUMENT_SIMILARITY_TEXT_BUILDERS.items():
+        representation_text = builder(document)
+        if representation_text:
+            texts_by_representation[representation] = representation_text
+    return texts_by_representation
+
+
+def build_document_similarity_text(
+    document: DocumentRecord,
+    representation: DocumentSimilarityRepresentation,
+) -> str:
+    """Build one similarity representation text for a document."""
+    return DOCUMENT_SIMILARITY_TEXT_BUILDERS[representation](document)
 
 
 def _build_embedding_text(document: DocumentRecord, max_embedding_chars: int) -> str:

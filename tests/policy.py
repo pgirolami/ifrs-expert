@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.policy import (
+    DocumentSimilarityRepresentation,
     DocumentStageRetrievalPolicy,
     DocumentTypeRetrievalPolicy,
     PolicyConfig,
@@ -50,8 +51,33 @@ def make_retrieval_policy(
             "PS": 0.4,
             "NAVIS": 0.6,
         }
+    per_type_similarity_representation: dict[str, DocumentSimilarityRepresentation] = {
+        "IFRS-S": "full",
+        "IFRS-BC": "full",
+        "IFRS-IE": "full",
+        "IFRS-IG": "full",
+        "IAS-S": "full",
+        "IAS-BC": "full",
+        "IAS-IE": "full",
+        "IAS-IG": "full",
+        "IFRIC": "full",
+        "IFRIC-BC": "full",
+        "IFRIC-IE": "full",
+        "IFRIC-IG": "full",
+        "SIC": "full",
+        "SIC-BC": "full",
+        "SIC-IE": "full",
+        "PS": "full",
+        "PS-BC": "full",
+        "NAVIS": "full",
+    }
     by_document_type = {
-        doc_type: DocumentTypeRetrievalPolicy(d=d_val, min_score=ms_val, expand_to_section=expand_to_section_val)
+        doc_type: DocumentTypeRetrievalPolicy(
+            d=d_val,
+            min_score=ms_val,
+            expand_to_section=expand_to_section_val,
+            similarity_representation=per_type_similarity_representation.get(doc_type, "full"),
+        )
         for doc_type, d_val, ms_val, expand_to_section_val in [
             # IFRS Standards and variants
             ("IFRS-S", per_type_d.get("IFRS-S", 4), per_type_min_score.get("IFRS-S", 0.53), True),

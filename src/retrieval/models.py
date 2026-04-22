@@ -21,6 +21,7 @@ class RetrievalRequest:
     document_d_by_type: dict[str, int]
     document_min_score_by_type: dict[str, float]
     document_expand_to_section_by_type: dict[str, bool]
+    document_similarity_representation_by_type: dict[str, str]
     chunk_min_score: float
     expand_to_section: bool
     expand: int

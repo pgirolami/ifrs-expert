@@ -32,7 +32,8 @@ class RetrievalPipelineConfig:
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
-    document_index_path_fn: Callable[[], Path] | None = None
+    document_vector_store_factory: Callable[[str], SearchDocumentVectorStoreProtocol] | None = None
+    document_index_path_fn: Callable[[str], Path] | None = None
 
 
 @dataclass(frozen=True)
@@ -154,17 +155,15 @@ def _execute_document_retrieval(  # noqa: PLR0911
     request: RetrievalRequest,
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
-    prerequisite_error = _get_document_retrieval_prerequisite_error(config=config)
+    prerequisite_error = _get_document_retrieval_prerequisite_error(config=config, request=request)
     if prerequisite_error is not None:
         return prerequisite_error, None
 
-    document_vector_store = config.document_vector_store
-    if document_vector_store is None:
-        error_message = "Error: Document retrieval is not configured."
-        raise RuntimeError(error_message)
-
-    with document_vector_store as active_document_vector_store:
-        ranked_document_results = active_document_vector_store.search_all(request.query)
+    ranked_document_results = _search_documents_by_representation(
+        query=request.query,
+        config=config,
+        document_similarity_representation_by_type=request.document_similarity_representation_by_type,
+    )
 
     if not ranked_document_results:
         return "Error: No documents retrieved", None
@@ -221,10 +220,16 @@ def _execute_document_retrieval(  # noqa: PLR0911
     )
 
 
-def _get_document_retrieval_prerequisite_error(config: RetrievalPipelineConfig) -> str | None:
-    if config.document_vector_store is None:
+def _get_document_retrieval_prerequisite_error(
+    config: RetrievalPipelineConfig,
+    request: RetrievalRequest,
+) -> str | None:
+    if config.document_vector_store is None and config.document_vector_store_factory is None:
         return "Error: Document retrieval is not configured."
-    document_index_error = _get_document_index_error(config=config)
+    document_index_error = _get_document_index_error(
+        config=config,
+        requested_representations=set(request.document_similarity_representation_by_type.values()),
+    )
     if document_index_error is not None:
         return document_index_error
     return _get_chunk_index_error(config=config)
@@ -238,14 +243,64 @@ def _get_chunk_index_error(config: RetrievalPipelineConfig) -> str | None:
     return "Error: No index found. Please run 'store' command first."
 
 
-def _get_document_index_error(config: RetrievalPipelineConfig) -> str | None:
+def _get_document_index_error(
+    config: RetrievalPipelineConfig,
+    requested_representations: set[str],
+) -> str | None:
     if config.document_index_path_fn is None:
         return "Error: Document retrieval is not configured."
-    document_index_path = config.document_index_path_fn()
-    if document_index_path.exists():
-        return None
-    logger.error(f"Missing document vector index at {document_index_path}; corpus must be built before running queries")
-    return "Error: No document index found. Please run 'store' command first."
+    for representation in sorted(requested_representations):
+        try:
+            document_index_path = config.document_index_path_fn(representation)
+        except TypeError:
+            document_index_path = config.document_index_path_fn()  # type: ignore[call-arg]
+        if document_index_path.exists():
+            continue
+        logger.error(f"Missing document vector index at {document_index_path} for representation={representation}; corpus must be built before running queries")
+        return "Error: No document index found. Please run 'store' command first."
+    return None
+
+
+def _search_documents_by_representation(
+    query: str,
+    config: RetrievalPipelineConfig,
+    document_similarity_representation_by_type: dict[str, str],
+) -> list[DocumentSearchResult]:
+    ranked_by_doc_uid: dict[str, float] = {}
+    required_representations = sorted(set(document_similarity_representation_by_type.values()))
+    for representation in required_representations:
+        document_vector_store = _get_document_vector_store(config=config, representation=representation)
+        with document_vector_store as active_document_vector_store:
+            ranked_results = active_document_vector_store.search_all(query)
+        for result in ranked_results:
+            doc_uid = str(result["doc_uid"])
+            document_type = infer_exact_document_type(doc_uid)
+            if document_type is None:
+                continue
+            configured_representation = document_similarity_representation_by_type.get(document_type)
+            if configured_representation != representation:
+                continue
+            score = float(result["score"])
+            existing_score = ranked_by_doc_uid.get(doc_uid)
+            if existing_score is None or score > existing_score:
+                ranked_by_doc_uid[doc_uid] = score
+
+    ranked_results_output: list[DocumentSearchResult] = [{"doc_uid": doc_uid, "score": score} for doc_uid, score in ranked_by_doc_uid.items()]
+    ranked_results_output.sort(key=lambda item: item["score"], reverse=True)
+    logger.info(f"Document search across representations returned {len(ranked_results_output)} unique candidate(s); representations={required_representations}")
+    return ranked_results_output
+
+
+def _get_document_vector_store(
+    config: RetrievalPipelineConfig,
+    representation: str,
+) -> SearchDocumentVectorStoreProtocol:
+    if config.document_vector_store_factory is not None:
+        return config.document_vector_store_factory(representation)
+    if config.document_vector_store is not None:
+        return config.document_vector_store
+    message = "Error: Document retrieval is not configured."
+    raise RuntimeError(message)
 
 
 def _search_chunks(query: str, config: RetrievalPipelineConfig) -> list[SearchResult]:

@@ -17,7 +17,7 @@ from src.models.answer_command_result import AnswerCommandResult, JSONValue
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.retrieval.models import RetrievalRequest
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
-from src.vector.document_store import DocumentVectorStore, get_document_index_path
+from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
 from src.vector.title_store import TitleVectorStore, get_title_index_path
 
@@ -55,7 +55,8 @@ class AnswerConfig:
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
-    document_index_path_fn: Callable[[], Path] | None = None
+    document_vector_store_factory: Callable[[str], SearchDocumentVectorStoreProtocol] | None = None
+    document_index_path_fn: Callable[[str], Path] | None = None
 
 
 @dataclass
@@ -300,9 +301,15 @@ class AnswerCommand:
         """Validate the prerequisites for document-first retrieval mode."""
         if self._config.document_index_path_fn is None:
             return "Error: Document retrieval is not configured."
-        document_index_path = self._config.document_index_path_fn()
-        if not document_index_path.exists():
-            logger.error(f"Missing document vector index at {document_index_path}; corpus must be built before running the answer pipeline")
+        required_representations = sorted({document_policy.similarity_representation for document_policy in self._options.policy.documents.by_document_type.values()})
+        for representation in required_representations:
+            try:
+                document_index_path = self._config.document_index_path_fn(representation)
+            except TypeError:
+                document_index_path = self._config.document_index_path_fn()  # type: ignore[call-arg]
+            if document_index_path.exists():
+                continue
+            logger.error(f"Missing document vector index at {document_index_path} for representation={representation}; corpus must be built before running the answer pipeline")
             return "Error: No document index found. Please run 'store' command first."
         return None
 
@@ -318,6 +325,7 @@ class AnswerCommand:
                 document_d_by_type={document_type: document_policy.d for document_type, document_policy in policy.documents.by_document_type.items()},
                 document_min_score_by_type={document_type: document_policy.min_score for document_type, document_policy in policy.documents.by_document_type.items()},
                 document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
+                document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
                 chunk_min_score=policy.titles.min_score if policy.mode == "titles" else policy.text.min_score,
                 expand_to_section=policy.expand_to_section if policy.mode != "documents" else True,
                 expand=policy.expand,
@@ -332,6 +340,7 @@ class AnswerCommand:
                 title_vector_store=self._config.title_vector_store,
                 title_index_path_fn=self._config.title_index_path_fn,
                 document_vector_store=self._config.document_vector_store,
+                document_vector_store_factory=self._config.document_vector_store_factory,
                 document_index_path_fn=self._config.document_index_path_fn,
             ),
         )
@@ -700,6 +709,10 @@ def create_answer_command(
         title_vector_store=TitleVectorStore(),
         title_index_path_fn=get_title_index_path,
         document_vector_store=DocumentVectorStore(),
+        document_vector_store_factory=lambda representation: DocumentVectorStore(
+            index_path=get_document_index_path(representation),
+            id_map_path=get_document_id_map_path(representation),
+        ),
         document_index_path_fn=get_document_index_path,
     )
     return AnswerCommand(query=query, config=config, options=options)

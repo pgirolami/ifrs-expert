@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from src.vector.document_store import DocumentVectorStore
+from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.model_cache import clear_embedding_model_cache, set_embedding_model_factory
 from src.vector.title_store import TitleVectorStore
 
@@ -110,6 +110,21 @@ def test_document_vector_store_validates_parallel_input_lengths(tmp_path: Path) 
             assert "same length" in str(error)
         else:
             raise AssertionError("Expected ValueError for mismatched add_embeddings inputs")
+
+
+def test_document_vector_store_representation_paths_are_stable() -> None:
+    """Representation-aware helpers should preserve legacy full paths and suffix specialized paths."""
+    full_index_path = get_document_index_path("full")
+    assert full_index_path.name == "faiss_documents.index"
+    assert get_document_id_map_path("full").name == "id_map_documents.json"
+
+    scope_index_path = get_document_index_path("scope")
+    assert scope_index_path.name == "faiss_documents_scope.index"
+    assert get_document_id_map_path("scope").name == "id_map_documents_scope.json"
+
+    background_and_issue_index_path = get_document_index_path("background_and_issue")
+    assert background_and_issue_index_path.name == "faiss_documents_background_and_issue.index"
+    assert get_document_id_map_path("background_and_issue").name == "id_map_documents_background_and_issue.json"
 
 
 def test_title_vector_store_add_search_delete_and_reload(tmp_path: Path) -> None:

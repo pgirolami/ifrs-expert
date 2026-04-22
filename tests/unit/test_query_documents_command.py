@@ -8,7 +8,7 @@ from typing import cast
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol
 from src.models.document import DocumentRecord
 from tests.fakes import InMemoryDocumentStore
-from tests.policy import load_test_policy_config, load_test_retrieval_policy, make_retrieval_policy
+from tests.policy import load_test_retrieval_policy, make_retrieval_policy
 
 
 class MockDocumentVectorStore(SearchDocumentVectorStoreProtocol):
@@ -350,3 +350,85 @@ def test_query_documents_verbose_output_starts_with_options() -> None:
     assert f"- Background: {expected_background_preview}" in result
     assert f"- Scope: {expected_scope_preview}" in result
     assert "- TOC: Background Issue Scope" in result
+
+
+def test_query_documents_uses_policy_similarity_representation_for_index_and_store() -> None:
+    """Query-documents should route to the index/store selected by per-type similarity representation."""
+    from src.commands.query_documents import QueryDocumentsCommand, QueryDocumentsConfig, QueryDocumentsOptions
+
+    captured_representations: list[str] = []
+
+    def _index_path_fn(representation: str) -> MockIndexPath:
+        captured_representations.append(f"index:{representation}")
+        return MockIndexPath(exists=True)
+
+    def _vector_store_factory(representation: str) -> MockDocumentVectorStore:
+        captured_representations.append(f"store:{representation}")
+        return MockDocumentVectorStore([{"doc_uid": "ifric16", "score": 0.97}])
+
+    document_store = InMemoryDocumentStore()
+    with document_store as store:
+        store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifric16",
+                source_type="html",
+                source_title="IFRIC 16",
+                source_url="https://www.ifrs.org/ifric16.html",
+                canonical_url="https://www.ifrs.org/ifric16.html",
+                captured_at="2026-04-05T10:00:00Z",
+                document_type="IFRIC",
+                scope_text="Scope text",
+            )
+        )
+
+    command = QueryDocumentsCommand(
+        query="hedges of a net investment",
+        config=QueryDocumentsConfig(
+            document_vector_store_factory=_vector_store_factory,
+            document_store=document_store,
+            init_db_fn=lambda: None,
+            index_path_fn=_index_path_fn,
+        ),
+        options=QueryDocumentsOptions(
+            policy=_build_policy_with_similarity_representation_overrides({"IFRIC": "scope"}),
+            document_type="IFRIC",
+            verbose=False,
+        ),
+    )
+
+    result = command.execute()
+
+    assert json.loads(result)[0]["doc_uid"] == "ifric16"
+    assert captured_representations == ["index:scope", "store:scope"]
+
+
+def _build_policy_with_similarity_representation_overrides(
+    overrides: dict[str, str],
+):
+    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, RetrievalPolicy
+
+    base_policy = make_retrieval_policy()
+    by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)
+    for document_type, representation in overrides.items():
+        existing_policy = by_document_type[document_type]
+        by_document_type[document_type] = DocumentTypeRetrievalPolicy(
+            d=existing_policy.d,
+            min_score=existing_policy.min_score,
+            expand_to_section=existing_policy.expand_to_section,
+            similarity_representation=representation,
+        )
+    return RetrievalPolicy(
+        mode=base_policy.mode,
+        k=base_policy.k,
+        expand=base_policy.expand,
+        full_doc_threshold=base_policy.full_doc_threshold,
+        expand_to_section=base_policy.expand_to_section,
+        text=base_policy.text,
+        titles=base_policy.titles,
+        documents=DocumentStageRetrievalPolicy(
+            global_d=base_policy.documents.global_d,
+            by_document_type=by_document_type,
+        ),
+    )
+
+
