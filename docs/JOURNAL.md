@@ -215,7 +215,7 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
     - At this point, discovered a bug in the IAS-BC representation: its scope & background were populated from sub sections in the middle of the document. Will need to fix it and verify all documents for other similar bugs.
 - Learning: Early prototypes can look good partly because the corpus is artificially clean. As corpus realism increases, authority overlap becomes a first-class systems problem.
 
-### 2026-04-21
+### 2026-04-21 - 2026-04-22
 - Fixed ingestion bugs affecting multiple documents (IAS 19, IAS 21...) which might make retrieval less efficient, manual review of each standard document. Added non-regression test cases for them. 
     - Fixes included
         - TOC representation was missing sections
@@ -225,3 +225,5 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - Filter out "Table of Concordance"
         - others...
     - [Verification table](../experiments/39_exhaustive_ifrs_ingestion_verification/EXPERIMENTS.md)
+- Evaluated new mechanism for retrieval `documents2`: query each document-type but map each variant back to the standard. The idea is to narrow the corpus of standards to look at by considering that if supporting material matches the semantics of the query then it's likely the standard is relevant. Widening to supporting documents might be done later if we see the quality of the answer is not up to par.
+    - [Experiment 39](../experiments/39_more_retrieval_investigations/EXPERIMENTS.md)

@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.models.document import DOCUMENT_TYPES, infer_exact_document_type
+from src.models.document import DOCUMENT_TYPES, infer_exact_document_type, resolve_standard_doc_uid
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 
@@ -54,7 +54,7 @@ def execute_retrieval(
     """Execute the shared retrieval pipeline for one request."""
     if request.retrieval_mode == "titles":
         return _execute_title_retrieval(request=request, config=config)
-    if request.retrieval_mode == "documents":
+    if request.retrieval_mode in {"documents", "documents2"}:
         return _execute_document_retrieval(request=request, config=config)
     return _execute_text_retrieval(request=request, config=config)
 
@@ -163,6 +163,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
         query=request.query,
         config=config,
         document_similarity_representation_by_type=request.document_similarity_representation_by_type,
+        consolidate_variants_to_standard=request.retrieval_mode == "documents2",
     )
 
     if not ranked_document_results:
@@ -212,7 +213,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
     return (
         None,
         RetrievalResult(
-            retrieval_mode="documents",
+            retrieval_mode=request.retrieval_mode,
             document_hits=document_hits,
             chunk_results=expanded_results,
             doc_chunks=doc_chunks,
@@ -265,6 +266,8 @@ def _search_documents_by_representation(
     query: str,
     config: RetrievalPipelineConfig,
     document_similarity_representation_by_type: dict[str, str],
+    *,
+    consolidate_variants_to_standard: bool,
 ) -> list[DocumentSearchResult]:
     ranked_by_doc_uid: dict[str, float] = {}
     required_representations = sorted(set(document_similarity_representation_by_type.values()))
@@ -273,22 +276,61 @@ def _search_documents_by_representation(
         with document_vector_store as active_document_vector_store:
             ranked_results = active_document_vector_store.search_all(query)
         for result in ranked_results:
-            doc_uid = str(result["doc_uid"])
-            document_type = infer_exact_document_type(doc_uid)
-            if document_type is None:
-                continue
-            configured_representation = document_similarity_representation_by_type.get(document_type)
-            if configured_representation != representation:
-                continue
-            score = float(result["score"])
-            existing_score = ranked_by_doc_uid.get(doc_uid)
-            if existing_score is None or score > existing_score:
-                ranked_by_doc_uid[doc_uid] = score
+            _merge_document_search_result(
+                ranked_by_doc_uid=ranked_by_doc_uid,
+                result=result,
+                representation=representation,
+                document_similarity_representation_by_type=document_similarity_representation_by_type,
+                consolidate_variants_to_standard=consolidate_variants_to_standard,
+            )
 
     ranked_results_output: list[DocumentSearchResult] = [{"doc_uid": doc_uid, "score": score} for doc_uid, score in ranked_by_doc_uid.items()]
     ranked_results_output.sort(key=lambda item: item["score"], reverse=True)
-    logger.info(f"Document search across representations returned {len(ranked_results_output)} unique candidate(s); representations={required_representations}")
+    logger.info(f"Document search across representations returned {len(ranked_results_output)} unique candidate(s); representations={required_representations}; consolidate_to_standard={consolidate_variants_to_standard}")
     return ranked_results_output
+
+
+def _merge_document_search_result(
+    *,
+    ranked_by_doc_uid: dict[str, float],
+    result: DocumentSearchResult,
+    representation: str,
+    document_similarity_representation_by_type: dict[str, str],
+    consolidate_variants_to_standard: bool,
+) -> None:
+    raw_doc_uid = str(result["doc_uid"])
+    document_type = infer_exact_document_type(raw_doc_uid)
+    if document_type is None:
+        logger.debug(f"Skipping unresolved document candidate doc_uid={raw_doc_uid} during representation={representation}")
+        return
+
+    configured_representation = document_similarity_representation_by_type.get(document_type)
+    if configured_representation != representation:
+        return
+
+    doc_uid = raw_doc_uid
+    if consolidate_variants_to_standard:
+        standard_doc_uid = resolve_standard_doc_uid(raw_doc_uid)
+        if standard_doc_uid is None:
+            logger.debug(f"Skipping document candidate doc_uid={raw_doc_uid} because it could not be mapped to a standard doc_uid")
+            return
+        if standard_doc_uid != raw_doc_uid:
+            logger.debug(f"Consolidating variant document doc_uid={raw_doc_uid} to standard doc_uid={standard_doc_uid} for representation={representation}")
+        doc_uid = standard_doc_uid
+
+    score = float(result["score"])
+    existing_score = ranked_by_doc_uid.get(doc_uid)
+    if existing_score is None:
+        ranked_by_doc_uid[doc_uid] = score
+        if consolidate_variants_to_standard and doc_uid != raw_doc_uid:
+            logger.debug(f"Recorded consolidated document doc_uid={doc_uid} score={score:.4f} from variant doc_uid={raw_doc_uid}")
+        return
+
+    if score > existing_score:
+        logger.debug(f"Updating consolidated document doc_uid={doc_uid} score={existing_score:.4f} -> {score:.4f} from candidate doc_uid={raw_doc_uid}")
+        ranked_by_doc_uid[doc_uid] = score
+    elif consolidate_variants_to_standard:
+        logger.debug(f"Keeping consolidated document doc_uid={doc_uid} existing_score={existing_score:.4f} >= candidate_score={score:.4f} from doc_uid={raw_doc_uid}")
 
 
 def _get_document_vector_store(

@@ -294,6 +294,50 @@ def test_retrieve_documents_mode_routes_document_search_by_similarity_representa
     assert sorted(factory.called_representations) == ["background_and_issue", "full", "scope"]
 
 
+def test_retrieve_documents2_mode_consolidates_variants_to_standard_doc_uid() -> None:
+    """Documents2 mode should collapse variant matches onto the standard doc_uid."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs standard chunk"),
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="hedges",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.95}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            document_vector_store=MockDocumentVectorStore(
+                [
+                    {"doc_uid": "ifrs9-bc", "score": 0.81},
+                    {"doc_uid": "ifrs9-ie", "score": 0.93},
+                    {"doc_uid": "ifrs9", "score": 0.89},
+                ]
+            ),
+            document_index_path_fn=lambda: MockIndexPath(exists=True),
+        ),
+        options=RetrieveOptions(
+            policy=make_retrieval_policy(k=5, d=5, chunk_min_score=0.5, expand=0, mode="documents2", per_type_d={"IFRS-S": 1}, per_type_min_score={"IFRS-S": 0.5}),
+            verbose=False,
+        ),
+    )
+
+    result = command.execute()
+    data = json.loads(result)
+
+    assert data["retrieval_mode"] == "documents2"
+    assert data["document_hits"] == [
+        {"doc_uid": "ifrs9", "score": 0.93, "document_type": "IFRS-S", "document_kind": "standard"},
+    ]
+    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9"]
+
+
 def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]):
     from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, RetrievalPolicy
 

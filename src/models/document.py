@@ -72,6 +72,44 @@ DOCUMENT_KINDS: tuple[str, ...] = (
     "basis_for_conclusions",
     "supporting_materials",
 )
+STANDARD_DOCUMENT_TYPE_BY_TYPE: dict[str, str] = {
+    "IFRS-S": "IFRS-S",
+    "IFRS-BC": "IFRS-S",
+    "IFRS-IE": "IFRS-S",
+    "IFRS-IG": "IFRS-S",
+    "IAS-S": "IAS-S",
+    "IAS-BC": "IAS-S",
+    "IAS-BCIASC": "IAS-S",
+    "IAS-IE": "IAS-S",
+    "IAS-IG": "IAS-S",
+    "IAS-SM": "IAS-S",
+    "IFRIC": "IFRIC",
+    "IFRIC-BC": "IFRIC",
+    "IFRIC-IE": "IFRIC",
+    "IFRIC-IG": "IFRIC",
+    "SIC": "SIC",
+    "SIC-BC": "SIC",
+    "SIC-IE": "SIC",
+    "PS": "PS",
+    "PS-BC": "PS",
+    "NAVIS": "NAVIS",
+}
+STANDARD_DOCUMENT_UID_SUFFIX_BY_TYPE: dict[str, str] = {
+    "IFRS-BC": "-bc",
+    "IFRS-IE": "-ie",
+    "IFRS-IG": "-ig",
+    "IAS-BC": "-bc",
+    "IAS-BCIASC": "-bciasc",
+    "IAS-IE": "-ie",
+    "IAS-IG": "-ig",
+    "IAS-SM": "-sm",
+    "IFRIC-BC": "-bc",
+    "IFRIC-IE": "-ie",
+    "IFRIC-IG": "-ig",
+    "SIC-BC": "-bc",
+    "SIC-IE": "-ie",
+    "PS-BC": "-bc",
+}
 DEFAULT_DB_PATH: Path = Path(__file__).parent.parent.parent / "corpus" / "data" / "db" / "ifrs.db"
 
 
@@ -144,6 +182,36 @@ def resolve_document_kind(document_type: str | None, explicit_document_kind: str
     if explicit_document_kind is not None and explicit_document_kind in DOCUMENT_KINDS:
         return explicit_document_kind
     return resolve_document_kind_from_document_type(document_type)
+
+
+def resolve_standard_document_type(document_type: str | None) -> str | None:
+    """Map an exact document type to its standard document type."""
+    if document_type is None:
+        return None
+    return STANDARD_DOCUMENT_TYPE_BY_TYPE.get(document_type)
+
+
+def resolve_standard_doc_uid(doc_uid: str) -> str | None:
+    """Map a variant doc_uid back to its standard doc_uid when possible."""
+    normalized_doc_uid = doc_uid.strip()
+    if not normalized_doc_uid:
+        return None
+
+    document_type = infer_exact_document_type(normalized_doc_uid)
+    if document_type is None:
+        return None
+
+    if STANDARD_DOCUMENT_TYPE_BY_TYPE.get(document_type) == document_type:
+        return normalized_doc_uid
+
+    suffix = STANDARD_DOCUMENT_UID_SUFFIX_BY_TYPE.get(document_type)
+    if suffix is None:
+        return normalized_doc_uid
+
+    lower_doc_uid = normalized_doc_uid.lower()
+    if lower_doc_uid.endswith(suffix):
+        return normalized_doc_uid[: -len(suffix)]
+    return normalized_doc_uid
 
 
 def document_type_to_family(document_type: str | None) -> str | None:

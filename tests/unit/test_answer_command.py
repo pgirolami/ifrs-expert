@@ -601,6 +601,73 @@ class TestAnswerCommand:
         assert getattr(request, "expand") == 1
         assert getattr(request, "full_doc_threshold") == 2000
 
+    def test_answer_documents2_mode_passes_through_retrieval_mode(self) -> None:
+        """Answer command should allow documents2 mode and pass it to retrieval."""
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(
+                [
+                    Chunk(id=1, doc_uid="ifrs9", chunk_number="1.1", page_start="A1", page_end="A1", text="ifrs chunk text"),
+                ]
+            )
+
+        captured_requests: list[object] = []
+
+        def mock_send_to_llm(prompt: str) -> str:
+            del prompt
+            return '{"status": "pass", "approaches": []}'
+
+        def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
+            del config
+            captured_requests.append(request)
+            return (
+                None,
+                RetrievalResult(
+                    retrieval_mode="documents2",
+                    document_hits=[],
+                    chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
+                    doc_chunks={
+                        "ifrs9": [
+                            Chunk(
+                                id=1,
+                                doc_uid="ifrs9",
+                                chunk_number="1.1",
+                                page_start="A1",
+                                page_end="A1",
+                                text="ifrs chunk text",
+                            )
+                        ]
+                    },
+                ),
+            )
+
+        config = AnswerConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            document_vector_store=MockDocumentVectorStore([]),
+            document_index_path_fn=lambda: MockIndexPath(exists=True),
+            send_to_llm_fn=mock_send_to_llm,
+        )
+        command = AnswerCommand(
+            query="foreign operation",
+            config=config,
+            options=AnswerOptions(policy=make_retrieval_policy(k=3, d=9, chunk_min_score=0.1, expand=1, full_doc_threshold=2000, expand_to_section=True, mode="documents2")),
+        )
+
+        with (
+            unittest.mock.patch("src.commands.answer._prompt_file_exists", return_value=True),
+            unittest.mock.patch("src.commands.answer.execute_retrieval", side_effect=mock_execute_retrieval),
+        ):
+            result = command.execute()
+
+        assert result.success is True
+        assert len(captured_requests) == 1
+        request = captured_requests[0]
+        assert getattr(request, "retrieval_mode") == "documents2"
+        assert getattr(request, "expand_to_section") is True
+
     def test_answer_prompt_b_contains_context(self) -> None:
         """Test that prompt B contains the retrieved chunk content (the bug fix verification)."""
         search_results = [

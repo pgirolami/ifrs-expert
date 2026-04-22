@@ -253,8 +253,8 @@ class AnswerCommand:
                 if cap.d <= 0:
                     first_error = f"Error: per-type document cap for {document_type} must be > 0"
                     break
-        elif policy.mode not in {"text", "titles", "documents"}:
-            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'"
+        elif policy.mode not in {"text", "titles", "documents", "documents2"}:
+            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', or 'documents2'"
         return first_error
 
     def _get_prerequisite_error(self) -> str | None:
@@ -266,7 +266,7 @@ class AnswerCommand:
 
         if policy.mode == "titles":
             return self._get_title_prerequisite_error()
-        if policy.mode == "documents":
+        if policy.mode in {"documents", "documents2"}:
             document_prerequisite_error = self._get_document_prerequisite_error()
             if document_prerequisite_error is not None:
                 return document_prerequisite_error
@@ -327,7 +327,7 @@ class AnswerCommand:
                 document_expand_to_section_by_type={document_type: document_policy.expand_to_section for document_type, document_policy in policy.documents.by_document_type.items()},
                 document_similarity_representation_by_type={document_type: document_policy.similarity_representation for document_type, document_policy in policy.documents.by_document_type.items()},
                 chunk_min_score=policy.titles.min_score if policy.mode == "titles" else policy.text.min_score,
-                expand_to_section=policy.expand_to_section if policy.mode != "documents" else True,
+                expand_to_section=policy.expand_to_section if policy.mode not in {"documents", "documents2"} else True,
                 expand=policy.expand,
                 full_doc_threshold=policy.full_doc_threshold,
             ),

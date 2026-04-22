@@ -61,6 +61,12 @@ def test_extract_mode_defaults_to_live_when_missing() -> None:
     assert run_answer._extract_mode({}) == "live"
 
 
+def test_extract_retrieval_mode_accepts_documents2() -> None:
+    """Wrapper should accept documents2 as a retrieval mode."""
+    run_answer = _load_run_answer_module()
+    assert run_answer._extract_retrieval_mode_from_mapping({"retrieval-mode": "documents2"}, "documents2") == "documents2"
+
+
 def test_extract_options_requires_policy_config() -> None:
     """Wrapper should fail fast when policy-config missing."""
     run_answer = _load_run_answer_module()

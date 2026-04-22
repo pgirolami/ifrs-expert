@@ -105,7 +105,7 @@ class RetrieveCommand:
     def _build_retrieval_request(self) -> RetrievalRequest:
         policy = self._options.policy
         chunk_min_score = policy.titles.min_score if policy.mode == "titles" else policy.text.min_score
-        expand_to_section = policy.expand_to_section if policy.mode != "documents" else True
+        expand_to_section = policy.expand_to_section if policy.mode not in {"documents", "documents2"} else True
 
         return RetrievalRequest(
             query=self.query,
@@ -153,9 +153,9 @@ class RetrieveCommand:
         return None
 
     def _get_retrieval_mode_validation_error(self) -> str | None:
-        if self._options.policy.mode in {"text", "titles", "documents"}:
+        if self._options.policy.mode in {"text", "titles", "documents", "documents2"}:
             return None
-        return "Error: retrieval.mode in policy must be 'text', 'titles', or 'documents'"
+        return "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', or 'documents2'"
 
     def _build_json_output(self, retrieval_result: RetrievalResult) -> dict[str, object]:
         return {

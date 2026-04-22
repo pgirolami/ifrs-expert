@@ -278,9 +278,9 @@ def _require_optional_string(value: object, context: str) -> str | None:
 
 
 def _require_retrieval_mode(value: object) -> str:
-    if isinstance(value, str) and value in {"text", "titles", "documents"}:
+    if isinstance(value, str) and value in {"text", "titles", "documents", "documents2"}:
         return value
-    message = "retrieval.mode must be one of: text, titles, documents"
+    message = "retrieval.mode must be one of: text, titles, documents, documents2"
     raise ValueError(message)
 
 

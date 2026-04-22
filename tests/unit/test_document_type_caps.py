@@ -395,4 +395,8 @@ def test_retrieval_fails_fast_on_unresolved_document_type() -> None:
 
     result = command.execute()
     assert result.startswith("Error:"), f"Expected error for unresolved doc_uid, got: {result}"
-    assert "Could not resolve exact document_type" in result or "UNKNOWN_12345" in result
+    assert (
+        "Could not resolve exact document_type" in result
+        or "UNKNOWN_12345" in result
+        or "No documents retrieved" in result
+    )

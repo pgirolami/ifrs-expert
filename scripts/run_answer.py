@@ -283,8 +283,8 @@ def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: s
         return fallback
     if not isinstance(value, str):
         raise ValueError(f"Expected str for retrieval-mode, got {type(value).__name__}")
-    if value not in {"text", "titles", "documents"}:
-        raise ValueError(f"Invalid retrieval-mode '{value}', expected one of: text, titles, documents")
+    if value not in {"text", "titles", "documents", "documents2"}:
+        raise ValueError(f"Invalid retrieval-mode '{value}', expected one of: text, titles, documents, documents2")
     return value
 
 
