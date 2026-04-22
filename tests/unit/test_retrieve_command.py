@@ -353,6 +353,7 @@ def _build_policy_with_similarity_representation_overrides(overrides: dict[str, 
         )
     return RetrievalPolicy(
         mode=base_policy.mode,
+        query_embedding_mode=base_policy.query_embedding_mode,
         k=base_policy.k,
         expand=base_policy.expand,
         full_doc_threshold=base_policy.full_doc_threshold,

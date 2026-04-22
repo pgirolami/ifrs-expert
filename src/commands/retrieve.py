@@ -109,6 +109,7 @@ class RetrieveCommand:
 
         return RetrievalRequest(
             query=self.query,
+            query_embedding_mode=policy.query_embedding_mode,
             retrieval_mode=policy.mode,
             k=policy.k,
             d=policy.documents.global_d,

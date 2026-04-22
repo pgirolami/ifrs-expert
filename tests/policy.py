@@ -9,6 +9,7 @@ from src.policy import (
     DocumentStageRetrievalPolicy,
     DocumentTypeRetrievalPolicy,
     PolicyConfig,
+    QueryEmbeddingMode,
     RetrievalPolicy,
     TextStageRetrievalPolicy,
     TitleStageRetrievalPolicy,
@@ -38,6 +39,7 @@ def make_retrieval_policy(
     mode: str = "text",
     per_type_d: dict[str, int] | None = None,
     per_type_min_score: dict[str, float] | None = None,
+    query_embedding_mode: QueryEmbeddingMode = "raw",
 ) -> RetrievalPolicy:
     """Build a RetrievalPolicy with specific numeric values for targeted tests."""
     if per_type_d is None:
@@ -111,6 +113,7 @@ def make_retrieval_policy(
     }
     return RetrievalPolicy(
         mode=mode,
+        query_embedding_mode=query_embedding_mode,
         k=k,
         expand=expand,
         full_doc_threshold=full_doc_threshold,

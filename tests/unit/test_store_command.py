@@ -266,6 +266,101 @@ class TestStoreCommand:
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "existing content"
         assert any("repair_count=" in record.message for record in caplog.records)
 
+    def test_store_command_reembeds_missing_document_vector_for_unchanged_html_scope_representation(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+        """Unchanged HTML imports should retry all missing document embeddings, including scope."""
+        caplog.set_level(logging.WARNING)
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+
+        existing_document = DocumentRecord(
+            doc_uid="ifric16",
+            source_type="html",
+            source_title="IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+            source_url="https://www.ifrs.org/ifric16.html",
+            canonical_url="https://www.ifrs.org/ifric16.html",
+            captured_at="2026-04-05T10:00:00Z",
+            scope_text="This Interpretation applies to IFRS 9 hedges of net investments.",
+        )
+        document_store.upsert_document(existing_document)
+
+        extracted_document = ExtractedDocument(
+            document=DocumentRecord(
+                doc_uid="ifric16",
+                source_type="html",
+                source_title="IFRIC 16 Hedges of a Net Investment in a Foreign Operation",
+                source_url="https://www.ifrs.org/ifric16.html",
+                canonical_url="https://www.ifrs.org/ifric16.html",
+                captured_at="2026-04-06T10:00:00Z",
+                scope_text="This Interpretation applies to IFRS 9 hedges of net investments.",
+            ),
+            chunks=[
+                Chunk(
+                    doc_uid="ifric16",
+                    chunk_number="1",
+                    page_start="",
+                    page_end="",
+                    chunk_id="c1",
+                    containing_section_id="sec-scope",
+                    text="This Interpretation applies to IFRS 9 hedges of net investments.",
+                )
+            ],
+            sections=[
+                SectionRecord(
+                    section_id="sec-scope",
+                    doc_uid="ifric16",
+                    parent_section_id=None,
+                    level=2,
+                    title="Scope",
+                    section_lineage=["Scope"],
+                    position=1,
+                )
+            ],
+            section_closure_rows=[
+                SectionClosureRow("sec-scope", "sec-scope", 0),
+            ],
+        )
+
+        full_store = RecordingDocumentVectorStore(existing_doc_uids={"ifric16"})
+        background_and_issue_store = RecordingDocumentVectorStore(existing_doc_uids={"ifric16"})
+        scope_store = RecordingDocumentVectorStore()
+        toc_store = RecordingDocumentVectorStore(existing_doc_uids={"ifric16"})
+        stores_by_representation = {
+            "full": full_store,
+            "background_and_issue": background_and_issue_store,
+            "scope": scope_store,
+            "toc": toc_store,
+        }
+
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            document_vector_store_factory=lambda representation: stores_by_representation[representation],
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=FakeExtractor(extracted_document=extracted_document, skip_if_unchanged=True),
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+            scope="documents",
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        assert vector_store.added_embeddings == []
+        assert full_store.deleted_doc_uids == ["ifric16"]
+        assert background_and_issue_store.deleted_doc_uids == ["ifric16"]
+        assert scope_store.deleted_doc_uids == ["ifric16"]
+        assert toc_store.deleted_doc_uids == ["ifric16"]
+        assert scope_store.added_embeddings and scope_store.added_embeddings[0][0] == ["ifric16"]
+        assert "Scope: This Interpretation applies to IFRS 9 hedges of net investments." in scope_store.added_embeddings[0][1][0]
+        assert any("missing_representations=scope" in record.message for record in caplog.records)
+
     def test_store_command_truncates_oversized_chunks(self, tmp_path: Path) -> None:
         """Oversized chunks should be truncated before persistence."""
         source_path = tmp_path / "test.pdf"

@@ -134,9 +134,7 @@ class Q1RetrieveTargetMatrixExperiment:
         )
         if completed_process.returncode != 0:
             stderr_text = completed_process.stderr.strip()
-            logger.error(
-                f"retrieve failed for {question.question_id} with return code {completed_process.returncode}: {stderr_text}"
-            )
+            logger.error(f"retrieve failed for {question.question_id} with return code {completed_process.returncode}: {stderr_text}")
             message = f"retrieve failed for {question.question_id}: {stderr_text}"
             raise RuntimeError(message)
 
@@ -156,9 +154,7 @@ class Q1RetrieveTargetMatrixExperiment:
         for rank, raw_hit in enumerate(hits_payload, start=1):
             hit = _parse_retrieved_document(raw_hit, rank=rank)
             if hit.doc_uid in hits_by_doc_uid:
-                logger.warning(
-                    f"Duplicate retrieved document for {question.question_id}: {hit.doc_uid}; keeping first occurrence"
-                )
+                logger.warning(f"Duplicate retrieved document for {question.question_id}: {hit.doc_uid}; keeping first occurrence")
                 continue
             hits_by_doc_uid[hit.doc_uid] = hit
 
@@ -222,12 +218,7 @@ LIGHT_GREEN_RGB: tuple[int, int, int] = (212, 237, 218)
 def _format_hit_cell(hit: RetrievedDocument, row_total: int) -> str:
     """Format a question-row cell with a rank-based background color."""
     background_color = _rank_to_background_color(hit.rank, row_total)
-    return (
-        f'<span style="display:block; background-color: {background_color}; '
-        f'padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">'
-        f"{hit.score:.2f} / <strong>{hit.rank}</strong>"
-        f"</span>"
-    )
+    return f'<span style="display:block; background-color: {background_color}; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">{hit.score:.2f} / <strong>{hit.rank}</strong></span>'
 
 
 def _format_total_cell(column: DocumentColumn) -> str:
@@ -241,10 +232,7 @@ def _rank_to_background_color(rank: int, total: int) -> str:
         return _rgb_to_hex(LIGHT_GREEN_RGB)
 
     progress = (rank - 1) / (total - 1)
-    rgb = tuple(
-        round(green + (red - green) * progress)
-        for green, red in zip(LIGHT_GREEN_RGB, LIGHT_RED_RGB, strict=True)
-    )
+    rgb = tuple(round(green + (red - green) * progress) for green, red in zip(LIGHT_GREEN_RGB, LIGHT_RED_RGB, strict=True))
     return _rgb_to_hex(rgb)
 
 
@@ -332,6 +320,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help=f"Markdown output path (default: {DEFAULT_OUTPUT_FILENAME} next to this script)",
     )
     parser.add_argument(
+        "--policy-config",
+        type=Path,
+        default=None,
+        help=f"Retrieval policy config path (default: {DEFAULT_POLICY_CONFIG})",
+    )
+    parser.add_argument(
         "--priority-doc-uids",
         nargs="+",
         default=(),
@@ -349,7 +343,7 @@ def main() -> None:
     repo_root = script_dir.parent.parent
     question_dir = args.question_dir or (repo_root / "experiments" / "00_QUESTIONS" / "Q1")
     output_path = args.output or (script_dir / DEFAULT_OUTPUT_FILENAME)
-    policy_config_path = repo_root / DEFAULT_POLICY_CONFIG
+    policy_config_path = args.policy_config or (repo_root / DEFAULT_POLICY_CONFIG)
     retrieve_command = (
         "uv",
         "run",

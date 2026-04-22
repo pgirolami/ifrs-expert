@@ -448,6 +448,12 @@ class StoreCommand:
                 )
                 logger.info(f"Stored {len(sections)} title embeddings for doc_uid={doc_uid}")
 
+    def _document_embedding_representations(self) -> tuple[DocumentSimilarityRepresentation, ...]:
+        """Return the document similarity representations that should be kept in sync."""
+        if self._dependencies.document_vector_store_factory is not None:
+            return DOCUMENT_SIMILARITY_REPRESENTATIONS
+        return ("full",)
+
     def _store_document_embeddings(
         self,
         doc_uid: str,
@@ -457,7 +463,7 @@ class StoreCommand:
             logger.info(f"Skipping document embeddings for doc_uid={doc_uid} because no document vector store is configured")
             return
 
-        representations = DOCUMENT_SIMILARITY_REPRESENTATIONS if self._dependencies.document_vector_store_factory is not None else ("full",)
+        representations = self._document_embedding_representations()
         for representation in representations:
             embedding_text = texts_by_representation.get(representation, "")
             with self._get_document_vector_store(representation) as document_vector_store:
@@ -480,15 +486,20 @@ class StoreCommand:
         if not self._stores_documents() or (self._dependencies.document_vector_store is None and self._dependencies.document_vector_store_factory is None):
             return None
 
-        with self._get_document_vector_store("full") as document_vector_store:
-            if document_vector_store.has_embedding_for_doc(doc_uid):
-                logger.info(f"Found existing full document embedding for unchanged doc_uid={doc_uid}")
-                return None
+        missing_representations: list[DocumentSimilarityRepresentation] = []
+        for representation in self._document_embedding_representations():
+            with self._get_document_vector_store(representation) as document_vector_store:
+                if not document_vector_store.has_embedding_for_doc(doc_uid):
+                    missing_representations.append(representation)
+        if not missing_representations:
+            logger.info(f"Found existing document embeddings for unchanged doc_uid={doc_uid}")
+            return None
 
+        missing_representations_text = ", ".join(missing_representations)
         repair_count = _increment_document_embedding_repair_count()
-        logger.warning(f"Detected missing document embedding for unchanged doc_uid={doc_uid}; retrying document embedding storage; repair_count={repair_count}")
+        logger.warning(f"Detected missing document embedding(s) for unchanged doc_uid={doc_uid}; missing_representations={missing_representations_text}; retrying document embedding storage; repair_count={repair_count}")
         self._store_document_embeddings(doc_uid=doc_uid, texts_by_representation=document_similarity_texts)
-        logger.info(f"Repaired missing document embedding for unchanged doc_uid={doc_uid}; repair_count={repair_count}")
+        logger.info(f"Repaired missing document embedding(s) for unchanged doc_uid={doc_uid}; missing_representations={missing_representations_text}; repair_count={repair_count}")
         return StoreCommandResult(
             status="stored",
             doc_uid=doc_uid,

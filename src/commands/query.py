@@ -195,6 +195,7 @@ class QueryCommand:
         error, retrieval_result = execute_retrieval(
             request=RetrievalRequest(
                 query=self.query,
+                query_embedding_mode="raw",
                 retrieval_mode="text",
                 k=policy.k,
                 d=policy.documents.global_d,

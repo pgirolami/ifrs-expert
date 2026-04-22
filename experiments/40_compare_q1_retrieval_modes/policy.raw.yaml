@@ -1,6 +1,6 @@
 retrieval:
   mode: documents2
-  query_embedding_mode: enriched
+  query_embedding_mode: raw
   k: 5
   expand: 0
   full_doc_threshold: 0

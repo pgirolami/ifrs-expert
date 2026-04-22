@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.interfaces import SearchResult
     from src.models.chunk import Chunk
+    from src.policy import QueryEmbeddingMode
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,7 @@ class RetrievalRequest:
     """One retrieval request passed into the shared pipeline."""
 
     query: str
+    query_embedding_mode: QueryEmbeddingMode
     retrieval_mode: str
     k: int
     d: int

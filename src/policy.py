@@ -16,7 +16,9 @@ from src.models.document import DOCUMENT_TYPES
 logger = logging.getLogger(__name__)
 
 DocumentSimilarityRepresentation = Literal["full", "background_and_issue", "scope", "toc"]
+QueryEmbeddingMode = Literal["raw", "enriched"]
 SIMILARITY_REPRESENTATIONS: tuple[DocumentSimilarityRepresentation, ...] = ("full", "background_and_issue", "scope", "toc")
+QUERY_EMBEDDING_MODES: tuple[QueryEmbeddingMode, ...] = ("raw", "enriched")
 
 
 @dataclass(frozen=True)
@@ -56,6 +58,7 @@ class RetrievalPolicy:
     """Top-level retrieval policy settings."""
 
     mode: str
+    query_embedding_mode: QueryEmbeddingMode
     k: int
     expand: int
     full_doc_threshold: int
@@ -113,6 +116,7 @@ def load_policy_config(path: Path) -> PolicyConfig:
 
 def _parse_retrieval_policy(retrieval_mapping: dict[str, object]) -> RetrievalPolicy:
     mode = _require_retrieval_mode(_require_key(retrieval_mapping, "mode", context="retrieval"))
+    query_embedding_mode = _require_query_embedding_mode(_require_key(retrieval_mapping, "query_embedding_mode", context="retrieval"))
     k = _require_positive_int(_require_key(retrieval_mapping, "k", context="retrieval"), context="retrieval.k")
     expand = _require_non_negative_int(_require_key(retrieval_mapping, "expand", context="retrieval"), context="retrieval.expand")
     full_doc_threshold = _require_non_negative_int(
@@ -147,6 +151,7 @@ def _parse_retrieval_policy(retrieval_mapping: dict[str, object]) -> RetrievalPo
 
     return RetrievalPolicy(
         mode=mode,
+        query_embedding_mode=query_embedding_mode,
         k=k,
         expand=expand,
         full_doc_threshold=full_doc_threshold,
@@ -281,6 +286,13 @@ def _require_retrieval_mode(value: object) -> str:
     if isinstance(value, str) and value in {"text", "titles", "documents", "documents2"}:
         return value
     message = "retrieval.mode must be one of: text, titles, documents, documents2"
+    raise ValueError(message)
+
+
+def _require_query_embedding_mode(value: object) -> QueryEmbeddingMode:
+    if isinstance(value, str) and value in QUERY_EMBEDDING_MODES:
+        return cast("QueryEmbeddingMode", value)
+    message = "retrieval.query_embedding_mode must be one of: raw, enriched"
     raise ValueError(message)
 
 

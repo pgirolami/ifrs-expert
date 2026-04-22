@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from src.models.document import DOCUMENT_TYPES, infer_exact_document_type, resolve_standard_doc_uid
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
+from src.retrieval.query_embedding import build_query_embedding_text
 from src.retrieval.title_retrieval import TitleRetrievalConfig, TitleRetrievalOptions, flatten_title_hits, retrieve_title_hits
 
 if TYPE_CHECKING:
@@ -52,22 +53,35 @@ def execute_retrieval(
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
     """Execute the shared retrieval pipeline for one request."""
+    query_for_embedding = _build_query_for_embedding(request)
     if request.retrieval_mode == "titles":
-        return _execute_title_retrieval(request=request, config=config)
+        return _execute_title_retrieval(request=request, query_for_embedding=query_for_embedding, config=config)
     if request.retrieval_mode in {"documents", "documents2"}:
-        return _execute_document_retrieval(request=request, config=config)
-    return _execute_text_retrieval(request=request, config=config)
+        return _execute_document_retrieval(request=request, query_for_embedding=query_for_embedding, config=config)
+    return _execute_text_retrieval(request=request, query_for_embedding=query_for_embedding, config=config)
+
+
+def _build_query_for_embedding(request: RetrievalRequest) -> str:
+    """Build the retrieval-time query text used for embeddings only."""
+    if request.query_embedding_mode == "raw":
+        logger.info(f"Prepared raw retrieval query for embedding; chars={len(request.query)}")
+        return request.query
+
+    query_for_embedding = build_query_embedding_text(request.query).embedding_text
+    logger.info(f"Prepared enriched retrieval query for embedding; original_chars={len(request.query)}, embedded_chars={len(query_for_embedding)}")
+    return query_for_embedding
 
 
 def _execute_text_retrieval(
     request: RetrievalRequest,
+    query_for_embedding: str,
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
     index_error = _get_chunk_index_error(config=config)
     if index_error is not None:
         return index_error, None
 
-    ranked_results = _search_chunks(query=request.query, config=config)
+    ranked_results = _search_chunks(query=query_for_embedding, config=config)
     if not ranked_results:
         return "Error: No chunks retrieved", None
 
@@ -104,13 +118,14 @@ def _execute_text_retrieval(
 
 def _execute_title_retrieval(
     request: RetrievalRequest,
+    query_for_embedding: str,
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
     if config.section_store is None or config.title_vector_store is None or config.title_index_path_fn is None:
         return "Error: Title retrieval is not configured.", None
 
     error, hits = retrieve_title_hits(
-        query=request.query,
+        query=query_for_embedding,
         config=TitleRetrievalConfig(
             title_vector_store=config.title_vector_store,
             section_store=config.section_store,
@@ -153,6 +168,7 @@ def _execute_title_retrieval(
 
 def _execute_document_retrieval(  # noqa: PLR0911
     request: RetrievalRequest,
+    query_for_embedding: str,
     config: RetrievalPipelineConfig,
 ) -> tuple[str | None, RetrievalResult | None]:
     prerequisite_error = _get_document_retrieval_prerequisite_error(config=config, request=request)
@@ -160,7 +176,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
         return prerequisite_error, None
 
     ranked_document_results = _search_documents_by_representation(
-        query=request.query,
+        query=query_for_embedding,
         config=config,
         document_similarity_representation_by_type=request.document_similarity_representation_by_type,
         consolidate_variants_to_standard=request.retrieval_mode == "documents2",
@@ -181,7 +197,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
         return "Error: No documents found with the configured per-type score thresholds", None
 
     allowed_doc_uids = {hit.doc_uid for hit in document_hits}
-    ranked_chunk_results = _search_chunks(query=request.query, config=config)
+    ranked_chunk_results = _search_chunks(query=query_for_embedding, config=config)
     if not ranked_chunk_results:
         return "Error: No chunks retrieved", None
 

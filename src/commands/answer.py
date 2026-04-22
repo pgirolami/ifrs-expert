@@ -319,6 +319,7 @@ class AnswerCommand:
         error, retrieval_result = execute_retrieval(
             request=RetrievalRequest(
                 query=self.query,
+                query_embedding_mode=policy.query_embedding_mode,
                 retrieval_mode=policy.mode,
                 k=policy.k,
                 d=policy.documents.global_d,

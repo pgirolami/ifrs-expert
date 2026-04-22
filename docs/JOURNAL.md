@@ -226,4 +226,13 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - others...
     - [Verification table](../experiments/39_exhaustive_ifrs_ingestion_verification/EXPERIMENTS.md)
 - Evaluated new mechanism for retrieval `documents2`: query each document-type but map each variant back to the standard. The idea is to narrow the corpus of standards to look at by considering that if supporting material matches the semantics of the query then it's likely the standard is relevant. Widening to supporting documents might be done later if we see the quality of the answer is not up to par.
-    - [Experiment 39](../experiments/39_more_retrieval_investigations/EXPERIMENTS.md)
+    - [Experiment 39](../experiments/39_more_retrieval_investigations/EXPERIMENTS.md) showed that retrieval of Q1en (translations of Q1) is nearly perfect, with IFRIC 16, IAS 39 and IFRS 9 in the top spots for almost all variants while the French is still problematic: IFRS 9 is seldom retrieved
+- Tackling the lack of IFRS 9 retrieval : evaluated enriching the query with english translations of French IFRS accounting terms using a [glossary](../config/en-fr-glossary_all.yaml) we expect could be created with an LLM using the IFRS document "Definitions" sections
+    - [Experiment 40](../experiments/40_compare_q1_retrieval_modes/EXPERIMENTS.md) 
+        - Created new analysis documents
+            - Question / Document analysis matrices:
+                -   [French raw](../experiments/40_compare_q1_retrieval_modes/generated_fr_raw_target_matrix)
+                -   [French enriched](../experiments/40_compare_q1_retrieval_modes/generated_fr_enriched_target_matrix.md)
+                -   [English raw](../experiments/40_compare_q1_retrieval_modes/generated_en_control_target_matrix)
+            - [Variant similarity matrix](../experiments/40_compare_q1_retrieval_modes/variant_similarity_table.md) : a big update to an artefact used in a previous experiment that helps see how the scores changed on a sample of questions
+        - Results are good on IFRIC 16 & IAS 39: they shoot to the top of retrieval. But IFRS 9 is often pushed down !
