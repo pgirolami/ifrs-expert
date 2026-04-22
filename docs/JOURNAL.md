@@ -215,16 +215,13 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
     - At this point, discovered a bug in the IAS-BC representation: its scope & background were populated from sub sections in the middle of the document. Will need to fix it and verify all documents for other similar bugs.
 - Learning: Early prototypes can look good partly because the corpus is artificially clean. As corpus realism increases, authority overlap becomes a first-class systems problem.
 
-Tomorrow:
-- make IAS representations genuinely reflect the document’s governing content
-K    - TOCs & others contain plain "<br>" !
-K    - IAS 10 (and others) has "[Refer: paragraphs 4⁠–⁠6, 17 and 18]" in the objective, something isn't filtered
-K    - IAS 10: any top-level section with subsections, doesn't appear in the TOC (ex: DISCLOSURE). Does it appear in the sections ?
-        - Same is IAS12-BC for "Recovery of investment properties" 
-K    - IAS 12 has "Dissenting opinion" : should be removed
-K    - IAS16 objective contains a [Deleted]
-    - Filter out "Table of Concordance"
-- then rerun retrieval
-- then see whether authority resolution finally gets the chance to do the job it was designed for
-
-background | issue | objective | scope | intro | toc
+### 2026-04-21
+- Fixed ingestion bugs affecting multiple documents (IAS 19, IAS 21...) which might make retrieval less efficient, manual review of each standard document. Added non-regression test cases for them. 
+    - Fixes included
+        - TOC representation was missing sections
+        - Scope or Objective was missing in the documents table for some IAS documents
+        - Appendices were being renamed to "Appendix"
+        - Not all "Dissenting opinions" were being removed
+        - Filter out "Table of Concordance"
+        - others...
+    - [Verification table](../experiments/39_exhaustive_ifrs_ingestion_verification/EXPERIMENTS.md)
