@@ -12,78 +12,35 @@
 #- Do not add single words when they are part of a phrase or a compound word (example: don't add 'dividends' for 'dividendes intragroup', only add 'intradgroup dividends')             
 
 question_glossary:
-  - fr: "documentation de couverture"
+  - fr: "couverture"
     en:
       - "hedge accounting"
-      - "hedge documentation"
 
   - fr: "comptes consolidés"
     en:
       - "consolidated financial statements"
-      - "consolidation"
 
-  - fr: "partie change"
+  - fr: "dividende"
     en:
-      - "foreign exchange risk"
-      - "foreign currency risk"
-      - "FX risk"
+      - "dividend"
 
-  - fr: "dividendes intragroupe"
-    en:
-      - "intragroup dividends"
-
-  - fr: "dividende intragroupe"
-    en:
-      - "intragroup dividend"
-
-  - fr: "créance à recevoir"
+  - fr: "créance"
     en:
       - "receivable"
-      - "dividend receivable"
 
-  - fr: "a été comptabilisée"
+  - fr: "comptabilisé"
     en:
-      - "has been recognised"
       - "recognised"
-      - "recorded"
 
-  - fr: "créance à recevoir a été comptabilisée"
+  - fr: "intragroupe"
     en:
-      - "recognised receivable"
-      - "recognised item"
-
-  - fr: "dans les comptes consolidés"
-    en:
-      - "in consolidated financial statements"
-
-  - fr: "relative aux dividendes intragroupe"
-    en:
-      - "relating to intragroup dividends"
-      - "on intragroup dividends"
-
-  - fr: "en créance"
-    en:
-      - "as a receivable"
-      - "recognised as a receivable"
-
-  - fr: "relation de couverture"
-    en:
-      - "hedging relationship"
-      - "hedge relationship"
-
-  - fr: "relation de couverture documentée"
-    en:
-      - "documented hedging relationship"
-      - "documented hedge relationship"
-
-  - fr: "comptabilité de couverture"
-    en:
-      - "hedge accounting"
+      - "intragroup"
 
   - fr: "élément couvert"
     en:
       - "hedged item"
 
-  - fr: "risque de change"
+  - fr: "change"
     en:
-      - "foreign exchange risk"
+      - "foreign exchange"
+      - "foreign currency"

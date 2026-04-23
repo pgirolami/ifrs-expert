@@ -1,0 +1,121 @@
+{
+  "targets": [
+    {
+      "doc_uid": "ifric16",
+      "display_label": "IFRIC 16",
+      "runs": [
+        {
+          "run_id": "fr_raw",
+          "run_label": "fr_raw",
+          "question_count": 23,
+          "retrieved_count": 20,
+          "top_1_count": 0,
+          "top_3_count": 0,
+          "top_5_count": 1,
+          "mean_rank": 14.5,
+          "mean_score": 0.5991249999999998
+        },
+        {
+          "run_id": "fr_enriched",
+          "run_label": "fr_enriched",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 0,
+          "top_3_count": 3,
+          "top_5_count": 21,
+          "mean_rank": 4.478260869565218,
+          "mean_score": 0.7049652173913042
+        },
+        {
+          "run_id": "en_control",
+          "run_label": "en_control",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 0,
+          "top_3_count": 20,
+          "top_5_count": 23,
+          "mean_rank": 3.0869565217391304,
+          "mean_score": 0.7034826086956522
+        }
+      ]
+    },
+    {
+      "doc_uid": "ias39",
+      "display_label": "IAS 39",
+      "runs": [
+        {
+          "run_id": "fr_raw",
+          "run_label": "fr_raw",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 2,
+          "top_3_count": 9,
+          "top_5_count": 19,
+          "mean_rank": 4.434782608695652,
+          "mean_score": 0.6433130434782608
+        },
+        {
+          "run_id": "fr_enriched",
+          "run_label": "fr_enriched",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 7,
+          "top_3_count": 22,
+          "top_5_count": 23,
+          "mean_rank": 2.130434782608696,
+          "mean_score": 0.7260565217391305
+        },
+        {
+          "run_id": "en_control",
+          "run_label": "en_control",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 12,
+          "top_3_count": 23,
+          "top_5_count": 23,
+          "mean_rank": 1.4782608695652173,
+          "mean_score": 0.7478826086956524
+        }
+      ]
+    },
+    {
+      "doc_uid": "ifrs9",
+      "display_label": "IFRS 9",
+      "runs": [
+        {
+          "run_id": "fr_raw",
+          "run_label": "fr_raw",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 0,
+          "top_3_count": 6,
+          "top_5_count": 14,
+          "mean_rank": 7.521739130434782,
+          "mean_score": 0.6307347826086956
+        },
+        {
+          "run_id": "fr_enriched",
+          "run_label": "fr_enriched",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 3,
+          "top_3_count": 20,
+          "top_5_count": 23,
+          "mean_rank": 2.4347826086956523,
+          "mean_score": 0.7233608695652174
+        },
+        {
+          "run_id": "en_control",
+          "run_label": "en_control",
+          "question_count": 23,
+          "retrieved_count": 23,
+          "top_1_count": 11,
+          "top_3_count": 23,
+          "top_5_count": 23,
+          "mean_rank": 1.565217391304348,
+          "mean_score": 0.7424608695652174
+        }
+      ]
+    }
+  ]
+}

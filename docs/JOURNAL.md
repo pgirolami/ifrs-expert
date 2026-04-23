@@ -236,3 +236,6 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
                 -   [English raw](../experiments/40_compare_q1_retrieval_modes/generated_en_control_target_matrix)
             - [Variant similarity matrix](../experiments/40_compare_q1_retrieval_modes/variant_similarity_table.md) : a big update to an artefact used in a previous experiment that helps see how the scores changed on a sample of questions
         - Results are good on IFRIC 16 & IAS 39: they shoot to the top of retrieval. But IFRS 9 is often pushed down !
+- Continued tackling the lack of IFRS 9 retrieval : built a new document routing method based on the best chunk match in a document + collapsing documents to their standard + glossary
+    - [Experiment 41](../experiments/41_documents2_through_chunks/EXPERIMENTS.md) : results are finally good on the Q1 family: IFRS 9, IAS 39 and IFRIC 16 (and 17) are consistently in the top 5 documents
+        - Also noticed that providing the glossary terms to `answer` rather than the full question seems to be enough. Will probably want to investigate this more

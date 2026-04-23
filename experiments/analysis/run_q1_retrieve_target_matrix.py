@@ -86,7 +86,7 @@ class Q1RetrieveTargetMatrixExperiment:
         self._question_dir = question_dir
         self._output_path = output_path
         self._retrieve_command = retrieve_command
-        self._priority_doc_uids = tuple(sorted({doc_uid.strip() for doc_uid in priority_doc_uids if doc_uid.strip()}))
+        self._priority_doc_uids = _normalize_priority_doc_uids(list(priority_doc_uids))
 
     def run(self) -> str:
         """Run all questions, write the markdown artifact, and return it."""
@@ -180,8 +180,7 @@ class Q1RetrieveTargetMatrixExperiment:
             )
             for doc_uid, scores in scores_by_doc_uid.items()
         ]
-        priority_columns = [column for column in columns if column.doc_uid in self._priority_doc_uids]
-        priority_columns.sort(key=lambda column: column.doc_uid)
+        priority_columns = [column for priority_doc_uid in self._priority_doc_uids for column in columns if column.doc_uid == priority_doc_uid]
         remaining_columns = [column for column in columns if column.doc_uid not in self._priority_doc_uids]
         remaining_columns.sort(key=lambda column: (-column.question_count, column.display_label, column.doc_uid))
         columns = [*priority_columns, *remaining_columns]
@@ -265,14 +264,17 @@ def _parse_retrieved_document(payload: object, *, rank: int) -> RetrievedDocumen
 
 
 def _normalize_priority_doc_uids(raw_values: list[str]) -> tuple[str, ...]:
-    """Normalize priority doc UID CLI values into a sorted unique tuple."""
-    doc_uids: set[str] = set()
+    """Normalize priority doc UID CLI values while preserving input order."""
+    doc_uids: list[str] = []
+    seen_doc_uids: set[str] = set()
     for raw_value in raw_values:
         for candidate in raw_value.split(","):
             normalized_candidate = candidate.strip()
-            if normalized_candidate:
-                doc_uids.add(normalized_candidate)
-    return tuple(sorted(doc_uids))
+            if not normalized_candidate or normalized_candidate in seen_doc_uids:
+                continue
+            seen_doc_uids.add(normalized_candidate)
+            doc_uids.append(normalized_candidate)
+    return tuple(doc_uids)
 
 
 def humanize_doc_uid(doc_uid: str) -> str:
@@ -364,7 +366,8 @@ def main() -> None:
         priority_doc_uids=_normalize_priority_doc_uids(args.priority_doc_uids),
     )
     markdown = experiment.run()
-    sys.stdout.write(markdown)
+    if args.output is None:
+        sys.stdout.write(markdown)
 
 
 if __name__ == "__main__":
