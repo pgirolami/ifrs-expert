@@ -10,105 +10,105 @@ retrieval:
   titles:
     min_score: 0.6
   documents:
-    global_d: 5
+    global_d: 25
     by_document_type:
       IFRS-S:
-        d: 1
-        min_score: 0.683
+        d: 25
+        min_score: 0.0
         expand_to_section: true
         similarity_representation: scope
       IFRS-BC:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: full
       IFRS-IE:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: full
       IFRS-IG:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: true
         similarity_representation: full
       IAS-S:
-        d: 2
-        min_score: 0.699
+        d: 25
+        min_score: 0.0
         expand_to_section: true
         similarity_representation: toc
       IAS-BC:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: toc
       IAS-BCIASC:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: toc
       IAS-IE:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: toc
       IAS-IG:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: true
         similarity_representation: toc
       IAS-SM:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: toc
       IFRIC:
-        d: 1
-        min_score: 0.671
+        d: 25
+        min_score: 0.0
         expand_to_section: true
         similarity_representation: scope
       IFRIC-BC:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: full
       IFRIC-IE:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: false
         similarity_representation: full
       IFRIC-IG:
-        d: 1
-        min_score: 0.8
+        d: 10
+        min_score: 0.53
         expand_to_section: true
         similarity_representation: full
       SIC:
-        d: 1
-        min_score: 0.8
+        d: 6
+        min_score: 0.53
         expand_to_section: true
         similarity_representation: background_and_issue
       SIC-BC:
         d: 1
-        min_score: 0.8
+        min_score: 0
         expand_to_section: false
         similarity_representation: full
       SIC-IE:
         d: 1
-        min_score: 0.8
+        min_score: 0
         expand_to_section: false
         similarity_representation: full
       NAVIS:
-        d: 1
-        min_score: 0.8
+        d: 2
+        min_score: 0.5
         expand_to_section: true
         similarity_representation: full
       PS:
         d: 1
-        min_score: 0.8
+        min_score: 0.6
         expand_to_section: true
         similarity_representation: full
       PS-BC:
         d: 1
-        min_score: 0.8
+        min_score: 0.6
         expand_to_section: false
         similarity_representation: full

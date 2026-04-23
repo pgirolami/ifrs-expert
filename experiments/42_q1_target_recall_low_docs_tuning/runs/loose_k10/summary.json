@@ -1,0 +1,1087 @@
+{
+  "policy_config": "experiments/42_q1_target_recall_low_docs_tuning/policies/loose_k10.yaml",
+  "question_count": 23,
+  "all_targets_present_count": 23,
+  "target_doc_uids": [
+    "ias39",
+    "ifrs9",
+    "ifric16"
+  ],
+  "target_presence": {
+    "ias39": 23,
+    "ifrs9": 23,
+    "ifric16": 23
+  },
+  "average_document_hits": 25.0,
+  "max_document_hits": 25,
+  "target_mean_rank": {
+    "ias39": 2.130434782608696,
+    "ifrs9": 2.4347826086956523,
+    "ifric16": 4.478260869565218
+  },
+  "target_max_rank": {
+    "ias39": 4,
+    "ifrs9": 5,
+    "ifric16": 6
+  },
+  "questions": [
+    {
+      "question_id": "Q1.0",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 3,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7125,
+        "ifrs9": 0.6911,
+        "ifric16": 0.6859
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias21",
+        "ifric16",
+        "navis-QRIFRS-C2B66005533958-EFL",
+        "ifrs10",
+        "ias24",
+        "ias32",
+        "ifrs12",
+        "ifrs2",
+        "ifrs3",
+        "ifrs8",
+        "ifric17",
+        "ifric22",
+        "ifrs7",
+        "ifrs5",
+        "ias27",
+        "ias7",
+        "ifrs17",
+        "ias12",
+        "ias29",
+        "ifrs19",
+        "ias33",
+        "ifrs1"
+      ]
+    },
+    {
+      "question_id": "Q1.1",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 3,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7127,
+        "ifrs9": 0.7027,
+        "ifric16": 0.6957
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias21",
+        "ias39",
+        "ifrs9",
+        "ifrs10",
+        "ifric16",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ias32",
+        "ias27",
+        "ias24",
+        "ifrs19",
+        "ifric17",
+        "ifrs3",
+        "ias12",
+        "ifric22",
+        "ifrs7",
+        "ifric2",
+        "ifrs12",
+        "ifrs2",
+        "ifrs18",
+        "sic7",
+        "ifrs1",
+        "ias10",
+        "ias7",
+        "ps1"
+      ]
+    },
+    {
+      "question_id": "Q1.2",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 3,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7064,
+        "ifrs9": 0.6939,
+        "ifric16": 0.6892
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias21",
+        "ias39",
+        "ifrs9",
+        "ifrs10",
+        "ifric16",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ias32",
+        "ias27",
+        "ifric17",
+        "ifrs19",
+        "ias12",
+        "ifrs3",
+        "ifrs12",
+        "ifric2",
+        "ias24",
+        "ifrs7",
+        "ifrs18",
+        "ifric22",
+        "ifrs2",
+        "ias10",
+        "ias7",
+        "ifrs1",
+        "sic7",
+        "ias29"
+      ]
+    },
+    {
+      "question_id": "Q1.3",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 1,
+        "ifric16": 3
+      },
+      "target_scores": {
+        "ias39": 0.7652,
+        "ifrs9": 0.7659,
+        "ifric16": 0.7366
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ias21",
+        "ifrs10",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ifrs12",
+        "ias12",
+        "ifrs17",
+        "ias32",
+        "ifrs7",
+        "ifric17",
+        "ias27",
+        "ifrs19",
+        "ias24",
+        "ifrs18",
+        "sic7",
+        "ifrs1",
+        "ifrs5",
+        "ias28",
+        "ifrs3",
+        "ifrs2",
+        "ifric22",
+        "ifrs14"
+      ]
+    },
+    {
+      "question_id": "Q1.4",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 4,
+        "ifric16": 6
+      },
+      "target_scores": {
+        "ias39": 0.6999,
+        "ifrs9": 0.69,
+        "ifric16": 0.6816
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias21",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ias39",
+        "ifrs9",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric16",
+        "ifric22",
+        "ifrs10",
+        "ias24",
+        "ifrs7",
+        "ias32",
+        "ifrs17",
+        "ias12",
+        "ifric17",
+        "ifrs5",
+        "ifrs19",
+        "ifrs12",
+        "ifrs18",
+        "ifrs1",
+        "ias7",
+        "ias27",
+        "ifrs2",
+        "ifrs3",
+        "sic7",
+        "ias28"
+      ]
+    },
+    {
+      "question_id": "Q1.5",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 4,
+        "ifrs9": 2,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7081,
+        "ifrs9": 0.7144,
+        "ifric16": 0.7033
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ias39",
+        "ifric16",
+        "ias32",
+        "ias21",
+        "sic7",
+        "ifrs18",
+        "ifrs17",
+        "ifric22",
+        "ifrs7",
+        "ifric17",
+        "ias12",
+        "ifrs19",
+        "ifrs16",
+        "ifrs1",
+        "ifric2",
+        "ifrs5",
+        "ifrs14",
+        "ifrs2",
+        "ifrs13",
+        "ias19",
+        "ias7",
+        "ifrs3"
+      ]
+    },
+    {
+      "question_id": "Q1.6",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 3,
+        "ifric16": 6
+      },
+      "target_scores": {
+        "ias39": 0.725,
+        "ifrs9": 0.7124,
+        "ifric16": 0.6786
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ias39",
+        "ifrs9",
+        "ias21",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ifric16",
+        "ifrs10",
+        "ifric17",
+        "ias32",
+        "ifric22",
+        "ias24",
+        "ifrs7",
+        "ias12",
+        "ifrs12",
+        "ifrs19",
+        "ias27",
+        "ifrs18",
+        "ifrs5",
+        "ifrs2",
+        "ifrs17",
+        "ifrs14",
+        "sic7",
+        "ifrs1",
+        "ias7",
+        "ifric2"
+      ]
+    },
+    {
+      "question_id": "Q1.7",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7312,
+        "ifrs9": 0.7318,
+        "ifric16": 0.7148
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "ias21",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifrs10",
+        "ifric17",
+        "ias24",
+        "ias12",
+        "ifrs7",
+        "ifrs17",
+        "ias32",
+        "ifrs5",
+        "ifrs8",
+        "ifrs3",
+        "ifrs19",
+        "ifrs12",
+        "ifrs2",
+        "ifrs1",
+        "ias10",
+        "ifrs18",
+        "ifrs16",
+        "ias27",
+        "ias33"
+      ]
+    },
+    {
+      "question_id": "Q1.8",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 3,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.705,
+        "ifrs9": 0.6889,
+        "ifric16": 0.672
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ias39",
+        "ifrs9",
+        "ias21",
+        "ifric16",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric22",
+        "ifric17",
+        "ifrs1",
+        "ifrs18",
+        "ias12",
+        "ifrs10",
+        "ifrs7",
+        "ias27",
+        "sic7",
+        "ifric2",
+        "ias32",
+        "ifrs19",
+        "ifrs5",
+        "ias24",
+        "ifrs17",
+        "ias7",
+        "ifrs3",
+        "ias10",
+        "ias19"
+      ]
+    },
+    {
+      "question_id": "Q1.9",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 1,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7623,
+        "ifrs9": 0.777,
+        "ifric16": 0.7134
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ifrs9",
+        "ias39",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifric16",
+        "ias21",
+        "ifrs10",
+        "ias32",
+        "ifrs19",
+        "ifrs7",
+        "ifrs12",
+        "ifrs1",
+        "ias12",
+        "sic7",
+        "ifrs18",
+        "ifrs17",
+        "ifric2",
+        "ias27",
+        "ias24",
+        "ias7",
+        "ifric17",
+        "ifrs8",
+        "ifrs2",
+        "ifrs5",
+        "ifric22"
+      ]
+    },
+    {
+      "question_id": "Q1.10",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7266,
+        "ifrs9": 0.7332,
+        "ifric16": 0.7206
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ias21",
+        "ifrs7",
+        "ifrs17",
+        "ifric17",
+        "ifrs1",
+        "ifrs19",
+        "ifrs5",
+        "ifrs2",
+        "ifrs18",
+        "ias12",
+        "ifrs10",
+        "ias32",
+        "ifrs3",
+        "ifric22",
+        "ifrs16",
+        "ifrs12",
+        "sic7",
+        "ias24",
+        "ias7",
+        "ifric5"
+      ]
+    },
+    {
+      "question_id": "Q1.11",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 2,
+        "ifric16": 3
+      },
+      "target_scores": {
+        "ias39": 0.7611,
+        "ifrs9": 0.7413,
+        "ifric16": 0.7363
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ifrs9",
+        "ifric16",
+        "ias21",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ifrs10",
+        "ifrs7",
+        "ifrs19",
+        "ias24",
+        "ias12",
+        "ias32",
+        "ifric17",
+        "ifrs18",
+        "ifrs12",
+        "ifrs1",
+        "sic7",
+        "ias7",
+        "ifrs5",
+        "ifric22",
+        "ias29",
+        "ias27",
+        "ifric2",
+        "ifrs3",
+        "ifrs8"
+      ]
+    },
+    {
+      "question_id": "Q1.12",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7109,
+        "ifrs9": 0.7158,
+        "ifric16": 0.681
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric16",
+        "ias32",
+        "ias21",
+        "ifric17",
+        "ifrs17",
+        "ifrs19",
+        "ifrs7",
+        "ifrs18",
+        "ifric22",
+        "ias12",
+        "ifric2",
+        "ifrs5",
+        "sic7",
+        "ifrs2",
+        "ifrs1",
+        "ifrs16",
+        "ias19",
+        "ifrs15",
+        "ifrs3",
+        "ias7",
+        "ifrs10"
+      ]
+    },
+    {
+      "question_id": "Q1.13",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7167,
+        "ifrs9": 0.7301,
+        "ifric16": 0.7069
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "ias21",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ias32",
+        "ifrs10",
+        "ifrs17",
+        "ifrs12",
+        "ias12",
+        "sic7",
+        "ifric22",
+        "ias24",
+        "ifrs3",
+        "ifric17",
+        "ifrs19",
+        "ifric2",
+        "ifrs2",
+        "ifrs18",
+        "ifrs7",
+        "ifrs5",
+        "ifrs15",
+        "ifrs14",
+        "ifrs1"
+      ]
+    },
+    {
+      "question_id": "Q1.14",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7046,
+        "ifrs9": 0.7166,
+        "ifric16": 0.693
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "ias21",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric17",
+        "ifrs19",
+        "ifrs7",
+        "ias12",
+        "ifrs18",
+        "ias27",
+        "ifrs17",
+        "ias32",
+        "ifric22",
+        "ifrs2",
+        "ifrs10",
+        "ifrs1",
+        "ifrs12",
+        "sic7",
+        "ias7",
+        "ias10",
+        "ifrs16",
+        "ias20",
+        "ias24"
+      ]
+    },
+    {
+      "question_id": "Q1.15",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 2,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7174,
+        "ifrs9": 0.7145,
+        "ifric16": 0.7008
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ifrs9",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric16",
+        "ifrs1",
+        "ifric2",
+        "ifrs7",
+        "ifric17",
+        "ifrs19",
+        "ias32",
+        "ias21",
+        "ifrs17",
+        "ias7",
+        "ias12",
+        "ifrs5",
+        "ifrs2",
+        "ifrs3",
+        "ifrs18",
+        "ias10",
+        "ias27",
+        "ias20",
+        "ifric22",
+        "ifrs12",
+        "ifric5"
+      ]
+    },
+    {
+      "question_id": "Q1.16",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7258,
+        "ifrs9": 0.7295,
+        "ifric16": 0.7212
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ias21",
+        "ias32",
+        "ifrs7",
+        "ifrs17",
+        "ifric17",
+        "ifrs19",
+        "ifrs5",
+        "ifrs12",
+        "ias12",
+        "ifrs1",
+        "ifrs18",
+        "ias7",
+        "ias24",
+        "ifrs16",
+        "ifrs3",
+        "ifrs2",
+        "ias37",
+        "ifric2",
+        "ifrs15",
+        "ifrs14"
+      ]
+    },
+    {
+      "question_id": "Q1.17",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 2,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7512,
+        "ifrs9": 0.749,
+        "ifric16": 0.7247
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ifrs9",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ias21",
+        "ifric16",
+        "ifrs10",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ias12",
+        "ias24",
+        "ifric17",
+        "ias32",
+        "ifrs12",
+        "ifrs2",
+        "ias27",
+        "ifrs18",
+        "ifrs17",
+        "ifrs19",
+        "ifric22",
+        "ifrs1",
+        "ifrs7",
+        "sic7",
+        "ifrs5",
+        "ifrs3",
+        "ias34",
+        "ias7"
+      ]
+    },
+    {
+      "question_id": "Q1.18",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 5,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.729,
+        "ifrs9": 0.6983,
+        "ifric16": 0.709
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ias21",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifric16",
+        "ifrs9",
+        "navis-QRIFRS-C22416FFEABA0B-EFL",
+        "ifrs10",
+        "ias12",
+        "ias24",
+        "ias32",
+        "ifric17",
+        "ifrs7",
+        "ifrs12",
+        "ifrs19",
+        "ifrs5",
+        "ifric22",
+        "ifrs18",
+        "ias33",
+        "ifrs3",
+        "ifrs1",
+        "ias27",
+        "ifrs17",
+        "ifrs15",
+        "ifrs2",
+        "ifrs14"
+      ]
+    },
+    {
+      "question_id": "Q1.19",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 3,
+        "ifrs9": 2,
+        "ifric16": 5
+      },
+      "target_scores": {
+        "ias39": 0.7171,
+        "ifrs9": 0.7263,
+        "ifric16": 0.7088
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifrs9",
+        "ias39",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifric16",
+        "ias21",
+        "ifrs18",
+        "ifric22",
+        "sic7",
+        "ias32",
+        "ifrs17",
+        "ifrs1",
+        "ifric17",
+        "ifrs7",
+        "ifrs19",
+        "ifrs12",
+        "ias12",
+        "ifrs10",
+        "ias27",
+        "ifrs5",
+        "ifrs2",
+        "ifrs14",
+        "ifric2",
+        "ias24",
+        "ifrs16"
+      ]
+    },
+    {
+      "question_id": "Q1.20",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 5,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7019,
+        "ifrs9": 0.6834,
+        "ifric16": 0.6853
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ias21",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifric16",
+        "ifrs9",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifrs7",
+        "ias32",
+        "ias7",
+        "ifric17",
+        "ifrs19",
+        "ifrs5",
+        "ifric22",
+        "ifric2",
+        "ifrs18",
+        "ias10",
+        "ifrs1",
+        "sic7",
+        "ias12",
+        "ifrs3",
+        "ifrs17",
+        "ias29",
+        "ias24",
+        "ias20",
+        "ifrs14"
+      ]
+    },
+    {
+      "question_id": "Q1.21",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 2,
+        "ifrs9": 1,
+        "ifric16": 3
+      },
+      "target_scores": {
+        "ias39": 0.7734,
+        "ifrs9": 0.7967,
+        "ifric16": 0.7304
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ifrs9",
+        "ias39",
+        "ifric16",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ias21",
+        "ifrs7",
+        "ifrs10",
+        "ifrs1",
+        "ifrs19",
+        "ias32",
+        "ifric17",
+        "ifrs5",
+        "ias12",
+        "ifrs2",
+        "ifrs17",
+        "ias7",
+        "ifrs3",
+        "ias24",
+        "ifrs8",
+        "ias27",
+        "ifrs18",
+        "ifrs12",
+        "ias28",
+        "ifric2"
+      ]
+    },
+    {
+      "question_id": "Q1.22",
+      "document_hit_count": 25,
+      "target_ranks": {
+        "ias39": 1,
+        "ifrs9": 2,
+        "ifric16": 4
+      },
+      "target_scores": {
+        "ias39": 0.7353,
+        "ifrs9": 0.7345,
+        "ifric16": 0.7251
+      },
+      "target_present": {
+        "ias39": true,
+        "ifrs9": true,
+        "ifric16": true
+      },
+      "document_hits": [
+        "ias39",
+        "ifrs9",
+        "navis-QRIFRS-C2DB864AD71978-EFL",
+        "ifric16",
+        "ias21",
+        "navis-QRIFRS-C2D9D1995F171F-EFL",
+        "ifrs10",
+        "ias32",
+        "ifrs17",
+        "ias12",
+        "ifric17",
+        "ifrs12",
+        "ifrs7",
+        "ifrs1",
+        "ifrs18",
+        "ias24",
+        "ifrs19",
+        "ifrs2",
+        "ifrs5",
+        "ias37",
+        "ias10",
+        "ifric22",
+        "sic7",
+        "ifrs14",
+        "ias27"
+      ]
+    }
+  ]
+}
