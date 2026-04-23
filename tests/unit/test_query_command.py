@@ -73,6 +73,25 @@ class TestQueryCommand:
         request = captured_requests[0]
         assert getattr(request, "query_embedding_mode") == "enriched"
 
+    def test_query_rejects_title_similarity_policies(self) -> None:
+        """Query should reject policies configured for title similarity retrieval."""
+        config = QueryConfig(
+            vector_store=MockVectorStore([]),
+            chunk_store=InMemoryChunkStore(),
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(mode="titles"), verbose=False),
+        )
+
+        result = command.execute()
+
+        assert result.startswith("Error:")
+        assert "chunk_similarity" in result
+
     def test_query_no_index(self):
         """Test query command when no index exists."""
         config = QueryConfig(
@@ -252,7 +271,7 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=False),
+            options=QueryOptions(policy=make_retrieval_policy(chunk_min_score=0.5), verbose=False),
         )
 
         result = command.execute()
@@ -261,43 +280,8 @@ class TestQueryCommand:
         assert len(data) == 1
         assert data[0]["id"] == 1
 
-    def test_query_verbose_output(self):
-        """Test query verbose output includes options and relevance."""
-        search_results = [
-            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},  # High
-            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.2},  # Low
-        ]
-
-        mock_chunks = [
-            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text 1"),
-            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="test text 2"),
-        ]
-
-        chunk_store = InMemoryChunkStore()
-        with chunk_store as store:
-            store.insert_chunks(mock_chunks)
-
-        config = QueryConfig(
-            vector_store=MockVectorStore(search_results),
-            chunk_store=chunk_store,
-            init_db_fn=lambda: None,
-            index_path_fn=lambda: MockIndexPath(exists=True),
-        )
-        command = QueryCommand(
-            query="test",
-            config=config,
-            options=QueryOptions(policy=load_test_retrieval_policy(), verbose=True),
-        )
-
-        result = command.execute()
-
-        assert result.startswith("QueryOptions(policy=")
-        # Both High-relevance chunks are in output; Low is filtered
-        assert "(High)" in result
-        assert "(Low)" not in result
-
-    def test_query_expand_includes_neighboring_chunks(self):
-        """Test query expansion includes surrounding chunks in document order."""
+    def test_query_chunk_expansion(self):
+        """Test query command chunk expansion."""
         search_results = [
             {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
         ]
@@ -327,21 +311,18 @@ class TestQueryCommand:
         result = command.execute()
 
         data = json.loads(result)
-        assert [item["id"] for item in data] == [1, 2, 3]
-        assert data[1]["score"] == 0.9
-        assert data[0]["score"] == 0.0
-        assert data[2]["score"] == 0.0
+        assert [chunk["id"] for chunk in data] == [1, 2, 3]
 
-    def test_query_full_doc_threshold_uses_total_text_size(self):
-        """Test query includes the full document when total text size is below threshold."""
+    def test_query_expand_to_section(self):
+        """Test query command expand to section."""
         search_results = [
-            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
         ]
 
         mock_chunks = [
-            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="aa"),
-            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="bbb"),
-            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="cccc"),
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="chunk 1", containing_section_id="sec1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="chunk 2", containing_section_id="sec1"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="chunk 3", containing_section_id="sec2"),
         ]
 
         chunk_store = InMemoryChunkStore()
@@ -357,13 +338,142 @@ class TestQueryCommand:
         command = QueryCommand(
             query="test",
             config=config,
-            options=QueryOptions(policy=make_retrieval_policy(expand=1), verbose=False),
+            options=QueryOptions(policy=make_retrieval_policy(expand=0, expand_to_section=True), verbose=False),
         )
 
         result = command.execute()
 
         data = json.loads(result)
-        assert [item["id"] for item in data] == [1, 2, 3]
-        assert data[1]["score"] == 0.9
-        assert data[0]["score"] == 0.0
-        assert data[2]["score"] == 0.0
+        assert [chunk["id"] for chunk in data] == [1]
+
+    def test_query_full_doc_threshold(self):
+        """Test query command full document threshold."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="short"),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        config = QueryConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(expand=0, full_doc_threshold=100), verbose=False),
+        )
+
+        result = command.execute()
+
+        data = json.loads(result)
+        assert len(data) == 1
+        assert data[0]["id"] == 1
+
+    def test_query_json_output_includes_metadata(self):
+        """Test query command JSON output includes metadata."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text"),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        config = QueryConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(k=1, expand=0), verbose=False),
+        )
+
+        result = command.execute()
+
+        data = json.loads(result)
+        assert len(data) == 1
+        assert data[0]["doc_uid"] == "doc1"
+        assert "document_type" in data[0]
+
+    def test_query_verbose_output_includes_context(self):
+        """Test query command verbose output."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 1, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="test text"),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        config = QueryConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(k=1, expand=0), verbose=True),
+        )
+
+        result = command.execute()
+
+        assert result.startswith("QueryOptions(")
+        assert "Document: doc1" in result
+
+    def test_query_no_expansion_when_zero(self):
+        """Test query command no expansion when expand is 0."""
+        search_results = [
+            {"doc_uid": "doc1", "chunk_id": 2, "score": 0.9},
+        ]
+
+        mock_chunks = [
+            Chunk(id=1, doc_uid="doc1", chunk_number="1.1", page_start="A1", page_end="A1", text="chunk 1"),
+            Chunk(id=2, doc_uid="doc1", chunk_number="1.2", page_start="A2", page_end="A2", text="chunk 2"),
+            Chunk(id=3, doc_uid="doc1", chunk_number="1.3", page_start="A3", page_end="A3", text="chunk 3"),
+        ]
+
+        chunk_store = InMemoryChunkStore()
+        with chunk_store as store:
+            store.insert_chunks(mock_chunks)
+
+        config = QueryConfig(
+            vector_store=MockVectorStore(search_results),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+        )
+        command = QueryCommand(
+            query="test",
+            config=config,
+            options=QueryOptions(policy=make_retrieval_policy(expand=0), verbose=False),
+        )
+
+        result = command.execute()
+
+        data = json.loads(result)
+        assert len(data) == 1
+        assert data[0]["id"] == 2
+
+

@@ -175,6 +175,8 @@ class QueryCommand:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
         policy = self._options.policy
+        if policy.chunk_retrieval.mode != "chunk_similarity":
+            return "Error: query command requires chunk_similarity retrieval policy"
         if policy.expand < 0:
             return "Error: expand must be >= 0"
         if policy.full_doc_threshold < 0:
