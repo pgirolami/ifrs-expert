@@ -27,11 +27,12 @@ def _has_required_argument(subparser: argparse.ArgumentParser, dest: str) -> boo
     raise AssertionError(msg)
 
 
-def test_policy_config_required_for_retrieval_commands() -> None:
-    """All retrieval-family commands should require --policy-config."""
+def test_policy_selector_required_for_retrieval_commands() -> None:
+    """All retrieval-family commands should require --policy-config and --retrieval-policy."""
     for command in ["query", "query-documents", "query-titles", "retrieve", "answer"]:
         subparser = _get_subparser(command)
         assert _has_required_argument(subparser, "policy_config") is True
+        assert _has_required_argument(subparser, "retrieval_policy") is True
 
 
 def test_answer_options_builder_loads_policy_and_passthrough_values() -> None:
@@ -42,6 +43,8 @@ def test_answer_options_builder_loads_policy_and_passthrough_values() -> None:
             "answer",
             "--policy-config",
             "config/policy.default.yaml",
+            "--retrieval-policy",
+            "documents2_through_chunks__enriched",
             "--output-dir",
             "tmp/out",
         ]

@@ -462,7 +462,7 @@ def test_retrieve_logs_highest_scoring_chunk_for_each_output_document(caplog) ->
 
 
 def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]) -> RetrievalPolicy:
-    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy
+    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, ResolvedRetrievalPolicy
 
     base_policy = make_retrieval_policy(mode="documents")
     by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)
@@ -474,19 +474,15 @@ def _build_policy_with_similarity_representation_overrides(overrides: dict[str, 
             expand_to_section=existing_policy.expand_to_section,
             similarity_representation=representation,
         )
-    return RetrievalPolicy(
-        mode=base_policy.mode,
-        query_embedding_mode=base_policy.query_embedding_mode,
-        k=base_policy.k,
-        expand=base_policy.expand,
-        full_doc_threshold=base_policy.full_doc_threshold,
-        expand_to_section=base_policy.expand_to_section,
-        text=base_policy.text,
-        titles=base_policy.titles,
-        documents=DocumentStageRetrievalPolicy(
+    return ResolvedRetrievalPolicy(
+        querying=base_policy.querying,
+        document_routing=base_policy.document_routing,
+        chunk_retrieval=base_policy.chunk_retrieval,
+        legacy_document_stage=DocumentStageRetrievalPolicy(
             global_d=base_policy.documents.global_d,
             by_document_type=by_document_type,
         ),
+        legacy_mode=base_policy.mode,
     )
 
 

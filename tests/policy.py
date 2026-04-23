@@ -72,6 +72,8 @@ def make_retrieval_policy(
         "IAS-BC": "full",
         "IAS-IE": "full",
         "IAS-IG": "full",
+        "IAS-BCIASC": "full",
+        "IAS-SM": "full",
         "IFRIC": "full",
         "IFRIC-BC": "full",
         "IFRIC-IE": "full",
@@ -150,7 +152,7 @@ def make_retrieval_policy(
             strategy="through_chunks",
             source="top_chunk_results",
             profile="q1_authority_family",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
             post_processing="aggregate_to_main_variant",
             post_processing_config=DocumentRoutingPostProcessingConfig(document_post_processing="aggregate_to_main_variant"),
         )
@@ -159,7 +161,7 @@ def make_retrieval_policy(
             strategy="through_document_representation",
             source="document_representation",
             profile="q1_authority_family_full_repr",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
             post_processing="none",
             post_processing_config=DocumentRoutingPostProcessingConfig(),
         )
@@ -168,7 +170,7 @@ def make_retrieval_policy(
             strategy="through_document_representation",
             source="document_representation",
             profile="q1_authority_family_full_repr",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
             post_processing="none",
             post_processing_config=DocumentRoutingPostProcessingConfig(),
         )

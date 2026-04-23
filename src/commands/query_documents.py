@@ -78,7 +78,7 @@ class QueryDocumentsCommand:
             return prerequisite_error
 
         document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
-        similarity_representation = document_policy.similarity_representation
+        similarity_representation = document_policy.similarity_representation or "full"
         vector_store = self._get_document_vector_store(similarity_representation)
         with vector_store as document_vector_store:
             ranked_results = document_vector_store.search_all(self.query)
@@ -114,7 +114,7 @@ class QueryDocumentsCommand:
     def _get_prerequisite_error(self) -> str | None:
         document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
         try:
-            index_path = self._config.index_path_fn(document_policy.similarity_representation)
+            index_path = self._config.index_path_fn(document_policy.similarity_representation or "full")
         except TypeError:
             index_path = self._config.index_path_fn()  # type: ignore[call-arg]
         if not index_path.exists():

@@ -408,9 +408,10 @@ def test_retrieve_parser_requires_policy_config_and_no_inline_defaults() -> None
     """Retrieve parser should require policy config and leave inline overrides unset."""
     parser = _build_parser()
 
-    args = parser.parse_args(["retrieve", "--policy-config", "config/policy.default.yaml"])
+    args = parser.parse_args(["retrieve", "--policy-config", "config/policy.default.yaml", "--retrieval-policy", "documents2_through_chunks__enriched"])
 
     assert args.policy_config == Path("config/policy.default.yaml")
+    assert args.retrieval_policy == "documents2_through_chunks__enriched"
     assert args.json is False
     assert not hasattr(args, "d")
     assert not hasattr(args, "ifrs_d")
@@ -421,9 +422,10 @@ def test_answer_parser_requires_policy_config_and_no_inline_defaults() -> None:
     """Answer parser should require policy config and leave inline overrides unset."""
     parser = _build_parser()
 
-    args = parser.parse_args(["answer", "--policy-config", "config/policy.default.yaml"])
+    args = parser.parse_args(["answer", "--policy-config", "config/policy.default.yaml", "--retrieval-policy", "documents2_through_chunks__enriched"])
 
     assert args.policy_config == Path("config/policy.default.yaml")
+    assert args.retrieval_policy == "documents2_through_chunks__enriched"
     assert args.output_dir is None
     assert not hasattr(args, "d")
     assert not hasattr(args, "ifrs_d")
