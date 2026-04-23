@@ -1,114 +1,293 @@
-retrieval:
-  mode: documents2-through-chunks
-  query_embedding_mode: enriched
-  k: 5
-  expand: 0
-  full_doc_threshold: 0
-  expand_to_section: true
-  text:
-    min_score: 0.53
-  titles:
-    min_score: 0.6
-  documents:
-    global_d: 5
-    by_document_type:
-      IFRS-S:
-        d: 1
-        min_score: 0.683
-        expand_to_section: true
-        similarity_representation: scope
-      IFRS-BC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      IFRS-IE:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      IFRS-IG:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: full
-      IAS-S:
-        d: 2
-        min_score: 0.699
-        expand_to_section: true
-        similarity_representation: toc
-      IAS-BC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: toc
-      IAS-BCIASC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: toc
-      IAS-IE:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: toc
-      IAS-IG:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: toc
-      IAS-SM:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: toc
-      IFRIC:
-        d: 1
-        min_score: 0.671
-        expand_to_section: true
-        similarity_representation: scope
-      IFRIC-BC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      IFRIC-IE:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      IFRIC-IG:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: full
-      SIC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: background_and_issue
-      SIC-BC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      SIC-IE:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
-      NAVIS:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: full
-      PS:
-        d: 1
-        min_score: 0.8
-        expand_to_section: true
-        similarity_representation: full
-      PS-BC:
-        d: 1
-        min_score: 0.8
-        expand_to_section: false
-        similarity_representation: full
+querying:
+  raw:
+    embedding_mode: raw
+  enriched:
+    embedding_mode: enriched
+
+document_routing_strategies:
+  return_all:
+    source: all_documents
+
+  through_chunks:
+    source: top_chunk_results
+    profiles:
+      q1_authority_family:
+        global_d: 5
+        by_document_type:
+          IFRS-S:
+            d: 1
+            min_score: 0.683
+            expand_to_section: true
+          IFRS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IFRS-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IFRS-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+          IAS-S:
+            d: 2
+            min_score: 0.699
+            expand_to_section: true
+          IAS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IAS-BCIASC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IAS-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IAS-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+          IAS-SM:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IFRIC:
+            d: 1
+            min_score: 0.671
+            expand_to_section: true
+          IFRIC-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IFRIC-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          IFRIC-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+          SIC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+          SIC-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          SIC-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          PS:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+          PS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+          NAVIS:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+
+  through_document_representation:
+    source: document_representation
+    profiles:
+      q1_authority_family_full_repr:
+        global_d: 5
+        by_document_type:
+          IFRS-S:
+            d: 1
+            min_score: 0.683
+            expand_to_section: true
+            similarity_representation: full
+          IFRS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          IFRS-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          IFRS-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: full
+          IAS-S:
+            d: 2
+            min_score: 0.699
+            expand_to_section: true
+            similarity_representation: toc
+          IAS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: toc
+          IAS-BCIASC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: toc
+          IAS-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: toc
+          IAS-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: toc
+          IAS-SM:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: toc
+          IFRIC:
+            d: 1
+            min_score: 0.671
+            expand_to_section: true
+            similarity_representation: scope
+          IFRIC-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          IFRIC-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          IFRIC-IG:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: full
+          SIC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: background_and_issue
+          SIC-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          SIC-IE:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          PS:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: full
+          PS-BC:
+            d: 1
+            min_score: 0.8
+            expand_to_section: false
+            similarity_representation: full
+          NAVIS:
+            d: 1
+            min_score: 0.8
+            expand_to_section: true
+            similarity_representation: full
+
+document_routing_post_processing:
+  none: {}
+  aggregate_to_main_variant:
+    document_post_processing: aggregate_to_main_variant
+  main_variant_only:
+    filter: main_variant_only
+
+chunk_retrieval_strategies:
+  dense_chunks:
+    mode: chunk_similarity
+    profiles:
+      default:
+        filter:
+          min_score: 0.53
+          per_document_k: 5
+        expansion:
+          expand: 0
+          expand_to_section: true
+          full_doc_threshold: 0
+  title_chunks:
+    mode: title_similarity
+    profiles:
+      titles_default:
+        filter:
+          min_score: 0.6
+          per_document_k: 5
+
+retrieval_policies:
+  documents2_through_chunks__raw:
+    querying: raw
+    document_routing:
+      strategy: through_chunks
+      profile: q1_authority_family
+      post_processing: aggregate_to_main_variant
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  documents2_through_chunks__enriched:
+    querying: enriched
+    document_routing:
+      strategy: through_chunks
+      profile: q1_authority_family
+      post_processing: aggregate_to_main_variant
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  standards_only_through_chunks__enriched:
+    querying: enriched
+    document_routing:
+      strategy: through_chunks
+      profile: q1_authority_family
+      post_processing: main_variant_only
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  full_documents__enriched:
+    querying: enriched
+    document_routing:
+      strategy: through_document_representation
+      profile: q1_authority_family_full_repr
+      post_processing: none
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  text__enriched:
+    querying: enriched
+    document_routing:
+      strategy: return_all
+      profile: null
+      post_processing: none
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  titles__enriched:
+    querying: enriched
+    document_routing:
+      strategy: return_all
+      profile: null
+      post_processing: none
+    chunk_retrieval:
+      strategy: title_chunks
+      profile: titles_default
+
+prompts:
+  answer_prompt_a_path: prompts/answer_prompt_A.txt
+  answer_prompt_b_path: prompts/answer_prompt_B.txt
+
+output:
+  response_format: markdown
