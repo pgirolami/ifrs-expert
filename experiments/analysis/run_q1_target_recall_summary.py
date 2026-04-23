@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_QUESTION_DIR = "experiments/00_QUESTIONS/Q1"
 DEFAULT_POLICY_CONFIG = "config/policy.default.yaml"
+DEFAULT_RETRIEVAL_POLICY = "documents2_through_chunks__enriched"
 DEFAULT_OUTPUT_DIRNAME = "generated_q1_target_recall_summary"
 DEFAULT_TARGET_DOC_UIDS: tuple[str, ...] = ("ias39", "ifrs9", "ifric16")
 
@@ -67,16 +68,18 @@ class Q1TargetRecallSummaryExperiment:
         repo_root: Path,
         question_dir: Path,
         policy_config_path: Path,
+        retrieval_policy: str,
         output_dir: Path,
         target_doc_uids: tuple[str, ...],
     ) -> None:
         self._repo_root = repo_root
         self._question_dir = question_dir
         self._policy_config_path = policy_config_path
+        self._retrieval_policy = retrieval_policy
         self._output_dir = output_dir
         self._target_doc_uids = target_doc_uids
         self._runs_dir = output_dir / "runs"
-        self._raw_dir = self._runs_dir / policy_config_path.stem
+        self._raw_dir = self._runs_dir / policy_config_path.stem / retrieval_policy
 
     def run(self) -> dict[str, object]:
         questions = self._load_questions()
@@ -108,7 +111,9 @@ class Q1TargetRecallSummaryExperiment:
         return questions
 
     def _run_question(self, question: QuestionCase) -> QuestionSummary:
-        logger.info(f"Running retrieve for {question.question_id} using policy {self._policy_config_path}")
+        logger.info(
+            f"Running retrieve for {question.question_id} using policy config {self._policy_config_path} and retrieval policy {self._retrieval_policy}"
+        )
         completed_process = subprocess.run(  # noqa: S603
             (
                 "uv",
@@ -119,6 +124,8 @@ class Q1TargetRecallSummaryExperiment:
                 "retrieve",
                 "--policy-config",
                 str(self._policy_config_path),
+                "--retrieval-policy",
+                self._retrieval_policy,
                 "--json",
             ),
             cwd=self._repo_root,
@@ -213,6 +220,7 @@ class Q1TargetRecallSummaryExperiment:
 
         return {
             "policy_config": str(self._policy_config_path),
+            "retrieval_policy": self._retrieval_policy,
             "question_count": question_count,
             "all_targets_present_count": all_targets_present_count,
             "target_doc_uids": list(self._target_doc_uids),
@@ -255,7 +263,7 @@ class Q1TargetRecallSummaryExperiment:
         target_max_rank = summary_payload["target_max_rank"]
 
         lines = [
-            f"# Q1 target recall summary for `{self._policy_config_path}`",
+            f"# Q1 target recall summary for `{self._policy_config_path}` / `{self._retrieval_policy}`",
             "",
             f"- Questions: {question_count}",
             f"- All targets present together: {all_targets_present_count} / {question_count}",
@@ -348,6 +356,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help=f"Retrieval policy config path (default: {DEFAULT_POLICY_CONFIG})",
     )
     parser.add_argument(
+        "--retrieval-policy",
+        default=None,
+        help=f"Named retrieval policy to resolve from the catalog (default: {DEFAULT_RETRIEVAL_POLICY})",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
@@ -370,12 +383,14 @@ def main() -> None:
     repo_root = script_dir.parent.parent
     question_dir = args.question_dir or (repo_root / DEFAULT_QUESTION_DIR)
     policy_config_path = args.policy_config or (repo_root / DEFAULT_POLICY_CONFIG)
-    output_dir = args.output_dir or (script_dir / DEFAULT_OUTPUT_DIRNAME / policy_config_path.stem)
+    retrieval_policy = args.retrieval_policy or DEFAULT_RETRIEVAL_POLICY
+    output_dir = args.output_dir or (script_dir / DEFAULT_OUTPUT_DIRNAME / policy_config_path.stem / retrieval_policy)
 
     experiment = Q1TargetRecallSummaryExperiment(
         repo_root=repo_root,
         question_dir=question_dir,
         policy_config_path=policy_config_path,
+        retrieval_policy=retrieval_policy,
         output_dir=output_dir,
         target_doc_uids=tuple(args.target_doc_uids),
     )

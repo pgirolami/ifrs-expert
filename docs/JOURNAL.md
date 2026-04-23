@@ -243,4 +243,5 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 ### 2026-04-23
 - Tightened Q1 document-routing parameters again with a reusable evaluator and confirmed that, for the experiment 42 target set, a standards-only-through-chunks policy is sufficient
     - [Experiment 42](../experiments/42_q1_target_recall_low_docs_tuning/EXPERIMENTS.md): all 3 target standards are retrieved in 23/23 variants with an average of 3.57 documents per query; support docs are not needed for this target set
-- Redesigned the policy file to make it easier to understand and to make the experiments easier to reason about. It now mirrors the retrieval pipeline design : query shaping, document routing, chunk retrieval and expansion behavior.
+- Redesigned the policy file to make it easier to understand and to make the experiments easier to reason about. It now mirrors the retrieval pipeline design : query shaping, document routing, chunk retrieval and expansion behavior
+    - [Experiment 43](../experiments/43_standards_only_through_chunks/EXPERIMENTS.md) shows there is no recall regression when using the new policy config file

@@ -41,7 +41,7 @@ Building LLM systems in practice quickly surfaces non-obvious challenges:
   Expert users require answers to cite and justify their reasoning from source material.
 
 This project addresses these issues through:
-- automated acquisition & ingestion of corpus
+- automated corpus acquisition and ingestion
 - a shared retrieval pipeline with multiple routing modes and experiment-specific policy files
 - bilingual query normalization used as a retrieval aid
 - a two-stage reasoning pipeline with explicit intermediate artifacts
@@ -58,6 +58,7 @@ This project addresses these issues through:
 
 **Example output**
 
+These three views show the same answer artifact at different levels of structure: machine-readable JSON, a memo-style rendering, and a shorter FAQ-style rendering:
 - Structured response ([JSON](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.json)), not visible to user
 - Memo-style response ([markdown](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.md))
 - FAQ-style response ([markdown](./experiments/33_authority_competition_on_full_corpus/runs/2026-04-16_22-20-04_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml/B-response_faq.md))
@@ -103,32 +104,70 @@ flowchart LR
 - **Retrieval**
   - Semantic retrieval is implemented by cosine similarity over normalized embeddings (`BAAI/bge-m3`) using FAISS
   - `bge-m3` was chosen because:
-    1. it is multilingual (IFRS is primarily in English while Navis questions are in French)
+    1. it is multilingual (IFRS is primarily in English while Navis questions are in French, the SMEs questions will mainly be in French)
     2. it supports long inputs (8192 tokens) so whole paragraphs and document representations can be embedded
     3. it performed well in initial tests, separating nonsensical queries from actual accounting questions
-  - Retrieval runs through a **shared pipeline** that supports several modes (`text`, `titles`, `documents`, `documents2`, `documents2-through-chunks`), because the retrieval architecture was evolved experimentally rather than fixed up front
-  - The current default mode is **`documents2-through-chunks`**:
-    1. search all chunks globally
-    2. keep the strongest local chunk evidence per exact document
-    3. collapse supporting variants and related materials back to the governing standard when possible
-    4. apply per-document-type routing caps and score thresholds from YAML policy files
-    5. retrieve and expand coherent section-level context from the selected document bundle
-  - `documents2` was the previous major step: it queried per document type, then mapped supporting materials back to their governing standard and deduplicated them. This was important, but on the Q1 family it also made the French vs English retrieval gap much more visible.
-  - A bilingual **FR→EN glossary** is available for retrieval-time query enrichment:
-    - matched French IFRS/accounting terms are expanded with normalized English terminology for the embedding query only
-    - this glossary is a retrieval aid, not an answer-generation artifact
-    - it improved retrieval of some governing documents, but by itself it was not the full solution
-  - A major recent result, demonstrated explicitly on the **Q1 family**, is that routing from the **best local evidence inside documents**, then collapsing back to the governing standard, is much stronger than relying only on broad document representations:
-    - English control retrieval was nearly perfect before French retrieval was
-    - glossary enrichment alone improved `IFRIC 16` and `IAS 39`, but did not reliably fix `IFRS 9`
-    - the new chunk-first routing combined with the enrichment now consistently surfaces `IFRS 9`, `IAS 39`, and `IFRIC 16` (and often `IFRIC 17`) in the top retrieved documents on Q1
-  - Section expansion still matters: retrieval expands to the whole logical section/subtree rather than passing isolated chunks to the LLM
+  - Retrieval is now decomposed into four layers: **Querying**, **Document routing**, **Chunk retrieval**, and **Policy composition**. Each layer has multiple implementations that were added over time for experiments, and the config keeps those options side by side.
+
+    - **Querying**
+      - We have raw queries and enriched queries
+      - Enriched queries add English IFRS terms when the input is in French
+      - The glossary is used only to help retrieval
+
+    - **Document routing**
+      - Routing decides which documents are kept after chunk search
+      - We have several routing strategies from the experiment history, including return-all, routing through document representations, and routing through chunks
+      - The current Q1 setup uses `documents2-through-chunks`, which routes from the strongest chunk-level evidence in each document bundle and then collapses variants back to the governing standard.
+
+    - **Chunk retrieval**
+      - Chunk search is tuned separately from document routing
+      - We have dense chunk search and title search, each with its own limits and score thresholds
+      - Retrieved chunks are expanded to the chunks in the enclosing section before prompting
+
+    - **Policy composition**
+      - A retrieval policy is built from smaller reusable parts
+      - This keeps the config easier to read and compare across experiments
+      - The default config is a catalog of assembled policies, not one large hard-coded block
+
+      ```yaml
+      querying:
+        enriched:
+          embedding_mode: enriched
+
+      document_routing_strategies:
+        through_chunks:
+          source: top_chunk_results
+          profiles:
+            q1_authority_family:
+              global_d: 5
+
+      chunk_retrieval_strategies:
+        dense_chunks:
+          mode: chunk_similarity
+          profiles:
+            default:
+              filter:
+                min_score: 0.53
+                per_document_k: 5
+
+      retrieval_policies:
+        standards_only_through_chunks__enriched:
+          querying: enriched
+          document_routing:
+            strategy: through_chunks
+            profile: q1_authority_family
+            post_processing: main_variant_only
+          chunk_retrieval:
+            strategy: dense_chunks
+            profile: default
+      ```
+
 
 - **Structuring**
   - In the first stage of the LLM pipeline, Prompt A performs a structured analysis of the retrieved context and identifies candidate accounting approaches. It returns a JSON ([example](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/A-response.json)) with:
       - primary accounting issue
       - authority classification (primary / supporting / peripheral)
-      - authority competition handling (IFRS > IAS, IFRIC > SIC, standard > everything else)
+      - authority competition handling (for example, preferring current governing standards over older or secondary authorities)
       - candidate approaches
       - or, a clarification payload (`status = needs_clarification`, `questions_fr`)
 
@@ -140,7 +179,7 @@ flowchart LR
      - a FAQ-style answer (`B-response_faq.md`)
 
 - **CLI**
-  - The main workflows are available via a [CLI](./src/cli.py)
+  - The main workflows are available through a [CLI](./src/cli.py)
   - This includes ingestion, retrieval inspection, document-routing diagnostics, and the two-stage `answer` flow
 
 - **Web UI**
@@ -258,7 +297,7 @@ Promptfoo details, commands, storage layout, and archive conventions are documen
 
 ## Demo
 
-This section sets up a quick demo with only 4 documents (`IFRS 9`, `IFRIC 16`, and 2 Lefebvre Navis captures).
+This section sets up a quick demo with only four documents: `IFRS 9`, `IFRIC 16`, and 2 Lefebvre Navis captures.
 
 ### Set up
 
@@ -311,8 +350,8 @@ uv sync --all-groups
 uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-standards__ifric-16-hedges-of-a-net-investment-in-a-foreign-operation.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifric16.html --doc-uid ifric16
 uv run python -m src.cli store examples/www.ifrs.org__issued-standards__list-of-standards__ifrs-9-financial-instruments.html__content__dam__ifrs__publications__html-standards__english__2026__issued__ifrs9.html --doc-uid ifrs9
 
-uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190013Z--document.html
-uv run python -m src.cli store examples/Lefebvre-Naxis/20260412T190029Z--document.html
+uv run python -m src.cli store examples/Lefebvre-Navis/20260412T190013Z--document.html
+uv run python -m src.cli store examples/Lefebvre-Navis/20260412T190029Z--document.html
 ```
 
 #### Ingesting more documents

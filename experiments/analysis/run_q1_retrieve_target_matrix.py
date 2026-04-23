@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_OUTPUT_FILENAME = "generated_q1_retrieve_target_matrix.md"
 DEFAULT_POLICY_CONFIG = "config/policy.default.yaml"
+DEFAULT_RETRIEVAL_POLICY = "documents2_through_chunks__enriched"
 
 
 @dataclass(frozen=True)
@@ -328,6 +329,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help=f"Retrieval policy config path (default: {DEFAULT_POLICY_CONFIG})",
     )
     parser.add_argument(
+        "--retrieval-policy",
+        default=None,
+        help=f"Named retrieval policy to resolve from the catalog (default: {DEFAULT_RETRIEVAL_POLICY})",
+    )
+    parser.add_argument(
         "--priority-doc-uids",
         nargs="+",
         default=(),
@@ -346,6 +352,7 @@ def main() -> None:
     question_dir = args.question_dir or (repo_root / "experiments" / "00_QUESTIONS" / "Q1")
     output_path = args.output or (script_dir / DEFAULT_OUTPUT_FILENAME)
     policy_config_path = args.policy_config or (repo_root / DEFAULT_POLICY_CONFIG)
+    retrieval_policy = args.retrieval_policy or DEFAULT_RETRIEVAL_POLICY
     retrieve_command = (
         "uv",
         "run",
@@ -355,6 +362,8 @@ def main() -> None:
         "retrieve",
         "--policy-config",
         str(policy_config_path),
+        "--retrieval-policy",
+        retrieval_policy,
         "--json",
     )
 
