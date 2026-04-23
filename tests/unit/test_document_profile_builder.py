@@ -85,10 +85,10 @@ def test_document_profile_builder_extracts_background_issue_and_scope_without_ht
     assert "Introduction:" not in built_profile.embedding_text
 
 
-def test_document_profile_builder_populates_ias10_objective_and_scope_from_example_files() -> None:
-    """The IAS 10 example should populate Objective and Scope from the real extracted file set."""
-    html_path = _example_ifrs_path("20260414T141833Z--ias10.html")
-    sidecar_path = _example_ifrs_path("20260414T141833Z--ias10.json")
+def test_document_profile_builder_populates_ifrs9_objective_and_scope_from_example_files() -> None:
+    """The IFRS 9 example should populate Objective and Scope from the real extracted file set."""
+    html_path = _example_ifrs_path("20260414T094554Z--ifrs-9-financial-instruments.html")
+    sidecar_path = _example_ifrs_path("20260414T094554Z--ifrs-9-financial-instruments.json")
     extractor = HtmlExtractor(sidecar_path=sidecar_path)
     extracted_document = extractor.extract(source_path=html_path, explicit_doc_uid=None)
 
@@ -100,11 +100,11 @@ def test_document_profile_builder_populates_ias10_objective_and_scope_from_examp
     )
 
     assert built_profile.document.objective_text is not None
-    assert built_profile.document.objective_text.startswith("The objective of this Standard is to prescribe:")
+    assert built_profile.document.objective_text.startswith("The objective of this Standard is to establish principles")
     assert built_profile.document.scope_text is not None
-    assert built_profile.document.scope_text.startswith("This Standard shall be applied in the accounting for, and disclosure of, events")
-    assert "Objective: The objective of this Standard is to prescribe:" in built_profile.embedding_text
-    assert "Scope: This Standard shall be applied in the accounting for, and disclosure of, events" in built_profile.embedding_text
+    assert built_profile.document.scope_text.startswith("This Standard shall be applied by all entities")
+    assert "Objective: The objective of this Standard is to establish principles" in built_profile.embedding_text
+    assert "Scope: This Standard shall be applied by all entities" in built_profile.embedding_text
 
 
 def test_document_profile_builder_populates_intro_from_descendant_chunks_under_title_like_root() -> None:

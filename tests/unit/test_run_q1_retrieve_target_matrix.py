@@ -182,8 +182,8 @@ def test_run_places_requested_documents_first_in_lexicographic_order(tmp_path: P
 
     markdown = experiment.run()
 
-    if "| Total | Question | IFRIC 16 | IFRS 15 | IFRS 9 | IAS 39 |" not in markdown:
-        message = "Expected prioritized columns first in lexicographic order"
+    if "| Total | Question | IFRS 15 | IFRIC 16 | IFRS 9 | IAS 39 |" not in markdown:
+        message = "Expected prioritized columns first in the supplied priority order"
         raise AssertionError(message)
 
 
