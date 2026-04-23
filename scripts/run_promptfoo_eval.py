@@ -26,6 +26,7 @@ EXPERIMENTS_ROOT: Final[Path] = PROJECT_ROOT / "experiments"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 PROMPTFOO_CONFIG_DIR_ENV: Final[str] = "PROMPTFOO_CONFIG_DIR"
 DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
+DEFAULT_SUITE: Final[str] = "answer"
 DEFAULT_POLICY_PATH: Final[Path] = PROJECT_ROOT / "config" / "policy.default.yaml"
 DEFAULT_PROMPT_A_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
 DEFAULT_PROMPT_B_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
@@ -50,6 +51,7 @@ class PromptfooEvalRunner:
         self,
         project_root: Path,
         experiment_dir: Path,
+        suite: str = DEFAULT_SUITE,
         promptfoo_config_dir: Path | None = None,
         now_fn: Callable[[], datetime] | None = None,
         command_runner: Callable[[list[str], dict[str, str], Path], subprocess.CompletedProcess[str]] | None = None,
@@ -57,6 +59,7 @@ class PromptfooEvalRunner:
         """Initialize the Promptfoo eval runner."""
         self._project_root = project_root
         self._experiment_dir = experiment_dir
+        self._suite = suite
         self._promptfoo_config_dir = promptfoo_config_dir or experiment_dir / ".promptfoo"
         self._now_fn = now_fn or (lambda: datetime.now(tz=UTC))
         self._command_runner = command_runner or _run_command
@@ -81,7 +84,7 @@ class PromptfooEvalRunner:
 
         logger.info(f"Building promptfooconfig.yaml to {promptfoo_config_path}")
         build_result = self._command_runner(
-            ["npm", "run", "eval:build", "--", "--output", str(promptfoo_config_path)],
+            ["npm", "run", "eval:build", "--", "--suite", self._suite, "--output", str(promptfoo_config_path)],
             env,
             self._project_root,
         )
@@ -304,6 +307,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Shortcut for `--filter-targets <value>`",
     )
     parser.add_argument(
+        "--suite",
+        choices=("answer", "retrieve"),
+        default=DEFAULT_SUITE,
+        help="Promptfoo suite to build and run",
+    )
+    parser.add_argument(
         "promptfoo_args",
         nargs=argparse.REMAINDER,
         help="Additional arguments forwarded to `promptfoo eval` after `--`",
@@ -325,6 +334,7 @@ def main() -> int:
     runner = PromptfooEvalRunner(
         project_root=PROJECT_ROOT,
         experiment_dir=experiment_dir,
+        suite=args.suite,
         promptfoo_config_dir=promptfoo_config_dir,
     )
     resolved_promptfoo_args = build_promptfoo_args(

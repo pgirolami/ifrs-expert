@@ -1,0 +1,20 @@
+family_id: Q1
+
+common:
+  question_dir: experiments/00_QUESTIONS/Q1
+
+scenarios:
+  authority_gate:
+    label: enriched
+    policy_config: config/policy.default.yaml
+    retrieval_policy: standards_only_through_chunks__enriched
+
+  glossary_sentinel:
+    baseline:
+      label: raw
+      policy_config: config/policy.default.yaml
+      retrieval_policy: documents2_through_chunks__raw
+    candidate:
+      label: enriched
+      policy_config: config/policy.default.yaml
+      retrieval_policy: documents2_through_chunks__enriched

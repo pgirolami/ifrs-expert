@@ -245,3 +245,8 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
     - [Experiment 42](../experiments/42_q1_target_recall_low_docs_tuning/EXPERIMENTS.md): all 3 target standards are retrieved in 23/23 variants with an average of 3.57 documents per query; support docs are not needed for this target set
 - Redesigned the policy file to make it easier to understand and to make the experiments easier to reason about. It now mirrors the retrieval pipeline design : query shaping, document routing, chunk retrieval and expansion behavior
     - [Experiment 43](../experiments/43_standards_only_through_chunks/EXPERIMENTS.md) shows there is no recall regression when using the new policy config file
+- Added a retrieval-only check for Q1 using PromptFoo so we can catch search regressions without calling the model
+    - The Q1 question file now says which documents and sections should be found
+    - Each question now saves the exact search text used for retrieval in the run artifacts, so it is easy to inspect
+    - We also tightened chunk retrieval so it only returns chunks from the documents selected during routing
+    - [Experiment 44](../experiments/44_retrieval_non_regression_test/EXPERIMENTS.md) contains the result of the first run on the Q1 family

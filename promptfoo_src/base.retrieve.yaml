@@ -1,0 +1,24 @@
+evaluateOptions:
+  cache: false
+  maxConcurrency: 8
+  repeat: 1
+  showProgressBar: true
+
+prompts:
+  - '{{question}}'
+
+providers:
+  - id: 'exec:uv run python ../../../../scripts/run_retrieve.py'
+    label: 'Q1 retrieval non-regression gate'
+    config:
+      policy-config: './effective/policy.default.yaml'
+      retrieval-policy: 'standards_only_through_chunks__enriched'
+
+readme: |
+  IFRS Expert retrieval regression suite.
+
+  This suite uses Promptfoo as the harness for retrieval-only checks.
+  The provider shells out to `src.cli retrieve --json`; no LLM calls happen
+  in this suite.
+
+  Run Q1 retrieval: make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval FAMILY=Q1

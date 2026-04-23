@@ -5,8 +5,9 @@ This project uses Promptfoo as the main regression harness for the current Promp
 It helps detect regressions across:
 - question phrasing variants within a family
 - question families under `experiments/00_QUESTIONS/`
-- retrieval defaults and prompt changes
-- whichever provider configurations are currently enabled in `promptfoo_src/base.yaml`
+- answer-pipeline defaults and prompt changes
+- retrieval-only guardrails and prompt changes
+- whichever provider configurations are currently enabled in `promptfoo_src/base.answer.yaml` or `promptfoo_src/base.retrieve.yaml`
 
 ## Quick start
 
@@ -14,6 +15,8 @@ Run and inspect an experiment history with:
 
 ```bash
 make eval EXPERIMENT_DIR=promptfoo_regression
+make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval
+make q1-retrieve-non-regression
 make eval-view EXPERIMENT_DIR=promptfoo_regression
 make eval-list EXPERIMENT_DIR=promptfoo_regression
 make eval-show EXPERIMENT_DIR=promptfoo_regression EVAL_ID=<eval-id>
@@ -28,7 +31,7 @@ make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 codex sm
 make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
 ```
 
-The checked-in base config currently enables one OpenAI Codex provider stanza (`OpenAI GPT 5.4 through Codex current answer defaults`). Uncomment or add provider blocks in `promptfoo_src/base.yaml` when you want cross-provider comparisons.
+The checked-in answer base config currently enables one OpenAI Codex provider stanza (`OpenAI GPT 5.4 through Codex current answer defaults`). Uncomment or add provider blocks in `promptfoo_src/base.answer.yaml` when you want cross-provider comparisons.
 
 ## Operator rules
 
@@ -86,11 +89,12 @@ Each archived run contains:
 ## Config generation
 
 The root `promptfooconfig.yaml` is generated from:
-- `promptfoo_src/base.yaml`
+- `promptfoo_src/base.answer.yaml`
+- `promptfoo_src/base.retrieve.yaml`
 - `experiments/00_QUESTIONS/*/family.yaml`
 
-`promptfoo_src/base.yaml` is the shared home for Promptfoo provider defaults.
-It now carries the fixed `answer` command settings that should be explicit and
+`promptfoo_src/base.answer.yaml` is the shared home for the answer-suite Promptfoo provider defaults.
+It carries the fixed `answer` command settings that should be explicit and
 stable across eval runs, such as:
 - `k`
 - `min-score`
@@ -110,8 +114,11 @@ in document-first mode with section expansion enabled:
 - `expand-to-section: true`
 
 Artifact-output settings such as `output-dir` and `save-all` are not stored in
-`promptfoo_src/base.yaml`; they are managed by `scripts/run_promptfoo_eval.py`
+`promptfoo_src/base.answer.yaml`; they are managed by `scripts/run_promptfoo_eval.py`
 through the run archive layout and `PROMPTFOO_ARTIFACTS_DIR`.
+
+`promptfoo_src/base.retrieve.yaml` is the retrieval-only suite base config. It
+uses `scripts/run_retrieve.py` as the `exec:` provider and does not call any LLM.
 
 When you update Promptfoo families, assertions, or shared provider defaults,
 rebuild it with:
@@ -130,6 +137,14 @@ uv run python scripts/run_promptfoo_eval.py \
   --family Q1 \
   --provider "OpenAI GPT 5.4 through Codex current answer defaults" \
   --description "Q1 codex"
+
+uv run python scripts/run_promptfoo_eval.py \
+  --experiment-dir promptfoo_retrieval \
+  --suite retrieve \
+  --family Q1 \
+  --description "Q1 retrieval"
+
+uv run python experiments/analysis/run_q1_retrieval_non_regression.py
 ```
 
 If you need raw Promptfoo flags, append them after `--`. In normal project usage,

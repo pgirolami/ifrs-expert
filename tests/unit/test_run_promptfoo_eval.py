@@ -82,6 +82,7 @@ def test_promptfoo_eval_runner_creates_timestamped_layout(tmp_path: Path) -> Non
     runner = module.PromptfooEvalRunner(
         project_root=tmp_path,
         experiment_dir=tmp_path / "experiments" / "promptfoo_regression",
+        suite="answer",
         now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
         command_runner=RecordingCommandRunner(),
     )
@@ -98,6 +99,7 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     runner = module.PromptfooEvalRunner(
         project_root=tmp_path,
         experiment_dir=tmp_path / "experiments" / "promptfoo_regression",
+        suite="answer",
         now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
         command_runner=command_runner,
     )
@@ -121,6 +123,8 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
 
     build_command, build_env, _ = command_runner.calls[0]
     assert build_command[:3] == ["npm", "run", "eval:build"]
+    assert "--suite" in build_command
+    assert "answer" in build_command
     assert module.PROMPTFOO_ARTIFACTS_DIR_ENV in build_env
     assert module.PROMPTFOO_CONFIG_DIR_ENV in build_env
 
@@ -129,3 +133,32 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     metadata = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
     assert metadata["description"] == "Q1 live"
     assert "archived_artifacts" in metadata
+
+
+def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
+    """Runner should forward suite=retrieve into the build command."""
+    module = _load_module()
+    command_runner = RecordingCommandRunner()
+    runner = module.PromptfooEvalRunner(
+        project_root=tmp_path,
+        experiment_dir=tmp_path / "experiments" / "promptfoo_regression",
+        suite="retrieve",
+        now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
+        command_runner=command_runner,
+    )
+
+    (tmp_path / "config").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "prompts").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "config" / "policy.default.yaml").write_text("retrieval: {}", encoding="utf-8")
+    (tmp_path / "prompts" / "answer_prompt_A.txt").write_text("A", encoding="utf-8")
+    (tmp_path / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
+    module.DEFAULT_POLICY_PATH = tmp_path / "config" / "policy.default.yaml"
+    module.DEFAULT_PROMPT_A_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
+    module.DEFAULT_PROMPT_B_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
+
+    exit_code = runner.run(promptfoo_args=[], description="retrieve suite")
+
+    assert exit_code == 0
+    build_command, _, _ = command_runner.calls[0]
+    assert "--suite" in build_command
+    assert "retrieve" in build_command

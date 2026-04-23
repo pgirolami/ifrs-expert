@@ -340,7 +340,7 @@ def test_retrieve_documents2_mode_consolidates_variants_to_standard_doc_uid() ->
 
 
 def test_retrieve_documents2_through_chunks_mode_routes_and_scores_by_chunk_similarity() -> None:
-    """documents2-through-chunks should route on chunk scores and collapse to the standard bundle."""
+    """documents2-through-chunks should route on chunk scores and keep only routed docs."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
 
     chunk_store = InMemoryChunkStore()
@@ -388,8 +388,8 @@ def test_retrieve_documents2_through_chunks_mode_routes_and_scores_by_chunk_simi
     assert data["document_hits"] == [
         {"doc_uid": "ifrs9", "score": 0.98, "document_type": "IFRS-S", "document_kind": "standard"},
     ]
-    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc", "ifrs9"]
-    assert [chunk["score"] for chunk in data["chunks"]] == [0.98, 0.94]
+    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9"]
+    assert [chunk["score"] for chunk in data["chunks"]] == [0.94]
 
 
 def test_retrieve_logs_top_chunk_per_output_document(caplog) -> None:

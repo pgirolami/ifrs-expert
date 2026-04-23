@@ -1,4 +1,4 @@
-.PHONY: dev lint format test test-retrieval build demo eval eval-view eval-list eval-show guard-experiment-dir
+.PHONY: dev lint format test test-retrieval build demo eval eval-retrieve q1-retrieve-non-regression eval-view eval-list eval-show guard-experiment-dir
 
 EXPERIMENT_DIR ?=
 DESCRIPTION ?=
@@ -7,6 +7,9 @@ VARIANT ?=
 PROVIDER ?=
 EXTRA_ARGS ?=
 EVAL_ID ?=
+RETRIEVAL_FIXTURE ?=
+RETRIEVAL_OUTPUT_DIR ?=
+RETRIEVAL_MAX_WORKERS ?=
 
 ifeq ($(filter /%,$(EXPERIMENT_DIR)),)
 ifneq ($(filter experiments/%,$(EXPERIMENT_DIR)),)
@@ -49,11 +52,27 @@ guard-experiment-dir:
 eval: guard-experiment-dir
 	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" uv run python scripts/run_promptfoo_eval.py \
 		--experiment-dir "$(EXPERIMENT_DIR)" \
+		--suite answer \
 		$(if $(DESCRIPTION),--description "$(DESCRIPTION)") \
 		$(if $(FAMILY),--family "$(FAMILY)") \
 		$(if $(VARIANT),--variant "$(VARIANT)") \
 		$(if $(PROVIDER),--provider "$(PROVIDER)") \
 		-- $(EXTRA_ARGS)
+
+eval-retrieve: guard-experiment-dir
+	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" uv run python scripts/run_promptfoo_eval.py \
+		--experiment-dir "$(EXPERIMENT_DIR)" \
+		--suite retrieve \
+		$(if $(DESCRIPTION),--description "$(DESCRIPTION)") \
+		$(if $(FAMILY),--family "$(FAMILY)") \
+		$(if $(VARIANT),--variant "$(VARIANT)") \
+		-- $(EXTRA_ARGS)
+
+q1-retrieve-non-regression:
+	uv run python experiments/analysis/run_q1_retrieval_non_regression.py \
+		$(if $(RETRIEVAL_FIXTURE),--fixture "$(RETRIEVAL_FIXTURE)") \
+		$(if $(RETRIEVAL_OUTPUT_DIR),--output-dir "$(RETRIEVAL_OUTPUT_DIR)") \
+		$(if $(RETRIEVAL_MAX_WORKERS),--max-workers "$(RETRIEVAL_MAX_WORKERS)")
 
 eval-view: guard-experiment-dir
 	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" npm exec -- promptfoo view -y

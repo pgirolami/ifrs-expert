@@ -1,0 +1,46 @@
+evaluateOptions:
+  cache: false
+  maxConcurrency: 3
+  repeat: 2
+  showProgressBar: true
+
+
+answer_command_defaults: &answer_command_defaults
+  policy-config: './effective/policy.default.yaml'
+
+prompts:
+  - '{{question}}'
+
+providers:
+  - id: 'exec:uv run python ../../../../scripts/run_answer.py'
+    label: 'OpenAI GPT 5.4 through Codex current answer defaults'
+    config:
+      <<: *answer_command_defaults
+      llm_provider: 'openai-codex'
+  # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
+  #   label: 'MiniMax 2.7 High current answer defaults'
+  #   config:
+  #     <<: *answer_command_defaults
+  #     llm_provider: 'minimax'
+  # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
+  #   label: 'Mistral Large 3 current answer defaults'
+  #   config:
+  #     <<: *answer_command_defaults
+  #     llm_provider: 'Mistral'
+
+readme: |
+  IFRS Expert Evaluation Suite
+
+  This regression suite validates:
+  1. JSON schema and structured output
+  2. Presence of expected hedge approaches
+  3. Recommendation and justification fields
+  4. Presence of references and operational points
+  5. High-level reasoning quality via one model-graded rubric
+
+  Promptfoo providers now pass one policy-config path. Retrieval tuning lives
+  in YAML policy files, not inline Promptfoo provider knobs.
+  Artifact/output handling is controlled separately by scripts/run_promptfoo_eval.py.
+
+  Run Q1: make eval EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1
+  View: make eval-view EXPERIMENT_DIR=promptfoo_q1_current_defaults

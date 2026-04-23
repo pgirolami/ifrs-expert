@@ -32,7 +32,7 @@ def _load_module() -> ModuleType:
 
 def test_builder_renders_family_anchor_and_alias(tmp_path: Path) -> None:
     """Builder should anchor family assertions once and reuse alias."""
-    base_path = tmp_path / "promptfoo_src" / "base.yaml"
+    base_path = tmp_path / "promptfoo_src" / "base.answer.yaml"
     base_path.parent.mkdir(parents=True)
     base_path.write_text(
         """
@@ -66,6 +66,14 @@ assert:
   - type: is-json
     value: file://./prompts/schema.json
     description: JSON schema
+assert_retrieve:
+  required_documents:
+    - ifrs9
+    - ifric16
+  required_section_ranges:
+    - document: ifrs9
+      start: "6.3.1"
+      end: "6.3.6"
 variants:
   - id: Q1.0
     file: Q1.0.txt
@@ -89,6 +97,70 @@ variants:
     assert "assert: *q1_assertions" in output
     assert "family: 'Q1¤'" in output
     assert "variant: 'Q1.0¤'" in output
+
+
+def test_builder_uses_retrieve_assertions_for_retrieve_suite(tmp_path: Path) -> None:
+    """Builder should render retrieval assertions when suite=retrieve."""
+    base_path = tmp_path / "promptfoo_src" / "base.retrieve.yaml"
+    base_path.parent.mkdir(parents=True)
+    base_path.write_text(
+        """
+evaluateOptions:
+  cache: false
+prompts:
+  - '{{question}}'
+providers:
+  - id: 'exec:test'
+    label: 'Provider'
+    config:
+      policy-config: '../../../../config/policy.default.yaml'
+readme: |
+  Demo retrieval suite
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    family_dir = tmp_path / "experiments" / "00_QUESTIONS" / "Q1"
+    family_dir.mkdir(parents=True)
+    (family_dir / "Q1.0.txt").write_text("Question 0", encoding="utf-8")
+    (family_dir / "family.yaml").write_text(
+        """
+family_id: Q1
+assert:
+  - type: is-json
+    value: file://./prompts/schema.json
+    description: JSON schema
+assert_retrieve:
+  required_documents:
+    - ifrs9
+    - ifric16
+    - ias39
+  required_section_ranges:
+    - document: ifrs9
+      start: "6.3.1"
+      end: "6.3.6"
+    - document: ifric16
+      start: "10"
+      end: "13"
+variants:
+  - id: Q1.0
+    file: Q1.0.txt
+    description: Variant zero
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=tmp_path, suite="retrieve")
+
+    output_path = tmp_path / "experiments" / "promptfoo_retrieval" / "runs" / "latest" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+    output = builder.build_text(output_path=output_path)
+
+    assert "assert: &q1_assertions" in output
+    assert "Required Q1 authorities are in the top 5 with expected document types" in output
+    assert "Required chunk numbers are present for ifrs9 6.3.1-6.3.6" in output
+    assert "expectedChunkNumbers" in output
 
 
 def test_builder_writes_requested_output_path(tmp_path: Path) -> None:

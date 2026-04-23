@@ -274,7 +274,7 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
     if not selected_results:
         return f"Error: No chunks found with score >= {request.chunk_min_score}", None
 
-    ranked_document_results, exact_doc_uids_by_standard_doc_uid = _aggregate_standard_bundle_scores(selected_results)
+    ranked_document_results = _aggregate_standard_document_scores(selected_results)
     if not ranked_document_results:
         return "Error: No documents retrieved", None
 
@@ -289,16 +289,13 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
     if not document_hits:
         return "Error: No documents found with the configured per-type score thresholds", None
 
-    allowed_standard_doc_uids = {document_hit.doc_uid for document_hit in document_hits}
-    allowed_exact_doc_uids = {exact_doc_uid for standard_doc_uid in allowed_standard_doc_uids for exact_doc_uid in exact_doc_uids_by_standard_doc_uid.get(standard_doc_uid, set())}
-    filtered_ranked_chunk_results = [result for result in selected_results if str(result["doc_uid"]) in allowed_exact_doc_uids]
+    allowed_doc_uids = {document_hit.doc_uid for document_hit in document_hits}
+    filtered_ranked_chunk_results = [result for result in selected_results if str(result["doc_uid"]) in allowed_doc_uids]
     if not filtered_ranked_chunk_results:
         return "Error: No chunks found in selected documents", None
 
     doc_chunks = _fetch_chunks(selected_results=filtered_ranked_chunk_results, config=config)
-    docs_to_expand_to_section = {
-        exact_doc_uid for document_hit in document_hits if request.document_expand_to_section_by_type.get(document_hit.document_type, False) for exact_doc_uid in exact_doc_uids_by_standard_doc_uid.get(document_hit.doc_uid, set())
-    }
+    docs_to_expand_to_section = {document_hit.doc_uid for document_hit in document_hits if request.document_expand_to_section_by_type.get(document_hit.document_type, False)}
     expanded_results = _expand_chunks(
         results=filtered_ranked_chunk_results,
         doc_chunks=doc_chunks,
@@ -321,18 +318,16 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
     )
 
 
-def _aggregate_standard_bundle_scores(
+def _aggregate_standard_document_scores(
     selected_results: list[SearchResult],
-) -> tuple[list[DocumentSearchResult], dict[str, set[str]]]:
+) -> list[DocumentSearchResult]:
     ranked_by_standard_doc_uid: dict[str, float] = {}
-    exact_doc_uids_by_standard_doc_uid: dict[str, set[str]] = {}
     for result in selected_results:
         raw_doc_uid = str(result["doc_uid"])
         standard_doc_uid = resolve_standard_doc_uid(raw_doc_uid)
         if standard_doc_uid is None:
             logger.debug(f"Skipping chunk candidate doc_uid={raw_doc_uid} because it could not be mapped to a standard doc_uid")
             continue
-        exact_doc_uids_by_standard_doc_uid.setdefault(standard_doc_uid, set()).add(raw_doc_uid)
         score = float(result["score"])
         existing_score = ranked_by_standard_doc_uid.get(standard_doc_uid)
         if existing_score is None or score > existing_score:
@@ -340,7 +335,7 @@ def _aggregate_standard_bundle_scores(
     ranked_results_output: list[DocumentSearchResult] = [{"doc_uid": doc_uid, "score": score} for doc_uid, score in ranked_by_standard_doc_uid.items()]
     ranked_results_output.sort(key=lambda item: item["score"], reverse=True)
     logger.info(f"Aggregated {len(selected_results)} chunk result(s) into {len(ranked_results_output)} standard document candidate(s)")
-    return ranked_results_output, exact_doc_uids_by_standard_doc_uid
+    return ranked_results_output
 
 
 def _get_document_retrieval_prerequisite_error(
