@@ -15,7 +15,7 @@ from src.commands.document_output import build_output_document_sections
 from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
-from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedDocumentHit
+from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
@@ -200,6 +200,40 @@ def _parse_json_value(raw_text: str) -> JSONValue:
     return _coerce_json_value(parsed)
 
 
+def _build_retrieved_chunk_hits(
+    results: list[SearchResult],
+    doc_chunks: dict[str, list[Chunk]],
+) -> list[RetrievedChunkHit]:
+    """Build serializable chunk hits from the retrieval result."""
+    chunk_hits: list[RetrievedChunkHit] = []
+    for result in results:
+        doc_uid = str(result["doc_uid"])
+        chunk_db_id = int(result["chunk_id"])
+        score = float(result["score"])
+        document_type = infer_exact_document_type(doc_uid)
+        document_kind = infer_document_kind(doc_uid)
+        for chunk in doc_chunks.get(doc_uid, []):
+            if chunk.id != chunk_db_id:
+                continue
+            chunk_hits.append(
+                RetrievedChunkHit(
+                    doc_uid=doc_uid,
+                    chunk_number=chunk.chunk_number,
+                    chunk_id=chunk.chunk_id,
+                    score=round(score, 4),
+                    document_type=document_type,
+                    document_kind=document_kind,
+                    containing_section_id=chunk.containing_section_id,
+                    containing_section_db_id=chunk.containing_section_db_id,
+                    page_start=chunk.page_start,
+                    page_end=chunk.page_end,
+                    text=chunk.text,
+                )
+            )
+            break
+    return chunk_hits
+
+
 class AnswerCommand:
     """Retrieve chunks and run the two-step answer pipeline."""
 
@@ -360,6 +394,7 @@ class AnswerCommand:
                 )
                 for hit in retrieval_result.document_hits
             ],
+            chunk_hits=_build_retrieved_chunk_hits(retrieval_result.chunk_results, retrieval_result.doc_chunks),
         )
         return self._process_prompts(result, retrieval_result.chunk_results, retrieval_result.doc_chunks)
 

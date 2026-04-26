@@ -10,7 +10,7 @@ import pytest
 
 import src.cli as cli
 from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
-from src.models.answer_command_result import AnswerCommandResult, RetrievedDocumentHit
+from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 
 VALID_PROMPT_B_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
@@ -39,6 +39,15 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
         success=True,
         retrieved_doc_uids=["ifrs-9"],
         document_hits=[RetrievedDocumentHit(doc_uid="ifrs-9", score=0.91, document_type="ifrs")],
+        chunk_hits=[
+            RetrievedChunkHit(
+                doc_uid="ifrs-9",
+                chunk_number="6.3.1",
+                chunk_id="IFRS9_6.3.1",
+                score=0.82,
+                document_type="ifrs",
+            )
+        ],
         prompt_a_text="Prompt A content",
         prompt_a_raw_response='{"status": "pass", "approaches": []}',
         prompt_b_text="Prompt B content",
@@ -59,6 +68,7 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
     assert '"answer": "oui"' in (tmp_path / "B-response.json").read_text(encoding="utf-8")
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
     assert '"document_hits"' in (tmp_path / "document_routing.json").read_text(encoding="utf-8")
+    assert '"chunks"' in (tmp_path / "target_chunk_retrieval.json").read_text(encoding="utf-8")
 
 
 class FakeTextCommand:
@@ -156,7 +166,6 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
 
     assert output == VALID_PROMPT_B_RESPONSE
     assert (output_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
-
 
 
 def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: pytest.MonkeyPatch) -> None:

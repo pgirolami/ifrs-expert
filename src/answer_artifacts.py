@@ -33,6 +33,27 @@ def save_answer_command_result(result: AnswerCommandResult, output_dir: Path) ->
     if result.prompt_b_faq_markdown is not None:
         _write_text_file(output_dir / "B-response_faq.md", result.prompt_b_faq_markdown)
 
+    _write_retrieval_diagnostic_artifacts(result, output_dir)
+
+    if result.error is not None and result.error_stage == "prompt_a":
+        _write_text_file(output_dir / "A-error.txt", result.error)
+
+    if result.error is not None and result.error_stage == "prompt_b":
+        _write_text_file(output_dir / "B-error.txt", result.error)
+
+
+def _write_b_response_json(path: Path, result: AnswerCommandResult) -> None:
+    """Write the historical B-response.json artifact."""
+    if result.prompt_b_json is not None:
+        path.write_text(json.dumps(result.prompt_b_json, indent=2, ensure_ascii=False), encoding="utf-8")
+        return
+
+    if result.prompt_b_raw_response is not None:
+        path.write_text(result.prompt_b_raw_response, encoding="utf-8")
+
+
+def _write_retrieval_diagnostic_artifacts(result: AnswerCommandResult, output_dir: Path) -> None:
+    """Persist retrieval-side diagnostic source artifacts when available."""
     if result.document_hits:
         _write_text_file(
             output_dir / "document_routing.json",
@@ -53,21 +74,32 @@ def save_answer_command_result(result: AnswerCommandResult, output_dir: Path) ->
             ),
         )
 
-    if result.error is not None and result.error_stage == "prompt_a":
-        _write_text_file(output_dir / "A-error.txt", result.error)
-
-    if result.error is not None and result.error_stage == "prompt_b":
-        _write_text_file(output_dir / "B-error.txt", result.error)
-
-
-def _write_b_response_json(path: Path, result: AnswerCommandResult) -> None:
-    """Write the historical B-response.json artifact."""
-    if result.prompt_b_json is not None:
-        path.write_text(json.dumps(result.prompt_b_json, indent=2, ensure_ascii=False), encoding="utf-8")
-        return
-
-    if result.prompt_b_raw_response is not None:
-        path.write_text(result.prompt_b_raw_response, encoding="utf-8")
+    if result.chunk_hits:
+        _write_text_file(
+            output_dir / "target_chunk_retrieval.json",
+            json.dumps(
+                {
+                    "chunks": [
+                        {
+                            "doc_uid": hit.doc_uid,
+                            "document_type": hit.document_type,
+                            "document_kind": hit.document_kind,
+                            "chunk_number": hit.chunk_number,
+                            "chunk_id": hit.chunk_id,
+                            "containing_section_id": hit.containing_section_id,
+                            "containing_section_db_id": hit.containing_section_db_id,
+                            "page_start": hit.page_start,
+                            "page_end": hit.page_end,
+                            "text": hit.text,
+                            "score": hit.score,
+                        }
+                        for hit in result.chunk_hits
+                    ]
+                },
+                indent=2,
+                ensure_ascii=False,
+            ),
+        )
 
 
 def _write_text_file(path: Path, content: str) -> None:

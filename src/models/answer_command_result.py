@@ -20,6 +20,23 @@ class RetrievedDocumentHit:
 
 
 @dataclass
+class RetrievedChunkHit:
+    """One retrieved chunk selected during answer generation."""
+
+    doc_uid: str
+    chunk_number: str
+    chunk_id: str
+    score: float
+    document_type: str | None = None
+    document_kind: str | None = None
+    containing_section_id: str | None = None
+    containing_section_db_id: int | None = None
+    page_start: str | None = None
+    page_end: str | None = None
+    text: str | None = None
+
+
+@dataclass
 class AnswerCommandResult:
     """Artifacts produced by one AnswerCommand execution."""
 
@@ -27,6 +44,7 @@ class AnswerCommandResult:
     success: bool = False
     retrieved_doc_uids: list[str] = field(default_factory=list)
     document_hits: list[RetrievedDocumentHit] = field(default_factory=list)
+    chunk_hits: list[RetrievedChunkHit] = field(default_factory=list)
     prompt_a_text: str | None = None
     prompt_a_raw_response: str | None = None
     prompt_a_json: JSONValue | None = None

@@ -917,13 +917,14 @@ class DocumentRoutingDiagnosticsAnalyzer:
         self._repo_root = repo_root
 
     def analyze(self, experiment_dir: Path, input_path: Path | None, section_title: str | None = None) -> str:
-        payload = self._load_payload(experiment_dir, input_path)
+        payload, markdown_path = self._load_payload(experiment_dir, input_path)
         if "input_labels" in payload and "rows" in payload:
             lines = self._analyze_comparison(payload)
         elif "document_summaries" in payload and "rows" in payload:
             lines = self._analyze_run(payload)
         else:
             raise TypeError("Unsupported document routing diagnostics input")
+        lines.insert(0, f"- Diagnostics: {_markdown_link(markdown_path, experiment_dir)}")
         rendered = self._render_section(section_title or DEFAULT_SECTION_TITLE, lines)
         experiments_md = experiment_dir / "EXPERIMENTS.md"
         existing = experiments_md.read_text(encoding="utf-8") if experiments_md.exists() else ""
@@ -932,7 +933,7 @@ class DocumentRoutingDiagnosticsAnalyzer:
         experiments_md.write_text(existing + "\n" + rendered, encoding="utf-8")
         return rendered
 
-    def _load_payload(self, experiment_dir: Path, input_path: Path | None) -> dict[str, object]:
+    def _load_payload(self, experiment_dir: Path, input_path: Path | None) -> tuple[dict[str, object], Path]:
         if input_path is None:
             index_path = experiment_dir / DEFAULT_DIAGNOSTICS_DIRNAME / DEFAULT_INDEX_JSON_FILENAME
             if not index_path.exists():
@@ -944,7 +945,22 @@ class DocumentRoutingDiagnosticsAnalyzer:
             run_entry = _require_mapping(runs[0], context="index.json: runs[0]")
             raw_json_path = Path(_require_str(run_entry.get("json_path"), context="index.json: runs[0].json_path"))
             input_path = raw_json_path if raw_json_path.is_absolute() else self._repo_root / raw_json_path
-        return _load_json_object(input_path)
+            raw_markdown_path = Path(_require_str(run_entry.get("markdown_path"), context="index.json: runs[0].markdown_path"))
+            markdown_path = raw_markdown_path if raw_markdown_path.is_absolute() else self._repo_root / raw_markdown_path
+            return _load_json_object(input_path), markdown_path
+
+        payload = _load_json_object(input_path)
+        if "runs" in payload and "experiment_name" in payload:
+            runs = _require_list(payload.get("runs"), context="index.json: runs")
+            if len(runs) != 1:
+                raise ValueError(f"{input_path} has {len(runs)} generated runs; pass a run JSON or comparison JSON")
+            run_entry = _require_mapping(runs[0], context="index.json: runs[0]")
+            raw_json_path = Path(_require_str(run_entry.get("json_path"), context="index.json: runs[0].json_path"))
+            run_json_path = raw_json_path if raw_json_path.is_absolute() else self._repo_root / raw_json_path
+            raw_markdown_path = Path(_require_str(run_entry.get("markdown_path"), context="index.json: runs[0].markdown_path"))
+            markdown_path = raw_markdown_path if raw_markdown_path.is_absolute() else self._repo_root / raw_markdown_path
+            return _load_json_object(run_json_path), markdown_path
+        return payload, _markdown_path_for_json(input_path)
 
     def _analyze_run(self, payload: dict[str, object]) -> list[str]:
         rows = _require_list(payload.get("rows"), context="rows")
@@ -1256,6 +1272,19 @@ def _path_text(path: Path, base: Path) -> str:
         return str(path.relative_to(base))
     except ValueError:
         return str(path)
+
+
+def _markdown_path_for_json(json_path: Path) -> Path:
+    if json_path.name == DEFAULT_COMPARE_JSON_FILENAME:
+        return json_path.with_name(DEFAULT_COMPARE_MD_FILENAME)
+    if json_path.name == DEFAULT_INDEX_JSON_FILENAME:
+        return json_path.with_name(DEFAULT_INDEX_MD_FILENAME)
+    return json_path.with_name(DEFAULT_RUN_MD_FILENAME)
+
+
+def _markdown_link(markdown_path: Path, experiment_dir: Path) -> str:
+    relative_path = os.path.relpath(markdown_path, start=experiment_dir)
+    return f"[diagnostics markdown]({relative_path})"
 
 
 def resolve_experiment_dir(repo_root: Path, experiment: str) -> Path:

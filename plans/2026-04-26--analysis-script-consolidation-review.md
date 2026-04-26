@@ -29,8 +29,8 @@ Comparison scripts should not rerun retrieval or LLM calls. They should consume 
 
 | Layer | Run-level artifacts | Comparison artifacts |
 | --- | --- | --- |
-| `document_routing` | `document_routing_diagnostics.md`, `document_routing_diagnostics.json`, `document_routing_raw/*.retrieve.json` | `document_routing_comparison.md`, `document_routing_comparison.json` |
-| `target_chunk_retrieval` | `target_chunk_retrieval_diagnostics.md`, `target_chunk_retrieval_diagnostics.json`, `target_chunk_retrieval_raw/*.retrieve.json` | `target_chunk_retrieval_comparison.md`, `target_chunk_retrieval_comparison.json` |
+| `document_routing` | `document_routing_diagnostics.md`, `document_routing_diagnostics.json`, `raw/*.retrieve.json` | `document_routing_comparison.md`, `document_routing_comparison.json` |
+| `target_chunk_retrieval` | `target_chunk_retrieval_diagnostics.md`, `target_chunk_retrieval_diagnostics.json`, `raw/*.retrieve.json` | `target_chunk_retrieval_comparison.md`, `target_chunk_retrieval_comparison.json` |
 | `approach_detection` | `approach_detection_diagnostics.html`, `approach_detection_diagnostics.md`, `approach_detection_diagnostics.json` | `approach_detection_comparison.md`, `approach_detection_comparison.json` |
 
 Secondary artifacts can exist, but each layer should have one primary artifact that humans open first.
@@ -249,6 +249,91 @@ The diagnostics surface should become:
 
 ## Implementation
 
+### Shared layer implementation pattern
+
+The `document_routing` implementation establishes the pattern the other two runtime layers should follow.
+
+The same shape should be used for:
+
+- `target_chunk_retrieval`
+- `approach_detection`
+
+Layer package layout:
+
+- each layer gets its own folder under `experiments/analysis/<layer>/`
+- each layer has one contract/module file that owns JSON shape, markdown rendering, comparison rendering, analysis rendering, and shared readers
+- each layer has three CLI entry points:
+  - `generate_<layer>_diagnostics.py`
+  - `compare_<layer>_diagnostics.py`
+  - `analyze_<layer>_diagnostics.py`
+- each CLI file should include a short runnable example at the top
+
+Run-level artifact layout:
+
+- canonical generated artifacts live under `<experiment>/runs/<run_id>/diagnostics/<layer>/`
+- the main human-readable artifact is `<layer>_diagnostics.md` or `<layer>_diagnostics.html`
+- the canonical machine-readable artifact is `<layer>_diagnostics.json`
+- raw source payloads used by the generator live under `<experiment>/runs/<run_id>/diagnostics/<layer>/raw/`
+- generators may copy or normalize raw payloads into `raw/`, but they should not treat `raw/` as the source of truth when richer run artifacts already exist
+
+Experiment-level index layout:
+
+- each layer writes an experiment index under `<experiment>/diagnostics/`
+- index files are named `<layer>_index.md` and `<layer>_index.json`
+- index markdown links must be relative to the index file, so links continue to work when the experiment directory is moved
+- the index is a browsing and discovery artifact only; per-run JSON remains the canonical data source
+
+CLI rules:
+
+- `generate_<layer>_diagnostics.py` takes `--experiment` and conditional `--run-id`
+- `--run-id` is required only when the experiment has more than one run
+- `compare_<layer>_diagnostics.py` takes repeatable `--input`, optional aligned `--label`, and required `--output-dir`
+- compare scripts can compare two or more inputs
+- compare scripts can accept per-run diagnostics JSON or experiment index JSON
+- `analyze_<layer>_diagnostics.py` takes `--experiment`, optional `--input`, and optional `--section-title`
+- analyze scripts write directly to `<experiment>/EXPERIMENTS.md`
+- analyze scripts require `--input` only when the experiment has multiple generated runs or when analyzing a comparison artifact
+- compare and analyze scripts never rerun retrieval or LLM calls
+
+Promptfoo suite rules:
+
+- `make eval` intentionally fails so users choose a suite explicitly
+- answer-suite runs use `make eval-answer`
+- retrieval-suite runs use `make eval-retrieve`
+- this prevents answer runs from being mistaken for retrieval runs when generating diagnostics
+
+Run artifact source rules:
+
+- generated diagnostics should derive provider, policy, glossary, question source, and family metadata from the selected run directory and its `promptfooconfig.yaml`
+- question paths come from `promptfooconfig.yaml:tests[*].metadata.question_path`
+- family ids come from `promptfooconfig.yaml:tests[*].metadata.family`
+- fail fast if required family or question metadata is missing or unreadable
+- if the run was filtered by family, diagnostics should analyze only the filtered family or families
+- target documents and expected paragraphs come from the resolved family `family.yaml`
+
+Answer-run support:
+
+- answer runs do not return retrieval diagnostics in the Promptfoo response body
+- answer runs must persist the layer-specific source artifacts needed by diagnostics beside the normal answer artifacts
+- for `document_routing`, the answer pipeline now writes `document_routing.json` beside `A-response.json` and `B-response.json`
+- generators should first read native Promptfoo output when it contains the needed data, then fall back to the saved layer source artifact
+- this same fallback pattern should be used for `target_chunk_retrieval` and `approach_detection` when their inputs are produced as side artifacts of answer generation
+
+Comparison output rules:
+
+- comparison output goes only to the explicit `--output-dir`
+- comparison JSON carries the full row-level data needed for downstream analysis
+- comparison markdown should be compact and optimized for human diagnosis
+- for rank-like values, compare on rank first and retain score as secondary information
+- color scales should be based on the strongest observed change in the comparison, not on hard-coded score thresholds
+
+Analyzer output rules:
+
+- analyzers append a reproducible section to `EXPERIMENTS.md`
+- analyzers should cite the artifact paths they consumed
+- analyzers should focus on the layer's target expectations, not every incidental retrieved or emitted item
+- generated narrative should be deterministic for a fixed diagnostics JSON input
+
 ### document_routing contract
 
 Run-level generator:
@@ -260,6 +345,17 @@ Run-level generator:
 - raw retrieval payloads: `raw/<question_id>.retrieve.json`
 - experiment index artifact: `<experiment>/diagnostics/document_routing_index.md`
 - experiment index JSON: `<experiment>/diagnostics/document_routing_index.json`
+- answer-run source artifact: `document_routing.json` beside the answer artifacts for each question/provider/repeat
+
+Implemented choices:
+
+- scripts live under `experiments/analysis/document_routing/`
+- `make eval` now fails intentionally; answer and retrieval runs must use `make eval-answer` or `make eval-retrieve`
+- retrieval-suite runs read `document_hits` directly from the Promptfoo response output
+- answer-suite runs read `document_routing.json` from the question artifact directory because answer outputs only contain answer JSON
+- the generator normalizes either source into the same `document_routing_diagnostics.json` contract
+- the answer-run fallback is a source compatibility layer, not a separate diagnostics contract
+- the current answer-run routing artifact stores document candidates only; richer chunk-level data belongs to `target_chunk_retrieval`
 
 Generator CLI arguments:
 
@@ -274,9 +370,11 @@ Generator-derived inputs:
 - fail fast if any test lacks a readable `metadata.family` or `metadata.question_path`
 - policy file path comes from `promptfooconfig.yaml:providers.config.policy-config`
 - policy file contents come from the selected run's `effective/` directory
-- policy name comes from `promptfooconfig.yaml:providers.config.retrieval-policy`
+- policy name comes from `promptfooconfig.yaml:providers.config.retrieval-policy` for retrieval runs
+- answer runs do not have `retrieval-policy`; the implemented fallback uses `llm_provider`, then the `policy-config` stem, as the policy label
 - glossary file comes from the selected run's `effective/` directory
 - target documents come from each resolved question family's `family.yaml`
+- when `run.json.promptfoo_args` contains family filters, only matching tests are loaded from `promptfooconfig.yaml`
 
 Artifact granularity:
 
@@ -292,6 +390,9 @@ Markdown contract:
 - the total row shows per-document coverage and score range
 - keep the markdown compact and scan-friendly, matching the historical single-run matrix style
 - reuse the single-run matrix styling: rank-colored cells, target-document columns left-most in family-file order, remaining retrieved-document columns sorted by coverage, and the same HTML span formatting for populated cells
+- target documents appear first after `Question` and `Total`, in the order read from `family.yaml`
+- non-target document columns appear after target documents, ordered by total retrieval coverage across questions
+- document uid headers should be human-readable labels, for example `ifrs9` becomes `IFRS 9`
 
 JSON contract:
 
@@ -349,6 +450,9 @@ Compare CLI arguments:
 - two-way comparisons should show direct deltas for rank and candidate presence, with score retained in JSON for downstream analysis if needed
 - N-way comparisons should use compact table summaries first, with detailed rows in JSON and appendix sections
 - does not rerun retrieval
+- implemented markdown cells compare on rank, not score
+- implemented markdown cells retain score on a second line using `<br>`
+- implemented color scale uses rank change relative to the first input: worse ranks go red, unchanged is white, better ranks go green, and the largest absolute rank change sets the color extrema
 
 Analyze-level script:
 
@@ -367,5 +471,77 @@ Analyze CLI arguments:
 - when given comparison JSON, it analyzes routing changes across the compared runs
 - writes the analysis section directly to `<experiment>/EXPERIMENTS.md`
 - reports target-document regressions, wins, and notable score/rank changes
+- implemented run analysis focuses on target documents only
 - cites the exact artifact paths it used
 - does not rerun retrieval
+
+### target_chunk_retrieval implementation notes
+
+This layer follows the same generator/compare/analyze pattern as `document_routing`.
+
+Expected run-level layout:
+
+- default output root: `<experiment>/runs/<run_id>/diagnostics/target_chunk_retrieval/`
+- run markdown artifact: `target_chunk_retrieval_diagnostics.md`
+- run JSON artifact: `target_chunk_retrieval_diagnostics.json`
+- raw payloads: `raw/<question_id>.chunks.json`
+- experiment index artifact: `<experiment>/diagnostics/target_chunk_retrieval_index.md`
+- experiment index JSON: `<experiment>/diagnostics/target_chunk_retrieval_index.json`
+
+Implemented choices:
+
+- scripts live under `experiments/analysis/target_chunk_retrieval/`
+- `generate_target_chunk_retrieval_diagnostics.py` reads existing Promptfoo run outputs and does not rerun retrieval
+- retrieval-suite runs read `chunks` directly from the Promptfoo response output
+- answer-suite runs can read `target_chunk_retrieval.json` from the question artifact directory because answer outputs only contain answer JSON
+- the answer pipeline now writes `target_chunk_retrieval.json` beside `A-response.json`, `B-response.json`, and `document_routing.json`
+- the generator normalizes retrieval-suite and answer-suite sources into the same `target_chunk_retrieval_diagnostics.json` contract
+- Promptfoo result rows are matched by metadata variant id, not by dense test index, so filtered family runs work when Promptfoo test indexes are sparse
+- generated markdown is a compact expected-range coverage matrix with one row per question and one column per required section range
+
+Source choices to mirror from `document_routing`:
+
+- retrieval-suite runs should read chunk results directly from retrieve outputs
+- answer-suite runs should persist a target-chunk source artifact beside answer artifacts if the Promptfoo response does not contain enough chunk data
+- the generator should normalize retrieval-suite and answer-suite sources into one JSON contract
+- compare and analyze scripts should consume generated diagnostics only
+
+Layer-specific choices:
+
+- target documents come from `family.yaml`
+- expected section ranges come from `family.yaml:assert_retrieve.required_section_ranges`
+- section range matching uses the retrieved chunk's `doc_uid` and `chunk_number`
+- run diagnostics show whether expected target ranges were retrieved, not just whether the target document was routed
+- each expected-range cell shows retrieved chunk count, best chunk rank, and best score
+- comparison diagnostics compare expected-range chunk-count changes and retain rank/score in the cell
+- analyzer summarizes expected-range coverage by target document/range
+
+### approach_detection implementation notes
+
+This layer should also follow the same generator/compare/analyze pattern.
+
+Expected run-level layout:
+
+- default output root: `<experiment>/runs/<run_id>/diagnostics/approach_detection/`
+- primary human artifact: `approach_detection_diagnostics.html`
+- secondary markdown artifact: `approach_detection_diagnostics.md`
+- run JSON artifact: `approach_detection_diagnostics.json`
+- experiment index artifact: `<experiment>/diagnostics/approach_detection_index.md`
+- experiment index JSON: `<experiment>/diagnostics/approach_detection_index.json`
+
+Source choices to mirror from `document_routing`:
+
+- answer-suite runs are the natural source for this layer
+- generator should consume saved answer artifacts and any side artifacts produced during answer generation
+- compare and analyze scripts should consume generated diagnostics only
+- comparison output must require explicit `--output-dir`
+- analysis output writes directly to `<experiment>/EXPERIMENTS.md`
+
+Layer-specific choices:
+
+- primary HTML view should inherit from `spurious_approaches_vs_sections_matrix.html`
+- label frequency should be included in `generate_approach_detection_diagnostics.py`
+- expected approaches and expected paragraphs should come from `family.yaml` when defined
+- when expected paragraphs are defined, highlight them in the retrieved section/paragraph matrix
+- reuse the useful parts of `compare_chunks.py` only when they add data not already present in the spurious-approaches matrix: strict/loose stability aggregates, top/low retrieval score ranges, and expansion-section context
+- analyzer should focus on wrong or missing approaches, label-frequency anomalies, and context correlations rather than restating every answer row
