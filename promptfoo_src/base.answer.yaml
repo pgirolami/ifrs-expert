@@ -42,5 +42,5 @@ readme: |
   in YAML policy files, not inline Promptfoo provider knobs.
   Artifact/output handling is controlled separately by scripts/run_promptfoo_eval.py.
 
-  Run Q1: make eval EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1
+  Run Q1: make eval-answer EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1
   View: make eval-view EXPERIMENT_DIR=promptfoo_q1_current_defaults

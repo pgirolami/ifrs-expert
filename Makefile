@@ -1,4 +1,4 @@
-.PHONY: dev lint format test test-retrieval build demo eval eval-retrieve q1-retrieve-non-regression eval-view eval-list eval-show guard-experiment-dir
+.PHONY: dev lint format test test-retrieval build demo eval eval-answer eval-retrieve q1-retrieve-non-regression eval-view eval-list eval-show guard-experiment-dir
 
 EXPERIMENT_DIR ?=
 DESCRIPTION ?=
@@ -49,7 +49,11 @@ guard-experiment-dir:
 		exit 1; \
 	fi
 
-eval: guard-experiment-dir
+eval:
+	@echo "Error: use make eval-answer for answer runs or make eval-retrieve for retrieval runs" >&2
+	@exit 1
+
+eval-answer: guard-experiment-dir
 	PROMPTFOO_CONFIG_DIR="$(RESOLVED_EXPERIMENT_DIR)/.promptfoo" uv run python scripts/run_promptfoo_eval.py \
 		--experiment-dir "$(EXPERIMENT_DIR)" \
 		--suite answer \

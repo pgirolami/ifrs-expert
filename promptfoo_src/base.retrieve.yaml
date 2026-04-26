@@ -1,7 +1,7 @@
 evaluateOptions:
   cache: false
-  maxConcurrency: 8
-  repeat: 1
+  maxConcurrency: 3
+  repeat: 0
   showProgressBar: true
 
 prompts:

@@ -33,6 +33,26 @@ def save_answer_command_result(result: AnswerCommandResult, output_dir: Path) ->
     if result.prompt_b_faq_markdown is not None:
         _write_text_file(output_dir / "B-response_faq.md", result.prompt_b_faq_markdown)
 
+    if result.document_hits:
+        _write_text_file(
+            output_dir / "document_routing.json",
+            json.dumps(
+                {
+                    "document_hits": [
+                        {
+                            "doc_uid": hit.doc_uid,
+                            "score": hit.score,
+                            "document_type": hit.document_type,
+                            "document_kind": hit.document_kind,
+                        }
+                        for hit in result.document_hits
+                    ]
+                },
+                indent=2,
+                ensure_ascii=False,
+            ),
+        )
+
     if result.error is not None and result.error_stage == "prompt_a":
         _write_text_file(output_dir / "A-error.txt", result.error)
 

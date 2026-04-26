@@ -10,12 +10,23 @@ JSONValue: TypeAlias = JSONScalar | list["JSONValue"] | dict[str, "JSONValue"]
 
 
 @dataclass
+class RetrievedDocumentHit:
+    """One retrieved document candidate selected during answer generation."""
+
+    doc_uid: str
+    score: float
+    document_type: str | None = None
+    document_kind: str | None = None
+
+
+@dataclass
 class AnswerCommandResult:
     """Artifacts produced by one AnswerCommand execution."""
 
     query: str
     success: bool = False
     retrieved_doc_uids: list[str] = field(default_factory=list)
+    document_hits: list[RetrievedDocumentHit] = field(default_factory=list)
     prompt_a_text: str | None = None
     prompt_a_raw_response: str | None = None
     prompt_a_json: JSONValue | None = None

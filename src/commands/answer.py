@@ -15,7 +15,7 @@ from src.commands.document_output import build_output_document_sections
 from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, SectionStore, init_db
 from src.llm import get_client
-from src.models.answer_command_result import AnswerCommandResult, JSONValue
+from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
@@ -348,7 +348,19 @@ class AnswerCommand:
             )
 
         self._retrieved_doc_uids = retrieval_result.retrieved_doc_uids
-        result = AnswerCommandResult(query=self.query, retrieved_doc_uids=list(self._retrieved_doc_uids))
+        result = AnswerCommandResult(
+            query=self.query,
+            retrieved_doc_uids=list(self._retrieved_doc_uids),
+            document_hits=[
+                RetrievedDocumentHit(
+                    doc_uid=hit.doc_uid,
+                    score=hit.score,
+                    document_type=hit.document_type,
+                    document_kind=infer_document_kind(hit.doc_uid),
+                )
+                for hit in retrieval_result.document_hits
+            ],
+        )
         return self._process_prompts(result, retrieval_result.chunk_results, retrieval_result.doc_chunks)
 
     def _process_prompts(

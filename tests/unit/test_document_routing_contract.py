@@ -114,3 +114,39 @@ def test_analyze_document_routing_diagnostics_appends_section(tmp_path: Path) ->
     assert "IFRS 7:" not in rendered
     assert "## Routing Review" in experiments_md
     assert diagnostics.provider_name in rendered
+
+
+def test_load_document_routing_payload_falls_back_to_answer_artifact(tmp_path: Path) -> None:
+    """The loader should use a saved answer routing artifact when Promptfoo output lacks document hits."""
+    generator = module.DocumentRoutingDiagnosticsGenerator(_repo_root())
+    artifacts_dir = tmp_path / "artifacts"
+    artifact_path = artifacts_dir / "Q1" / "Q1.0" / "routing" / module.DEFAULT_DOCUMENT_ROUTING_FILENAME
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    artifact_path.write_text(
+        json.dumps(
+            {
+                "document_hits": [
+                    {
+                        "doc_uid": "ifrs9",
+                        "score": 0.91,
+                        "document_type": "ifrs",
+                        "document_kind": "standard",
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    payload = generator._load_document_routing_payload(
+        promptfoo_response=json.dumps({"output": json.dumps({"recommendation": {"answer": "oui"}})}, ensure_ascii=False),
+        run_artifacts_dir=artifacts_dir,
+        question_source=module.PromptfooTestCase(
+            family_id="Q1¤",
+            question_path=Path("experiments/00_QUESTIONS/Q1/Q1.0.txt"),
+            description="promptfoo test",
+        ),
+    )
+
+    assert payload["document_hits"][0]["doc_uid"] == "ifrs9"

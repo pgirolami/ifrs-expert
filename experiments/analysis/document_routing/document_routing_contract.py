@@ -28,6 +28,7 @@ DEFAULT_RAW_DIRNAME = "raw"
 DEFAULT_PROMPTFOO_DB_FILENAME = "promptfoo.db"
 DEFAULT_PROMPTFOO_CONFIG_FILENAME = "promptfooconfig.yaml"
 DEFAULT_RUN_METADATA_FILENAME = "run.json"
+DEFAULT_DOCUMENT_ROUTING_FILENAME = "document_routing.json"
 DEFAULT_SECTION_TITLE = "Document Routing Diagnostics"
 LIGHT_RED_RGB: tuple[int, int, int] = (248, 215, 218)
 LIGHT_GREEN_RGB: tuple[int, int, int] = (212, 237, 218)
@@ -245,7 +246,8 @@ class DocumentRoutingDiagnosticsGenerator:
         run_metadata = _load_json_object(run_metadata_path)
         promptfoo_config = _load_yaml_object(promptfooconfig_path)
         eval_id = self._select_eval_id(promptfoo_db_path, run_metadata)
-        question_sources = self._load_question_sources(promptfoo_config)
+        active_family_ids = self._active_family_ids_from_run_metadata(run_metadata)
+        question_sources = self._load_question_sources(promptfoo_config, active_family_ids=active_family_ids)
         target_documents = self._load_target_documents(question_sources)
         provider_name = self._load_provider_name(promptfoo_config)
         policy_name = self._load_policy_name(promptfoo_config)
@@ -255,6 +257,7 @@ class DocumentRoutingDiagnosticsGenerator:
             promptfoo_db_path=promptfoo_db_path,
             eval_id=eval_id,
             run_id=run_dir.name,
+            run_artifacts_dir=run_dir / "artifacts",
             question_sources=question_sources,
             target_documents=target_documents,
         )
@@ -292,7 +295,9 @@ class DocumentRoutingDiagnosticsGenerator:
             raw_dir=raw_dir,
             promptfoo_db_path=promptfoo_db_path,
             eval_id=diagnostics.eval_id,
+            run_artifacts_dir=output_dir.parent.parent / "artifacts",
             question_ids=tuple(row.question_id for row in diagnostics.rows),
+            question_sources=tuple(diagnostics.question_sources),
         )
         (output_dir / DEFAULT_RUN_JSON_FILENAME).write_text(
             json.dumps(diagnostics.to_json(), indent=2, ensure_ascii=False) + "\n",
@@ -414,21 +419,52 @@ class DocumentRoutingDiagnosticsGenerator:
         chosen = min(eval_rows, key=lambda row: abs(_eval_created_at(row["created_at"]) - created_at))
         return _require_str(chosen["id"], context="evals.id")
 
-    def _load_question_sources(self, promptfoo_config: dict[str, object]) -> list[PromptfooTestCase]:
+    def _load_question_sources(
+        self,
+        promptfoo_config: dict[str, object],
+        *,
+        active_family_ids: set[str] | None = None,
+    ) -> list[PromptfooTestCase]:
         tests = _require_list(promptfoo_config.get("tests"), context="promptfooconfig.yaml: tests")
         question_sources: list[PromptfooTestCase] = []
         for index, test in enumerate(tests):
             test_mapping = _require_mapping(test, context=f"promptfooconfig.yaml: tests[{index}]")
             metadata = _require_mapping(test_mapping.get("metadata"), context=f"promptfooconfig.yaml: tests[{index}].metadata")
             family_id = _require_str(metadata.get("family"), context=f"promptfooconfig.yaml: tests[{index}].metadata.family")
+            if active_family_ids is not None and family_id not in active_family_ids:
+                continue
             question_path = self._repo_root / _require_str(metadata.get("question_path"), context=f"promptfooconfig.yaml: tests[{index}].metadata.question_path")
             if not question_path.exists():
                 raise FileNotFoundError(f"Question file not found: {question_path}")
             description = _require_str(test_mapping.get("description"), context=f"promptfooconfig.yaml: tests[{index}].description")
             question_sources.append(PromptfooTestCase(family_id=family_id, question_path=question_path, description=description))
         if not question_sources:
-            raise LookupError("promptfooconfig.yaml did not define any tests")
+            if active_family_ids is None:
+                raise LookupError("promptfooconfig.yaml did not define any tests")
+            raise LookupError(f"promptfooconfig.yaml did not define any tests for families: {sorted(active_family_ids)}")
         return question_sources
+
+    def _active_family_ids_from_run_metadata(self, run_metadata: dict[str, object]) -> set[str] | None:
+        promptfoo_args = run_metadata.get("promptfoo_args")
+        if not isinstance(promptfoo_args, list):
+            return None
+        active_family_ids: set[str] = set()
+        for index, item in enumerate(promptfoo_args):
+            if not isinstance(item, str):
+                continue
+            if item != "--filter-metadata":
+                continue
+            if index + 1 >= len(promptfoo_args):
+                continue
+            filter_value = promptfoo_args[index + 1]
+            if not isinstance(filter_value, str):
+                continue
+            if not filter_value.startswith("family="):
+                continue
+            family_id = filter_value.removeprefix("family=").strip()
+            if family_id:
+                active_family_ids.add(family_id)
+        return active_family_ids or None
 
     def _load_target_documents(self, question_sources: list[PromptfooTestCase]) -> list[str]:
         target_documents: list[str] = []
@@ -457,7 +493,14 @@ class DocumentRoutingDiagnosticsGenerator:
         providers = _require_list(promptfoo_config.get("providers"), context="promptfooconfig.yaml: providers")
         provider = _require_mapping(providers[0], context="promptfooconfig.yaml: providers[0]")
         config = _require_mapping(provider.get("config"), context="promptfooconfig.yaml: providers[0].config")
-        return _require_str(config.get("retrieval-policy"), context="promptfooconfig.yaml: providers[0].config.retrieval-policy")
+        retrieval_policy = config.get("retrieval-policy")
+        if isinstance(retrieval_policy, str) and retrieval_policy.strip():
+            return retrieval_policy.strip()
+        llm_provider = config.get("llm_provider")
+        if isinstance(llm_provider, str) and llm_provider.strip():
+            return llm_provider.strip()
+        policy_config = _require_str(config.get("policy-config"), context="promptfooconfig.yaml: providers[0].config.policy-config")
+        return Path(policy_config).stem
 
     def _load_policy(self, promptfooconfig_path: Path, promptfoo_config: dict[str, object]) -> tuple[Path, Path, dict[str, object]]:
         providers = _require_list(promptfoo_config.get("providers"), context="promptfooconfig.yaml: providers")
@@ -496,6 +539,7 @@ class DocumentRoutingDiagnosticsGenerator:
         promptfoo_db_path: Path,
         eval_id: str,
         run_id: str,
+        run_artifacts_dir: Path,
         question_sources: list[PromptfooTestCase],
         target_documents: list[str],
     ) -> list[QuestionDiagnostics]:
@@ -505,7 +549,11 @@ class DocumentRoutingDiagnosticsGenerator:
             result_row = results.get(test_idx)
             if result_row is None:
                 raise LookupError(f"Missing Promptfoo result for test_idx={test_idx}")
-            raw_payload = _parse_promptfoo_response(result_row["response"])
+            raw_payload = self._load_document_routing_payload(
+                promptfoo_response=result_row["response"],
+                run_artifacts_dir=run_artifacts_dir,
+                question_source=source,
+            )
             document_hits = _parse_document_hits(raw_payload)
             target_present: dict[str, bool] = {}
             target_ranks: dict[str, int | None] = {}
@@ -549,17 +597,66 @@ class DocumentRoutingDiagnosticsGenerator:
             rows_by_test_idx[test_idx] = row
         return rows_by_test_idx
 
-    def _write_raw_payloads(self, raw_dir: Path, promptfoo_db_path: Path, eval_id: str, question_ids: tuple[str, ...]) -> None:
+    def _write_raw_payloads(
+        self,
+        raw_dir: Path,
+        promptfoo_db_path: Path,
+        eval_id: str,
+        run_artifacts_dir: Path,
+        question_ids: tuple[str, ...],
+        question_sources: tuple[PromptfooTestCase, ...],
+    ) -> None:
         results = self._load_eval_results(promptfoo_db_path, eval_id)
         for test_idx, question_id in enumerate(question_ids):
             result_row = results.get(test_idx)
             if result_row is None:
                 continue
-            raw_payload = _parse_promptfoo_response(result_row["response"])
+            raw_payload = self._load_document_routing_payload(
+                promptfoo_response=result_row["response"],
+                run_artifacts_dir=run_artifacts_dir,
+                question_source=question_sources[test_idx],
+            )
             (raw_dir / f"{question_id}.retrieve.json").write_text(
                 json.dumps(raw_payload, indent=2, ensure_ascii=False) + "\n",
                 encoding="utf-8",
             )
+
+    def _load_document_routing_payload(
+        self,
+        *,
+        promptfoo_response: object,
+        run_artifacts_dir: Path,
+        question_source: PromptfooTestCase,
+    ) -> dict[str, object]:
+        try:
+            payload = _parse_promptfoo_response(promptfoo_response)
+        except (TypeError, json.JSONDecodeError):
+            payload = {}
+        document_hits = payload.get("document_hits")
+        if isinstance(document_hits, list) and document_hits:
+            return payload
+
+        fallback_payload = self._load_document_routing_artifact(run_artifacts_dir=run_artifacts_dir, question_source=question_source)
+        if fallback_payload is not None:
+            return fallback_payload
+
+        return payload
+
+    def _load_document_routing_artifact(
+        self,
+        *,
+        run_artifacts_dir: Path,
+        question_source: PromptfooTestCase,
+    ) -> dict[str, object] | None:
+        if not run_artifacts_dir.exists():
+            return None
+        question_root = run_artifacts_dir / question_source.family_id.strip("¤") / question_source.question_id
+        if not question_root.exists():
+            return None
+        candidates = sorted(question_root.rglob(DEFAULT_DOCUMENT_ROUTING_FILENAME))
+        if not candidates:
+            return None
+        return _load_json_object(candidates[-1])
 
     def _render_matrix_markdown(self, diagnostics: RunDiagnostics) -> str:
         columns = self._build_columns(rows=diagnostics.rows, question_sources=diagnostics.question_sources)
