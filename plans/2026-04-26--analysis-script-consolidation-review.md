@@ -21,7 +21,7 @@ The target shape is:
 | --- | --- | --- | --- | 
 | `document_routing` | Did the right documents enter the candidate set, and at what rank/score? | `document_routing/generate_document_routing_diagnostics.py`<br>`document_routing/compare_document_routing_diagnostics.py`<br>`document_routing/analyze_document_routing_diagnostics.py` | `document_routing_diagnostics.md` |
 | `target_chunk_retrieval` | Did the required authoritative chunks/paragraphs get retrieved for the target documents? | `generate_target_chunk_retrieval_diagnostics.py`<br>`compare_target_chunk_retrieval_diagnostics.py`<br>`analyze_target_chunk_retrieval_diagnostics.py` | `target_chunk_retrieval_diagnostics.md` |
-| `approach_detection` | Did Prompt B emit the expected approaches, and do wrong approaches correlate with retrieved sections? | `generate_approach_detection_diagnostics.py`<br>`compare_approach_detection_diagnostics.py`<br>`analyze_approach_detection_diagnostics.py` | `approach_detection_diagnostics.html` |
+| `approach_detection` | Did Prompt B emit the expected approaches, and do wrong approaches correlate with retrieved sections? | `approach_detection/generate_approach_detection_diagnostics.py`<br>`approach_detection/compare_approach_detection_diagnostics.py`<br>`approach_detection/analyze_approach_detection_diagnostics.py` | `approach_detection_diagnostics.html` |
 
 Comparison scripts should not rerun retrieval or LLM calls. They should consume artifacts produced by the run-level generators. Analyze scripts should not rerun retrieval or LLM calls either; they should consume generated diagnostics, produce an interpretation that is reproducible, and write or append that interpretation to the experiment's `EXPERIMENTS.md`.
 
@@ -518,9 +518,9 @@ Layer-specific choices:
 
 ### approach_detection implementation notes
 
-This layer should also follow the same generator/compare/analyze pattern.
+This layer follows the same generator/compare/analyze pattern.
 
-Expected run-level layout:
+Run-level layout:
 
 - default output root: `<experiment>/runs/<run_id>/diagnostics/approach_detection/`
 - primary human artifact: `approach_detection_diagnostics.html`
@@ -529,19 +529,26 @@ Expected run-level layout:
 - experiment index artifact: `<experiment>/diagnostics/approach_detection_index.md`
 - experiment index JSON: `<experiment>/diagnostics/approach_detection_index.json`
 
-Source choices to mirror from `document_routing`:
+Implemented choices:
 
-- answer-suite runs are the natural source for this layer
-- generator should consume saved answer artifacts and any side artifacts produced during answer generation
-- compare and analyze scripts should consume generated diagnostics only
-- comparison output must require explicit `--output-dir`
-- analysis output writes directly to `<experiment>/EXPERIMENTS.md`
+- scripts live under `experiments/analysis/approach_detection/`
+- answer-suite runs are the source for this layer
+- `generate_approach_detection_diagnostics.py` reads saved `B-response.json` and `A-prompt.txt` artifacts and does not rerun Prompt B or retrieval
+- the generator loads filtered question sources from `promptfooconfig.yaml:tests[*].metadata`
+- expected approaches are extracted from family-level JavaScript assertions that use `labels.includes('<normalized_label>')`
+- expected paragraphs come from `family.yaml:assert_retrieve.required_section_ranges`
+- repeated answer attempts are represented as separate rows using `base`, `repeat-1`, `repeat-2`, etc.
+- the primary HTML artifact shows emitted labels against retrieved chunks; expected labels are green when present, spurious labels are red, and chunks inside expected paragraph ranges are highlighted
+- the secondary Markdown artifact includes label frequency and per-question stability summaries
+- stability scoring reuses `experiments/analysis/stability_scorer.py`
+- the run JSON includes normalized rows, label summaries, expected section ranges, and per-question stability summaries
+- `compare_approach_detection_diagnostics.py` consumes generated run JSON or experiment index JSON and requires explicit `--output-dir`
+- comparison output is label-frequency oriented: one row per normalized approach label, with count/rate per input
+- `analyze_approach_detection_diagnostics.py` appends directly to `<experiment>/EXPERIMENTS.md` and links back to the diagnostics Markdown artifact
 
 Layer-specific choices:
 
-- primary HTML view should inherit from `spurious_approaches_vs_sections_matrix.html`
-- label frequency should be included in `generate_approach_detection_diagnostics.py`
-- expected approaches and expected paragraphs should come from `family.yaml` when defined
-- when expected paragraphs are defined, highlight them in the retrieved section/paragraph matrix
-- reuse the useful parts of `compare_chunks.py` only when they add data not already present in the spurious-approaches matrix: strict/loose stability aggregates, top/low retrieval score ranges, and expansion-section context
-- analyzer should focus on wrong or missing approaches, label-frequency anomalies, and context correlations rather than restating every answer row
+- the first implementation keeps the HTML matrix compact and self-contained instead of embedding the full historical `spurious_approaches_vs_sections_matrix.html` code path
+- the next useful enhancement is to enrich chunk columns with section titles/lineage from the corpus database, matching the historical spurious matrix more closely
+- another enhancement is to add the useful non-overlapping `compare_chunks.py` context metrics: top/low retrieval score ranges and expansion-section context
+- analyzer focuses on missing expected approaches, spurious approaches, expected-label coverage, and lowest strict stability question

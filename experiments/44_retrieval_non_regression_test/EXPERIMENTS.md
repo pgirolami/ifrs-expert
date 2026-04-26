@@ -19,27 +19,6 @@ The experiment now separates two things:
 - Run directory: [`runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/`](./runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/)
 - Document-level comparison artifact: [`q1-target-retrieval__documents2-through-chunks__exp43-vs-exp44.md`](./q1-target-retrieval__documents2-through-chunks__exp43-vs-exp44.md)
 
-## What It Checks
-
-For each Q1 variant, the suite checks:
-
-- the expected governing documents are present in the top retrieval results
-- the required section ranges are present in the retrieved chunks
-- the exact text used for similarity search is saved as a plain-text artifact
-
-The per-question artifact is stored at:
-
-```text
-runs/<timestamp>_<slug>/artifacts/Q1/<variant>/query_embedding.txt
-```
-
-That file contains only the embedded text. It is meant for quick inspection of
-the enrichment step.
-
-Example: the `Q1.0` artifact shows the original French question plus appended
-English glossary terms such as `hedge accounting`, `dividend`, `receivable`,
-`foreign exchange`, and `foreign currency`.
-
 ## Results
 
 Document routing:
@@ -88,17 +67,19 @@ already retrieved. This is something we weren't checking before.
 
 ## Document Routing Diagnostics
 
+- Diagnostics: [diagnostics markdown](runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md)
 - Run `2026-04-23_22-19-14_promptfoo-eval-family-q1` covered 23 question(s).
 - Provider: `Q1 retrieval non-regression gate`
 - IFRS 9: 23/23 present
 - IAS 39: 23/23 present
 - IFRIC 16: 23/23 present
-- IAS 21: 20/23 present
-- IFRS 10: 13/23 present
-- IFRS 7: 4/23 present
-- IAS 32: 2/23 present
-- IFRS 1: 2/23 present
-- IFRS 18: 2/23 present
-- IFRIC 2: 1/23 present
-- IFRS 17: 1/23 present
-- IFRS 19: 1/23 present
+
+## Target Chunk Retrieval Diagnostics
+
+- Diagnostics: [diagnostics markdown](runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md)
+- Run `2026-04-23_22-19-14_promptfoo-eval-family-q1` covered 23 question(s).
+- Provider: `Q1 retrieval non-regression gate`
+- IFRS 9 6.3.1-6.3.6: 23/23 present
+- IFRS 9 B6.3.1-B6.3.6: 23/23 present
+- IFRIC 16 10-13: 20/23 present
+

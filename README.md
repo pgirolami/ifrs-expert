@@ -186,12 +186,21 @@ flowchart LR
   - A simple demonstration chat UI is available
   - Supports follow-up questions
 
+- **Diagnostics scripts**
+  - Layer-specific diagnostics now live under `experiments/analysis/`
+  - Each layer follows the same pattern:
+    - `generate_*_diagnostics.py` writes run-level artifacts into `<experiment>/runs/<run>/diagnostics/<layer>/`
+    - `compare_*_diagnostics.py` compares saved run artifacts across experiments
+    - `analyze_*_diagnostics.py` appends a reproducible summary into `<experiment>/EXPERIMENTS.md`
+  - Current layers include document routing, chunk retrieval, and approach identification
+
+
 - **Evaluation loop**
   - Promptfoo-based regression tests for structured-answer quality
   - schema validation
   - approach coverage checks
   - recommendation consistency checks
-  - retrieval-specific experiment artifacts such as target matrices, merged delta reports, and similarity tables used to isolate failure modes before changing prompts
+  - retrieval-specific experiment artifacts such as target matrices, merged delta reports, similarity tables, and the layer-specific diagnostics outputs used to isolate failure modes before changing prompts
 
 ---
 
@@ -255,7 +264,7 @@ Outputting JSON makes it possible to:
 - assert presence of key approaches
 - detect regressions across experiments
 - compare runs systematically
-- keep richer analysis artifacts such as retrieval target matrices and variant-similarity tables
+- keep richer analysis artifacts such as retrieval target matrices, variant-similarity tables, and the layer-specific diagnostics scripts
 
 Those artifacts were especially useful in recent work to isolate distinct failure modes:
 - ingestion defects
@@ -272,15 +281,19 @@ Promptfoo is the ongoing regression harness for structured-answer quality.
 Typical usage:
 
 ```bash
-make eval EXPERIMENT_DIR=promptfoo_regression
+make eval-answer EXPERIMENT_DIR=promptfoo_regression
+make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval
 ```
 
 Promptfoo now passes a single `policy-config` path into the answer runner; retrieval tuning lives in `config/policy.default.yaml` (copied into each run's `effective/` directory) rather than being spread across inline provider knobs. Archived runs preserve Prompt A/B inputs plus JSON, memo-style markdown, and FAQ-style markdown outputs.
 
-Retrieval work continues to live in experiment directories as first-class artifacts. Recent retrieval experiments also generate richer analysis outputs such as:
+Retrieval and diagnostics work continue to live in experiment directories as first-class artifacts. Recent experiments also generate richer analysis outputs such as:
 - target matrices
 - merged delta reports
 - similarity tables
+- document-routing diagnostics
+- chunk-retrieval diagnostics
+- approach-identification diagnostics
 
 This has made it easier to tell apart:
 - a bad ingestion artifact

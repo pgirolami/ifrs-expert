@@ -91,4 +91,4 @@ def test_execute_retrieval_uses_enriched_query_embedding_mode() -> None:
         ),
     )
 
-    assert vector_store.received_queries == ["documentation de couverture\nhedge accounting"]
+    assert vector_store.received_queries == ["documentation de couverture\nhedge accounting\nhedge documentation"]

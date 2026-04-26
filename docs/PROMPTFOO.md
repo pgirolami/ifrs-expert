@@ -19,7 +19,7 @@ similarity search as a debug artifact for each question.
 Run and inspect an experiment history with:
 
 ```bash
-make eval EXPERIMENT_DIR=promptfoo_regression
+make eval-answer EXPERIMENT_DIR=promptfoo_regression
 make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval
 make q1-retrieve-non-regression
 make eval-view EXPERIMENT_DIR=promptfoo_regression
@@ -30,11 +30,13 @@ make eval-show EXPERIMENT_DIR=promptfoo_regression EVAL_ID=<eval-id>
 Focused runs against the same experiment database:
 
 ```bash
-make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
-make eval EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="OpenAI GPT 5.4 through Codex current answer defaults"
-make eval EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 codex smoke"
-make eval EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
+make eval-answer EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1
+make eval-answer EXPERIMENT_DIR=promptfoo_regression VARIANT=Q1.0 PROVIDER="OpenAI GPT 5.4 through Codex current answer defaults"
+make eval-answer EXPERIMENT_DIR=promptfoo_regression FAMILY=Q1 DESCRIPTION="Q1 codex smoke"
+make eval-retrieve EXPERIMENT_DIR=scratch_promptfoo FAMILY=Q1
 ```
+
+`make eval` is intentionally disabled now. It fails fast so answer runs must use `make eval-answer` and retrieval runs must use `make eval-retrieve`.
 
 The checked-in answer base config currently enables one OpenAI Codex provider stanza (`OpenAI GPT 5.4 through Codex current answer defaults`). Uncomment or add provider blocks in `promptfoo_src/base.answer.yaml` when you want cross-provider comparisons.
 

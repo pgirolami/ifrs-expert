@@ -248,5 +248,10 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - Added a retrieval-only check for Q1 using PromptFoo so we can catch search regressions without calling the model
     - The Q1 question file now says which documents and sections should be found
     - Each question now saves the exact search text used for retrieval in the run artifacts, so it is easy to inspect
-    - We also tightened chunk retrieval so it only returns chunks from the documents selected during routing
+- Expanded the bilingual glossary using LLM help on IFRS definitions
     - [Experiment 44](../experiments/44_retrieval_non_regression_test/EXPERIMENTS.md) contains the result of the first run on the Q1 family
+
+
+### 2026-04-26
+- Consolidating diagnostics & analysis by layer (document routing, chunk retrieval, approach identification) : one JSON artifact, one Markdown artifact, one compare-runs script, one generated analysis block per layer
+    - Ran them on Experiment 44

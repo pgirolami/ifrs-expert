@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from tests.policy import make_retrieval_policy
 from src.policy import load_policy_config
 
 
@@ -19,18 +20,10 @@ def test_load_policy_config_accepts_documents2_through_chunks_mode() -> None:
         raise AssertionError(message)
 
 
-def test_load_policy_config_accepts_documents2_mode(tmp_path: Path) -> None:
-    """Policy config should still accept documents2 as a retrieval mode."""
-    project_root = Path(__file__).resolve().parents[2]
-    policy_path = project_root / "config" / "policy.default.yaml"
-    temp_policy_path = tmp_path / "policy.yaml"
-    temp_policy_path.write_text(
-        policy_path.read_text(encoding="utf-8").replace("mode: documents2-through-chunks", "mode: documents2"),
-        encoding="utf-8",
-    )
+def test_make_retrieval_policy_accepts_documents2_mode() -> None:
+    """Legacy documents2 mode should still be constructible for compatibility."""
+    policy = make_retrieval_policy(mode="documents2")
 
-    config = load_policy_config(temp_policy_path)
-
-    if config.retrieval.mode != "documents2":
-        message = f"Expected documents2 mode, got {config.retrieval.mode}"
+    if policy.mode != "documents2":
+        message = f"Expected documents2 mode, got {policy.mode}"
         raise AssertionError(message)
