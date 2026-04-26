@@ -19,11 +19,11 @@ The target shape is:
 
 | Layer | Question it answers | Scripts | Primary artifact |
 | --- | --- | --- | --- | 
-| `document_routing` | Did the right documents enter the candidate set, and at what rank/score? | `generate_document_routing_diagnostics.py`<br>`compare_document_routing_diagnostics.py`<br>`analyse_document_routing_diagnostics.py` | `document_routing_diagnostics.md` |
-| `target_chunk_retrieval` | Did the required authoritative chunks/paragraphs get retrieved for the target documents? | `generate_target_chunk_retrieval_diagnostics.py`<br>`compare_target_chunk_retrieval_diagnostics.py`<br>`analyse_target_chunk_retrieval_diagnostics.py` | `target_chunk_retrieval_diagnostics.md` |
-| `approach_detection` | Did Prompt B emit the expected approaches, and do wrong approaches correlate with retrieved sections? | `generate_approach_detection_diagnostics.py`<br>`compare_approach_detection_diagnostics.py`<br>`analyse_approach_detection_diagnostics.py` | `approach_detection_diagnostics.html` |
+| `document_routing` | Did the right documents enter the candidate set, and at what rank/score? | `document_routing/generate_document_routing_diagnostics.py`<br>`document_routing/compare_document_routing_diagnostics.py`<br>`document_routing/analyze_document_routing_diagnostics.py` | `document_routing_diagnostics.md` |
+| `target_chunk_retrieval` | Did the required authoritative chunks/paragraphs get retrieved for the target documents? | `generate_target_chunk_retrieval_diagnostics.py`<br>`compare_target_chunk_retrieval_diagnostics.py`<br>`analyze_target_chunk_retrieval_diagnostics.py` | `target_chunk_retrieval_diagnostics.md` |
+| `approach_detection` | Did Prompt B emit the expected approaches, and do wrong approaches correlate with retrieved sections? | `generate_approach_detection_diagnostics.py`<br>`compare_approach_detection_diagnostics.py`<br>`analyze_approach_detection_diagnostics.py` | `approach_detection_diagnostics.html` |
 
-Comparison scripts should not rerun retrieval or LLM calls. They should consume artifacts produced by the run-level generators. Analyse scripts should not rerun retrieval or LLM calls either; they should consume generated diagnostics, produce an interpretation that is reproducible, and write or append that interpretation to the experiment's `EXPERIMENTS.md`.
+Comparison scripts should not rerun retrieval or LLM calls. They should consume artifacts produced by the run-level generators. Analyze scripts should not rerun retrieval or LLM calls either; they should consume generated diagnostics, produce an interpretation that is reproducible, and write or append that interpretation to the experiment's `EXPERIMENTS.md`.
 
 ## Canonical Artifact Names
 
@@ -94,7 +94,7 @@ These should become secondary sections in `approach_detection_diagnostics.md` an
 
 The label frequency table should be produced by `generate_approach_detection_diagnostics.py`, not by a separate long-lived script.
 
-`compare_chunks.py` overlaps with the spurious-approaches matrix because both connect retrieved context to answer behavior. The spurious matrix is the better primary diagnostic because it shows the run-level relationship between emitted labels and retrieved sections. `compare_chunks.py` brings three reusable additions: aggregate strict/loose stability scores, top/low retrieval score ranges, and expansion-section context. Those should be folded into `generate_approach_detection_diagnostics.py` or `analyse_approach_detection_diagnostics.py`.
+`compare_chunks.py` overlaps with the spurious-approaches matrix because both connect retrieved context to answer behavior. The spurious matrix is the better primary diagnostic because it shows the run-level relationship between emitted labels and retrieved sections. `compare_chunks.py` brings three reusable additions: aggregate strict/loose stability scores, top/low retrieval score ranges, and expansion-section context. Those should be folded into `generate_approach_detection_diagnostics.py` or `analyze_approach_detection_diagnostics.py`.
 
 ### Document routing
 
@@ -142,7 +142,7 @@ Before moving code, pin the output contract for each canonical artifact:
 - markdown sections
 - JSON schema
 - whether it is run-level or comparison-level
-- how the layer-specific `analyse_*` script writes reproducible findings into `EXPERIMENTS.md`
+- how the layer-specific `analyze_*` script writes reproducible findings into `EXPERIMENTS.md`
 
 ### 2. Extract common readers and parsers
 
@@ -159,16 +159,16 @@ Shared helpers should cover:
 
 Target:
 
-- `generate_document_routing_diagnostics.py`
-- `compare_document_routing_diagnostics.py`
-- `analyse_document_routing_diagnostics.py`
+- `document_routing/generate_document_routing_diagnostics.py`
+- `document_routing/compare_document_routing_diagnostics.py`
+- `document_routing/analyze_document_routing_diagnostics.py`
 
 Migration:
 
 - fold `run_q1_retrieve_target_matrix.py` into the generator
 - make `run_q1_retrieval_mode_comparison.py` call or consume generator outputs
 - reuse the `variant_similarity_table.md` display style for comparisons
-- add an analyser that summarizes routing failures, improvements/regressions, and notable rank/score movements into `EXPERIMENTS.md`
+- add an analyzer that summarizes routing failures, improvements/regressions, and notable rank/score movements into `EXPERIMENTS.md`
 
 ### 4. Consolidate target chunk retrieval scripts
 
@@ -176,14 +176,14 @@ Target:
 
 - `generate_target_chunk_retrieval_diagnostics.py`
 - `compare_target_chunk_retrieval_diagnostics.py`
-- `analyse_target_chunk_retrieval_diagnostics.py`
+- `analyze_target_chunk_retrieval_diagnostics.py`
 
 Migration:
 
 - fold `run_q1_target_recall_summary.py` into the generator
 - fold the useful parts of `run_q1_retrieval_non_regression.py` into gate evaluation over generated diagnostics
 - add expected paragraph coverage from `family.yaml`
-- add an analyser that summarizes missing target chunks, expected-paragraph misses, and retrieval gate failures into `EXPERIMENTS.md`
+- add an analyzer that summarizes missing target chunks, expected-paragraph misses, and retrieval gate failures into `EXPERIMENTS.md`
 
 ### 5. Consolidate approach detection scripts
 
@@ -191,15 +191,15 @@ Target:
 
 - `generate_approach_detection_diagnostics.py`
 - `compare_approach_detection_diagnostics.py`
-- `analyse_approach_detection_diagnostics.py`
+- `analyze_approach_detection_diagnostics.py`
 
 Migration:
 
 - fold `generate_spurious_approaches_sections_matrix.py` into the generator
 - fold `run_promptfoo_analysis.py`, `run_stability_scoring.py`, `analyze_labels.py`, and `generate_label_table.py` into markdown/JSON secondary sections
-- fold useful non-overlapping parts of `compare_chunks.py` into generated diagnostics or the analyser
+- fold useful non-overlapping parts of `compare_chunks.py` into generated diagnostics or the analyzer
 - keep `stability_scorer.py` as reusable library code
-- add an analyser that summarizes spurious approach patterns, label-frequency anomalies, and context correlations into `EXPERIMENTS.md`
+- add an analyzer that summarizes spurious approach patterns, label-frequency anomalies, and context correlations into `EXPERIMENTS.md`
 
 ### 6. Decide what to retire
 
@@ -253,52 +253,119 @@ The diagnostics surface should become:
 
 Run-level generator:
 
-- `generate_document_routing_diagnostics.py`
-- default output root: `<experiment>/document_routing_diagnostics/`
-- primary markdown artifact: `document_routing_diagnostics.md`
-- machine-readable artifact: `document_routing_diagnostics.json`
-- raw retrieval payloads: `raw/*.retrieve.json`
+- `document_routing/generate_document_routing_diagnostics.py`
+- default output root: `<experiment>/runs/<run_id>/diagnostics/document_routing/`
+- run markdown artifact: `document_routing_diagnostics.md`
+- run JSON artifact: `document_routing_diagnostics.json`
+- raw retrieval payloads: `raw/<question_id>.retrieve.json`
+- experiment index artifact: `<experiment>/diagnostics/document_routing_index.md`
+- experiment index JSON: `<experiment>/diagnostics/document_routing_index.json`
+
+Generator CLI arguments:
+
+- `--experiment`: required experiment directory or experiment number
+- `--run-id`: required only when the experiment directory contains more than one run
+
+Generator-derived inputs:
+
+- provider label comes from the selected run's `promptfooconfig.yaml`
+- question files come from `promptfooconfig.yaml:tests[*].metadata.question_path`
+- question family ids come from `promptfooconfig.yaml:tests[*].metadata.family`
+- fail fast if any test lacks a readable `metadata.family` or `metadata.question_path`
+- policy file path comes from `promptfooconfig.yaml:providers.config.policy-config`
+- policy file contents come from the selected run's `effective/` directory
+- policy name comes from `promptfooconfig.yaml:providers.config.retrieval-policy`
+- glossary file comes from the selected run's `effective/` directory
+- target documents come from each resolved question family's `family.yaml`
+
+Artifact granularity:
+
+- one artifact per run is better for provenance, reproducibility, and comparisons because it records the exact policy, glossary, questions, raw retrieval payloads, and generated timestamp for one execution
+- one artifact per experiment is better for browsing and linking from `EXPERIMENTS.md`, especially when an experiment has many runs
+- the recommended shape is both: per-run artifacts are canonical data, and the experiment-level index is a lightweight rollup that links to each run
+- comparison and analysis scripts should consume per-run JSON artifacts; they may use the experiment index only to discover available runs
 
 Markdown contract:
 
-- one top-level title for the experiment and provider
-- one summary table with one row per Q1 question
-- one row group per target document, ordered by document priority
-- a bottom section with per-row detail for rank, score, and candidate-set membership
+- one matrix table with a `Question` column, a `Total` column, one column per retrieved document, and a bottom `Total` row
+- each question row shows candidate count plus `score / rank` for each retrieved document when present
+- the total row shows per-document coverage and score range
+- keep the markdown compact and scan-friendly, matching the historical single-run matrix style
+- reuse the single-run matrix styling: rank-colored cells, target-document columns left-most in family-file order, remaining retrieved-document columns sorted by coverage, and the same HTML span formatting for populated cells
 
 JSON contract:
 
 - `experiment_name`
 - `provider_name`
+- `run_id`
 - `generated_at`
+- `question_families`
+- `question_sources`
 - `question_ids`
+- `policy_file`
+- `effective_policy_file`
+- `policy_name`
+- `policy`
+- `glossary_file`
+- `effective_glossary_file`
 - `target_documents`
 - `rows`
 - `document_summaries`
 
 Each row should include:
 
-- `question_id`
-- `run_id`
-- `document_hits`
-- `selected_document`
-- `selected_rank`
-- `selected_score`
-- `in_candidate_set`
-- `candidate_count`
+- `question_id`: stable question variant id, for example `Q1.0`
+- `run_id`: id of the retrieval run that produced the row; for a single-run artifact this repeats the top-level `run_id`
+- `question_path`: source question file used for retrieval
+- `question_text_sha256`: hash of the question text, so analysis can detect stale diagnostics without storing duplicate full text everywhere
+- `document_hits`: ordered unique document hits returned by retrieval; each hit should include `doc_uid`, display label, rank, score, and any available representation metadata
+- `selected_document`: target document selected for the row when evaluating a specific expected document; `null` when the row is a general candidate-set row
+- `selected_rank`: rank of `selected_document` in `document_hits`; `null` when absent or not applicable
+- `selected_score`: score of `selected_document` in `document_hits`; `null` when absent or not applicable
+- `in_candidate_set`: whether `selected_document` was retrieved
+- `candidate_count`: number of unique document candidates in `document_hits`
+- `target_documents_present`: map of configured target document uid to boolean candidate-set presence
+- `target_document_ranks`: map of configured target document uid to rank or `null`
+- `target_document_scores`: map of configured target document uid to score or `null`
 
 Compare-level script:
 
-- `compare_document_routing_diagnostics.py`
-- consumes only saved generator outputs
-- writes `document_routing_comparison.md`
-- writes `document_routing_comparison.json`
+- `document_routing/compare_document_routing_diagnostics.py`
+
+Compare CLI arguments:
+
+- `--input`: required; repeatable path to a per-run `document_routing_diagnostics.json` or experiment `index.json`
+- `--label`: optional; repeatable display label aligned with `--input`
+- `--output-dir`: required directory for comparison artifacts
+- `--target-documents`: optional comma-separated list limiting the target documents shown in the comparison
+
+- input can be two or more per-run `document_routing_diagnostics.json` files
+- input can also be one or more experiment index JSON files, which expand to their listed per-run JSON artifacts
+- accepts explicit labels for each input so comparisons are readable across experiments
+- requires an explicit `--output-dir`
+- writes to `<output-dir>/document_routing_comparison.md`
+- writes companion JSON to `<output-dir>/document_routing_comparison.json`
+- supports two-way comparisons and N-way comparisons
+- two-way comparisons should show direct deltas for rank and candidate presence, with score retained in JSON for downstream analysis if needed
+- N-way comparisons should use compact table summaries first, with detailed rows in JSON and appendix sections
 - does not rerun retrieval
 
-Analyse-level script:
+Analyze-level script:
 
-- `analyse_document_routing_diagnostics.py`
-- reads the generator and comparison artifacts
-- writes a reproducible section to `EXPERIMENTS.md`
-- reports routing regressions, routing wins, and notable score/rank changes
+- `document_routing/analyze_document_routing_diagnostics.py`
+
+Analyze CLI arguments:
+
+- `--experiment`: required experiment directory or experiment number; determines the `EXPERIMENTS.md` destination
+- `--input`: required only when the experiment has more than one diagnostics run, or when analyzing a comparison; path to one per-run `document_routing_diagnostics.json`, one experiment `index.json`, or one `document_routing_comparison.json`
+- `--section-title`: optional heading for the generated `EXPERIMENTS.md` section
+
+- input can be one per-run `document_routing_diagnostics.json`, one experiment `index.json`, or one `document_routing_comparison.json`
+- if the experiment has exactly one diagnostics run and `--input` is omitted, the script uses that run's `document_routing_diagnostics.json`
+- requires explicit `--input` when multiple diagnostics runs exist for the experiment
+- when given an experiment index, it analyzes all runs listed in that index
+- when given comparison JSON, it analyzes routing changes across the compared runs
+- writes the analysis section directly to `<experiment>/EXPERIMENTS.md`
+- reports target-document regressions, wins, and notable score/rank changes
 - cites the exact artifact paths it used
+- does not rerun retrieval

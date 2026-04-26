@@ -85,3 +85,20 @@ already retrieved. This is something we weren't checking before.
 - Provider artifacts: [`runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/artifacts/`](./runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/artifacts/)
 - Document-routing comparison: [`q1-target-retrieval__documents2-through-chunks__exp43-vs-exp44.md`](./q1-target-retrieval__documents2-through-chunks__exp43-vs-exp44.md)
 - Promptfoo logs: [`.promptfoo/logs/`](./.promptfoo/logs/)
+
+## Document Routing Diagnostics
+
+- Run `2026-04-23_22-19-14_promptfoo-eval-family-q1` covered 23 question(s).
+- Provider: `Q1 retrieval non-regression gate`
+- IFRS 9: 23/23 present
+- IAS 39: 23/23 present
+- IFRIC 16: 23/23 present
+- IAS 21: 20/23 present
+- IFRS 10: 13/23 present
+- IFRS 7: 4/23 present
+- IAS 32: 2/23 present
+- IFRS 1: 2/23 present
+- IFRS 18: 2/23 present
+- IFRIC 2: 1/23 present
+- IFRS 17: 1/23 present
+- IFRS 19: 1/23 present

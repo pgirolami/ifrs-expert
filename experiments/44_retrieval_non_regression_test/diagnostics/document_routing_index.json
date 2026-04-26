@@ -1,0 +1,14 @@
+{
+  "experiment_name": "44_retrieval_non_regression_test",
+  "generated_at": "2026-04-26T16:48:19.560627+00:00",
+  "runs": [
+    {
+      "run_id": "2026-04-23_22-19-14_promptfoo-eval-family-q1",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/44_retrieval_non_regression_test/runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/44_retrieval_non_regression_test/runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/44_retrieval_non_regression_test/runs/2026-04-23_22-19-14_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}
