@@ -142,9 +142,15 @@ assert_retrieve:
     - document: ifrs9
       start: "B4.1.9A"
       end: "B4.1.9E"
+    - document: ifrs9
+      start: "B5.1.1"
+      end: "B5.1.2A"
     - document: ifric16
       start: "10"
       end: "13"
+    - document: ifric16
+      start: "B11"
+      end: "B13"
 variants:
   - id: Q1.0
     file: Q1.0.txt
@@ -164,7 +170,11 @@ variants:
     assert "Required Q1 authorities are in the top 5 with expected document types" in output
     assert "Required chunk numbers are present for ifrs9 6.3.1-6.3.6" in output
     assert "Required chunk numbers are present for ifrs9 B4.1.9A-B4.1.9E" in output
+    assert "Required chunk numbers are present for ifrs9 B5.1.1-B5.1.2A" in output
+    assert "Required chunk numbers are present for ifric16 B11-B13" in output
     assert "'B4.1.9A', 'B4.1.9B', 'B4.1.9C', 'B4.1.9D', 'B4.1.9E'" in output
+    assert "'B5.1.1', 'B5.1.2', 'B5.1.2A'" in output
+    assert "'B11', 'B12', 'B13'" in output
     assert "expectedChunkNumbers" in output
 
 

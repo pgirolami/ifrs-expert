@@ -5,6 +5,28 @@ from __future__ import annotations
 from src.retrieval.retrieval_contract import expand_chunk_number_range
 
 
+def test_expand_chunk_number_range_handles_alphanumeric_leaf_prefix() -> None:
+    """Chunk-number ranges should support labels like B11 through B17."""
+    assert expand_chunk_number_range(start="B11", end="B17") == [
+        "B11",
+        "B12",
+        "B13",
+        "B14",
+        "B15",
+        "B16",
+        "B17",
+    ]
+
+
+def test_expand_chunk_number_range_handles_numeric_to_suffixed_leaf() -> None:
+    """Chunk-number ranges should support labels like B5.1.1 through B5.1.2A."""
+    assert expand_chunk_number_range(start="B5.1.1", end="B5.1.2A") == [
+        "B5.1.1",
+        "B5.1.2",
+        "B5.1.2A",
+    ]
+
+
 def test_expand_chunk_number_range_handles_alphabetic_leaf_suffix() -> None:
     """Chunk-number ranges should support labels like B4.1.9A through B4.1.9E."""
     assert expand_chunk_number_range(start="B4.1.9A", end="B4.1.9E") == [
