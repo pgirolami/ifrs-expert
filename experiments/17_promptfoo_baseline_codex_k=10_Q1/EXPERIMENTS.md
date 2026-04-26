@@ -9,11 +9,11 @@ Rerun all Q1 variants with promptfoo using `openai-codex` and a larger retrieval
 Analysis was produced with the existing scripts under `experiments/analysis/`:
 
 ```bash
-uv run python experiments/analysis/analyze.py \
+uv run python experiments/analysis/run_promptfoo_analysis.py \
   'k=10__llm_provider=openai-codex__min-score=0.55' \
   --experiment 17_promptfoo_baseline_codex_k=10_Q1
 
-uv run python experiments/analysis/analyze.py \
+uv run python experiments/analysis/run_promptfoo_analysis.py \
   openai \
   --experiment 15_promptfoo_baseline_Q1
 ```

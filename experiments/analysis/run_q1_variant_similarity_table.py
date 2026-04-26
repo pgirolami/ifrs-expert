@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 import math
 import textwrap
@@ -25,6 +26,10 @@ from pathlib import Path
 from typing import Literal
 
 import yaml
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.db.documents import DocumentStore
 from src.models.document import infer_exact_document_type, resolve_standard_doc_uid
@@ -39,11 +44,13 @@ from src.vector.document_store import DocumentVectorStore, get_document_id_map_p
 logger = logging.getLogger(__name__)
 
 DEFAULT_OUTPUT_FILENAME = "variant_similarity_table.md"
+DEFAULT_TARGET_MATRIX_COMPARE_FILENAME = "q1-target-retrieval__documents2-through-chunks__comparison.md"
 DEFAULT_QUESTION_DIR = "experiments/00_QUESTIONS/Q1"
 DEFAULT_GLOSSARY_PATH = "config/en-fr-glossary_all.yaml"
 DEFAULT_POLICY_PATH = "config/policy.default.yaml"
 DEFAULT_TOP_PER_REPRESENTATION = 12
 DEFAULT_QUESTION_IDS: tuple[str, ...] = ("Q1.1", "Q1.6", "Q1.9", "Q1.11", "Q1.14", "Q1.18")
+DEFAULT_TARGET_MATRIX_COMPARE_DOC_UIDS: tuple[str, ...] = ("ifric16", "ias39", "ifrs9")
 VARIANT_TYPE_ORDER: tuple[str, ...] = (
     "IFRS-S",
     "IAS-S",
@@ -67,6 +74,7 @@ VARIANT_TYPE_ORDER: tuple[str, ...] = (
 )
 ScoreSide = Literal["raw", "enriched"]
 STANDARD_ROW_DOCUMENT_TYPES: tuple[str, ...] = ("IFRS-S", "IAS-S", "IFRIC", "SIC", "PS")
+TARGET_MATRIX_CELL_PATTERN = re.compile(r"(?P<score>-?\d+(?:\.\d+)?)\s*/\s*<strong>(?P<rank>\d+)</strong>")
 
 
 @dataclass(frozen=True)
@@ -152,6 +160,30 @@ class QuestionSection:
     std_only_top_standards: tuple[RankedStandardScore, ...]
     toc_documents2_top_standards: tuple[RankedStandardScore, ...]
     toc_std_only_top_standards: tuple[RankedStandardScore, ...]
+
+
+@dataclass(frozen=True)
+class TargetMatrixCell:
+    """A parsed score/rank cell from a target-retrieval matrix."""
+
+    score: float
+    rank: int
+
+
+@dataclass(frozen=True)
+class ParsedTargetMatrix:
+    """A parsed target-retrieval matrix keyed by question and column label."""
+
+    column_labels: tuple[str, ...]
+    cells_by_question_id: dict[str, dict[str, TargetMatrixCell]]
+
+
+@dataclass(frozen=True)
+class TargetMatrixComparisonRow:
+    """One question row in the matrix-to-matrix delta report."""
+
+    question_id: str
+    cells_by_doc_uid: dict[str, tuple[TargetMatrixCell | None, TargetMatrixCell | None]]
 
 
 class YamlGlossarySource(GlossarySourceProtocol):
@@ -941,9 +973,221 @@ def format_representation_cell(
     return f'<span style="{heatmap_style}">{cell_text}<br>{format_delta_change(scores.raw, scores.enriched)}</span>'
 
 
+class Q1TargetMatrixComparisonExperiment:
+    """Compare two target-retrieval matrices and show score/rank deltas."""
+
+    def __init__(
+        self,
+        matrix_a_path: Path,
+        matrix_b_path: Path,
+        output_path: Path,
+        target_doc_uids: tuple[str, ...],
+    ) -> None:
+        """Initialize the comparison experiment."""
+        self._matrix_a_path = matrix_a_path
+        self._matrix_b_path = matrix_b_path
+        self._output_path = output_path
+        self._target_doc_uids = target_doc_uids
+
+    def run(self) -> str:
+        """Parse both matrices, write the delta report, and return it."""
+        matrix_a = self._load_matrix(self._matrix_a_path)
+        matrix_b = self._load_matrix(self._matrix_b_path)
+        comparison_rows = self._build_comparison_rows(matrix_a, matrix_b)
+        markdown = self._build_markdown(comparison_rows)
+        self._output_path.parent.mkdir(parents=True, exist_ok=True)
+        self._output_path.write_text(markdown, encoding="utf-8")
+        logger.info(f"Wrote target-matrix comparison to {self._output_path}")
+        return markdown
+
+    def _load_matrix(self, matrix_path: Path) -> ParsedTargetMatrix:
+        """Parse one markdown matrix artifact."""
+        if not matrix_path.exists():
+            message = f"Matrix file not found: {matrix_path}"
+            raise FileNotFoundError(message)
+        markdown = matrix_path.read_text(encoding="utf-8")
+        return parse_target_matrix_markdown(markdown)
+
+    def _build_comparison_rows(
+        self,
+        matrix_a: ParsedTargetMatrix,
+        matrix_b: ParsedTargetMatrix,
+    ) -> list[TargetMatrixComparisonRow]:
+        """Align rows from both matrices by question and target document."""
+        question_ids = sorted(
+            set(matrix_a.cells_by_question_id) | set(matrix_b.cells_by_question_id),
+            key=_question_id_sort_key,
+        )
+        comparison_rows: list[TargetMatrixComparisonRow] = []
+        for question_id in question_ids:
+            a_row = matrix_a.cells_by_question_id.get(question_id, {})
+            b_row = matrix_b.cells_by_question_id.get(question_id, {})
+            cells_by_doc_uid: dict[str, tuple[TargetMatrixCell | None, TargetMatrixCell | None]] = {}
+            for doc_uid in self._target_doc_uids:
+                column_label = humanize_doc_uid(doc_uid)
+                cells_by_doc_uid[doc_uid] = (a_row.get(column_label), b_row.get(column_label))
+            comparison_rows.append(TargetMatrixComparisonRow(question_id=question_id, cells_by_doc_uid=cells_by_doc_uid))
+        return comparison_rows
+
+    def _build_markdown(self, comparison_rows: list[TargetMatrixComparisonRow]) -> str:
+        """Render the matrix-to-matrix comparison as markdown."""
+        lines = [
+            "<!-- Generated by experiments/analysis/run_q1_variant_similarity_table.py -->",
+            "# Q1 target retrieval matrix comparison",
+            "",
+            f"Comparing `{self._matrix_a_path}` to `{self._matrix_b_path}`.",
+            "Each cell shows the experiment 43 score/rank, the experiment 44 score/rank, and the delta.",
+            "The arrow follows the score change; the rank delta is positive when the rank number gets worse.",
+            "",
+        ]
+        header_cells = ["Question", *[humanize_doc_uid(doc_uid) for doc_uid in self._target_doc_uids]]
+        separator_cells = ["---", *["---" for _ in self._target_doc_uids]]
+        lines.append("| " + " | ".join(header_cells) + " |")
+        lines.append("| " + " | ".join(separator_cells) + " |")
+        for row in comparison_rows:
+            row_cells = [row.question_id]
+            for doc_uid in self._target_doc_uids:
+                old_cell, new_cell = row.cells_by_doc_uid[doc_uid]
+                row_cells.append(format_target_matrix_comparison_cell(old_cell, new_cell))
+            lines.append("| " + " | ".join(row_cells) + " |")
+        return "\n".join(lines) + "\n"
+
+
+def parse_target_matrix_markdown(markdown: str) -> ParsedTargetMatrix:
+    """Parse a target-retrieval matrix markdown artifact."""
+    lines = markdown.splitlines()
+    header_index = next((index for index, line in enumerate(lines) if line.startswith("| Total | Question |")), None)
+    if header_index is None:
+        message = "Could not find target-matrix header row"
+        raise ValueError(message)
+
+    header_cells = _split_markdown_row(lines[header_index])
+    if len(header_cells) < 3:
+        message = f"Target matrix header is too short: {lines[header_index]!r}"
+        raise ValueError(message)
+    column_labels = tuple(header_cells[2:])
+
+    cells_by_question_id: dict[str, dict[str, TargetMatrixCell]] = {}
+    for line in lines[header_index + 2 :]:
+        if not line.startswith("|"):
+            if cells_by_question_id:
+                break
+            continue
+        row_cells = _split_markdown_row(line)
+        if len(row_cells) < 2:
+            continue
+        question_id = row_cells[1].strip()
+        if not question_id or question_id.lower() == "question":
+            continue
+        row_cells_by_label: dict[str, TargetMatrixCell] = {}
+        for column_label, cell_text in zip(column_labels, row_cells[2:], strict=False):
+            parsed_cell = _parse_target_matrix_cell(cell_text)
+            if parsed_cell is not None:
+                row_cells_by_label[column_label] = parsed_cell
+        cells_by_question_id[question_id] = row_cells_by_label
+
+    return ParsedTargetMatrix(column_labels=column_labels, cells_by_question_id=cells_by_question_id)
+
+
+def _split_markdown_row(line: str) -> list[str]:
+    """Split a markdown table row into cells."""
+    stripped = line.strip().strip("|")
+    if not stripped:
+        return []
+    return [cell.strip() for cell in stripped.split("|")]
+
+
+def _question_id_sort_key(question_id: str) -> tuple[int, str]:
+    """Sort `Q1.<n>` identifiers numerically, then lexicographically."""
+    suffix = question_id.removeprefix("Q1.")
+    if suffix.isdigit():
+        return (int(suffix), question_id)
+    return (10**9, question_id)
+
+
+def _normalize_priority_doc_uids(raw_values: list[str]) -> tuple[str, ...]:
+    """Normalize priority doc UID CLI values while preserving input order."""
+    doc_uids: list[str] = []
+    seen_doc_uids: set[str] = set()
+    for raw_value in raw_values:
+        for candidate in raw_value.split(","):
+            normalized_candidate = candidate.strip()
+            if not normalized_candidate or normalized_candidate in seen_doc_uids:
+                continue
+            seen_doc_uids.add(normalized_candidate)
+            doc_uids.append(normalized_candidate)
+    return tuple(doc_uids)
+
+
+def humanize_doc_uid(doc_uid: str) -> str:
+    """Convert a doc UID like `ifric16` into `IFRIC 16`."""
+    normalized_doc_uid = doc_uid.strip()
+    if not normalized_doc_uid:
+        return normalized_doc_uid
+
+    lower_doc_uid = normalized_doc_uid.lower()
+    for prefix in ("ifric", "ifrs", "ias", "sic", "ps", "navis"):
+        if not lower_doc_uid.startswith(prefix):
+            continue
+        suffix = normalized_doc_uid[len(prefix) :]
+        suffix = suffix.lstrip("-_ ")
+        suffix = suffix.replace("_", " ").replace("-", " ")
+        suffix = re.sub(r"(?<=\D)(?=\d)", " ", suffix)
+        suffix = re.sub(r"\s+", " ", suffix).strip()
+        label = prefix.upper()
+        return f"{label} {suffix}" if suffix else label
+
+    return normalized_doc_uid
+
+
+def _parse_target_matrix_cell(cell_text: str) -> TargetMatrixCell | None:
+    """Parse one score/rank cell from a target matrix."""
+    match = TARGET_MATRIX_CELL_PATTERN.search(cell_text)
+    if match is None:
+        return None
+    return TargetMatrixCell(score=float(match.group("score")), rank=int(match.group("rank")))
+
+
+def format_target_matrix_comparison_cell(
+    old_cell: TargetMatrixCell | None,
+    new_cell: TargetMatrixCell | None,
+) -> str:
+    """Format one matrix-delta cell using score and rank changes."""
+    if old_cell is None and new_cell is None:
+        return "—"
+    if old_cell is None and new_cell is not None:
+        return f"— ↗ {new_cell.score:.4f} / {new_cell.rank} (new)"
+    if old_cell is not None and new_cell is None:
+        return f"{old_cell.score:.4f} / {old_cell.rank} ↘ — (missing)"
+
+    assert old_cell is not None
+    assert new_cell is not None
+    arrow = score_direction_arrow(old_cell.score, new_cell.score)
+    score_delta = new_cell.score - old_cell.score
+    rank_delta = new_cell.rank - old_cell.rank
+    return (
+        f"{old_cell.score:.4f} / {old_cell.rank} {arrow} {new_cell.score:.4f} / {new_cell.rank}"
+        f"<br>({score_delta:+.4f}, rank {rank_delta:+d})"
+    )
+
+
 def _build_parser() -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser(description="Build a variant-level similarity table for selected Q1 variants")
+    parser.add_argument(
+        "--compare-target-matrices",
+        nargs=2,
+        type=Path,
+        default=None,
+        metavar=("MATRIX_A", "MATRIX_B"),
+        help="Compare two target-matrix markdown artifacts instead of building the similarity table",
+    )
+    parser.add_argument(
+        "--compare-target-doc-uids",
+        nargs="+",
+        default=list(DEFAULT_TARGET_MATRIX_COMPARE_DOC_UIDS),
+        help="Document UIDs to include in the target-matrix comparison",
+    )
     parser.add_argument(
         "--question-dir",
         type=Path,
@@ -990,22 +1234,32 @@ def main() -> None:
 
     script_dir = Path(__file__).resolve().parent
     repo_root = script_dir.parent.parent
-    question_dir = args.question_dir or (repo_root / DEFAULT_QUESTION_DIR)
-    glossary_path = args.glossary_path or (repo_root / DEFAULT_GLOSSARY_PATH)
-    policy_path = args.policy_path or (repo_root / DEFAULT_POLICY_PATH)
-    output_path = args.output or (script_dir / DEFAULT_OUTPUT_FILENAME)
-
-    experiment = Q1VariantSimilarityTableExperiment(
-        ExperimentConfig(
-            repo_root=repo_root,
-            question_dir=question_dir,
-            question_ids=tuple(args.question_ids),
-            glossary_path=glossary_path,
-            policy_path=policy_path,
+    if args.compare_target_matrices is not None:
+        matrix_a_path, matrix_b_path = args.compare_target_matrices
+        output_path = args.output or (script_dir / DEFAULT_TARGET_MATRIX_COMPARE_FILENAME)
+        experiment = Q1TargetMatrixComparisonExperiment(
+            matrix_a_path=matrix_a_path,
+            matrix_b_path=matrix_b_path,
             output_path=output_path,
-            top_per_representation=args.top_per_representation,
+            target_doc_uids=_normalize_priority_doc_uids(args.compare_target_doc_uids),
         )
-    )
+    else:
+        question_dir = args.question_dir or (repo_root / DEFAULT_QUESTION_DIR)
+        glossary_path = args.glossary_path or (repo_root / DEFAULT_GLOSSARY_PATH)
+        policy_path = args.policy_path or (repo_root / DEFAULT_POLICY_PATH)
+        output_path = args.output or (script_dir / DEFAULT_OUTPUT_FILENAME)
+
+        experiment = Q1VariantSimilarityTableExperiment(
+            ExperimentConfig(
+                repo_root=repo_root,
+                question_dir=question_dir,
+                question_ids=tuple(args.question_ids),
+                glossary_path=glossary_path,
+                policy_path=policy_path,
+                output_path=output_path,
+                top_per_representation=args.top_per_representation,
+            )
+        )
     markdown = experiment.run()
     sys.stdout.write(markdown)
 
