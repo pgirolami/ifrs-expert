@@ -108,11 +108,13 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     (tmp_path / "config").mkdir(parents=True, exist_ok=True)
     (tmp_path / "prompts").mkdir(parents=True, exist_ok=True)
     (tmp_path / "config" / "policy.default.yaml").write_text("retrieval: {}", encoding="utf-8")
+    (tmp_path / "config" / "en-fr-glossary.yaml").write_text("question_glossary: []", encoding="utf-8")
     (tmp_path / "prompts" / "answer_prompt_A.txt").write_text("A", encoding="utf-8")
     (tmp_path / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
 
     # Patch module-level paths for isolated temp project.
     module.DEFAULT_POLICY_PATH = tmp_path / "config" / "policy.default.yaml"
+    module.DEFAULT_GLOSSARY_PATH = tmp_path / "config" / "en-fr-glossary.yaml"
     module.DEFAULT_PROMPT_A_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
     module.DEFAULT_PROMPT_B_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
 
@@ -130,9 +132,13 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
 
     run_dirs = sorted((tmp_path / "experiments" / "promptfoo_regression" / "runs").iterdir())
     run_dir = run_dirs[0]
+    effective_dir = run_dir / "effective"
+    assert (effective_dir / "en-fr-glossary.yaml").read_text(encoding="utf-8") == "question_glossary: []"
     metadata = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
     assert metadata["description"] == "Q1 live"
     assert "archived_artifacts" in metadata
+    assert "glossary" in metadata["archived_artifacts"]
+    assert metadata["archived_artifacts"]["glossary"]["archived_path"].endswith("effective/en-fr-glossary.yaml")
 
 
 def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
@@ -150,9 +156,11 @@ def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
     (tmp_path / "config").mkdir(parents=True, exist_ok=True)
     (tmp_path / "prompts").mkdir(parents=True, exist_ok=True)
     (tmp_path / "config" / "policy.default.yaml").write_text("retrieval: {}", encoding="utf-8")
+    (tmp_path / "config" / "en-fr-glossary.yaml").write_text("question_glossary: []", encoding="utf-8")
     (tmp_path / "prompts" / "answer_prompt_A.txt").write_text("A", encoding="utf-8")
     (tmp_path / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
     module.DEFAULT_POLICY_PATH = tmp_path / "config" / "policy.default.yaml"
+    module.DEFAULT_GLOSSARY_PATH = tmp_path / "config" / "en-fr-glossary.yaml"
     module.DEFAULT_PROMPT_A_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
     module.DEFAULT_PROMPT_B_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
 

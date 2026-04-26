@@ -9,6 +9,11 @@ It helps detect regressions across:
 - retrieval-only guardrails and prompt changes
 - whichever provider configurations are currently enabled in `promptfoo_src/base.answer.yaml` or `promptfoo_src/base.retrieve.yaml`
 
+The same harness now also powers a retrieval-only suite for Q1. That suite does
+not call any LLM. It runs `scripts/run_retrieve.py`, checks that the right
+documents and sections are retrieved, and saves the exact text used for the
+similarity search as a debug artifact for each question.
+
 ## Quick start
 
 Run and inspect an experiment history with:
@@ -77,6 +82,15 @@ experiments/<experiment_subdir>/
                 └── B-response_faq.md
 ```
 
+For retrieval runs, the provider also writes one plain-text artifact per
+question at:
+
+```text
+experiments/<experiment_subdir>/runs/<timestamp>_<slug>/artifacts/<family>/<variant>/query_embedding.txt
+```
+
+That file contains only the exact text that was embedded for similarity search.
+
 The `<config>` path component is derived from the effective Promptfoo provider
 configuration. In practice this includes the staged `policy-config` path and,
 when explicitly overridden for the run, `llm_provider` and other answer-command
@@ -120,6 +134,11 @@ through the run archive layout and `PROMPTFOO_ARTIFACTS_DIR`.
 `promptfoo_src/base.retrieve.yaml` is the retrieval-only suite base config. It
 uses `scripts/run_retrieve.py` as the `exec:` provider and does not call any LLM.
 
+For retrieval tests, the important family-level contract lives in
+`experiments/00_QUESTIONS/<family>/family.yaml` under `assert_retrieve`. The
+config builder turns that simple declarative shape into the Promptfoo JavaScript
+assertions used by the retrieve suite.
+
 When you update Promptfoo families, assertions, or shared provider defaults,
 rebuild it with:
 
@@ -158,6 +177,10 @@ The Promptfoo suite currently checks:
 - family-specific expected approach coverage where applicable (for example Q1 hedge approaches)
 - recommendation answers use the allowed enum and include a non-trivial justification
 - each approach carries an applicability assessment and at least one reference
+- for Q1 retrieval runs, the required governing documents are in the top 5 and
+  the required section/chunk ranges are present
+- for Q1 retrieval runs, the exact embedded search text is saved in the run
+  artifacts for inspection
 
 LLM-graded rubric assertions are currently commented out in the checked-in family files, so the active suite relies on deterministic JSON/Javascript assertions.
 

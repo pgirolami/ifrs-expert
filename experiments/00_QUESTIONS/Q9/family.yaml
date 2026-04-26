@@ -36,6 +36,47 @@ assert:
       );
     description: Each approach has applicability and at least one reference
 
+assert_retrieve:
+  required_documents:
+    - ifrs9
+    - ifrs13
+    - ias32
+  required_section_ranges:
+    - document: ifrs9
+      start: "4.2.1"
+      end: "4.2.1"
+    - document: ifrs9
+      start: "5.1.1"
+      end: "5.1.1"
+    - document: ifrs9
+      start: "B5.1.1"
+      end: "B5.1.3"
+    - document: ifrs13
+      start: "9"
+      end: "9"
+    - document: ifrs13
+      start: "24"
+      end: "24"
+    - document: ifrs13
+      start: "42"
+      end: "44"
+    - document: ifrs13
+      start: "47"
+      end: "47"
+    - document: ifrs13
+      start: "61"
+      end: "62"
+    - document: ifrs13
+      start: "B11"
+      end: "B17"
+    - document: ias32
+      start: "11"
+      end: "11"
+    - document: ias32
+      start: "16"
+      end: "20"
+
+
 variants:
   - id: Q9.0
     file: Q9.0.txt

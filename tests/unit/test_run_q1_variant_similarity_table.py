@@ -388,3 +388,69 @@ def test_build_question_section_lines_includes_compact_ranking_table() -> None:
         if snippet not in rendered:
             message = f"Missing ranking-table snippet: {snippet}"
             raise AssertionError(message)
+
+
+def test_target_matrix_comparison_cell_shows_score_and_rank_delta() -> None:
+    """The matrix comparator should show the score arrow and rank delta."""
+    module = _load_module()
+
+    old_cell = module.TargetMatrixCell(score=0.7000, rank=4)
+    new_cell = module.TargetMatrixCell(score=0.7200, rank=3)
+
+    rendered = module.format_target_matrix_comparison_cell(old_cell, new_cell)
+
+    if "0.7000 / 4 ↗ 0.7200 / 3" not in rendered:
+        message = f"Unexpected comparison cell format: {rendered}"
+        raise AssertionError(message)
+    if "(+0.0200, rank -1)" not in rendered:
+        message = f"Unexpected delta content: {rendered}"
+        raise AssertionError(message)
+
+
+def test_compare_target_matrices_renders_target_doc_deltas(tmp_path: Path) -> None:
+    """The compare mode should align rows and target documents by question."""
+    module = _load_module()
+    matrix_a = tmp_path / "matrix_a.md"
+    matrix_b = tmp_path / "matrix_b.md"
+
+    matrix_a.write_text(
+        "\n".join(
+            [
+                "| Total | Question | IFRIC 16 | IAS 39 | IFRS 9 |",
+                "| ---: | --- | ---: | ---: | ---: |",
+                "| 3 | Q1.0 | <span>0.7000 / <strong>4</strong></span> | <span>0.7100 / <strong>1</strong></span> | <span>0.6800 / <strong>2</strong></span> |",
+                "| Total |  | 1 (0.70-0.70) | 1 (0.71-0.71) | 1 (0.68-0.68) |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    matrix_b.write_text(
+        "\n".join(
+            [
+                "| Total | Question | IFRIC 16 | IAS 39 | IFRS 9 |",
+                "| ---: | --- | ---: | ---: | ---: |",
+                "| 3 | Q1.0 | <span>0.7200 / <strong>3</strong></span> | <span>0.6900 / <strong>2</strong></span> | <span>0.6800 / <strong>2</strong></span> |",
+                "| Total |  | 1 (0.72-0.72) | 1 (0.69-0.69) | 1 (0.68-0.68) |",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    experiment = module.Q1TargetMatrixComparisonExperiment(
+        matrix_a_path=matrix_a,
+        matrix_b_path=matrix_b,
+        output_path=tmp_path / "delta.md",
+        target_doc_uids=("ifric16", "ias39", "ifrs9"),
+    )
+
+    markdown = experiment.run()
+
+    if "| Question | IFRIC 16 | IAS 39 | IFRS 9 |" not in markdown:
+        message = f"Unexpected header: {markdown}"
+        raise AssertionError(message)
+    if "0.7000 / 4 ↗ 0.7200 / 3" not in markdown:
+        message = f"Expected IFRIC 16 delta not found: {markdown}"
+        raise AssertionError(message)
+    if "0.7100 / 1 ↘ 0.6900 / 2" not in markdown:
+        message = f"Expected IAS 39 delta not found: {markdown}"
+        raise AssertionError(message)

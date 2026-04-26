@@ -16,7 +16,7 @@ assert:
   - type: javascript
     value: |
       const data = JSON.parse(output);
-      return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+      return 'non' === data.recommendation?.answer;
     description: Recommendation answer is one of the allowed values
 
   - type: javascript
@@ -36,6 +36,20 @@ assert:
       );
     description: Each approach has applicability and at least one reference
 
+assert_retrieve:
+  required_documents:
+    - ifrs9
+  required_section_ranges:
+    - document: ifrs9
+      start: "4.1.1"
+      end: "4.1.4"
+    - document: ifrs9
+      start: "B4.1.20"
+      end: "B4.1.26"
+    - document: ifrs9
+      start: "B4.1.10"
+      end: "B4.1.19"
+      
 variants:
   - id: Q4.0
     file: Q4.0.txt

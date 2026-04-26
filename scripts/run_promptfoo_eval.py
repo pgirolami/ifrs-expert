@@ -28,6 +28,7 @@ PROMPTFOO_CONFIG_DIR_ENV: Final[str] = "PROMPTFOO_CONFIG_DIR"
 DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
 DEFAULT_SUITE: Final[str] = "answer"
 DEFAULT_POLICY_PATH: Final[Path] = PROJECT_ROOT / "config" / "policy.default.yaml"
+DEFAULT_GLOSSARY_PATH: Final[Path] = PROJECT_ROOT / "config" / "en-fr-glossary.yaml"
 DEFAULT_PROMPT_A_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
 DEFAULT_PROMPT_B_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 
@@ -161,6 +162,7 @@ class PromptfooEvalRunner:
         effective_dir = run_layout.effective_config_dir
         effective_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(DEFAULT_POLICY_PATH, effective_dir / DEFAULT_POLICY_PATH.name)
+        shutil.copy2(DEFAULT_GLOSSARY_PATH, effective_dir / DEFAULT_GLOSSARY_PATH.name)
         shutil.copy2(DEFAULT_PROMPT_A_PATH, effective_dir / DEFAULT_PROMPT_A_PATH.name)
         shutil.copy2(DEFAULT_PROMPT_B_PATH, effective_dir / DEFAULT_PROMPT_B_PATH.name)
 
@@ -180,6 +182,10 @@ class PromptfooEvalRunner:
         artifacts["policy"] = self._copy_with_hash(
             source_path=archived_dir / DEFAULT_POLICY_PATH.name,
             destination_path=archived_dir / DEFAULT_POLICY_PATH.name,
+        )
+        artifacts["glossary"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_GLOSSARY_PATH.name,
+            destination_path=archived_dir / DEFAULT_GLOSSARY_PATH.name,
         )
         artifacts["prompt_a"] = self._copy_with_hash(
             source_path=archived_dir / DEFAULT_PROMPT_A_PATH.name,
