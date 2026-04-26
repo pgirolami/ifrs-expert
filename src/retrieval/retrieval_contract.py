@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 
@@ -157,9 +158,10 @@ def _parse_required_section_ranges(value: object, *, context: str) -> tuple[Requ
 def expand_chunk_number_range(*, start: str, end: str) -> list[str]:
     """Expand one inclusive chunk_number range.
 
-    The range syntax is strict about shared prefixes and numeric leaf values,
-    but it allows an alphanumeric prefix in earlier components, such as
-    ``B6.3.1`` through ``B6.3.6``.
+    The range syntax is strict about shared prefixes and leaf formats. It
+    supports numeric leaf values such as ``B6.3.1`` through ``B6.3.6`` and
+    alphabetic suffix ranges on the same numeric base, such as ``B4.1.9A``
+    through ``B4.1.9E``.
     """
     start_parts = _parse_chunk_number_parts(start)
     end_parts = _parse_chunk_number_parts(end)
@@ -171,18 +173,60 @@ def expand_chunk_number_range(*, start: str, end: str) -> list[str]:
     if start_parts[:-1] != end_parts[:-1]:
         message = f"Unsupported chunk_number range {start!r}-{end!r}: ranges must share a prefix"
         raise ValueError(message)
-    if not start_parts[-1].isdigit() or not end_parts[-1].isdigit():
-        message = f"Unsupported chunk_number range {start!r}-{end!r}: expected numeric leaf values"
-        raise ValueError(message)
 
-    start_leaf = int(start_parts[-1])
-    end_leaf = int(end_parts[-1])
-    if start_leaf > end_leaf:
+    prefix = ".".join(str(part) for part in start_parts[:-1])
+    return _expand_chunk_number_leaf_range(
+        start=start,
+        end=end,
+        prefix=prefix,
+        start_leaf=start_parts[-1],
+        end_leaf=end_parts[-1],
+    )
+
+
+def _expand_chunk_number_leaf_range(*, start: str, end: str, prefix: str, start_leaf: str, end_leaf: str) -> list[str]:
+    if start_leaf.isdigit() and end_leaf.isdigit():
+        return _expand_numeric_leaf_range(start=start, end=end, prefix=prefix, start_leaf=start_leaf, end_leaf=end_leaf)
+
+    start_suffix_range = _parse_leaf_suffix_range(start_leaf)
+    end_suffix_range = _parse_leaf_suffix_range(end_leaf)
+    if start_suffix_range is None or end_suffix_range is None:
+        message = f"Unsupported chunk_number range {start!r}-{end!r}: expected numeric leaf values or matching alphabetic suffix ranges"
+        raise ValueError(message)
+    if start_suffix_range.numeric_base != end_suffix_range.numeric_base:
+        message = f"Unsupported chunk_number range {start!r}-{end!r}: alphabetic suffix ranges must share the same numeric base"
+        raise ValueError(message)
+    if start_suffix_range.suffix > end_suffix_range.suffix:
         message = f"Unsupported chunk_number range {start!r}-{end!r}: start must be <= end"
         raise ValueError(message)
 
-    prefix = ".".join(str(part) for part in start_parts[:-1])
-    return [f"{prefix}.{leaf}" if prefix else str(leaf) for leaf in range(start_leaf, end_leaf + 1)]
+    values = [f"{start_suffix_range.numeric_base}{chr(code_point)}" for code_point in range(ord(start_suffix_range.suffix), ord(end_suffix_range.suffix) + 1)]
+    return [f"{prefix}.{value}" if prefix else value for value in values]
+
+
+@dataclass(frozen=True)
+class _LeafSuffixRange:
+    numeric_base: int
+    suffix: str
+
+
+def _parse_leaf_suffix_range(value: str) -> _LeafSuffixRange | None:
+    match = re.fullmatch(r"(?P<numeric_base>\d+)(?P<suffix>[A-Z])", value)
+    if match is None:
+        return None
+    return _LeafSuffixRange(
+        numeric_base=int(match.group("numeric_base")),
+        suffix=match.group("suffix"),
+    )
+
+
+def _expand_numeric_leaf_range(*, start: str, end: str, prefix: str, start_leaf: str, end_leaf: str) -> list[str]:
+    start_leaf_number = int(start_leaf)
+    end_leaf_number = int(end_leaf)
+    if start_leaf_number > end_leaf_number:
+        message = f"Unsupported chunk_number range {start!r}-{end!r}: start must be <= end"
+        raise ValueError(message)
+    return [f"{prefix}.{leaf}" if prefix else str(leaf) for leaf in range(start_leaf_number, end_leaf_number + 1)]
 
 
 def _parse_chunk_number_parts(value: str) -> tuple[str, ...]:
