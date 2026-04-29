@@ -42,21 +42,42 @@ assert_retrieve:
   required_section_ranges:
     - document: ifrs9
       start: "4.1.1"
-      end: "4.1.4"
+      end: "4.1.3"
     - document: ifrs9
       start: "B4.1.7"
-      end: "B4.1.9"
-    - document: ifrs9
-      start: "B4.1.9A"
-      end: "B4.1.9E"
-    - document: ifrs9
-      start: "B4.1.10"
-      end: "B4.1.19"
-    - document: ifrs9
-      start: "B4.1.20"
       end: "B4.1.26"
 
 variants:
   - id: Q3.0
     file: Q3.0.txt
+    description: SPPI test for debt instruments
+  - id: Q3.1
+    file: Q3.1.txt
+    description: SPPI test for debt instruments
+  - id: Q3.2
+    file: Q3.2.txt
+    description: SPPI test for debt instruments
+  - id: Q3.3
+    file: Q3.3.txt
+    description: SPPI test for debt instruments
+  - id: Q3.4
+    file: Q3.4.txt
+    description: SPPI test for debt instruments
+  - id: Q3.5
+    file: Q3.5.txt
+    description: SPPI test for debt instruments
+  - id: Q3.6
+    file: Q3.6.txt
+    description: SPPI test for debt instruments
+  - id: Q3.7
+    file: Q3.7.txt
+    description: SPPI test for debt instruments
+  - id: Q3.8
+    file: Q3.8.txt
+    description: SPPI test for debt instruments
+  - id: Q3.9
+    file: Q3.9.txt
+    description: SPPI test for debt instruments
+  - id: Q3.10
+    file: Q3.10.txt
     description: SPPI test for debt instruments

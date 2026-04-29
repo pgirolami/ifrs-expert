@@ -269,5 +269,7 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - It is likely we'll have to work on mapping French terms to accounting concepts to automate the glossary creation via LLM
     - Rolled back the expansion for now
 
-- Run eval on Q2 family
-    - approach labels were inconsistent (ex: `fair_value_through_profit_and_loss` vs `fvpl`), added naming convention to prompt A
+- [Experiment 46](../experiments/46_Q2_family_retrieval_baseline-Q1-glossary/EXPERIMENTS.md) showed that the retrieval eval gave 100% recall on target documents and chunks on the [Q2](../experiments/00_QUESTIONS/Q2/Q2.0.txt) family of questions
+
+- [Experiment 46](../experiments/47_Q3_family_retrieval_baseline-Q1-glossary/EXPERIMENTS.md)  showed 100% recall on target documents but only 30% on target chunks for the [Q3](../experiments/00_QUESTIONS/Q3/Q3.0.txt) family of questions.
+    - An improvement to retrieval to address this will be implemented next: cross-reference expansion

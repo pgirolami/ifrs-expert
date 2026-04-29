@@ -1,0 +1,1110 @@
+{
+  "experiment_name": "47_Q3_family_retrieval_baseline-Q1-glossary",
+  "provider_name": "Q1 retrieval non-regression gate",
+  "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+  "generated_at": "2026-04-29T10:15:36.940120+00:00",
+  "promptfoo_db_path": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/.promptfoo/promptfoo.db",
+  "eval_id": "eval-h8n-2026-04-29T10:12:24",
+  "question_families": [
+    "Q3¤"
+  ],
+  "question_sources": [
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.0.txt",
+      "description": "Q3.0 - SPPI test for debt instruments",
+      "question_id": "Q3.0"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.1.txt",
+      "description": "Q3.1 - SPPI test for debt instruments",
+      "question_id": "Q3.1"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.2.txt",
+      "description": "Q3.2 - SPPI test for debt instruments",
+      "question_id": "Q3.2"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.3.txt",
+      "description": "Q3.3 - SPPI test for debt instruments",
+      "question_id": "Q3.3"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.4.txt",
+      "description": "Q3.4 - SPPI test for debt instruments",
+      "question_id": "Q3.4"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.5.txt",
+      "description": "Q3.5 - SPPI test for debt instruments",
+      "question_id": "Q3.5"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.6.txt",
+      "description": "Q3.6 - SPPI test for debt instruments",
+      "question_id": "Q3.6"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.7.txt",
+      "description": "Q3.7 - SPPI test for debt instruments",
+      "question_id": "Q3.7"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.8.txt",
+      "description": "Q3.8 - SPPI test for debt instruments",
+      "question_id": "Q3.8"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.9.txt",
+      "description": "Q3.9 - SPPI test for debt instruments",
+      "question_id": "Q3.9"
+    },
+    {
+      "family_id": "Q3¤",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.10.txt",
+      "description": "Q3.10 - SPPI test for debt instruments",
+      "question_id": "Q3.10"
+    }
+  ],
+  "question_ids": [
+    "Q3.0",
+    "Q3.1",
+    "Q3.2",
+    "Q3.3",
+    "Q3.4",
+    "Q3.5",
+    "Q3.6",
+    "Q3.7",
+    "Q3.8",
+    "Q3.9",
+    "Q3.10"
+  ],
+  "policy_file": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/effective/policy.default.yaml",
+  "effective_policy_file": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/effective/policy.default.yaml",
+  "policy_name": "standards_only_through_chunks__enriched",
+  "policy": {
+    "querying": {
+      "raw": {
+        "embedding_mode": "raw"
+      },
+      "enriched": {
+        "embedding_mode": "enriched"
+      }
+    },
+    "document_routing_strategies": {
+      "return_all": {
+        "source": "all_documents"
+      },
+      "through_chunks": {
+        "source": "top_chunk_results",
+        "profiles": {
+          "q1_authority_family": {
+            "global_d": 5,
+            "by_document_type": {
+              "IFRS-S": {
+                "d": 2,
+                "min_score": 0.6,
+                "expand_to_section": true
+              },
+              "IFRS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IFRS-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IFRS-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              },
+              "IAS-S": {
+                "d": 2,
+                "min_score": 0.6,
+                "expand_to_section": true
+              },
+              "IAS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IAS-BCIASC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IAS-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IAS-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              },
+              "IAS-SM": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IFRIC": {
+                "d": 2,
+                "min_score": 0.671,
+                "expand_to_section": true
+              },
+              "IFRIC-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IFRIC-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "IFRIC-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              },
+              "SIC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              },
+              "SIC-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "SIC-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "PS": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              },
+              "PS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false
+              },
+              "NAVIS": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true
+              }
+            }
+          }
+        }
+      },
+      "through_document_representation": {
+        "source": "document_representation",
+        "profiles": {
+          "q1_authority_family_full_repr": {
+            "global_d": 5,
+            "by_document_type": {
+              "IFRS-S": {
+                "d": 2,
+                "min_score": 0.683,
+                "expand_to_section": true,
+                "similarity_representation": "full"
+              },
+              "IFRS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "IFRS-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "IFRS-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "full"
+              },
+              "IAS-S": {
+                "d": 2,
+                "min_score": 0.699,
+                "expand_to_section": true,
+                "similarity_representation": "toc"
+              },
+              "IAS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "toc"
+              },
+              "IAS-BCIASC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "toc"
+              },
+              "IAS-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "toc"
+              },
+              "IAS-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "toc"
+              },
+              "IAS-SM": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "toc"
+              },
+              "IFRIC": {
+                "d": 2,
+                "min_score": 0.671,
+                "expand_to_section": true,
+                "similarity_representation": "scope"
+              },
+              "IFRIC-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "IFRIC-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "IFRIC-IG": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "full"
+              },
+              "SIC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "background_and_issue"
+              },
+              "SIC-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "SIC-IE": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "PS": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "full"
+              },
+              "PS-BC": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": false,
+                "similarity_representation": "full"
+              },
+              "NAVIS": {
+                "d": 2,
+                "min_score": 0.8,
+                "expand_to_section": true,
+                "similarity_representation": "full"
+              }
+            }
+          }
+        }
+      }
+    },
+    "document_routing_post_processing": {
+      "none": {},
+      "aggregate_to_main_variant": {
+        "document_post_processing": "aggregate_to_main_variant"
+      },
+      "main_variant_only": {
+        "filter": "main_variant_only"
+      }
+    },
+    "chunk_retrieval_strategies": {
+      "dense_chunks": {
+        "mode": "chunk_similarity",
+        "profiles": {
+          "default": {
+            "filter": {
+              "min_score": 0.53,
+              "per_document_k": 5
+            },
+            "expansion": {
+              "expand": 0,
+              "expand_to_section": true,
+              "full_doc_threshold": 0
+            }
+          }
+        }
+      },
+      "title_chunks": {
+        "mode": "title_similarity",
+        "profiles": {
+          "titles_default": {
+            "filter": {
+              "min_score": 0.6,
+              "per_document_k": 5
+            }
+          }
+        }
+      }
+    },
+    "retrieval_policies": {
+      "documents2_through_chunks__raw": {
+        "querying": "raw",
+        "document_routing": {
+          "strategy": "through_chunks",
+          "profile": "q1_authority_family",
+          "post_processing": "aggregate_to_main_variant"
+        },
+        "chunk_retrieval": {
+          "strategy": "dense_chunks",
+          "profile": "default"
+        }
+      },
+      "documents2_through_chunks__enriched": {
+        "querying": "enriched",
+        "document_routing": {
+          "strategy": "through_chunks",
+          "profile": "q1_authority_family",
+          "post_processing": "aggregate_to_main_variant"
+        },
+        "chunk_retrieval": {
+          "strategy": "dense_chunks",
+          "profile": "default"
+        }
+      },
+      "standards_only_through_chunks__enriched": {
+        "querying": "enriched",
+        "document_routing": {
+          "strategy": "through_chunks",
+          "profile": "q1_authority_family",
+          "post_processing": "main_variant_only"
+        },
+        "chunk_retrieval": {
+          "strategy": "dense_chunks",
+          "profile": "default"
+        }
+      },
+      "full_documents__enriched": {
+        "querying": "enriched",
+        "document_routing": {
+          "strategy": "through_document_representation",
+          "profile": "q1_authority_family_full_repr",
+          "post_processing": "none"
+        },
+        "chunk_retrieval": {
+          "strategy": "dense_chunks",
+          "profile": "default"
+        }
+      },
+      "text__enriched": {
+        "querying": "enriched",
+        "document_routing": {
+          "strategy": "return_all",
+          "profile": null,
+          "post_processing": "none"
+        },
+        "chunk_retrieval": {
+          "strategy": "dense_chunks",
+          "profile": "default"
+        }
+      },
+      "titles__enriched": {
+        "querying": "enriched",
+        "document_routing": {
+          "strategy": "return_all",
+          "profile": null,
+          "post_processing": "none"
+        },
+        "chunk_retrieval": {
+          "strategy": "title_chunks",
+          "profile": "titles_default"
+        }
+      }
+    },
+    "prompts": {
+      "answer_prompt_a_path": "prompts/answer_prompt_A.txt",
+      "answer_prompt_b_path": "prompts/answer_prompt_B.txt"
+    },
+    "output": {
+      "response_format": "markdown"
+    }
+  },
+  "glossary_file": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/effective/en-fr-glossary.yaml",
+  "effective_glossary_file": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/effective/en-fr-glossary.yaml",
+  "target_documents": [
+    "ifrs9"
+  ],
+  "rows": [
+    {
+      "question_id": "Q3.0",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.0.txt",
+      "question_text_sha256": "fa250e24408d38920a6508d14d9af727526f62469604297a455645066d65b96e",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.6391,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 1,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6391
+      }
+    },
+    {
+      "question_id": "Q3.1",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.1.txt",
+      "question_text_sha256": "556ea8f24e188341c48b3869560470de8d9e9c36fa32d92a5bfa1e0f295c9e59",
+      "document_hits": [
+        {
+          "doc_uid": "ifric12",
+          "display_label": "IFRIC 12",
+          "rank": 1,
+          "score": 0.6938,
+          "document_type": "IFRIC",
+          "document_kind": "interpretation"
+        },
+        {
+          "doc_uid": "ifrs3",
+          "display_label": "IFRS 3",
+          "rank": 2,
+          "score": 0.6704,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 3,
+          "score": 0.6698,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias32",
+          "display_label": "IAS 32",
+          "rank": 4,
+          "score": 0.6653,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias19",
+          "display_label": "IAS 19",
+          "rank": 5,
+          "score": 0.6135,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 5,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 3
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6698
+      }
+    },
+    {
+      "question_id": "Q3.2",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.2.txt",
+      "question_text_sha256": "51451e30af50dc72e88178f188cd8e744bda069b658d35cd7c96d194ad4c236f",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.6391,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 1,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6391
+      }
+    },
+    {
+      "question_id": "Q3.3",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.3.txt",
+      "question_text_sha256": "49804f53abfe6080eb7340a627cced48546af2aa2e0999e3b2487ac1ac53981a",
+      "document_hits": [
+        {
+          "doc_uid": "ifric12",
+          "display_label": "IFRIC 12",
+          "rank": 1,
+          "score": 0.6871,
+          "document_type": "IFRIC",
+          "document_kind": "interpretation"
+        },
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 2,
+          "score": 0.6832,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs3",
+          "display_label": "IFRS 3",
+          "rank": 3,
+          "score": 0.6677,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias32",
+          "display_label": "IAS 32",
+          "rank": 4,
+          "score": 0.6545,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias7",
+          "display_label": "IAS 7",
+          "rank": 5,
+          "score": 0.6155,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 5,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 2
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6832
+      }
+    },
+    {
+      "question_id": "Q3.4",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.4.txt",
+      "question_text_sha256": "6e4ea86f68841da19fe3cd8d2ecd16be2f006ce9cd9e37439d94b4833b17e652",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.7021,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias32",
+          "display_label": "IAS 32",
+          "rank": 2,
+          "score": 0.6906,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs15",
+          "display_label": "IFRS 15",
+          "rank": 3,
+          "score": 0.624,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias39",
+          "display_label": "IAS 39",
+          "rank": 4,
+          "score": 0.6096,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 4,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.7021
+      }
+    },
+    {
+      "question_id": "Q3.5",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.5.txt",
+      "question_text_sha256": "77eb398e2a52b05603e60441713ceaaf994471f4551583bd8c33aa4fbbf45f82",
+      "document_hits": [
+        {
+          "doc_uid": "ias7",
+          "display_label": "IAS 7",
+          "rank": 1,
+          "score": 0.697,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 2,
+          "score": 0.6869,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs17",
+          "display_label": "IFRS 17",
+          "rank": 3,
+          "score": 0.6194,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias39",
+          "display_label": "IAS 39",
+          "rank": 4,
+          "score": 0.6007,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 4,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 2
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6869
+      }
+    },
+    {
+      "question_id": "Q3.6",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.6.txt",
+      "question_text_sha256": "e76aa4e37abc7190d26a79f24b3e9443d4ece42f61f65e08fbb9c94b383cdc5b",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.6937,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias32",
+          "display_label": "IAS 32",
+          "rank": 2,
+          "score": 0.6778,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs3",
+          "display_label": "IFRS 3",
+          "rank": 3,
+          "score": 0.6279,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias19",
+          "display_label": "IAS 19",
+          "rank": 4,
+          "score": 0.6127,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 4,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6937
+      }
+    },
+    {
+      "question_id": "Q3.7",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.7.txt",
+      "question_text_sha256": "705ae65b936ff26d31562baea4e30d2f1fb46eed15b407193fa5cfebe1729b12",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.6824,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 1,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6824
+      }
+    },
+    {
+      "question_id": "Q3.8",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.8.txt",
+      "question_text_sha256": "e108aae44ab20d4022aead5c8be7ae55ea7320500bb3df20a1df65f070b3009a",
+      "document_hits": [
+        {
+          "doc_uid": "ias32",
+          "display_label": "IAS 32",
+          "rank": 1,
+          "score": 0.6866,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifric12",
+          "display_label": "IFRIC 12",
+          "rank": 2,
+          "score": 0.6814,
+          "document_type": "IFRIC",
+          "document_kind": "interpretation"
+        },
+        {
+          "doc_uid": "ifrs3",
+          "display_label": "IFRS 3",
+          "rank": 3,
+          "score": 0.6786,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 4,
+          "score": 0.6704,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias19",
+          "display_label": "IAS 19",
+          "rank": 5,
+          "score": 0.6293,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 5,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 4
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6704
+      }
+    },
+    {
+      "question_id": "Q3.9",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.9.txt",
+      "question_text_sha256": "11accc741fcf43db05e021e9a49b90963271f51785cb876416d3791454175dea",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.7234,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias7",
+          "display_label": "IAS 7",
+          "rank": 2,
+          "score": 0.7067,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ifrs19",
+          "display_label": "IFRS 19",
+          "rank": 3,
+          "score": 0.6741,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        },
+        {
+          "doc_uid": "ias36",
+          "display_label": "IAS 36",
+          "rank": 4,
+          "score": 0.6719,
+          "document_type": "IAS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 4,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.7234
+      }
+    },
+    {
+      "question_id": "Q3.10",
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "question_path": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/00_QUESTIONS/Q3/Q3.10.txt",
+      "question_text_sha256": "89f9f47fd3b3fcdf203f684ef399f6a507f108f9f71ee2651c732a3467c45f87",
+      "document_hits": [
+        {
+          "doc_uid": "ifrs9",
+          "display_label": "IFRS 9",
+          "rank": 1,
+          "score": 0.6485,
+          "document_type": "IFRS-S",
+          "document_kind": "standard"
+        }
+      ],
+      "selected_document": null,
+      "selected_rank": null,
+      "selected_score": null,
+      "in_candidate_set": null,
+      "candidate_count": 1,
+      "target_documents_present": {
+        "ifrs9": true
+      },
+      "target_document_ranks": {
+        "ifrs9": 1
+      },
+      "target_document_scores": {
+        "ifrs9": 0.6485
+      }
+    }
+  ],
+  "document_summaries": [
+    {
+      "doc_uid": "ifrs9",
+      "display_label": "IFRS 9",
+      "question_count": 11,
+      "present_count": 11,
+      "score_min": 0.6391,
+      "score_max": 0.7234,
+      "rank_min": 1,
+      "rank_max": 4
+    },
+    {
+      "doc_uid": "ias32",
+      "display_label": "IAS 32",
+      "question_count": 11,
+      "present_count": 5,
+      "score_min": 0.6545,
+      "score_max": 0.6906,
+      "rank_min": 1,
+      "rank_max": 4
+    },
+    {
+      "doc_uid": "ifrs3",
+      "display_label": "IFRS 3",
+      "question_count": 11,
+      "present_count": 4,
+      "score_min": 0.6279,
+      "score_max": 0.6786,
+      "rank_min": 2,
+      "rank_max": 3
+    },
+    {
+      "doc_uid": "ias19",
+      "display_label": "IAS 19",
+      "question_count": 11,
+      "present_count": 3,
+      "score_min": 0.6127,
+      "score_max": 0.6293,
+      "rank_min": 4,
+      "rank_max": 5
+    },
+    {
+      "doc_uid": "ias7",
+      "display_label": "IAS 7",
+      "question_count": 11,
+      "present_count": 3,
+      "score_min": 0.6155,
+      "score_max": 0.7067,
+      "rank_min": 1,
+      "rank_max": 5
+    },
+    {
+      "doc_uid": "ifric12",
+      "display_label": "IFRIC 12",
+      "question_count": 11,
+      "present_count": 3,
+      "score_min": 0.6814,
+      "score_max": 0.6938,
+      "rank_min": 1,
+      "rank_max": 2
+    },
+    {
+      "doc_uid": "ias39",
+      "display_label": "IAS 39",
+      "question_count": 11,
+      "present_count": 2,
+      "score_min": 0.6007,
+      "score_max": 0.6096,
+      "rank_min": 4,
+      "rank_max": 4
+    },
+    {
+      "doc_uid": "ias36",
+      "display_label": "IAS 36",
+      "question_count": 11,
+      "present_count": 1,
+      "score_min": 0.6719,
+      "score_max": 0.6719,
+      "rank_min": 4,
+      "rank_max": 4
+    },
+    {
+      "doc_uid": "ifrs15",
+      "display_label": "IFRS 15",
+      "question_count": 11,
+      "present_count": 1,
+      "score_min": 0.624,
+      "score_max": 0.624,
+      "rank_min": 3,
+      "rank_max": 3
+    },
+    {
+      "doc_uid": "ifrs17",
+      "display_label": "IFRS 17",
+      "question_count": 11,
+      "present_count": 1,
+      "score_min": 0.6194,
+      "score_max": 0.6194,
+      "rank_min": 3,
+      "rank_max": 3
+    },
+    {
+      "doc_uid": "ifrs19",
+      "display_label": "IFRS 19",
+      "question_count": 11,
+      "present_count": 1,
+      "score_min": 0.6741,
+      "score_max": 0.6741,
+      "rank_min": 3,
+      "rank_max": 3
+    }
+  ]
+}

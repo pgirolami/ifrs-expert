@@ -1,0 +1,15 @@
+{
+  "experiment_name": "47_Q3_family_retrieval_baseline-Q1-glossary",
+  "generated_at": "2026-04-29T16:00:21.184830+00:00",
+  "runs": [
+    {
+      "run_id": "2026-04-29_10-12-21_promptfoo-eval-family-q3",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval",
+      "html_path": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html",
+      "markdown_path": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md",
+      "json_path": "experiments/47_Q3_family_retrieval_baseline-Q1-glossary/runs/2026-04-29_10-12-21_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.json"
+    }
+  ]
+}

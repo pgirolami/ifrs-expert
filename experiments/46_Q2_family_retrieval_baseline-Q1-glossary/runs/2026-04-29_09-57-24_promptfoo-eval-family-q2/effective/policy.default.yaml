@@ -230,15 +230,6 @@ chunk_retrieval_strategies:
           per_document_k: 5
 
 retrieval_policies:
-  standards_only_through_chunks__enriched:
-    querying: enriched
-    document_routing:
-      strategy: through_chunks
-      profile: q1_authority_family
-      post_processing: main_variant_only
-    chunk_retrieval:
-      strategy: dense_chunks
-      profile: default
   documents2_through_chunks__raw:
     querying: raw
     document_routing:
@@ -254,6 +245,15 @@ retrieval_policies:
       strategy: through_chunks
       profile: q1_authority_family
       post_processing: aggregate_to_main_variant
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  standards_only_through_chunks__enriched:
+    querying: enriched
+    document_routing:
+      strategy: through_chunks
+      profile: q1_authority_family
+      post_processing: main_variant_only
     chunk_retrieval:
       strategy: dense_chunks
       profile: default
