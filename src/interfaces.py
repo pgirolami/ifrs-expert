@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
+    from src.models.reference import ContentReference
     from src.models.section import SectionClosureRow, SectionRecord
 
 
@@ -102,6 +103,25 @@ class SectionStoreProtocol(ReadSectionStoreProtocol, Protocol):
 
     def delete_sections_by_doc(self, doc_uid: str) -> int:
         """Delete all sections for a document."""
+
+
+class ReferenceStoreProtocol(Protocol):
+    """Protocol for reference storage operations."""
+
+    def __enter__(self) -> Self:
+        """Enter context manager."""
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        """Exit context manager."""
+
+    def insert_references(self, references: list[ContentReference]) -> list[int]:
+        """Insert references into the store."""
+
+    def get_references_by_doc(self, doc_uid: str) -> list[ContentReference]:
+        """Get all references for a document."""
+
+    def delete_references_by_doc(self, doc_uid: str) -> int:
+        """Delete all references for a document."""
 
 
 class DocumentStoreProtocol(Protocol):

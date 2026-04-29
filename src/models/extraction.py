@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
+    from src.models.reference import ContentReference
     from src.models.section import SectionClosureRow, SectionRecord
 
 
@@ -19,3 +20,4 @@ class ExtractedDocument:
     chunks: list[Chunk]
     sections: list[SectionRecord] = field(default_factory=list)
     section_closure_rows: list[SectionClosureRow] = field(default_factory=list)
+    references: list[ContentReference] = field(default_factory=list)

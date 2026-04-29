@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Self
 
-from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, SearchResult, VectorStoreProtocol
+from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ReferenceStoreProtocol, SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord, resolve_document_kind, resolve_document_type
+from src.models.reference import ContentReference
 from src.models.section import SectionClosureRow, SectionRecord
 
 
@@ -219,6 +220,39 @@ class InMemoryDocumentStore(DocumentStoreProtocol):
         if document is None:
             return None
         return replace(document)
+
+
+class InMemoryReferenceStore(ReferenceStoreProtocol):
+    """In-memory implementation of reference storage for testing."""
+
+    def __init__(self) -> None:
+        self._references: list[ContentReference] = []
+        self._next_id = 1
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        return None
+
+    def insert_references(self, references: list[ContentReference]) -> list[int]:
+        ids: list[int] = []
+        for reference in references:
+            row_id = reference.id if reference.id is not None else self._next_id
+            self._next_id = max(self._next_id, row_id + 1)
+            stored_reference = replace(reference, id=row_id)
+            reference.id = row_id
+            self._references.append(stored_reference)
+            ids.append(row_id)
+        return ids
+
+    def get_references_by_doc(self, doc_uid: str) -> list[ContentReference]:
+        return [replace(reference) for reference in self._references if reference.source_doc_uid == doc_uid]
+
+    def delete_references_by_doc(self, doc_uid: str) -> int:
+        original_count = len(self._references)
+        self._references = [reference for reference in self._references if reference.source_doc_uid != doc_uid]
+        return original_count - len(self._references)
 
 
 class RecordingVectorStore(VectorStoreProtocol):

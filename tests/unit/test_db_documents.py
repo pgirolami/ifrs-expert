@@ -35,6 +35,7 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
         chunk_columns = {row[1] for row in connection.execute("PRAGMA table_info(chunks)").fetchall()}
         section_columns = {row[1] for row in connection.execute("PRAGMA table_info(sections)").fetchall()}
         closure_columns = {row[1] for row in connection.execute("PRAGMA table_info(section_closure)").fetchall()}
+        reference_columns = {row[1] for row in connection.execute("PRAGMA table_info(content_references)").fetchall()}
 
     assert {
         "doc_uid",
@@ -64,6 +65,22 @@ def test_init_db_creates_documents_sections_and_chunk_metadata_columns(temp_db: 
         "position",
     }.issubset(section_columns)
     assert {"doc_uid", "ancestor_section_db_id", "descendant_section_db_id", "depth"}.issubset(closure_columns)
+    assert {
+        "source_doc_uid",
+        "source_location_type",
+        "source_chunk_id",
+        "source_chunk_db_id",
+        "source_section_id",
+        "source_section_db_id",
+        "reference_order",
+        "annotation_raw_text",
+        "target_raw_text",
+        "target_kind",
+        "target_doc_hint",
+        "target_start",
+        "target_end",
+        "parsed_ok",
+    }.issubset(reference_columns)
 
 
 def test_infer_document_type_returns_supported_prefixes() -> None:

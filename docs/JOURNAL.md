@@ -273,3 +273,9 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 - [Experiment 46](../experiments/47_Q3_family_retrieval_baseline-Q1-glossary/EXPERIMENTS.md)  showed 100% recall on target documents but only 30% on target chunks for the [Q3](../experiments/00_QUESTIONS/Q3/Q3.0.txt) family of questions.
     - An improvement to retrieval to address this will be implemented next: cross-reference expansion
+
+- Cross-reference expansion implementation
+    - Updated IFRS HTML ingestion so `Refer:` annotations are parsed into structured reference rows instead of being discarded with the note text
+        - Chunk-level inline `Refer:` spans are captured from paragraph bodies
+        - Top-of-section `Refer:` blocks are captured as section-scoped references
+        - References are persisted in a dedicated database table during storage

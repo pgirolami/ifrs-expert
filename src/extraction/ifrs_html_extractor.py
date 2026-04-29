@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from pathlib import PurePosixPath
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from bs4.element import Tag
 
@@ -28,6 +29,7 @@ from src.extraction.html import (
     _tag_attribute_as_string,
     _tag_classes,
 )
+from src.extraction.ifrs_references import extract_references_from_note
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord, resolve_document_kind_from_document_type, resolve_document_type
 from src.models.extraction import ExtractedDocument
@@ -39,6 +41,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from bs4 import BeautifulSoup
+
+    from src.models.reference import ContentReference
 
 
 class IfrsHtmlExtractor:
@@ -76,7 +80,7 @@ class IfrsHtmlExtractor:
         if not isinstance(content_root, Tag):
             _fail_validation("HTML is missing the IFRS content root")
 
-        chunks, sections = self._extract_structure(doc_uid=doc_uid, content_root=content_root)
+        chunks, sections, references = self._extract_structure(doc_uid=doc_uid, content_root=content_root)
         section_closure_rows = _build_section_closure_rows(sections)
 
         return ExtractedDocument(
@@ -94,6 +98,7 @@ class IfrsHtmlExtractor:
             chunks=chunks,
             sections=sections,
             section_closure_rows=section_closure_rows,
+            references=references,
         )
 
     def _extract_shell_canonical_url(self, soup: BeautifulSoup) -> str:
@@ -162,49 +167,53 @@ class IfrsHtmlExtractor:
                 _fail_validation(f"Unsupported IAS documentType label: {variant.label}", cause=error)
         return resolve_document_type(doc_uid)
 
-    def _extract_structure(self, doc_uid: str, content_root: Tag) -> tuple[list[Chunk], list[SectionRecord]]:
-        chunks: list[Chunk] = []
-        sections: list[SectionRecord] = []
-        traversal_state = _SectionTraversalState(active_sections_by_level={}, chapter_sections_by_prefix={})
+    def _extract_structure(self, doc_uid: str, content_root: Tag) -> tuple[list[Chunk], list[SectionRecord], list[ContentReference]]:
+        state = _StructureExtractionState(
+            chunks=[],
+            sections=[],
+            references=[],
+            traversal_state=_SectionTraversalState(active_sections_by_level={}, chapter_sections_by_prefix={}),
+            last_chunk_by_section_id={},
+            next_reference_order=1,
+        )
 
         for node in content_root.find_all(["div", "table"]):
             if not isinstance(node, Tag):
                 continue
+            self._process_structure_node(doc_uid=doc_uid, node=node, state=state)
 
-            annotation_chunk = self._maybe_extract_annotation_chunk(
-                doc_uid=doc_uid,
-                node=node,
-                active_sections_by_level=traversal_state.active_sections_by_level,
-            )
-            if annotation_chunk is not None:
-                chunks.append(annotation_chunk)
-                continue
+        return state.chunks, state.sections, state.references
 
-            paragraph_chunk = self._maybe_extract_paragraph_chunk(
-                doc_uid=doc_uid,
-                node=node,
-                active_sections_by_level=traversal_state.active_sections_by_level,
-            )
-            if paragraph_chunk is not None:
-                chunks.append(paragraph_chunk)
-                continue
+    def _process_structure_node(self, doc_uid: str, node: Tag, state: _StructureExtractionState) -> None:
+        if self._is_reference_only_educational_note(node):
+            self._append_note_references(doc_uid=doc_uid, note=node, state=state)
+            return
 
-            section = self._extract_section(doc_uid=doc_uid, node=node, traversal_state=traversal_state)
-            if section is None:
-                continue
+        annotation_chunk = self._maybe_extract_annotation_chunk(
+            doc_uid=doc_uid,
+            node=node,
+            active_sections_by_level=state.traversal_state.active_sections_by_level,
+        )
+        if annotation_chunk is not None:
+            self._append_chunk(state=state, chunk=annotation_chunk)
+            return
 
-            self._register_section(node=node, section=section, traversal_state=traversal_state, sections=sections)
+        paragraph_chunk, paragraph_references = self._maybe_extract_paragraph_chunk(
+            doc_uid=doc_uid,
+            node=node,
+            active_sections_by_level=state.traversal_state.active_sections_by_level,
+        )
+        if paragraph_chunk is not None:
+            self._append_chunk(state=state, chunk=paragraph_chunk)
+            self._append_references(state=state, note_references=paragraph_references)
+            return
 
-            section_body_chunk = self._extract_section_body_chunk(doc_uid=doc_uid, node=node, section=section)
-            if section_body_chunk is not None:
-                chunks.append(section_body_chunk)
+        section = self._extract_section(doc_uid=doc_uid, node=node, traversal_state=state.traversal_state)
+        if section is None:
+            return
 
-            if doc_uid.endswith("-ig"):
-                guidance_chunk = self._extract_guidance_chunk(doc_uid=doc_uid, node=node, section=section)
-                if guidance_chunk is not None:
-                    chunks.append(guidance_chunk)
-
-        return chunks, sections
+        self._register_section(node=node, section=section, traversal_state=state.traversal_state, sections=state.sections)
+        self._append_section_content(doc_uid=doc_uid, node=node, section=section, state=state)
 
     def _maybe_extract_annotation_chunk(
         self,
@@ -225,13 +234,13 @@ class IfrsHtmlExtractor:
         doc_uid: str,
         node: Tag,
         active_sections_by_level: dict[int, SectionRecord],
-    ) -> Chunk | None:
+    ) -> tuple[Chunk | None, list[ContentReference]]:
         if node.name != "div":
-            return None
+            return None, []
         nested_level = _extract_nested_level(node)
         classes = _tag_classes(node)
         if nested_level is None or "paragraph" not in classes or "topic" not in classes:
-            return None
+            return None, []
         return self._extract_chunk(
             doc_uid=doc_uid,
             paragraph=node,
@@ -309,20 +318,20 @@ class IfrsHtmlExtractor:
         doc_uid: str,
         paragraph: Tag,
         active_sections_by_level: dict[int, SectionRecord],
-    ) -> Chunk | None:
+    ) -> tuple[Chunk | None, list[ContentReference]]:
         chunk_number_tag = paragraph.select_one("td.paragraph_col1 .paranum > p")
         body_tag = paragraph.select_one("td.paragraph_col2 > .body")
         if not isinstance(chunk_number_tag, Tag) or not isinstance(body_tag, Tag):
-            return None
+            return None, []
 
         chunk_number = _normalize_whitespace(chunk_number_tag.get_text(" ", strip=True))
         if not chunk_number:
-            return None
+            return None, []
 
         text_lines = self._extract_body_lines(body_tag)
         text = "\n".join(line for line in text_lines if line)
         if not text:
-            return None
+            return None, []
 
         nested_level = _extract_nested_level(paragraph)
         containing_section = None
@@ -332,7 +341,7 @@ class IfrsHtmlExtractor:
                 nested_level=nested_level,
             )
 
-        return Chunk(
+        chunk = Chunk(
             doc_uid=doc_uid,
             chunk_number=chunk_number,
             page_start="",
@@ -341,6 +350,13 @@ class IfrsHtmlExtractor:
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
         )
+        references = self._extract_span_note_references(
+            doc_uid=doc_uid,
+            body_node=body_tag,
+            source_chunk=chunk,
+            source_section=containing_section,
+        )
+        return chunk, references
 
     def _extract_section_body_chunk(self, doc_uid: str, node: Tag, section: SectionRecord) -> Chunk | None:
         normalized_title = _normalize_whitespace(section.title).lower()
@@ -398,6 +414,21 @@ class IfrsHtmlExtractor:
             text=text,
             containing_section_id=section.section_id,
         )
+
+    def _append_chunk(self, state: _StructureExtractionState, chunk: Chunk) -> None:
+        state.chunks.append(chunk)
+        if chunk.containing_section_id is not None:
+            state.last_chunk_by_section_id[chunk.containing_section_id] = chunk
+
+    def _append_section_content(self, doc_uid: str, node: Tag, section: SectionRecord, state: _StructureExtractionState) -> None:
+        section_body_chunk = self._extract_section_body_chunk(doc_uid=doc_uid, node=node, section=section)
+        if section_body_chunk is not None:
+            self._append_chunk(state=state, chunk=section_body_chunk)
+
+        if doc_uid.endswith("-ig"):
+            guidance_chunk = self._extract_guidance_chunk(doc_uid=doc_uid, node=node, section=section)
+            if guidance_chunk is not None:
+                self._append_chunk(state=state, chunk=guidance_chunk)
 
     def _extract_annotation_chunk(
         self,
@@ -560,6 +591,77 @@ class IfrsHtmlExtractor:
     def _is_reference_only_educational_note(self, node: Tag) -> bool:
         classes = set(_tag_classes(node))
         return "note" in classes and "edu" in classes
+
+    def _is_refer_annotation(self, node: Tag) -> bool:
+        prefix_node = node.select_one(".edu_prefix")
+        if not isinstance(prefix_node, Tag):
+            return False
+        return _normalize_whitespace(prefix_node.get_text(" ", strip=True)).lower() == "refer:"
+
+    def _extract_span_note_references(
+        self,
+        doc_uid: str,
+        body_node: Tag,
+        source_chunk: Chunk,
+        source_section: SectionRecord | None,
+    ) -> list[ContentReference]:
+        references: list[ContentReference] = []
+        for note in body_node.select("span.note.edu"):
+            if not isinstance(note, Tag):
+                continue
+            if not self._is_refer_annotation(note):
+                continue
+            if any(isinstance(parent, Tag) and self._is_reference_only_educational_note(parent) for parent in note.parents):
+                continue
+            references.extend(
+                extract_references_from_note(
+                    note,
+                    source_doc_uid=doc_uid,
+                    source_location_type="chunk",
+                    source_chunk_id=source_chunk.chunk_id or None,
+                    source_section_id=source_section.section_id if source_section is not None else source_chunk.containing_section_id,
+                ),
+            )
+        return references
+
+    def _append_note_references(self, doc_uid: str, note: Tag, state: _StructureExtractionState) -> None:
+        current_section = _get_highest_level_section(state.traversal_state.active_sections_by_level)
+        source_chunk = state.last_chunk_by_section_id.get(current_section.section_id) if current_section is not None else None
+        source_location_type: Literal["chunk", "section"]
+        if source_chunk is not None:
+            source_location_type = "chunk"
+            source_chunk_id = source_chunk.chunk_id or None
+            source_section_id = source_chunk.containing_section_id
+        else:
+            source_location_type = "section"
+            source_chunk_id = None
+            source_section_id = current_section.section_id if current_section is not None else None
+        self._append_references(
+            state=state,
+            note_references=extract_references_from_note(
+                note,
+                source_doc_uid=doc_uid,
+                source_location_type=source_location_type,
+                source_chunk_id=source_chunk_id,
+                source_section_id=source_section_id,
+            ),
+        )
+
+    def _append_references(self, state: _StructureExtractionState, note_references: list[ContentReference]) -> None:
+        for reference in note_references:
+            reference.reference_order = state.next_reference_order
+            state.references.append(reference)
+            state.next_reference_order += 1
+
+
+@dataclass
+class _StructureExtractionState:
+    chunks: list[Chunk]
+    sections: list[SectionRecord]
+    references: list[ContentReference]
+    traversal_state: _SectionTraversalState
+    last_chunk_by_section_id: dict[str, Chunk]
+    next_reference_order: int
 
 
 class _IfrsVariantMetadata:
