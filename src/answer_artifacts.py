@@ -91,6 +91,7 @@ def _write_retrieval_diagnostic_artifacts(result: AnswerCommandResult, output_di
                             "page_start": hit.page_start,
                             "page_end": hit.page_end,
                             "text": hit.text,
+                            "provenance": hit.provenance,
                             "score": hit.score,
                         }
                         for hit in result.chunk_hits

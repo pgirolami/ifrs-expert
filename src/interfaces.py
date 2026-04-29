@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, Self, TypedDict
+from typing import TYPE_CHECKING, NotRequired, Protocol, Self, TypedDict
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,6 +20,7 @@ class SearchResult(TypedDict):
     doc_uid: str
     chunk_id: int
     score: float
+    provenance: NotRequired[str]
 
 
 class TitleSearchResult(TypedDict):
@@ -184,6 +185,9 @@ class VectorStoreProtocol(SearchVectorStoreProtocol, Protocol):
 
     def delete_by_doc(self, doc_uid: str) -> int:
         """Delete all embeddings for a document."""
+
+    def count_embeddings_for_doc(self, doc_uid: str) -> int:
+        """Count embeddings stored for one document."""
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
         """Add embeddings for chunks."""

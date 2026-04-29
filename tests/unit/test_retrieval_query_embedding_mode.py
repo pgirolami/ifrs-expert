@@ -40,7 +40,10 @@ def _build_request(query_embedding_mode: str) -> RetrievalRequest:
     return RetrievalRequest(
         query="documentation de couverture",
         query_embedding_mode=query_embedding_mode,
-        retrieval_mode="text",
+        policy_name="text",
+        document_routing_source="all_documents",
+        document_routing_post_processing="none",
+        chunk_retrieval_mode="chunk_similarity",
         k=1,
         d=1,
         document_d_by_type={},
@@ -91,4 +94,4 @@ def test_execute_retrieval_uses_enriched_query_embedding_mode() -> None:
         ),
     )
 
-    assert vector_store.received_queries == ["documentation de couverture\nhedge accounting\nhedge documentation"]
+    assert vector_store.received_queries == ["documentation de couverture\nhedge accounting"]

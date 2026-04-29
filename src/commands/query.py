@@ -7,9 +7,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.commands.constants import DEFAULT_VERBOSE
-from src.commands.retrieval_request_builder import build_retrieval_request
-from src.db import ChunkStore, init_db
-from src.interfaces import ReadChunkStoreProtocol, SearchResult, SearchVectorStoreProtocol
+from src.commands.retrieval_request_builder import RetrievalRequestOverrides, build_retrieval_request
+from src.db import ChunkStore, ContentReferenceStore, init_db
+from src.interfaces import ReadChunkStoreProtocol, ReferenceStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.policy import RetrievalPolicy
@@ -29,6 +29,7 @@ class QueryConfig:
     chunk_store: ReadChunkStoreProtocol
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
+    reference_store: ReferenceStoreProtocol | None = None
 
 
 @dataclass
@@ -198,15 +199,21 @@ class QueryCommand:
             request=build_retrieval_request(
                 query=self.query,
                 policy=policy,
-                retrieval_mode="text",
                 chunk_min_score=policy.text.min_score,
                 expand_to_section=policy.expand_to_section,
+                overrides=RetrievalRequestOverrides(
+                    policy_name=policy.policy_name,
+                    document_routing_source="all_documents",
+                    document_routing_post_processing="none",
+                    chunk_retrieval_mode="chunk_similarity",
+                ),
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,
                 chunk_store=self._config.chunk_store,
                 init_db_fn=self._config.init_db_fn,
                 index_path_fn=self._config.index_path_fn,
+                reference_store=self._config.reference_store,
             ),
         )
         if error is not None:
@@ -296,6 +303,7 @@ class QueryCommand:
                             "text": chunk.text,
                             "score": round(score, 4),
                             "relevance": relevance,
+                            "provenance": result.get("provenance", "similarity"),
                         },
                     )
                     break
@@ -315,6 +323,7 @@ class QueryCommand:
                     document_kind = infer_document_kind(doc_uid)
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
+                    output_lines.append(f"Provenance: {result.get('provenance', 'similarity')}")
                     output_lines.append(f"Document: {chunk.doc_uid}")
                     output_lines.append(f"Document type: {document_type}")
                     output_lines.append(f"Document kind: {document_kind}")
@@ -336,5 +345,6 @@ def create_query_command(
         chunk_store=ChunkStore(),
         init_db_fn=init_db,
         index_path_fn=get_index_path,
+        reference_store=ContentReferenceStore(),
     )
     return QueryCommand(query=query, config=config, options=options)

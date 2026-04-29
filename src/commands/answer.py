@@ -13,7 +13,7 @@ from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, 
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
 from src.commands.retrieval_request_builder import build_retrieval_request
-from src.db import ChunkStore, SectionStore, init_db
+from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from src.interfaces import (
         ReadChunkStoreProtocol,
         ReadSectionStoreProtocol,
+        ReferenceStoreProtocol,
         SearchDocumentVectorStoreProtocol,
         SearchResult,
         SearchTitleVectorStoreProtocol,
@@ -53,6 +54,7 @@ class AnswerConfig:
     index_path_fn: Callable[[], Path]
     send_to_llm_fn: Callable[[str], str]
     section_store: ReadSectionStoreProtocol | None = None
+    reference_store: ReferenceStoreProtocol | None = None
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
@@ -228,6 +230,7 @@ def _build_retrieved_chunk_hits(
                     page_start=chunk.page_start,
                     page_end=chunk.page_end,
                     text=chunk.text,
+                    provenance=result.get("provenance", "similarity"),
                 )
             )
             break
@@ -271,26 +274,48 @@ class AnswerCommand:
 
     def _get_validation_error(self) -> str | None:
         """Validate query and policy; return the first error or None."""
-        if not self.query or not self.query.strip():
-            return "Error: Query cannot be empty"
+        validators = (
+            self._get_query_validation_error,
+            self._get_positive_policy_validation_error,
+            self._get_document_cap_validation_error,
+            self._get_policy_shape_validation_error,
+        )
+        for validator in validators:
+            error = validator()
+            if error is not None:
+                return error
+        return None
+
+    def _get_query_validation_error(self) -> str | None:
+        if self.query and self.query.strip():
+            return None
+        return "Error: Query cannot be empty"
+
+    def _get_positive_policy_validation_error(self) -> str | None:
         policy = self._options.policy
-        first_error: str | None = None
         if policy.expand < 0:
-            first_error = "Error: expand must be >= 0"
-        elif policy.full_doc_threshold < 0:
-            first_error = "Error: full_doc_threshold must be >= 0"
-        elif policy.k <= 0:
-            first_error = "Error: retrieval.k in policy must be > 0"
-        elif policy.documents.global_d <= 0:
-            first_error = "Error: retrieval.documents.global_d in policy must be > 0"
-        elif not all(cap.d > 0 for document_type, cap in policy.documents.by_document_type.items()):
-            for document_type, cap in policy.documents.by_document_type.items():
-                if cap.d <= 0:
-                    first_error = f"Error: per-type document cap for {document_type} must be > 0"
-                    break
-        elif policy.mode not in {"text", "titles", "documents", "documents2", "documents2-through-chunks"}:
-            first_error = "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', 'documents2', or 'documents2-through-chunks'"
-        return first_error
+            return "Error: expand must be >= 0"
+        if policy.full_doc_threshold < 0:
+            return "Error: full_doc_threshold must be >= 0"
+        if policy.k <= 0:
+            return "Error: retrieval.k in policy must be > 0"
+        if policy.documents.global_d <= 0:
+            return "Error: retrieval.documents.global_d in policy must be > 0"
+        return None
+
+    def _get_document_cap_validation_error(self) -> str | None:
+        for document_type, cap in self._options.policy.documents.by_document_type.items():
+            if cap.d <= 0:
+                return f"Error: per-type document cap for {document_type} must be > 0"
+        return None
+
+    def _get_policy_shape_validation_error(self) -> str | None:
+        policy = self._options.policy
+        if policy.document_routing.source not in {"all_documents", "top_chunk_results", "document_representation"}:
+            return "Error: document_routing.source in policy must be 'all_documents', 'top_chunk_results', or 'document_representation'"
+        if policy.chunk_retrieval.mode not in {"chunk_similarity", "title_similarity"}:
+            return "Error: chunk_retrieval.mode in policy must be 'chunk_similarity' or 'title_similarity'"
+        return None
 
     def _get_prerequisite_error(self) -> str | None:
         """Get prerequisite error or None."""
@@ -299,9 +324,9 @@ class AnswerCommand:
         if prompt_error is not None:
             return prompt_error
 
-        if policy.mode == "titles":
+        if policy.document_routing.source == "all_documents" and policy.chunk_retrieval.mode == "title_similarity":
             return self._get_title_prerequisite_error()
-        if policy.mode in {"documents", "documents2"}:
+        if policy.document_routing.source == "document_representation":
             document_prerequisite_error = self._get_document_prerequisite_error()
             if document_prerequisite_error is not None:
                 return document_prerequisite_error
@@ -355,9 +380,8 @@ class AnswerCommand:
             request=build_retrieval_request(
                 query=self.query,
                 policy=policy,
-                retrieval_mode=policy.mode,
-                chunk_min_score=policy.titles.min_score if policy.mode == "titles" else policy.text.min_score,
-                expand_to_section=policy.expand_to_section if policy.mode not in {"documents", "documents2", "documents2-through-chunks"} else True,
+                chunk_min_score=policy.titles.min_score if policy.chunk_retrieval.mode == "title_similarity" else policy.text.min_score,
+                expand_to_section=policy.expand_to_section if policy.document_routing.source == "all_documents" else True,
             ),
             config=RetrievalPipelineConfig(
                 vector_store=self._config.vector_store,
@@ -365,6 +389,7 @@ class AnswerCommand:
                 init_db_fn=self._config.init_db_fn,
                 index_path_fn=self._config.index_path_fn,
                 section_store=self._config.section_store,
+                reference_store=self._config.reference_store,
                 title_vector_store=self._config.title_vector_store,
                 title_index_path_fn=self._config.title_index_path_fn,
                 document_vector_store=self._config.document_vector_store,
@@ -723,6 +748,7 @@ def create_answer_command(
         init_db_fn=init_db,
         index_path_fn=get_index_path,
         send_to_llm_fn=_default_send_to_llm,
+        reference_store=ContentReferenceStore(),
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
         title_index_path_fn=get_title_index_path,

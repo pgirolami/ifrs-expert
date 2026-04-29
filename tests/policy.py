@@ -20,6 +20,7 @@ from src.policy import (
     ResolvedQueryingPolicy,
     ResolvedRetrievalPolicy,
     RetrievalPolicy,
+    ReferenceExpansionConfig,
     load_policy_config,
 )
 
@@ -43,6 +44,7 @@ def make_retrieval_policy(
     expand: int = 0,
     full_doc_threshold: int = 0,
     expand_to_section: bool = True,
+    reference_expand_depth: int = 1,
     mode: str = "text",
     per_type_d: dict[str, int] | None = None,
     per_type_min_score: dict[str, float] | None = None,
@@ -133,17 +135,22 @@ def make_retrieval_policy(
             post_processing_config=DocumentRoutingPostProcessingConfig(),
         )
         return ResolvedRetrievalPolicy(
+            policy_name=mode,
             querying=querying,
             document_routing=document_routing,
             chunk_retrieval=chunk_retrieval,
             legacy_document_stage=legacy_document_stage,
-            legacy_mode=mode,
         )
 
     querying = ResolvedQueryingPolicy(embedding_mode=query_embedding_mode)
     chunk_profile = ChunkRetrievalProfileConfig(
         filter=ChunkRetrievalFilterConfig(min_score=chunk_min_score, per_document_k=k),
-        expansion=ChunkRetrievalExpansionConfig(expand=expand, expand_to_section=expand_to_section, full_doc_threshold=full_doc_threshold),
+        expansion=ChunkRetrievalExpansionConfig(
+            expand=expand,
+            expand_to_section=expand_to_section,
+            full_doc_threshold=full_doc_threshold,
+            reference_expansion=ReferenceExpansionConfig(enabled=True, depth=reference_expand_depth, max_chunks_per_seed=8, max_chunks_per_doc=32),
+        ),
     )
     chunk_retrieval = ResolvedChunkRetrievalPolicy(strategy="dense_chunks", mode="chunk_similarity", profile="default", profile_config=chunk_profile)
 
@@ -171,8 +178,8 @@ def make_retrieval_policy(
             source="document_representation",
             profile="q1_authority_family_full_repr",
             profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
-            post_processing="none",
-            post_processing_config=DocumentRoutingPostProcessingConfig(),
+            post_processing="aggregate_to_main_variant",
+            post_processing_config=DocumentRoutingPostProcessingConfig(document_post_processing="aggregate_to_main_variant"),
         )
     else:
         document_routing = ResolvedDocumentRoutingPolicy(
@@ -185,9 +192,9 @@ def make_retrieval_policy(
         )
 
     return ResolvedRetrievalPolicy(
+        policy_name=mode,
         querying=querying,
         document_routing=document_routing,
         chunk_retrieval=chunk_retrieval,
         legacy_document_stage=legacy_document_stage,
-        legacy_mode=mode,
     )

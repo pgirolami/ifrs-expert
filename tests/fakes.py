@@ -258,9 +258,10 @@ class InMemoryReferenceStore(ReferenceStoreProtocol):
 class RecordingVectorStore(VectorStoreProtocol):
     """Vector store fake that records operations for assertions."""
 
-    def __init__(self) -> None:
+    def __init__(self, existing_doc_uids: set[str] | None = None) -> None:
         self.deleted_doc_uids: list[str] = []
         self.added_embeddings: list[tuple[str, list[int], list[str]]] = []
+        self._embedding_counts: dict[str, int] = {doc_uid: 1 for doc_uid in (existing_doc_uids or set())}
 
     def __enter__(self) -> Self:
         return self
@@ -273,10 +274,15 @@ class RecordingVectorStore(VectorStoreProtocol):
 
     def delete_by_doc(self, doc_uid: str) -> int:
         self.deleted_doc_uids.append(doc_uid)
+        self._embedding_counts.pop(doc_uid, None)
         return 0
+
+    def count_embeddings_for_doc(self, doc_uid: str) -> int:
+        return self._embedding_counts.get(doc_uid, 0)
 
     def add_embeddings(self, doc_uid: str, chunk_ids: list[int], texts: list[str]) -> None:
         self.added_embeddings.append((doc_uid, chunk_ids, texts))
+        self._embedding_counts[doc_uid] = len(chunk_ids)
 
 
 class RecordingTitleVectorStore:

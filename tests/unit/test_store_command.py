@@ -345,7 +345,7 @@ class TestStoreCommand:
         source_path.write_text("dummy", encoding="utf-8")
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
-        vector_store = RecordingVectorStore()
+        vector_store = RecordingVectorStore(existing_doc_uids={"ifrs9"})
         document_vector_store = RecordingDocumentVectorStore(existing_doc_uids={"ifrs9"})
 
         existing_chunk = Chunk(
@@ -415,6 +415,81 @@ class TestStoreCommand:
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "existing content"
         assert command.execute().startswith("Skipped: doc_uid=ifrs9")
 
+    def test_store_command_repairs_missing_chunk_vector_for_unchanged_html(self, tmp_path: Path) -> None:
+        """Unchanged HTML imports should repair a missing chunk vector instead of skipping forever."""
+        source_path = tmp_path / "test.html"
+        source_path.write_text("dummy", encoding="utf-8")
+        chunk_store = InMemoryChunkStore()
+        document_store = InMemoryDocumentStore()
+        vector_store = RecordingVectorStore()
+        document_vector_store = RecordingDocumentVectorStore(existing_doc_uids={"ifrs9"})
+
+        existing_chunk = Chunk(
+            doc_uid="ifrs9",
+            chunk_number="2.4",
+            page_start="",
+            page_end="",
+            chunk_id="IFRS09_2.4",
+            text="existing content",
+        )
+        chunk_store.insert_chunks([existing_chunk])
+        document_store.upsert_document(
+            DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS 9",
+                source_url="https://www.ifrs.org/original.html",
+                canonical_url="https://www.ifrs.org/original.html",
+                captured_at="2026-04-04T14:23:10Z",
+            )
+        )
+
+        extractor = FakeExtractor(
+            extracted_document=ExtractedDocument(
+                document=DocumentRecord(
+                    doc_uid="ifrs9",
+                    source_type="html",
+                    source_title="IFRS 9",
+                    source_url="https://www.ifrs.org/original.html",
+                    canonical_url="https://www.ifrs.org/original.html",
+                    captured_at="2026-04-05T14:23:10Z",
+                ),
+                chunks=[
+                    Chunk(
+                        doc_uid="ifrs9",
+                        chunk_number="2.4",
+                        page_start="",
+                        page_end="",
+                        chunk_id="IFRS09_2.4",
+                        text="existing content",
+                    )
+                ],
+            ),
+            skip_if_unchanged=True,
+        )
+
+        dependencies = StoreDependencies(
+            chunk_store=chunk_store,
+            document_store=document_store,
+            vector_store=vector_store,
+            document_vector_store=document_vector_store,
+            init_db_fn=lambda: None,
+        )
+        command = StoreCommand(
+            source_path=source_path,
+            extractor=extractor,
+            dependencies=dependencies,
+            explicit_doc_uid=None,
+        )
+
+        result = command.execute_result()
+
+        assert result.status == "stored"
+        assert result.reason == "repaired missing chunk embedding"
+        assert vector_store.deleted_doc_uids == ["ifrs9"]
+        assert vector_store.added_embeddings == [("ifrs9", [1], ["existing content"])]
+        assert document_vector_store.added_embeddings == []
+
     def test_store_command_reembeds_missing_document_vector_for_unchanged_html(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
         """Unchanged HTML imports should retry the document embedding when the vector is missing."""
         caplog.set_level(logging.WARNING)
@@ -422,7 +497,7 @@ class TestStoreCommand:
         source_path.write_text("dummy", encoding="utf-8")
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
-        vector_store = RecordingVectorStore()
+        vector_store = RecordingVectorStore(existing_doc_uids={"ifrs9"})
         document_vector_store = RecordingDocumentVectorStore()
 
         existing_chunk = Chunk(

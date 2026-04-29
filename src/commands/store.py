@@ -335,6 +335,12 @@ class StoreCommand:
             ),
         )
         if should_skip:
+            repaired_chunk_result = self._repair_missing_chunk_embeddings_if_needed(
+                doc_uid=doc_uid,
+                existing_chunks=existing_chunks,
+            )
+            if repaired_chunk_result is not None:
+                return repaired_chunk_result
             repaired_result = self._repair_missing_document_embedding_if_needed(
                 doc_uid=doc_uid,
                 chunk_count=len(chunks),
@@ -601,6 +607,41 @@ class StoreCommand:
             chunk_count=chunk_count,
             embedding_count=0,
             reason="repaired missing document embedding",
+        )
+
+    def _repair_missing_chunk_embeddings_if_needed(
+        self,
+        doc_uid: str,
+        existing_chunks: list[Chunk],
+    ) -> StoreCommandResult | None:
+        if not self._stores_chunks():
+            return None
+        if self._dependencies.vector_store is None:
+            return None
+
+        with self._dependencies.vector_store as vector_store:
+            stored_embedding_count = vector_store.count_embeddings_for_doc(doc_uid)
+            expected_embedding_count = len([chunk for chunk in existing_chunks if chunk.id is not None])
+            if stored_embedding_count == expected_embedding_count:
+                logger.info(f"Found existing chunk embeddings for unchanged doc_uid={doc_uid}")
+                return None
+
+            logger.warning(
+                f"Detected missing chunk embedding(s) for unchanged doc_uid={doc_uid}; stored_embedding_count={stored_embedding_count}, expected_embedding_count={expected_embedding_count}; retrying chunk embedding storage",
+            )
+            vector_store.delete_by_doc(doc_uid)
+            chunk_ids = [chunk.id for chunk in existing_chunks if chunk.id is not None]
+            texts = [chunk.text for chunk in existing_chunks if chunk.id is not None]
+            if chunk_ids:
+                vector_store.add_embeddings(doc_uid, chunk_ids, texts)
+            logger.info(f"Repaired missing chunk embedding(s) for unchanged doc_uid={doc_uid}")
+
+        return StoreCommandResult(
+            status="stored",
+            doc_uid=doc_uid,
+            chunk_count=len(existing_chunks),
+            embedding_count=len([chunk for chunk in existing_chunks if chunk.id is not None]),
+            reason="repaired missing chunk embedding",
         )
 
     def _get_document_vector_store(self, representation: str) -> StoreDocumentVectorStore:

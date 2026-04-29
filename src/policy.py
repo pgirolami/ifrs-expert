@@ -87,6 +87,17 @@ class ChunkRetrievalExpansionConfig:
     expand: int
     expand_to_section: bool
     full_doc_threshold: int
+    reference_expansion: ReferenceExpansionConfig | None = None
+
+
+@dataclass(frozen=True)
+class ReferenceExpansionConfig:
+    """Chunk-retrieval reference expansion settings."""
+
+    enabled: bool
+    depth: int
+    max_chunks_per_seed: int
+    max_chunks_per_doc: int
 
 
 @dataclass(frozen=True)
@@ -192,34 +203,16 @@ class ResolvedChunkRetrievalPolicy:
 class ResolvedRetrievalPolicy:
     """Resolved runtime retrieval policy assembled from the catalog."""
 
+    policy_name: str
     querying: ResolvedQueryingPolicy
     document_routing: ResolvedDocumentRoutingPolicy
     chunk_retrieval: ResolvedChunkRetrievalPolicy
     legacy_document_stage: DocumentStageRetrievalPolicy | None = None
-    legacy_mode: str | None = None
 
     @property
     def query_embedding_mode(self) -> QueryEmbeddingMode:
         """Compatibility accessor for the legacy flat policy shape."""
         return self.querying.embedding_mode
-
-    @property
-    def retrieval_mode(self) -> str:
-        """Return the legacy pipeline mode for compatibility."""
-        if self.legacy_mode is not None:
-            return self.legacy_mode
-        if self.document_routing.source == "all_documents":
-            if self.chunk_retrieval.mode == "title_similarity":
-                return "titles"
-            return "text"
-        if self.document_routing.source == "document_representation":
-            return "documents2"
-        return "documents2-through-chunks"
-
-    @property
-    def mode(self) -> str:
-        """Compatibility alias for the legacy flat policy shape."""
-        return self.retrieval_mode
 
     @property
     def k(self) -> int:
@@ -241,6 +234,14 @@ class ResolvedRetrievalPolicy:
         if expansion is None:
             return 0
         return expansion.full_doc_threshold
+
+    @property
+    def reference_expansion(self) -> ReferenceExpansionConfig | None:
+        """Compatibility accessor for chunk reference expansion settings."""
+        expansion = self.chunk_retrieval.profile_config.expansion
+        if expansion is None:
+            return None
+        return expansion.reference_expansion
 
     @property
     def expand_to_section(self) -> bool:
@@ -373,12 +374,13 @@ def resolve_retrieval_policy(catalog: PolicyCatalog, policy_name: str) -> Resolv
     chunk_retrieval = _resolve_chunk_retrieval(catalog=catalog, reference=reference.chunk_retrieval)
     legacy_document_stage = _build_legacy_document_stage(catalog=catalog, document_routing=document_routing, chunk_retrieval=chunk_retrieval)
     resolved = ResolvedRetrievalPolicy(
+        policy_name=policy_name,
         querying=querying,
         document_routing=document_routing,
         chunk_retrieval=chunk_retrieval,
         legacy_document_stage=legacy_document_stage,
     )
-    logger.info(f"Resolved retrieval policy: {policy_name} -> {resolved.retrieval_mode}")
+    logger.info(f"Resolved retrieval policy: {policy_name} -> source={resolved.document_routing.source}, chunk_mode={resolved.chunk_retrieval.mode}")
     return resolved
 
 
@@ -550,6 +552,27 @@ def _validate_chunk_retrieval_profile(
         _raise_value_error(f"chunk retrieval expand for {strategy_name}.{profile_name} must be >= 0")
     if profile_config.expansion.full_doc_threshold < 0:
         _raise_value_error(f"chunk retrieval full_doc_threshold for {strategy_name}.{profile_name} must be >= 0")
+    _validate_reference_expansion_profile(
+        strategy_name=strategy_name,
+        profile_name=profile_name,
+        reference_expansion=profile_config.expansion.reference_expansion,
+    )
+
+
+def _validate_reference_expansion_profile(
+    *,
+    strategy_name: str,
+    profile_name: str,
+    reference_expansion: ReferenceExpansionConfig | None,
+) -> None:
+    if reference_expansion is None:
+        return
+    if reference_expansion.depth < 0:
+        _raise_value_error(f"chunk retrieval reference_expansion.depth for {strategy_name}.{profile_name} must be >= 0")
+    if reference_expansion.max_chunks_per_seed < 0:
+        _raise_value_error(f"chunk retrieval reference_expansion.max_chunks_per_seed for {strategy_name}.{profile_name} must be >= 0")
+    if reference_expansion.max_chunks_per_doc < 0:
+        _raise_value_error(f"chunk retrieval reference_expansion.max_chunks_per_doc for {strategy_name}.{profile_name} must be >= 0")
 
 
 def _parse_querying_catalog(raw_querying: object) -> dict[str, QueryingConfig]:
@@ -691,6 +714,29 @@ def _parse_chunk_retrieval_profiles(raw_profiles: object, *, strategy_name: str)
             parsed_expansion = None
         else:
             expansion_mapping = _require_mapping(raw_expansion, context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion")
+            raw_reference_expansion = expansion_mapping.get("reference_expansion")
+            if raw_reference_expansion is None:
+                parsed_reference_expansion = None
+            else:
+                reference_mapping = _require_mapping(raw_reference_expansion, context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion")
+                parsed_reference_expansion = ReferenceExpansionConfig(
+                    enabled=_require_bool(
+                        _require_key(reference_mapping, "enabled", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion"),
+                        context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.enabled",
+                    ),
+                    depth=_require_non_negative_int(
+                        _require_key(reference_mapping, "depth", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion"),
+                        context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.depth",
+                    ),
+                    max_chunks_per_seed=_require_non_negative_int(
+                        _require_key(reference_mapping, "max_chunks_per_seed", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion"),
+                        context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.max_chunks_per_seed",
+                    ),
+                    max_chunks_per_doc=_require_non_negative_int(
+                        _require_key(reference_mapping, "max_chunks_per_doc", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion"),
+                        context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.max_chunks_per_doc",
+                    ),
+                )
             parsed_expansion = ChunkRetrievalExpansionConfig(
                 expand=_require_non_negative_int(
                     _require_key(expansion_mapping, "expand", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion"),
@@ -704,6 +750,7 @@ def _parse_chunk_retrieval_profiles(raw_profiles: object, *, strategy_name: str)
                     _require_key(expansion_mapping, "full_doc_threshold", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion"),
                     context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.full_doc_threshold",
                 ),
+                reference_expansion=parsed_reference_expansion,
             )
         parsed[profile_name] = ChunkRetrievalProfileConfig(filter=parsed_filter, expansion=parsed_expansion)
     return parsed

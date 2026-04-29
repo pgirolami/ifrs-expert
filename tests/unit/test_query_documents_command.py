@@ -418,6 +418,7 @@ def _build_policy_with_similarity_representation_overrides(
             similarity_representation=representation,
         )
     return ResolvedRetrievalPolicy(
+        policy_name=base_policy.policy_name,
         querying=base_policy.querying,
         document_routing=base_policy.document_routing,
         chunk_retrieval=base_policy.chunk_retrieval,
@@ -425,7 +426,5 @@ def _build_policy_with_similarity_representation_overrides(
             global_d=base_policy.documents.global_d,
             by_document_type=by_document_type,
         ),
-        legacy_mode=base_policy.mode,
     )
-
 

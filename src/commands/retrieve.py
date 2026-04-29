@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
 from src.commands.retrieval_request_builder import build_retrieval_request
-from src.db import ChunkStore, SectionStore, init_db
+from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
 from src.policy import RetrievalPolicy
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
-    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
+    from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, ReferenceStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
     from src.policy import RetrievalPolicy
     from src.retrieval.models import RetrievalRequest, RetrievalResult
@@ -41,6 +41,7 @@ class RetrieveConfig:
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
     section_store: ReadSectionStoreProtocol | None = None
+    reference_store: ReferenceStoreProtocol | None = None
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
     title_index_path_fn: Callable[[], Path] | None = None
     document_vector_store: SearchDocumentVectorStoreProtocol | None = None
@@ -88,6 +89,7 @@ class RetrieveCommand:
                 init_db_fn=self._config.init_db_fn,
                 index_path_fn=self._config.index_path_fn,
                 section_store=self._config.section_store,
+                reference_store=self._config.reference_store,
                 title_vector_store=self._config.title_vector_store,
                 title_index_path_fn=self._config.title_index_path_fn,
                 document_vector_store=self._config.document_vector_store,
@@ -106,12 +108,11 @@ class RetrieveCommand:
 
     def _build_retrieval_request(self) -> RetrievalRequest:
         policy = self._options.policy
-        chunk_min_score = policy.titles.min_score if policy.mode == "titles" else policy.text.min_score
-        expand_to_section = policy.expand_to_section if policy.mode not in {"documents", "documents2", "documents2-through-chunks"} else True
+        chunk_min_score = policy.titles.min_score if policy.chunk_retrieval.mode == "title_similarity" else policy.text.min_score
+        expand_to_section = policy.expand_to_section if policy.document_routing.source == "all_documents" else True
         return build_retrieval_request(
             query=self.query,
             policy=policy,
-            retrieval_mode=policy.mode,
             chunk_min_score=chunk_min_score,
             expand_to_section=expand_to_section,
         )
@@ -120,7 +121,7 @@ class RetrieveCommand:
         validators = (
             self._get_query_validation_error,
             self._get_numeric_validation_error,
-            self._get_retrieval_mode_validation_error,
+            self._get_policy_shape_validation_error,
         )
         for validator in validators:
             error = validator()
@@ -146,10 +147,13 @@ class RetrieveCommand:
             return f"Error: {name} must be {operator} {minimum}"
         return None
 
-    def _get_retrieval_mode_validation_error(self) -> str | None:
-        if self._options.policy.mode in {"text", "titles", "documents", "documents2", "documents2-through-chunks"}:
-            return None
-        return "Error: retrieval.mode in policy must be 'text', 'titles', 'documents', 'documents2', or 'documents2-through-chunks'"
+    def _get_policy_shape_validation_error(self) -> str | None:
+        policy = self._options.policy
+        if policy.document_routing.source not in {"all_documents", "top_chunk_results", "document_representation"}:
+            return "Error: document_routing.source in policy must be 'all_documents', 'top_chunk_results', or 'document_representation'"
+        if policy.chunk_retrieval.mode not in {"chunk_similarity", "title_similarity"}:
+            return "Error: chunk_retrieval.mode in policy must be 'chunk_similarity' or 'title_similarity'"
+        return None
 
     def _build_json_output(self, retrieval_result: RetrievalResult) -> dict[str, object]:
         build_output_document_sections(
@@ -158,7 +162,10 @@ class RetrieveCommand:
             logger=logger,
         )
         return {
-            "retrieval_mode": retrieval_result.retrieval_mode,
+            "policy_name": retrieval_result.policy_name,
+            "document_routing_source": retrieval_result.document_routing_source,
+            "document_routing_post_processing": retrieval_result.document_routing_post_processing,
+            "chunk_retrieval_mode": retrieval_result.chunk_retrieval_mode,
             "document_hits": [
                 {
                     "doc_uid": document_hit.doc_uid,
@@ -224,6 +231,7 @@ def _build_chunk_json_output(
                     "text": chunk.text,
                     "score": round(score, 4),
                     "relevance": relevance,
+                    "provenance": result.get("provenance", "similarity"),
                 }
             )
             break
@@ -247,6 +255,7 @@ def _build_chunk_verbose_output(
             relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
             snippet = chunk.text[:200].replace("\n", " ")
             output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
+            output_lines.append(f"Provenance: {result.get('provenance', 'similarity')}")
             output_lines.append(f"Document: {chunk.doc_uid}")
             output_lines.append(f"Document type: {document_type}")
             output_lines.append(f"Document kind: {document_kind}")
@@ -267,6 +276,7 @@ def create_retrieve_command(
         chunk_store=ChunkStore(),
         init_db_fn=init_db,
         index_path_fn=get_index_path,
+        reference_store=ContentReferenceStore(),
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
         title_index_path_fn=get_title_index_path,

@@ -7,9 +7,10 @@ from typing import cast
 
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
+from src.models.reference import ContentReference
 from src.models.section import SectionRecord
 from src.policy import RetrievalPolicy
-from tests.fakes import InMemoryChunkStore, InMemorySectionStore
+from tests.fakes import InMemoryChunkStore, InMemoryReferenceStore, InMemorySectionStore
 from tests.policy import make_retrieval_policy
 
 
@@ -119,7 +120,9 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
     result = command.execute()
 
     data = json.loads(result)
-    assert data["retrieval_mode"] == "documents"
+    assert data["policy_name"] == "documents"
+    assert data["document_routing_source"] == "document_representation"
+    assert data["document_routing_post_processing"] == "none"
     assert data["document_hits"] == [
         {"doc_uid": "ifric16", "score": 0.6, "document_type": "IFRIC", "document_kind": "interpretation"},
         {"doc_uid": "ifrs9", "score": 0.595, "document_type": "IFRS-S", "document_kind": "standard"},
@@ -241,6 +244,221 @@ def test_retrieve_expand_to_section_includes_descendant_section_chunks() -> None
     assert data["chunks"][1]["score"] == 0.0
 
 
+def test_retrieve_expands_same_family_references_before_section_expansion() -> None:
+    """Reference expansion should recover the governing paragraph before section fan-out runs."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="application guidance chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.1", containing_section_id="IFRS09_S5", text="governing paragraph"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.1.1", page_start="B2", page_end="B2", chunk_id="IFRS09_5.1.1", containing_section_id="IFRS09_S5_1", text="section child"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="IFRS09_S5",
+                    doc_uid="ifrs9",
+                    parent_section_id=None,
+                    level=2,
+                    title="Recognition",
+                    section_lineage=["Recognition"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_S5_1",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_S5",
+                    level=3,
+                    title="Initial recognition",
+                    section_lineage=["Recognition", "Initial recognition"],
+                    position=2,
+                ),
+            ]
+        )
+        store.add_descendant_mapping("IFRS09_S5", ["IFRS09_S5", "IFRS09_S5_1"])
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9-bc",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09BC_B1",
+                    annotation_raw_text="Refer: paragraph 5.1",
+                    target_raw_text="paragraph 5.1",
+                    target_kind="same_standard_paragraph",
+                    target_start="5.1",
+                    parsed_ok=True,
+                )
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="recognition",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96},
+                    {"doc_uid": "ifrs9", "chunk_id": 2, "score": 0.94},
+                ]
+            ),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            section_store=section_store,
+            reference_store=reference_store,
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand_to_section=True, expand=0, mode="text"), verbose=False),
+    )
+
+    result = command.execute()
+    data = json.loads(result)
+
+    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc", "ifrs9", "ifrs9"]
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.1", "5.1.1"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "similarity", "exp_section_from_seed"]
+
+
+def test_retrieve_expands_same_family_references_across_two_levels() -> None:
+    """Depth-2 reference expansion should follow an intermediate governing paragraph."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="application guidance chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="4.1.1", page_start="B1", page_end="B1", chunk_id="IFRS09_4.1.1", containing_section_id="IFRS09_S4", text="governing paragraph"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="B4.1.7", page_start="B2", page_end="B2", chunk_id="IFRS09_B4.1.7", containing_section_id="IFRS09_S4_1", text="guidance chunk 1"),
+                Chunk(id=4, doc_uid="ifrs9", chunk_number="B4.1.8", page_start="B3", page_end="B3", chunk_id="IFRS09_B4.1.8", containing_section_id="IFRS09_S4_1", text="guidance chunk 2"),
+                Chunk(id=5, doc_uid="ifrs9", chunk_number="B4.1.9", page_start="B4", page_end="B4", chunk_id="IFRS09_B4.1.9", containing_section_id="IFRS09_S4_1", text="guidance chunk 3"),
+            ]
+        )
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9-bc",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09BC_B1",
+                    annotation_raw_text="Refer: paragraph 4.1.1",
+                    target_raw_text="paragraph 4.1.1",
+                    target_kind="same_standard_paragraph",
+                    target_start="4.1.1",
+                    parsed_ok=True,
+                ),
+                ContentReference(
+                    source_doc_uid="ifrs9",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09_4.1.1",
+                    annotation_raw_text="Refer: paragraphs B4.1.7-B4.1.9",
+                    target_raw_text="paragraphs B4.1.7-B4.1.9",
+                    target_kind="same_standard_paragraph",
+                    target_start="B4.1.7",
+                    target_end="B4.1.9",
+                    parsed_ok=True,
+                ),
+            ]
+        )
+
+    base_config = RetrieveConfig(
+        vector_store=MockVectorStore([{"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96}]),
+        chunk_store=chunk_store,
+        init_db_fn=lambda: None,
+        index_path_fn=lambda: MockIndexPath(exists=True),
+        reference_store=reference_store,
+    )
+
+    depth_one_command = RetrieveCommand(
+        query="recognition",
+        config=base_config,
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand=0, expand_to_section=False, reference_expand_depth=1, mode="text"), verbose=False),
+    )
+    depth_two_command = RetrieveCommand(
+        query="recognition",
+        config=base_config,
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand=0, expand_to_section=False, reference_expand_depth=2, mode="text"), verbose=False),
+    )
+
+    depth_one_data = json.loads(depth_one_command.execute())
+    depth_two_data = json.loads(depth_two_command.execute())
+
+    assert [chunk["chunk_number"] for chunk in depth_one_data["chunks"]] == ["B1", "4.1.1"]
+    assert [chunk["provenance"] for chunk in depth_one_data["chunks"]] == ["similarity", "ref_sf"]
+    assert [chunk["chunk_number"] for chunk in depth_two_data["chunks"]] == ["B1", "4.1.1", "B4.1.7", "B4.1.8", "B4.1.9"]
+    assert [chunk["provenance"] for chunk in depth_two_data["chunks"]] == ["similarity", "ref_sf", "ref_sf", "ref_sf", "ref_sf"]
+
+
+def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> None:
+    """Cross-document and BC/IE/IG references should not be auto-followed in v1."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="supporting chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="9", page_start="B1", page_end="B1", chunk_id="IFRS09_9", containing_section_id="IFRS09_S9", text="cross doc target"),
+            ]
+        )
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9-bc",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09BC_B1",
+                    annotation_raw_text="Refer: IAS 24 paragraph 9",
+                    target_raw_text="IAS 24 paragraph 9",
+                    target_kind="cross_document",
+                    target_doc_hint="IAS 24",
+                    target_start="9",
+                    parsed_ok=True,
+                ),
+                ContentReference(
+                    source_doc_uid="ifrs9-bc",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09BC_B1",
+                    annotation_raw_text="Refer: BC4.1",
+                    target_raw_text="BC4.1",
+                    target_kind="basis_for_conclusions",
+                    target_start="BC4.1",
+                    parsed_ok=True,
+                ),
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="recognition",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            reference_store=reference_store,
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand_to_section=True, expand=0, mode="text"), verbose=False),
+    )
+
+    result = command.execute()
+    data = json.loads(result)
+
+    assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc"]
+    assert data["chunks"][0]["provenance"] == "similarity"
+
+
 def test_retrieve_documents_mode_routes_document_search_by_similarity_representation() -> None:
     """Documents mode should search each configured similarity representation index."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
@@ -332,7 +550,9 @@ def test_retrieve_documents2_mode_consolidates_variants_to_standard_doc_uid() ->
     result = command.execute()
     data = json.loads(result)
 
-    assert data["retrieval_mode"] == "documents2"
+    assert data["policy_name"] == "documents2"
+    assert data["document_routing_source"] == "document_representation"
+    assert data["document_routing_post_processing"] == "aggregate_to_main_variant"
     assert data["document_hits"] == [
         {"doc_uid": "ifrs9", "score": 0.93, "document_type": "IFRS-S", "document_kind": "standard"},
     ]
@@ -384,7 +604,9 @@ def test_retrieve_documents2_through_chunks_mode_routes_and_scores_by_chunk_simi
     result = command.execute()
     data = json.loads(result)
 
-    assert data["retrieval_mode"] == "documents2-through-chunks"
+    assert data["policy_name"] == "documents2-through-chunks"
+    assert data["document_routing_source"] == "top_chunk_results"
+    assert data["document_routing_post_processing"] == "aggregate_to_main_variant"
     assert data["document_hits"] == [
         {"doc_uid": "ifrs9", "score": 0.98, "document_type": "IFRS-S", "document_kind": "standard"},
     ]
@@ -475,6 +697,7 @@ def _build_policy_with_similarity_representation_overrides(overrides: dict[str, 
             similarity_representation=representation,
         )
     return ResolvedRetrievalPolicy(
+        policy_name=base_policy.policy_name,
         querying=base_policy.querying,
         document_routing=base_policy.document_routing,
         chunk_retrieval=base_policy.chunk_retrieval,
@@ -482,7 +705,6 @@ def _build_policy_with_similarity_representation_overrides(overrides: dict[str, 
             global_d=base_policy.documents.global_d,
             by_document_type=by_document_type,
         ),
-        legacy_mode=base_policy.mode,
     )
 
 

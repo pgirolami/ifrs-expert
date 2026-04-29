@@ -40,7 +40,11 @@ def test_resolve_retrieval_policy_rejects_unknown_querying_reference(tmp_path: P
     """Unknown querying references should fail fast."""
     project_root = Path(__file__).resolve().parents[2]
     catalog_text = (project_root / "config" / "policy.default.yaml").read_text(encoding="utf-8")
-    invalid_text = catalog_text.replace("querying: enriched", "querying: missing_querying", 1)
+    invalid_text = catalog_text.replace(
+        "  documents2_through_chunks__enriched:\n    querying: enriched",
+        "  documents2_through_chunks__enriched:\n    querying: missing_querying",
+        1,
+    )
     policy_path = tmp_path / "policy.invalid.yaml"
     policy_path.write_text(invalid_text, encoding="utf-8")
 

@@ -46,6 +46,7 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
                 chunk_id="IFRS9_6.3.1",
                 score=0.82,
                 document_type="ifrs",
+                provenance="ref_sf",
             )
         ],
         prompt_a_text="Prompt A content",
@@ -68,7 +69,9 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
     assert '"answer": "oui"' in (tmp_path / "B-response.json").read_text(encoding="utf-8")
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
     assert '"document_hits"' in (tmp_path / "document_routing.json").read_text(encoding="utf-8")
-    assert '"chunks"' in (tmp_path / "target_chunk_retrieval.json").read_text(encoding="utf-8")
+    target_chunk_json = (tmp_path / "target_chunk_retrieval.json").read_text(encoding="utf-8")
+    assert '"chunks"' in target_chunk_json
+    assert '"provenance": "ref_sf"' in target_chunk_json
 
 
 class FakeTextCommand:

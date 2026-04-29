@@ -279,3 +279,6 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - Chunk-level inline `Refer:` spans are captured from paragraph bodies
         - Top-of-section `Refer:` blocks are captured as section-scoped references
         - References are persisted in a dedicated database table during storage
+    - Retrieval now expands same-family references before section expansion, using the stored reference rows to recover governing paragraphs from seed chunks while keeping cross-document references out of v1
+        - Added provenance tags so diagnostics can distinguish seed similarity, reference expansion, and section fan-out
+        - Kept the expansion bounded with policy-controlled depth and per-seed / per-document caps

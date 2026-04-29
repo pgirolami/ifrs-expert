@@ -373,6 +373,10 @@ class VectorStore:
         logger.info(f"Deleted {count} embeddings for doc_uid={doc_uid}")
         return count
 
+    def count_embeddings_for_doc(self, doc_uid: str) -> int:
+        """Count stored embeddings for one document."""
+        return sum(1 for stored_doc_uid, _ in self._id_map.values() if stored_doc_uid == doc_uid)
+
 
 def compute_embeddings(texts: list[str]) -> np.ndarray:
     """Compute embeddings for a list of texts.

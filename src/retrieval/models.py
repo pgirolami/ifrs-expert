@@ -17,7 +17,10 @@ class RetrievalRequest:
 
     query: str
     query_embedding_mode: QueryEmbeddingMode
-    retrieval_mode: str
+    policy_name: str
+    document_routing_source: str
+    document_routing_post_processing: str
+    chunk_retrieval_mode: str
     k: int
     d: int
     document_d_by_type: dict[str, int]
@@ -28,6 +31,10 @@ class RetrievalRequest:
     expand_to_section: bool
     expand: int
     full_doc_threshold: int
+    reference_expand_enabled: bool = False
+    reference_expand_depth: int = 0
+    reference_expand_max_chunks_per_seed: int = 0
+    reference_expand_max_chunks_per_doc: int = 0
 
 
 @dataclass(frozen=True)
@@ -43,7 +50,10 @@ class DocumentHit:
 class RetrievalResult:
     """Shared retrieval result used by query, retrieve, and answer."""
 
-    retrieval_mode: str
+    policy_name: str
+    document_routing_source: str
+    document_routing_post_processing: str
+    chunk_retrieval_mode: str
     document_hits: list[DocumentHit]
     chunk_results: list[SearchResult]
     doc_chunks: dict[str, list[Chunk]]

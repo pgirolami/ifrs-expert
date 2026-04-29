@@ -221,6 +221,11 @@ chunk_retrieval_strategies:
           expand: 0
           expand_to_section: true
           full_doc_threshold: 0
+          reference_expansion:
+            enabled: true
+            depth: 1
+            max_chunks_per_seed: 8
+            max_chunks_per_doc: 32
   title_chunks:
     mode: title_similarity
     profiles:

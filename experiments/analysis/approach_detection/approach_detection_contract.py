@@ -111,6 +111,7 @@ class SectionColumn:
     title: str
     section_lineage: tuple[str, ...]
     position: int
+    is_target: bool = False
 
 
 @dataclass(frozen=True)

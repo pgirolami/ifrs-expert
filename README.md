@@ -117,12 +117,13 @@ flowchart LR
     - **Document routing**
       - Routing decides which documents are kept after chunk search
       - We have several routing strategies from the experiment history, including return-all, routing through document representations, and routing through chunks
-      - The current Q1 setup uses `documents2-through-chunks`, which routes from the strongest chunk-level evidence in each document bundle and then collapses variants back to the governing standard.
+      - The current Q1 setup uses `standards_only_through_chunks__enriched`, which routes from the strongest chunk-level evidence in each document bundle and then keeps the governing standard.
 
     - **Chunk retrieval**
       - Chunk search is tuned separately from document routing
       - We have dense chunk search and title search, each with its own limits and score thresholds
-      - Retrieved chunks are expanded to the chunks in the enclosing section before prompting
+      - The runtime stage order is seed chunk retrieval, same-family reference expansion, then section expansion before prompting
+      - Same-family reference expansion uses stored `Refer:` annotations to recover governing paragraphs from explanatory or application guidance without reparsing the source HTML
 
     - **Policy composition**
       - A retrieval policy is built from smaller reusable parts
@@ -235,7 +236,7 @@ Key lessons from the recent experiments:
   The bilingual glossary materially improved retrieval for `IFRIC 16` and `IAS 39`, but it did not reliably solve `IFRS 9`. In some cases it made the ranking trade-off worse by shifting score mass toward the other two authorities.
 
 - **Routing from best local evidence was the breakthrough**  
-  The shift to `documents2-through-chunks` made routing depend on the best chunk-level match inside a document bundle, then collapse that evidence back to the governing standard. On the Q1 family, this was the first approach that consistently surfaced `IFRS 9`, `IAS 39`, and `IFRIC 16` together near the top.
+  The shift to `standards_only_through_chunks__enriched` made routing depend on the best chunk-level match inside a document bundle, then keep the governing standard. On the Q1 family, this was the first approach that consistently surfaced `IFRS 9`, `IAS 39`, and `IFRIC 16` together near the top.
 
 → retrieval quality directly determines which accounting reasoning paths are even available to the model
 

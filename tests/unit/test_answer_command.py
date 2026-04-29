@@ -515,7 +515,10 @@ class TestAnswerCommand:
             return (
                 None,
                 RetrievalResult(
-                    retrieval_mode="documents",
+                    policy_name="documents",
+                    document_routing_source="document_representation",
+                    document_routing_post_processing="none",
+                    chunk_retrieval_mode="chunk_similarity",
                     document_hits=[],
                     chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
                     doc_chunks={
@@ -581,7 +584,10 @@ class TestAnswerCommand:
         assert result.success is True
         assert len(captured_requests) == 1
         request = captured_requests[0]
-        assert getattr(request, "retrieval_mode") == "documents"
+        assert getattr(request, "policy_name") == "documents"
+        assert getattr(request, "document_routing_source") == "document_representation"
+        assert getattr(request, "document_routing_post_processing") == "none"
+        assert getattr(request, "chunk_retrieval_mode") == "chunk_similarity"
         assert getattr(request, "k") == 3
         assert getattr(request, "d") == 9
         document_d_by_type = getattr(request, "document_d_by_type")
@@ -625,7 +631,10 @@ class TestAnswerCommand:
             return (
                 None,
                 RetrievalResult(
-                    retrieval_mode="documents2",
+                    policy_name="documents2",
+                    document_routing_source="document_representation",
+                    document_routing_post_processing="aggregate_to_main_variant",
+                    chunk_retrieval_mode="chunk_similarity",
                     document_hits=[],
                     chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
                     doc_chunks={
@@ -667,7 +676,9 @@ class TestAnswerCommand:
         assert result.success is True
         assert len(captured_requests) == 1
         request = captured_requests[0]
-        assert getattr(request, "retrieval_mode") == "documents2"
+        assert getattr(request, "policy_name") == "documents2"
+        assert getattr(request, "document_routing_source") == "document_representation"
+        assert getattr(request, "document_routing_post_processing") == "aggregate_to_main_variant"
         assert getattr(request, "expand_to_section") is True
 
     def test_answer_documents2_through_chunks_mode_passes_through_retrieval_mode(self) -> None:
@@ -692,7 +703,10 @@ class TestAnswerCommand:
             return (
                 None,
                 RetrievalResult(
-                    retrieval_mode="documents2-through-chunks",
+                    policy_name="documents2-through-chunks",
+                    document_routing_source="top_chunk_results",
+                    document_routing_post_processing="aggregate_to_main_variant",
+                    chunk_retrieval_mode="chunk_similarity",
                     document_hits=[],
                     chunk_results=[{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.9}],
                     doc_chunks={
@@ -732,7 +746,8 @@ class TestAnswerCommand:
         assert result.success is True
         assert len(captured_requests) == 1
         request = captured_requests[0]
-        assert getattr(request, "retrieval_mode") == "documents2-through-chunks"
+        assert getattr(request, "policy_name") == "documents2-through-chunks"
+        assert getattr(request, "document_routing_source") == "top_chunk_results"
         assert getattr(request, "expand_to_section") is True
 
     def test_answer_prompt_b_contains_context(self) -> None:

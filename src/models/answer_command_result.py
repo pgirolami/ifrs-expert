@@ -34,6 +34,7 @@ class RetrievedChunkHit:
     page_start: str | None = None
     page_end: str | None = None
     text: str | None = None
+    provenance: str | None = None
 
 
 @dataclass

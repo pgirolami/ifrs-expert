@@ -60,6 +60,8 @@ def test_generate_target_chunk_retrieval_diagnostics_uses_promptfoo_artifacts(tm
     assert "question:" in html
     assert "embedded question:" in html
     assert "🎯" in html
+    assert 'data-is-target="1"' in html
+    assert "header.dataset.isTarget === '1' ||" in html
     assert "IAS 21" in html
 
     markdown = (output_dir / module.DEFAULT_RUN_MD_FILENAME).read_text(encoding="utf-8")

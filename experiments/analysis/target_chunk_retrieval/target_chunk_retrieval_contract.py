@@ -105,6 +105,7 @@ class RetrievedChunk:
     document_kind: str | None
     containing_section_id: str | None
     text_sha256: str | None
+    provenance: str | None = None
 
 
 @dataclass(frozen=True)
@@ -248,6 +249,7 @@ class RunDiagnostics:
                     "document_kind": chunk.document_kind,
                     "containing_section_id": chunk.containing_section_id,
                     "text_sha256": chunk.text_sha256,
+                    "provenance": chunk.provenance,
                 }
                 for chunk in row.chunks
             ],
@@ -582,6 +584,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             f'<th class="section-col {section_column.canonical_doc_key}" '
             f'data-section-key="{html.escape(section_column.column_key)}" '
             f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
+            f'data-is-target="{"1" if section_column.is_target else "0"}" '
             f'title="{html.escape(tooltip)}">{target_prefix}{html.escape(header_text_by_column.get(section_column.column_key, _display_section_header(section_column.section_id)))}</th>'
         )
 
@@ -744,7 +747,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
       const docKey = header.dataset.docKey;
       let visible = enabledDocs.has(docKey);
       if (visible && hideEmpty) {{
-        visible = rows.some((row) => {{
+        visible = header.dataset.isTarget === '1' || rows.some((row) => {{
           const cell = row.querySelector(`td[data-section-key="${{sectionKey}}"]`);
           return cell && cell.dataset.hasRetrieved === '1';
         }});
@@ -829,6 +832,18 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                     title=record.title,
                     section_lineage=record.section_lineage,
                     position=record.position,
+                    is_target=_section_column_is_expected(
+                        SectionColumn(
+                            column_key=_section_column_key(canonical_doc_key, record.section_id),
+                            canonical_doc_key=canonical_doc_key,
+                            doc_display_name=doc_display_names[canonical_doc_key],
+                            section_id=record.section_id,
+                            title=record.title,
+                            section_lineage=record.section_lineage,
+                            position=record.position,
+                        ),
+                        expected_section_ranges,
+                    ),
                 )
                 for record in display_records
             )
@@ -923,6 +938,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             document_kind=chunk.document_kind,
             containing_section_id=chunk.containing_section_id,
             text_sha256=chunk.text_sha256,
+            provenance=chunk.provenance,
         )
 
     def _section_display_record(
@@ -1664,6 +1680,7 @@ def _run_diagnostics_from_json(payload: dict[str, object]) -> RunDiagnostics:
                 document_kind=_optional_str(chunk.get("document_kind")),
                 containing_section_id=_optional_str(chunk.get("containing_section_id")),
                 text_sha256=_optional_str(chunk.get("text_sha256")),
+                provenance=_optional_str(chunk.get("provenance")),
             )
             for chunk in (_require_mapping(item, context="rows[].chunks[]") for item in _require_list(row.get("chunks"), context="rows[].chunks"))
         ]

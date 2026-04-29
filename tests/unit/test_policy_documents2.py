@@ -9,21 +9,27 @@ from src.policy import load_policy_config
 
 
 def test_load_policy_config_accepts_documents2_through_chunks_mode() -> None:
-    """Policy config should load the current documents2-through-chunks retrieval mode."""
+    """Policy config should load the default documents2-through-chunks policy."""
     project_root = Path(__file__).resolve().parents[2]
     policy_path = project_root / "config" / "policy.default.yaml"
 
     config = load_policy_config(policy_path)
 
-    if config.retrieval.mode != "documents2-through-chunks":
-        message = f"Expected documents2-through-chunks mode, got {config.retrieval.mode}"
+    if config.retrieval.policy_name != "documents2_through_chunks__enriched":
+        message = f"Expected documents2_through_chunks__enriched policy, got {config.retrieval.policy_name}"
+        raise AssertionError(message)
+    if config.retrieval.document_routing.source != "top_chunk_results":
+        message = f"Expected top_chunk_results source, got {config.retrieval.document_routing.source}"
         raise AssertionError(message)
 
 
 def test_make_retrieval_policy_accepts_documents2_mode() -> None:
-    """Legacy documents2 mode should still be constructible for compatibility."""
+    """Test helper should still construct a document-representation policy for old document tests."""
     policy = make_retrieval_policy(mode="documents2")
 
-    if policy.mode != "documents2":
-        message = f"Expected documents2 mode, got {policy.mode}"
+    if policy.policy_name != "documents2":
+        message = f"Expected documents2 policy name, got {policy.policy_name}"
+        raise AssertionError(message)
+    if policy.document_routing.source != "document_representation":
+        message = f"Expected document_representation source, got {policy.document_routing.source}"
         raise AssertionError(message)
