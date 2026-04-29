@@ -17,6 +17,7 @@ from pathlib import Path
 import yaml
 
 from experiments.analysis.stability_scorer import compute_stability_score, normalize_label
+from src.retrieval.query_embedding import build_query_embedding_text
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ DEFAULT_PROMPTFOO_CONFIG_FILENAME = "promptfooconfig.yaml"
 DEFAULT_RUN_METADATA_FILENAME = "run.json"
 DEFAULT_SECTION_TITLE = "Approach Detection Diagnostics"
 DEFAULT_B_RESPONSE_FILENAME = "B-response.json"
+DEFAULT_A_RESPONSE_FILENAME = "A-response.json"
 DEFAULT_A_PROMPT_FILENAME = "A-prompt.txt"
 
 
@@ -112,6 +114,16 @@ class SectionColumn:
 
 
 @dataclass(frozen=True)
+class ChunkAuthorityRecord:
+    """One chunk plus its authority categorization status."""
+
+    chunk_number: str
+    score: float
+    authority_category: str
+    dropped: bool
+
+
+@dataclass(frozen=True)
 class SectionCell:
     """One run x section cell with retrieved and visible-context views."""
 
@@ -123,6 +135,9 @@ class SectionCell:
     visible_display_text: str
     visible_max_score: float | None
     visible_chunk_numbers: tuple[str, ...]
+    retrieved_chunks: tuple[ChunkAuthorityRecord, ...]
+    visible_chunks: tuple[ChunkAuthorityRecord, ...]
+    dropped_chunks: tuple[ChunkAuthorityRecord, ...]
 
 
 @dataclass(frozen=True)
@@ -140,6 +155,8 @@ class QuestionRunDiagnostics:
     """One Prompt B answer attempt for a question."""
 
     question_id: str
+    question_text: str
+    embedded_question_text: str
     family_id: str
     run_label: str
     artifact_dir: Path
@@ -149,6 +166,10 @@ class QuestionRunDiagnostics:
     missing_expected_labels: tuple[str, ...]
     spurious_labels: tuple[str, ...]
     prompt_chunks: tuple[PromptChunk, ...]
+    authoritative_references: tuple[tuple[str, str], ...]
+    secondary_references: tuple[tuple[str, str], ...]
+    peripheral_references: tuple[tuple[str, str], ...]
+    dropped_documents: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -222,6 +243,8 @@ class RunDiagnostics:
     def _row_to_json(row: QuestionRunDiagnostics) -> dict[str, object]:
         return {
             "question_id": row.question_id,
+            "question_text": row.question_text,
+            "embedded_question_text": row.embedded_question_text,
             "family_id": row.family_id,
             "run_label": row.run_label,
             "artifact_dir": str(row.artifact_dir),
@@ -248,6 +271,10 @@ class RunDiagnostics:
                 }
                 for chunk in row.prompt_chunks
             ],
+            "authoritative_references": [list(item) for item in row.authoritative_references],
+            "secondary_references": [list(item) for item in row.secondary_references],
+            "peripheral_references": [list(item) for item in row.peripheral_references],
+            "dropped_documents": list(row.dropped_documents),
         }
 
     @staticmethod
@@ -459,7 +486,7 @@ class ApproachDetectionDiagnosticsGenerator:
         lines = [
             "# approach_detection_diagnostics",
             "",
-            "This report summarizes Prompt B approach labels, missing expected approaches, spurious approaches, and repeated-output stability.",
+            "This report summarizes Prompt B approach labels, missing expected approaches, spurious approaches, repeated-output stability, and authority categorization of visible prompt chunks.",
             "",
             f"- Experiment: `{diagnostics.experiment_name}`",
             f"- Run: `{diagnostics.run_id}`",
@@ -477,6 +504,35 @@ class ApproachDetectionDiagnosticsGenerator:
         lines.extend(["", "## Question Stability", "", "| Question | Runs | Strict | Loose | Missing expected | Spurious |", "| --- | ---: | ---: | ---: | ---: | ---: |"])
         for summary in diagnostics.question_stability:
             lines.append(f"| {summary.question_id} | {summary.run_count} | {summary.stability_score:.1f} | {summary.stability_score_loose:.1f} | {summary.missing_expected_count} | {summary.spurious_count} |")
+
+        section_columns = self._section_columns(diagnostics.rows, diagnostics.expected_section_ranges)
+        lines.extend(["", "## Authority Categorization by Run", ""])
+        for row in diagnostics.rows:
+            lines.extend([
+                f"### {row.question_id} / {_display_run_id(row.run_label)}",
+                "",
+                f"- Question: {row.question_text}",
+                f"- Embedded question: {row.embedded_question_text}",
+                "",
+                "| Document | Section range | Category | Retrieved score | Dropped |",
+                "| --- | --- | --- | --- | --- |",
+            ])
+            section_cells_by_key = self._section_cells(row)
+            for section_column in section_columns:
+                section_cell = section_cells_by_key.get(section_column.column_key)
+                if section_cell is None:
+                    continue
+                range_category = _section_range_category(section_cell)
+                lines.append(
+                    f"| {section_column.doc_display_name} | {_display_section_header(section_column.section_id)} | "
+                    f"{_range_category_emoji(range_category)} {range_category} | "
+                    f"{section_cell.retrieved_display_text or '—'} | "
+                    f"D:{len(section_cell.dropped_chunks)} |"
+                )
+            dropped_lines = _markdown_dropped_chunk_lines(section_columns, section_cells_by_key)
+            if dropped_lines:
+                lines.extend(["", "Dropped chunks:", "", *dropped_lines])
+            lines.append("")
         return "\n".join(lines) + "\n"
 
     def render_index_markdown(
@@ -639,6 +695,9 @@ class ApproachDetectionDiagnosticsGenerator:
         raw_payloads_by_question: dict[str, list[dict[str, object]]] = {}
         for source in question_sources:
             family_dirname = _normalize_family_id(source.family_id)
+            resolved_question_path = source.question_path if source.question_path.is_absolute() else self._repo_root / source.question_path
+            question_text = resolved_question_path.read_text(encoding="utf-8").strip()
+            embedded_question_text = build_query_embedding_text(question_text).embedding_text.strip()
             question_dirs = self._find_question_artifact_dirs(
                 artifacts_dir=artifacts_dir,
                 family_dirname=family_dirname,
@@ -649,15 +708,17 @@ class ApproachDetectionDiagnosticsGenerator:
                 continue
             for question_dir in question_dirs:
                 for artifact_dir, run_label in self._iter_answer_artifact_dirs(question_dir):
-                    b_response_path = artifact_dir / DEFAULT_B_RESPONSE_FILENAME
-                    payload = _load_json_object(b_response_path)
+                    payload = self._load_preferred_response_payload(artifact_dir)
                     raw_payloads_by_question.setdefault(source.question_id, []).append(payload)
                     prompt_chunks = self._load_prompt_chunks(artifact_dir / DEFAULT_A_PROMPT_FILENAME, expected_ranges)
                     approaches = _parse_approaches(payload)
                     labels = tuple(_ordered_unique(approach.normalized_label for approach in approaches if approach.normalized_label))
+                    authoritative_references, secondary_references, peripheral_references, dropped_documents = _extract_authority_diagnostics(artifact_dir / DEFAULT_A_RESPONSE_FILENAME)
                     rows.append(
                         QuestionRunDiagnostics(
                             question_id=source.question_id,
+                            question_text=question_text,
+                            embedded_question_text=embedded_question_text,
                             family_id=source.family_id,
                             run_label=run_label,
                             artifact_dir=artifact_dir,
@@ -667,10 +728,16 @@ class ApproachDetectionDiagnosticsGenerator:
                             missing_expected_labels=tuple(sorted(expected_labels - set(labels))),
                             spurious_labels=tuple(sorted(set(labels) - expected_labels)) if expected_labels else tuple(),
                             prompt_chunks=prompt_chunks,
+                            authoritative_references=authoritative_references,
+                            secondary_references=secondary_references,
+                            peripheral_references=peripheral_references,
+                            dropped_documents=dropped_documents,
                         )
                     )
         if not rows:
-            raise FileNotFoundError(f"No {DEFAULT_B_RESPONSE_FILENAME} artifacts found in {artifacts_dir}")
+            raise FileNotFoundError(
+                f"No {DEFAULT_B_RESPONSE_FILENAME} or {DEFAULT_A_RESPONSE_FILENAME} artifacts found in {artifacts_dir}"
+            )
         return sorted(rows, key=lambda item: (_question_sort_key(item.question_id), _run_label_sort_key(item.run_label))), raw_payloads_by_question
 
     def _find_question_artifact_dirs(self, *, artifacts_dir: Path, family_dirname: str, question_id: str) -> list[Path]:
@@ -684,13 +751,34 @@ class ApproachDetectionDiagnosticsGenerator:
 
     def _iter_answer_artifact_dirs(self, question_dir: Path) -> list[tuple[Path, str]]:
         artifact_dirs: list[tuple[Path, str]] = []
-        b_response_paths = sorted(question_dir.rglob(DEFAULT_B_RESPONSE_FILENAME), key=lambda path: str(path))
-        for b_response_path in b_response_paths:
-            artifact_dir = b_response_path.parent
+        response_paths = sorted(
+            {
+                *question_dir.rglob(DEFAULT_B_RESPONSE_FILENAME),
+                *question_dir.rglob(DEFAULT_A_RESPONSE_FILENAME),
+            },
+            key=lambda path: str(path),
+        )
+        seen_dirs: set[Path] = set()
+        for response_path in response_paths:
+            artifact_dir = response_path.parent
+            if artifact_dir in seen_dirs:
+                continue
+            seen_dirs.add(artifact_dir)
             repeat_parent = next((parent for parent in [artifact_dir, *artifact_dir.parents] if parent.parent != parent and parent.name.startswith("repeat-")), None)
             run_label = repeat_parent.name if repeat_parent is not None and question_dir in repeat_parent.parents else "base"
             artifact_dirs.append((artifact_dir, run_label))
         return artifact_dirs
+
+    def _load_preferred_response_payload(self, artifact_dir: Path) -> dict[str, object]:
+        b_response_path = artifact_dir / DEFAULT_B_RESPONSE_FILENAME
+        if b_response_path.exists():
+            return _load_json_object(b_response_path)
+        a_response_path = artifact_dir / DEFAULT_A_RESPONSE_FILENAME
+        if a_response_path.exists():
+            return _load_json_object(a_response_path)
+        raise FileNotFoundError(
+            f"Missing both {DEFAULT_B_RESPONSE_FILENAME} and {DEFAULT_A_RESPONSE_FILENAME} in {artifact_dir}"
+        )
 
     def _load_prompt_chunks(self, a_prompt_path: Path, expected_ranges: tuple[ExpectedSectionRange, ...]) -> tuple[PromptChunk, ...]:
         if not a_prompt_path.exists():
@@ -785,7 +873,10 @@ class ApproachDetectionDiagnosticsGenerator:
     ) -> tuple[SectionColumn, ...]:
         chunk_lookup = _load_chunk_lookup(_collect_chunk_db_ids(rows))
         chunk_lookup_by_reference = _load_chunk_lookup_by_reference(_collect_chunk_references(rows))
-        section_lookup = _load_section_lookup(_collect_section_ids(chunk_lookup) | _collect_section_ids(chunk_lookup_by_reference))
+        expected_display_records = _load_expected_section_display_records(expected_section_ranges)
+        section_lookup = _load_section_lookup(
+            _collect_section_ids(chunk_lookup)
+            | _collect_section_ids(chunk_lookup_by_reference))
         observed_section_ids_by_doc: dict[str, set[str]] = {}
         retrieved_doc_counts: dict[str, int] = {}
         doc_display_names: dict[str, str] = {}
@@ -798,19 +889,22 @@ class ApproachDetectionDiagnosticsGenerator:
                 section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
                 observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).add(section_id)
 
+        for canonical_doc_key, records in expected_display_records.items():
+            doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(canonical_doc_key))
+            observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).update(record.section_id for record in records)
+            for record in records:
+                section_lookup.setdefault(record.section_id, record)
+
         columns: list[SectionColumn] = []
-        target_doc_keys = [
-            _canonical_doc_key(expected_range.document)
-            for expected_range in expected_section_ranges
-            if _canonical_doc_key(expected_range.document) in observed_section_ids_by_doc
-        ]
-        target_doc_keys = list(dict.fromkeys(target_doc_keys))
+        target_doc_keys = list(dict.fromkeys(_canonical_doc_key(expected_range.document) for expected_range in expected_section_ranges))
         non_target_doc_keys = sorted(
             set(observed_section_ids_by_doc) - set(target_doc_keys),
             key=lambda doc_key: (-retrieved_doc_counts.get(doc_key, 0), doc_display_names[doc_key], doc_key),
         )
         doc_keys = [*target_doc_keys, *non_target_doc_keys]
         for canonical_doc_key in doc_keys:
+            if canonical_doc_key not in observed_section_ids_by_doc:
+                continue
             display_records = [
                 self._section_display_record(canonical_doc_key, section_id, section_lookup)
                 for section_id in observed_section_ids_by_doc[canonical_doc_key]
@@ -975,13 +1069,18 @@ class ApproachDetectionDiagnosticsGenerator:
         section_cells = tuple(self._render_section_cell(section_column, section_cells_by_key.get(section_column.column_key)) for section_column in section_columns)
         order_spurious = self._spurious_order_value(row, index)
         spurious_labels_attr = "|".join(row.spurious_labels)
+        question_tooltip = (
+            f"question_id: {row.question_id}\n\n"
+            f"question:\n{row.question_text}\n\n"
+            f"embedded question:\n{row.embedded_question_text}"
+        )
         return (
             f'<tr data-order-question="{index}" '
             f'data-order-spurious="{order_spurious}" '
             f'data-has-spurious="{"1" if row.spurious_labels else "0"}" '
             f'data-spurious-labels="{html.escape(spurious_labels_attr)}" '
             f'data-question-id="{html.escape(row.question_id)}">'
-            f'<td class="sticky-1 metadata-col metadata-q">{html.escape(row.question_id)}</td>'
+            f'<td class="sticky-1 metadata-col metadata-q" title="{html.escape(question_tooltip)}">{html.escape(row.question_id)}</td>'
             f'<td class="sticky-2 metadata-col metadata-run">{html.escape(_display_run_id(row.run_label))}</td>'
             f'<td class="sticky-3 metadata-col metadata-rec">{html.escape(_display_recommendation(row.recommendation or ""))}</td>'
             f'{"".join((*label_cells, *section_cells))}'
@@ -1003,7 +1102,10 @@ class ApproachDetectionDiagnosticsGenerator:
             section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
             display_chunk = self._chunk_with_corpus_chunk_number(chunk, chunk_lookup, chunk_lookup_by_reference)
             entries_by_section.setdefault(_section_column_key(canonical_doc_key, section_id), []).append(display_chunk)
-        return {column_key: _build_section_cell(chunks) for column_key, chunks in entries_by_section.items()}
+        return {
+            column_key: _build_section_cell(chunks, row=row)
+            for column_key, chunks in entries_by_section.items()
+        }
 
     def _chunk_with_corpus_chunk_number(
         self,
@@ -1026,15 +1128,18 @@ class ApproachDetectionDiagnosticsGenerator:
                 f'data-has-visible="0"></td>'
             )
         lineage_text = " > ".join(section_column.section_lineage)
+        retrieved_summary = _format_section_cell_summary(section_cell.retrieved_display_text, section_cell.retrieved_chunks, include_dropped=True, dropped_chunks=section_cell.dropped_chunks)
+        visible_summary = _format_section_cell_summary(section_cell.visible_display_text, section_cell.visible_chunks, include_dropped=True, dropped_chunks=section_cell.dropped_chunks)
         tooltip = (
             f"{section_column.doc_display_name}\n"
             f"section_id: {section_column.section_id}\n"
             f"title: {section_column.title}\n"
             f"lineage: {lineage_text}\n\n"
-            f"retrieved chunks:\n{_chunk_lines(section_cell.retrieved_chunk_numbers, section_cell.retrieved_scores)}\n\n"
-            f"visible context chunks:\n{_chunk_lines(section_cell.visible_chunk_numbers, section_cell.visible_scores)}\n\n"
-            f"retrieved display: {section_cell.retrieved_display_text or '(blank)'}\n"
-            f"visible display: {section_cell.visible_display_text or '(blank)'}"
+            f"retrieved chunks:\n{_chunk_authority_lines(section_cell.retrieved_chunks)}\n\n"
+            f"visible context chunks:\n{_chunk_authority_lines(section_cell.visible_chunks)}\n\n"
+            f"dropped chunks:\n{_chunk_authority_lines(section_cell.dropped_chunks)}\n\n"
+            f"retrieved summary: {retrieved_summary.replace('<br>', ' | ')}\n"
+            f"visible summary: {visible_summary.replace('<br>', ' | ')}"
         )
         retrieved_color = _section_background_color(section_column.canonical_doc_key, section_cell.retrieved_max_score)
         visible_color = _section_background_color(section_column.canonical_doc_key, section_cell.visible_max_score)
@@ -1046,12 +1151,12 @@ class ApproachDetectionDiagnosticsGenerator:
             f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
             f'data-has-retrieved="{has_retrieved}" '
             f'data-has-visible="{has_visible}" '
-            f'data-retrieved-text="{html.escape(section_cell.retrieved_display_text)}" '
-            f'data-visible-text="{html.escape(section_cell.visible_display_text)}" '
+            f'data-retrieved-text="{html.escape(retrieved_summary)}" '
+            f'data-visible-text="{html.escape(visible_summary)}" '
             f'data-retrieved-bg="{html.escape(retrieved_color)}" '
             f'data-visible-bg="{html.escape(visible_color)}" '
             f'title="{html.escape(tooltip)}" '
-            f'style="background-color: {retrieved_color};">{html.escape(section_cell.retrieved_display_text)}</td>'
+            f'style="background-color: {retrieved_color};">{retrieved_summary}</td>'
         )
 
     def _spurious_order_value(self, row: QuestionRunDiagnostics, fallback_index: int) -> str:
@@ -1060,19 +1165,7 @@ class ApproachDetectionDiagnosticsGenerator:
         return f"{spurious_prefix}:{spurious_text}:{row.question_id}:{row.run_label}:{fallback_index:04d}"
 
     def _render_legend(self, diagnostics: RunDiagnostics, section_columns: tuple[SectionColumn, ...]) -> str:
-        return f"""
-    <section class="legend">
-      <p>
-        <strong>Rows:</strong> {len(diagnostics.rows)} runs.<br>
-        <strong>Section columns:</strong> {len(section_columns)} observed visible-context sections across runs.
-      </p>
-      <ul>
-        <li>Core label columns use ✅ when present; spurious label columns are red when present.</li>
-        <li>Section text shows the score range for the active mode: retrieved-only by default, or full visible context when toggled on.</li>
-        <li>Darker section cells mean a higher maximum retrieved score in that section.</li>
-      </ul>
-    </section>
-"""
+        return ""
 
     def _render_style(self) -> str:
         return """
@@ -1101,7 +1194,9 @@ class ApproachDetectionDiagnosticsGenerator:
   .label-cell.present.spurious { background: #b91c1c; color: #ffffff; font-weight: 700; }
   .label-cell.absent { color: #d1d5db; }
   .label-cell.core.absent { background: #ffffff; }
-  .section-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .section-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.3; }
+  .section-cell-score { display: block; font-weight: 600; }
+  .section-cell-authority { display: block; font-size: 11px; color: #374151; }
   button { cursor: pointer; }
 </style>
 """
@@ -1153,7 +1248,7 @@ class ApproachDetectionDiagnosticsGenerator:
   function updateSectionCellPresentation() {{
     const useVisibleContext = isVisibleContextMode();
     document.querySelectorAll('td.section-cell').forEach((cell) => {{
-      cell.textContent = (useVisibleContext ? cell.dataset.visibleText : cell.dataset.retrievedText) || '';
+      cell.innerHTML = (useVisibleContext ? cell.dataset.visibleText : cell.dataset.retrievedText) || '';
       cell.style.backgroundColor = (useVisibleContext ? cell.dataset.visibleBg : cell.dataset.retrievedBg) || 'transparent';
     }});
   }}
@@ -1302,6 +1397,49 @@ def _collect_section_ids(chunk_lookup: dict[int, ChunkLookupRecord]) -> set[str]
     return {record.containing_section_id for record in chunk_lookup.values() if record.containing_section_id is not None}
 
 
+def _load_expected_section_display_records(
+    expected_section_ranges: tuple[ExpectedSectionRange, ...],
+) -> dict[str, tuple[SectionDisplayRecord, ...]]:
+    if not expected_section_ranges:
+        return {}
+    db_path = _default_db_path()
+    if not db_path.exists():
+        return {}
+
+    doc_keys = sorted({_canonical_doc_key(expected_range.document) for expected_range in expected_section_ranges})
+    ranges_by_doc: dict[str, list[ExpectedSectionRange]] = {}
+    for expected_range in expected_section_ranges:
+        ranges_by_doc.setdefault(_canonical_doc_key(expected_range.document), []).append(expected_range)
+
+    records_by_doc: dict[str, list[SectionDisplayRecord]] = {}
+    with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute(
+            """
+            SELECT doc_uid, section_id, title, section_lineage, position
+            FROM sections
+            WHERE doc_uid IN (SELECT value FROM json_each(?))
+            """,
+            (json.dumps(doc_keys),),
+        ).fetchall()
+        for row in rows:
+            doc_uid = str(row["doc_uid"])
+            doc_key = _canonical_doc_key(doc_uid)
+            section_id = str(row["section_id"])
+            if not any(_section_id_overlaps_expected_range(section_id, expected_range) for expected_range in ranges_by_doc.get(doc_key, [])):
+                continue
+            records_by_doc.setdefault(doc_key, []).append(
+                SectionDisplayRecord(
+                    doc_uid=doc_uid,
+                    section_id=section_id,
+                    title=str(row["title"]),
+                    section_lineage=tuple(_decode_lineage(str(row["section_lineage"]))),
+                    position=int(row["position"]),
+                )
+            )
+    return {doc_key: tuple(records) for doc_key, records in records_by_doc.items()}
+
+
 def _load_section_lookup(section_ids: set[str]) -> dict[str, SectionDisplayRecord]:
     if not section_ids:
         return {}
@@ -1337,13 +1475,16 @@ def _decode_lineage(raw_lineage: str) -> list[str]:
     return decoded
 
 
-def _build_section_cell(chunks: list[PromptChunk]) -> SectionCell:
+def _build_section_cell(chunks: list[PromptChunk], *, row: QuestionRunDiagnostics) -> SectionCell:
     sorted_chunks = sorted(chunks, key=lambda chunk: (_section_sort_key(chunk.chunk_number), chunk.score))
     visible_scores = tuple(chunk.score for chunk in sorted_chunks)
     visible_chunk_numbers = tuple(chunk.chunk_number for chunk in sorted_chunks)
     retrieved_chunks = [chunk for chunk in sorted_chunks if chunk.score > 0.0]
     retrieved_scores = tuple(chunk.score for chunk in retrieved_chunks)
     retrieved_chunk_numbers = tuple(chunk.chunk_number for chunk in retrieved_chunks)
+    visible_chunk_records = tuple(_chunk_authority_record(chunk, row=row) for chunk in sorted_chunks if not _chunk_is_dropped(chunk, row=row))
+    retrieved_chunk_records = tuple(_chunk_authority_record(chunk, row=row) for chunk in retrieved_chunks if not _chunk_is_dropped(chunk, row=row))
+    dropped_chunk_records = tuple(_chunk_authority_record(chunk, row=row) for chunk in sorted_chunks if _chunk_is_dropped(chunk, row=row))
     return SectionCell(
         retrieved_scores=retrieved_scores,
         retrieved_display_text=_format_score_range(retrieved_scores),
@@ -1353,11 +1494,47 @@ def _build_section_cell(chunks: list[PromptChunk]) -> SectionCell:
         visible_display_text=_format_score_range(visible_scores),
         visible_max_score=max(visible_scores) if visible_scores else None,
         visible_chunk_numbers=visible_chunk_numbers,
+        retrieved_chunks=retrieved_chunk_records,
+        visible_chunks=visible_chunk_records,
+        dropped_chunks=dropped_chunk_records,
     )
 
 
-def _chunk_lines(chunk_numbers: tuple[str, ...], scores: tuple[float, ...]) -> str:
-    lines = [f"- {chunk_number} ({score:.2f})" for chunk_number, score in zip(chunk_numbers, scores, strict=True)]
+def _chunk_authority_record(chunk: PromptChunk, *, row: QuestionRunDiagnostics) -> ChunkAuthorityRecord:
+    canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
+    reference_key = (canonical_doc_key, chunk.chunk_number)
+    if canonical_doc_key in set(row.dropped_documents):
+        authority_category = "dropped"
+        dropped = True
+    elif reference_key in set(row.authoritative_references):
+        authority_category = "authoritative"
+        dropped = False
+    elif reference_key in set(row.secondary_references):
+        authority_category = "secondary"
+        dropped = False
+    elif reference_key in set(row.peripheral_references):
+        authority_category = "peripheral"
+        dropped = False
+    else:
+        authority_category = "dropped"
+        dropped = True
+    return ChunkAuthorityRecord(
+        chunk_number=chunk.chunk_number,
+        score=chunk.score,
+        authority_category=authority_category,
+        dropped=dropped,
+    )
+
+
+def _chunk_is_dropped(chunk: PromptChunk, *, row: QuestionRunDiagnostics) -> bool:
+    return _canonical_doc_key(chunk.doc_uid) in set(row.dropped_documents)
+
+
+def _chunk_authority_lines(chunks: tuple[ChunkAuthorityRecord, ...]) -> str:
+    lines = [
+        f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}]"
+        for chunk in chunks
+    ]
     return "\n".join(lines) if lines else "(none)"
 
 
@@ -1369,6 +1546,64 @@ def _format_score_range(scores: tuple[float, ...]) -> str:
     if min_score == max_score:
         return f"{min_score:.2f}"
     return f"{min_score:.2f}-{max_score:.2f}"
+
+
+def _section_range_category(section_cell: SectionCell) -> str:
+    return _range_category_from_chunks(section_cell.visible_chunks, section_cell.dropped_chunks)
+
+
+def _range_category_emoji(category: str) -> str:
+    if category == "authoritative":
+        return "🎯"
+    if category == "secondary":
+        return "🔎"
+    if category == "peripheral":
+        return "🖼️"
+    return "🗑️"
+
+
+def _range_category_from_chunks(
+    categorized_chunks: tuple[ChunkAuthorityRecord, ...],
+    dropped_chunks: tuple[ChunkAuthorityRecord, ...],
+) -> str:
+    categories = {chunk.authority_category for chunk in (*categorized_chunks, *dropped_chunks)}
+    if "authoritative" in categories:
+        return "authoritative"
+    if "secondary" in categories:
+        return "secondary"
+    if "peripheral" in categories:
+        return "peripheral"
+    return "dropped"
+
+
+def _format_section_cell_summary(
+    score_text: str,
+    categorized_chunks: tuple[ChunkAuthorityRecord, ...],
+    *,
+    include_dropped: bool,
+    dropped_chunks: tuple[ChunkAuthorityRecord, ...] = (),
+) -> str:
+    del include_dropped
+    range_category = _range_category_from_chunks(categorized_chunks, dropped_chunks)
+    score_line = html.escape(score_text or "—")
+    emoji_line = html.escape(_range_category_emoji(range_category))
+    return f'<span class="section-cell-score">{score_line}</span><span class="section-cell-authority">{emoji_line}</span>'
+
+
+def _markdown_dropped_chunk_lines(
+    section_columns: tuple[SectionColumn, ...],
+    section_cells_by_key: dict[str, SectionCell],
+) -> list[str]:
+    lines: list[str] = []
+    for section_column in section_columns:
+        section_cell = section_cells_by_key.get(section_column.column_key)
+        if section_cell is None or not section_cell.dropped_chunks:
+            continue
+        for chunk in section_cell.dropped_chunks:
+            lines.append(
+                f"- {section_column.doc_display_name} / {_display_section_header(section_column.section_id)} / {chunk.chunk_number} / {chunk.authority_category}"
+            )
+    return lines
 
 
 def _section_background_color(canonical_doc_key: str, max_score: float | None) -> str:
@@ -1444,8 +1679,7 @@ def _section_column_is_expected(section_column: SectionColumn, expected_section_
     for expected_range in expected_section_ranges:
         if _canonical_doc_key(expected_range.document) != section_column.canonical_doc_key:
             continue
-        section_start, section_end = _section_display_range(section_column.section_id)
-        if section_start == expected_range.start and section_end == expected_range.end:
+        if _section_id_overlaps_expected_range(section_column.section_id, expected_range):
             return True
     return False
 
@@ -1457,6 +1691,15 @@ def _section_display_range(section_id: str) -> tuple[str, str]:
         return range_text, range_text
     start, end = range_text.split("-", maxsplit=1)
     return start, end
+
+
+def _section_id_overlaps_expected_range(section_id: str, expected_range: ExpectedSectionRange) -> bool:
+    section_start, section_end = _section_display_range(section_id)
+    return _section_ranges_overlap(section_start, section_end, expected_range.start, expected_range.end)
+
+
+def _section_ranges_overlap(left_start: str, left_end: str, right_start: str, right_end: str) -> bool:
+    return not (_section_sort_key(left_end) < _section_sort_key(right_start) or _section_sort_key(right_end) < _section_sort_key(left_start))
 
 
 def _default_db_path() -> Path:
@@ -1642,6 +1885,56 @@ class ApproachDetectionDiagnosticsAnalyzer:
         return "\n".join([f"## {section_title}", "", *lines, ""])
 
 
+def _extract_authority_diagnostics(a_response_path: Path) -> tuple[tuple[tuple[str, str], ...], tuple[tuple[str, str], ...], tuple[tuple[str, str], ...], tuple[str, ...]]:
+    if not a_response_path.exists():
+        return (), (), (), ()
+    payload = _load_json_object(a_response_path)
+    authority_classification = payload.get("authority_classification")
+    if not isinstance(authority_classification, dict):
+        return (), (), (), ()
+    authority_resolution = payload.get("authority_resolution")
+    dropped_documents_raw = authority_resolution.get("discarded_due_to_overlap") if isinstance(authority_resolution, dict) else []
+    dropped_documents = tuple(
+        sorted(
+            {
+                _canonical_doc_key(document)
+                for document in dropped_documents_raw
+                if isinstance(document, str) and document.strip()
+            }
+        )
+    )
+    return (
+        _extract_authority_references(authority_classification.get("primary_authority")),
+        _extract_authority_references(authority_classification.get("supporting_authority")),
+        _extract_authority_references(authority_classification.get("peripheral_authority")),
+        dropped_documents,
+    )
+
+
+def _extract_authority_references(value: object) -> tuple[tuple[str, str], ...]:
+    if not isinstance(value, list):
+        return ()
+    references: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        document = item.get("document")
+        raw_references = item.get("references")
+        if not isinstance(document, str) or not isinstance(raw_references, list):
+            continue
+        canonical_doc_key = _canonical_doc_key(document)
+        for raw_reference in raw_references:
+            if not isinstance(raw_reference, str) or not raw_reference.strip():
+                continue
+            reference = (canonical_doc_key, raw_reference.strip())
+            if reference in seen:
+                continue
+            seen.add(reference)
+            references.append(reference)
+    return tuple(references)
+
+
 def _parse_approaches(payload: dict[str, object]) -> list[ApproachRecord]:
     raw_approaches = payload.get("approaches")
     if not isinstance(raw_approaches, list):
@@ -1780,6 +2073,8 @@ def _row_from_json(value: object) -> QuestionRunDiagnostics:
     row = _require_mapping(value, context="rows[]")
     return QuestionRunDiagnostics(
         question_id=_require_str(row.get("question_id"), context="rows[].question_id"),
+        question_text=_require_str(row.get("question_text"), context="rows[].question_text") if row.get("question_text") is not None else "",
+        embedded_question_text=_require_str(row.get("embedded_question_text"), context="rows[].embedded_question_text") if row.get("embedded_question_text") is not None else "",
         family_id=_require_str(row.get("family_id"), context="rows[].family_id"),
         run_label=_require_str(row.get("run_label"), context="rows[].run_label"),
         artifact_dir=Path(_require_str(row.get("artifact_dir"), context="rows[].artifact_dir")),
@@ -1797,6 +2092,20 @@ def _row_from_json(value: object) -> QuestionRunDiagnostics:
         missing_expected_labels=tuple(_require_str(item, context="rows[].missing_expected_labels[]") for item in _require_list(row.get("missing_expected_labels"), context="rows[].missing_expected_labels")),
         spurious_labels=tuple(_require_str(item, context="rows[].spurious_labels[]") for item in _require_list(row.get("spurious_labels"), context="rows[].spurious_labels")),
         prompt_chunks=tuple(_prompt_chunk_from_json(item) for item in _require_list(row.get("prompt_chunks"), context="rows[].prompt_chunks")),
+        authoritative_references=tuple(_reference_pair_from_json(item, context="rows[].authoritative_references[]") for item in _require_list(row.get("authoritative_references") or [], context="rows[].authoritative_references")),
+        secondary_references=tuple(_reference_pair_from_json(item, context="rows[].secondary_references[]") for item in _require_list(row.get("secondary_references") or [], context="rows[].secondary_references")),
+        peripheral_references=tuple(_reference_pair_from_json(item, context="rows[].peripheral_references[]") for item in _require_list(row.get("peripheral_references") or [], context="rows[].peripheral_references")),
+        dropped_documents=tuple(_require_str(item, context="rows[].dropped_documents[]") for item in _require_list(row.get("dropped_documents") or [], context="rows[].dropped_documents")),
+    )
+
+
+def _reference_pair_from_json(value: object, *, context: str) -> tuple[str, str]:
+    pair = _require_list(value, context=context)
+    if len(pair) != 2:
+        raise ValueError(f"Expected reference pair of length 2 for {context}, got {pair!r}")
+    return (
+        _require_str(pair[0], context=f"{context}[0]"),
+        _require_str(pair[1], context=f"{context}[1]"),
     )
 
 
