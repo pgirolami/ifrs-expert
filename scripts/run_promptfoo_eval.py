@@ -119,7 +119,16 @@ class PromptfooEvalRunner:
         eval_result = self._command_runner(eval_command, env, self._project_root)
         if eval_result.returncode != 0:
             logger.warning(f"Promptfoo eval finished with exit code {eval_result.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
-        return eval_result.returncode
+
+        diagnostics_exit_code = 0
+        if self._suite == "retrieve":
+            diagnostics_exit_code = self._run_retrieval_diagnostics(env=env, run_layout=run_layout)
+        if self._suite == "answer":
+            diagnostics_exit_code = self._run_answer_diagnostics(env=env, run_layout=run_layout)
+
+        if eval_result.returncode != 0:
+            return eval_result.returncode
+        return diagnostics_exit_code
 
     def _build_run_layout(self, description: str | None) -> PromptfooRunLayout:
         """Build the archive layout for one run."""
@@ -215,6 +224,73 @@ class PromptfooEvalRunner:
             "archived_path": str(destination_path.relative_to(self._project_root)),
             "sha256": digest,
         }
+
+    def _run_retrieval_diagnostics(self, env: dict[str, str], run_layout: PromptfooRunLayout) -> int:
+        """Generate retrieval diagnostics for the archived run."""
+        experiment_arg = str(run_layout.run_dir.parent.parent.relative_to(self._project_root))
+        diagnostics_commands = [
+            [
+                "uv",
+                "run",
+                "python",
+                "experiments/analysis/document_routing/generate_document_routing_diagnostics.py",
+                "--experiment",
+                experiment_arg,
+                "--run-id",
+                run_layout.run_dir.name,
+            ],
+            [
+                "uv",
+                "run",
+                "python",
+                "experiments/analysis/target_chunk_retrieval/generate_target_chunk_retrieval_diagnostics.py",
+                "--experiment",
+                experiment_arg,
+                "--run-id",
+                run_layout.run_dir.name,
+            ],
+        ]
+        return self._run_diagnostics_commands(
+            env=env,
+            diagnostics_commands=diagnostics_commands,
+            diagnostics_name="retrieval",
+        )
+
+    def _run_answer_diagnostics(self, env: dict[str, str], run_layout: PromptfooRunLayout) -> int:
+        """Generate answer diagnostics for the archived run."""
+        experiment_arg = str(run_layout.run_dir.parent.parent.relative_to(self._project_root))
+        diagnostics_commands = [
+            [
+                "uv",
+                "run",
+                "python",
+                "experiments/analysis/approach_detection/generate_approach_detection_diagnostics.py",
+                "--experiment",
+                experiment_arg,
+                "--run-id",
+                run_layout.run_dir.name,
+            ],
+        ]
+        return self._run_diagnostics_commands(
+            env=env,
+            diagnostics_commands=diagnostics_commands,
+            diagnostics_name="answer",
+        )
+
+    def _run_diagnostics_commands(
+        self,
+        env: dict[str, str],
+        diagnostics_commands: list[list[str]],
+        diagnostics_name: str,
+    ) -> int:
+        """Run one or more diagnostics commands and return the first failure code."""
+        for command in diagnostics_commands:
+            logger.info(f"Running {diagnostics_name} diagnostics command: {' '.join(command)}")
+            result = self._command_runner(command, env, self._project_root)
+            if result.returncode != 0:
+                logger.error(f"{diagnostics_name.capitalize()} diagnostics command failed with exit code {result.returncode}: {' '.join(command)}")
+                return result.returncode
+        return 0
 
 
 def _slugify(value: str) -> str:

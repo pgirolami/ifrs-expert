@@ -121,7 +121,7 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     exit_code = runner.run(promptfoo_args=["--filter-metadata", "family=Q1"], description="Q1 live")
 
     assert exit_code == 0
-    assert len(command_runner.calls) == 2
+    assert len(command_runner.calls) == 3
 
     build_command, build_env, _ = command_runner.calls[0]
     assert build_command[:3] == ["npm", "run", "eval:build"]
@@ -139,6 +139,18 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     assert "archived_artifacts" in metadata
     assert "glossary" in metadata["archived_artifacts"]
     assert metadata["archived_artifacts"]["glossary"]["archived_path"].endswith("effective/en-fr-glossary.yaml")
+
+    approach_detection_command, _, _ = command_runner.calls[2]
+    assert approach_detection_command == [
+        "uv",
+        "run",
+        "python",
+        "experiments/analysis/approach_detection/generate_approach_detection_diagnostics.py",
+        "--experiment",
+        "experiments/promptfoo_regression",
+        "--run-id",
+        "2026-04-04_09-15-00_q1-live",
+    ]
 
 
 def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
@@ -167,6 +179,35 @@ def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
     exit_code = runner.run(promptfoo_args=[], description="retrieve suite")
 
     assert exit_code == 0
+    assert len(command_runner.calls) == 4
+
     build_command, _, _ = command_runner.calls[0]
     assert "--suite" in build_command
     assert "retrieve" in build_command
+
+    eval_command, _, _ = command_runner.calls[1]
+    assert eval_command[:4] == ["npm", "exec", "--", "promptfoo"]
+
+    document_routing_command, _, _ = command_runner.calls[2]
+    assert document_routing_command == [
+        "uv",
+        "run",
+        "python",
+        "experiments/analysis/document_routing/generate_document_routing_diagnostics.py",
+        "--experiment",
+        "experiments/promptfoo_regression",
+        "--run-id",
+        "2026-04-04_09-15-00_retrieve-suite",
+    ]
+
+    target_chunk_command, _, _ = command_runner.calls[3]
+    assert target_chunk_command == [
+        "uv",
+        "run",
+        "python",
+        "experiments/analysis/target_chunk_retrieval/generate_target_chunk_retrieval_diagnostics.py",
+        "--experiment",
+        "experiments/promptfoo_regression",
+        "--run-id",
+        "2026-04-04_09-15-00_retrieve-suite",
+    ]

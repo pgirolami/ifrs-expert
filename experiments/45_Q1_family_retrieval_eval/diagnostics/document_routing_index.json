@@ -1,0 +1,22 @@
+{
+  "experiment_name": "45_Q1_family_retrieval_eval",
+  "generated_at": "2026-04-29T09:24:10.713589+00:00",
+  "runs": [
+    {
+      "run_id": "2026-04-29_09-02-11_promptfoo-eval-family-q1",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-02-11_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-02-11_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-02-11_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+    },
+    {
+      "run_id": "2026-04-29_09-16-57_promptfoo-eval-family-q1",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-16-57_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-16-57_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/45_Q1_family_retrieval_eval/runs/2026-04-29_09-16-57_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}

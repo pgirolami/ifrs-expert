@@ -248,10 +248,21 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - Added a retrieval-only check for Q1 using PromptFoo so we can catch search regressions without calling the model
     - The Q1 question file now says which documents and sections should be found
     - Each question now saves the exact search text used for retrieval in the run artifacts, so it is easy to inspect
-- Expanded the bilingual glossary using LLM help on IFRS definitions
     - [Experiment 44](../experiments/44_retrieval_non_regression_test/EXPERIMENTS.md) contains the result of the first run on the Q1 family
 
 
 ### 2026-04-26
 - Consolidating diagnostics & analysis by layer (document routing, chunk retrieval, approach identification) : one JSON artifact, one Markdown artifact, one compare-runs script, one generated analysis block per layer
     - Ran them on Experiment 44
+
+### 2026-04-29
+- Expanded the bilingual glossary by having LLM translate IFRS definitions in IRS 9
+    - A retrieve eval showed document-routing regression : IFRIC 16 was missing on many questions
+    - Hand-tuned the glossary until IFRIC 16 consistently retrieved by finding expansion terms present in experiment 44 but not in th current glossary
+        - `hedge` -> `hedge accounting`
+        - `change` needs to translate to `foreign exchange` **in addition to** `foreign currency`
+    - Achieved 100% target document routing & 100% target chunk retrieval for the first time at the expense of the brittleness of the glossary wordings
+    - [Experiment 45](../experiments/45_Q1_family_retrieval_eval/EXPERIMENTS.md)
+
+- Run eval on Q2 family
+    - approach labels were inconsistent (ex: `fair_value_through_profit_and_loss` vs `fvpl`), added naming convention to prompt A
