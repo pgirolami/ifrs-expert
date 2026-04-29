@@ -1,0 +1,96 @@
+You are extending a bilingual IFRS retrieval glossary used only for query expansion.
+
+Inputs:
+- Existing glossary: `@config/en-fr-glossary.yaml`
+- SQLite database path: `@corpus/data/db/ifrs.db`
+- Target document uid: `ifrs9`
+
+Goal:
+Extend `@config/en-fr-glossary.yaml` by reading one corpus document from the SQLite database and extracting **canonical accounting IFRS terms** that are useful for retrieval.
+
+Important:
+- This task is **document-driven**, not question-driven.
+- Work from the vocabulary and concepts in the target document itself.
+- Assume this prompt will be run repeatedly, one document at a time, across the corpus.
+
+How to read the document:
+- Query the `chunks` table in the SQLite database
+- Read all rows where `doc_uid = '<DOC_UID>'`
+- Use the chunk text to reconstruct the accounting vocabulary of the document
+- Prefer especially chunks that correspond to:
+  - Definitions
+  - Objective
+  - Scope
+  - Core requirements
+  - Named models / categories / treatments
+- If metadata columns such as section title, paragraph, or chunk number exist, use them to focus on the most authoritative terminology
+- You may inspect the schema first if needed
+
+What to optimize for:
+- retrieval usefulness
+- canonical accounting vocabulary
+- small reusable units
+- minimal redundancy
+- good transfer across many question phrasings
+
+Scope rules:
+- Add only terms grounded in the target document
+- Focus on **canonical accounting concepts, named treatments, recognition bases, measurement bases, presentation bases, and authoritative IFRS terminology**
+- Do not add generic prose, filler language, or non-accounting wording
+- Do not add terms that are too document-specific unless they are real accounting concepts likely to help retrieval
+
+Granularity rules:
+- Prefer the **smallest accounting-bearing components** that are still meaningful for retrieval
+- Prefer reusable sub-terms over long sentence fragments
+- Split phrases when the components are independently meaningful accounting terms
+- Example: prefer separate entries for concepts like “dividend”, “recognised”, “foreign currency”, “hedge accounting” when each is meaningful on its own
+- But do NOT split compounds or phrases into meaningless fragments
+- Do NOT add isolated words that are too generic to help retrieval
+- Do NOT add morphology-only variants if the base concept is already covered
+
+Canonicalization rules:
+- Prefer canonical IFRS-style English terms from the document
+- Use concise French equivalents suitable for retrieval
+- Avoid duplicates, near-duplicates, and wording-only variants
+- If an entry already exists with the same accounting meaning, do not add another version
+- If multiple candidate phrasings exist, prefer the shortest one that preserves the accounting meaning
+- Prefer document-native accounting phrasing over casual paraphrase
+
+Translation rules:
+- Add French expansions that help a French query match the English accounting wording in the corpus
+- It is acceptable for one French term to map to multiple English retrieval terms when that improves recall
+- Prefer accounting translations, not literal general-language translations
+- If a French term could map to several English accounting phrasings used in practice, include the useful accounting ones, but keep the set tight
+
+What counts as a good entry:
+- a specific accounting concept
+- likely to help match French question wording to IFRS wording
+- reusable beyond this one document
+- compact enough to combine well with other glossary entries
+
+What not to add:
+- whole clauses
+- long explanatory fragments
+- generic verbs or connectors
+- non-accounting adjectives unless they materially change the accounting concept
+- terms already covered by an existing glossary item with the same meaning
+- purely procedural wording from basis-for-conclusions or examples unless it yields a reusable accounting term
+
+Task:
+1. Read the existing glossary
+2. Inspect the SQLite schema if needed
+3. Query the `chunks` table for all rows with `doc_uid = '<DOC_UID>'`
+4. Identify missing canonical accounting terms useful for retrieval
+5. Update the glossary in place
+6. Keep the file tidy and deduplicated
+
+Selection bias:
+- Be conservative
+- When in doubt, prefer fewer, cleaner, more reusable entries
+- The glossary should become a compact retrieval aid, not a dump of document vocabulary
+
+Output requirements:
+- Edit `@config/en-fr-glossary.yaml`
+- Preserve the existing structure and style
+- Only add genuinely useful missing entries
+- Keep entries normalized and deduplicated

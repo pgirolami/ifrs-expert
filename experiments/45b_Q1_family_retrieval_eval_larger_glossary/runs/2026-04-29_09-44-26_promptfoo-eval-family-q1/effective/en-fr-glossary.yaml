@@ -1,0 +1,292 @@
+# Created with GPT 5.5/low
+# Prompt: @prompts/glossary_expansion_prompt.txt
+#
+# Documents processed
+# - ifrs9
+
+question_glossary:
+  - fr: "comptes consolidés"
+    en:
+      - "financial statements"
+
+  - fr: "consolidé"
+    en:
+      - "consolidated"
+
+  - fr: "change"
+    en:
+      - "foreign currency"
+      - "foreign exchange"
+
+  - fr: "dividende"
+    en:
+      - "dividend"
+
+  - fr: "créance"
+    en:
+      - "receivable"
+
+  - fr: "comptabilis"
+    en:
+      - "recognised"
+
+  - fr: "élément couvert"
+    en:
+      - "hedged item"
+
+  - fr: "coût amorti"
+    en:
+      - "amortised cost"
+
+  - fr: "décomptabilisation"
+    en:
+      - "derecognition"
+
+  - fr: "décomptabiliser"
+    en:
+      - "derecognition"
+
+  - fr: "dérivé"
+    en:
+      - "derivative"
+
+  - fr: "taux d'intérêt effectif"
+    en:
+      - "effective interest rate"
+
+  - fr: "instrument de capitaux propres"
+    en:
+      - "equity instrument"
+
+  - fr: "juste valeur"
+    en:
+      - "fair value"
+
+  - fr: "actif financier"
+    en:
+      - "financial asset"
+
+  - fr: "instrument financier"
+    en:
+      - "financial instrument"
+
+  - fr: "passif financier"
+    en:
+      - "financial liability"
+
+  - fr: "couverture"
+    en:
+      - "hedge accounting"
+
+  - fr: "couvrir"
+    en:
+      - "hedge accounting"
+
+  - fr: "flux de trésorerie"
+    en:
+      - "cash flow"
+
+  - fr: "engagement ferme"
+    en:
+      - "firm commitment"
+
+  - fr: "transaction prévue"
+    en:
+      - "forecast transaction"
+
+  - fr: "investissement net"
+    en:
+      - "net investment"
+
+  - fr: "activité à l'étranger"
+    en:
+      - "foreign operation"
+
+  - fr: "résultat net"
+    en:
+      - "profit or loss"
+
+  - fr: "autres éléments du résultat global"
+    en:
+      - "other comprehensive income"
+
+  - fr: "juste valeur par résultat"
+    en:
+      - "fair value through profit or loss"
+
+  - fr: "juste valeur par autres éléments du résultat global"
+    en:
+      - "fair value through other comprehensive income"
+
+  - fr: "modèle économique"
+    en:
+      - "business model"
+
+  - fr: "flux de trésorerie contractuels"
+    en:
+      - "contractual cash flows"
+
+  - fr: "paiements du principal et des intérêts"
+    en:
+      - "payments of principal and interest"
+      - "solely payments of principal and interest"
+
+  - fr: "principal"
+    en:
+      - "principal"
+
+  - fr: "intérêts"
+    en:
+      - "interest"
+
+  - fr: "classement"
+    en:
+      - "classification"
+
+  - fr: "reclassement"
+    en:
+      - "reclassification"
+
+  - fr: "évaluation initiale"
+    en:
+      - "initial measurement"
+
+  - fr: "évaluation ultérieure"
+    en:
+      - "subsequent measurement"
+
+  - fr: "comptabilisation initiale"
+    en:
+      - "initial recognition"
+
+  - fr: "coûts de transaction"
+    en:
+      - "transaction costs"
+
+  - fr: "prix de transaction"
+    en:
+      - "transaction price"
+
+  - fr: "montant comptable"
+    en:
+      - "carrying amount"
+
+  - fr: "valeur comptable brute"
+    en:
+      - "gross carrying amount"
+
+  - fr: "perte de valeur"
+    en:
+      - "impairment"
+
+  - fr: "correction de valeur pour pertes"
+    en:
+      - "loss allowance"
+
+  - fr: "pertes de crédit attendues"
+    en:
+      - "expected credit losses"
+
+  - fr: "pertes de crédit attendues sur la durée de vie"
+    en:
+      - "lifetime expected credit losses"
+
+  - fr: "pertes de crédit attendues à 12 mois"
+    en:
+      - "12-month expected credit losses"
+
+  - fr: "risque de crédit"
+    en:
+      - "credit risk"
+
+  - fr: "augmentation importante du risque de crédit"
+    en:
+      - "significant increase in credit risk"
+
+  - fr: "défaut"
+    en:
+      - "default"
+
+  - fr: "actif financier déprécié"
+    en:
+      - "credit-impaired financial asset"
+
+  - fr: "actif financier acquis ou créé déprécié"
+    en:
+      - "purchased or originated credit-impaired financial asset"
+
+  - fr: "contrat de garantie financière"
+    en:
+      - "financial guarantee contract"
+
+  - fr: "engagement de prêt"
+    en:
+      - "loan commitment"
+
+  - fr: "créance locative"
+    en:
+      - "lease receivable"
+
+  - fr: "actif sur contrat"
+    en:
+      - "contract asset"
+
+  - fr: "créance client"
+    en:
+      - "trade receivable"
+
+  - fr: "dérivé incorporé"
+    en:
+      - "embedded derivative"
+
+  - fr: "contrat hybride"
+    en:
+      - "hybrid contract"
+
+  - fr: "contrat hôte"
+    en:
+      - "host"
+
+  - fr: "instrument de couverture"
+    en:
+      - "hedging instrument"
+
+  - fr: "relation de couverture"
+    en:
+      - "hedging relationship"
+
+  - fr: "couverture de juste valeur"
+    en:
+      - "fair value hedge"
+
+  - fr: "couverture de flux de trésorerie"
+    en:
+      - "cash flow hedge"
+
+  - fr: "efficacité de la couverture"
+    en:
+      - "hedge effectiveness"
+
+  - fr: "inefficacité de la couverture"
+    en:
+      - "hedge ineffectiveness"
+
+  - fr: "ratio de couverture"
+    en:
+      - "hedge ratio"
+
+  - fr: "composante de risque"
+    en:
+      - "risk component"
+
+  - fr: "réforme des taux de référence"
+    en:
+      - "interest rate benchmark reform"
+
+  - fr: "taux de référence alternatif"
+    en:
+      - "alternative benchmark rate"
+
+  - fr: "non-concordance comptable"
+    en:
+      - "accounting mismatch"

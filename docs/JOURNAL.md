@@ -263,6 +263,11 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - `change` needs to translate to `foreign exchange` **in addition to** `foreign currency`
     - Achieved 100% target document routing & 100% target chunk retrieval for the first time at the expense of the brittleness of the glossary wordings
     - [Experiment 45](../experiments/45_Q1_family_retrieval_eval/EXPERIMENTS.md)
+- Further expanded glossary on IFRS 9 with a new prompt
+    - Ran [Experiment 45b](../experiments/45b_Q1_family_retrieval_eval_larger_glossary/) and obtained 100% recall on document retrieval but one failure on IFRC 16 target chunk retrieval
+        - due to `relation de couverture`->`hedging relationship` which took precedence over `couverture`->`hedge accounting`
+        - It is likely we'll have to work on mapping French terms to accounting concepts to automate the glossary creation via LLM
+    - Rolled back the expansion for now
 
 - Run eval on Q2 family
     - approach labels were inconsistent (ex: `fair_value_through_profit_and_loss` vs `fvpl`), added naming convention to prompt A

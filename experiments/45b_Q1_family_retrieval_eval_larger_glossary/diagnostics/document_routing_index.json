@@ -1,0 +1,14 @@
+{
+  "experiment_name": "45b_Q1_family_retrieval_eval_larger_glossary",
+  "generated_at": "2026-04-29T09:47:10.615041+00:00",
+  "runs": [
+    {
+      "run_id": "2026-04-29_09-44-26_promptfoo-eval-family-q1",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/45b_Q1_family_retrieval_eval_larger_glossary/runs/2026-04-29_09-44-26_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/45b_Q1_family_retrieval_eval_larger_glossary/runs/2026-04-29_09-44-26_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/45b_Q1_family_retrieval_eval_larger_glossary/runs/2026-04-29_09-44-26_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}
