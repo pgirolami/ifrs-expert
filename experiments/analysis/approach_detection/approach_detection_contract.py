@@ -1411,6 +1411,7 @@ def _load_expected_section_display_records(
     for expected_range in expected_section_ranges:
         ranges_by_doc.setdefault(_canonical_doc_key(expected_range.document), []).append(expected_range)
 
+    expected_section_ids_by_doc = _load_expected_section_ids_by_doc(ranges_by_doc, db_path)
     records_by_doc: dict[str, list[SectionDisplayRecord]] = {}
     with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as connection:
         connection.row_factory = sqlite3.Row
@@ -1426,7 +1427,7 @@ def _load_expected_section_display_records(
             doc_uid = str(row["doc_uid"])
             doc_key = _canonical_doc_key(doc_uid)
             section_id = str(row["section_id"])
-            if not any(_section_id_overlaps_expected_range(section_id, expected_range) for expected_range in ranges_by_doc.get(doc_key, [])):
+            if section_id not in expected_section_ids_by_doc.get(doc_key, set()):
                 continue
             records_by_doc.setdefault(doc_key, []).append(
                 SectionDisplayRecord(
@@ -1438,6 +1439,60 @@ def _load_expected_section_display_records(
                 )
             )
     return {doc_key: tuple(records) for doc_key, records in records_by_doc.items()}
+
+
+def _load_expected_section_ids_by_doc(
+    ranges_by_doc: dict[str, list[ExpectedSectionRange]],
+    db_path: Path,
+) -> dict[str, set[str]]:
+    expected_section_ids_by_doc: dict[str, set[str]] = {}
+    doc_keys = sorted(ranges_by_doc)
+    with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute(
+            """
+            SELECT doc_uid, chunk_number, containing_section_id
+            FROM chunks
+            WHERE doc_uid IN (SELECT value FROM json_each(?))
+              AND containing_section_id IS NOT NULL
+            """,
+            (json.dumps(doc_keys),),
+        ).fetchall()
+        for row in rows:
+            doc_key = _canonical_doc_key(str(row["doc_uid"]))
+            chunk_number = str(row["chunk_number"])
+            containing_section_id = str(row["containing_section_id"])
+            if not any(_section_number_in_range(chunk_number, expected_range.start, expected_range.end) for expected_range in ranges_by_doc.get(doc_key, [])):
+                continue
+            expected_section_ids_by_doc.setdefault(doc_key, set()).add(containing_section_id)
+
+    for doc_key, expected_ranges in ranges_by_doc.items():
+        if doc_key in expected_section_ids_by_doc:
+            continue
+        expected_section_ids_by_doc[doc_key] = _fallback_overlapping_section_ids(db_path, doc_key, expected_ranges)
+    return expected_section_ids_by_doc
+
+
+def _fallback_overlapping_section_ids(
+    db_path: Path,
+    doc_key: str,
+    expected_ranges: list[ExpectedSectionRange],
+) -> set[str]:
+    with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute(
+            """
+            SELECT section_id
+            FROM sections
+            WHERE doc_uid = ?
+            """,
+            (doc_key,),
+        ).fetchall()
+    return {
+        str(row["section_id"])
+        for row in rows
+        if any(_section_id_overlaps_expected_range(str(row["section_id"]), expected_range) for expected_range in expected_ranges)
+    }
 
 
 def _load_section_lookup(section_ids: set[str]) -> dict[str, SectionDisplayRecord]:

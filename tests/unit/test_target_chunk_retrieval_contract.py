@@ -49,10 +49,18 @@ def test_generate_target_chunk_retrieval_diagnostics_uses_promptfoo_artifacts(tm
     assert diagnostics.target_documents[:3] == ("ifrs9", "ias39", "ifric16")
     assert diagnostics.expected_section_ranges[0].key == "ifrs9:6.3.1-6.3.6"
     assert diagnostics.rows[0].expected_ranges[0].present
+    assert (output_dir / module.DEFAULT_RUN_HTML_FILENAME).exists()
     assert (output_dir / module.DEFAULT_RUN_MD_FILENAME).exists()
     assert (output_dir / module.DEFAULT_RUN_JSON_FILENAME).exists()
     assert (output_dir / module.DEFAULT_RAW_DIRNAME / "Q1.0.chunks.json").exists()
     assert (experiment_dir / module.DEFAULT_DIAGNOSTICS_DIRNAME / module.DEFAULT_INDEX_JSON_FILENAME).exists()
+
+    html = (output_dir / module.DEFAULT_RUN_HTML_FILENAME).read_text(encoding="utf-8")
+    assert '<table id="matrix-table">' in html
+    assert "question:" in html
+    assert "embedded question:" in html
+    assert "🎯" in html
+    assert "IAS 21" in html
 
     markdown = (output_dir / module.DEFAULT_RUN_MD_FILENAME).read_text(encoding="utf-8")
     assert markdown.startswith("This table checks whether the expected target paragraph ranges")
@@ -85,6 +93,80 @@ def test_compare_target_chunk_retrieval_diagnostics_renders_count_deltas(tmp_pat
     assert "# target_chunk_retrieval_diagnostics__comparison" in markdown
     assert "IFRS 9 6.3.1-6.3.6" in markdown
     assert "(+1)<br>rank" in markdown
+
+
+def test_target_chunk_html_treats_section_expanded_targets_as_retrieved() -> None:
+    """Section-expanded target chunks should not be rendered as dropped."""
+    assert module._chunk_number_in_range("B4.1.9A", "B4.1.7", "B4.1.26")
+    chunks = (
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.7A",
+            chunk_id="IFRS09_B4.1.7A",
+            score=0.61,
+            rank=0,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_gB4.1.7-B4.1.26",
+            text_sha256=None,
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.9A",
+            chunk_id="IFRS09_B4.1.9A",
+            score=0.0,
+            rank=1,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_gB4.1.9A-B4.1.9E",
+            text_sha256=None,
+        ),
+    )
+
+    row = module.QuestionDiagnostics(
+        question_id="Q3.0",
+        run_id="run",
+        question_path=Path("Q3.0.txt"),
+        question_text="question",
+        embedded_question_text="question",
+        question_text_sha256="sha",
+        chunks=chunks,
+        target_documents=("ifrs9",),
+        expected_ranges=(
+            module.RangeCoverage(
+                key="ifrs9:B4.1.7-B4.1.26",
+                document="ifrs9",
+                start="B4.1.7",
+                end="B4.1.26",
+                display_label="IFRS 9 B4.1.7-B4.1.26",
+                present=True,
+                chunk_count=1,
+                best_rank=0,
+                best_score=0.0,
+                chunk_numbers=("B4.1.9A",),
+            ),
+        ),
+    )
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    section_cells = generator._section_cells(row)
+    parent_key = module._section_column_key("ifrs9", "IFRS09_gB4.1.7-B4.1.26")
+    child_key = module._section_column_key("ifrs9", "IFRS09_gB4.1.9A-B4.1.9E")
+
+    assert parent_key in section_cells
+    assert child_key not in section_cells
+    assert section_cells[parent_key].retrieved_chunk_numbers == ("B4.1.7A", "B4.1.9A")
+    assert section_cells[parent_key].retrieved_display_text == "0.61"
+
+    cell = module._build_section_cell(
+        [
+            chunks[1],
+        ],
+        row=row,
+    )
+
+    assert cell.retrieved_chunk_numbers == ("B4.1.9A",)
+    assert cell.retrieved_chunks[0].authority_category == "authoritative"
+    assert not cell.dropped_chunks
 
 
 def test_analyze_target_chunk_retrieval_diagnostics_appends_section(tmp_path: Path) -> None:

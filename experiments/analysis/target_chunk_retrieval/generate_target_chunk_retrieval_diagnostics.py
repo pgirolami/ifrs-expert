@@ -34,6 +34,7 @@ def _build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     """Run the CLI."""
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    logging.getLogger("src.retrieval.query_embedding").setLevel(logging.WARNING)
     args = _build_parser().parse_args()
     experiment_dir = resolve_experiment_dir(REPO_ROOT, args.experiment)
     generator = TargetChunkRetrievalDiagnosticsGenerator(REPO_ROOT)

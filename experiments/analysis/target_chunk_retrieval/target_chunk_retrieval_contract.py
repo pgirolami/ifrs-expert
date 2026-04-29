@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import json
 import logging
 import os
@@ -14,13 +15,39 @@ from pathlib import Path
 
 import yaml
 
+from experiments.analysis.approach_detection.approach_detection_contract import (
+    ChunkAuthorityRecord,
+    ChunkLookupRecord,
+    SectionCell,
+    SectionColumn,
+    SectionDisplayRecord,
+    _canonical_doc_key,
+    _collect_section_ids,
+    _display_doc_uid,
+    _display_section_header,
+    _doc_order_from_columns,
+    _default_db_path,
+    _format_score_range,
+    _format_section_cell_summary,
+    _lexicographic_chunk_key,
+    _load_chunk_lookup,
+    _load_chunk_lookup_by_reference,
+    _load_expected_section_display_records,
+    _load_section_lookup,
+    _section_background_color,
+    _section_column_is_expected,
+    _section_column_key,
+    _section_sort_key,
+)
 from experiments.analysis.document_routing.document_routing_contract import humanize_doc_uid, resolve_experiment_dir
+from src.retrieval.query_embedding import build_query_embedding_text
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_RUNS_DIRNAME = "runs"
 DEFAULT_DIAGNOSTICS_DIRNAME = "diagnostics"
 DEFAULT_LAYER_DIRNAME = "target_chunk_retrieval"
+DEFAULT_RUN_HTML_FILENAME = "target_chunk_retrieval_diagnostics.html"
 DEFAULT_RUN_MD_FILENAME = "target_chunk_retrieval_diagnostics.md"
 DEFAULT_RUN_JSON_FILENAME = "target_chunk_retrieval_diagnostics.json"
 DEFAULT_INDEX_MD_FILENAME = "target_chunk_retrieval_index.md"
@@ -103,6 +130,8 @@ class QuestionDiagnostics:
     question_id: str
     run_id: str
     question_path: Path
+    question_text: str
+    embedded_question_text: str
     question_text_sha256: str
     chunks: tuple[RetrievedChunk, ...]
     target_documents: tuple[str, ...]
@@ -132,6 +161,15 @@ class RangeSummary:
     mean_best_rank: float | None
     score_min: float | None
     score_max: float | None
+
+
+@dataclass(frozen=True)
+class ChunkSectionEntry:
+    """One retrieved chunk with its actual containing section."""
+
+    chunk: RetrievedChunk
+    canonical_doc_key: str
+    actual_section_id: str
 
 
 @dataclass(frozen=True)
@@ -194,6 +232,8 @@ class RunDiagnostics:
             "question_id": row.question_id,
             "run_id": row.run_id,
             "question_path": str(row.question_path),
+            "question_text": row.question_text,
+            "embedded_question_text": row.embedded_question_text,
             "question_text_sha256": row.question_text_sha256,
             "target_chunk_count": row.target_chunk_count,
             "expected_ranges_present_count": row.expected_ranges_present_count,
@@ -348,6 +388,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             json.dumps(diagnostics.to_json(), indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
+        (output_dir / DEFAULT_RUN_HTML_FILENAME).write_text(self.render_html(diagnostics), encoding="utf-8")
         (output_dir / DEFAULT_RUN_MD_FILENAME).write_text(self.render_run_markdown(diagnostics), encoding="utf-8")
 
     def refresh_experiment_index(self, experiment_dir: Path) -> tuple[Path, Path]:
@@ -371,6 +412,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                     "provider_name": diagnostics.provider_name,
                     "policy_name": diagnostics.policy_name,
                     "output_dir": _path_text(output_dir, self._repo_root),
+                    "html_path": _path_text(output_dir / DEFAULT_RUN_HTML_FILENAME, self._repo_root),
                     "markdown_path": _path_text(output_dir / DEFAULT_RUN_MD_FILENAME, self._repo_root),
                     "json_path": _path_text(json_path, self._repo_root),
                 }
@@ -386,6 +428,58 @@ class TargetChunkRetrievalDiagnosticsGenerator:
         index_json_path.write_text(json.dumps(index_json, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         index_md_path.write_text(self.render_index_markdown(experiment_dir.name, index_root, run_outputs), encoding="utf-8")
         return index_md_path, index_json_path
+
+    def render_html(self, diagnostics: RunDiagnostics) -> str:
+        """Render target chunk diagnostics as an approach-detection-style HTML matrix."""
+        section_columns = self._section_columns(diagnostics.rows, diagnostics.expected_section_ranges)
+        header_text_by_column = self._section_header_text_by_column(diagnostics.rows, section_columns)
+        rows_html = "\n".join(
+            self._render_html_row(index, row, section_columns)
+            for index, row in enumerate(sorted(diagnostics.rows, key=lambda item: _question_sort_key(item.question_id)))
+        )
+        group_header_html = self._render_group_header(section_columns)
+        column_header_html = self._render_column_header(section_columns, diagnostics.expected_section_ranges, header_text_by_column)
+        controls_html = self._render_controls(section_columns)
+        script_html = self._render_script(section_columns)
+        style_html = self._render_style()
+        return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Target Chunk Retrieval Diagnostics</title>
+  {style_html}
+</head>
+<body>
+  <main>
+    <h1>Target Chunk Retrieval Diagnostics</h1>
+    <p><strong>Experiment:</strong> {html.escape(diagnostics.experiment_name)}<br>
+       <strong>Provider:</strong> {html.escape(diagnostics.provider_name)}<br>
+       <strong>Policy:</strong> {html.escape(diagnostics.policy_name)}<br>
+       <strong>Generated:</strong> {html.escape(diagnostics.generated_at)}</p>
+
+    {controls_html}
+
+    <div class="table-wrap">
+      <table id="matrix-table">
+        <thead>
+          <tr>
+            {group_header_html}
+          </tr>
+          <tr>
+            {column_header_html}
+          </tr>
+        </thead>
+        <tbody>
+          {rows_html}
+        </tbody>
+      </table>
+    </div>
+  </main>
+  {script_html}
+</body>
+</html>
+"""
 
     def render_run_markdown(self, diagnostics: RunDiagnostics) -> str:
         lines = [
@@ -419,10 +513,11 @@ class TargetChunkRetrievalDiagnosticsGenerator:
         lines = [
             f"# {experiment_name} target chunk retrieval diagnostics index",
             "",
-            "| Run | Provider | Policy | Markdown | JSON |",
-            "| --- | --- | --- | --- | --- |",
+            "| Run | Provider | Policy | HTML | Markdown | JSON |",
+            "| --- | --- | --- | --- | --- | --- |",
         ]
         for output_dir, diagnostics in run_outputs:
+            html_path = output_dir / DEFAULT_RUN_HTML_FILENAME
             markdown_path = output_dir / DEFAULT_RUN_MD_FILENAME
             json_path = output_dir / DEFAULT_RUN_JSON_FILENAME
             lines.append(
@@ -432,6 +527,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                         diagnostics.run_id,
                         diagnostics.provider_name,
                         diagnostics.policy_name,
+                        f"[link]({os.path.relpath(html_path, start=index_root)})",
                         f"[link]({os.path.relpath(markdown_path, start=index_root)})",
                         f"[link]({os.path.relpath(json_path, start=index_root)})",
                     ]
@@ -439,6 +535,412 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                 + " |"
             )
         return "\n".join(lines) + "\n"
+
+    def _render_group_header(self, section_columns: tuple[SectionColumn, ...]) -> str:
+        doc_order = _doc_order_from_columns(section_columns)
+        counts = dict.fromkeys(doc_order, 0)
+        display_names = {column.canonical_doc_key: column.doc_display_name for column in section_columns}
+        for section_column in section_columns:
+            counts[section_column.canonical_doc_key] += 1
+        section_group_headers = "".join(
+            f'<th class="group-header section-group" id="group-header-{html.escape(doc_key)}" '
+            f'data-doc-key="{html.escape(doc_key)}" colspan="{counts[doc_key]}" '
+            f'title="{html.escape(display_names[doc_key])}">{html.escape(display_names[doc_key])}</th>'
+            for doc_key in doc_order
+        )
+        return '<th class="group-header sticky-group" colspan="2" title="Question metadata">Run metadata</th>' + section_group_headers
+
+    def _render_column_header(
+        self,
+        section_columns: tuple[SectionColumn, ...],
+        expected_section_ranges: tuple[ExpectedSectionRange, ...],
+        header_text_by_column: dict[str, str],
+    ) -> str:
+        metadata_headers = (
+            '<th class="sticky-1 metadata-col" title="Question id. Hover question cells for raw and embedded query text.">Q</th>',
+            '<th class="sticky-2 metadata-col" title="Number of retrieved chunks from target documents.">🎯 chunks</th>',
+        )
+        section_headers = tuple(self._render_section_header(section_column, expected_section_ranges, header_text_by_column) for section_column in section_columns)
+        return "".join((*metadata_headers, *section_headers))
+
+    def _render_section_header(
+        self,
+        section_column: SectionColumn,
+        expected_section_ranges: tuple[ExpectedSectionRange, ...],
+        header_text_by_column: dict[str, str],
+    ) -> str:
+        lineage_text = " > ".join(section_column.section_lineage)
+        tooltip = (
+            f"{section_column.doc_display_name}\n"
+            f"section_id: {section_column.section_id}\n"
+            f"title: {section_column.title}\n"
+            f"lineage: {lineage_text}\n"
+            f"position: {section_column.position}"
+        )
+        target_prefix = "🎯 " if _section_column_is_expected(section_column, expected_section_ranges) else ""
+        return (
+            f'<th class="section-col {section_column.canonical_doc_key}" '
+            f'data-section-key="{html.escape(section_column.column_key)}" '
+            f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
+            f'title="{html.escape(tooltip)}">{target_prefix}{html.escape(header_text_by_column.get(section_column.column_key, _display_section_header(section_column.section_id)))}</th>'
+        )
+
+    def _render_controls(self, section_columns: tuple[SectionColumn, ...]) -> str:
+        display_names = {column.canonical_doc_key: column.doc_display_name for column in section_columns}
+        doc_toggles = "\n      ".join(
+            f'<label><input type="checkbox" class="doc-toggle" data-doc-key="{html.escape(doc_key)}" checked> {html.escape(display_names[doc_key])}</label>'
+            for doc_key in _doc_order_from_columns(section_columns)
+        )
+        return f"""
+    <section class="controls">
+      <button type="button" data-sort-mode="question">Question order</button>
+      <button type="button" data-sort-mode="missing">Missing-first</button>
+      <label><input type="checkbox" id="missing-only"> Show only rows with missing targets</label>
+      <label><input type="checkbox" id="hide-empty-columns" checked> Hide empty target columns</label>
+      {doc_toggles}
+    </section>
+"""
+
+    def _render_html_row(
+        self,
+        index: int,
+        row: QuestionDiagnostics,
+        section_columns: tuple[SectionColumn, ...],
+    ) -> str:
+        section_cells_by_key = self._section_cells(row)
+        section_cells = tuple(self._render_section_cell(section_column, section_cells_by_key.get(section_column.column_key)) for section_column in section_columns)
+        missing_count = len(row.expected_ranges) - row.expected_ranges_present_count
+        question_tooltip = (
+            f"question_id: {row.question_id}\n\n"
+            f"question:\n{row.question_text}\n\n"
+            f"embedded question:\n{row.embedded_question_text}"
+        )
+        target_chunk_tooltip = (
+            f"target document chunks: {row.target_chunk_count}\n"
+            f"expected ranges present: {row.expected_ranges_present_count}/{len(row.expected_ranges)}\n"
+            f"target documents: {', '.join(humanize_doc_uid(doc_uid) for doc_uid in row.target_documents)}"
+        )
+        missing_order = f"{0 if missing_count else 1}:{missing_count:03d}:{row.question_id}:{index:04d}"
+        return (
+            f'<tr data-order-question="{index}" '
+            f'data-order-missing="{html.escape(missing_order)}" '
+            f'data-has-missing="{"1" if missing_count else "0"}" '
+            f'data-question-id="{html.escape(row.question_id)}">'
+            f'<td class="sticky-1 metadata-col metadata-q" title="{html.escape(question_tooltip)}">{html.escape(row.question_id)}</td>'
+            f'<td class="sticky-2 metadata-col metadata-rec" title="{html.escape(target_chunk_tooltip)}">{row.target_chunk_count}</td>'
+            f'{"".join(section_cells)}'
+            '</tr>'
+        )
+
+    def _render_section_cell(self, section_column: SectionColumn, section_cell: SectionCell | None) -> str:
+        if section_cell is None:
+            return (
+                f'<td class="section-cell {section_column.canonical_doc_key}" '
+                f'data-section-key="{html.escape(section_column.column_key)}" '
+                f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
+                f'data-has-retrieved="0" '
+                f'data-has-visible="0"></td>'
+            )
+        lineage_text = " > ".join(section_column.section_lineage)
+        retrieved_summary = _format_section_cell_summary(section_cell.retrieved_display_text, section_cell.retrieved_chunks, include_dropped=True, dropped_chunks=section_cell.dropped_chunks)
+        visible_summary = _format_section_cell_summary(section_cell.visible_display_text, section_cell.visible_chunks, include_dropped=True, dropped_chunks=section_cell.dropped_chunks)
+        tooltip = (
+            f"{section_column.doc_display_name}\n"
+            f"section_id: {section_column.section_id}\n"
+            f"title: {section_column.title}\n"
+            f"lineage: {lineage_text}\n\n"
+            f"retrieved chunks:\n{_chunk_authority_lines(section_cell.retrieved_chunks)}\n\n"
+            f"visible context chunks:\n{_chunk_authority_lines(section_cell.visible_chunks)}\n\n"
+            f"dropped chunks:\n{_chunk_authority_lines(section_cell.dropped_chunks)}\n\n"
+            f"retrieved summary: {retrieved_summary.replace('<br>', ' | ')}\n"
+            f"visible summary: {visible_summary.replace('<br>', ' | ')}"
+        )
+        retrieved_color = _section_background_color(section_column.canonical_doc_key, section_cell.retrieved_max_score)
+        visible_color = _section_background_color(section_column.canonical_doc_key, section_cell.visible_max_score)
+        has_retrieved = "1" if section_cell.retrieved_scores else "0"
+        has_visible = "1" if section_cell.visible_scores else "0"
+        return (
+            f'<td class="section-cell {section_column.canonical_doc_key}" '
+            f'data-section-key="{html.escape(section_column.column_key)}" '
+            f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
+            f'data-has-retrieved="{has_retrieved}" '
+            f'data-has-visible="{has_visible}" '
+            f'data-retrieved-text="{html.escape(retrieved_summary)}" '
+            f'data-visible-text="{html.escape(visible_summary)}" '
+            f'data-retrieved-bg="{html.escape(retrieved_color)}" '
+            f'data-visible-bg="{html.escape(visible_color)}" '
+            f'title="{html.escape(tooltip)}" '
+            f'style="background-color: {retrieved_color};">{retrieved_summary}</td>'
+        )
+
+    def _render_style(self) -> str:
+        return """
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #1f2937; background: #f8fafc; }
+  main { padding: 1rem; }
+  h1 { margin-top: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; align-items: center; }
+  .table-wrap { overflow: auto; border: 1px solid #d1d5db; background: #ffffff; }
+  table { border-collapse: collapse; font-size: 12px; width: max-content; min-width: 100%; }
+  th, td { border: 1px solid #d1d5db; padding: 0.35rem 0.5rem; text-align: center; white-space: nowrap; }
+  thead th { position: sticky; top: 0; z-index: 3; background: #f3f4f6; }
+  .group-header { background: #e5e7eb; font-weight: 700; }
+  .metadata-col { text-align: left; background: #ffffff; }
+  .metadata-q, .metadata-rec { text-align: center; }
+  .sticky-1, .sticky-2 { position: sticky; z-index: 2; background: #ffffff; }
+  .sticky-1 { left: 0; min-width: 56px; }
+  .sticky-2 { left: 56px; min-width: 74px; }
+  thead .sticky-1, thead .sticky-2 { z-index: 4; background: #f3f4f6; }
+  .section-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.3; }
+  .section-cell-score { display: block; font-weight: 600; }
+  .section-cell-authority { display: block; font-size: 11px; color: #374151; }
+  button { cursor: pointer; }
+</style>
+"""
+
+    def _render_script(self, section_columns: tuple[SectionColumn, ...]) -> str:
+        section_keys = [section_column.column_key for section_column in section_columns]
+        doc_keys = _doc_order_from_columns(section_columns)
+        return f"""
+<script>
+  const tableBody = document.querySelector('#matrix-table tbody');
+  const sortButtons = document.querySelectorAll('button[data-sort-mode]');
+  const missingOnlyCheckbox = document.getElementById('missing-only');
+  const hideEmptyCheckbox = document.getElementById('hide-empty-columns');
+  const docToggles = document.querySelectorAll('.doc-toggle');
+  const sectionKeys = {json.dumps(section_keys)};
+  let currentSortMode = 'question';
+
+  function visibleRows() {{
+    return Array.from(tableBody.querySelectorAll('tr')).filter((row) => row.style.display !== 'none');
+  }}
+  function sortRows(mode) {{
+    currentSortMode = mode;
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    rows.sort((left, right) => {{
+      const leftValue = left.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      const rightValue = right.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      if (mode === 'question') {{ return Number(leftValue) - Number(rightValue); }}
+      return leftValue.localeCompare(rightValue);
+    }});
+    rows.forEach((row) => tableBody.appendChild(row));
+  }}
+  function applyRowVisibility() {{
+    const missingOnly = missingOnlyCheckbox.checked;
+    Array.from(tableBody.querySelectorAll('tr')).forEach((row) => {{
+      const hasMissing = row.dataset.hasMissing === '1';
+      row.style.display = (!missingOnly || hasMissing) ? '' : 'none';
+    }});
+  }}
+  function updateSectionVisibility() {{
+    const enabledDocs = new Set(Array.from(docToggles).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.dataset.docKey));
+    const rows = visibleRows();
+    const hideEmpty = hideEmptyCheckbox.checked;
+    const docKeys = {json.dumps(doc_keys)};
+    const visibleCounts = Object.fromEntries(docKeys.map((docKey) => [docKey, 0]));
+    sectionKeys.forEach((sectionKey) => {{
+      const header = document.querySelector(`th[data-section-key="${{sectionKey}}"]`);
+      if (!header) {{ return; }}
+      const docKey = header.dataset.docKey;
+      let visible = enabledDocs.has(docKey);
+      if (visible && hideEmpty) {{
+        visible = rows.some((row) => {{
+          const cell = row.querySelector(`td[data-section-key="${{sectionKey}}"]`);
+          return cell && cell.dataset.hasRetrieved === '1';
+        }});
+      }}
+      header.style.display = visible ? '' : 'none';
+      document.querySelectorAll(`td[data-section-key="${{sectionKey}}"]`).forEach((cell) => {{ cell.style.display = visible ? '' : 'none'; }});
+      if (visible) {{ visibleCounts[docKey] += 1; }}
+    }});
+    docKeys.forEach((docKey) => {{
+      const groupHeader = document.getElementById(`group-header-${{docKey}}`);
+      if (!groupHeader) {{ return; }}
+      const visibleCount = visibleCounts[docKey];
+      groupHeader.style.display = visibleCount > 0 ? '' : 'none';
+      groupHeader.colSpan = Math.max(visibleCount, 1);
+    }});
+  }}
+  function applyAll() {{
+    applyRowVisibility();
+    sortRows(currentSortMode);
+    updateSectionVisibility();
+  }}
+  sortButtons.forEach((button) => button.addEventListener('click', () => {{ sortRows(button.dataset.sortMode); updateSectionVisibility(); }}));
+  missingOnlyCheckbox.addEventListener('change', applyAll);
+  hideEmptyCheckbox.addEventListener('change', updateSectionVisibility);
+  docToggles.forEach((checkbox) => checkbox.addEventListener('change', updateSectionVisibility));
+  applyAll();
+</script>
+"""
+
+    def _section_columns(
+        self,
+        rows: tuple[QuestionDiagnostics, ...],
+        expected_section_ranges: tuple[ExpectedSectionRange, ...],
+    ) -> tuple[SectionColumn, ...]:
+        chunk_lookup = _load_chunk_lookup(_collect_chunk_db_ids(rows))
+        chunk_lookup_by_reference = _load_chunk_lookup_by_reference(_collect_chunk_references(rows))
+        expected_display_records = _load_expected_section_display_records(expected_section_ranges)
+        section_lookup = _load_section_lookup(
+            _collect_section_ids(chunk_lookup)
+            | _collect_section_ids(chunk_lookup_by_reference)
+            | _collect_direct_section_ids(rows)
+        )
+        observed_section_ids_by_doc: dict[str, set[str]] = {}
+        retrieved_doc_counts: dict[str, int] = {}
+        doc_display_names: dict[str, str] = {}
+        for row in rows:
+            for chunk in row.chunks:
+                canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
+                if chunk.score > 0.0:
+                    retrieved_doc_counts[canonical_doc_key] = retrieved_doc_counts.get(canonical_doc_key, 0) + 1
+                doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(chunk.doc_uid))
+                section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
+                observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).add(section_id)
+
+        for canonical_doc_key, records in expected_display_records.items():
+            doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(canonical_doc_key))
+            observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).update(record.section_id for record in records)
+            for record in records:
+                section_lookup.setdefault(record.section_id, record)
+
+        columns: list[SectionColumn] = []
+        target_doc_keys = list(dict.fromkeys(_canonical_doc_key(expected_range.document) for expected_range in expected_section_ranges))
+        non_target_doc_keys = sorted(
+            set(observed_section_ids_by_doc) - set(target_doc_keys),
+            key=lambda doc_key: (-retrieved_doc_counts.get(doc_key, 0), doc_display_names[doc_key], doc_key),
+        )
+        doc_keys = [*target_doc_keys, *non_target_doc_keys]
+        for canonical_doc_key in doc_keys:
+            if canonical_doc_key not in observed_section_ids_by_doc:
+                continue
+            display_records = [
+                self._section_display_record(canonical_doc_key, section_id, section_lookup)
+                for section_id in observed_section_ids_by_doc[canonical_doc_key]
+            ]
+            display_records.sort(key=lambda record: _lexicographic_chunk_key(_display_section_header(record.section_id)))
+            columns.extend(
+                SectionColumn(
+                    column_key=_section_column_key(canonical_doc_key, record.section_id),
+                    canonical_doc_key=canonical_doc_key,
+                    doc_display_name=doc_display_names[canonical_doc_key],
+                    section_id=record.section_id,
+                    title=record.title,
+                    section_lineage=record.section_lineage,
+                    position=record.position,
+                )
+                for record in display_records
+            )
+        return tuple(columns)
+
+    def _section_cells(self, row: QuestionDiagnostics) -> dict[str, SectionCell]:
+        chunk_lookup = _load_chunk_lookup(_collect_chunk_db_ids((row,)))
+        chunk_lookup_by_reference = _load_chunk_lookup_by_reference(_collect_chunk_references((row,)))
+        entries_by_section: dict[str, list[RetrievedChunk]] = {}
+        entries = self._chunk_section_entries(row, chunk_lookup, chunk_lookup_by_reference)
+        display_section_ids = _display_section_ids_for_entries(entries)
+        for index, entry in enumerate(entries):
+            section_id = display_section_ids[index]
+            display_chunk = self._chunk_with_corpus_chunk_number(entry.chunk, chunk_lookup, chunk_lookup_by_reference)
+            entries_by_section.setdefault(_section_column_key(entry.canonical_doc_key, section_id), []).append(display_chunk)
+        return {
+            column_key: _build_section_cell(chunks, row=row)
+            for column_key, chunks in entries_by_section.items()
+        }
+
+    def _chunk_section_entries(
+        self,
+        row: QuestionDiagnostics,
+        chunk_lookup: dict[int, ChunkLookupRecord],
+        chunk_lookup_by_reference: dict[tuple[str, str], ChunkLookupRecord],
+    ) -> list[ChunkSectionEntry]:
+        entries: list[ChunkSectionEntry] = []
+        for chunk in row.chunks:
+            canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
+            entries.append(
+                ChunkSectionEntry(
+                    chunk=chunk,
+                    canonical_doc_key=canonical_doc_key,
+                    actual_section_id=self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference),
+                )
+            )
+        return entries
+
+    def _section_header_text_by_column(
+        self,
+        rows: tuple[QuestionDiagnostics, ...],
+        section_columns: tuple[SectionColumn, ...],
+    ) -> dict[str, str]:
+        del rows
+        return {
+            section_column.column_key: _display_section_header(section_column.section_id)
+            for section_column in section_columns
+        }
+
+    def _section_id_for_chunk(
+        self,
+        chunk: RetrievedChunk,
+        chunk_lookup: dict[int, ChunkLookupRecord],
+        chunk_lookup_by_reference: dict[tuple[str, str], ChunkLookupRecord],
+    ) -> str:
+        chunk_record = self._chunk_record_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
+        if chunk_record is not None and chunk_record.containing_section_id is not None:
+            return chunk_record.containing_section_id
+        if chunk.containing_section_id is not None:
+            return chunk.containing_section_id
+        return f"{_canonical_doc_key(chunk.doc_uid)}_{chunk.chunk_number}"
+
+    def _chunk_record_for_chunk(
+        self,
+        chunk: RetrievedChunk,
+        chunk_lookup: dict[int, ChunkLookupRecord],
+        chunk_lookup_by_reference: dict[tuple[str, str], ChunkLookupRecord],
+    ) -> ChunkLookupRecord | None:
+        chunk_db_id = _chunk_db_id(chunk)
+        if chunk_db_id is not None:
+            chunk_record = chunk_lookup.get(chunk_db_id)
+            if chunk_record is not None:
+                return chunk_record
+        return chunk_lookup_by_reference.get((_canonical_doc_key(chunk.doc_uid), chunk.chunk_number))
+
+    def _chunk_with_corpus_chunk_number(
+        self,
+        chunk: RetrievedChunk,
+        chunk_lookup: dict[int, ChunkLookupRecord],
+        chunk_lookup_by_reference: dict[tuple[str, str], ChunkLookupRecord],
+    ) -> RetrievedChunk:
+        chunk_record = self._chunk_record_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
+        if chunk_record is None:
+            return chunk
+        return RetrievedChunk(
+            doc_uid=chunk.doc_uid,
+            chunk_number=chunk_record.chunk_number,
+            chunk_id=chunk.chunk_id,
+            score=chunk.score,
+            rank=chunk.rank,
+            document_type=chunk.document_type,
+            document_kind=chunk.document_kind,
+            containing_section_id=chunk.containing_section_id,
+            text_sha256=chunk.text_sha256,
+        )
+
+    def _section_display_record(
+        self,
+        canonical_doc_key: str,
+        section_id: str,
+        section_lookup: dict[str, SectionDisplayRecord],
+    ) -> SectionDisplayRecord:
+        record = section_lookup.get(section_id)
+        if record is not None:
+            return record
+        return SectionDisplayRecord(
+            doc_uid=canonical_doc_key,
+            section_id=section_id,
+            title=section_id,
+            section_lineage=(section_id,),
+            position=999_999,
+        )
 
     def _select_run_dir(self, experiment_dir: Path, run_id: str | None) -> Path:
         runs_dir = experiment_dir / DEFAULT_RUNS_DIRNAME
@@ -591,12 +1093,15 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             run_artifacts_dir=run_dir / "artifacts",
             question_source=source,
         )
+        question_text = source.question_path.read_text(encoding="utf-8").strip()
         chunks = _parse_chunks(payload)
         return QuestionDiagnostics(
             question_id=source.question_id,
             run_id=run_id,
             question_path=source.question_path,
-            question_text_sha256=_sha256_text(source.question_path.read_text(encoding="utf-8")),
+            question_text=question_text,
+            embedded_question_text=build_query_embedding_text(question_text).embedding_text.strip(),
+            question_text_sha256=_sha256_text(question_text),
             chunks=chunks,
             target_documents=tuple(target_documents),
             expected_ranges=tuple(_coverage_for_range(expected_range, chunks) for expected_range in expected_ranges),
@@ -905,24 +1410,7 @@ def _coverage_for_range(expected_range: ExpectedSectionRange, chunks: tuple[Retr
 
 
 def _chunk_number_in_range(chunk_number: str, start: str, end: str) -> bool:
-    parsed_chunk = _parse_section_number(chunk_number)
-    parsed_start = _parse_section_number(start)
-    parsed_end = _parse_section_number(end)
-    if parsed_chunk is None or parsed_start is None or parsed_end is None:
-        return chunk_number == start or chunk_number == end
-    chunk_prefix, chunk_numbers = parsed_chunk
-    start_prefix, start_numbers = parsed_start
-    end_prefix, end_numbers = parsed_end
-    if chunk_prefix != start_prefix or chunk_prefix != end_prefix:
-        return False
-    return start_numbers <= chunk_numbers <= end_numbers
-
-
-def _parse_section_number(value: str) -> tuple[str, tuple[int, ...]] | None:
-    match = re.fullmatch(r"([A-Z]*)(\d+(?:\.\d+)*)", value.strip(), flags=re.IGNORECASE)
-    if match is None:
-        return None
-    return match.group(1).upper(), tuple(int(part) for part in match.group(2).split("."))
+    return _section_sort_key(start) <= _section_sort_key(chunk_number) <= _section_sort_key(end)
 
 
 def _format_coverage_cell(coverage: RangeCoverage) -> str:
@@ -931,6 +1419,171 @@ def _format_coverage_cell(coverage: RangeCoverage) -> str:
     score_text = "-" if coverage.best_score is None else f"{coverage.best_score:.2f}"
     rank_text = "-" if coverage.best_rank is None else str(coverage.best_rank)
     return f'<span style="display:block; background-color:#d4edda; padding:2px 4px;">{coverage.chunk_count} chunk(s)<br>rank {rank_text}<br>score {score_text}</span>'
+
+
+def _collect_chunk_db_ids(rows: tuple[QuestionDiagnostics, ...]) -> set[int]:
+    chunk_ids: set[int] = set()
+    for row in rows:
+        for chunk in row.chunks:
+            chunk_db_id = _chunk_db_id(chunk)
+            if chunk_db_id is not None:
+                chunk_ids.add(chunk_db_id)
+    return chunk_ids
+
+
+def _collect_chunk_references(rows: tuple[QuestionDiagnostics, ...]) -> set[tuple[str, str]]:
+    references: set[tuple[str, str]] = set()
+    for row in rows:
+        for chunk in row.chunks:
+            canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
+            references.add((canonical_doc_key, chunk.chunk_number))
+    return references
+
+
+def _collect_direct_section_ids(rows: tuple[QuestionDiagnostics, ...]) -> set[str]:
+    return {
+        chunk.containing_section_id
+        for row in rows
+        for chunk in row.chunks
+        if chunk.containing_section_id is not None
+    }
+
+
+def _chunk_db_id(chunk: RetrievedChunk) -> int | None:
+    if not chunk.chunk_id.isdigit():
+        return None
+    return int(chunk.chunk_id)
+
+
+def _display_section_ids_for_entries(entries: list[ChunkSectionEntry]) -> dict[int, str]:
+    scored_section_ids = {
+        entry.actual_section_id
+        for entry in entries
+        if entry.chunk.score > 0.0
+    }
+    expanded_section_ids = {
+        entry.actual_section_id
+        for entry in entries
+        if entry.chunk.score <= 0.0
+    }
+    ancestor_section_ids = _nearest_scored_ancestor_section_ids(
+        descendant_section_ids=expanded_section_ids,
+        ancestor_section_ids=scored_section_ids,
+    )
+    return {
+        index: ancestor_section_ids.get(entry.actual_section_id, entry.actual_section_id)
+        for index, entry in enumerate(entries)
+    }
+
+
+def _nearest_scored_ancestor_section_ids(
+    *,
+    descendant_section_ids: set[str],
+    ancestor_section_ids: set[str],
+) -> dict[str, str]:
+    if not descendant_section_ids or not ancestor_section_ids:
+        return {}
+    db_path = _default_db_path()
+    if not db_path.exists():
+        return {}
+    with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute(
+            """
+            SELECT
+                descendant.section_id AS descendant_section_id,
+                ancestor.section_id AS ancestor_section_id,
+                closure.depth AS depth
+            FROM section_closure closure
+            JOIN sections descendant ON descendant.db_id = closure.descendant_section_db_id
+            JOIN sections ancestor ON ancestor.db_id = closure.ancestor_section_db_id
+            WHERE descendant.section_id IN (SELECT value FROM json_each(?))
+              AND ancestor.section_id IN (SELECT value FROM json_each(?))
+              AND closure.depth > 0
+            ORDER BY descendant.section_id, closure.depth
+            """,
+            (json.dumps(sorted(descendant_section_ids)), json.dumps(sorted(ancestor_section_ids))),
+        ).fetchall()
+    nearest_by_descendant: dict[str, str] = {}
+    for row in rows:
+        descendant_section_id = str(row["descendant_section_id"])
+        if descendant_section_id in nearest_by_descendant:
+            continue
+        nearest_by_descendant[descendant_section_id] = str(row["ancestor_section_id"])
+    return nearest_by_descendant
+
+
+def _build_section_cell(chunks: list[RetrievedChunk], *, row: QuestionDiagnostics) -> SectionCell:
+    sorted_chunks = sorted(chunks, key=lambda chunk: (_section_sort_key(chunk.chunk_number), chunk.score))
+    retrieved_chunks = sorted_chunks
+    scored_retrieved_scores = tuple(chunk.score for chunk in retrieved_chunks if chunk.score > 0.0)
+    retrieved_scores = scored_retrieved_scores or tuple(chunk.score for chunk in retrieved_chunks)
+    retrieved_chunk_numbers = tuple(chunk.chunk_number for chunk in retrieved_chunks)
+    retrieved_chunk_records = tuple(_chunk_authority_record(chunk, row=row) for chunk in retrieved_chunks)
+    return SectionCell(
+        retrieved_scores=retrieved_scores,
+        retrieved_display_text=_format_score_range(retrieved_scores),
+        retrieved_max_score=max(retrieved_scores) if retrieved_scores else None,
+        retrieved_chunk_numbers=retrieved_chunk_numbers,
+        visible_scores=retrieved_scores,
+        visible_display_text=_format_score_range(retrieved_scores),
+        visible_max_score=max(retrieved_scores) if retrieved_scores else None,
+        visible_chunk_numbers=retrieved_chunk_numbers,
+        retrieved_chunks=retrieved_chunk_records,
+        visible_chunks=retrieved_chunk_records,
+        dropped_chunks=tuple(),
+    )
+
+
+def _chunk_authority_record(chunk: RetrievedChunk, *, row: QuestionDiagnostics) -> ChunkAuthorityRecord:
+    authority_category = "authoritative" if _is_expected_chunk(chunk.doc_uid, chunk.chunk_number, row.expected_ranges) else "secondary"
+    return ChunkAuthorityRecord(
+        chunk_number=chunk.chunk_number,
+        score=chunk.score,
+        authority_category=authority_category,
+        dropped=False,
+    )
+
+
+def _is_expected_chunk(doc_uid: str, chunk_number: str, expected_ranges: tuple[RangeCoverage, ...]) -> bool:
+    canonical_doc_key = _canonical_doc_key(doc_uid)
+    for expected_range in expected_ranges:
+        if _canonical_doc_key(expected_range.document) != canonical_doc_key:
+            continue
+        if _chunk_number_in_range(chunk_number, expected_range.start, expected_range.end):
+            return True
+    return False
+
+
+def _chunk_authority_lines(chunks: tuple[ChunkAuthorityRecord, ...]) -> str:
+    lines = [
+        f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}]"
+        for chunk in chunks
+    ]
+    return "\n".join(lines) if lines else "(none)"
+
+
+def _display_observed_chunk_range(section_id: str, chunk_numbers: list[str]) -> str:
+    if not chunk_numbers:
+        return _display_section_header(section_id)
+    display_header = _display_section_header(section_id)
+    prefix_match = re.match(r"([A-Za-z]+)", display_header)
+    section_prefix = "" if prefix_match is None else prefix_match.group(1)
+    range_candidates = [chunk_number for chunk_number in chunk_numbers if _is_paragraph_chunk_number(chunk_number)]
+    sorted_chunk_numbers = sorted(set(range_candidates or chunk_numbers), key=_section_sort_key)
+    first_chunk = sorted_chunk_numbers[0]
+    last_chunk = sorted_chunk_numbers[-1]
+    range_text = first_chunk if first_chunk == last_chunk else f"{first_chunk}-{last_chunk}"
+    if range_text.startswith(section_prefix):
+        return range_text
+    range_prefix_match = re.match(r"([A-Za-z]+)", range_text)
+    range_prefix = "" if range_prefix_match is None else range_prefix_match.group(1)
+    group_prefix = section_prefix.removesuffix(range_prefix) if range_prefix else section_prefix
+    return f"{group_prefix}{range_text}"
+
+
+def _is_paragraph_chunk_number(chunk_number: str) -> bool:
+    return re.fullmatch(r"B?\d+(?:\.\d+)*(?:[A-Z])?", chunk_number) is not None
 
 
 def _format_comparison_cell(
@@ -1034,6 +1687,8 @@ def _run_diagnostics_from_json(payload: dict[str, object]) -> RunDiagnostics:
                 question_id=_require_str(row.get("question_id"), context="rows[].question_id"),
                 run_id=_require_str(row.get("run_id"), context="rows[].run_id"),
                 question_path=Path(_require_str(row.get("question_path"), context="rows[].question_path")),
+                question_text=_optional_str(row.get("question_text")) or "",
+                embedded_question_text=_optional_str(row.get("embedded_question_text")) or "",
                 question_text_sha256=_require_str(row.get("question_text_sha256"), context="rows[].question_text_sha256"),
                 chunks=tuple(chunks),
                 target_documents=tuple(_require_str(item, context="target_documents[]") for item in _require_list(payload.get("target_documents"), context="target_documents")),
