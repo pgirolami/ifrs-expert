@@ -216,7 +216,7 @@ chunk_retrieval_strategies:
       default:
         filter:
           min_score: 0.53
-          per_document_k: 5
+          per_document_k: 10
         expansion:
           expand: 0
           expand_to_section: true
@@ -224,8 +224,8 @@ chunk_retrieval_strategies:
           reference_expansion:
             enabled: true
             depth: 1
-            max_chunks_per_seed: 8
-            max_chunks_per_doc: 32
+            max_chunks_per_seed: 1000
+            max_chunks_per_doc: 1000
   title_chunks:
     mode: title_similarity
     profiles:

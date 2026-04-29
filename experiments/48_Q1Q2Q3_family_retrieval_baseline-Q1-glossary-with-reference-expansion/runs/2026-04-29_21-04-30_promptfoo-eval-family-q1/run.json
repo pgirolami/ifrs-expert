@@ -1,0 +1,32 @@
+{
+  "description": "promptfoo eval family=Q1",
+  "artifacts_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/artifacts",
+  "promptfoo_config_dir": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q1\u00a4"
+  ],
+  "created_at_utc": "2026-04-29T21:04:30.536758+00:00",
+  "archived_artifacts": {
+    "policy": {
+      "source_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/policy.default.yaml",
+      "archived_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/policy.default.yaml",
+      "sha256": "65d5e2132640b55968999633cebdca84e6dcbfedc1dfaee74f9b0ad2b441b7a5"
+    },
+    "glossary": {
+      "source_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
+      "archived_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
+      "sha256": "83c8c2675db757f7c0b42d84d1d4209f8d7a962969c5731f75d7d65559e4846e"
+    },
+    "prompt_a": {
+      "source_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/answer_prompt_A.txt",
+      "archived_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/answer_prompt_A.txt",
+      "sha256": "2752511e4c6be70090c41fc44512af58e9777519ab3cf6ca957f5f89dabf3f1b"
+    },
+    "prompt_b": {
+      "source_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/answer_prompt_B.txt",
+      "archived_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/effective/answer_prompt_B.txt",
+      "sha256": "4cfbf1e9a7e1d07c4ffd8c6c33ad93da7acb0e8fac7d1dbbc952848a648f5d37"
+    }
+  }
+}

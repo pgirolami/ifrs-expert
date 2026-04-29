@@ -1,0 +1,30 @@
+{
+  "experiment_name": "48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion",
+  "generated_at": "2026-04-29T21:06:02.765637+00:00",
+  "runs": [
+    {
+      "run_id": "2026-04-29_21-04-30_promptfoo-eval-family-q1",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-04-30_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+    },
+    {
+      "run_id": "2026-04-29_21-05-21_promptfoo-eval-family-q2",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-21_promptfoo-eval-family-q2/diagnostics/document_routing",
+      "markdown_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-21_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-21_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.json"
+    },
+    {
+      "run_id": "2026-04-29_21-05-40_promptfoo-eval-family-q3",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-40_promptfoo-eval-family-q3/diagnostics/document_routing",
+      "markdown_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-40_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-04-29_21-05-40_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}

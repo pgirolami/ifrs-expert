@@ -282,3 +282,4 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
     - Retrieval now expands same-family references before section expansion, using the stored reference rows to recover governing paragraphs from seed chunks while keeping cross-document references out of v1
         - Added provenance tags so diagnostics can distinguish seed similarity, reference expansion, and section fan-out
         - Kept the expansion bounded with policy-controlled depth and per-seed / per-document caps
+    - [Experiment 48](../experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/EXPERIMENTS.md) shows that with level 1 cross-reference expansion and (by increasing chunk retrieval to k=10 per document) we achieve 100% recall on documents & target chunks across Q1, Q2, Q3
