@@ -837,7 +837,7 @@ def _build_chunk_number_lookup(chunks: list[Chunk]) -> dict[str, Chunk]:
 
 def _resolve_reference_target_chunk_numbers(reference: object) -> list[str]:
     chunk_numbers: list[str] = []
-    if isinstance(reference, ContentReference) and reference.target_kind == "same_standard_paragraph" and reference.target_unit == "paragraph" and reference.target_start is not None:
+    if isinstance(reference, ContentReference) and reference.target_kind == "same_standard_paragraph" and reference.target_unit in {"paragraph", "section"} and reference.target_start is not None:
         if reference.target_end is None:
             chunk_numbers = [reference.target_start]
         else:

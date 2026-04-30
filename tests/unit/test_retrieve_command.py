@@ -399,6 +399,82 @@ def test_retrieve_expands_same_family_references_across_two_levels() -> None:
     assert [chunk["provenance"] for chunk in depth_two_data["chunks"]] == ["similarity", "ref_sf", "ref_sf", "ref_sf", "ref_sf"]
 
 
+def test_retrieve_expands_section_target_references() -> None:
+    """Section targets should resolve through same-family reference expansion."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="source chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5", containing_section_id="IFRS09_S5_5", text="section target chunk"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_S5_5_1", text="section child chunk"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="IFRS09_S5_5",
+                    doc_uid="ifrs9",
+                    parent_section_id=None,
+                    level=2,
+                    title="Section 5.5",
+                    section_lineage=["Section 5.5"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_S5_5_1",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_S5_5",
+                    level=3,
+                    title="Section 5.5.1",
+                    section_lineage=["Section 5.5", "Section 5.5.1"],
+                    position=2,
+                ),
+            ]
+        )
+        store.add_descendant_mapping("IFRS09_S5_5", ["IFRS09_S5_5", "IFRS09_S5_5_1"])
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9-bc",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09BC_B1",
+                    annotation_raw_text="Refer: Section 5.5",
+                    target_raw_text="Section 5.5",
+                    target_kind="same_standard_paragraph",
+                    target_unit="section",
+                    target_start="5.5",
+                    parsed_ok=True,
+                )
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="section 5.5",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            section_store=section_store,
+            reference_store=reference_store,
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand=0, expand_to_section=False, reference_expand_depth=1, mode="text"), verbose=False),
+    )
+
+    data = json.loads(command.execute())
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf"]
+
+
 def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> None:
     """Cross-document and BC/IE/IG references should not be auto-followed in v1."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
