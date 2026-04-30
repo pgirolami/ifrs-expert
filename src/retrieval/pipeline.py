@@ -1036,6 +1036,13 @@ def _expand_reference_targets_for_seed(
             logger.info(f"Added reference target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number} provenance=ref_sf depth_remaining={depth_remaining}")
         else:
             logger.info(f"Reference target already selected: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number}")
+        if reference.target_unit == "section":
+            added_chunks += _expand_reference_target_section_subtree(
+                target_chunk=target_chunk,
+                seed_state=seed_state,
+                context=context,
+                processed_source_chunks=processed_source_chunks,
+            )
         if depth_remaining > 1:
             logger.info(f"Descending into next-hop reference traversal from standard_doc_uid={seed_state.source_standard_doc_uid} chunk_number={target_chunk.chunk_number} remaining_depth={depth_remaining - 1}")
             added_chunks += _expand_reference_source_chunk(
@@ -1045,6 +1052,58 @@ def _expand_reference_targets_for_seed(
                 context=context,
                 processed_source_chunks=processed_source_chunks,
             )
+    return added_chunks
+
+
+def _expand_reference_target_section_subtree(
+    *,
+    target_chunk: Chunk,
+    seed_state: ReferenceExpansionSeedState,
+    context: ReferenceExpansionContext,
+    processed_source_chunks: set[tuple[str, int]],
+) -> int:
+    section_store = context.expansion_config.section_store
+    if section_store is None:
+        logger.info(f"Skipping section fan-out for reference target chunk_number={target_chunk.chunk_number} because no section store is configured")
+        return 0
+
+    with section_store as active_section_store:
+        section_db_id_by_source_id = {section.section_id: section.db_id for section in active_section_store.get_sections_by_doc(seed_state.source_standard_doc_uid) if section.db_id is not None}
+        target_section_db_id = _resolve_chunk_section_db_id(
+            chunk=target_chunk,
+            section_db_id_by_source_id=section_db_id_by_source_id,
+        )
+        if target_section_db_id is None:
+            logger.info(f"Skipping section fan-out for reference target chunk_number={target_chunk.chunk_number} because no containing section db id was resolved")
+            return 0
+
+        descendant_section_db_ids = set(active_section_store.get_descendant_section_db_ids(target_section_db_id))
+        if not descendant_section_db_ids:
+            return 0
+
+    expanded_provenance = _section_expansion_provenance("ref_sf")
+    added_chunks = 0
+    for chunk in context.doc_chunks.get(seed_state.source_standard_doc_uid, []):
+        chunk_section_db_id = _resolve_chunk_section_db_id(
+            chunk=chunk,
+            section_db_id_by_source_id=section_db_id_by_source_id,
+        )
+        if chunk.id is None or chunk_section_db_id not in descendant_section_db_ids:
+            continue
+        if (chunk.doc_uid, chunk.id) in processed_source_chunks:
+            continue
+        if chunk.id in context.state.selected_ids_by_doc.get(seed_state.source_standard_doc_uid, set()):
+            continue
+        _add_selected_chunk(
+            doc_uid=seed_state.source_standard_doc_uid,
+            chunk_id=chunk.id,
+            provenance=expanded_provenance,
+            state=context.state,
+        )
+        seed_state.chunks_added_for_seed += 1
+        context.added_chunks_by_doc[seed_state.source_standard_doc_uid] = context.added_chunks_by_doc.get(seed_state.source_standard_doc_uid, 0) + 1
+        added_chunks += 1
+        logger.info(f"Added section fan-out target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={chunk.id} chunk_number={chunk.chunk_number} provenance={expanded_provenance}")
     return added_chunks
 
 

@@ -471,8 +471,8 @@ def test_retrieve_expands_section_target_references() -> None:
     )
 
     data = json.loads(command.execute())
-    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5"]
-    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf"]
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5", "5.5.1"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "exp_sect_from_reference"]
 
 
 def test_retrieve_expands_suffixed_appendix_ranges() -> None:
