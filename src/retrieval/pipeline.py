@@ -1020,6 +1020,11 @@ def _expand_reference_targets_for_seed(
             logger.info(f"Stopping target following for standard_doc_uid={seed_state.source_standard_doc_uid} because max_chunks_per_doc={context.expansion_config.reference_expand_max_chunks_per_doc} was reached")
             break
         target_chunk = target_chunks_by_number.get(target_chunk_number)
+        if target_chunk is None and reference.target_unit == "section":
+            target_chunk = _find_first_chunk_with_prefix(
+                chunks=context.doc_chunks.get(seed_state.source_standard_doc_uid, []),
+                chunk_number_prefix=target_chunk_number,
+            )
         if target_chunk is None or target_chunk.id is None:
             logger.info(f"Missing target chunk for source_doc_uid={reference.source_doc_uid} target_chunk_number={target_chunk_number} standard_doc_uid={seed_state.source_standard_doc_uid}")
             continue
@@ -1053,6 +1058,18 @@ def _expand_reference_targets_for_seed(
                 processed_source_chunks=processed_source_chunks,
             )
     return added_chunks
+
+
+def _find_first_chunk_with_prefix(
+    *,
+    chunks: list[Chunk],
+    chunk_number_prefix: str,
+) -> Chunk | None:
+    prefix_with_separator = f"{chunk_number_prefix}."
+    for chunk in chunks:
+        if chunk.chunk_number == chunk_number_prefix or chunk.chunk_number.startswith(prefix_with_separator):
+            return chunk
+    return None
 
 
 def _expand_reference_target_section_subtree(

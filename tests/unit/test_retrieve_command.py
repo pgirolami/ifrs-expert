@@ -408,8 +408,8 @@ def test_retrieve_expands_section_target_references() -> None:
         store.insert_chunks(
             [
                 Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="source chunk"),
-                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5", containing_section_id="IFRS09_S5_5", text="section target chunk"),
-                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_S5_5_1", text="section child chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_S5_5", text="section target chunk"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_S5_5", text="section child chunk"),
             ]
         )
 
@@ -426,18 +426,9 @@ def test_retrieve_expands_section_target_references() -> None:
                     section_lineage=["Section 5.5"],
                     position=1,
                 ),
-                SectionRecord(
-                    section_id="IFRS09_S5_5_1",
-                    doc_uid="ifrs9",
-                    parent_section_id="IFRS09_S5_5",
-                    level=3,
-                    title="Section 5.5.1",
-                    section_lineage=["Section 5.5", "Section 5.5.1"],
-                    position=2,
-                ),
             ]
         )
-        store.add_descendant_mapping("IFRS09_S5_5", ["IFRS09_S5_5", "IFRS09_S5_5_1"])
+        store.add_descendant_mapping("IFRS09_S5_5", ["IFRS09_S5_5"])
 
     reference_store = InMemoryReferenceStore()
     with reference_store as store:
@@ -471,7 +462,7 @@ def test_retrieve_expands_section_target_references() -> None:
     )
 
     data = json.loads(command.execute())
-    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5", "5.5.1"]
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5.1", "5.5.2"]
     assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "exp_sect_from_reference"]
 
 
