@@ -447,8 +447,8 @@ def test_answer_parser_requires_policy_config_and_no_inline_defaults() -> None:
     assert not hasattr(args, "content_min_score")
 
 
-def test_store_parser_accepts_force_flag() -> None:
-    """Store parser should expose the force flag for re-storing unchanged payloads."""
+def test_store_parser_accepts_force_store_flag() -> None:
+    """Store parser should expose the force-store flag for unchanged payloads."""
     parser = _build_parser()
 
     args = parser.parse_args(["store", "--force-store", "./doc.html"])
@@ -457,14 +457,30 @@ def test_store_parser_accepts_force_flag() -> None:
     assert args.scope == "all"
 
 
-def test_ingest_parser_accepts_force_flag() -> None:
-    """Ingest parser should expose the force flag for re-storing unchanged payloads."""
+def test_ingest_parser_accepts_force_store_flag() -> None:
+    """Ingest parser should expose the force-store flag for unchanged payloads."""
     parser = _build_parser()
 
     args = parser.parse_args(["ingest", "--force-store"])
 
     assert args.force_store is True
     assert args.scope == "all"
+
+
+def test_store_parser_rejects_force_alias() -> None:
+    """Store parser should no longer accept the legacy force alias."""
+    parser = _build_parser()
+
+    with pytest.raises(SystemExit):
+        parser.parse_args(["store", "--force", "./doc.html"])
+
+
+def test_ingest_parser_rejects_force_alias() -> None:
+    """Ingest parser should no longer accept the legacy force alias."""
+    parser = _build_parser()
+
+    with pytest.raises(SystemExit):
+        parser.parse_args(["ingest", "--force"])
 
 
 def test_query_command_returns_error_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:

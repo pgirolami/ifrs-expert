@@ -84,7 +84,7 @@ def _build_scope_parent_parser() -> argparse.ArgumentParser:
 
 def _build_parser() -> argparse.ArgumentParser:
     """Build the top-level CLI parser."""
-    parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management")
+    parser = argparse.ArgumentParser(description="IFRS Expert CLI - Document ingestion and management", allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     _add_chunk_parser(subparsers)
     _add_store_parser(subparsers)
@@ -103,6 +103,7 @@ def _add_chunk_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
     chunk_parser = subparsers.add_parser(
         "chunk",
         help="Parse a PDF file into chunks and output as JSON",
+        allow_abbrev=False,
     )
     chunk_parser.add_argument("pdf", help="Path to the PDF file to chunk")
 
@@ -112,6 +113,7 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
         "store",
         help="Extract chunks from a PDF or HTML capture and store them in the database",
         parents=[_build_scope_parent_parser()],
+        allow_abbrev=False,
     )
     store_parser.add_argument("source", help="Path to the source file to store (.pdf or .html)")
     store_parser.add_argument(
@@ -120,7 +122,6 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
     )
     store_parser.add_argument(
         "--force-store",
-        "--force",
         action="store_true",
         help="Force store even when the extracted payload is unchanged",
     )
@@ -131,16 +132,12 @@ def _add_ingest_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         "ingest",
         help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs plus PDFs",
         parents=[_build_scope_parent_parser()],
+        allow_abbrev=False,
     )
     ingest_parser.add_argument(
         "--force-store",
         action="store_true",
         help="Force store even when the extracted payload is unchanged",
-    )
-    ingest_parser.add_argument(
-        "--force",
-        action="store_true",
-        help=argparse.SUPPRESS,
     )
 
 
@@ -157,6 +154,7 @@ def _add_query_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
             _build_json_parent_parser(),
             _build_policy_parent_parser(),
         ],
+        allow_abbrev=False,
     )
 
 
@@ -168,6 +166,7 @@ def _add_query_documents_parser(subparsers: argparse._SubParsersAction[argparse.
             _build_json_parent_parser(),
             _build_policy_parent_parser(),
         ],
+        allow_abbrev=False,
     )
     query_documents_parser.add_argument(
         "--document-type",
@@ -185,6 +184,7 @@ def _add_retrieve_parser(subparsers: argparse._SubParsersAction[argparse.Argumen
             _build_json_parent_parser(),
             _build_policy_parent_parser(),
         ],
+        allow_abbrev=False,
     )
 
 
@@ -196,6 +196,7 @@ def _add_query_titles_parser(subparsers: argparse._SubParsersAction[argparse.Arg
             _build_json_parent_parser(),
             _build_policy_parent_parser(),
         ],
+        allow_abbrev=False,
     )
 
 
@@ -207,11 +208,12 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
             _build_policy_parent_parser(),
             _build_answer_artifacts_parent_parser(),
         ],
+        allow_abbrev=False,
     )
 
 
 def _add_llm_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    subparsers.add_parser("llm", help="Send a raw prompt directly to the LLM (reads prompt from stdin)")
+    subparsers.add_parser("llm", help="Send a raw prompt directly to the LLM (reads prompt from stdin)", allow_abbrev=False)
 
 
 def main() -> int:
@@ -349,7 +351,7 @@ def _execute_store_command(args: argparse.Namespace) -> str:
         options=StoreCommandOptions(
             explicit_doc_uid=args.doc_uid,
             scope=args.scope,
-            force_store=getattr(args, "force_store", False) or getattr(args, "force", False),
+            force_store=getattr(args, "force_store", False),
         ),
     ).execute()
 
@@ -359,7 +361,7 @@ def _execute_ingest_command(args: argparse.Namespace) -> str:
     return IngestCommand(
         store_options=StoreCommandOptions(
             scope=args.scope,
-            force_store=getattr(args, "force_store", False) or getattr(args, "force", False),
+            force_store=getattr(args, "force_store", False),
         ),
     ).execute()
 
