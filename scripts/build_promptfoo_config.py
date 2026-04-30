@@ -120,7 +120,8 @@ class PromptfooConfigBuilder:
         lines.append("")
         lines.extend(self._render_mapping_entry("prompts", base_config.prompts, indent=0))
         lines.append("")
-        lines.extend(self._render_mapping_entry("providers", base_config.providers, indent=0))
+        providers = self._rewrite_exec_commands(base_config.providers)
+        lines.extend(self._render_mapping_entry("providers", providers, indent=0))
         lines.append("")
         if families:
             lines.append("tests:")
@@ -308,6 +309,28 @@ class PromptfooConfigBuilder:
         absolute_target_path = self._project_root / normalized_raw_path
         relative_target_path = Path(os.path.relpath(absolute_target_path, start=self._output_path.parent)).as_posix()
         return f"file://{relative_target_path}"
+
+    def _rewrite_exec_commands(self, value: YamlValue) -> YamlValue:
+        """Rewrite provider exec commands so script paths are anchored to the repository root."""
+        if isinstance(value, dict):
+            return {key: self._rewrite_exec_commands(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [self._rewrite_exec_commands(item) for item in value]
+        if not isinstance(value, str):
+            return value
+
+        match = re.fullmatch(r"exec:uv run python (?P<script_path>\S+)(?P<suffix>.*)", value)
+        if match is None:
+            return value
+
+        script_path = Path(match.group("script_path"))
+        if script_path.is_absolute():
+            return value
+
+        script_name = script_path.name
+        absolute_script_path = (self._project_root / "scripts" / script_name).resolve()
+        suffix = match.group("suffix")
+        return f"exec:uv run python {absolute_script_path.as_posix()}{suffix}"
 
     def _render_mapping(self, mapping: YamlObject, indent: int) -> list[str]:
         """Render a YAML mapping."""

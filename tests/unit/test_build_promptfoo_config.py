@@ -206,3 +206,27 @@ def test_builder_includes_policy_config_reference(tmp_path: Path) -> None:
 
     assert "policy-config" in generated
     assert "effective/policy.default.yaml" in generated
+
+
+def test_builder_rewrites_exec_provider_to_absolute_script_path(tmp_path: Path) -> None:
+    """Generated config should anchor exec providers to the repository root."""
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=_repo_root())
+
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+    generated = builder.build_text(output_path=output_path)
+
+    assert f"exec:uv run python {_repo_root() / 'scripts' / 'run_answer.py'}" in generated
+
+
+def test_builder_rewrites_retrieve_exec_provider_to_absolute_script_path(tmp_path: Path) -> None:
+    """Retrieve suite should also anchor exec providers to the repository root."""
+    module = _load_module()
+    builder = module.PromptfooConfigBuilder(project_root=_repo_root(), suite="retrieve")
+
+    output_path = tmp_path / "experiments" / "promptfoo_regression" / "runs" / "demo" / "promptfooconfig.yaml"
+    output_path.parent.mkdir(parents=True)
+    generated = builder.build_text(output_path=output_path)
+
+    assert f"exec:uv run python {_repo_root() / 'scripts' / 'run_retrieve.py'}" in generated

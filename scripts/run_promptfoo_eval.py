@@ -25,6 +25,7 @@ PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 EXPERIMENTS_ROOT: Final[Path] = PROJECT_ROOT / "experiments"
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
 PROMPTFOO_CONFIG_DIR_ENV: Final[str] = "PROMPTFOO_CONFIG_DIR"
+PROMPTFOO_SKIP_DIAGNOSTICS_ENV: Final[str] = "PROMPTFOO_SKIP_DIAGNOSTICS"
 DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
 DEFAULT_SUITE: Final[str] = "answer"
 DEFAULT_POLICY_PATH: Final[Path] = PROJECT_ROOT / "config" / "policy.default.yaml"
@@ -76,6 +77,7 @@ class PromptfooEvalRunner:
         env = os.environ.copy()
         env[PROMPTFOO_ARTIFACTS_DIR_ENV] = str(run_layout.artifacts_dir)
         env[PROMPTFOO_CONFIG_DIR_ENV] = str(run_layout.promptfoo_config_dir)
+        skip_diagnostics = _should_skip_diagnostics(env)
 
         # Stage policy and prompts next to the config so relative paths resolve
         self._stage_effective_config(run_layout=run_layout)
@@ -121,10 +123,11 @@ class PromptfooEvalRunner:
             logger.warning(f"Promptfoo eval finished with exit code {eval_result.returncode}; archived outputs remain available in {run_layout.run_dir} and experiment history remains available in {run_layout.promptfoo_config_dir}")
 
         diagnostics_exit_code = 0
-        if self._suite == "retrieve":
-            diagnostics_exit_code = self._run_retrieval_diagnostics(env=env, run_layout=run_layout)
-        if self._suite == "answer":
-            diagnostics_exit_code = self._run_answer_diagnostics(env=env, run_layout=run_layout)
+        if not skip_diagnostics:
+            if self._suite == "retrieve":
+                diagnostics_exit_code = self._run_retrieval_diagnostics(env=env, run_layout=run_layout)
+            if self._suite == "answer":
+                diagnostics_exit_code = self._run_answer_diagnostics(env=env, run_layout=run_layout)
 
         if eval_result.returncode != 0:
             return eval_result.returncode
@@ -309,6 +312,13 @@ def _slugify(value: str) -> str:
 def _run_command(command: list[str], env: dict[str, str], cwd: Path) -> subprocess.CompletedProcess[str]:
     """Run one subprocess command and return its completion status."""
     return subprocess.run(command, cwd=cwd, env=env, check=False, text=True)  # noqa: S603
+
+
+def _should_skip_diagnostics(env: dict[str, str]) -> bool:
+    """Return whether post-eval diagnostics should be skipped."""
+    raw_value = env.get(PROMPTFOO_SKIP_DIAGNOSTICS_ENV, "")
+    normalized_value = raw_value.strip().lower()
+    return normalized_value in {"1", "true", "yes", "on"}
 
 
 def build_default_description(

@@ -121,7 +121,7 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
         help="Document UID to use for PDF ingestion (default: filename stem)",
     )
     store_parser.add_argument(
-        "--force-store",
+        "--force",
         action="store_true",
         help="Force store even when the extracted payload is unchanged",
     )
@@ -135,7 +135,7 @@ def _add_ingest_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         allow_abbrev=False,
     )
     ingest_parser.add_argument(
-        "--force-store",
+        "--force",
         action="store_true",
         help="Force store even when the extracted payload is unchanged",
     )
@@ -351,7 +351,7 @@ def _execute_store_command(args: argparse.Namespace) -> str:
         options=StoreCommandOptions(
             explicit_doc_uid=args.doc_uid,
             scope=args.scope,
-            force_store=getattr(args, "force_store", False),
+            force_store=getattr(args, "force", False),
         ),
     ).execute()
 
@@ -361,7 +361,7 @@ def _execute_ingest_command(args: argparse.Namespace) -> str:
     return IngestCommand(
         store_options=StoreCommandOptions(
             scope=args.scope,
-            force_store=getattr(args, "force_store", False),
+            force_store=getattr(args, "force", False),
         ),
     ).execute()
 

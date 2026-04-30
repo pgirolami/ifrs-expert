@@ -101,6 +101,7 @@ def test_hook_runner_keeps_temp_root_on_failure_and_stops_later_pairs(tmp_path: 
     temp_experiment_dir = Path(env["EXPERIMENT_DIR"])
     assert temp_experiment_dir.is_absolute()
     assert temp_experiment_dir.parent.exists()
+    assert env["PROMPTFOO_SKIP_DIAGNOSTICS"] == "1"
 
 
 def test_parse_pairs_trims_whitespace() -> None:

@@ -104,6 +104,7 @@ class RetrievalEvalHookRunner:
         env["EXPERIMENT_DIR"] = str(experiment_dir)
         env["FAMILY"] = pair.family
         env["VARIANT"] = pair.variant
+        env["PROMPTFOO_SKIP_DIAGNOSTICS"] = "1"
         command = ["make", self._make_target]
         return self._command_runner(command, self._project_root, env)
 
