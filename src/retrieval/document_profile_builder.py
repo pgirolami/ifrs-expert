@@ -461,24 +461,30 @@ def build_full_document_similarity_text(document: DocumentRecord, max_embedding_
 
 
 def _build_background_and_issue_similarity_text(document: DocumentRecord) -> str:
-    parts: list[str] = []
+    parts: list[_EmbeddingPart] = []
     if document.background_text is not None and document.background_text.strip():
-        parts.append(f"Background: {document.background_text}")
+        parts.append(_EmbeddingPart(field_name="background_text", label="Background", text=document.background_text))
     if document.issue_text is not None and document.issue_text.strip():
-        parts.append(f"Issue: {document.issue_text}")
-    return "\n".join(parts)
+        parts.append(_EmbeddingPart(field_name="issue_text", label="Issue", text=document.issue_text))
+    return _build_bounded_similarity_text(parts=parts, max_embedding_chars=MAX_EMBEDDING_TEXT_CHARS)
 
 
 def _build_scope_similarity_text(document: DocumentRecord) -> str:
     if document.scope_text is None or not document.scope_text.strip():
         return ""
-    return f"Scope: {document.scope_text}"
+    return _build_bounded_similarity_text(
+        parts=[_EmbeddingPart(field_name="scope_text", label="Scope", text=document.scope_text)],
+        max_embedding_chars=MAX_EMBEDDING_TEXT_CHARS,
+    )
 
 
 def _build_toc_similarity_text(document: DocumentRecord) -> str:
     if document.toc_text is None or not document.toc_text.strip():
         return ""
-    return f"TOC: {document.toc_text}"
+    return _build_bounded_similarity_text(
+        parts=[_EmbeddingPart(field_name="toc_text", label="TOC", text=document.toc_text)],
+        max_embedding_chars=MAX_EMBEDDING_TEXT_CHARS,
+    )
 
 
 DOCUMENT_SIMILARITY_TEXT_BUILDERS: dict[DocumentSimilarityRepresentation, Callable[[DocumentRecord], str]] = {
@@ -557,6 +563,31 @@ def _build_embedding_text(document: DocumentRecord, max_embedding_chars: int) ->
     embedding_text = "\n".join(lines)
     logger.info(f"Built embedding text for doc_uid={document.doc_uid} with chars={len(embedding_text)}")
     return embedding_text
+
+
+def _build_bounded_similarity_text(
+    parts: list[_EmbeddingPart],
+    max_embedding_chars: int,
+) -> str:
+    if not parts:
+        return ""
+
+    line_prefix_chars = sum(len(f"{part.label}: ") for part in parts)
+    newline_chars = max(0, len(parts) - 1)
+    available_content_chars = max_embedding_chars - line_prefix_chars - newline_chars
+    if available_content_chars <= 0:
+        logger.warning(
+            f"No content budget remains for document similarity representation; part_count={len(parts)}, max_embedding_chars={max_embedding_chars}",
+        )
+        return ""
+
+    raw_content_chars = sum(len(part.text) for part in parts)
+    if raw_content_chars <= available_content_chars:
+        return "\n".join(_build_part_line(part) for part in parts)
+
+    budgets = _allocate_proportional_budgets(parts=parts, available_content_chars=available_content_chars)
+    lines = [_build_part_line(part, part.text[: budgets[part.field_name]].rstrip()) for part in parts if budgets[part.field_name] > 0]
+    return "\n".join(lines)
 
 
 def _build_embedding_parts(document: DocumentRecord) -> list[_EmbeddingPart]:

@@ -836,19 +836,16 @@ def _build_chunk_number_lookup(chunks: list[Chunk]) -> dict[str, Chunk]:
 
 
 def _resolve_reference_target_chunk_numbers(reference: object) -> list[str]:
-    if not isinstance(reference, ContentReference):
-        return []
-    if reference.target_kind != "same_standard_paragraph":
-        return []
-    if reference.target_start is None:
-        return []
-    if reference.target_end is None:
-        return [reference.target_start]
-    try:
-        return expand_chunk_number_range(start=reference.target_start, end=reference.target_end)
-    except ValueError:
-        logger.warning(f"Skipping unresolved reference range {reference.target_start}-{reference.target_end} for source_doc_uid={reference.source_doc_uid}")
-        return []
+    chunk_numbers: list[str] = []
+    if isinstance(reference, ContentReference) and reference.target_kind == "same_standard_paragraph" and reference.target_unit == "paragraph" and reference.target_start is not None:
+        if reference.target_end is None:
+            chunk_numbers = [reference.target_start]
+        else:
+            try:
+                chunk_numbers = expand_chunk_number_range(start=reference.target_start, end=reference.target_end)
+            except ValueError:
+                logger.warning(f"Skipping unresolved reference range {reference.target_start}-{reference.target_end} for source_doc_uid={reference.source_doc_uid}")
+    return chunk_numbers
 
 
 def _expand_same_family_references(

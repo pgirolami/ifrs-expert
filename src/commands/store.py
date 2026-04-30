@@ -739,6 +739,7 @@ class StoreCommand:
             reference.annotation_raw_text,
             reference.target_raw_text,
             reference.target_kind,
+            reference.target_unit,
             reference.target_doc_hint,
             reference.target_start,
             reference.target_end,

@@ -29,7 +29,7 @@ from src.extraction.html import (
     _tag_attribute_as_string,
     _tag_classes,
 )
-from src.extraction.ifrs_references import extract_references_from_note
+from src.extraction.ifrs_references import extract_references_from_container, extract_references_from_note
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord, resolve_document_kind_from_document_type, resolve_document_type
 from src.models.extraction import ExtractedDocument
@@ -174,6 +174,7 @@ class IfrsHtmlExtractor:
             references=[],
             traversal_state=_SectionTraversalState(active_sections_by_level={}, chapter_sections_by_prefix={}),
             last_chunk_by_section_id={},
+            seen_reference_keys=set(),
             next_reference_order=1,
         )
 
@@ -350,11 +351,12 @@ class IfrsHtmlExtractor:
             text=text,
             containing_section_id=containing_section.section_id if containing_section is not None else None,
         )
-        references = self._extract_span_note_references(
-            doc_uid=doc_uid,
-            body_node=body_tag,
-            source_chunk=chunk,
-            source_section=containing_section,
+        references = extract_references_from_container(
+            body_tag,
+            source_doc_uid=doc_uid,
+            source_location_type="chunk",
+            source_chunk_id=chunk.chunk_id or None,
+            source_section_id=containing_section.section_id if containing_section is not None else chunk.containing_section_id,
         )
         return chunk, references
 
@@ -598,32 +600,6 @@ class IfrsHtmlExtractor:
             return False
         return _normalize_whitespace(prefix_node.get_text(" ", strip=True)).lower() == "refer:"
 
-    def _extract_span_note_references(
-        self,
-        doc_uid: str,
-        body_node: Tag,
-        source_chunk: Chunk,
-        source_section: SectionRecord | None,
-    ) -> list[ContentReference]:
-        references: list[ContentReference] = []
-        for note in body_node.select("span.note.edu"):
-            if not isinstance(note, Tag):
-                continue
-            if not self._is_refer_annotation(note):
-                continue
-            if any(isinstance(parent, Tag) and self._is_reference_only_educational_note(parent) for parent in note.parents):
-                continue
-            references.extend(
-                extract_references_from_note(
-                    note,
-                    source_doc_uid=doc_uid,
-                    source_location_type="chunk",
-                    source_chunk_id=source_chunk.chunk_id or None,
-                    source_section_id=source_section.section_id if source_section is not None else source_chunk.containing_section_id,
-                ),
-            )
-        return references
-
     def _append_note_references(self, doc_uid: str, note: Tag, state: _StructureExtractionState) -> None:
         current_section = _get_highest_level_section(state.traversal_state.active_sections_by_level)
         source_chunk = state.last_chunk_by_section_id.get(current_section.section_id) if current_section is not None else None
@@ -649,9 +625,28 @@ class IfrsHtmlExtractor:
 
     def _append_references(self, state: _StructureExtractionState, note_references: list[ContentReference]) -> None:
         for reference in note_references:
+            reference_key = self._reference_dedup_key(reference)
+            if reference_key in state.seen_reference_keys:
+                continue
+            state.seen_reference_keys.add(reference_key)
             reference.reference_order = state.next_reference_order
             state.references.append(reference)
             state.next_reference_order += 1
+
+    def _reference_dedup_key(self, reference: ContentReference) -> tuple[object, ...]:
+        return (
+            reference.source_doc_uid,
+            reference.source_location_type,
+            reference.source_chunk_id,
+            reference.source_section_id,
+            reference.target_raw_text,
+            reference.target_kind,
+            reference.target_unit,
+            reference.target_doc_hint,
+            reference.target_start,
+            reference.target_end,
+            reference.parsed_ok,
+        )
 
 
 @dataclass
@@ -661,6 +656,7 @@ class _StructureExtractionState:
     references: list[ContentReference]
     traversal_state: _SectionTraversalState
     last_chunk_by_section_id: dict[str, Chunk]
+    seen_reference_keys: set[tuple[object, ...]]
     next_reference_order: int
 
 

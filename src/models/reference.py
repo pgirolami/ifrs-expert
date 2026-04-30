@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+ReferenceTargetUnit = Literal["document", "paragraph", "section"]
+
 
 @dataclass
 class ContentReference:
@@ -17,6 +19,7 @@ class ContentReference:
     annotation_raw_text: str = ""
     target_raw_text: str = ""
     target_kind: str = "unknown"
+    target_unit: ReferenceTargetUnit = "paragraph"
     target_doc_hint: str | None = None
     target_start: str | None = None
     target_end: str | None = None

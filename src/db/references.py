@@ -44,11 +44,12 @@ class ContentReferenceStore:
                     annotation_raw_text,
                     target_raw_text,
                     target_kind,
+                    target_unit,
                     target_doc_hint,
                     target_start,
                     target_end,
                     parsed_ok
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     reference.source_doc_uid,
@@ -61,6 +62,7 @@ class ContentReferenceStore:
                     reference.annotation_raw_text,
                     reference.target_raw_text,
                     reference.target_kind,
+                    reference.target_unit,
                     reference.target_doc_hint,
                     reference.target_start,
                     reference.target_end,
@@ -93,6 +95,7 @@ class ContentReferenceStore:
                 annotation_raw_text,
                 target_raw_text,
                 target_kind,
+                target_unit,
                 target_doc_hint,
                 target_start,
                 target_end,
@@ -127,6 +130,7 @@ def _row_to_reference(row: sqlite3.Row) -> ContentReference:
         annotation_raw_text=row["annotation_raw_text"],
         target_raw_text=row["target_raw_text"],
         target_kind=row["target_kind"],
+        target_unit=row["target_unit"],
         target_doc_hint=row["target_doc_hint"],
         target_start=row["target_start"],
         target_end=row["target_end"],

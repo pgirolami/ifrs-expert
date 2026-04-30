@@ -9,7 +9,8 @@ from src.extraction.html import HtmlExtractor
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
 from src.models.section import SectionClosureRow, SectionRecord
-from src.retrieval.document_profile_builder import DocumentProfileBuilder
+from src.retrieval.document_profile_builder import DocumentProfileBuilder, build_document_similarity_texts
+from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 
 
 def _example_ifrs_path(filename: str) -> Path:
@@ -1013,3 +1014,24 @@ def test_document_profile_builder_truncates_embedding_text_proportionally() -> N
     assert built_profile.embedding_text.startswith("Title: Short title\n")
     assert len(scope_value) > len(issue_value)
     assert len(scope_value) >= len(issue_value) * 4
+
+
+def test_document_similarity_texts_are_bounded_for_non_full_representations() -> None:
+    """Scope and TOC embeddings should respect the shared embedding character budget."""
+    document = DocumentRecord(
+        doc_uid="ifrs9",
+        source_type="html",
+        source_title="Short title",
+        source_url="https://www.ifrs.org/ifrs9.html",
+        canonical_url="https://www.ifrs.org/ifrs9.html",
+        captured_at="2026-04-05T10:00:00Z",
+        scope_text="S" * (MAX_EMBEDDING_TEXT_CHARS + 500),
+        toc_text="T" * (MAX_EMBEDDING_TEXT_CHARS + 500),
+    )
+
+    texts = build_document_similarity_texts(document)
+
+    assert len(texts["scope"]) <= MAX_EMBEDDING_TEXT_CHARS
+    assert len(texts["toc"]) <= MAX_EMBEDDING_TEXT_CHARS
+    assert texts["scope"].startswith("Scope: ")
+    assert texts["toc"].startswith("TOC: ")
