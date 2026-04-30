@@ -113,7 +113,9 @@ def test_retrieve_documents_mode_applies_per_type_thresholds_and_overall_cap() -
             ),
             document_index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=RetrieveOptions(policy=make_retrieval_policy(k=5, d=3, chunk_min_score=0.5, expand=0, mode="documents"), verbose=False,
+        options=RetrieveOptions(
+            policy=make_retrieval_policy(k=5, d=3, chunk_min_score=0.5, expand=0, mode="documents"),
+            verbose=False,
         ),
     )
 
@@ -408,8 +410,10 @@ def test_retrieve_expands_section_target_references() -> None:
         store.insert_chunks(
             [
                 Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="source chunk"),
-                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_S5_5", text="section target chunk"),
-                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_S5_5", text="section child chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section target chunk"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section child chunk"),
+                Chunk(id=4, doc_uid="ifrs9", chunk_number="5.5.15", page_start="B3", page_end="B3", chunk_id="IFRS09_5.5.15", containing_section_id="IFRS09_g5.5.15-5.5.16", text="later subsection chunk"),
+                Chunk(id=5, doc_uid="ifrs9", chunk_number="5.5.16", page_start="B4", page_end="B4", chunk_id="IFRS09_5.5.16", containing_section_id="IFRS09_g5.5.15-5.5.16", text="later subsection child"),
             ]
         )
 
@@ -418,7 +422,7 @@ def test_retrieve_expands_section_target_references() -> None:
         store.insert_sections(
             [
                 SectionRecord(
-                    section_id="IFRS09_S5_5",
+                    section_id="IFRS09_g5.5.1-5.5.20",
                     doc_uid="ifrs9",
                     parent_section_id=None,
                     level=2,
@@ -426,9 +430,36 @@ def test_retrieve_expands_section_target_references() -> None:
                     section_lineage=["Section 5.5"],
                     position=1,
                 ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.1-5.5.14",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
+                    level=3,
+                    title="Section 5.5.1-5.5.14",
+                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.14"],
+                    position=2,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.1-5.5.8",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.14",
+                    level=3,
+                    title="Section 5.5.1-5.5.8",
+                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.14", "Section 5.5.1-5.5.8"],
+                    position=3,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.15-5.5.16",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
+                    level=3,
+                    title="Section 5.5.15-5.5.16",
+                    section_lineage=["Section 5.5", "Section 5.5.15-5.5.16"],
+                    position=4,
+                ),
             ]
         )
-        store.add_descendant_mapping("IFRS09_S5_5", ["IFRS09_S5_5"])
+        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.20", ["IFRS09_g5.5.1-5.5.20", "IFRS09_g5.5.1-5.5.14", "IFRS09_g5.5.1-5.5.8", "IFRS09_g5.5.15-5.5.16"])
 
     reference_store = InMemoryReferenceStore()
     with reference_store as store:
@@ -462,8 +493,8 @@ def test_retrieve_expands_section_target_references() -> None:
     )
 
     data = json.loads(command.execute())
-    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5.1", "5.5.2"]
-    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "exp_sect_from_reference"]
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5.1", "5.5.2", "5.5.15", "5.5.16"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "exp_sect_from_reference", "exp_sect_from_reference", "exp_sect_from_reference"]
 
 
 def test_retrieve_expands_suffixed_appendix_ranges() -> None:

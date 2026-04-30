@@ -12,6 +12,7 @@ from src.db import ChunkStore, ContentReferenceStore, init_db
 from src.interfaces import ReadChunkStoreProtocol, ReferenceStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.document import infer_document_kind, infer_exact_document_type
+from src.models.provenance import coerce_provenance
 from src.policy import RetrievalPolicy
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.store import VectorStore, get_index_path
@@ -303,7 +304,7 @@ class QueryCommand:
                             "text": chunk.text,
                             "score": round(score, 4),
                             "relevance": relevance,
-                            "provenance": result.get("provenance", "similarity"),
+                            "provenance": coerce_provenance(result.get("provenance")).value,
                         },
                     )
                     break
@@ -323,7 +324,7 @@ class QueryCommand:
                     document_kind = infer_document_kind(doc_uid)
                     relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
                     output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
-                    output_lines.append(f"Provenance: {result.get('provenance', 'similarity')}")
+                    output_lines.append(f"Provenance: {coerce_provenance(result.get('provenance')).value}")
                     output_lines.append(f"Document: {chunk.doc_uid}")
                     output_lines.append(f"Document type: {document_type}")
                     output_lines.append(f"Document kind: {document_kind}")

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from src.models.chunk import Chunk
     from src.models.document import DocumentRecord
     from src.models.extraction import ExtractedDocument
+    from src.models.provenance import Provenance
     from src.models.reference import ContentReference
     from src.models.section import SectionClosureRow, SectionRecord
 
@@ -20,7 +21,7 @@ class SearchResult(TypedDict):
     doc_uid: str
     chunk_id: int
     score: float
-    provenance: NotRequired[str]
+    provenance: NotRequired[Provenance]
 
 
 class TitleSearchResult(TypedDict):

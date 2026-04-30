@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.models.document import DOCUMENT_TYPES, infer_exact_document_type, resolve_standard_doc_uid
+from src.models.provenance import Provenance, coerce_provenance
 from src.models.reference import ContentReference
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.query_embedding import build_query_embedding_text
@@ -75,7 +76,7 @@ class ExpansionState:
     """Mutable expansion state shared across the post-retrieval stages."""
 
     selected_ids_by_doc: dict[str, set[int]]
-    provenance_by_chunk: dict[tuple[str, int], str]
+    provenance_by_chunk: dict[tuple[str, int], Provenance]
     doc_order: list[str]
 
 
@@ -619,7 +620,7 @@ def _init_expansion_state(
     result_score_by_chunk: dict[tuple[str, int], float] = {}
     doc_order: list[str] = []
     selected_ids_by_doc: dict[str, set[int]] = {}
-    provenance_by_chunk: dict[tuple[str, int], str] = {}
+    provenance_by_chunk: dict[tuple[str, int], Provenance] = {}
     for result in results:
         doc_uid = result["doc_uid"]
         chunk_id = result["chunk_id"]
@@ -628,7 +629,7 @@ def _init_expansion_state(
             doc_order.append(doc_uid)
         selected_ids_by_doc[doc_uid].add(chunk_id)
         result_score_by_chunk[(doc_uid, chunk_id)] = result["score"]
-        provenance_by_chunk[(doc_uid, chunk_id)] = result.get("provenance", "similarity")
+        provenance_by_chunk[(doc_uid, chunk_id)] = coerce_provenance(result.get("provenance"))
     return result_score_by_chunk, ExpansionState(
         selected_ids_by_doc=selected_ids_by_doc,
         provenance_by_chunk=provenance_by_chunk,
@@ -657,7 +658,7 @@ def _include_full_documents(
                 _add_selected_chunk(
                     doc_uid=doc_uid,
                     chunk_id=chunk.id,
-                    provenance="full_doc",
+                    provenance=Provenance.FULL_DOCUMENT,
                     state=state,
                 )
     return full_doc_docs
@@ -710,7 +711,7 @@ def _expand_to_section_subtrees(
             if containing_section_db_id not in descendant_section_db_ids_by_section_db_id:
                 descendant_section_db_ids_by_section_db_id[containing_section_db_id] = set(active_section_store.get_descendant_section_db_ids(containing_section_db_id))
             descendant_section_db_ids = descendant_section_db_ids_by_section_db_id[containing_section_db_id]
-            source_provenance = state.provenance_by_chunk.get((doc_uid, result["chunk_id"]), "similarity")
+            source_provenance = coerce_provenance(state.provenance_by_chunk.get((doc_uid, result["chunk_id"])))
             expanded_provenance = _section_expansion_provenance(source_provenance)
             added_for_root = 0
             for chunk in doc_chunks.get(doc_uid, []):
@@ -727,7 +728,9 @@ def _expand_to_section_subtrees(
                     state=state,
                 )
                 added_for_root += 1
-            logger.info(f"Expanded section root doc_uid={doc_uid} chunk_id={chunk_id} through section_db_id={containing_section_db_id} descendants={len(descendant_section_db_ids)} provenance={expanded_provenance} added={added_for_root}")
+            logger.info(
+                f"Expanded section root doc_uid={doc_uid} chunk_id={chunk_id} through section_db_id={containing_section_db_id} descendants={len(descendant_section_db_ids)} provenance={expanded_provenance.value} added={added_for_root}"
+            )
     logger.info("Completed section expansion")
 
 
@@ -760,7 +763,7 @@ def _expand_with_neighbour_chunks(
         doc_uid = result["doc_uid"]
         chunk_id = result["chunk_id"]
         chunks = doc_chunks.get(doc_uid, [])
-        source_provenance = state.provenance_by_chunk.get((doc_uid, chunk_id), "similarity")
+        source_provenance = coerce_provenance(state.provenance_by_chunk.get((doc_uid, chunk_id)))
         expanded_provenance = _section_expansion_provenance(source_provenance)
         for index, chunk in enumerate(chunks):
             if chunk.id != chunk_id:
@@ -777,7 +780,7 @@ def _expand_with_neighbour_chunks(
                         state=state,
                     )
                     added += 1
-            logger.debug(f"Expanded doc_uid={doc_uid} chunk_id={chunk_id} around index={index} window={start_index}:{end_index} provenance={expanded_provenance} added={added}")
+            logger.debug(f"Expanded doc_uid={doc_uid} chunk_id={chunk_id} around index={index} window={start_index}:{end_index} provenance={expanded_provenance.value} added={added}")
             break
     logger.info("Completed neighbour expansion")
 
@@ -800,7 +803,7 @@ def _build_expanded_chunk_results(
                     "doc_uid": doc_uid,
                     "chunk_id": chunk_id,
                     "score": result_score_by_chunk.get((doc_uid, chunk_id), 0.0),
-                    "provenance": state.provenance_by_chunk.get((doc_uid, chunk_id), "similarity"),
+                    "provenance": state.provenance_by_chunk.get((doc_uid, chunk_id), Provenance.SIMILARITY),
                 }
             )
     return expanded_results
@@ -810,7 +813,7 @@ def _add_selected_chunk(
     *,
     doc_uid: str,
     chunk_id: int,
-    provenance: str,
+    provenance: Provenance,
     state: ExpansionState,
 ) -> None:
     if doc_uid not in state.selected_ids_by_doc:
@@ -822,10 +825,10 @@ def _add_selected_chunk(
     state.provenance_by_chunk[(doc_uid, chunk_id)] = provenance
 
 
-def _section_expansion_provenance(source_provenance: str) -> str:
-    if source_provenance == "similarity":
-        return "exp_section_from_seed"
-    return "exp_sect_from_reference"
+def _section_expansion_provenance(source_provenance: Provenance) -> Provenance:
+    if source_provenance == Provenance.SIMILARITY:
+        return Provenance.SECTION_FAN_OUT_FROM_SEED
+    return Provenance.SECTION_FAN_OUT_FROM_REFERENCE
 
 
 def _build_chunk_number_lookup(chunks: list[Chunk]) -> dict[str, Chunk]:
@@ -1032,18 +1035,23 @@ def _expand_reference_targets_for_seed(
             _add_selected_chunk(
                 doc_uid=seed_state.source_standard_doc_uid,
                 chunk_id=target_chunk.id,
-                provenance="ref_sf",
+                provenance=Provenance.SAME_FAMILY_REFERENCE,
                 state=context.state,
             )
             seed_state.chunks_added_for_seed += 1
             context.added_chunks_by_doc[seed_state.source_standard_doc_uid] = context.added_chunks_by_doc.get(seed_state.source_standard_doc_uid, 0) + 1
             added_chunks += 1
-            logger.info(f"Added reference target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number} provenance=ref_sf depth_remaining={depth_remaining}")
+            logger.info(
+                f"Added reference target: standard_doc_uid={seed_state.source_standard_doc_uid} "
+                f"chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number} "
+                f"provenance={Provenance.SAME_FAMILY_REFERENCE.value} depth_remaining={depth_remaining}"
+            )
         else:
             logger.info(f"Reference target already selected: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number}")
         if reference.target_unit == "section":
             added_chunks += _expand_reference_target_section_subtree(
                 target_chunk=target_chunk,
+                target_chunk_number=target_chunk_number,
                 seed_state=seed_state,
                 context=context,
                 processed_source_chunks=processed_source_chunks,
@@ -1075,37 +1083,19 @@ def _find_first_chunk_with_prefix(
 def _expand_reference_target_section_subtree(
     *,
     target_chunk: Chunk,
+    target_chunk_number: str,
     seed_state: ReferenceExpansionSeedState,
     context: ReferenceExpansionContext,
     processed_source_chunks: set[tuple[str, int]],
 ) -> int:
-    section_store = context.expansion_config.section_store
-    if section_store is None:
-        logger.info(f"Skipping section fan-out for reference target chunk_number={target_chunk.chunk_number} because no section store is configured")
-        return 0
-
-    with section_store as active_section_store:
-        section_db_id_by_source_id = {section.section_id: section.db_id for section in active_section_store.get_sections_by_doc(seed_state.source_standard_doc_uid) if section.db_id is not None}
-        target_section_db_id = _resolve_chunk_section_db_id(
-            chunk=target_chunk,
-            section_db_id_by_source_id=section_db_id_by_source_id,
-        )
-        if target_section_db_id is None:
-            logger.info(f"Skipping section fan-out for reference target chunk_number={target_chunk.chunk_number} because no containing section db id was resolved")
-            return 0
-
-        descendant_section_db_ids = set(active_section_store.get_descendant_section_db_ids(target_section_db_id))
-        if not descendant_section_db_ids:
-            return 0
-
-    expanded_provenance = _section_expansion_provenance("ref_sf")
+    logger.info(f"Starting section fan-out for reference target chunk_number={target_chunk_number} anchor_chunk_number={target_chunk.chunk_number}")
+    expanded_provenance = _section_expansion_provenance(Provenance.SAME_FAMILY_REFERENCE)
     added_chunks = 0
+    target_chunk_prefix = f"{target_chunk_number}."
     for chunk in context.doc_chunks.get(seed_state.source_standard_doc_uid, []):
-        chunk_section_db_id = _resolve_chunk_section_db_id(
-            chunk=chunk,
-            section_db_id_by_source_id=section_db_id_by_source_id,
-        )
-        if chunk.id is None or chunk_section_db_id not in descendant_section_db_ids:
+        if chunk.id is None:
+            continue
+        if chunk.chunk_number != target_chunk_number and not chunk.chunk_number.startswith(target_chunk_prefix):
             continue
         if (chunk.doc_uid, chunk.id) in processed_source_chunks:
             continue
@@ -1120,7 +1110,7 @@ def _expand_reference_target_section_subtree(
         seed_state.chunks_added_for_seed += 1
         context.added_chunks_by_doc[seed_state.source_standard_doc_uid] = context.added_chunks_by_doc.get(seed_state.source_standard_doc_uid, 0) + 1
         added_chunks += 1
-        logger.info(f"Added section fan-out target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={chunk.id} chunk_number={chunk.chunk_number} provenance={expanded_provenance}")
+        logger.info(f"Added section fan-out target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={chunk.id} chunk_number={chunk.chunk_number} provenance={expanded_provenance.value}")
     return added_chunks
 
 
