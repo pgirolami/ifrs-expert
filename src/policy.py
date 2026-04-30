@@ -98,6 +98,7 @@ class ReferenceExpansionConfig:
     depth: int
     max_chunks_per_seed: int
     max_chunks_per_doc: int
+    section_target_max_chunks: int = 3
 
 
 @dataclass(frozen=True)
@@ -573,6 +574,8 @@ def _validate_reference_expansion_profile(
         _raise_value_error(f"chunk retrieval reference_expansion.max_chunks_per_seed for {strategy_name}.{profile_name} must be >= 0")
     if reference_expansion.max_chunks_per_doc < 0:
         _raise_value_error(f"chunk retrieval reference_expansion.max_chunks_per_doc for {strategy_name}.{profile_name} must be >= 0")
+    if reference_expansion.section_target_max_chunks < 0:
+        _raise_value_error(f"chunk retrieval reference_expansion.section_target_max_chunks for {strategy_name}.{profile_name} must be >= 0")
 
 
 def _parse_querying_catalog(raw_querying: object) -> dict[str, QueryingConfig]:
@@ -735,6 +738,10 @@ def _parse_chunk_retrieval_profiles(raw_profiles: object, *, strategy_name: str)
                     max_chunks_per_doc=_require_non_negative_int(
                         _require_key(reference_mapping, "max_chunks_per_doc", context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion"),
                         context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.max_chunks_per_doc",
+                    ),
+                    section_target_max_chunks=_require_non_negative_int(
+                        reference_mapping.get("section_target_max_chunks", 3),
+                        context=f"chunk_retrieval_strategies.{strategy_name}.profiles.{profile_name}.expansion.reference_expansion.section_target_max_chunks",
                     ),
                 )
             parsed_expansion = ChunkRetrievalExpansionConfig(

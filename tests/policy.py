@@ -45,6 +45,7 @@ def make_retrieval_policy(
     full_doc_threshold: int = 0,
     expand_to_section: bool = True,
     reference_expand_depth: int = 1,
+    reference_expand_section_max_chunks_per_target: int = 3,
     mode: str = "text",
     per_type_d: dict[str, int] | None = None,
     per_type_min_score: dict[str, float] | None = None,
@@ -149,7 +150,13 @@ def make_retrieval_policy(
             expand=expand,
             expand_to_section=expand_to_section,
             full_doc_threshold=full_doc_threshold,
-            reference_expansion=ReferenceExpansionConfig(enabled=True, depth=reference_expand_depth, max_chunks_per_seed=8, max_chunks_per_doc=32),
+            reference_expansion=ReferenceExpansionConfig(
+                enabled=True,
+                depth=reference_expand_depth,
+                max_chunks_per_seed=8,
+                max_chunks_per_doc=32,
+                section_target_max_chunks=reference_expand_section_max_chunks_per_target,
+            ),
         ),
     )
     chunk_retrieval = ResolvedChunkRetrievalPolicy(strategy="dense_chunks", mode="chunk_similarity", profile="default", profile_config=chunk_profile)

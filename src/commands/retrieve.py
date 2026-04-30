@@ -12,7 +12,7 @@ from src.commands.document_output import build_output_document_sections
 from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
-from src.models.provenance import coerce_provenance
+from src.models.provenance import Provenance
 from src.policy import RetrievalPolicy
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
@@ -232,7 +232,7 @@ def _build_chunk_json_output(
                     "text": chunk.text,
                     "score": round(score, 4),
                     "relevance": relevance,
-                    "provenance": coerce_provenance(result.get("provenance")).value,
+                    "provenance": Provenance(result["provenance"]).value,
                 }
             )
             break
@@ -256,7 +256,7 @@ def _build_chunk_verbose_output(
             relevance = "High" if score >= RELEVANCE_HIGH_THRESHOLD else "Low"
             snippet = chunk.text[:200].replace("\n", " ")
             output_lines.append(f"\n--- Score: {score:.4f} ({relevance}) ---")
-            output_lines.append(f"Provenance: {coerce_provenance(result.get('provenance')).value}")
+            output_lines.append(f"Provenance: {Provenance(result['provenance']).value}")
             output_lines.append(f"Document: {chunk.doc_uid}")
             output_lines.append(f"Document type: {document_type}")
             output_lines.append(f"Document kind: {document_kind}")

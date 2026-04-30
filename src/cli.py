@@ -120,13 +120,9 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
     )
     store_parser.add_argument(
         "--force-store",
-        action="store_true",
-        help="Force store even when the extracted payload is unchanged",
-    )
-    store_parser.add_argument(
         "--force",
         action="store_true",
-        help=argparse.SUPPRESS,
+        help="Force store even when the extracted payload is unchanged",
     )
 
 

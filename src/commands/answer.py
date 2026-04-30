@@ -17,7 +17,7 @@ from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
-from src.models.provenance import coerce_provenance
+from src.models.provenance import Provenance
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
@@ -231,7 +231,7 @@ def _build_retrieved_chunk_hits(
                     page_start=chunk.page_start,
                     page_end=chunk.page_end,
                     text=chunk.text,
-                    provenance=coerce_provenance(result.get("provenance")),
+                    provenance=Provenance(result["provenance"]),
                 )
             )
             break

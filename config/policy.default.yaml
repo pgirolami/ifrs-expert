@@ -223,9 +223,10 @@ chunk_retrieval_strategies:
           full_doc_threshold: 0
           reference_expansion:
             enabled: true
-            depth: 1
+            depth: 2
             max_chunks_per_seed: 1000
             max_chunks_per_doc: 1000
+            section_target_max_chunks: 3
   title_chunks:
     mode: title_similarity
     profiles:
@@ -237,6 +238,15 @@ chunk_retrieval_strategies:
 retrieval_policies:
   standards_only_through_chunks__enriched:
     querying: enriched
+    document_routing:
+      strategy: through_chunks
+      profile: q1_authority_family
+      post_processing: main_variant_only
+    chunk_retrieval:
+      strategy: dense_chunks
+      profile: default
+  standards_only_through_chunks__not-enriched:
+    querying: raw
     document_routing:
       strategy: through_chunks
       profile: q1_authority_family

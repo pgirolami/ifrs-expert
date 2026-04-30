@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.models.document import DOCUMENT_TYPES, infer_exact_document_type, resolve_standard_doc_uid
-from src.models.provenance import Provenance, coerce_provenance
+from src.models.provenance import Provenance
 from src.models.reference import ContentReference
 from src.retrieval.models import DocumentHit, RetrievalRequest, RetrievalResult
 from src.retrieval.query_embedding import build_query_embedding_text
@@ -34,6 +34,7 @@ if TYPE_CHECKING:
         SearchVectorStoreProtocol,
     )
     from src.models.chunk import Chunk
+    from src.models.section import SectionRecord
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ class ExpansionConfig:
     reference_expand_depth: int
     reference_expand_max_chunks_per_seed: int
     reference_expand_max_chunks_per_doc: int
+    reference_expand_section_max_chunks_per_target: int
 
 
 @dataclass
@@ -86,6 +88,8 @@ class ReferenceExpansionContext:
 
     doc_chunks: dict[str, list[Chunk]]
     references_by_doc: dict[str, list[ContentReference]]
+    result_score_by_chunk: dict[tuple[str, int], float]
+    ranked_result_score_by_chunk: dict[tuple[str, int], float]
     expansion_config: ExpansionConfig
     state: ExpansionState
     added_chunks_by_doc: dict[str, int]
@@ -154,6 +158,7 @@ def _execute_text_retrieval(
     doc_uids_to_fetch = _collect_doc_uids_for_chunk_expansion(selected_results, request)
     doc_chunks = _fetch_chunks(doc_uids=doc_uids_to_fetch, config=config)
     expanded_results = _expand_chunks(
+        ranked_results=ranked_results,
         results=selected_results,
         doc_chunks=doc_chunks,
         expansion_config=ExpansionConfig(
@@ -167,6 +172,7 @@ def _execute_text_retrieval(
             reference_expand_depth=request.reference_expand_depth,
             reference_expand_max_chunks_per_seed=request.reference_expand_max_chunks_per_seed,
             reference_expand_max_chunks_per_doc=request.reference_expand_max_chunks_per_doc,
+            reference_expand_section_max_chunks_per_target=request.reference_expand_section_max_chunks_per_target,
         ),
     )
     return (
@@ -287,6 +293,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
     doc_chunks = _fetch_chunks(doc_uids=doc_uids_to_fetch, config=config)
     docs_to_expand_to_section = {document_hit.doc_uid for document_hit in document_hits if request.document_expand_to_section_by_type.get(document_hit.document_type, False)}
     expanded_results = _expand_chunks(
+        ranked_results=filtered_ranked_chunk_results,
         results=selected_results,
         doc_chunks=doc_chunks,
         expansion_config=ExpansionConfig(
@@ -300,6 +307,7 @@ def _execute_document_retrieval(  # noqa: PLR0911
             reference_expand_depth=request.reference_expand_depth,
             reference_expand_max_chunks_per_seed=request.reference_expand_max_chunks_per_seed,
             reference_expand_max_chunks_per_doc=request.reference_expand_max_chunks_per_doc,
+            reference_expand_section_max_chunks_per_target=request.reference_expand_section_max_chunks_per_target,
         ),
     )
     return (
@@ -353,6 +361,10 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
         return "Error: No documents found with the configured per-type score thresholds", None
 
     allowed_doc_uids = {document_hit.doc_uid for document_hit in document_hits}
+    allowed_ranked_chunk_results = [result for result in ranked_chunk_results if str(result["doc_uid"]) in allowed_doc_uids]
+    if not allowed_ranked_chunk_results:
+        return "Error: No chunks found in selected documents", None
+
     filtered_ranked_chunk_results = [result for result in selected_results if str(result["doc_uid"]) in allowed_doc_uids]
     if not filtered_ranked_chunk_results:
         return "Error: No chunks found in selected documents", None
@@ -361,6 +373,7 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
     doc_chunks = _fetch_chunks(doc_uids=doc_uids_to_fetch, config=config)
     docs_to_expand_to_section = {document_hit.doc_uid for document_hit in document_hits if request.document_expand_to_section_by_type.get(document_hit.document_type, False)}
     expanded_results = _expand_chunks(
+        ranked_results=allowed_ranked_chunk_results,
         results=filtered_ranked_chunk_results,
         doc_chunks=doc_chunks,
         expansion_config=ExpansionConfig(
@@ -374,6 +387,7 @@ def _execute_document_routing_through_chunks(  # noqa: PLR0911
             reference_expand_depth=request.reference_expand_depth,
             reference_expand_max_chunks_per_seed=request.reference_expand_max_chunks_per_seed,
             reference_expand_max_chunks_per_doc=request.reference_expand_max_chunks_per_doc,
+            reference_expand_section_max_chunks_per_target=request.reference_expand_section_max_chunks_per_target,
         ),
     )
     return (
@@ -537,6 +551,8 @@ def _get_document_vector_store(
 def _search_chunks(query: str, config: RetrievalPipelineConfig) -> list[SearchResult]:
     with config.vector_store as vector_store:
         ranked_results = vector_store.search_all(query)
+    for result in ranked_results:
+        result["provenance"] = Provenance.TOP_SIMILARITY
     logger.info(f"Search returned {len(ranked_results)} raw chunk result(s)")
     return ranked_results
 
@@ -629,7 +645,7 @@ def _init_expansion_state(
             doc_order.append(doc_uid)
         selected_ids_by_doc[doc_uid].add(chunk_id)
         result_score_by_chunk[(doc_uid, chunk_id)] = result["score"]
-        provenance_by_chunk[(doc_uid, chunk_id)] = coerce_provenance(result.get("provenance"))
+        provenance_by_chunk[(doc_uid, chunk_id)] = Provenance(result["provenance"])
     return result_score_by_chunk, ExpansionState(
         selected_ids_by_doc=selected_ids_by_doc,
         provenance_by_chunk=provenance_by_chunk,
@@ -711,7 +727,7 @@ def _expand_to_section_subtrees(
             if containing_section_db_id not in descendant_section_db_ids_by_section_db_id:
                 descendant_section_db_ids_by_section_db_id[containing_section_db_id] = set(active_section_store.get_descendant_section_db_ids(containing_section_db_id))
             descendant_section_db_ids = descendant_section_db_ids_by_section_db_id[containing_section_db_id]
-            source_provenance = coerce_provenance(state.provenance_by_chunk.get((doc_uid, result["chunk_id"])))
+            source_provenance = state.provenance_by_chunk[(doc_uid, result["chunk_id"])]
             expanded_provenance = _section_expansion_provenance(source_provenance)
             added_for_root = 0
             for chunk in doc_chunks.get(doc_uid, []):
@@ -763,7 +779,7 @@ def _expand_with_neighbour_chunks(
         doc_uid = result["doc_uid"]
         chunk_id = result["chunk_id"]
         chunks = doc_chunks.get(doc_uid, [])
-        source_provenance = coerce_provenance(state.provenance_by_chunk.get((doc_uid, chunk_id)))
+        source_provenance = state.provenance_by_chunk[(doc_uid, chunk_id)]
         expanded_provenance = _section_expansion_provenance(source_provenance)
         for index, chunk in enumerate(chunks):
             if chunk.id != chunk_id:
@@ -803,7 +819,7 @@ def _build_expanded_chunk_results(
                     "doc_uid": doc_uid,
                     "chunk_id": chunk_id,
                     "score": result_score_by_chunk.get((doc_uid, chunk_id), 0.0),
-                    "provenance": state.provenance_by_chunk.get((doc_uid, chunk_id), Provenance.SIMILARITY),
+                    "provenance": state.provenance_by_chunk[(doc_uid, chunk_id)],
                 }
             )
     return expanded_results
@@ -826,9 +842,11 @@ def _add_selected_chunk(
 
 
 def _section_expansion_provenance(source_provenance: Provenance) -> Provenance:
-    if source_provenance == Provenance.SIMILARITY:
-        return Provenance.SECTION_FAN_OUT_FROM_SEED
-    return Provenance.SECTION_FAN_OUT_FROM_REFERENCE
+    if source_provenance == Provenance.TOP_SIMILARITY:
+        return Provenance.EXPAND_TO_ENCLOSING_SECTION
+    if source_provenance == Provenance.TOP_SIMILARITY_FOR_SECTION_REFERENCE:
+        return Provenance.EXPAND_TO_ENCLOSING_SECTION_OF_REFERENCED_CHUNK
+    return Provenance.EXPAND_TO_ENCLOSING_SECTION_OF_REFERENCED_CHUNK
 
 
 def _build_chunk_number_lookup(chunks: list[Chunk]) -> dict[str, Chunk]:
@@ -851,10 +869,12 @@ def _resolve_reference_target_chunk_numbers(reference: object) -> list[str]:
     return chunk_numbers
 
 
-def _expand_same_family_references(
+def _expand_same_family_references(  # noqa: PLR0913
     *,
     seed_results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
+    result_score_by_chunk: dict[tuple[str, int], float],
+    ranked_result_score_by_chunk: dict[tuple[str, int], float],
     expansion_config: ExpansionConfig,
     state: ExpansionState,
 ) -> None:
@@ -874,6 +894,8 @@ def _expand_same_family_references(
     context = ReferenceExpansionContext(
         doc_chunks=doc_chunks,
         references_by_doc={},
+        result_score_by_chunk=result_score_by_chunk,
+        ranked_result_score_by_chunk=ranked_result_score_by_chunk,
         expansion_config=expansion_config,
         state=state,
         added_chunks_by_doc={},
@@ -1031,11 +1053,18 @@ def _expand_reference_targets_for_seed(
         if target_chunk is None or target_chunk.id is None:
             logger.info(f"Missing target chunk for source_doc_uid={reference.source_doc_uid} target_chunk_number={target_chunk_number} standard_doc_uid={seed_state.source_standard_doc_uid}")
             continue
-        if target_chunk.id not in context.state.selected_ids_by_doc.get(seed_state.source_standard_doc_uid, set()):
+        if reference.target_unit == "section":
+            added_chunks += _expand_reference_target_section_roots(
+                target_chunk=target_chunk,
+                target_chunk_number=target_chunk_number,
+                seed_state=seed_state,
+                context=context,
+            )
+        elif target_chunk.id not in context.state.selected_ids_by_doc.get(seed_state.source_standard_doc_uid, set()):
             _add_selected_chunk(
                 doc_uid=seed_state.source_standard_doc_uid,
                 chunk_id=target_chunk.id,
-                provenance=Provenance.SAME_FAMILY_REFERENCE,
+                provenance=Provenance.EXPAND_TO_REFERENCED_CHUNK,
                 state=context.state,
             )
             seed_state.chunks_added_for_seed += 1
@@ -1044,18 +1073,10 @@ def _expand_reference_targets_for_seed(
             logger.info(
                 f"Added reference target: standard_doc_uid={seed_state.source_standard_doc_uid} "
                 f"chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number} "
-                f"provenance={Provenance.SAME_FAMILY_REFERENCE.value} depth_remaining={depth_remaining}"
+                f"provenance={Provenance.EXPAND_TO_REFERENCED_CHUNK.value} depth_remaining={depth_remaining}"
             )
         else:
             logger.info(f"Reference target already selected: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={target_chunk.id} chunk_number={target_chunk.chunk_number}")
-        if reference.target_unit == "section":
-            added_chunks += _expand_reference_target_section_subtree(
-                target_chunk=target_chunk,
-                target_chunk_number=target_chunk_number,
-                seed_state=seed_state,
-                context=context,
-                processed_source_chunks=processed_source_chunks,
-            )
         if depth_remaining > 1:
             logger.info(f"Descending into next-hop reference traversal from standard_doc_uid={seed_state.source_standard_doc_uid} chunk_number={target_chunk.chunk_number} remaining_depth={depth_remaining - 1}")
             added_chunks += _expand_reference_source_chunk(
@@ -1080,26 +1101,115 @@ def _find_first_chunk_with_prefix(
     return None
 
 
-def _expand_reference_target_section_subtree(
+def _resolve_reference_target_section_db_id(
+    *,
+    target_chunk: Chunk,
+    target_chunk_number: str,
+    section_by_source_id: dict[str, SectionRecord],
+) -> int | None:
+    target_section = _resolve_chunk_section_record(
+        chunk=target_chunk,
+        section_by_source_id=section_by_source_id,
+    )
+    if target_section is None or target_section.db_id is None:
+        return None
+    if target_chunk.chunk_number == target_chunk_number:
+        return target_section.db_id
+    if target_section.parent_section_db_id is not None:
+        return target_section.parent_section_db_id
+    return target_section.db_id
+
+
+def _resolve_chunk_section_record(
+    *,
+    chunk: Chunk,
+    section_by_source_id: dict[str, SectionRecord],
+) -> SectionRecord | None:
+    if chunk.containing_section_id is None:
+        return None
+    return section_by_source_id.get(chunk.containing_section_id)
+
+
+def _select_top_chunks_within_section_subtree(
+    *,
+    context: ReferenceExpansionContext,
+    doc_uid: str,
+    section_db_ids: set[int],
+    section_db_id_by_source_id: dict[str, int],
+    limit: int,
+) -> list[Chunk]:
+    if limit <= 0:
+        logger.info(f"Skipping section-target top-n selection for doc_uid={doc_uid} because the configured limit is {limit}")
+        return []
+    scored_candidates: list[tuple[float, str, int, Chunk]] = []
+    for chunk in context.doc_chunks.get(doc_uid, []):
+        if chunk.id is None:
+            continue
+        chunk_score = context.ranked_result_score_by_chunk.get((doc_uid, chunk.id))
+        if chunk_score is None:
+            continue
+        chunk_section_db_id = _resolve_chunk_section_db_id(
+            chunk=chunk,
+            section_db_id_by_source_id=section_db_id_by_source_id,
+        )
+        if chunk_section_db_id is None or chunk_section_db_id not in section_db_ids:
+            continue
+        scored_candidates.append((-chunk_score, chunk.chunk_number, chunk.id, chunk))
+    scored_candidates.sort()
+    selected_candidates = [candidate[3] for candidate in scored_candidates[:limit]]
+    logger.info(f"Ranked section-target candidates for doc_uid={doc_uid} subtree_sections={len(section_db_ids)} candidate_count={len(scored_candidates)} selected_count={len(selected_candidates)} limit={limit}")
+    for rank, candidate in enumerate(scored_candidates[:limit], start=1):
+        logger.info(f"Section-target candidate rank={rank} doc_uid={doc_uid} chunk_id={candidate[2]} chunk_number={candidate[1]} score={-candidate[0]:.4f}")
+    return selected_candidates
+
+
+def _expand_reference_target_section_roots(
     *,
     target_chunk: Chunk,
     target_chunk_number: str,
     seed_state: ReferenceExpansionSeedState,
     context: ReferenceExpansionContext,
-    processed_source_chunks: set[tuple[str, int]],
 ) -> int:
-    logger.info(f"Starting section fan-out for reference target chunk_number={target_chunk_number} anchor_chunk_number={target_chunk.chunk_number}")
-    expanded_provenance = _section_expansion_provenance(Provenance.SAME_FAMILY_REFERENCE)
+    section_store = context.expansion_config.section_store
+    if section_store is None:
+        logger.info(f"Skipping section-root selection for reference target chunk_number={target_chunk_number} because no section store is configured")
+        return 0
+
+    with section_store as active_section_store:
+        sections_by_source_id = {section.section_id: section for section in active_section_store.get_sections_by_doc(seed_state.source_standard_doc_uid)}
+        target_section_db_id = _resolve_reference_target_section_db_id(
+            target_chunk=target_chunk,
+            target_chunk_number=target_chunk_number,
+            section_by_source_id=sections_by_source_id,
+        )
+        if target_section_db_id is None:
+            logger.info(f"Skipping section-root selection for reference target chunk_number={target_chunk_number} because no containing section db id was resolved")
+            return 0
+        descendant_section_db_ids = set(active_section_store.get_descendant_section_db_ids(target_section_db_id))
+
+    if not descendant_section_db_ids:
+        logger.info(f"Skipping section-root selection for reference target chunk_number={target_chunk_number} because the section subtree is empty")
+        return 0
+
+    candidate_chunks = _select_top_chunks_within_section_subtree(
+        context=context,
+        doc_uid=seed_state.source_standard_doc_uid,
+        section_db_ids=descendant_section_db_ids,
+        section_db_id_by_source_id={section.section_id: section.db_id for section in sections_by_source_id.values() if section.db_id is not None},
+        limit=context.expansion_config.reference_expand_section_max_chunks_per_target,
+    )
+    if not candidate_chunks:
+        logger.info(f"Skipping section-root selection for reference target chunk_number={target_chunk_number} because no scored chunks were found in the subtree")
+        return 0
+
+    expanded_provenance = Provenance.TOP_SIMILARITY_FOR_SECTION_REFERENCE
     added_chunks = 0
-    target_chunk_prefix = f"{target_chunk_number}."
-    for chunk in context.doc_chunks.get(seed_state.source_standard_doc_uid, []):
+    logger.info(f"Selecting top {len(candidate_chunks)} section roots for reference target chunk_number={target_chunk_number} anchor_chunk_number={target_chunk.chunk_number}")
+    for chunk in candidate_chunks:
         if chunk.id is None:
             continue
-        if chunk.chunk_number != target_chunk_number and not chunk.chunk_number.startswith(target_chunk_prefix):
-            continue
-        if (chunk.doc_uid, chunk.id) in processed_source_chunks:
-            continue
         if chunk.id in context.state.selected_ids_by_doc.get(seed_state.source_standard_doc_uid, set()):
+            logger.info(f"Section root already selected; keeping first provenance: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={chunk.id} chunk_number={chunk.chunk_number}")
             continue
         _add_selected_chunk(
             doc_uid=seed_state.source_standard_doc_uid,
@@ -1110,7 +1220,12 @@ def _expand_reference_target_section_subtree(
         seed_state.chunks_added_for_seed += 1
         context.added_chunks_by_doc[seed_state.source_standard_doc_uid] = context.added_chunks_by_doc.get(seed_state.source_standard_doc_uid, 0) + 1
         added_chunks += 1
-        logger.info(f"Added section fan-out target: standard_doc_uid={seed_state.source_standard_doc_uid} chunk_id={chunk.id} chunk_number={chunk.chunk_number} provenance={expanded_provenance.value}")
+        chunk_key = (seed_state.source_standard_doc_uid, chunk.id)
+        logger.info(
+            f"Added section root candidate: standard_doc_uid={seed_state.source_standard_doc_uid} "
+            f"chunk_id={chunk.id} chunk_number={chunk.chunk_number} score={context.result_score_by_chunk.get(chunk_key, 0.0):.4f} "
+            f"provenance={expanded_provenance.value}"
+        )
     return added_chunks
 
 
@@ -1126,6 +1241,7 @@ def _filter_seed_references(seed_chunk: Chunk, references: list[ContentReference
 
 
 def _expand_chunks(
+    ranked_results: list[SearchResult],
     results: list[SearchResult],
     doc_chunks: dict[str, list[Chunk]],
     expansion_config: ExpansionConfig,
@@ -1143,11 +1259,14 @@ def _expand_chunks(
         f"reference_expand_depth={expansion_config.reference_expand_depth}"
     )
     result_score_by_chunk, state = _init_expansion_state(results)
+    ranked_result_score_by_chunk, _ = _init_expansion_state(ranked_results)
     seed_chunk_summary = ", ".join(f"{doc_uid}={len(chunk_ids)}" for doc_uid, chunk_ids in state.selected_ids_by_doc.items())
     logger.debug(f"Seed chunk summary: {seed_chunk_summary}")
     _expand_same_family_references(
         seed_results=results,
         doc_chunks=doc_chunks,
+        result_score_by_chunk=result_score_by_chunk,
+        ranked_result_score_by_chunk=ranked_result_score_by_chunk,
         expansion_config=expansion_config,
         state=state,
     )

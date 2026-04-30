@@ -11,6 +11,7 @@ import pytest
 import src.cli as cli
 from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
 from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
+from src.models.provenance import Provenance
 
 VALID_PROMPT_B_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
@@ -46,7 +47,7 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
                 chunk_id="IFRS9_6.3.1",
                 score=0.82,
                 document_type="ifrs",
-                provenance="ref_sf",
+                provenance=Provenance.EXPAND_TO_REFERENCED_CHUNK,
             )
         ],
         prompt_a_text="Prompt A content",
@@ -71,7 +72,7 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
     assert '"document_hits"' in (tmp_path / "document_routing.json").read_text(encoding="utf-8")
     target_chunk_json = (tmp_path / "target_chunk_retrieval.json").read_text(encoding="utf-8")
     assert '"chunks"' in target_chunk_json
-    assert '"provenance": "ref_sf"' in target_chunk_json
+    assert f'"provenance": "{Provenance.EXPAND_TO_REFERENCED_CHUNK.value}"' in target_chunk_json
 
 
 class FakeTextCommand:

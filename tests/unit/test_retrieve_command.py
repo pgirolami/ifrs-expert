@@ -8,6 +8,7 @@ from typing import cast
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.reference import ContentReference
+from src.models.provenance import Provenance
 from src.models.section import SectionRecord
 from src.policy import RetrievalPolicy
 from tests.fakes import InMemoryChunkStore, InMemoryReferenceStore, InMemorySectionStore
@@ -326,7 +327,11 @@ def test_retrieve_expands_same_family_references_before_section_expansion() -> N
 
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc", "ifrs9", "ifrs9"]
     assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.1", "5.1.1"]
-    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "similarity", "exp_section_from_seed"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_ENCLOSING_SECTION.value,
+    ]
 
 
 def test_retrieve_expands_same_family_references_across_two_levels() -> None:
@@ -396,13 +401,22 @@ def test_retrieve_expands_same_family_references_across_two_levels() -> None:
     depth_two_data = json.loads(depth_two_command.execute())
 
     assert [chunk["chunk_number"] for chunk in depth_one_data["chunks"]] == ["B1", "4.1.1"]
-    assert [chunk["provenance"] for chunk in depth_one_data["chunks"]] == ["similarity", "ref_sf"]
+    assert [chunk["provenance"] for chunk in depth_one_data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+    ]
     assert [chunk["chunk_number"] for chunk in depth_two_data["chunks"]] == ["B1", "4.1.1", "B4.1.7", "B4.1.8", "B4.1.9"]
-    assert [chunk["provenance"] for chunk in depth_two_data["chunks"]] == ["similarity", "ref_sf", "ref_sf", "ref_sf", "ref_sf"]
+    assert [chunk["provenance"] for chunk in depth_two_data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+    ]
 
 
 def test_retrieve_expands_section_target_references() -> None:
-    """Section targets should resolve through same-family reference expansion."""
+    """Section targets should select the top-scoring section roots before section fan-out."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
 
     chunk_store = InMemoryChunkStore()
@@ -410,10 +424,11 @@ def test_retrieve_expands_section_target_references() -> None:
         store.insert_chunks(
             [
                 Chunk(id=1, doc_uid="ifrs9-bc", chunk_number="B1", page_start="A1", page_end="A1", chunk_id="IFRS09BC_B1", containing_section_id="IFRS09BC_S1", text="source chunk"),
-                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section target chunk"),
-                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section child chunk"),
-                Chunk(id=4, doc_uid="ifrs9", chunk_number="5.5.15", page_start="B3", page_end="B3", chunk_id="IFRS09_5.5.15", containing_section_id="IFRS09_g5.5.15-5.5.16", text="later subsection chunk"),
-                Chunk(id=5, doc_uid="ifrs9", chunk_number="5.5.16", page_start="B4", page_end="B4", chunk_id="IFRS09_5.5.16", containing_section_id="IFRS09_g5.5.15-5.5.16", text="later subsection child"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section root candidate A"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section child of A"),
+                Chunk(id=4, doc_uid="ifrs9", chunk_number="5.5.9", page_start="B3", page_end="B3", chunk_id="IFRS09_5.5.9", containing_section_id="IFRS09_g5.5.9-5.5.11", text="section root candidate C"),
+                Chunk(id=5, doc_uid="ifrs9", chunk_number="5.5.15", page_start="B4", page_end="B4", chunk_id="IFRS09_5.5.15", containing_section_id="IFRS09_g5.5.15-5.5.16", text="section root candidate B"),
+                Chunk(id=6, doc_uid="ifrs9", chunk_number="5.5.16", page_start="B5", page_end="B5", chunk_id="IFRS09_5.5.16", containing_section_id="IFRS09_g5.5.15-5.5.16", text="section child of B"),
             ]
         )
 
@@ -431,21 +446,21 @@ def test_retrieve_expands_section_target_references() -> None:
                     position=1,
                 ),
                 SectionRecord(
-                    section_id="IFRS09_g5.5.1-5.5.14",
+                    section_id="IFRS09_g5.5.1-5.5.8",
                     doc_uid="ifrs9",
                     parent_section_id="IFRS09_g5.5.1-5.5.20",
                     level=3,
-                    title="Section 5.5.1-5.5.14",
-                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.14"],
+                    title="Section 5.5.1-5.5.8",
+                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.8"],
                     position=2,
                 ),
                 SectionRecord(
-                    section_id="IFRS09_g5.5.1-5.5.8",
+                    section_id="IFRS09_g5.5.9-5.5.11",
                     doc_uid="ifrs9",
-                    parent_section_id="IFRS09_g5.5.1-5.5.14",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
                     level=3,
-                    title="Section 5.5.1-5.5.8",
-                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.14", "Section 5.5.1-5.5.8"],
+                    title="Section 5.5.9-5.5.11",
+                    section_lineage=["Section 5.5", "Section 5.5.9-5.5.11"],
                     position=3,
                 ),
                 SectionRecord(
@@ -459,7 +474,10 @@ def test_retrieve_expands_section_target_references() -> None:
                 ),
             ]
         )
-        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.20", ["IFRS09_g5.5.1-5.5.20", "IFRS09_g5.5.1-5.5.14", "IFRS09_g5.5.1-5.5.8", "IFRS09_g5.5.15-5.5.16"])
+        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.20", ["IFRS09_g5.5.1-5.5.20", "IFRS09_g5.5.1-5.5.8", "IFRS09_g5.5.9-5.5.11", "IFRS09_g5.5.15-5.5.16"])
+        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.8", ["IFRS09_g5.5.1-5.5.8"])
+        store.add_descendant_mapping("IFRS09_g5.5.9-5.5.11", ["IFRS09_g5.5.9-5.5.11"])
+        store.add_descendant_mapping("IFRS09_g5.5.15-5.5.16", ["IFRS09_g5.5.15-5.5.16"])
 
     reference_store = InMemoryReferenceStore()
     with reference_store as store:
@@ -482,19 +500,169 @@ def test_retrieve_expands_section_target_references() -> None:
     command = RetrieveCommand(
         query="section 5.5",
         config=RetrieveConfig(
-            vector_store=MockVectorStore([{"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96}]),
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96},
+                    {"doc_uid": "ifrs9", "chunk_id": 2, "score": 0.99},
+                    {"doc_uid": "ifrs9", "chunk_id": 5, "score": 0.98},
+                    {"doc_uid": "ifrs9", "chunk_id": 4, "score": 0.97},
+                    {"doc_uid": "ifrs9", "chunk_id": 3, "score": 0.10},
+                    {"doc_uid": "ifrs9", "chunk_id": 6, "score": 0.05},
+                ]
+            ),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
             section_store=section_store,
             reference_store=reference_store,
         ),
-        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand=0, expand_to_section=False, reference_expand_depth=1, mode="text"), verbose=False),
+        options=RetrieveOptions(
+            policy=make_retrieval_policy(
+                k=5,
+                chunk_min_score=0.5,
+                expand=0,
+                expand_to_section=True,
+                reference_expand_depth=1,
+                reference_expand_section_max_chunks_per_target=2,
+                mode="text",
+            ),
+            verbose=False,
+        ),
     )
 
     data = json.loads(command.execute())
-    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5.1", "5.5.2", "5.5.15", "5.5.16"]
-    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "exp_sect_from_reference", "exp_sect_from_reference", "exp_sect_from_reference"]
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["B1", "5.5.1", "5.5.2", "5.5.9", "5.5.15", "5.5.16"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_ENCLOSING_SECTION.value,
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_ENCLOSING_SECTION.value,
+    ]
+
+
+def test_retrieve_section_reference_roots_use_full_ranked_results() -> None:
+    """Section reference selection should use the full ranked list, not just the top-k seeds."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="4.2.1", page_start="A1", page_end="A1", chunk_id="IFRS09_4.2.1", containing_section_id="IFRS09_S4_2", text="seed chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="1.1", page_start="A2", page_end="A2", chunk_id="IFRS09_1.1", containing_section_id="IFRS09_S1", text="higher scoring non-section chunk"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="1.2", page_start="A3", page_end="A3", chunk_id="IFRS09_1.2", containing_section_id="IFRS09_S1", text="higher scoring non-section chunk"),
+                Chunk(id=4, doc_uid="ifrs9", chunk_number="5.5.1", page_start="B1", page_end="B1", chunk_id="IFRS09_5.5.1", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section root candidate A"),
+                Chunk(id=5, doc_uid="ifrs9", chunk_number="5.5.2", page_start="B2", page_end="B2", chunk_id="IFRS09_5.5.2", containing_section_id="IFRS09_g5.5.1-5.5.8", text="section child of A"),
+                Chunk(id=6, doc_uid="ifrs9", chunk_number="5.5.9", page_start="B3", page_end="B3", chunk_id="IFRS09_5.5.9", containing_section_id="IFRS09_g5.5.9-5.5.11", text="section root candidate C"),
+                Chunk(id=7, doc_uid="ifrs9", chunk_number="5.5.15", page_start="B4", page_end="B4", chunk_id="IFRS09_5.5.15", containing_section_id="IFRS09_g5.5.15-5.5.16", text="section root candidate B"),
+                Chunk(id=8, doc_uid="ifrs9", chunk_number="5.5.16", page_start="B5", page_end="B5", chunk_id="IFRS09_5.5.16", containing_section_id="IFRS09_g5.5.15-5.5.16", text="section child of B"),
+            ]
+        )
+
+    section_store = InMemorySectionStore()
+    with section_store as store:
+        store.insert_sections(
+            [
+                SectionRecord(
+                    section_id="IFRS09_g5.5.1-5.5.20",
+                    doc_uid="ifrs9",
+                    parent_section_id=None,
+                    level=2,
+                    title="Section 5.5",
+                    section_lineage=["Section 5.5"],
+                    position=1,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.1-5.5.8",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
+                    level=3,
+                    title="Section 5.5.1-5.5.8",
+                    section_lineage=["Section 5.5", "Section 5.5.1-5.5.8"],
+                    position=2,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.9-5.5.11",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
+                    level=3,
+                    title="Section 5.5.9-5.5.11",
+                    section_lineage=["Section 5.5", "Section 5.5.9-5.5.11"],
+                    position=3,
+                ),
+                SectionRecord(
+                    section_id="IFRS09_g5.5.15-5.5.16",
+                    doc_uid="ifrs9",
+                    parent_section_id="IFRS09_g5.5.1-5.5.20",
+                    level=3,
+                    title="Section 5.5.15-5.5.16",
+                    section_lineage=["Section 5.5", "Section 5.5.15-5.5.16"],
+                    position=4,
+                ),
+            ]
+        )
+        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.20", ["IFRS09_g5.5.1-5.5.20", "IFRS09_g5.5.1-5.5.8", "IFRS09_g5.5.9-5.5.11", "IFRS09_g5.5.15-5.5.16"])
+        store.add_descendant_mapping("IFRS09_g5.5.1-5.5.8", ["IFRS09_g5.5.1-5.5.8"])
+        store.add_descendant_mapping("IFRS09_g5.5.9-5.5.11", ["IFRS09_g5.5.9-5.5.11"])
+        store.add_descendant_mapping("IFRS09_g5.5.15-5.5.16", ["IFRS09_g5.5.15-5.5.16"])
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09_4.2.1",
+                    annotation_raw_text="Refer: Section 5.5",
+                    target_raw_text="Section 5.5",
+                    target_kind="same_standard_paragraph",
+                    target_unit="section",
+                    target_start="5.5",
+                    parsed_ok=True,
+                )
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="are all liabilities measured at amortized cost ?",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore(
+                [
+                    {"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.99},
+                    {"doc_uid": "ifrs9", "chunk_id": 2, "score": 0.98},
+                    {"doc_uid": "ifrs9", "chunk_id": 3, "score": 0.97},
+                    {"doc_uid": "ifrs9", "chunk_id": 4, "score": 0.96},
+                    {"doc_uid": "ifrs9", "chunk_id": 7, "score": 0.95},
+                    {"doc_uid": "ifrs9", "chunk_id": 6, "score": 0.94},
+                    {"doc_uid": "ifrs9", "chunk_id": 5, "score": 0.93},
+                    {"doc_uid": "ifrs9", "chunk_id": 8, "score": 0.92},
+                ]
+            ),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            section_store=section_store,
+            reference_store=reference_store,
+        ),
+        options=RetrieveOptions(
+            policy=make_retrieval_policy(k=1, chunk_min_score=0.5, expand=0, expand_to_section=True, reference_expand_depth=1, mode="text"),
+            verbose=False,
+        ),
+    )
+
+    data = json.loads(command.execute())
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["4.2.1", "5.5.1", "5.5.2", "5.5.9", "5.5.15", "5.5.16"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.TOP_SIMILARITY_FOR_SECTION_REFERENCE.value,
+        Provenance.EXPAND_TO_ENCLOSING_SECTION_OF_REFERENCED_CHUNK.value,
+        Provenance.TOP_SIMILARITY_FOR_SECTION_REFERENCE.value,
+        Provenance.TOP_SIMILARITY_FOR_SECTION_REFERENCE.value,
+        Provenance.EXPAND_TO_ENCLOSING_SECTION_OF_REFERENCED_CHUNK.value,
+    ]
 
 
 def test_retrieve_expands_suffixed_appendix_ranges() -> None:
@@ -543,7 +711,11 @@ def test_retrieve_expands_suffixed_appendix_ranges() -> None:
 
     data = json.loads(command.execute())
     assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["4.1.2", "B4.1.2C", "B4.1.4"]
-    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "ref_sf"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == [
+        Provenance.TOP_SIMILARITY.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+        Provenance.EXPAND_TO_REFERENCED_CHUNK.value,
+    ]
 
 
 def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> None:
@@ -590,7 +762,16 @@ def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> 
     command = RetrieveCommand(
         query="recognition",
         config=RetrieveConfig(
-            vector_store=MockVectorStore([{"doc_uid": "ifrs9-bc", "chunk_id": 1, "score": 0.96}]),
+            vector_store=MockVectorStore(
+                [
+                    {
+                        "doc_uid": "ifrs9-bc",
+                        "chunk_id": 1,
+                        "score": 0.96,
+                        "provenance": Provenance.EXPAND_TO_REFERENCED_CHUNK,
+                    }
+                ]
+            ),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
@@ -603,7 +784,7 @@ def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> 
     data = json.loads(result)
 
     assert [chunk["doc_uid"] for chunk in data["chunks"]] == ["ifrs9-bc"]
-    assert data["chunks"][0]["provenance"] == "similarity"
+    assert data["chunks"][0]["provenance"] == Provenance.TOP_SIMILARITY.value
 
 
 def test_retrieve_documents_mode_routes_document_search_by_similarity_representation() -> None:

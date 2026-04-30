@@ -35,6 +35,7 @@ class RetrievalRequest:
     reference_expand_depth: int = 0
     reference_expand_max_chunks_per_seed: int = 0
     reference_expand_max_chunks_per_doc: int = 0
+    reference_expand_section_max_chunks_per_target: int = 3
 
 
 @dataclass(frozen=True)

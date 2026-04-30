@@ -54,4 +54,5 @@ def build_retrieval_request(
         reference_expand_depth=reference_expansion.depth if reference_expansion is not None else 0,
         reference_expand_max_chunks_per_seed=reference_expansion.max_chunks_per_seed if reference_expansion is not None else 0,
         reference_expand_max_chunks_per_doc=reference_expansion.max_chunks_per_doc if reference_expansion is not None else 0,
+        reference_expand_section_max_chunks_per_target=reference_expansion.section_target_max_chunks if reference_expansion is not None else 3,
     )
