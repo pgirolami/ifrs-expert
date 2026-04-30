@@ -475,6 +475,55 @@ def test_retrieve_expands_section_target_references() -> None:
     assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf"]
 
 
+def test_retrieve_expands_suffixed_appendix_ranges() -> None:
+    """Appendix B ranges like B4.1.2C-B4.1.4 should resolve during reference expansion."""
+    from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions
+
+    chunk_store = InMemoryChunkStore()
+    with chunk_store as store:
+        store.insert_chunks(
+            [
+                Chunk(id=1, doc_uid="ifrs9", chunk_number="4.1.2", page_start="B1", page_end="B1", chunk_id="IFRS09_4.1.2", containing_section_id="IFRS09_S4", text="source chunk"),
+                Chunk(id=2, doc_uid="ifrs9", chunk_number="B4.1.2C", page_start="B2", page_end="B2", chunk_id="IFRS09_B4.1.2C", containing_section_id="IFRS09_B4", text="appendix target chunk"),
+                Chunk(id=3, doc_uid="ifrs9", chunk_number="B4.1.4", page_start="B3", page_end="B3", chunk_id="IFRS09_B4.1.4", containing_section_id="IFRS09_B4", text="appendix end chunk"),
+            ]
+        )
+
+    reference_store = InMemoryReferenceStore()
+    with reference_store as store:
+        store.insert_references(
+            [
+                ContentReference(
+                    source_doc_uid="ifrs9",
+                    source_location_type="chunk",
+                    source_chunk_id="IFRS09_4.1.2",
+                    annotation_raw_text="Refer: paragraphs B4.1.2C-B4.1.4",
+                    target_raw_text="paragraphs B4.1.2C-B4.1.4",
+                    target_kind="same_standard_paragraph",
+                    target_start="B4.1.2C",
+                    target_end="B4.1.4",
+                    parsed_ok=True,
+                )
+            ]
+        )
+
+    command = RetrieveCommand(
+        query="business model",
+        config=RetrieveConfig(
+            vector_store=MockVectorStore([{"doc_uid": "ifrs9", "chunk_id": 1, "score": 0.96}]),
+            chunk_store=chunk_store,
+            init_db_fn=lambda: None,
+            index_path_fn=lambda: MockIndexPath(exists=True),
+            reference_store=reference_store,
+        ),
+        options=RetrieveOptions(policy=make_retrieval_policy(k=5, chunk_min_score=0.5, expand=0, expand_to_section=False, reference_expand_depth=1, mode="text"), verbose=False),
+    )
+
+    data = json.loads(command.execute())
+    assert [chunk["chunk_number"] for chunk in data["chunks"]] == ["4.1.2", "B4.1.2C", "B4.1.4"]
+    assert [chunk["provenance"] for chunk in data["chunks"]] == ["similarity", "ref_sf", "ref_sf"]
+
+
 def test_retrieve_ignores_cross_document_and_non_standard_references_in_v1() -> None:
     """Cross-document and BC/IE/IG references should not be auto-followed in v1."""
     from src.commands.retrieve import RetrieveCommand, RetrieveConfig, RetrieveOptions

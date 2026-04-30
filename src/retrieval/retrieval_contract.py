@@ -196,18 +196,20 @@ def _expand_chunk_number_leaf_range(*, start: str, end: str, prefix: str, start_
     if start_label.prefix != end_label.prefix:
         message = f"Unsupported chunk_number range {start!r}-{end!r}: leaf prefixes must match"
         raise ValueError(message)
-    if start_label.suffix is not None and start_label.numeric_base != end_label.numeric_base:
+    if start_label.suffix is not None and start_label.numeric_base != end_label.numeric_base and end_label.suffix is not None:
         message = f"Unsupported chunk_number range {start!r}-{end!r}: cross-number ranges cannot start with an alphabetic suffix"
         raise ValueError(message)
+    if start_label.suffix is not None and start_label.numeric_base != end_label.numeric_base and end_label.suffix is None:
+        return _expand_suffixed_to_numeric_leaf_range(start=start, end=end, prefix=prefix, start_label=start_label, end_label=end_label)
 
-    return _expand_leaf_label_range(start=start, end=end, prefix=prefix, start_label=start_label, end_label=end_label)
+    return _expand_numeric_like_leaf_range(start=start, end=end, prefix=prefix, start_label=start_label, end_label=end_label)
 
 
 @dataclass(frozen=True)
 class _LeafLabel:
     prefix: str
     numeric_base: int
-    suffix: str | None
+    suffix: str | None = None
 
 
 def _parse_leaf_label(value: str) -> _LeafLabel | None:
@@ -222,7 +224,7 @@ def _parse_leaf_label(value: str) -> _LeafLabel | None:
     )
 
 
-def _expand_leaf_label_range(*, start: str, end: str, prefix: str, start_label: _LeafLabel, end_label: _LeafLabel) -> list[str]:
+def _expand_numeric_like_leaf_range(*, start: str, end: str, prefix: str, start_label: _LeafLabel, end_label: _LeafLabel) -> list[str]:
     start_order = _leaf_suffix_order(start_label.suffix)
     end_order = _leaf_suffix_order(end_label.suffix)
     if (start_label.numeric_base, start_order) > (end_label.numeric_base, end_order):
@@ -230,12 +232,13 @@ def _expand_leaf_label_range(*, start: str, end: str, prefix: str, start_label: 
         raise ValueError(message)
 
     values: list[str] = []
+    extends_past_suffixed_leaf = start_label.suffix is not None and end_label.suffix is None and start_label.numeric_base < end_label.numeric_base
     for numeric_base in range(start_label.numeric_base, end_label.numeric_base + 1):
         is_start_base = numeric_base == start_label.numeric_base
         is_end_base = numeric_base == end_label.numeric_base
 
         suffix_start = start_order if is_start_base else 0
-        suffix_end = end_order if is_end_base else 0
+        suffix_end = 26 if is_start_base and extends_past_suffixed_leaf else end_order if is_end_base else 0
         if suffix_start > suffix_end:
             message = f"Unsupported chunk_number range {start!r}-{end!r}: start must be <= end"
             raise ValueError(message)
@@ -250,16 +253,53 @@ def _expand_leaf_label_range(*, start: str, end: str, prefix: str, start_label: 
     return values
 
 
+def _expand_suffixed_to_numeric_leaf_range(*, start: str, end: str, prefix: str, start_label: _LeafLabel, end_label: _LeafLabel) -> list[str]:
+    values: list[str] = []
+    start_order = _leaf_suffix_order(start_label.suffix)
+    if (start_label.numeric_base, start_order) > (end_label.numeric_base, 0):
+        message = f"Unsupported chunk_number range {start!r}-{end!r}: start must be <= end"
+        raise ValueError(message)
+
+    for numeric_base in range(start_label.numeric_base, end_label.numeric_base + 1):
+        if numeric_base == start_label.numeric_base:
+            suffix_start = start_order
+            suffix_end = 26
+        else:
+            suffix_start = 0
+            suffix_end = 0
+        if numeric_base == end_label.numeric_base:
+            suffix_end = 0
+        if suffix_start > suffix_end:
+            message = f"Unsupported chunk_number range {start!r}-{end!r}: start must be <= end"
+            raise ValueError(message)
+        for suffix_order in range(suffix_start, suffix_end + 1):
+            rendered_leaf = _render_leaf_label_component(
+                prefix=start_label.prefix,
+                numeric_base=numeric_base,
+                suffix=_leaf_suffix_from_order(suffix_order),
+            )
+            values.append(f"{prefix}.{rendered_leaf}" if prefix else rendered_leaf)
+    return values
+
+
 def _leaf_suffix_order(value: str | None) -> int:
     if value is None:
         return 0
-    return ord(value) - ord("A") + 1
+    order = 0
+    for char in value:
+        order = (order * 26) + (ord(char) - ord("A") + 1)
+    return order
 
 
 def _leaf_suffix_from_order(value: int) -> str | None:
     if value == 0:
         return None
-    return chr(ord("A") + value - 1)
+    characters: list[str] = []
+    current = value
+    while current > 0:
+        current, remainder = divmod(current - 1, 26)
+        characters.append(chr(ord("A") + remainder))
+    return "".join(reversed(characters))
 
 
 def _render_leaf_label_component(*, prefix: str, numeric_base: int, suffix: str | None) -> str:

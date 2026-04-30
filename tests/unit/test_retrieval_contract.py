@@ -27,6 +27,13 @@ def test_expand_chunk_number_range_handles_numeric_to_suffixed_leaf() -> None:
     ]
 
 
+def test_expand_chunk_number_range_handles_suffixed_to_numeric_leaf() -> None:
+    """Chunk-number ranges should support labels like B4.1.2C through B4.1.4."""
+    expected = [f"B4.1.2{suffix}" for suffix in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
+    expected.extend(["B4.1.3", "B4.1.4"])
+    assert expand_chunk_number_range(start="B4.1.2C", end="B4.1.4") == expected
+
+
 def test_expand_chunk_number_range_handles_alphabetic_leaf_suffix() -> None:
     """Chunk-number ranges should support labels like B4.1.9A through B4.1.9E."""
     assert expand_chunk_number_range(start="B4.1.9A", end="B4.1.9E") == [
