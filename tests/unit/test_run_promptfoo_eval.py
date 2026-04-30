@@ -211,3 +211,40 @@ def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
         "--run-id",
         "2026-04-04_09-15-00_retrieve-suite",
     ]
+
+
+def test_runner_supports_experiment_dirs_outside_project_root(tmp_path: Path) -> None:
+    """Runner should fall back to absolute paths when experiment dirs live outside the repo root."""
+    module = _load_module()
+    command_runner = RecordingCommandRunner()
+    project_root = tmp_path / "repo"
+    experiment_dir = tmp_path / "external" / "promptfoo_regression"
+    project_root.mkdir()
+
+    (project_root / "config").mkdir(parents=True, exist_ok=True)
+    (project_root / "prompts").mkdir(parents=True, exist_ok=True)
+    (project_root / "config" / "policy.default.yaml").write_text("retrieval: {}", encoding="utf-8")
+    (project_root / "config" / "en-fr-glossary.yaml").write_text("question_glossary: []", encoding="utf-8")
+    (project_root / "prompts" / "answer_prompt_A.txt").write_text("A", encoding="utf-8")
+    (project_root / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
+    module.DEFAULT_POLICY_PATH = project_root / "config" / "policy.default.yaml"
+    module.DEFAULT_GLOSSARY_PATH = project_root / "config" / "en-fr-glossary.yaml"
+    module.DEFAULT_PROMPT_A_PATH = project_root / "prompts" / "answer_prompt_A.txt"
+    module.DEFAULT_PROMPT_B_PATH = project_root / "prompts" / "answer_prompt_B.txt"
+
+    runner = module.PromptfooEvalRunner(
+        project_root=project_root,
+        experiment_dir=experiment_dir,
+        suite="answer",
+        now_fn=lambda: datetime(2026, 4, 4, 9, 15, 0, tzinfo=UTC),
+        command_runner=command_runner,
+    )
+
+    exit_code = runner.run(promptfoo_args=[], description="external experiment")
+
+    assert exit_code == 0
+    metadata = json.loads((experiment_dir / "runs" / "2026-04-04_09-15-00_external-experiment" / "run.json").read_text(encoding="utf-8"))
+    assert metadata["artifacts_path"].startswith(str((experiment_dir / "runs").resolve()))
+    assert metadata["promptfoo_config_dir"].startswith(str((experiment_dir / ".promptfoo").resolve()))
+    assert command_runner.calls[2][0][0:4] == ["uv", "run", "python", "experiments/analysis/approach_detection/generate_approach_detection_diagnostics.py"]
+    assert command_runner.calls[2][0][5] == str(experiment_dir.resolve())

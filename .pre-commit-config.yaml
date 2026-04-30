@@ -6,16 +6,16 @@ repos:
         entry: make format
         language: system
         pass_filenames: false
-        files: ^(src/|tests/|scripts/|config/|prompts/|promptfoo_src/|Makefile|pyproject.toml)$
+        files: ^(src/|tests/|scripts/|config/|prompts/|promptfoo_src/|Makefile|pyproject.toml).*
       - id: make-lint
         name: make lint
         entry: make lint
         language: system
         pass_filenames: false
-        files: ^(src/)$
+        files: ^src/.*
       - id: retrieval-evals
         name: retrieval evals
         entry: uv run python scripts/run_retrieval_eval_hook.py --pair Q1 Q1.4 --pair Q2 Q2.3 --pair Q3 Q3.8
         language: system
         pass_filenames: false
-        files: ^(config/|prompts/|src/)$
+        files: ^(config/|prompts/|src/).*

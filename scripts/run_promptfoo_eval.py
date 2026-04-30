@@ -154,8 +154,8 @@ class PromptfooEvalRunner:
         """Write run metadata for reproducibility."""
         metadata = {
             "description": run_layout.description,
-            "artifacts_path": str(run_layout.artifacts_dir.relative_to(self._project_root)),
-            "promptfoo_config_dir": str(run_layout.promptfoo_config_dir.relative_to(self._project_root)),
+            "artifacts_path": self._format_path_for_metadata(run_layout.artifacts_dir),
+            "promptfoo_config_dir": self._format_path_for_metadata(run_layout.promptfoo_config_dir),
             "promptfoo_args": promptfoo_args,
             "created_at_utc": self._now_fn().astimezone(UTC).isoformat(),
             "archived_artifacts": archived_artifacts,
@@ -220,14 +220,14 @@ class PromptfooEvalRunner:
         file_bytes = destination_path.read_bytes()
         digest = hashlib.sha256(file_bytes).hexdigest()
         return {
-            "source_path": str(source_path.relative_to(self._project_root)),
-            "archived_path": str(destination_path.relative_to(self._project_root)),
+            "source_path": self._format_path_for_metadata(source_path),
+            "archived_path": self._format_path_for_metadata(destination_path),
             "sha256": digest,
         }
 
     def _run_retrieval_diagnostics(self, env: dict[str, str], run_layout: PromptfooRunLayout) -> int:
         """Generate retrieval diagnostics for the archived run."""
-        experiment_arg = str(run_layout.run_dir.parent.parent.relative_to(self._project_root))
+        experiment_arg = self._format_path_for_metadata(run_layout.run_dir.parent.parent)
         diagnostics_commands = [
             [
                 "uv",
@@ -258,7 +258,7 @@ class PromptfooEvalRunner:
 
     def _run_answer_diagnostics(self, env: dict[str, str], run_layout: PromptfooRunLayout) -> int:
         """Generate answer diagnostics for the archived run."""
-        experiment_arg = str(run_layout.run_dir.parent.parent.relative_to(self._project_root))
+        experiment_arg = self._format_path_for_metadata(run_layout.run_dir.parent.parent)
         diagnostics_commands = [
             [
                 "uv",
@@ -291,6 +291,13 @@ class PromptfooEvalRunner:
                 logger.error(f"{diagnostics_name.capitalize()} diagnostics command failed with exit code {result.returncode}: {' '.join(command)}")
                 return result.returncode
         return 0
+
+    def _format_path_for_metadata(self, path: Path) -> str:
+        """Return a repo-relative path when possible, otherwise an absolute path."""
+        try:
+            return str(path.relative_to(self._project_root))
+        except ValueError:
+            return str(path)
 
 
 def _slugify(value: str) -> str:
