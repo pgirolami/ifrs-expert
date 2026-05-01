@@ -16,7 +16,7 @@ assert:
   - type: javascript
     value: |
       const data = JSON.parse(output);
-      return ['oui', 'non', 'oui_sous_conditions'].includes(data.recommendation?.answer);
+      return ['oui'].includes(data.recommendation?.answer);
     description: Recommendation answer is one of the allowed values
 
   - type: javascript
@@ -35,6 +35,14 @@ assert:
         a.references.length >= 1
       );
     description: Each approach has applicability and at least one reference
+
+assert_retrieve:
+  required_documents:
+    - ifrs13
+  required_section_ranges:
+    - document: ifrs13
+      start: "42"
+      end: "42"
 
 variants:
   - id: Q5.0

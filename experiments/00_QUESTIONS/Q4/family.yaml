@@ -38,17 +38,11 @@ assert:
 
 assert_retrieve:
   required_documents:
-    - ifrs9
+    - ifric22
   required_section_ranges:
-    - document: ifrs9
-      start: "4.1.1"
-      end: "4.1.4"
-    - document: ifrs9
-      start: "B4.1.20"
-      end: "B4.1.26"
-    - document: ifrs9
-      start: "B4.1.10"
-      end: "B4.1.19"
+    - document: ifric22
+      start: "8"
+      end: "9"
       
 variants:
   - id: Q4.0

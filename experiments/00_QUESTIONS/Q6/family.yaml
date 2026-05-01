@@ -36,6 +36,29 @@ assert:
       );
     description: Each approach has applicability and at least one reference
 
+assert_retrieve:
+  required_documents:
+    - ifrs10
+  required_section_ranges:
+    - document: ifrs10
+      start: "10"
+      end: "12"
+    - document: ifrs10
+      start: "B11"
+      end: "B12"
+    - document: ifrs10
+      start: "B16"
+      end: "B17"
+    - document: ifrs10
+      start: "B22"
+      end: "B25"
+    - document: ifrs10
+      start: "B36"
+      end: "B36"
+    - document: ifrs10
+      start: "B47"
+      end: "B50"
+
 variants:
   - id: Q6.0
     file: Q6.0.txt
