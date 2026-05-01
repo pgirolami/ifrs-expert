@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si le revenu provenant d’une licence de propriété intellectuelle est constaté à une date donnée ou sur la durée du droit selon la nature de la promesse de licence en IFRS 15",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs15"],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I applied the strict precedence rule by selecting the IFRS standard document as the single governing lineage because it directly addresses revenue recognition for licences of intellectual property and there is no higher-precedence overlapping document in the provided context.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low; the context includes explicit IFRS 15 licence guidance that directly governs whether licence revenue is recognised over time or at a point in time."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["B52", "B53", "B54", "B55", "B56", "B58", "B60", "B61"],
+        "reason": "These paragraphs directly govern the timing model for revenue recognition on licences of intellectual property."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["31", "32", "35", "38"],
+        "reason": "These paragraphs provide the core over-time versus point-in-time framework that the licence guidance applies."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["39", "40", "41", "42", "43", "44", "45"],
+        "reason": "These paragraphs support the over-time model by governing measurement of progress once that model applies."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B62"],
+        "reason": "This paragraph clarifies factors that must be disregarded when distinguishing right-to-access from right-to-use licences."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B63", "B63A", "B63B", "58"],
+        "reason": "These paragraphs provide a royalty-specific overlay relevant to licence arrangements but do not create a separate top-level timing model."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["E4", "E5", "E6"],
+        "reason": "These agenda decisions relate to real estate revenue and do not help identify peer approaches for intellectual property licences."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72"],
+        "reason": "These paragraphs address transaction price and other pricing mechanics rather than the top-level timing models for licence revenue."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B34", "B34A", "B35", "B35A", "B35B", "B36", "B37", "B37A", "B38", "E11"],
+        "reason": "These paragraphs concern principal-versus-agent assessment, which is topically related but not part of identifying the licence timing approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence performance obligation assessed by reference to the nature of the licence promise",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B56", "B58", "B60", "B61"]
+        }
+      ],
+      "mapped_approaches": [
+        "right_to_access_the_entitys_intellectual_property",
+        "right_to_use_the_entitys_intellectual_property"
+      ]
+    },
+    {
+      "family": "Licence combined with other promised goods or services as a single performance obligation",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B53", "B54", "B55", "31", "32", "35", "38"]
+        }
+      ],
+      "mapped_approaches": [
+        "revenue_recognised_over_time",
+        "revenue_recognised_at_a_point_in_time"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access the entity’s intellectual property",
+      "normalized_label": "right_to_access_the_entitys_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as a distinct licence model that results in revenue recognition over time."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use the entity’s intellectual property",
+      "normalized_label": "right_to_use_the_entitys_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as a distinct licence model that results in revenue recognition at a point in time."
+    }
+  ]
+}

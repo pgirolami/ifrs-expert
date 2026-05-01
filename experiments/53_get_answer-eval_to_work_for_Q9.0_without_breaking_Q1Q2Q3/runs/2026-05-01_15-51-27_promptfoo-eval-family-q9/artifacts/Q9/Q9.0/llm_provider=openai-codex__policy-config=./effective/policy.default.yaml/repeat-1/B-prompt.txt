@@ -1,0 +1,509 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ifrs15" document_type="IFRS-S" document_kind="standard">
+<chunk id="48661" doc_uid="ifrs15" paragraph="31" score="0.0000">
+An entity shall recognise revenue when (or as) the entity satisfies a performance obligation by transferring a promised good or service (ie an asset) to a customer. An asset is transferred when (or as) the customer obtains control of that asset.
+</chunk>
+
+<chunk id="48662" doc_uid="ifrs15" paragraph="32" score="0.0000">
+For each performance obligation identified in accordance with paragraphs 22⁠–⁠30, an entity shall determine at contract inception whether it satisfies the performance obligation over time (in accordance with paragraphs 35⁠–⁠37) or satisfies the performance obligation at a point in time (in accordance with paragraph 38). If an entity does not satisfy a performance obligation over time, the performance obligation is satisfied at a point in time.
+</chunk>
+
+<chunk id="48665" doc_uid="ifrs15" paragraph="35" score="0.0000">
+An entity transfers control of a good or service over time and, therefore, satisfies a performance obligation and recognises revenue over time, if one of the following criteria is met: E4, E5
+(a)the customer simultaneously receives and consumes the benefits provided by the entity’s performance as the entity performs (see paragraphs B3⁠–⁠B4);
+(b)the entity’s performance creates or enhances an asset (for example, work in progress) that the customer controls as the asset is created or enhanced (see paragraph B5); or
+(c)the entity’s performance does not create an asset with an alternative use to the entity (see paragraph 36) and the entity has an enforceable right to payment for performance completed to date (see paragraph 37). E6
+</chunk>
+
+<chunk id="48671" doc_uid="ifrs15" paragraph="38" score="0.0000">
+If a performance obligation is not satisfied over time in accordance with paragraphs 35⁠–⁠37, an entity satisfies the performance obligation at a point in time. To determine the point in time at which a customer obtains control of a promised asset and the entity satisfies a performance obligation, the entity shall consider the requirements for control in paragraphs 31⁠–⁠34. In addition, an entity shall consider indicators of the transfer of control, which include, but are not limited to, the following:
+(a)The entity has a present right to payment for the asset—if a customer is presently obliged to pay for an asset, then that may indicate that the customer has obtained the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset in exchange.
+(b)The customer has legal title to the asset—legal title may indicate which party to a contract has the ability to direct the use of, and obtain substantially all of the remaining benefits from, an asset or to restrict the access of other entities to those benefits. Therefore, the transfer of legal title of an asset may indicate that the customer has obtained control of the asset. If an entity retains legal title solely as protection against the customer’s failure to pay, those rights of the entity would not preclude the customer from obtaining control of an asset.
+(c)The entity has transferred physical possession of the asset—the customer’s physical possession of an asset may indicate that the customer has the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset or to restrict the access of other entities to those benefits. However, physical possession may not coincide with control of an asset. For example, in some repurchase agreements and in some consignment arrangements, a customer or consignee may have physical possession of an asset that the entity controls. Conversely, in some bill-and-hold arrangements, the entity may have physical possession of an asset that the customer controls. Paragraphs B64⁠–⁠B76, B77⁠–⁠B78 and B79⁠–⁠B82 provide guidance on accounting for repurchase agreements, consignment arrangements and bill-and-hold arrangements, respectively.
+(d)The customer has the significant risks and rewards of ownership of the asset—the transfer of the significant risks and rewards of ownership of an asset to the customer may indicate that the customer has obtained the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset. However, when evaluating the risks and rewards of ownership of a promised asset, an entity shall exclude any risks that give rise to a separate performance obligation in addition to the performance obligation to transfer the asset. For example, an entity may have transferred control of an asset to a customer but not yet satisfied an additional performance obligation to provide maintenance services related to the transferred asset.
+(e)The customer has accepted the asset—the customer’s acceptance of an asset may indicate that it has obtained the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset. To evaluate the effect of a contractual customer acceptance clause on when control of an asset is transferred, an entity shall consider the guidance in paragraphs B83⁠–⁠B86.
+</chunk>
+
+<chunk id="48672" doc_uid="ifrs15" paragraph="39" score="0.0000">
+For each performance obligation satisfied over time in accordance with paragraphs 35⁠–⁠37, an entity shall recognise revenue over time by measuring the progress towards complete satisfaction of that performance obligation. The objective when measuring progress is to depict an entity’s performance in transferring control of goods or services promised to a customer (ie the satisfaction of an entity’s performance obligation). E7
+</chunk>
+
+<chunk id="48674" doc_uid="ifrs15" paragraph="40" score="0.0000">
+An entity shall apply a single method of measuring progress for each performance obligation satisfied over time and the entity shall apply that method consistently to similar performance obligations and in similar circumstances. At the end of each reporting period, an entity shall remeasure its progress towards complete satisfaction of a performance obligation satisfied over time.
+</chunk>
+
+<chunk id="48675" doc_uid="ifrs15" paragraph="41" score="0.0000">
+Appropriate methods of measuring progress include output methods and input methods. Paragraphs B14⁠–⁠B19 provide guidance for using output methods and input methods to measure an entity’s progress towards complete satisfaction of a performance obligation. In determining the appropriate method for measuring progress, an entity shall consider the nature of the good or service that the entity promised to transfer to the customer.
+</chunk>
+
+<chunk id="48676" doc_uid="ifrs15" paragraph="42" score="0.0000">
+When applying a method for measuring progress, an entity shall exclude from the measure of progress any goods or services for which the entity does not transfer control to a customer. Conversely, an entity shall include in the measure of progress any goods or services for which the entity does transfer control to a customer when satisfying that performance obligation.
+</chunk>
+
+<chunk id="48677" doc_uid="ifrs15" paragraph="43" score="0.0000">
+As circumstances change over time, an entity shall update its measure of progress to reflect any changes in the outcome of the performance obligation. Such changes to an entity’s measure of progress shall be accounted for as a change in accounting estimate in accordance with IAS 8 Basis of Preparation of Financial Statements.
+</chunk>
+
+<chunk id="48678" doc_uid="ifrs15" paragraph="44" score="0.0000">
+An entity shall recognise revenue for a performance obligation satisfied over time only if the entity can reasonably measure its progress towards complete satisfaction of the performance obligation. An entity would not be able to reasonably measure its progress towards complete satisfaction of a performance obligation if it lacks reliable information that would be required to apply an appropriate method of measuring progress.
+</chunk>
+
+<chunk id="48679" doc_uid="ifrs15" paragraph="45" score="0.0000">
+In some circumstances (for example, in the early stages of a contract), an entity may not be able to reasonably measure the outcome of a performance obligation, but the entity expects to recover the costs incurred in satisfying the performance obligation. In those circumstances, the entity shall recognise revenue only to the extent of the costs incurred until such time that it can reasonably measure the outcome of the performance obligation.
+</chunk>
+
+<chunk id="48823" doc_uid="ifrs15" paragraph="B52" score="0.5515">
+A licence establishes a customer’s rights to the intellectual property of an entity. Licences of intellectual property may include, but are not limited to, licences of any of the following:
+(a)software and technology;
+(b)motion pictures, music and other forms of media and entertainment;
+(c)franchises; and
+(d)patents, trademarks and copyrights.
+</chunk>
+
+<chunk id="48824" doc_uid="ifrs15" paragraph="B53" score="0.0000">
+In addition to a promise to grant a licence (or licences) to a customer, an entity may also promise to transfer other goods or services to the customer. Those promises may be explicitly stated in the contract or implied by an entity’s customary business practices, published policies or specific statements (see paragraph 24). As with other types of contracts, when a contract with a customer includes a promise to grant a licence (or licences) in addition to other promised goods or services, an entity applies paragraphs 22⁠–⁠30 to identify each of the performance obligations in the contract.
+</chunk>
+
+<chunk id="48825" doc_uid="ifrs15" paragraph="B54" score="0.0000">
+If the promise to grant a licence is not distinct from other promised goods or services in the contract in accordance with paragraphs 26⁠–⁠30, an entity shall account for the promise to grant a licence and those other promised goods or services together as a single performance obligation. Examples of licences that are not distinct from other goods or services promised in the contract include the following:
+(a)a licence that forms a component of a tangible good and that is integral to the functionality of the good; and
+(b)a licence that the customer can benefit from only in conjunction with a related service (such as an online service provided by the entity that enables, by granting a licence, the customer to access content).
+</chunk>
+
+<chunk id="48826" doc_uid="ifrs15" paragraph="B55" score="0.5548">
+If the licence is not distinct, an entity shall apply paragraphs 31⁠–⁠38 to determine whether the performance obligation (which includes the promised licence) is a performance obligation that is satisfied over time or satisfied at a point in time.
+</chunk>
+
+<chunk id="48827" doc_uid="ifrs15" paragraph="B56" score="0.5585">
+If the promise to grant the licence is distinct from the other promised goods or services in the contract and, therefore, the promise to grant the licence is a separate performance obligation, an entity shall determine whether the licence transfers to a customer either at a point in time or over time. In making this determination, an entity shall consider whether the nature of the entity’s promise in granting the licence to a customer is to provide the customer with either:
+(a)a right to access the entity’s intellectual property as it exists throughout the licence period; or
+(b)a right to use the entity’s intellectual property as it exists at the point in time at which the licence is granted.
+</chunk>
+
+<chunk id="48828" doc_uid="ifrs15" paragraph="B58" score="0.0000">
+The nature of an entity’s promise in granting a licence is a promise to provide a right to access the entity’s intellectual property if all of the following criteria are met:
+(a)the contract requires, or the customer reasonably expects, that the entity will undertake activities that significantly affect the intellectual property to which the customer has rights (see paragraphs B59 and B59A);
+(b)the rights granted by the licence directly expose the customer to any positive or negative effects of the entity’s activities identified in paragraph B58(a) ; and
+(c)those activities do not result in the transfer of a good or a service to the customer as those activities occur (see paragraph 25).
+</chunk>
+
+<chunk id="48829" doc_uid="ifrs15" paragraph="B59" score="0.0000">
+Factors that may indicate that a customer could reasonably expect that an entity will undertake activities that significantly affect the intellectual property include the entity’s customary business practices, published policies or specific statements. Although not determinative, the existence of a shared economic interest (for example, a sales-based royalty) between the entity and the customer related to the intellectual property to which the customer has rights may also indicate that the customer could reasonably expect that the entity will undertake such activities.
+</chunk>
+
+<chunk id="48830" doc_uid="ifrs15" paragraph="B59A" score="0.0000">
+An entity’s activities significantly affect the intellectual property to which the customer has rights when either:
+(a)those activities are expected to significantly change the form (for example, the design or content) or the functionality (for example, the ability to perform a function or task) of the intellectual property; or
+(b)the ability of the customer to obtain benefit from the intellectual property is substantially derived from, or dependent upon, those activities. For example, the benefit from a brand is often derived from, or dependent upon, the entity’s ongoing activities that support or maintain the value of the intellectual property.
+Accordingly, if the intellectual property to which the customer has rights has significant stand-alone functionality, a substantial portion of the benefit of that intellectual property is derived from that functionality. Consequently, the ability of the customer to obtain benefit from that intellectual property would not be significantly affected by the entity’s activities unless those activities significantly change its form or functionality. Types of intellectual property that often have significant stand-alone functionality include software, biological compounds or drug formulas, and completed media content (for example, films, television shows and music recordings).
+</chunk>
+
+<chunk id="48831" doc_uid="ifrs15" paragraph="B60" score="0.5657">
+If the criteria in paragraph B58 are met, an entity shall account for the promise to grant a licence as a performance obligation satisfied over time because the customer will simultaneously receive and consume the benefit from the entity’s performance of providing access to its intellectual property as the performance occurs (see paragraph 35(a)). An entity shall apply paragraphs 39⁠–⁠45 to select an appropriate method to measure its progress towards complete satisfaction of that performance obligation to provide access.
+</chunk>
+
+<chunk id="48832" doc_uid="ifrs15" paragraph="B61" score="0.5827">
+If the criteria in paragraph B58 are not met, the nature of an entity’s promise is to provide a right to use the entity’s intellectual property as that intellectual property exists (in terms of form and functionality) at the point in time at which the licence is granted to the customer. This means that the customer can direct the use of, and obtain substantially all of the remaining benefits from, the licence at the point in time at which the licence transfers. An entity shall account for the promise to provide a right to use the entity’s intellectual property as a performance obligation satisfied at a point in time. An entity shall apply paragraph 38 to determine the point in time at which the licence transfers to the customer. However, revenue cannot be recognised for a licence that provides a right to use the entity’s intellectual property before the beginning of the period during which the customer is able to use and benefit from the licence. For example, if a software licence period begins before an entity provides (or otherwise makes available) to the customer a code that enables the customer to immediately use the software, the entity would not recognise revenue before that code has been provided (or otherwise made available).
+</chunk>
+
+<chunk id="48833" doc_uid="ifrs15" paragraph="B62" score="0.0000">
+An entity shall disregard the following factors when determining whether a licence provides a right to access the entity’s intellectual property or a right to use the entity’s intellectual property:
+(a)Restrictions of time, geographical region or use—those restrictions define the attributes of the promised licence, rather than define whether the entity satisfies its performance obligation at a point in time or over time.
+(b)Guarantees provided by the entity that it has a valid patent to intellectual property and that it will defend that patent from unauthorised use—a promise to defend a patent right is not a performance obligation because the act of defending a patent protects the value of the entity’s intellectual property assets and provides assurance to the customer that the licence transferred meets the specifications of the licence promised in the contract.
+</chunk>
+
+<chunk id="48834" doc_uid="ifrs15" paragraph="B63" score="0.6015">
+Notwithstanding the requirements in paragraphs 56⁠–⁠59, an entity shall recognise revenue for a sales-based or usage-based royalty promised in exchange for a licence of intellectual property only when (or as) the later of the following events occurs:
+(a)the subsequent sale or usage occurs; and
+(b)the performance obligation to which some or all of the sales-based or usage-based royalty has been allocated has been satisfied (or partially satisfied).
+</chunk>
+
+<chunk id="48835" doc_uid="ifrs15" paragraph="B63A" score="0.0000">
+The requirement for a sales-based or usage-based royalty in paragraph B63 applies when the royalty relates only to a licence of intellectual property or when a licence of intellectual property is the predominant item to which the royalty relates (for example, the licence of intellectual property may be the predominant item to which the royalty relates when the entity has a reasonable expectation that the customer would ascribe significantly more value to the licence than to the other goods or services to which the royalty relates).
+</chunk>
+
+<chunk id="48836" doc_uid="ifrs15" paragraph="B63B" score="0.0000">
+When the requirement in paragraph B63A is met, revenue from a sales-based or usage-based royalty shall be recognised wholly in accordance with paragraph B63. When the requirement in paragraph B63A is not met, the requirements on variable consideration in paragraphs 50⁠–⁠59 apply to the sales-based or usage-based royalty.
+</chunk>
+</Document>
+</context>
+
+<question>
+Comment constater le revenu lié aux licences de propriété intellectuelle : à une date donnée ou de façon étalée sur la durée du droit ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si le revenu provenant d’une licence de propriété intellectuelle est comptabilisé à un moment précis ou sur la durée du droit, selon la nature de la promesse de licence en IFRS 15.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs15"
+    ],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I selected IFRS 15 because it is the only candidate governing standard in the provided context, and under the stated precedence rule no overlapping lower-precedence document exists to displace it.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low: the context includes explicit licence-specific guidance in IFRS 15 that directly addresses the timing of revenue recognition for intellectual property licences."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "B52",
+          "B53",
+          "B54",
+          "B55",
+          "B56",
+          "B58",
+          "B59",
+          "B59A",
+          "B60",
+          "B61",
+          "B62"
+        ],
+        "reason": "These paragraphs directly govern how to determine the nature of a licence promise and whether revenue from a licence is recognised over time or at a point in time."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "31",
+          "32",
+          "35",
+          "38"
+        ],
+        "reason": "These paragraphs provide the core transfer-of-control framework and the over-time versus point-in-time recognition bases that the licence guidance applies."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45"
+        ],
+        "reason": "These paragraphs support the measurement of progress when a licence-related performance obligation is satisfied over time."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "B63",
+          "B63A",
+          "B63B"
+        ],
+        "reason": "These paragraphs modify the revenue recognition pattern for sales-based or usage-based royalties related to licences of intellectual property."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "35(c)",
+          "36",
+          "37",
+          "E6"
+        ],
+        "reason": "These paragraphs address over-time recognition for created assets and enforceable rights to payment, which are not the licence-specific peer models for this issue."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59"
+        ],
+        "reason": "These paragraphs concern transaction price and variable consideration generally rather than identifying the core peer timing models for licence revenue."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "60",
+          "61",
+          "62",
+          "63",
+          "64",
+          "65"
+        ],
+        "reason": "These paragraphs relate to significant financing components, which do not determine whether licence revenue is recognised over time or at a point in time."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "66",
+          "67",
+          "68",
+          "69",
+          "70",
+          "71",
+          "72"
+        ],
+        "reason": "These paragraphs address non-cash consideration and consideration payable to a customer, not the top-level licence timing models."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "B34",
+          "B34A",
+          "B35",
+          "B35A",
+          "B35B",
+          "B36",
+          "B37",
+          "B37A",
+          "B38",
+          "E11"
+        ],
+        "reason": "These paragraphs address principal-versus-agent assessment, which is topically related to revenue but not relevant to identifying licence timing approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence of intellectual property: determine whether the promise is to provide access to intellectual property or to provide use of intellectual property",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B56",
+            "B58",
+            "B59",
+            "B59A",
+            "B60",
+            "B61",
+            "B62"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "right_to_access_intellectual_property",
+        "right_to_use_intellectual_property"
+      ]
+    },
+    {
+      "family": "Licence not distinct from other promised goods or services: assess the combined performance obligation under the general transfer-of-control model",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B54",
+            "B55",
+            "31",
+            "32",
+            "35",
+            "38"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "revenue_recognised_over_time",
+        "revenue_recognised_at_a_point_in_time"
+      ]
+    },
+    {
+      "family": "Sales-based or usage-based royalty on a licence of intellectual property: special royalty recognition constraint",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B63",
+            "B63A",
+            "B63B"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "sales_or_usage_based_royalty_recognition"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats this as a distinct licence model, with revenue recognised over time when the criteria in paragraph B58 are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats this as a distinct licence model, with revenue recognised at a point in time when the criteria in paragraph B58 are not met."
+    },
+    {
+      "id": "approach_3",
+      "label": "Revenue recognised over time",
+      "normalized_label": "revenue_recognised_over_time",
+      "rationale_for_inclusion": "Where a licence is not distinct and is part of a combined performance obligation, IFRS 15 requires assessment under the general over-time recognition model."
+    },
+    {
+      "id": "approach_4",
+      "label": "Revenue recognised at a point in time",
+      "normalized_label": "revenue_recognised_at_a_point_in_time",
+      "rationale_for_inclusion": "Where a licence is not distinct and the combined performance obligation does not meet over-time criteria, IFRS 15 requires point-in-time recognition."
+    },
+    {
+      "id": "approach_5",
+      "label": "Sales-based or usage-based royalty recognition",
+      "normalized_label": "sales_or_usage_based_royalty_recognition",
+      "rationale_for_inclusion": "IFRS 15 provides a distinct recognition model for royalties promised in exchange for a licence of intellectual property."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "paragraph attribute",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ]
+}

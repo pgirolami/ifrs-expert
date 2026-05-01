@@ -1,0 +1,226 @@
+You are an IFRS expert performing structured accounting analysis.
+
+<context>
+{{CHUNKS}}
+</context>
+
+<question>
+{{QUERY}}
+</question>
+
+<instructions>
+Use only the information in this message's context and the question.
+Do not do any web searches.
+Answer in English.
+
+Your task is NOT to write the final answer.
+
+Your task is to:
+
+1. Identify the primary accounting issue raised by the question.
+
+2. Classify the provided context into:
+   - primary authority: directly governs that accounting issue
+   - supporting authority: constrains, modifies, clarifies, illustrates, or provides a distinct alternative model relevant to that issue but only if it is not itself an overlapping superseded governing standard
+   - peripheral authority: topically related but not relevant for identifying peer approaches within that issue
+
+3. Using only primary and supporting authority, identify the relevant top-level accounting treatment families.
+
+4. Map those treatment families to peer top-level accounting approaches.
+
+Core boundary of this step:
+- This step is for approach identification only.
+- This step is NOT for deciding which approach is most likely to apply.
+- This step is NOT for narrowing the set of approaches based on the specific facts beyond what is necessary to identify the accounting issue and the relevant peer models.
+- If multiple peer top-level approaches are grounded in the identified accounting issue, include them even if one appears more likely to apply later.
+
+Authority competition resolution (must occur BEFORE any classification):
+- Resolve to a single governing lineage and discard the other documents when two or more governing documents address the same accounting issue, model, scope decision, recognition basis, measurement basis, or eligibility question, even if one is legacy guidance and even if the wording is consistent.
+- Apply this precedence rule strictly: IFRS supersedes IAS, and IFRIC supersedes SIC.
+- Any lower-precedence overlapping governing document is discarded.
+
+Effects of discarding:
+- Discarded documents are removed from the candidate set prior to classification.
+- Discarded documents are ineligible for all authority classifications (primary, supporting, peripheral).
+- Discarded documents must not appear in authority_classification, treatment_families, approaches, or anywhere else in the output.
+
+Reporting requirement:
+- Every document listed in discarded_due_to_overlap must not appear anywhere else in the JSON.
+- In authority_resolution.selection_reason, explicitly describe the precedence rule you applied.
+
+Authority hierarchy — use document_kind of each Document block to guide classification:
+- Treat 'standard' documents as candidates for governing authority or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+- Use 'interpretation' as supporting authority only or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+- Use 'implementation_guidance', 'illustrative_examples', and 'basis_for_conclusions' as supporting or peripheral authority, or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+
+Approach-identification rules:
+- Output only approaches that are peers at the same level of abstraction.
+- Output top-level IFRS accounting models, accounting treatments, recognition bases, measurement bases, or presentation bases when those are the relevant peer approaches for the issue.
+- When IFRS defines multiple named accounting models within the identified issue, those named models must be used as the peer top-level approaches. Do not replace recognized IFRS model names with a broader descriptive category.
+- When the governing authority supports multiple distinct accounting models, the output should typically contain more than two approaches.
+- Do not output pathway-specific, stage-specific, scoped, exposure-specific, document-specific, or mechanics-specific formulations as final approaches unless IFRS treats them as distinct top-level accounting models.
+- Do not output:
+  - stage-specific instances of a broader treatment
+  - fallback or absence of treatment or absence of approach
+  - binary or eligibility-based labels (e.g., 'hedge', 'no hedge', 'qualifies', 'does not qualify')
+  - negative conclusions
+  - conditions, tests, eligibility criteria, or implementation mechanics
+  - preliminary applicability judgments
+  - labels that merely restate the fact pattern
+
+Overlay / exception / pricing-rule exclusion rule:
+- Do not output as a separate peer top-level approach a rule that only constrains, times, prices, caps, allocates, or otherwise modifies recognition or measurement within an already identified accounting model.
+- Do not output as a peer approach a special rule for variable consideration, royalties, allocation, constraint, sequencing, exception handling, or other overlay mechanics unless the question's primary accounting issue is itself about that distinct rule.
+- If a rule applies only after one of the peer top-level approaches has already been selected, treat it as an overlay, modifier, or later-step consideration, not as a separate peer approach.
+- A rule may be relevant supporting authority without being a peer approach.
+- Include such overlays or exceptions only if they constitute a genuinely distinct IFRS accounting model, recognition basis, measurement basis, or presentation basis within the identified issue.
+
+Qualifier rule:
+- If one candidate differs from another only because it adds a timing, scope, reporting-level, instrument-type, exposure-type, or fact-pattern qualifier, prefer the broader top-level accounting approach unless the qualifier changes the accounting model itself.
+- Preserve qualifying details for later applicability analysis, not as separate peer approaches, unless IFRS treats them as distinct top-level approaches.
+- If the qualifier identifies a distinct IFRS recognition basis, measurement basis, presentation basis, or named accounting model, retain it as a separate peer approach.
+- If a candidate differs only because it adds an overlay, exception, pricing rule, variable-consideration rule, or other secondary mechanic within the same model, do not retain it as a separate peer approach.
+
+Anti-collapse rule:
+- Do NOT eliminate a peer top-level accounting approach merely because the facts in the question make another approach seem more directly applicable.
+- Do NOT reduce the output to a single approach unless the primary and supporting authority reasonably support only one peer top-level approach within the accounting issue.
+- Fact-pattern details should help identify the accounting issue and relevant treatment families, but should usually be preserved for later applicability assessment rather than used here to exclude peer approaches.
+
+Authority-use rule:
+- Use primary authority first to determine the core issue and the candidate treatment families.
+- Use supporting authority only to confirm, constrain, distinguish, or add a genuinely distinct peer model.
+- Do NOT derive final approaches from peripheral authority.
+- Do NOT let a larger volume of peripheral context outweigh a smaller amount of directly governing authority.
+
+Final-label mapping rule:
+- The final emitted approaches must be the peer top-level accounting approaches, not the intermediate treatment families.
+- If a treatment family maps to a recognized IFRS accounting model or treatment, prefer that recognized model or treatment name as the final label.
+- Prefer standard IFRS terminology over descriptive paraphrases when a recognized name exists.
+- Do NOT emit labels that merely restate the identified exposure, item, stage, qualifier, or procedural path when those map to a broader recognized accounting approach.
+- If multiple standard-looking labels refer to the same peer top-level approach, choose one canonical final label and collapse the others as synonyms rather than emitting multiple approaches.
+- Do NOT emit as final approaches labels for overlays, modifiers, constraints, royalty rules, variable-consideration rules, pricing rules, allocation rules, or other secondary mechanics unless they are themselves the distinct primary accounting issue.
+
+Canonical naming and synonym-collapsing rule:
+- If two or more candidate labels refer to the same peer top-level accounting approach, emit only one final approach using the most canonical recognized IFRS name.
+- Prefer the label that best matches the wording used in the governing authority when that wording identifies a recognized accounting model, treatment, recognition basis, measurement basis, or presentation basis.
+- Collapse synonymous, abbreviated, expanded, or paraphrased labels into a single normalized_label when they refer to the same peer top-level approach.
+- Do not emit separate approaches merely because one label is:
+  - an abbreviation of another
+  - an expanded form of another
+  - a wording variant such as “through profit or loss” vs “profit or loss” vs "pnl"
+  - a British vs American spelling variant
+  - a reordered phrasing with the same accounting meaning
+- When choosing among synonymous labels, prefer:
+  1. the most standard IFRS wording, if clearly identifiable from the governing authority
+  2. otherwise, the fullest explicit label that preserves the accounting meaning
+  3. otherwise, the least paraphrastic wording
+
+Canonical label construction rule:
+- For each final peer top-level accounting approach, construct the label using a fully expanded canonical form rather than an abbreviation, acronym, shorthand, or compressed variant.
+- Prefer a label that preserves the full accounting meaning in plain IFRS terminology.
+- Do not shorten or compress the label if doing so removes words that distinguish the accounting treatment, recognition basis, measurement basis, or presentation basis.
+- Do not use acronyms or initialisms as the final label unless the acronym is itself the primary recognized IFRS name of the approach.
+- If both an abbreviated and a fully expanded form refer to the same peer top-level approach, choose the fully expanded form as the final label.
+- Keep the word order stable and close to the governing authority when that wording expresses the accounting model clearly.
+
+Needs-clarification rule:
+If the context is not sufficient to identify the peer top-level accounting approaches with reasonable confidence, return:
+{
+  "status": "needs_clarification",
+  "questions": ["..."]
+}
+- do NOT include approaches
+
+If answerable, return:
+{
+  "status": "pass",
+  ...
+}
+
+For each approach, output:
+- id
+- label
+- normalized_label
+- rationale_for_inclusion
+
+Normalization rules:
+- normalized_label must be in snake_case
+- normalized_label must be 2–8 words
+- The label and normalized_label must refer to the final peer top-level accounting approach, not to an intermediate treatment family.
+- Prefer concise but fully expanded canonical labels when available.
+- Do not use acronyms, abbreviations, initialisms, or compressed shorthand in the final label unless they are themselves the primary recognized IFRS name.
+- Prefer labels that are explicit enough to remain stable across wording variants and across runs.
+- Avoid negative wording.
+- Avoid fact-pattern-specific qualifiers unless required because they change the top-level model.
+- normalized_label must be derived from the chosen final canonical label, not from an alternative synonym that was collapsed.
+- Build normalized_label directly from the final label by:
+  - lowercasing
+  - replacing spaces and hyphens with underscores
+  - removing punctuation
+  - preserving the same meaning and word order
+- Do not create normalized_label from a shorthand, acronym, or alternative synonym that was not chosen as the final label.
+- Use one normalized_label per peer top-level approach.
+- Do not emit multiple normalized_label values for the same accounting approach.
+
+Output rules:
+- return valid JSON only
+- no markdown
+- no prose before or after JSON
+</instructions>
+
+<output_schema>
+{
+  "status": "pass",
+  "primary_accounting_issue": "short description in French of the core IFRS issue raised by the question",
+  "authority_resolution": {
+    "candidate_governing_documents": ["doc_uid"],
+    "selected_primary_document": "your choice",
+    "selection_reason": "1 sentence explain how you came to decide which to choose",
+    "discarded_due_to_overlap": ["doc_uid"],
+    "residual_uncertainty": "Your estimate of the uncertainty on the choice of the selected primary document and 1 sentence why"
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority directly governs the issue"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority constrains, clarifies, or provides a distinct alternative model"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority is not relevant for identifying peer approaches"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "short English description of the intermediate treatment family",
+      "authority_basis": [
+        {
+          "document": "document identifier found in doc_uid",
+          "references": ["paragraph attribute"]
+        }
+      ],
+      "mapped_approaches": ["snake_case_label"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "short English label",
+      "normalized_label": "snake_case_label",
+      "rationale_for_inclusion": "1 short sentence"
+    }
+  ]
+}
+</output_schema>

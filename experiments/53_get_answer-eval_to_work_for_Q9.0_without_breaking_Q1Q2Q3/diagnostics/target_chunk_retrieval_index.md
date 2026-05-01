@@ -1,0 +1,6 @@
+# 53_initial_eval-retrieve_for_Q9.0 target chunk retrieval diagnostics index
+
+| Run | Provider | Policy | HTML | Markdown | JSON |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-01_15-45-38_promptfoo-eval-family-q9 | Q1 retrieval non-regression gate | standards_only_through_chunks__enriched | [link](../runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html) | [link](../runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md) | [link](../runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.json) |
+| 2026-05-01_16-28-39_promptfoo-eval-family-q9 | Q1 retrieval non-regression gate | standards_only_through_chunks__enriched | [link](../runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html) | [link](../runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md) | [link](../runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.json) |

@@ -1,0 +1,54 @@
+{
+  "experiment_name": "53_initial_eval-retrieve_for_Q9.0",
+  "generated_at": "2026-05-01T17:13:27.753113+00:00",
+  "runs": [
+    {
+      "run_id": "2026-05-01_15-51-27_promptfoo-eval-family-q9",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-51-27_promptfoo-eval-family-q9/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-51-27_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-51-27_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-51-27_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_16-28-59_promptfoo-eval-family-q9",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_16-54-11_promptfoo-eval-family-q9",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-54-11_promptfoo-eval-family-q9/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-54-11_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-54-11_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-54-11_promptfoo-eval-family-q9/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_17-02-57_promptfoo-eval-family-q1-variant-q1-4",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-02-57_promptfoo-eval-family-q1-variant-q1-4/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-02-57_promptfoo-eval-family-q1-variant-q1-4/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-02-57_promptfoo-eval-family-q1-variant-q1-4/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-02-57_promptfoo-eval-family-q1-variant-q1-4/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_17-06-15_promptfoo-eval-family-q2-variant-q2-3",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-06-15_promptfoo-eval-family-q2-variant-q2-3/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-06-15_promptfoo-eval-family-q2-variant-q2-3/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-06-15_promptfoo-eval-family-q2-variant-q2-3/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-06-15_promptfoo-eval-family-q2-variant-q2-3/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_17-11-41_promptfoo-eval-family-q3-variant-q3-8",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-11-41_promptfoo-eval-family-q3-variant-q3-8/diagnostics/approach_detection",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-11-41_promptfoo-eval-family-q3-variant-q3-8/diagnostics/approach_detection/approach_detection_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-11-41_promptfoo-eval-family-q3-variant-q3-8/diagnostics/approach_detection/approach_detection_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_17-11-41_promptfoo-eval-family-q3-variant-q3-8/diagnostics/approach_detection/approach_detection_diagnostics.json"
+    }
+  ]
+}

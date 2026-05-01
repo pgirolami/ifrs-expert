@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination du critère « solely payments of principal and interest » (SPPI) des clauses contractuelles d’un actif financier selon IFRS 9, comme condition de sa classification ultérieure.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because it directly governs the contractual cash flow characteristics test for financial assets, including whether cash flows are solely payments of principal and interest; no overlapping higher-precedence governing document in the context addresses that same issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about the SPPI test, which is expressly addressed in IFRS 9 paragraphs 4.1.2, 4.1.2A, 4.1.3 and B4.1.7–B4.1.26."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "B4.1.19", "B4.1.20", "B4.1.21", "B4.1.22", "B4.1.23", "B4.1.24", "B4.1.25", "B4.1.26"],
+        "reason": "These paragraphs directly define the SPPI test and link it to the possible classification models for financial assets."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs3",
+        "references": ["16(a)"],
+        "reason": "This supports that IFRS 9 classification is the relevant model when financial assets are classified at acquisition, but it does not itself govern the SPPI test."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["11", "AG15", "AG16", "AG20", "AG22", "AG23"],
+        "reason": "IAS 32 helps distinguish financial instruments generally, but it does not govern the SPPI classification criterion for financial assets."
+      },
+      {
+        "document": "ifric12",
+        "references": ["16", "23", "24", "25"],
+        "reason": "IFRIC 12 addresses service concession receivables and points to IFRS 9, but it does not add peer approaches for the SPPI issue itself."
+      },
+      {
+        "document": "ias19",
+        "references": ["114", "124", "125", "132"],
+        "reason": "IAS 19 mentions financial instruments and plan assets in other contexts, which are not relevant to identifying SPPI-based classification approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and held both to collect contractual cash flows and to sell financial assets",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that fail the SPPI condition or are otherwise not within an amortised cost or fair value through other comprehensive income business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.20", "B4.1.21", "B4.1.25", "B4.1.26"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 requires this measurement basis when the asset has SPPI cash flows and is held in a business model to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 requires this measurement basis when the asset has SPPI cash flows and is held in a business model achieved by both collecting contractual cash flows and selling financial assets."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 uses this as the classification outcome for financial assets that do not meet the SPPI condition or do not fit the qualifying business models for the other two approaches."
+    }
+  ]
+}

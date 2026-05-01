@@ -1,0 +1,1691 @@
+{
+  "experiment_name": "53_initial_eval-retrieve_for_Q9.0",
+  "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+  "run_id": "2026-05-01_16-28-59_promptfoo-eval-family-q9",
+  "generated_at": "2026-05-01T16:31:02.947083+00:00",
+  "question_families": [
+    "Q9¤"
+  ],
+  "question_sources": [
+    {
+      "family_id": "Q9¤",
+      "question_path": "experiments/00_QUESTIONS/Q9/Q9.0.txt",
+      "description": "Q9.0 - todo",
+      "question_id": "Q9.0"
+    }
+  ],
+  "question_ids": [
+    "Q9.0"
+  ],
+  "expected_labels": [],
+  "expected_section_ranges": [
+    {
+      "document": "ifrs15",
+      "start": "B56",
+      "end": "B56"
+    },
+    {
+      "document": "ifrs15",
+      "start": "B58",
+      "end": "B58"
+    },
+    {
+      "document": "ifrs15",
+      "start": "B61",
+      "end": "B61"
+    }
+  ],
+  "rows": [
+    {
+      "question_id": "Q9.0",
+      "question_text": "Comment constater le revenu lié aux licences de propriété intellectuelle : à une date donnée ou de façon étalée sur la durée du droit ?",
+      "embedded_question_text": "Comment constater le revenu lié aux licences de propriété intellectuelle : à une date donnée ou de façon étalée sur la durée du droit ?",
+      "family_id": "Q9¤",
+      "run_label": "base",
+      "artifact_dir": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/artifacts/Q9/Q9.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml",
+      "recommendation": "oui_sous_conditions",
+      "approaches": [
+        {
+          "normalized_label": "right_to_access_the_entitys_intellectual_property",
+          "label": "Droit d’accès à la propriété intellectuelle de l’entité",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 3
+        },
+        {
+          "normalized_label": "right_to_use_the_entitys_intellectual_property",
+          "label": "Droit d’utilisation de la propriété intellectuelle de l’entité",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 2
+        }
+      ],
+      "labels": [
+        "right_to_access_the_entitys_intellectual_property",
+        "right_to_use_the_entitys_intellectual_property"
+      ],
+      "missing_expected_labels": [],
+      "spurious_labels": [],
+      "prompt_chunks": [
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "31",
+          "score": 0.0,
+          "chunk_id": "48661",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "32",
+          "score": 0.0,
+          "chunk_id": "48662",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "33",
+          "score": 0.0,
+          "chunk_id": "48663",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "34",
+          "score": 0.0,
+          "chunk_id": "48664",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "48665",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E4",
+          "score": 0.0,
+          "chunk_id": "48666",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E5",
+          "score": 0.0,
+          "chunk_id": "48667",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E6",
+          "score": 0.5615,
+          "chunk_id": "48668",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "48669",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "48670",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "38",
+          "score": 0.0,
+          "chunk_id": "48671",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "39",
+          "score": 0.0,
+          "chunk_id": "48672",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E7",
+          "score": 0.0,
+          "chunk_id": "48673",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "40",
+          "score": 0.0,
+          "chunk_id": "48674",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "41",
+          "score": 0.0,
+          "chunk_id": "48675",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "42",
+          "score": 0.0,
+          "chunk_id": "48676",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "43",
+          "score": 0.0,
+          "chunk_id": "48677",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "48678",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "45",
+          "score": 0.0,
+          "chunk_id": "48679",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "47",
+          "score": 0.0,
+          "chunk_id": "48681",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "48",
+          "score": 0.0,
+          "chunk_id": "48682",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "49",
+          "score": 0.0,
+          "chunk_id": "48683",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "50",
+          "score": 0.0,
+          "chunk_id": "48684",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "51",
+          "score": 0.0,
+          "chunk_id": "48685",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E8",
+          "score": 0.0,
+          "chunk_id": "48686",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "52",
+          "score": 0.0,
+          "chunk_id": "48687",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "53",
+          "score": 0.0,
+          "chunk_id": "48688",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "54",
+          "score": 0.0,
+          "chunk_id": "48689",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "55",
+          "score": 0.0,
+          "chunk_id": "48690",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "56",
+          "score": 0.0,
+          "chunk_id": "48691",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "57",
+          "score": 0.0,
+          "chunk_id": "48692",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "58",
+          "score": 0.5586,
+          "chunk_id": "48693",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "59",
+          "score": 0.0,
+          "chunk_id": "48694",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "60",
+          "score": 0.0,
+          "chunk_id": "48695",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "61",
+          "score": 0.0,
+          "chunk_id": "48696",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "62",
+          "score": 0.0,
+          "chunk_id": "48697",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "63",
+          "score": 0.0,
+          "chunk_id": "48698",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "64",
+          "score": 0.0,
+          "chunk_id": "48699",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "65",
+          "score": 0.5633,
+          "chunk_id": "48700",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "66",
+          "score": 0.0,
+          "chunk_id": "48701",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "67",
+          "score": 0.0,
+          "chunk_id": "48702",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "68",
+          "score": 0.0,
+          "chunk_id": "48703",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "69",
+          "score": 0.0,
+          "chunk_id": "48704",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "70",
+          "score": 0.0,
+          "chunk_id": "48705",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "71",
+          "score": 0.0,
+          "chunk_id": "48706",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "72",
+          "score": 0.0,
+          "chunk_id": "48707",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B34",
+          "score": 0.0,
+          "chunk_id": "48800",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B34A",
+          "score": 0.0,
+          "chunk_id": "48801",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E11",
+          "score": 0.551,
+          "chunk_id": "48802",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35",
+          "score": 0.0,
+          "chunk_id": "48803",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35A",
+          "score": 0.0,
+          "chunk_id": "48804",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35B",
+          "score": 0.0,
+          "chunk_id": "48805",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B36",
+          "score": 0.0,
+          "chunk_id": "48806",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B37",
+          "score": 0.0,
+          "chunk_id": "48807",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B37A",
+          "score": 0.0,
+          "chunk_id": "48808",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B38",
+          "score": 0.0,
+          "chunk_id": "48809",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B52",
+          "score": 0.5515,
+          "chunk_id": "48823",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B53",
+          "score": 0.0,
+          "chunk_id": "48824",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B54",
+          "score": 0.0,
+          "chunk_id": "48825",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B55",
+          "score": 0.5548,
+          "chunk_id": "48826",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B56",
+          "score": 0.5585,
+          "chunk_id": "48827",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B58",
+          "score": 0.0,
+          "chunk_id": "48828",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B59",
+          "score": 0.0,
+          "chunk_id": "48829",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B59A",
+          "score": 0.0,
+          "chunk_id": "48830",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B60",
+          "score": 0.5657,
+          "chunk_id": "48831",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B61",
+          "score": 0.5827,
+          "chunk_id": "48832",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B62",
+          "score": 0.0,
+          "chunk_id": "48833",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63",
+          "score": 0.6015,
+          "chunk_id": "48834",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63A",
+          "score": 0.0,
+          "chunk_id": "48835",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63B",
+          "score": 0.0,
+          "chunk_id": "48836",
+          "expected": false
+        }
+      ],
+      "authoritative_references": [
+        [
+          "ifrs15",
+          "B52"
+        ],
+        [
+          "ifrs15",
+          "B53"
+        ],
+        [
+          "ifrs15",
+          "B54"
+        ],
+        [
+          "ifrs15",
+          "B55"
+        ],
+        [
+          "ifrs15",
+          "B56"
+        ],
+        [
+          "ifrs15",
+          "B58"
+        ],
+        [
+          "ifrs15",
+          "B60"
+        ],
+        [
+          "ifrs15",
+          "B61"
+        ]
+      ],
+      "secondary_references": [
+        [
+          "ifrs15",
+          "31"
+        ],
+        [
+          "ifrs15",
+          "32"
+        ],
+        [
+          "ifrs15",
+          "35"
+        ],
+        [
+          "ifrs15",
+          "38"
+        ],
+        [
+          "ifrs15",
+          "39"
+        ],
+        [
+          "ifrs15",
+          "40"
+        ],
+        [
+          "ifrs15",
+          "41"
+        ],
+        [
+          "ifrs15",
+          "42"
+        ],
+        [
+          "ifrs15",
+          "43"
+        ],
+        [
+          "ifrs15",
+          "44"
+        ],
+        [
+          "ifrs15",
+          "45"
+        ],
+        [
+          "ifrs15",
+          "B62"
+        ],
+        [
+          "ifrs15",
+          "B63"
+        ],
+        [
+          "ifrs15",
+          "B63A"
+        ],
+        [
+          "ifrs15",
+          "B63B"
+        ],
+        [
+          "ifrs15",
+          "58"
+        ]
+      ],
+      "peripheral_references": [
+        [
+          "ifrs15",
+          "E4"
+        ],
+        [
+          "ifrs15",
+          "E5"
+        ],
+        [
+          "ifrs15",
+          "E6"
+        ],
+        [
+          "ifrs15",
+          "47"
+        ],
+        [
+          "ifrs15",
+          "48"
+        ],
+        [
+          "ifrs15",
+          "49"
+        ],
+        [
+          "ifrs15",
+          "50"
+        ],
+        [
+          "ifrs15",
+          "51"
+        ],
+        [
+          "ifrs15",
+          "52"
+        ],
+        [
+          "ifrs15",
+          "53"
+        ],
+        [
+          "ifrs15",
+          "54"
+        ],
+        [
+          "ifrs15",
+          "55"
+        ],
+        [
+          "ifrs15",
+          "56"
+        ],
+        [
+          "ifrs15",
+          "57"
+        ],
+        [
+          "ifrs15",
+          "59"
+        ],
+        [
+          "ifrs15",
+          "60"
+        ],
+        [
+          "ifrs15",
+          "61"
+        ],
+        [
+          "ifrs15",
+          "62"
+        ],
+        [
+          "ifrs15",
+          "63"
+        ],
+        [
+          "ifrs15",
+          "64"
+        ],
+        [
+          "ifrs15",
+          "65"
+        ],
+        [
+          "ifrs15",
+          "66"
+        ],
+        [
+          "ifrs15",
+          "67"
+        ],
+        [
+          "ifrs15",
+          "68"
+        ],
+        [
+          "ifrs15",
+          "69"
+        ],
+        [
+          "ifrs15",
+          "70"
+        ],
+        [
+          "ifrs15",
+          "71"
+        ],
+        [
+          "ifrs15",
+          "72"
+        ],
+        [
+          "ifrs15",
+          "B34"
+        ],
+        [
+          "ifrs15",
+          "B34A"
+        ],
+        [
+          "ifrs15",
+          "B35"
+        ],
+        [
+          "ifrs15",
+          "B35A"
+        ],
+        [
+          "ifrs15",
+          "B35B"
+        ],
+        [
+          "ifrs15",
+          "B36"
+        ],
+        [
+          "ifrs15",
+          "B37"
+        ],
+        [
+          "ifrs15",
+          "B37A"
+        ],
+        [
+          "ifrs15",
+          "B38"
+        ],
+        [
+          "ifrs15",
+          "E11"
+        ]
+      ],
+      "dropped_documents": []
+    },
+    {
+      "question_id": "Q9.0",
+      "question_text": "Comment constater le revenu lié aux licences de propriété intellectuelle : à une date donnée ou de façon étalée sur la durée du droit ?",
+      "embedded_question_text": "Comment constater le revenu lié aux licences de propriété intellectuelle : à une date donnée ou de façon étalée sur la durée du droit ?",
+      "family_id": "Q9¤",
+      "run_label": "repeat-1",
+      "artifact_dir": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-59_promptfoo-eval-family-q9/artifacts/Q9/Q9.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml/repeat-1",
+      "recommendation": "oui_sous_conditions",
+      "approaches": [
+        {
+          "normalized_label": "right_to_access_intellectual_property",
+          "label": "Droit d’accès à la propriété intellectuelle",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 4
+        },
+        {
+          "normalized_label": "right_to_use_intellectual_property",
+          "label": "Droit d’utilisation de la propriété intellectuelle",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 3
+        },
+        {
+          "normalized_label": "revenue_recognised_over_time",
+          "label": "Licence non distincte : revenu reconnu sur la durée",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 4
+        },
+        {
+          "normalized_label": "revenue_recognised_at_a_point_in_time",
+          "label": "Licence non distincte : revenu reconnu à une date donnée",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 3
+        }
+      ],
+      "labels": [
+        "right_to_access_intellectual_property",
+        "right_to_use_intellectual_property",
+        "revenue_recognised_over_time",
+        "revenue_recognised_at_a_point_in_time"
+      ],
+      "missing_expected_labels": [],
+      "spurious_labels": [],
+      "prompt_chunks": [
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "31",
+          "score": 0.0,
+          "chunk_id": "48661",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "32",
+          "score": 0.0,
+          "chunk_id": "48662",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "33",
+          "score": 0.0,
+          "chunk_id": "48663",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "34",
+          "score": 0.0,
+          "chunk_id": "48664",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "48665",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E4",
+          "score": 0.0,
+          "chunk_id": "48666",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E5",
+          "score": 0.0,
+          "chunk_id": "48667",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E6",
+          "score": 0.5615,
+          "chunk_id": "48668",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "48669",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "48670",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "38",
+          "score": 0.0,
+          "chunk_id": "48671",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "39",
+          "score": 0.0,
+          "chunk_id": "48672",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E7",
+          "score": 0.0,
+          "chunk_id": "48673",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "40",
+          "score": 0.0,
+          "chunk_id": "48674",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "41",
+          "score": 0.0,
+          "chunk_id": "48675",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "42",
+          "score": 0.0,
+          "chunk_id": "48676",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "43",
+          "score": 0.0,
+          "chunk_id": "48677",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "48678",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "45",
+          "score": 0.0,
+          "chunk_id": "48679",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "47",
+          "score": 0.0,
+          "chunk_id": "48681",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "48",
+          "score": 0.0,
+          "chunk_id": "48682",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "49",
+          "score": 0.0,
+          "chunk_id": "48683",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "50",
+          "score": 0.0,
+          "chunk_id": "48684",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "51",
+          "score": 0.0,
+          "chunk_id": "48685",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E8",
+          "score": 0.0,
+          "chunk_id": "48686",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "52",
+          "score": 0.0,
+          "chunk_id": "48687",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "53",
+          "score": 0.0,
+          "chunk_id": "48688",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "54",
+          "score": 0.0,
+          "chunk_id": "48689",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "55",
+          "score": 0.0,
+          "chunk_id": "48690",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "56",
+          "score": 0.0,
+          "chunk_id": "48691",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "57",
+          "score": 0.0,
+          "chunk_id": "48692",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "58",
+          "score": 0.5586,
+          "chunk_id": "48693",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "59",
+          "score": 0.0,
+          "chunk_id": "48694",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "60",
+          "score": 0.0,
+          "chunk_id": "48695",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "61",
+          "score": 0.0,
+          "chunk_id": "48696",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "62",
+          "score": 0.0,
+          "chunk_id": "48697",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "63",
+          "score": 0.0,
+          "chunk_id": "48698",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "64",
+          "score": 0.0,
+          "chunk_id": "48699",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "65",
+          "score": 0.5633,
+          "chunk_id": "48700",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "66",
+          "score": 0.0,
+          "chunk_id": "48701",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "67",
+          "score": 0.0,
+          "chunk_id": "48702",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "68",
+          "score": 0.0,
+          "chunk_id": "48703",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "69",
+          "score": 0.0,
+          "chunk_id": "48704",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "70",
+          "score": 0.0,
+          "chunk_id": "48705",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "71",
+          "score": 0.0,
+          "chunk_id": "48706",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "72",
+          "score": 0.0,
+          "chunk_id": "48707",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B34",
+          "score": 0.0,
+          "chunk_id": "48800",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B34A",
+          "score": 0.0,
+          "chunk_id": "48801",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E11",
+          "score": 0.551,
+          "chunk_id": "48802",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35",
+          "score": 0.0,
+          "chunk_id": "48803",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35A",
+          "score": 0.0,
+          "chunk_id": "48804",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B35B",
+          "score": 0.0,
+          "chunk_id": "48805",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B36",
+          "score": 0.0,
+          "chunk_id": "48806",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B37",
+          "score": 0.0,
+          "chunk_id": "48807",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B37A",
+          "score": 0.0,
+          "chunk_id": "48808",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B38",
+          "score": 0.0,
+          "chunk_id": "48809",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B52",
+          "score": 0.5515,
+          "chunk_id": "48823",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B53",
+          "score": 0.0,
+          "chunk_id": "48824",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B54",
+          "score": 0.0,
+          "chunk_id": "48825",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B55",
+          "score": 0.5548,
+          "chunk_id": "48826",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B56",
+          "score": 0.5585,
+          "chunk_id": "48827",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B58",
+          "score": 0.0,
+          "chunk_id": "48828",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B59",
+          "score": 0.0,
+          "chunk_id": "48829",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B59A",
+          "score": 0.0,
+          "chunk_id": "48830",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B60",
+          "score": 0.5657,
+          "chunk_id": "48831",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B61",
+          "score": 0.5827,
+          "chunk_id": "48832",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B62",
+          "score": 0.0,
+          "chunk_id": "48833",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63",
+          "score": 0.6015,
+          "chunk_id": "48834",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63A",
+          "score": 0.0,
+          "chunk_id": "48835",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B63B",
+          "score": 0.0,
+          "chunk_id": "48836",
+          "expected": false
+        }
+      ],
+      "authoritative_references": [
+        [
+          "ifrs15",
+          "B53"
+        ],
+        [
+          "ifrs15",
+          "B54"
+        ],
+        [
+          "ifrs15",
+          "B55"
+        ],
+        [
+          "ifrs15",
+          "B56"
+        ],
+        [
+          "ifrs15",
+          "B58"
+        ],
+        [
+          "ifrs15",
+          "B60"
+        ],
+        [
+          "ifrs15",
+          "B61"
+        ]
+      ],
+      "secondary_references": [
+        [
+          "ifrs15",
+          "31"
+        ],
+        [
+          "ifrs15",
+          "32"
+        ],
+        [
+          "ifrs15",
+          "35"
+        ],
+        [
+          "ifrs15",
+          "38"
+        ],
+        [
+          "ifrs15",
+          "39"
+        ],
+        [
+          "ifrs15",
+          "40"
+        ],
+        [
+          "ifrs15",
+          "41"
+        ],
+        [
+          "ifrs15",
+          "42"
+        ],
+        [
+          "ifrs15",
+          "43"
+        ],
+        [
+          "ifrs15",
+          "44"
+        ],
+        [
+          "ifrs15",
+          "45"
+        ],
+        [
+          "ifrs15",
+          "B52"
+        ],
+        [
+          "ifrs15",
+          "B59"
+        ],
+        [
+          "ifrs15",
+          "B59A"
+        ],
+        [
+          "ifrs15",
+          "B62"
+        ],
+        [
+          "ifrs15",
+          "B63"
+        ],
+        [
+          "ifrs15",
+          "B63A"
+        ],
+        [
+          "ifrs15",
+          "B63B"
+        ],
+        [
+          "ifrs15",
+          "58"
+        ]
+      ],
+      "peripheral_references": [
+        [
+          "ifrs15",
+          "47"
+        ],
+        [
+          "ifrs15",
+          "48"
+        ],
+        [
+          "ifrs15",
+          "49"
+        ],
+        [
+          "ifrs15",
+          "50"
+        ],
+        [
+          "ifrs15",
+          "51"
+        ],
+        [
+          "ifrs15",
+          "52"
+        ],
+        [
+          "ifrs15",
+          "53"
+        ],
+        [
+          "ifrs15",
+          "54"
+        ],
+        [
+          "ifrs15",
+          "55"
+        ],
+        [
+          "ifrs15",
+          "56"
+        ],
+        [
+          "ifrs15",
+          "57"
+        ],
+        [
+          "ifrs15",
+          "59"
+        ],
+        [
+          "ifrs15",
+          "60"
+        ],
+        [
+          "ifrs15",
+          "61"
+        ],
+        [
+          "ifrs15",
+          "62"
+        ],
+        [
+          "ifrs15",
+          "63"
+        ],
+        [
+          "ifrs15",
+          "64"
+        ],
+        [
+          "ifrs15",
+          "65"
+        ],
+        [
+          "ifrs15",
+          "66"
+        ],
+        [
+          "ifrs15",
+          "67"
+        ],
+        [
+          "ifrs15",
+          "68"
+        ],
+        [
+          "ifrs15",
+          "69"
+        ],
+        [
+          "ifrs15",
+          "70"
+        ],
+        [
+          "ifrs15",
+          "71"
+        ],
+        [
+          "ifrs15",
+          "72"
+        ],
+        [
+          "ifrs15",
+          "B34"
+        ],
+        [
+          "ifrs15",
+          "B34A"
+        ],
+        [
+          "ifrs15",
+          "B35"
+        ],
+        [
+          "ifrs15",
+          "B35A"
+        ],
+        [
+          "ifrs15",
+          "B35B"
+        ],
+        [
+          "ifrs15",
+          "B36"
+        ],
+        [
+          "ifrs15",
+          "B37"
+        ],
+        [
+          "ifrs15",
+          "B37A"
+        ],
+        [
+          "ifrs15",
+          "B38"
+        ],
+        [
+          "ifrs15",
+          "E11"
+        ],
+        [
+          "ifrs15",
+          "35"
+        ],
+        [
+          "ifrs15",
+          "36"
+        ],
+        [
+          "ifrs15",
+          "37"
+        ],
+        [
+          "ifrs15",
+          "E4"
+        ],
+        [
+          "ifrs15",
+          "E5"
+        ],
+        [
+          "ifrs15",
+          "E6"
+        ],
+        [
+          "ifrs15",
+          "E7"
+        ],
+        [
+          "ifrs15",
+          "E8"
+        ]
+      ],
+      "dropped_documents": []
+    }
+  ],
+  "label_summaries": [
+    {
+      "label": "revenue_recognised_at_a_point_in_time",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "revenue_recognised_over_time",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "right_to_access_intellectual_property",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "right_to_access_the_entitys_intellectual_property",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "right_to_use_intellectual_property",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "right_to_use_the_entitys_intellectual_property",
+      "expected": false,
+      "present_count": 1,
+      "run_count": 2,
+      "question_count": 1
+    }
+  ],
+  "question_stability": [
+    {
+      "question_id": "Q9.0",
+      "run_count": 2,
+      "stability_score": 35.0,
+      "stability_score_loose": 35.0,
+      "approach_set_stability": 0.0,
+      "applicability_stability": 0.0,
+      "recommendation_stability": 1.0,
+      "missing_expected_count": 0,
+      "spurious_count": 6
+    }
+  ]
+}

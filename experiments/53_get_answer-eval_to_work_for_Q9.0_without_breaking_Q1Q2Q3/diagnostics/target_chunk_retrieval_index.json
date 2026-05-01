@@ -1,0 +1,24 @@
+{
+  "experiment_name": "53_initial_eval-retrieve_for_Q9.0",
+  "generated_at": "2026-05-01T16:28:49.130888+00:00",
+  "runs": [
+    {
+      "run_id": "2026-05-01_15-45-38_promptfoo-eval-family-q9",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_15-45-38_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.json"
+    },
+    {
+      "run_id": "2026-05-01_16-28-39_promptfoo-eval-family-q9",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval",
+      "html_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html",
+      "markdown_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.md",
+      "json_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.json"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "description": "promptfoo eval family=Q9",
+  "artifacts_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/artifacts",
+  "promptfoo_config_dir": "experiments/53_initial_eval-retrieve_for_Q9.0/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q9\u00a4"
+  ],
+  "created_at_utc": "2026-05-01T16:28:39.938014+00:00",
+  "archived_artifacts": {
+    "policy": {
+      "source_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/policy.default.yaml",
+      "archived_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/policy.default.yaml",
+      "sha256": "cb1e77bf86fc4fc5d5b34fc2b0acac9de63c91a20bea11e7bb8aa29f0743f60d"
+    },
+    "glossary": {
+      "source_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/en-fr-glossary.yaml",
+      "archived_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/en-fr-glossary.yaml",
+      "sha256": "83c8c2675db757f7c0b42d84d1d4209f8d7a962969c5731f75d7d65559e4846e"
+    },
+    "prompt_a": {
+      "source_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/answer_prompt_A.txt",
+      "archived_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/answer_prompt_A.txt",
+      "sha256": "8ee9cce4bb56b5821ddd859ed02cbf45794fa3f60b057e8b99513b0ae7c8e94d"
+    },
+    "prompt_b": {
+      "source_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/answer_prompt_B.txt",
+      "archived_path": "experiments/53_initial_eval-retrieve_for_Q9.0/runs/2026-05-01_16-28-39_promptfoo-eval-family-q9/effective/answer_prompt_B.txt",
+      "sha256": "4cfbf1e9a7e1d07c4ffd8c6c33ad93da7acb0e8fac7d1dbbc952848a648f5d37"
+    }
+  }
+}

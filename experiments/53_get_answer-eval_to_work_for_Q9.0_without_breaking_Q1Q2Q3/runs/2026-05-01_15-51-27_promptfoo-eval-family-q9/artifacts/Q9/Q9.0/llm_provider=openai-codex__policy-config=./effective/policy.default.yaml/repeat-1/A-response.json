@@ -1,0 +1,136 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si le revenu provenant d’une licence de propriété intellectuelle est comptabilisé à un moment précis ou sur la durée du droit, selon la nature de la promesse de licence en IFRS 15.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs15"],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I selected IFRS 15 because it is the only candidate governing standard in the provided context, and under the stated precedence rule no overlapping lower-precedence document exists to displace it.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low: the context includes explicit licence-specific guidance in IFRS 15 that directly addresses the timing of revenue recognition for intellectual property licences."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["B52", "B53", "B54", "B55", "B56", "B58", "B59", "B59A", "B60", "B61", "B62"],
+        "reason": "These paragraphs directly govern how to determine the nature of a licence promise and whether revenue from a licence is recognised over time or at a point in time."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["31", "32", "35", "38"],
+        "reason": "These paragraphs provide the core transfer-of-control framework and the over-time versus point-in-time recognition bases that the licence guidance applies."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["39", "40", "41", "42", "43", "44", "45"],
+        "reason": "These paragraphs support the measurement of progress when a licence-related performance obligation is satisfied over time."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B63", "B63A", "B63B"],
+        "reason": "These paragraphs modify the revenue recognition pattern for sales-based or usage-based royalties related to licences of intellectual property."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["35(c)", "36", "37", "E6"],
+        "reason": "These paragraphs address over-time recognition for created assets and enforceable rights to payment, which are not the licence-specific peer models for this issue."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"],
+        "reason": "These paragraphs concern transaction price and variable consideration generally rather than identifying the core peer timing models for licence revenue."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["60", "61", "62", "63", "64", "65"],
+        "reason": "These paragraphs relate to significant financing components, which do not determine whether licence revenue is recognised over time or at a point in time."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["66", "67", "68", "69", "70", "71", "72"],
+        "reason": "These paragraphs address non-cash consideration and consideration payable to a customer, not the top-level licence timing models."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B34", "B34A", "B35", "B35A", "B35B", "B36", "B37", "B37A", "B38", "E11"],
+        "reason": "These paragraphs address principal-versus-agent assessment, which is topically related to revenue but not relevant to identifying licence timing approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence of intellectual property: determine whether the promise is to provide access to intellectual property or to provide use of intellectual property",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B56", "B58", "B59", "B59A", "B60", "B61", "B62"]
+        }
+      ],
+      "mapped_approaches": [
+        "right_to_access_intellectual_property",
+        "right_to_use_intellectual_property"
+      ]
+    },
+    {
+      "family": "Licence not distinct from other promised goods or services: assess the combined performance obligation under the general transfer-of-control model",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B54", "B55", "31", "32", "35", "38"]
+        }
+      ],
+      "mapped_approaches": [
+        "revenue_recognised_over_time",
+        "revenue_recognised_at_a_point_in_time"
+      ]
+    },
+    {
+      "family": "Sales-based or usage-based royalty on a licence of intellectual property: special royalty recognition constraint",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B63", "B63A", "B63B"]
+        }
+      ],
+      "mapped_approaches": [
+        "sales_or_usage_based_royalty_recognition"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats this as a distinct licence model, with revenue recognised over time when the criteria in paragraph B58 are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats this as a distinct licence model, with revenue recognised at a point in time when the criteria in paragraph B58 are not met."
+    },
+    {
+      "id": "approach_3",
+      "label": "Revenue recognised over time",
+      "normalized_label": "revenue_recognised_over_time",
+      "rationale_for_inclusion": "Where a licence is not distinct and is part of a combined performance obligation, IFRS 15 requires assessment under the general over-time recognition model."
+    },
+    {
+      "id": "approach_4",
+      "label": "Revenue recognised at a point in time",
+      "normalized_label": "revenue_recognised_at_a_point_in_time",
+      "rationale_for_inclusion": "Where a licence is not distinct and the combined performance obligation does not meet over-time criteria, IFRS 15 requires point-in-time recognition."
+    },
+    {
+      "id": "approach_5",
+      "label": "Sales-based or usage-based royalty recognition",
+      "normalized_label": "sales_or_usage_based_royalty_recognition",
+      "rationale_for_inclusion": "IFRS 15 provides a distinct recognition model for royalties promised in exchange for a licence of intellectual property."
+    }
+  ]
+}

@@ -16,6 +16,26 @@ assert:
   - type: javascript
     value: |
       const data = JSON.parse(output);
+      const labels = data.approaches.map(a => a.normalized_label);
+      return labels.includes('amortised_cost') &&
+             labels.includes('fair_value_through_other_comprehensive_income') &&
+             labels.includes('fair_value_through_profit_or_loss');
+    description: All expected hedge approaches are identified
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      const byLabel = Object.fromEntries(
+        data.approaches.map(a => [a.normalized_label, a.applicability])
+      );
+      return ['oui_sous_conditions'].includes(byLabel.amortised_cost) &&
+             byLabel.fair_value_through_other_comprehensive_income === 'oui_sous_conditions' &&
+             byLabel.fair_value_through_profit_or_loss === 'oui_sous_conditions';
+    description: Expected applicability is assigned to each hedge approach
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
       return 'oui_sous_conditions' === data.recommendation?.answer;
     description: Recommendation answer is one of the allowed values
 

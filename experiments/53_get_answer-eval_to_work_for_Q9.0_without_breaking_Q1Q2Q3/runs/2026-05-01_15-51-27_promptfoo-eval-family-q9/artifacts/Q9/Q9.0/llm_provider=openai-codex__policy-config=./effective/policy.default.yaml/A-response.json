@@ -1,0 +1,192 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer la base de constatation du revenu pour une licence de propriété intellectuelle selon IFRS 15, c’est-à-dire si le revenu est reconnu à un moment précis ou sur la durée du droit, et si un régime spécifique s’applique aux redevances fondées sur les ventes ou l’usage.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs15"
+    ],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I applied the precedence rule strictly and selected IFRS 15 as the single governing lineage because it is the only candidate governing standard in the provided context and it directly addresses revenue recognition for licences of intellectual property, including point-in-time, over-time, and royalty-specific models.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the context includes explicit IFRS 15 licence guidance that directly governs the issue."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "B52",
+          "B53",
+          "B54",
+          "B55",
+          "B56",
+          "B58",
+          "B60",
+          "B61",
+          "B63",
+          "B63A",
+          "B63B"
+        ],
+        "reason": "These paragraphs directly govern how revenue from licences of intellectual property is classified and recognised."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "31",
+          "32",
+          "35",
+          "38"
+        ],
+        "reason": "These paragraphs provide the general control-based framework for determining over-time versus point-in-time revenue recognition."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45"
+        ],
+        "reason": "These paragraphs support the measurement of progress when a licence-related performance obligation is satisfied over time."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "56",
+          "57",
+          "58",
+          "59"
+        ],
+        "reason": "These paragraphs support the general variable consideration model and are modified for licence royalties by paragraph B63."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "33",
+          "34",
+          "36",
+          "37",
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "60",
+          "61",
+          "62",
+          "63",
+          "64",
+          "65",
+          "66",
+          "67",
+          "68",
+          "69",
+          "70",
+          "71",
+          "72",
+          "B34",
+          "B34A",
+          "B35",
+          "B35A",
+          "B35B",
+          "B36",
+          "B37",
+          "B37A",
+          "B38",
+          "E4",
+          "E5",
+          "E6",
+          "E7",
+          "E8",
+          "E11"
+        ],
+        "reason": "These paragraphs are topically related to revenue, control, principal-versus-agent, financing, or other contract features but are not needed to identify the peer licence revenue recognition approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognition model for a distinct licence of intellectual property",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B56",
+            "B58",
+            "B60",
+            "B61"
+          ]
+        },
+        {
+          "document": "ifrs15",
+          "references": [
+            "31",
+            "32",
+            "35",
+            "38"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "right_to_access_intellectual_property",
+        "right_to_use_intellectual_property"
+      ]
+    },
+    {
+      "family": "Recognition model for sales-based or usage-based royalty consideration relating to a licence of intellectual property",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B63",
+            "B63A",
+            "B63B"
+          ]
+        },
+        {
+          "document": "ifrs15",
+          "references": [
+            "56",
+            "57",
+            "58",
+            "59"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "sales_based_or_usage_based_royalty_recognition"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats a licence as a promise to provide access to intellectual property in some cases, with revenue recognised over time."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats a licence as a promise to provide a right to use intellectual property in other cases, with revenue recognised at a point in time."
+    },
+    {
+      "id": "approach_3",
+      "label": "Sales-based or usage-based royalty recognition",
+      "normalized_label": "sales_based_or_usage_based_royalty_recognition",
+      "rationale_for_inclusion": "IFRS 15 provides a distinct recognition model for sales-based or usage-based royalties promised in exchange for a licence of intellectual property."
+    }
+  ]
+}
