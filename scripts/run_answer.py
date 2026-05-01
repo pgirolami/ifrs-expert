@@ -189,6 +189,7 @@ class ExtractionOptions:
 
     policy_config: str
     output_dir: str | None = None
+    base_path: Path | None = None
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
 
 
@@ -340,11 +341,16 @@ def _extract_options(
     """Extract mandatory policy-config and runtime options."""
     output_dir: str | None = None
     policy_config: str | None = None
+    base_path: Path | None = None
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
         if policy_config is None:
             policy_config = _extract_required_policy_config(mapping)
         output_dir = _extract_optional_string_from_mapping(mapping, ("output-dir", "output_dir"), output_dir)
+        if base_path is None:
+            base_path_value = _extract_optional_string_from_mapping(mapping, ("basePath", "base_path"), None)
+            if base_path_value is not None:
+                base_path = Path(base_path_value)
 
     if policy_config is None:
         message = "Missing required provider option: policy-config"
@@ -353,12 +359,23 @@ def _extract_options(
     options = ExtractionOptions(
         policy_config=policy_config,
         output_dir=output_dir,
+        base_path=base_path,
     )
     options.config_kv = _build_effective_config_kv(
         options=options,
         llm_provider=_extract_llm_provider(provider_options, context),
     )
     return options
+
+
+def _resolve_path_relative_to_base_path(path_value: str, base_path: Path | None) -> Path:
+    """Resolve a Promptfoo path against basePath when the path is relative."""
+    path = Path(path_value)
+    if path.is_absolute():
+        return path
+    if base_path is not None:
+        return base_path / path
+    return PROJECT_ROOT / path
 
 
 def _extract_llm_provider_from_mapping(mapping: dict[str, object]) -> str | None:
@@ -512,12 +529,15 @@ def _run_live(
     _apply_llm_provider_override(llm_provider)
     setup_logging()
 
-    policy_config = load_policy_config(Path(options.policy_config))
+    policy_config_path = _resolve_path_relative_to_base_path(options.policy_config, options.base_path)
+    output_dir = _resolve_path_relative_to_base_path(options.output_dir, options.base_path) if options.output_dir is not None else None
+    logger.debug(f"Resolved Promptfoo answer paths: policy_config_path={policy_config_path}, output_dir={output_dir}, base_path={options.base_path}")
+    policy_config = load_policy_config(policy_config_path)
     command = create_answer_command(
         query=question,
         options=AnswerOptions(
             policy=policy_config.retrieval,
-            output_dir=(Path(options.output_dir) if options.output_dir is not None else None),
+            output_dir=output_dir,
         ),
     )
     result = command.execute()
@@ -542,35 +562,27 @@ def main() -> int:
         _write_stdout(_error_payload("Error: Missing prompt argument"))
         return 1
 
-    prompt = sys.argv[PROMPT_ARG_INDEX]
-    provider_options = _load_provider_options()
-    context = _load_context()
-    mode = _extract_mode(context)
-    question = _extract_question(prompt, mode)
-    if not question:
-        _write_stdout(_error_payload("Error: Missing question text"))
-        return 1
-
-    if mode == "canned":
-        _write_stdout(CANNED_RESPONSE)
-        return 0
-
+    setup_logging()
     try:
+        prompt = sys.argv[PROMPT_ARG_INDEX]
+        provider_options = _load_provider_options()
+        context = _load_context()
+        mode = _extract_mode(context)
+        question = _extract_question(prompt, mode)
+        if not question:
+            _write_stdout(_error_payload("Error: Missing question text"))
+            return 1
+
+        if mode == "canned":
+            _write_stdout(CANNED_RESPONSE)
+            return 0
+
         llm_provider = _extract_llm_provider(provider_options, context)
-    except ValueError as e:
-        _write_stdout(_error_payload(f"Error: {e}"))
-        return 1
-
-    try:
         extraction_options = _extract_options(provider_options, context)
-    except ValueError as error:
-        _write_stdout(_error_payload(f"Error: {error}"))
-        return 1
-
-    try:
         exit_code, payload = _run_live(question, llm_provider, context, extraction_options)
-    except ValueError as e:
-        _write_stdout(_error_payload(f"Error: {e}"))
+    except Exception as error:
+        logger.exception(f"Promptfoo answer wrapper failed: {error}")
+        _write_stdout(_error_payload(f"Error: {error}"))
         return 1
 
     _write_stdout(payload)

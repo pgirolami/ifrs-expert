@@ -1,0 +1,93 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, en comptes consolidés, quelles familles de relations de couverture IFRS peuvent théoriquement accueillir la composante de risque de change liée à un dividende intragroupe lorsqu’une créance correspondante a été comptabilisée.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias39"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS for overlapping hedge accounting eligibility, hedged item, and hedge model questions; therefore IFRS 9 governs and IAS 39 is discarded.",
+    "discarded_due_to_overlap": ["ias39"],
+    "residual_uncertainty": "Low uncertainty because the question is about hedge accounting eligibility/models and IFRS 9 expressly governs those matters for current IFRS reporting."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.5", "6.3.6", "6.4.1", "6.5.2", "6.5.4"],
+        "reason": "These paragraphs directly govern eligible hedged items in consolidated financial statements and identify the named hedge accounting models."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["27", "32", "33", "45", "48"],
+        "reason": "These paragraphs explain when intragroup monetary items generate foreign exchange effects in consolidated financial statements and how net investment related exchange differences are presented and recycled."
+      },
+      {
+        "document": "ifric16",
+        "references": ["10", "11", "12", "13", "14", "15"],
+        "reason": "This Interpretation clarifies the hedge of a net investment in a foreign operation as a distinct hedge model within a group context."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting models for exposures to changes in fair value attributable to a particular risk",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.5.2(a)"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_hedge"]
+    },
+    {
+      "family": "Hedge accounting models for exposures to variability in cash flows attributable to a particular risk",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.5.2(b)"]
+        }
+      ],
+      "mapped_approaches": ["cash_flow_hedge"]
+    },
+    {
+      "family": "Hedge accounting models for foreign currency risk arising from a net investment in a foreign operation",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.5.2(c)", "6.5.13", "6.5.14"]
+        },
+        {
+          "document": "ias21",
+          "references": ["32", "33", "48"]
+        },
+        {
+          "document": "ifric16",
+          "references": ["10", "11", "12", "14", "15"]
+        }
+      ],
+      "mapped_approaches": ["hedge_of_a_net_investment"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a distinct named hedge accounting model for a recognised asset or liability or a component thereof exposed to changes in fair value attributable to a particular risk."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a distinct named hedge accounting model for variability in cash flows attributable to a particular risk associated with a recognised item or a highly probable forecast transaction."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment",
+      "normalized_label": "hedge_of_a_net_investment",
+      "rationale_for_inclusion": "IFRS 9 and IAS 21 treat the hedge of a net investment in a foreign operation as a separate named hedge accounting model, further clarified by IFRIC 16 for group situations."
+    }
+  ]
+}

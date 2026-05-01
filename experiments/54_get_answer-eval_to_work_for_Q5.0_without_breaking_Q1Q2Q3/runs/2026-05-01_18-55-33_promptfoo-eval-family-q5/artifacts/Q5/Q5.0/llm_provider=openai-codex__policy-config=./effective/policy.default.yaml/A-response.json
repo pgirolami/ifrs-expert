@@ -1,0 +1,74 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Prise en compte du risque de défaut de la contrepartie dans l’évaluation de la juste valeur d’un actif ou d’un passif selon IFRS",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9", "ias39", "ias41"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I selected IFRS 13 because the question is directly about how fair value is measured, and under the strict precedence rule IFRS guidance on fair value measurement governs over overlapping legacy IAS guidance.",
+    "discarded_due_to_overlap": ["ias39"],
+    "residual_uncertainty": "low; IFRS 13 directly defines the fair value measurement framework, while IFRS 9 only adds instrument-specific consequences and presentations rather than replacing the core measurement rule."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "34", "36", "42", "43", "44"],
+        "reason": "These paragraphs directly govern whether and how credit or non-performance risk is incorporated into fair value measurements of assets and liabilities."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.1.1", "5.1.1A", "B5.1.1", "B5.1.2A", "5.7.7", "5.7.8", "B5.7.16", "B5.7.20"],
+        "reason": "These paragraphs confirm that financial instruments are measured at fair value by applying IFRS 13 and clarify a liability-specific credit-risk presentation overlay under IFRS 9."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias41",
+        "references": ["8", "12", "16"],
+        "reason": "IAS 41 uses fair value for biological assets but does not help identify peer approaches for counterparty default risk within fair value measurement."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value measurement of an asset using market participant assumptions that may reflect counterparty credit risk when relevant to pricing",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "11", "22", "24"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_measurement_of_an_asset"]
+    },
+    {
+      "family": "Fair value measurement of a liability or own equity instrument incorporating non-performance risk including the issuer's own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "42", "43", "44"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["5.7.7", "B5.7.16", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_measurement_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value measurement of an asset",
+      "normalized_label": "fair_value_measurement_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 measures assets from a market participant exit-price perspective using pricing assumptions market participants would use, which can include counterparty credit-related factors when relevant to the asset's pricing."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value measurement of a liability",
+      "normalized_label": "fair_value_measurement_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 separately requires liabilities to reflect non-performance risk, including the entity's own credit risk, making liability fair value a distinct top-level measurement approach."
+    }
+  ]
+}

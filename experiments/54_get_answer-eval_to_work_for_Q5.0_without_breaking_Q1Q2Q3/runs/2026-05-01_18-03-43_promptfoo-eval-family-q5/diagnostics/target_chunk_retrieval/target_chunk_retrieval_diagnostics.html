@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Target Chunk Retrieval Diagnostics</title>
+  
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #1f2937; background: #f8fafc; }
+  main { padding: 1rem; }
+  h1 { margin-top: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; align-items: center; }
+  .table-wrap { overflow: auto; border: 1px solid #d1d5db; background: #ffffff; }
+  table { border-collapse: collapse; font-size: 12px; width: max-content; min-width: 100%; }
+  th, td { border: 1px solid #d1d5db; padding: 0.35rem 0.5rem; text-align: center; white-space: nowrap; }
+  thead th { position: sticky; top: 0; z-index: 3; background: #f3f4f6; }
+  .group-header { background: #e5e7eb; font-weight: 700; }
+  .metadata-col { text-align: left; background: #ffffff; }
+  .metadata-q, .metadata-rec { text-align: center; }
+  .sticky-1, .sticky-2 { position: sticky; z-index: 2; background: #ffffff; }
+  .sticky-1 { left: 0; min-width: 56px; }
+  .sticky-2 { left: 56px; min-width: 74px; }
+  thead .sticky-1, thead .sticky-2 { z-index: 4; background: #f3f4f6; }
+  .section-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.3; }
+  .section-cell-score { display: block; font-weight: 600; }
+  .section-cell-authority { display: block; font-size: 11px; color: #374151; }
+  button { cursor: pointer; }
+</style>
+
+</head>
+<body>
+  <main>
+    <h1>Target Chunk Retrieval Diagnostics</h1>
+    <p><strong>Experiment:</strong> 54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3<br>
+       <strong>Provider:</strong> OpenAI GPT 5.4 through Codex current answer defaults<br>
+       <strong>Policy:</strong> openai-codex<br>
+       <strong>Generated:</strong> 2026-05-01T18:38:24.644838+00:00</p>
+        <p><strong>Legend:</strong> 🎯 exact target range, ↳ nested subrange of the previous discovered range, 🧭 no retrieved chunks</p>
+
+    
+    <section class="controls">
+      <button type="button" data-sort-mode="question">Question order</button>
+      <button type="button" data-sort-mode="missing">Missing-first</button>
+      <label><input type="checkbox" id="missing-only"> Show only rows with missing targets</label>
+      <label><input type="checkbox" id="hide-empty-columns" checked> Hide empty target columns</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs13" checked> IFRS 13</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ias39" checked> IAS 39</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ias41" checked> IAS 41</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs9" checked> IFRS 9</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="navisqrifrsc25305fb4f52cbefl" checked> NAVIS QRIFRS C 25305FB 4F 52CB EFL</label>
+    </section>
+
+
+    <div class="table-wrap">
+      <table id="matrix-table">
+        <thead>
+          <tr>
+            <th class="group-header sticky-group" colspan="2" title="Question metadata">Run metadata</th><th class="group-header section-group" id="group-header-ifrs13" data-doc-key="ifrs13" colspan="24" title="IFRS 13">IFRS 13</th><th class="group-header section-group" id="group-header-ias39" data-doc-key="ias39" colspan="6" title="IAS 39">IAS 39</th><th class="group-header section-group" id="group-header-ias41" data-doc-key="ias41" colspan="4" title="IAS 41">IAS 41</th><th class="group-header section-group" id="group-header-ifrs9" data-doc-key="ifrs9" colspan="22" title="IFRS 9">IFRS 9</th><th class="group-header section-group" id="group-header-navisqrifrsc25305fb4f52cbefl" data-doc-key="navisqrifrsc25305fb4f52cbefl" colspan="10" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL">NAVIS QRIFRS C 25305FB 4F 52CB EFL</th>
+          </tr>
+          <tr>
+            <th class="sticky-1 metadata-col" title="Question id. Hover question cells for raw and embedded query text.">Q</th><th class="sticky-2 metadata-col" title="Number of retrieved chunks from target documents.">🎯 chunks</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g1-4" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g1-4
+title: Objective
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Objective
+position: 1
+display label: 1-4
+observed range: 1-4
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk">1-4</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g9-10" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g9-10
+title: Definition of fair value
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Definition of fair value
+position: 4
+display label: 9-10
+observed range: 9-10
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">9-10</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g11-14" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g11-14
+title: The asset or liability
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The asset or liability
+position: 5
+display label: 11-14
+observed range: 11-14
+provenance: top_similarity, enclosing_section_expansion, referenced_chunk">11-14</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g15-21" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g15-21
+title: The transaction
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The transaction
+position: 6
+display label: 15-21
+observed range: 15-21
+provenance: top_similarity, referenced_chunk, enclosing_section_expansion">15-21</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g22-23" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g22-23
+title: Market participants
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Market participants
+position: 7
+display label: 22-23
+observed range: 22-23
+provenance: referenced_chunk">22-23</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g24-26" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g24-26
+title: The price
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The price
+position: 8
+display label: 24-26
+observed range: 24-26
+provenance: top_similarity, enclosing_section_expansion">24-26</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g27-30" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g27-30
+title: Highest and best use for non-financial assets
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to non-financial assets &gt; Highest and best use for non-financial assets
+position: 10
+display label: 27-30
+observed range: 27-30
+provenance: referenced_chunk">27-30</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g31-33" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g31-33
+title: Valuation premise for non-financial assets
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to non-financial assets &gt; Valuation premise for non-financial assets
+position: 11
+display label: 31-33
+observed range: 31-33
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">31-33</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g34-41" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g34-41
+title: General principles
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to liabilities and an entity’s own equity instruments &gt; General principles
+position: 13
+display label: 34-41
+observed range: 34-41
+provenance: top_similarity, enclosing_section_expansion, referenced_chunk">34-41</th><th class="section-col ifrs13" data-section-key="ifrs13::ifrs13_42-42" data-doc-key="ifrs13" data-is-target="1" title="IFRS 13
+section_id: ifrs13_42-42
+title: ifrs13_42-42
+lineage: ifrs13_42-42
+position: 999999
+display label: 42-42
+observed range: 42
+provenance: enclosing_section_expansion">42-42</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g42-44" data-doc-key="ifrs13" data-is-target="1" title="IFRS 13
+section_id: IFRS13_g42-44
+title: Non-performance risk
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to liabilities and an entity’s own equity instruments &gt; Non-performance risk
+position: 16
+display label: 42-44
+observed range: 43-44
+provenance: top_similarity, enclosing_section_expansion">42-44</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g56-56" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g56-56
+title: Exposure to the credit risk of a particular counterparty
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to financial assets and financial liabilities with offsetting positions in market risks or counterparty credit risk &gt; Exposure to the credit risk of a particular counterparty
+position: 21
+display label: 56-56
+observed range: 56
+provenance: top_similarity">56-56</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g61-66" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g61-66
+title: Valuation techniques
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Valuation techniques
+position: 23
+display label: 61-66
+observed range: 61-66
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">61-66</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g67-69" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g67-69
+title: General principles
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Inputs to valuation techniques &gt; General principles
+position: 25
+display label: 67-69
+observed range: 67-69
+provenance: referenced_chunk">67-69</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g72-90" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g72-90
+title: Fair value hierarchy
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy
+position: 27
+display label: 72-90
+observed range: 72-75
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">72-90</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g76-80" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g76-80
+title: Level 1 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 1 inputs
+position: 28
+display label: 76-80
+observed range: 76-80
+provenance: enclosing_section_expansion_for_referenced_chunk">76-80</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g81-85" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g81-85
+title: Level 2 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 2 inputs
+position: 29
+display label: 81-85
+observed range: 81-85
+provenance: enclosing_section_expansion_for_referenced_chunk">81-85</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_g86-90" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_g86-90
+title: Level 3 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 3 inputs
+position: 30
+display label: 86-90
+observed range: 86-90
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk">86-90</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB2-B2" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB2-B2
+title: The fair value measurement approach
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; The fair value measurement approach
+position: 35
+display label: B2-B2
+observed range: B2
+provenance: top_similarity">B2-B2</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB4-B4" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB4-B4
+title: Fair value at initial recognition (paragraphs 57⁠–⁠60)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Fair value at initial recognition (paragraphs 57⁠–⁠60)
+position: 37
+display label: B4-B4
+observed range: B4
+provenance: top_similarity">B4-B4</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB15-B17" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB15-B17
+title: Risk and uncertainty
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Valuation techniques (paragraphs 61⁠–⁠66) &gt; Income approach &gt; The components of a present value measurement &gt; Risk and uncertainty
+position: 45
+display label: B15-B17
+observed range: B15-B17
+provenance: enclosing_section_expansion, top_similarity">B15-B17</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB31-B33" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB31-B33
+title: Applying present value techniques to liabilities and an entity’s own equity instruments not held by other parties as assets (paragraphs 40 and 41)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Applying present value techniques to liabilities and an entity’s own equity instruments not held by other parties as assets (paragraphs 40 and 41)
+position: 48
+display label: B31-B33
+observed range: B31-B33
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">B31-B33</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB34-B34" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB34-B34
+title: Inputs to valuation techniques (paragraphs 67⁠–⁠71)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Inputs to valuation techniques (paragraphs 67⁠–⁠71)
+position: 49
+display label: B34-B34
+observed range: B34
+provenance: referenced_chunk">B34-B34</th><th class="section-col ifrs13" data-section-key="ifrs13::IFRS13_gB37-B47" data-doc-key="ifrs13" data-is-target="0" title="IFRS 13
+section_id: IFRS13_gB37-B47
+title: Measuring fair value when the volume or level of activity for an asset or a liability has significantly decreased
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Measuring fair value when the volume or level of activity for an asset or a liability has significantly decreased
+position: 53
+display label: B37-B47
+observed range: B37-B47
+provenance: enclosing_section_expansion, top_similarity, referenced_chunk">B37-B47</th><th class="section-col ias39" data-section-key="ias39::IAS39_g81-81A" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_g81-81A
+title: Designation of financial items as hedged items
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedged items &gt; Designation of financial items as hedged items
+position: 10
+display label: 81-81A
+observed range: 81-81A
+provenance: referenced_chunk, top_similarity">81-81A</th><th class="section-col ias39" data-section-key="ias39::IAS39_g83-84" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_g83-84
+title: Designation of groups of items as hedged items
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedged items &gt; Designation of groups of items as hedged items
+position: 12
+display label: 83-84
+observed range: 83-84
+provenance: top_similarity, enclosing_section_expansion">83-84</th><th class="section-col ias39" data-section-key="ias39::IAS39_g85-102" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_g85-102
+title: Hedge accounting
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedge accounting
+position: 13
+display label: 85-102
+observed range: 85-102
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk, top_similarity">85-102</th><th class="section-col ias39" data-section-key="ias39::IAS39_gAG99C-AG99D" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_gAG99C-AG99D
+title: Designation of financial items as hedged items (paragraphs 81 and 81A)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedged items (paragraphs 78⁠–⁠84) &gt; Designation of financial items as hedged items (paragraphs 81 and 81A)
+position: 39
+display label: AG99C-AG99D
+observed range: AG99C-AG99D
+provenance: referenced_chunk">AG99C-AG99D</th><th class="section-col ias39" data-section-key="ias39::IAS39_gAG101-AG101" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_gAG101-AG101
+title: Designation of groups of items as hedged items (paragraphs 83 and 84)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedged items (paragraphs 78⁠–⁠84) &gt; Designation of groups of items as hedged items (paragraphs 83 and 84)
+position: 41
+display label: AG101-AG101
+observed range: AG101
+provenance: referenced_chunk">AG101-AG101</th><th class="section-col ias39" data-section-key="ias39::IAS39_gAG102-AG132" data-doc-key="ias39" data-is-target="0" title="IAS 39
+section_id: IAS39_gAG102-AG132
+title: Hedge accounting (paragraphs 85⁠–⁠102)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedge accounting (paragraphs 85⁠–⁠102)
+position: 42
+display label: AG102-AG132
+observed range: AG102-AG132
+provenance: top_similarity, enclosing_section_expansion, referenced_chunk">AG102-AG132</th><th class="section-col ias41" data-section-key="ias41::IAS41_g8-9" data-doc-key="ias41" data-is-target="0" title="IAS 41
+section_id: IAS41_g8-9
+title: General definitions
+lineage: International Accounting Standard 41 Agriculture &gt; Definitions &gt; General definitions
+position: 5
+display label: 8-9
+observed range: 8
+provenance: top_similarity">8-9</th><th class="section-col ias41" data-section-key="ias41::IAS41_g10-33" data-doc-key="ias41" data-is-target="0" title="IAS 41
+section_id: IAS41_g10-33
+title: Recognition and measurement
+lineage: International Accounting Standard 41 Agriculture &gt; Recognition and measurement
+position: 6
+display label: 10-33
+observed range: 10-33
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk, top_similarity">10-33</th><th class="section-col ias41" data-section-key="ias41::IAS41_g40-53" data-doc-key="ias41" data-is-target="0" title="IAS 41
+section_id: IAS41_g40-53
+title: General
+lineage: International Accounting Standard 41 Agriculture &gt; Disclosure &gt; General
+position: 11
+display label: 40-53
+observed range: 40-53
+provenance: enclosing_section_expansion, top_similarity">40-53</th><th class="section-col ias41" data-section-key="ias41::IAS41_g54-56" data-doc-key="ias41" data-is-target="0" title="IAS 41
+section_id: IAS41_g54-56
+title: Additional disclosures for biological assets where fair value cannot be measured reliably
+lineage: International Accounting Standard 41 Agriculture &gt; Disclosure &gt; Additional disclosures for biological assets where fair value cannot be measured reliably
+position: 12
+display label: 54-56
+observed range: 54-56
+provenance: top_similarity, enclosing_section_expansion">54-56</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g3.2.10-3.2.14" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g3.2.10-3.2.14
+title: Transfers that qualify for derecognition
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Recognition and derecognition &gt; Derecognition of financial assets &gt; Transfers that qualify for derecognition
+position: 8
+display label: 3.2.10-3.2.14
+observed range: 3.2.10-3.2.14
+provenance: enclosing_section_expansion, top_similarity">3.2.10-3.2.14</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g4.1.1-4.1.5" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g4.1.1-4.1.5
+title: Classification of financial assets
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial assets
+position: 14
+display label: 4.1.1-4.1.5
+observed range: 4.1.1-4.1.4
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk">4.1.1-4.1.5</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g4.1.5-4.1.5" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g4.1.5-4.1.5
+title: Option to designate a financial asset at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial assets &gt; Option to designate a financial asset at fair value through profit or loss
+position: 15
+display label: 4.1.5-4.1.5
+observed range: 4.1.5
+provenance: referenced_chunk">4.1.5-4.1.5</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g4.2.2-4.2.2" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g4.2.2-4.2.2
+title: Option to designate a financial liability at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial liabilities &gt; Option to designate a financial liability at fair value through profit or loss
+position: 17
+display label: 4.2.2-4.2.2
+observed range: 4.2.2
+provenance: referenced_chunk">4.2.2-4.2.2</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.1.1-5.1.3" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g5.1.1-5.1.3
+title: Initial measurement
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Initial measurement
+position: 23
+display label: 5.1.1-5.1.3
+observed range: 5.1.1-5.1.3
+provenance: top_similarity, referenced_chunk, enclosing_section_expansion">5.1.1-5.1.3</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Gains and losses
+position: 41
+display label: 5.7.1-5.7.11
+observed range: 5.7.1-5.7.11
+provenance: top_similarity, enclosing_section_expansion, referenced_chunk">5.7.1-5.7.11</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g6.4.1-6.4.1" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g6.4.1-6.4.1
+title: Qualifying criteria for hedge accounting
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Qualifying criteria for hedge accounting
+position: 53
+display label: 6.4.1-6.4.1
+observed range: 6.4.1
+provenance: referenced_chunk">6.4.1-6.4.1</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_g6.5.1-6.5.16" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_g6.5.1-6.5.16
+title: Accounting for qualifying hedging relationships
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Accounting for qualifying hedging relationships
+position: 54
+display label: 6.5.1-6.5.16
+observed range: 6.5.1-6.5.16
+provenance: enclosing_section_expansion, top_similarity, referenced_chunk">6.5.1-6.5.16</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB4.1.29-B4.1.32" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB4.1.29-B4.1.32
+title: Designation eliminates or significantly reduces an accounting mismatch
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Classification (Chapter 4) &gt; Option to designate a financial asset or financial liability as at fair value through profit or loss (Sections 4.1 and 4.2) &gt; Designation eliminates or significantly reduces an accounting mismatch
+position: 128
+display label: B4.1.29-B4.1.32
+observed range: B4.1.29-B4.1.32
+provenance: enclosing_section_expansion, top_similarity">B4.1.29-B4.1.32</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB4.1.33-B4.1.36" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB4.1.33-B4.1.36
+title: A group of financial liabilities or financial assets and financial liabilities is managed and its performance is evaluated on a fair value basis
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Classification (Chapter 4) &gt; Option to designate a financial asset or financial liability as at fair value through profit or loss (Sections 4.1 and 4.2) &gt; A group of financial liabilities or financial assets and financial liabilities is managed and its performance is evaluated on a fair value basis
+position: 129
+display label: B4.1.33-B4.1.36
+observed range: B4.1.33-B4.1.36
+provenance: enclosing_section_expansion, top_similarity">B4.1.33-B4.1.36</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB5.1.1-B5.1.2A" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB5.1.1-B5.1.2A
+title: Initial measurement (Section 5.1)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Initial measurement (Section 5.1)
+position: 136
+display label: B5.1.1-B5.1.2A
+observed range: B5.1.1-B5.1.2A
+provenance: top_similarity, referenced_chunk">B5.1.1-B5.1.2A</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB5.2.1-B5.2.2A" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB5.2.1-B5.2.2A
+title: Subsequent measurement (Sections 5.2 and 5.3)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Subsequent measurement (Sections 5.2 and 5.3)
+position: 137
+display label: B5.2.1-B5.2.2A
+observed range: B5.2.1-B5.2.2A
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk">B5.2.1-B5.2.2A</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_sgB5.2.3-B5.2.6" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_sgB5.2.3-B5.2.6
+title: Investments in equity instruments and contracts on those investments
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Investments in equity instruments and contracts on those investments
+position: 138
+display label: B5.2.3-B5.2.6
+observed range: B5.2.3-B5.2.6
+provenance: top_similarity, enclosing_section_expansion">B5.2.3-B5.2.6</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB5.4.8-B5.4.8" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB5.4.8-B5.4.8
+title: Transaction costs
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Amortised cost measurement (Section 5.4) &gt; Transaction costs
+position: 141
+display label: B5.4.8-B5.4.8
+observed range: B5.4.8
+provenance: referenced_chunk">B5.4.8-B5.4.8</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB5.7.1-B5.7.20" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB5.7.1-B5.7.20
+title: Gains and losses (Section 5.7)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Gains and losses (Section 5.7)
+position: 159
+display label: B5.7.1-B5.7.20
+observed range: B5.7.1-B5.7.4
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">B5.7.1-B5.7.20</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB5.7.5-B5.7.20" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB5.7.5-B5.7.20
+title: Liabilities designated as at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Gains and losses (Section 5.7) &gt; Liabilities designated as at fair value through profit or loss
+position: 160
+display label: B5.7.5-B5.7.20
+observed range: B5.7.5-B5.7.20
+provenance: referenced_chunk, top_similarity">B5.7.5-B5.7.20</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.1-B6.5.39" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.1-B6.5.39
+title: Accounting for qualifying hedging relationships (Section 6.5)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5)
+position: 181
+display label: B6.5.1-B6.5.39
+observed range: B6.5.1-B6.5.3
+provenance: enclosing_section_expansion_for_referenced_chunk, referenced_chunk">B6.5.1-B6.5.39</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.4-B6.5.6" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.4-B6.5.6
+title: Measurement of hedge ineffectiveness
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Measurement of hedge ineffectiveness
+position: 182
+display label: B6.5.4-B6.5.6
+observed range: B6.5.4-B6.5.6
+provenance: enclosing_section_expansion_for_referenced_chunk">B6.5.4-B6.5.6</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.7-B6.5.21" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.7-B6.5.21
+title: Rebalancing the hedging relationship and changes to the hedge ratio
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Rebalancing the hedging relationship and changes to the hedge ratio
+position: 183
+display label: B6.5.7-B6.5.21
+observed range: B6.5.7-B6.5.21
+provenance: enclosing_section_expansion_for_referenced_chunk">B6.5.7-B6.5.21</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.22-B6.5.28" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.22-B6.5.28
+title: Discontinuation of hedge accounting
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Discontinuation of hedge accounting
+position: 184
+display label: B6.5.22-B6.5.28
+observed range: B6.5.22-B6.5.28
+provenance: enclosing_section_expansion_for_referenced_chunk">B6.5.22-B6.5.28</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.29-B6.5.33" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.29-B6.5.33
+title: Accounting for the time value of options
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Accounting for the time value of options
+position: 185
+display label: B6.5.29-B6.5.33
+observed range: B6.5.29-B6.5.33
+provenance: enclosing_section_expansion_for_referenced_chunk">B6.5.29-B6.5.33</th><th class="section-col ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.34-B6.5.39" data-doc-key="ifrs9" data-is-target="0" title="IFRS 9
+section_id: IFRS09_gB6.5.34-B6.5.39
+title: Accounting for the forward element of forward contracts and foreign currency basis spreads of financial instruments
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Accounting for the forward element of forward contracts and foreign currency basis spreads of financial instruments
+position: 186
+display label: B6.5.34-B6.5.39
+observed range: B6.5.34-B6.5.39
+provenance: enclosing_section_expansion_for_referenced_chunk">B6.5.34-B6.5.39</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N2A5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N2A5305FB4F52CB-EFL
+title: Principes spécifiques aux portefeuilles gérés sur une base nette
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Principes spécifiques aux portefeuilles gérés sur une base nette
+position: 12
+display label: N2A5305FB4F52CB-EFL
+observed range: 13335
+provenance: top_similarity">N2A5305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N9C5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N9C5305FB4F52CB-EFL
+title: Principe général
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Principe général
+position: 33
+display label: N9C5305FB4F52CB-EFL
+observed range: 13380
+provenance: top_similarity">N9C5305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N115305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N115305FB4F52CB-EFL
+title: Définition unique de la juste valeur
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Définition unique de la juste valeur
+position: 7
+display label: N115305FB4F52CB-EFL
+observed range: 13315
+provenance: top_similarity">N115305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N145305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N145305FB4F52CB-EFL
+title: Estimation de la juste valeur basée sur des hypothèses de marché
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Estimation de la juste valeur basée sur des hypothèses de marché
+position: 8
+display label: N145305FB4F52CB-EFL
+observed range: 13317
+provenance: top_similarity">N145305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N245305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N245305FB4F52CB-EFL
+title: Passifs et instruments de capitaux propres émis
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Passifs et instruments de capitaux propres émis
+position: 11
+display label: N245305FB4F52CB-EFL
+observed range: 13330
+provenance: top_similarity">N245305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N355305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N355305FB4F52CB-EFL
+title: Paramètres d&#x27;évaluation
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Techniques et paramètres d&#x27;évaluation &gt; Paramètres d&#x27;évaluation
+position: 15
+display label: N355305FB4F52CB-EFL
+observed range: 13339
+provenance: top_similarity">N355305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N525305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N525305FB4F52CB-EFL
+title: Définition de la juste valeur
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Définition de la juste valeur
+position: 24
+display label: N525305FB4F52CB-EFL
+observed range: 13370
+provenance: top_similarity">N525305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N815305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N815305FB4F52CB-EFL
+title: Prise en compte du risque de défaut de la contrepartie
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Prise en compte du risque de défaut de la contrepartie
+position: 28
+display label: N815305FB4F52CB-EFL
+observed range: 13376
+provenance: top_similarity">N815305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::NA75305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: NA75305FB4F52CB-EFL
+title: Juste valeur et risque de non-exécution d&#x27;un passif
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Juste valeur et risque de non-exécution d&#x27;un passif
+position: 34
+display label: NA75305FB4F52CB-EFL
+observed range: 13382
+provenance: top_similarity">NA75305FB4F52CB-EFL</th><th class="section-col navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::NDD5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-is-target="0" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: NDD5305FB4F52CB-EFL
+title: Evénements postérieurs à la date d&#x27;évaluation
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Paramètres utilisés pour les évaluations de la juste valeur &gt; Evénements postérieurs à la date d&#x27;évaluation
+position: 40
+display label: NDD5305FB4F52CB-EFL
+observed range: 13389
+provenance: top_similarity">NDD5305FB4F52CB-EFL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-order-question="0" data-order-missing="1:000:Q5.0:0000" data-has-missing="0" data-question-id="Q5.0"><td class="sticky-1 metadata-col metadata-q" title="question_id: Q5.0
+
+question:
+Le risque de défaut de la contrepartie doit-il être pris en compte dans l&#x27;évaluation de la juste valeur d&#x27;un actif ou d&#x27;un passif ?
+
+embedded question:
+Le risque de défaut de la contrepartie doit-il être pris en compte dans l&#x27;évaluation de la juste valeur d&#x27;un actif ou d&#x27;un passif ?
+fair value">Q5.0</td><td class="sticky-2 metadata-col metadata-rec" title="target document chunks: 90
+expected ranges present: 1/1
+target documents: IFRS 13">90</td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g1-4" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g1-4
+title: Objective
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Objective
+
+retrieved chunks:
+- 1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 2 (0.00) [secondary] provenance=referenced_chunk
+- 3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 2 (0.00) [secondary] provenance=referenced_chunk
+- 3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g9-10" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g9-10
+title: Definition of fair value
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Definition of fair value
+
+retrieved chunks:
+- 9 (0.00) [secondary] provenance=referenced_chunk
+- 10 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 9 (0.00) [secondary] provenance=referenced_chunk
+- 10 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g11-14" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 64.2%)" data-visible-bg="hsl(312 70% 64.2%)" title="IFRS 13
+section_id: IFRS13_g11-14
+title: The asset or liability
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The asset or liability
+
+retrieved chunks:
+- 11 (0.68) [secondary] provenance=top_similarity
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=referenced_chunk
+- 14 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 11 (0.68) [secondary] provenance=top_similarity
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=referenced_chunk
+- 14 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 64.2%);"><span class="section-cell-score">0.68</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g15-21" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 66.2%)" data-visible-bg="hsl(312 70% 66.2%)" title="IFRS 13
+section_id: IFRS13_g15-21
+title: The transaction
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The transaction
+
+retrieved chunks:
+- 15 (0.66) [secondary] provenance=top_similarity
+- 16 (0.00) [secondary] provenance=referenced_chunk
+- 17 (0.00) [secondary] provenance=enclosing_section_expansion
+- 18 (0.00) [secondary] provenance=enclosing_section_expansion
+- 19 (0.00) [secondary] provenance=enclosing_section_expansion
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+- 21 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 15 (0.66) [secondary] provenance=top_similarity
+- 16 (0.00) [secondary] provenance=referenced_chunk
+- 17 (0.00) [secondary] provenance=enclosing_section_expansion
+- 18 (0.00) [secondary] provenance=enclosing_section_expansion
+- 19 (0.00) [secondary] provenance=enclosing_section_expansion
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+- 21 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 66.2%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g22-23" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g22-23
+title: Market participants
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Market participants
+
+retrieved chunks:
+- 22 (0.00) [secondary] provenance=referenced_chunk
+- 23 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 22 (0.00) [secondary] provenance=referenced_chunk
+- 23 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g24-26" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 65.5%)" data-visible-bg="hsl(312 70% 65.5%)" title="IFRS 13
+section_id: IFRS13_g24-26
+title: The price
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; The price
+
+retrieved chunks:
+- 24 (0.67) [secondary] provenance=top_similarity
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion
+- 26 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 24 (0.67) [secondary] provenance=top_similarity
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion
+- 26 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 65.5%);"><span class="section-cell-score">0.67</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g27-30" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g27-30
+title: Highest and best use for non-financial assets
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to non-financial assets &gt; Highest and best use for non-financial assets
+
+retrieved chunks:
+- 27 (0.00) [secondary] provenance=referenced_chunk
+- 28 (0.00) [secondary] provenance=referenced_chunk
+- 29 (0.00) [secondary] provenance=referenced_chunk
+- 30 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 27 (0.00) [secondary] provenance=referenced_chunk
+- 28 (0.00) [secondary] provenance=referenced_chunk
+- 29 (0.00) [secondary] provenance=referenced_chunk
+- 30 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g31-33" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g31-33
+title: Valuation premise for non-financial assets
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to non-financial assets &gt; Valuation premise for non-financial assets
+
+retrieved chunks:
+- 31 (0.00) [secondary] provenance=referenced_chunk
+- 32 (0.00) [secondary] provenance=referenced_chunk
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 31 (0.00) [secondary] provenance=referenced_chunk
+- 32 (0.00) [secondary] provenance=referenced_chunk
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g34-41" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 67.3%)" data-visible-bg="hsl(312 70% 67.3%)" title="IFRS 13
+section_id: IFRS13_g34-41
+title: General principles
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to liabilities and an entity’s own equity instruments &gt; General principles
+
+retrieved chunks:
+- 34 (0.65) [secondary] provenance=top_similarity
+- 35 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36 (0.00) [secondary] provenance=enclosing_section_expansion
+- 37 (0.00) [secondary] provenance=enclosing_section_expansion
+- 38 (0.00) [secondary] provenance=enclosing_section_expansion
+- 39 (0.00) [secondary] provenance=referenced_chunk
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 34 (0.65) [secondary] provenance=top_similarity
+- 35 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36 (0.00) [secondary] provenance=enclosing_section_expansion
+- 37 (0.00) [secondary] provenance=enclosing_section_expansion
+- 38 (0.00) [secondary] provenance=enclosing_section_expansion
+- 39 (0.00) [secondary] provenance=referenced_chunk
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 67.3%);"><span class="section-cell-score">0.65</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::ifrs13_42-42" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: ifrs13_42-42
+title: ifrs13_42-42
+lineage: ifrs13_42-42
+
+retrieved chunks:
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g42-44" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 64.1%)" data-visible-bg="hsl(312 70% 64.1%)" title="IFRS 13
+section_id: IFRS13_g42-44
+title: Non-performance risk
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to liabilities and an entity’s own equity instruments &gt; Non-performance risk
+
+retrieved chunks:
+- 43 (0.68) [secondary] provenance=top_similarity
+- 44 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 43 (0.68) [secondary] provenance=top_similarity
+- 44 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.68&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 64.1%);"><span class="section-cell-score">0.68</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g56-56" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.74&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.74&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 62.0%)" data-visible-bg="hsl(312 70% 62.0%)" title="IFRS 13
+section_id: IFRS13_g56-56
+title: Exposure to the credit risk of a particular counterparty
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Application to financial assets and financial liabilities with offsetting positions in market risks or counterparty credit risk &gt; Exposure to the credit risk of a particular counterparty
+
+retrieved chunks:
+- 56 (0.74) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 56 (0.74) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.74&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.74&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 62.0%);"><span class="section-cell-score">0.74</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g61-66" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g61-66
+title: Valuation techniques
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Valuation techniques
+
+retrieved chunks:
+- 61 (0.00) [secondary] provenance=referenced_chunk
+- 62 (0.00) [secondary] provenance=referenced_chunk
+- 63 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 64 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 65 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 66 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 61 (0.00) [secondary] provenance=referenced_chunk
+- 62 (0.00) [secondary] provenance=referenced_chunk
+- 63 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 64 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 65 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 66 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g67-69" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g67-69
+title: General principles
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Inputs to valuation techniques &gt; General principles
+
+retrieved chunks:
+- 67 (0.00) [secondary] provenance=referenced_chunk
+- 68 (0.00) [secondary] provenance=referenced_chunk
+- 69 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 67 (0.00) [secondary] provenance=referenced_chunk
+- 68 (0.00) [secondary] provenance=referenced_chunk
+- 69 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g72-90" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g72-90
+title: Fair value hierarchy
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy
+
+retrieved chunks:
+- 72 (0.00) [secondary] provenance=referenced_chunk
+- 73 (0.00) [secondary] provenance=referenced_chunk
+- 74 (0.00) [secondary] provenance=referenced_chunk
+- 75 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 72 (0.00) [secondary] provenance=referenced_chunk
+- 73 (0.00) [secondary] provenance=referenced_chunk
+- 74 (0.00) [secondary] provenance=referenced_chunk
+- 75 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g76-80" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g76-80
+title: Level 1 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 1 inputs
+
+retrieved chunks:
+- 76 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 77 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 78 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 79 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 80 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 76 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 77 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 78 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 79 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 80 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g81-85" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g81-85
+title: Level 2 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 2 inputs
+
+retrieved chunks:
+- 81 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 82 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 83 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 84 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 85 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 81 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 82 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 83 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 84 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 85 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_g86-90" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_g86-90
+title: Level 3 inputs
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Measurement &gt; Fair value hierarchy &gt; Level 3 inputs
+
+retrieved chunks:
+- 86 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 87 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 88 (0.00) [secondary] provenance=referenced_chunk
+- 89 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 90 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 86 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 87 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 88 (0.00) [secondary] provenance=referenced_chunk
+- 89 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 90 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB2-B2" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 66.7%)" data-visible-bg="hsl(312 70% 66.7%)" title="IFRS 13
+section_id: IFRS13_gB2-B2
+title: The fair value measurement approach
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; The fair value measurement approach
+
+retrieved chunks:
+- B2 (0.66) [secondary] provenance=top_similarity
+
+visible context chunks:
+- B2 (0.66) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 66.7%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB4-B4" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 67.3%)" data-visible-bg="hsl(312 70% 67.3%)" title="IFRS 13
+section_id: IFRS13_gB4-B4
+title: Fair value at initial recognition (paragraphs 57⁠–⁠60)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Fair value at initial recognition (paragraphs 57⁠–⁠60)
+
+retrieved chunks:
+- B4 (0.65) [secondary] provenance=top_similarity
+
+visible context chunks:
+- B4 (0.65) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 67.3%);"><span class="section-cell-score">0.65</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB15-B17" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 66.3%)" data-visible-bg="hsl(312 70% 66.3%)" title="IFRS 13
+section_id: IFRS13_gB15-B17
+title: Risk and uncertainty
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Valuation techniques (paragraphs 61⁠–⁠66) &gt; Income approach &gt; The components of a present value measurement &gt; Risk and uncertainty
+
+retrieved chunks:
+- B15 (0.00) [secondary] provenance=enclosing_section_expansion
+- B16 (0.66) [secondary] provenance=top_similarity
+- B17 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B15 (0.00) [secondary] provenance=enclosing_section_expansion
+- B16 (0.66) [secondary] provenance=top_similarity
+- B17 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 66.3%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB31-B33" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_gB31-B33
+title: Applying present value techniques to liabilities and an entity’s own equity instruments not held by other parties as assets (paragraphs 40 and 41)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Applying present value techniques to liabilities and an entity’s own equity instruments not held by other parties as assets (paragraphs 40 and 41)
+
+retrieved chunks:
+- B31 (0.00) [secondary] provenance=referenced_chunk
+- B32 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B33 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B31 (0.00) [secondary] provenance=referenced_chunk
+- B32 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B33 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB34-B34" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 35% 97.5%)" data-visible-bg="hsl(312 35% 97.5%)" title="IFRS 13
+section_id: IFRS13_gB34-B34
+title: Inputs to valuation techniques (paragraphs 67⁠–⁠71)
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Inputs to valuation techniques (paragraphs 67⁠–⁠71)
+
+retrieved chunks:
+- B34 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B34 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs13" data-section-key="ifrs13::IFRS13_gB37-B47" data-doc-key="ifrs13" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(312 70% 66.9%)" data-visible-bg="hsl(312 70% 66.9%)" title="IFRS 13
+section_id: IFRS13_gB37-B47
+title: Measuring fair value when the volume or level of activity for an asset or a liability has significantly decreased
+lineage: International Financial Reporting Standard 13 Fair Value Measurement &gt; Appendices &gt; Appendix B Application guidance &gt; Measuring fair value when the volume or level of activity for an asset or a liability has significantly decreased
+
+retrieved chunks:
+- B37 (0.00) [secondary] provenance=enclosing_section_expansion
+- B38 (0.00) [secondary] provenance=enclosing_section_expansion
+- B39 (0.00) [secondary] provenance=enclosing_section_expansion
+- B40 (0.00) [secondary] provenance=enclosing_section_expansion
+- B41 (0.66) [secondary] provenance=top_similarity
+- B42 (0.00) [secondary] provenance=enclosing_section_expansion
+- B43 (0.00) [secondary] provenance=referenced_chunk
+- B44 (0.00) [secondary] provenance=referenced_chunk
+- B45 (0.00) [secondary] provenance=enclosing_section_expansion
+- B46 (0.00) [secondary] provenance=enclosing_section_expansion
+- B47 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B37 (0.00) [secondary] provenance=enclosing_section_expansion
+- B38 (0.00) [secondary] provenance=enclosing_section_expansion
+- B39 (0.00) [secondary] provenance=enclosing_section_expansion
+- B40 (0.00) [secondary] provenance=enclosing_section_expansion
+- B41 (0.66) [secondary] provenance=top_similarity
+- B42 (0.00) [secondary] provenance=enclosing_section_expansion
+- B43 (0.00) [secondary] provenance=referenced_chunk
+- B44 (0.00) [secondary] provenance=referenced_chunk
+- B45 (0.00) [secondary] provenance=enclosing_section_expansion
+- B46 (0.00) [secondary] provenance=enclosing_section_expansion
+- B47 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(312 70% 66.9%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_g81-81A" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 70% 69.1%)" data-visible-bg="hsl(225 70% 69.1%)" title="IAS 39
+section_id: IAS39_g81-81A
+title: Designation of financial items as hedged items
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedged items &gt; Designation of financial items as hedged items
+
+retrieved chunks:
+- 81 (0.00) [secondary] provenance=referenced_chunk
+- 81A (0.64) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 81 (0.00) [secondary] provenance=referenced_chunk
+- 81A (0.64) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 70% 69.1%);"><span class="section-cell-score">0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_g83-84" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 70% 74.1%)" data-visible-bg="hsl(225 70% 74.1%)" title="IAS 39
+section_id: IAS39_g83-84
+title: Designation of groups of items as hedged items
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedged items &gt; Designation of groups of items as hedged items
+
+retrieved chunks:
+- 83 (0.59) [secondary] provenance=top_similarity
+- 84 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 83 (0.59) [secondary] provenance=top_similarity
+- 84 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 70% 74.1%);"><span class="section-cell-score">0.59</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_g85-102" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.60-0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.60-0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 70% 69.6%)" data-visible-bg="hsl(225 70% 69.6%)" title="IAS 39
+section_id: IAS39_g85-102
+title: Hedge accounting
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Hedging &gt; Hedge accounting
+
+retrieved chunks:
+- 85 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 86 (0.00) [secondary] provenance=referenced_chunk
+- 87 (0.63) [secondary] provenance=top_similarity
+- 88 (0.00) [secondary] provenance=referenced_chunk
+- 89 (0.62) [secondary] provenance=top_similarity
+- 89A (0.00) [secondary] provenance=referenced_chunk
+- 90 (0.00) [secondary] provenance=referenced_chunk
+- 91 (0.00) [secondary] provenance=referenced_chunk
+- 92 (0.00) [secondary] provenance=referenced_chunk
+- 93 (0.60) [secondary] provenance=top_similarity
+- 94 (0.61) [secondary] provenance=top_similarity
+- 95 (0.00) [secondary] provenance=referenced_chunk
+- 96 (0.00) [secondary] provenance=referenced_chunk
+- 97 (0.00) [secondary] provenance=referenced_chunk
+- 98 (0.00) [secondary] provenance=referenced_chunk
+- 99 (0.00) [secondary] provenance=referenced_chunk
+- 100 (0.00) [secondary] provenance=referenced_chunk
+- 101 (0.00) [secondary] provenance=referenced_chunk
+- 102 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E6 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E7 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E8 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E9 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 85 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 86 (0.00) [secondary] provenance=referenced_chunk
+- 87 (0.63) [secondary] provenance=top_similarity
+- 88 (0.00) [secondary] provenance=referenced_chunk
+- 89 (0.62) [secondary] provenance=top_similarity
+- 89A (0.00) [secondary] provenance=referenced_chunk
+- 90 (0.00) [secondary] provenance=referenced_chunk
+- 91 (0.00) [secondary] provenance=referenced_chunk
+- 92 (0.00) [secondary] provenance=referenced_chunk
+- 93 (0.60) [secondary] provenance=top_similarity
+- 94 (0.61) [secondary] provenance=top_similarity
+- 95 (0.00) [secondary] provenance=referenced_chunk
+- 96 (0.00) [secondary] provenance=referenced_chunk
+- 97 (0.00) [secondary] provenance=referenced_chunk
+- 98 (0.00) [secondary] provenance=referenced_chunk
+- 99 (0.00) [secondary] provenance=referenced_chunk
+- 100 (0.00) [secondary] provenance=referenced_chunk
+- 101 (0.00) [secondary] provenance=referenced_chunk
+- 102 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E6 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E7 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E8 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E9 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.60-0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.60-0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 70% 69.6%);"><span class="section-cell-score">0.60-0.63</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_gAG99C-AG99D" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 35% 97.5%)" data-visible-bg="hsl(225 35% 97.5%)" title="IAS 39
+section_id: IAS39_gAG99C-AG99D
+title: Designation of financial items as hedged items (paragraphs 81 and 81A)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedged items (paragraphs 78⁠–⁠84) &gt; Designation of financial items as hedged items (paragraphs 81 and 81A)
+
+retrieved chunks:
+- AG99C (0.00) [secondary] provenance=referenced_chunk
+- AG99D (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- AG99C (0.00) [secondary] provenance=referenced_chunk
+- AG99D (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_gAG101-AG101" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 35% 97.5%)" data-visible-bg="hsl(225 35% 97.5%)" title="IAS 39
+section_id: IAS39_gAG101-AG101
+title: Designation of groups of items as hedged items (paragraphs 83 and 84)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedged items (paragraphs 78⁠–⁠84) &gt; Designation of groups of items as hedged items (paragraphs 83 and 84)
+
+retrieved chunks:
+- AG101 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- AG101 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias39" data-section-key="ias39::IAS39_gAG102-AG132" data-doc-key="ias39" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(225 70% 68.4%)" data-visible-bg="hsl(225 70% 68.4%)" title="IAS 39
+section_id: IAS39_gAG102-AG132
+title: Hedge accounting (paragraphs 85⁠–⁠102)
+lineage: International Accounting Standard 39 Financial Instruments: Recognition and Measurement &gt; Appendices &gt; Appendix A Application guidance &gt; Hedging (paragraphs 71⁠–⁠102) &gt; Hedge accounting (paragraphs 85⁠–⁠102)
+
+retrieved chunks:
+- AG102 (0.62) [secondary] provenance=top_similarity
+- AG103 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG104 (0.00) [secondary] provenance=referenced_chunk
+- AG105 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG106 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG107 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG107A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG108 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG109 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110B (0.00) [secondary] provenance=enclosing_section_expansion
+- AG111 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG112 (0.64) [secondary] provenance=top_similarity
+- AG113 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG113A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG114 (0.59) [secondary] provenance=top_similarity
+- AG115 (0.00) [secondary] provenance=referenced_chunk
+- AG116 (0.00) [secondary] provenance=referenced_chunk
+- AG117 (0.00) [secondary] provenance=referenced_chunk
+- AG118 (0.00) [secondary] provenance=referenced_chunk
+- AG119 (0.00) [secondary] provenance=referenced_chunk
+- AG120 (0.00) [secondary] provenance=referenced_chunk
+- AG121 (0.61) [secondary] provenance=top_similarity
+- AG122 (0.00) [secondary] provenance=referenced_chunk
+- AG123 (0.00) [secondary] provenance=referenced_chunk
+- AG124 (0.00) [secondary] provenance=referenced_chunk
+- AG125 (0.00) [secondary] provenance=referenced_chunk
+- AG126 (0.00) [secondary] provenance=referenced_chunk
+- AG127 (0.00) [secondary] provenance=referenced_chunk
+- AG128 (0.00) [secondary] provenance=referenced_chunk
+- AG129 (0.00) [secondary] provenance=referenced_chunk
+- AG130 (0.00) [secondary] provenance=referenced_chunk
+- AG131 (0.00) [secondary] provenance=referenced_chunk
+- AG132 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- AG102 (0.62) [secondary] provenance=top_similarity
+- AG103 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG104 (0.00) [secondary] provenance=referenced_chunk
+- AG105 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG106 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG107 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG107A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG108 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG109 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG110B (0.00) [secondary] provenance=enclosing_section_expansion
+- AG111 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG112 (0.64) [secondary] provenance=top_similarity
+- AG113 (0.00) [secondary] provenance=enclosing_section_expansion
+- AG113A (0.00) [secondary] provenance=enclosing_section_expansion
+- AG114 (0.59) [secondary] provenance=top_similarity
+- AG115 (0.00) [secondary] provenance=referenced_chunk
+- AG116 (0.00) [secondary] provenance=referenced_chunk
+- AG117 (0.00) [secondary] provenance=referenced_chunk
+- AG118 (0.00) [secondary] provenance=referenced_chunk
+- AG119 (0.00) [secondary] provenance=referenced_chunk
+- AG120 (0.00) [secondary] provenance=referenced_chunk
+- AG121 (0.61) [secondary] provenance=top_similarity
+- AG122 (0.00) [secondary] provenance=referenced_chunk
+- AG123 (0.00) [secondary] provenance=referenced_chunk
+- AG124 (0.00) [secondary] provenance=referenced_chunk
+- AG125 (0.00) [secondary] provenance=referenced_chunk
+- AG126 (0.00) [secondary] provenance=referenced_chunk
+- AG127 (0.00) [secondary] provenance=referenced_chunk
+- AG128 (0.00) [secondary] provenance=referenced_chunk
+- AG129 (0.00) [secondary] provenance=referenced_chunk
+- AG130 (0.00) [secondary] provenance=referenced_chunk
+- AG131 (0.00) [secondary] provenance=referenced_chunk
+- AG132 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(225 70% 68.4%);"><span class="section-cell-score">0.59-0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias41" data-section-key="ias41::IAS41_g8-9" data-doc-key="ias41" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(156 70% 79.2%)" data-visible-bg="hsl(156 70% 79.2%)" title="IAS 41
+section_id: IAS41_g8-9
+title: General definitions
+lineage: International Accounting Standard 41 Agriculture &gt; Definitions &gt; General definitions
+
+retrieved chunks:
+- 8 (0.55) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 8 (0.55) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(156 70% 79.2%);"><span class="section-cell-score">0.55</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias41" data-section-key="ias41::IAS41_g10-33" data-doc-key="ias41" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.58&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.58&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(156 70% 75.6%)" data-visible-bg="hsl(156 70% 75.6%)" title="IAS 41
+section_id: IAS41_g10-33
+title: Recognition and measurement
+lineage: International Accounting Standard 41 Agriculture &gt; Recognition and measurement
+
+retrieved chunks:
+- 10 (0.00) [secondary] provenance=referenced_chunk
+- 11 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 15 (0.55) [secondary] provenance=top_similarity
+- 16 (0.55) [secondary] provenance=top_similarity
+- 22 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 24 (0.54) [secondary] provenance=top_similarity
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 26 (0.55) [secondary] provenance=top_similarity
+- 27 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 28 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 29 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 30 (0.58) [secondary] provenance=top_similarity
+- 31 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 32 (0.54) [secondary] provenance=top_similarity
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E2 (0.54) [secondary] provenance=top_similarity
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 10 (0.00) [secondary] provenance=referenced_chunk
+- 11 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 15 (0.55) [secondary] provenance=top_similarity
+- 16 (0.55) [secondary] provenance=top_similarity
+- 22 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 24 (0.54) [secondary] provenance=top_similarity
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 26 (0.55) [secondary] provenance=top_similarity
+- 27 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 28 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 29 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 30 (0.58) [secondary] provenance=top_similarity
+- 31 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 32 (0.54) [secondary] provenance=top_similarity
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E2 (0.54) [secondary] provenance=top_similarity
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.58&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.58&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(156 70% 75.6%);"><span class="section-cell-score">0.54-0.58</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias41" data-section-key="ias41::IAS41_g40-53" data-doc-key="ias41" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(156 70% 80.2%)" data-visible-bg="hsl(156 70% 80.2%)" title="IAS 41
+section_id: IAS41_g40-53
+title: General
+lineage: International Accounting Standard 41 Agriculture &gt; Disclosure &gt; General
+
+retrieved chunks:
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41 (0.00) [secondary] provenance=enclosing_section_expansion
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- 44 (0.00) [secondary] provenance=enclosing_section_expansion
+- 45 (0.00) [secondary] provenance=enclosing_section_expansion
+- 46 (0.00) [secondary] provenance=enclosing_section_expansion
+- 49 (0.00) [secondary] provenance=enclosing_section_expansion
+- 50 (0.00) [secondary] provenance=enclosing_section_expansion
+- 51 (0.54) [secondary] provenance=top_similarity
+- 52 (0.00) [secondary] provenance=enclosing_section_expansion
+- 53 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41 (0.00) [secondary] provenance=enclosing_section_expansion
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- 44 (0.00) [secondary] provenance=enclosing_section_expansion
+- 45 (0.00) [secondary] provenance=enclosing_section_expansion
+- 46 (0.00) [secondary] provenance=enclosing_section_expansion
+- 49 (0.00) [secondary] provenance=enclosing_section_expansion
+- 50 (0.00) [secondary] provenance=enclosing_section_expansion
+- 51 (0.54) [secondary] provenance=top_similarity
+- 52 (0.00) [secondary] provenance=enclosing_section_expansion
+- 53 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(156 70% 80.2%);"><span class="section-cell-score">0.54</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias41" data-section-key="ias41::IAS41_g54-56" data-doc-key="ias41" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(156 70% 80.6%)" data-visible-bg="hsl(156 70% 80.6%)" title="IAS 41
+section_id: IAS41_g54-56
+title: Additional disclosures for biological assets where fair value cannot be measured reliably
+lineage: International Accounting Standard 41 Agriculture &gt; Disclosure &gt; Additional disclosures for biological assets where fair value cannot be measured reliably
+
+retrieved chunks:
+- 54 (0.54) [secondary] provenance=top_similarity
+- 55 (0.00) [secondary] provenance=enclosing_section_expansion
+- 56 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 54 (0.54) [secondary] provenance=top_similarity
+- 55 (0.00) [secondary] provenance=enclosing_section_expansion
+- 56 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(156 70% 80.6%);"><span class="section-cell-score">0.54</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g3.2.10-3.2.14" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 69.9%)" data-visible-bg="hsl(31 70% 69.9%)" title="IFRS 9
+section_id: IFRS09_g3.2.10-3.2.14
+title: Transfers that qualify for derecognition
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Recognition and derecognition &gt; Derecognition of financial assets &gt; Transfers that qualify for derecognition
+
+retrieved chunks:
+- 3.2.10 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.11 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.13 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.14 (0.63) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 3.2.10 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.11 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.13 (0.00) [secondary] provenance=enclosing_section_expansion
+- 3.2.14 (0.63) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 69.9%);"><span class="section-cell-score">0.63</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.1.1-4.1.5" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g4.1.1-4.1.5
+title: Classification of financial assets
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial assets
+
+retrieved chunks:
+- 4.1.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.2A (0.00) [secondary] provenance=referenced_chunk
+- 4.1.3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.4 (0.00) [secondary] provenance=referenced_chunk
+- E13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- 4.1.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.2A (0.00) [secondary] provenance=referenced_chunk
+- 4.1.3 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- 4.1.4 (0.00) [secondary] provenance=referenced_chunk
+- E13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.1.5-4.1.5" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g4.1.5-4.1.5
+title: Option to designate a financial asset at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial assets &gt; Option to designate a financial asset at fair value through profit or loss
+
+retrieved chunks:
+- 4.1.5 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 4.1.5 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g4.2.2-4.2.2" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g4.2.2-4.2.2
+title: Option to designate a financial liability at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Classification of financial liabilities &gt; Option to designate a financial liability at fair value through profit or loss
+
+retrieved chunks:
+- 4.2.2 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 4.2.2 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.1.1-5.1.3" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 68.2%)" data-visible-bg="hsl(31 70% 68.2%)" title="IFRS 9
+section_id: IFRS09_g5.1.1-5.1.3
+title: Initial measurement
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Initial measurement
+
+retrieved chunks:
+- 5.1.1 (0.64) [secondary] provenance=top_similarity
+- 5.1.1A (0.00) [secondary] provenance=referenced_chunk
+- 5.1.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.1.3 (0.00) [secondary] provenance=referenced_chunk
+- E16 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 5.1.1 (0.64) [secondary] provenance=top_similarity
+- 5.1.1A (0.00) [secondary] provenance=referenced_chunk
+- 5.1.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.1.3 (0.00) [secondary] provenance=referenced_chunk
+- E16 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 68.2%);"><span class="section-cell-score">0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g5.7.1-5.7.11" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 65.8%)" data-visible-bg="hsl(31 70% 65.8%)" title="IFRS 9
+section_id: IFRS09_g5.7.1-5.7.11
+title: Gains and losses
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Gains and losses
+
+retrieved chunks:
+- 5.7.1 (0.67) [secondary] provenance=top_similarity
+- 5.7.1A (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.3 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.4 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.5 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.7 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.8 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.9 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.10 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.11 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 5.7.1 (0.67) [secondary] provenance=top_similarity
+- 5.7.1A (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.3 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.4 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.5 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 5.7.7 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.8 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.9 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.10 (0.00) [secondary] provenance=referenced_chunk
+- 5.7.11 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 65.8%);"><span class="section-cell-score">0.67</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.4.1-6.4.1" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_g6.4.1-6.4.1
+title: Qualifying criteria for hedge accounting
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Qualifying criteria for hedge accounting
+
+retrieved chunks:
+- 6.4.1 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 6.4.1 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_g6.5.1-6.5.16" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 69.8%)" data-visible-bg="hsl(31 70% 69.8%)" title="IFRS 9
+section_id: IFRS09_g6.5.1-6.5.16
+title: Accounting for qualifying hedging relationships
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Accounting for qualifying hedging relationships
+
+retrieved chunks:
+- 6.5.1 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.3 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.4 (0.63) [secondary] provenance=top_similarity
+- 6.5.5 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.7 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.8 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.9 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.10 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.11 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.12 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.13 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.14 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.15 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.16 (0.00) [secondary] provenance=enclosing_section_expansion
+- E21 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 6.5.1 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.2 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.3 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.4 (0.63) [secondary] provenance=top_similarity
+- 6.5.5 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.7 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.8 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.9 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.10 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.11 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.12 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.13 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.14 (0.00) [secondary] provenance=referenced_chunk
+- 6.5.15 (0.00) [secondary] provenance=enclosing_section_expansion
+- 6.5.16 (0.00) [secondary] provenance=enclosing_section_expansion
+- E21 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 69.8%);"><span class="section-cell-score">0.63</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB4.1.29-B4.1.32" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 69.9%)" data-visible-bg="hsl(31 70% 69.9%)" title="IFRS 9
+section_id: IFRS09_gB4.1.29-B4.1.32
+title: Designation eliminates or significantly reduces an accounting mismatch
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Classification (Chapter 4) &gt; Option to designate a financial asset or financial liability as at fair value through profit or loss (Sections 4.1 and 4.2) &gt; Designation eliminates or significantly reduces an accounting mismatch
+
+retrieved chunks:
+- B4.1.29 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.30 (0.63) [secondary] provenance=top_similarity
+- B4.1.31 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.32 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B4.1.29 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.30 (0.63) [secondary] provenance=top_similarity
+- B4.1.31 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.32 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 69.9%);"><span class="section-cell-score">0.63</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB4.1.33-B4.1.36" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 69.3%)" data-visible-bg="hsl(31 70% 69.3%)" title="IFRS 9
+section_id: IFRS09_gB4.1.33-B4.1.36
+title: A group of financial liabilities or financial assets and financial liabilities is managed and its performance is evaluated on a fair value basis
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Classification (Chapter 4) &gt; Option to designate a financial asset or financial liability as at fair value through profit or loss (Sections 4.1 and 4.2) &gt; A group of financial liabilities or financial assets and financial liabilities is managed and its performance is evaluated on a fair value basis
+
+retrieved chunks:
+- B4.1.33 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.34 (0.64) [secondary] provenance=top_similarity
+- B4.1.35 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.36 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B4.1.33 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.34 (0.64) [secondary] provenance=top_similarity
+- B4.1.35 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4.1.36 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 69.3%);"><span class="section-cell-score">0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB5.1.1-B5.1.2A" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 68.4%)" data-visible-bg="hsl(31 70% 68.4%)" title="IFRS 9
+section_id: IFRS09_gB5.1.1-B5.1.2A
+title: Initial measurement (Section 5.1)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Initial measurement (Section 5.1)
+
+retrieved chunks:
+- B5.1.1 (0.64) [secondary] provenance=top_similarity
+- B5.1.2 (0.00) [secondary] provenance=referenced_chunk
+- B5.1.2A (0.63) [secondary] provenance=top_similarity
+
+visible context chunks:
+- B5.1.1 (0.64) [secondary] provenance=top_similarity
+- B5.1.2 (0.00) [secondary] provenance=referenced_chunk
+- B5.1.2A (0.63) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 68.4%);"><span class="section-cell-score">0.63-0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB5.2.1-B5.2.2A" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB5.2.1-B5.2.2A
+title: Subsequent measurement (Sections 5.2 and 5.3)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Subsequent measurement (Sections 5.2 and 5.3)
+
+retrieved chunks:
+- B5.2.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.2.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.2.2A (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B5.2.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.2.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.2.2A (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_sgB5.2.3-B5.2.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 69.3%)" data-visible-bg="hsl(31 70% 69.3%)" title="IFRS 9
+section_id: IFRS09_sgB5.2.3-B5.2.6
+title: Investments in equity instruments and contracts on those investments
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Investments in equity instruments and contracts on those investments
+
+retrieved chunks:
+- B5.2.3 (0.64) [secondary] provenance=top_similarity
+- B5.2.4 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5.2.5 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5.2.6 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B5.2.3 (0.64) [secondary] provenance=top_similarity
+- B5.2.4 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5.2.5 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5.2.6 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 69.3%);"><span class="section-cell-score">0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB5.4.8-B5.4.8" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB5.4.8-B5.4.8
+title: Transaction costs
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Amortised cost measurement (Section 5.4) &gt; Transaction costs
+
+retrieved chunks:
+- B5.4.8 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B5.4.8 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB5.7.1-B5.7.20" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB5.7.1-B5.7.20
+title: Gains and losses (Section 5.7)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Gains and losses (Section 5.7)
+
+retrieved chunks:
+- B5.7.1 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.1A (0.00) [secondary] provenance=referenced_chunk
+- B5.7.2 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.2A (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.7.3 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.4 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B5.7.1 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.1A (0.00) [secondary] provenance=referenced_chunk
+- B5.7.2 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.2A (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B5.7.3 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.4 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB5.7.5-B5.7.20" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 70% 67.7%)" data-visible-bg="hsl(31 70% 67.7%)" title="IFRS 9
+section_id: IFRS09_gB5.7.5-B5.7.20
+title: Liabilities designated as at fair value through profit or loss
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Measurement (Chapter 5) &gt; Gains and losses (Section 5.7) &gt; Liabilities designated as at fair value through profit or loss
+
+retrieved chunks:
+- B5.7.5 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.6 (0.65) [secondary] provenance=top_similarity
+- B5.7.7 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.8 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.9 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.10 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.11 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.12 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.13 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.14 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.15 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.16 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.17 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.18 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.19 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.20 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B5.7.5 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.6 (0.65) [secondary] provenance=top_similarity
+- B5.7.7 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.8 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.9 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.10 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.11 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.12 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.13 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.14 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.15 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.16 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.17 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.18 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.19 (0.00) [secondary] provenance=referenced_chunk
+- B5.7.20 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 70% 67.7%);"><span class="section-cell-score">0.65</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.1-B6.5.39" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.1-B6.5.39
+title: Accounting for qualifying hedging relationships (Section 6.5)
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5)
+
+retrieved chunks:
+- B6.5.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.3 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B6.5.1 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.2 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.3 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.4-B6.5.6" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.4-B6.5.6
+title: Measurement of hedge ineffectiveness
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Measurement of hedge ineffectiveness
+
+retrieved chunks:
+- B6.5.4 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.5 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.6 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B6.5.4 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.5 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.6 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.7-B6.5.21" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.7-B6.5.21
+title: Rebalancing the hedging relationship and changes to the hedge ratio
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Rebalancing the hedging relationship and changes to the hedge ratio
+
+retrieved chunks:
+- B6.5.7 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.8 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.9 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.10 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.11 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.15 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.16 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.17 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.18 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.19 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.20 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.21 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B6.5.7 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.8 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.9 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.10 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.11 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.15 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.16 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.17 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.18 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.19 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.20 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.21 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.22-B6.5.28" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.22-B6.5.28
+title: Discontinuation of hedge accounting
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Discontinuation of hedge accounting
+
+retrieved chunks:
+- B6.5.22 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.23 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.24 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.25 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.26 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.27 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.28 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B6.5.22 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.23 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.24 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.25 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.26 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.27 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.28 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.29-B6.5.33" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.29-B6.5.33
+title: Accounting for the time value of options
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Accounting for the time value of options
+
+retrieved chunks:
+- B6.5.29 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.30 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.31 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.32 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B6.5.29 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.30 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.31 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.32 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.33 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs9" data-section-key="ifrs9::IFRS09_gB6.5.34-B6.5.39" data-doc-key="ifrs9" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(31 35% 97.5%)" data-visible-bg="hsl(31 35% 97.5%)" title="IFRS 9
+section_id: IFRS09_gB6.5.34-B6.5.39
+title: Accounting for the forward element of forward contracts and foreign currency basis spreads of financial instruments
+lineage: International Financial Reporting Standard 9 Financial Instruments &gt; Appendices &gt; Appendix B Application guidance &gt; Hedge accounting (Chapter 6) &gt; Accounting for qualifying hedging relationships (Section 6.5) &gt; Accounting for the forward element of forward contracts and foreign currency basis spreads of financial instruments
+
+retrieved chunks:
+- B6.5.34 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.35 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.36 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.37 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.38 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.39 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B6.5.34 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.35 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.36 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.37 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.38 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- B6.5.39 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(31 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N2A5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 69.5%)" data-visible-bg="hsl(299 70% 69.5%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N2A5305FB4F52CB-EFL
+title: Principes spécifiques aux portefeuilles gérés sur une base nette
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Principes spécifiques aux portefeuilles gérés sur une base nette
+
+retrieved chunks:
+- 13335 (0.63) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13335 (0.63) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 69.5%);"><span class="section-cell-score">0.63</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N9C5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 65.2%)" data-visible-bg="hsl(299 70% 65.2%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N9C5305FB4F52CB-EFL
+title: Principe général
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Principe général
+
+retrieved chunks:
+- 13380 (0.67) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13380 (0.67) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.67&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 65.2%);"><span class="section-cell-score">0.67</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N115305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 69.0%)" data-visible-bg="hsl(299 70% 69.0%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N115305FB4F52CB-EFL
+title: Définition unique de la juste valeur
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Définition unique de la juste valeur
+
+retrieved chunks:
+- 13315 (0.64) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13315 (0.64) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 69.0%);"><span class="section-cell-score">0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N145305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 66.8%)" data-visible-bg="hsl(299 70% 66.8%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N145305FB4F52CB-EFL
+title: Estimation de la juste valeur basée sur des hypothèses de marché
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Estimation de la juste valeur basée sur des hypothèses de marché
+
+retrieved chunks:
+- 13317 (0.66) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13317 (0.66) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 66.8%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N245305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 67.6%)" data-visible-bg="hsl(299 70% 67.6%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N245305FB4F52CB-EFL
+title: Passifs et instruments de capitaux propres émis
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Passifs et instruments de capitaux propres émis
+
+retrieved chunks:
+- 13330 (0.65) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13330 (0.65) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.65&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 67.6%);"><span class="section-cell-score">0.65</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N355305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 70.9%)" data-visible-bg="hsl(299 70% 70.9%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N355305FB4F52CB-EFL
+title: Paramètres d&#x27;évaluation
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; Généralités &gt; Evaluation &gt; Principes généraux &gt; Principes spécifiques selon la nature de l&#x27;élément évalué à la juste valeur &gt; Techniques et paramètres d&#x27;évaluation &gt; Paramètres d&#x27;évaluation
+
+retrieved chunks:
+- 13339 (0.62) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13339 (0.62) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 70.9%);"><span class="section-cell-score">0.62</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N525305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 71.1%)" data-visible-bg="hsl(299 70% 71.1%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N525305FB4F52CB-EFL
+title: Définition de la juste valeur
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Définition de la juste valeur
+
+retrieved chunks:
+- 13370 (0.62) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13370 (0.62) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.62&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 71.1%);"><span class="section-cell-score">0.62</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::N815305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.81&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.81&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 62.0%)" data-visible-bg="hsl(299 70% 62.0%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: N815305FB4F52CB-EFL
+title: Prise en compte du risque de défaut de la contrepartie
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Prise en compte du risque de défaut de la contrepartie
+
+retrieved chunks:
+- 13376 (0.81) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13376 (0.81) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.81&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.81&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 62.0%);"><span class="section-cell-score">0.81</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::NA75305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 66.9%)" data-visible-bg="hsl(299 70% 66.9%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: NA75305FB4F52CB-EFL
+title: Juste valeur et risque de non-exécution d&#x27;un passif
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Juste valeur et risque de non-exécution d&#x27;un passif
+
+retrieved chunks:
+- 13382 (0.66) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13382 (0.66) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.66&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 66.9%);"><span class="section-cell-score">0.66</span><span class="section-cell-authority">🔎</span></td><td class="section-cell navisqrifrsc25305fb4f52cbefl" data-section-key="navisqrifrsc25305fb4f52cbefl::NDD5305FB4F52CB-EFL" data-doc-key="navisqrifrsc25305fb4f52cbefl" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(299 70% 70.3%)" data-visible-bg="hsl(299 70% 70.3%)" title="NAVIS QRIFRS C 25305FB 4F 52CB EFL
+section_id: NDD5305FB4F52CB-EFL
+title: Evénements postérieurs à la date d&#x27;évaluation
+lineage: Evaluation de la juste valeur (IFRS 13) &gt; L&#x27;ESSENTIEL DE LA NORME IFRS 13 &gt; QUESTIONS/REPONSES PRATIQUES &gt; Généralités &gt; Principes d&#x27;évaluation de la juste valeur &gt; Principes généraux &gt; Evaluation des actifs non financiers &gt; Evaluation des passifs et instruments de capitaux propres émis non cotés sur un marché actif &gt; Paramètres utilisés pour les évaluations de la juste valeur &gt; Evénements postérieurs à la date d&#x27;évaluation
+
+retrieved chunks:
+- 13389 (0.63) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 13389 (0.63) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.63&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(299 70% 70.3%);"><span class="section-cell-score">0.63</span><span class="section-cell-authority">🔎</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  
+<script>
+  const tableBody = document.querySelector('#matrix-table tbody');
+  const sortButtons = document.querySelectorAll('button[data-sort-mode]');
+  const missingOnlyCheckbox = document.getElementById('missing-only');
+  const hideEmptyCheckbox = document.getElementById('hide-empty-columns');
+  const docToggles = document.querySelectorAll('.doc-toggle');
+  const sectionKeys = ["ifrs13::IFRS13_g1-4", "ifrs13::IFRS13_g9-10", "ifrs13::IFRS13_g11-14", "ifrs13::IFRS13_g15-21", "ifrs13::IFRS13_g22-23", "ifrs13::IFRS13_g24-26", "ifrs13::IFRS13_g27-30", "ifrs13::IFRS13_g31-33", "ifrs13::IFRS13_g34-41", "ifrs13::ifrs13_42-42", "ifrs13::IFRS13_g42-44", "ifrs13::IFRS13_g56-56", "ifrs13::IFRS13_g61-66", "ifrs13::IFRS13_g67-69", "ifrs13::IFRS13_g72-90", "ifrs13::IFRS13_g76-80", "ifrs13::IFRS13_g81-85", "ifrs13::IFRS13_g86-90", "ifrs13::IFRS13_gB2-B2", "ifrs13::IFRS13_gB4-B4", "ifrs13::IFRS13_gB15-B17", "ifrs13::IFRS13_gB31-B33", "ifrs13::IFRS13_gB34-B34", "ifrs13::IFRS13_gB37-B47", "ias39::IAS39_g81-81A", "ias39::IAS39_g83-84", "ias39::IAS39_g85-102", "ias39::IAS39_gAG99C-AG99D", "ias39::IAS39_gAG101-AG101", "ias39::IAS39_gAG102-AG132", "ias41::IAS41_g8-9", "ias41::IAS41_g10-33", "ias41::IAS41_g40-53", "ias41::IAS41_g54-56", "ifrs9::IFRS09_g3.2.10-3.2.14", "ifrs9::IFRS09_g4.1.1-4.1.5", "ifrs9::IFRS09_g4.1.5-4.1.5", "ifrs9::IFRS09_g4.2.2-4.2.2", "ifrs9::IFRS09_g5.1.1-5.1.3", "ifrs9::IFRS09_g5.7.1-5.7.11", "ifrs9::IFRS09_g6.4.1-6.4.1", "ifrs9::IFRS09_g6.5.1-6.5.16", "ifrs9::IFRS09_gB4.1.29-B4.1.32", "ifrs9::IFRS09_gB4.1.33-B4.1.36", "ifrs9::IFRS09_gB5.1.1-B5.1.2A", "ifrs9::IFRS09_gB5.2.1-B5.2.2A", "ifrs9::IFRS09_sgB5.2.3-B5.2.6", "ifrs9::IFRS09_gB5.4.8-B5.4.8", "ifrs9::IFRS09_gB5.7.1-B5.7.20", "ifrs9::IFRS09_gB5.7.5-B5.7.20", "ifrs9::IFRS09_gB6.5.1-B6.5.39", "ifrs9::IFRS09_gB6.5.4-B6.5.6", "ifrs9::IFRS09_gB6.5.7-B6.5.21", "ifrs9::IFRS09_gB6.5.22-B6.5.28", "ifrs9::IFRS09_gB6.5.29-B6.5.33", "ifrs9::IFRS09_gB6.5.34-B6.5.39", "navisqrifrsc25305fb4f52cbefl::N2A5305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N9C5305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N115305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N145305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N245305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N355305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N525305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::N815305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::NA75305FB4F52CB-EFL", "navisqrifrsc25305fb4f52cbefl::NDD5305FB4F52CB-EFL"];
+  let currentSortMode = 'question';
+
+  function visibleRows() {
+    return Array.from(tableBody.querySelectorAll('tr')).filter((row) => row.style.display !== 'none');
+  }
+  function sortRows(mode) {
+    currentSortMode = mode;
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    rows.sort((left, right) => {
+      const leftValue = left.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      const rightValue = right.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      if (mode === 'question') { return Number(leftValue) - Number(rightValue); }
+      return leftValue.localeCompare(rightValue);
+    });
+    rows.forEach((row) => tableBody.appendChild(row));
+  }
+  function applyRowVisibility() {
+    const missingOnly = missingOnlyCheckbox.checked;
+    Array.from(tableBody.querySelectorAll('tr')).forEach((row) => {
+      const hasMissing = row.dataset.hasMissing === '1';
+      row.style.display = (!missingOnly || hasMissing) ? '' : 'none';
+    });
+  }
+  function updateSectionVisibility() {
+    const enabledDocs = new Set(Array.from(docToggles).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.dataset.docKey));
+    const rows = visibleRows();
+    const hideEmpty = hideEmptyCheckbox.checked;
+    const docKeys = ["ifrs13", "ias39", "ias41", "ifrs9", "navisqrifrsc25305fb4f52cbefl"];
+    const visibleCounts = Object.fromEntries(docKeys.map((docKey) => [docKey, 0]));
+    sectionKeys.forEach((sectionKey) => {
+      const header = document.querySelector(`th[data-section-key="${sectionKey}"]`);
+      if (!header) { return; }
+      const docKey = header.dataset.docKey;
+      let visible = enabledDocs.has(docKey);
+      if (visible && hideEmpty) {
+        visible = header.dataset.isTarget === '1' || rows.some((row) => {
+          const cell = row.querySelector(`td[data-section-key="${sectionKey}"]`);
+          return cell && cell.dataset.hasRetrieved === '1';
+        });
+      }
+      header.style.display = visible ? '' : 'none';
+      document.querySelectorAll(`td[data-section-key="${sectionKey}"]`).forEach((cell) => { cell.style.display = visible ? '' : 'none'; });
+      if (visible) { visibleCounts[docKey] += 1; }
+    });
+    docKeys.forEach((docKey) => {
+      const groupHeader = document.getElementById(`group-header-${docKey}`);
+      if (!groupHeader) { return; }
+      const visibleCount = visibleCounts[docKey];
+      groupHeader.style.display = visibleCount > 0 ? '' : 'none';
+      groupHeader.colSpan = Math.max(visibleCount, 1);
+    });
+  }
+  function applyAll() {
+    applyRowVisibility();
+    sortRows(currentSortMode);
+    updateSectionVisibility();
+  }
+  sortButtons.forEach((button) => button.addEventListener('click', () => { sortRows(button.dataset.sortMode); updateSectionVisibility(); }));
+  missingOnlyCheckbox.addEventListener('change', applyAll);
+  hideEmptyCheckbox.addEventListener('change', updateSectionVisibility);
+  docToggles.forEach((checkbox) => checkbox.addEventListener('change', updateSectionVisibility));
+  applyAll();
+</script>
+
+</body>
+</html>

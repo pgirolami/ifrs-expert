@@ -1,0 +1,32 @@
+{
+  "description": "promptfoo eval family=Q5",
+  "artifacts_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/artifacts",
+  "promptfoo_config_dir": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/.promptfoo",
+  "promptfoo_args": [
+    "--filter-metadata",
+    "family=Q5\u00a4"
+  ],
+  "created_at_utc": "2026-05-01T20:10:11.974004+00:00",
+  "archived_artifacts": {
+    "policy": {
+      "source_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/policy.default.yaml",
+      "archived_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/policy.default.yaml",
+      "sha256": "0a58d160197b591781119ca64cbd47f4ade3c853be6debafadadfbe42307a7aa"
+    },
+    "glossary": {
+      "source_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/en-fr-glossary.yaml",
+      "archived_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/en-fr-glossary.yaml",
+      "sha256": "83c8c2675db757f7c0b42d84d1d4209f8d7a962969c5731f75d7d65559e4846e"
+    },
+    "prompt_a": {
+      "source_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/answer_prompt_A.txt",
+      "archived_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/answer_prompt_A.txt",
+      "sha256": "2a5fa1ce3d021ae1bae33a296030cc3f860eada00d7f73d2adf8995e6d4b64ff"
+    },
+    "prompt_b": {
+      "source_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/answer_prompt_B.txt",
+      "archived_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_20-10-11_promptfoo-eval-family-q5/effective/answer_prompt_B.txt",
+      "sha256": "4cfbf1e9a7e1d07c4ffd8c6c33ad93da7acb0e8fac7d1dbbc952848a648f5d37"
+    }
+  }
+}

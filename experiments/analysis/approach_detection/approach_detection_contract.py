@@ -112,6 +112,7 @@ class SectionColumn:
     section_lineage: tuple[str, ...]
     position: int
     is_target: bool = False
+    display_label: str | None = None
 
 
 @dataclass(frozen=True)
@@ -510,15 +511,17 @@ class ApproachDetectionDiagnosticsGenerator:
         section_columns = self._section_columns(diagnostics.rows, diagnostics.expected_section_ranges)
         lines.extend(["", "## Authority Categorization by Run", ""])
         for row in diagnostics.rows:
-            lines.extend([
-                f"### {row.question_id} / {_display_run_id(row.run_label)}",
-                "",
-                f"- Question: {row.question_text}",
-                f"- Embedded question: {row.embedded_question_text}",
-                "",
-                "| Document | Section range | Category | Retrieved score | Dropped |",
-                "| --- | --- | --- | --- | --- |",
-            ])
+            lines.extend(
+                [
+                    f"### {row.question_id} / {_display_run_id(row.run_label)}",
+                    "",
+                    f"- Question: {row.question_text}",
+                    f"- Embedded question: {row.embedded_question_text}",
+                    "",
+                    "| Document | Section range | Category | Retrieved score | Dropped |",
+                    "| --- | --- | --- | --- | --- |",
+                ]
+            )
             section_cells_by_key = self._section_cells(row)
             for section_column in section_columns:
                 section_cell = section_cells_by_key.get(section_column.column_key)
@@ -737,9 +740,7 @@ class ApproachDetectionDiagnosticsGenerator:
                         )
                     )
         if not rows:
-            raise FileNotFoundError(
-                f"No {DEFAULT_B_RESPONSE_FILENAME} or {DEFAULT_A_RESPONSE_FILENAME} artifacts found in {artifacts_dir}"
-            )
+            raise FileNotFoundError(f"No {DEFAULT_B_RESPONSE_FILENAME} or {DEFAULT_A_RESPONSE_FILENAME} artifacts found in {artifacts_dir}")
         return sorted(rows, key=lambda item: (_question_sort_key(item.question_id), _run_label_sort_key(item.run_label))), raw_payloads_by_question
 
     def _find_question_artifact_dirs(self, *, artifacts_dir: Path, family_dirname: str, question_id: str) -> list[Path]:
@@ -778,9 +779,7 @@ class ApproachDetectionDiagnosticsGenerator:
         a_response_path = artifact_dir / DEFAULT_A_RESPONSE_FILENAME
         if a_response_path.exists():
             return _load_json_object(a_response_path)
-        raise FileNotFoundError(
-            f"Missing both {DEFAULT_B_RESPONSE_FILENAME} and {DEFAULT_A_RESPONSE_FILENAME} in {artifact_dir}"
-        )
+        raise FileNotFoundError(f"Missing both {DEFAULT_B_RESPONSE_FILENAME} and {DEFAULT_A_RESPONSE_FILENAME} in {artifact_dir}")
 
     def _load_prompt_chunks(self, a_prompt_path: Path, expected_ranges: tuple[ExpectedSectionRange, ...]) -> tuple[PromptChunk, ...]:
         if not a_prompt_path.exists():
@@ -876,12 +875,11 @@ class ApproachDetectionDiagnosticsGenerator:
         chunk_lookup = _load_chunk_lookup(_collect_chunk_db_ids(rows))
         chunk_lookup_by_reference = _load_chunk_lookup_by_reference(_collect_chunk_references(rows))
         expected_display_records = _load_expected_section_display_records(expected_section_ranges)
-        section_lookup = _load_section_lookup(
-            _collect_section_ids(chunk_lookup)
-            | _collect_section_ids(chunk_lookup_by_reference))
+        section_lookup = _load_section_lookup(_collect_section_ids(chunk_lookup) | _collect_section_ids(chunk_lookup_by_reference))
         observed_section_ids_by_doc: dict[str, set[str]] = {}
         retrieved_doc_counts: dict[str, int] = {}
         doc_display_names: dict[str, str] = {}
+        target_display_labels_by_section_id: dict[str, str] = {}
         for row in rows:
             for chunk in row.prompt_chunks:
                 canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
@@ -890,6 +888,10 @@ class ApproachDetectionDiagnosticsGenerator:
                 doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(chunk.doc_uid))
                 section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
                 observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).add(section_id)
+                if chunk.expected:
+                    exact_expected_range = _expected_range_for_chunk(chunk.doc_uid, chunk.chunk_number, expected_section_ranges)
+                    if exact_expected_range is not None:
+                        target_display_labels_by_section_id.setdefault(section_id, f"{exact_expected_range.start}-{exact_expected_range.end}")
 
         for canonical_doc_key, records in expected_display_records.items():
             doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(canonical_doc_key))
@@ -907,10 +909,7 @@ class ApproachDetectionDiagnosticsGenerator:
         for canonical_doc_key in doc_keys:
             if canonical_doc_key not in observed_section_ids_by_doc:
                 continue
-            display_records = [
-                self._section_display_record(canonical_doc_key, section_id, section_lookup)
-                for section_id in observed_section_ids_by_doc[canonical_doc_key]
-            ]
+            display_records = [self._section_display_record(canonical_doc_key, section_id, section_lookup) for section_id in observed_section_ids_by_doc[canonical_doc_key]]
             display_records.sort(key=lambda record: _lexicographic_chunk_key(_display_section_header(record.section_id)))
             columns.extend(
                 SectionColumn(
@@ -921,6 +920,8 @@ class ApproachDetectionDiagnosticsGenerator:
                     title=record.title,
                     section_lineage=record.section_lineage,
                     position=record.position,
+                    is_target=record.section_id in target_display_labels_by_section_id,
+                    display_label=target_display_labels_by_section_id.get(record.section_id),
                 )
                 for record in display_records
             )
@@ -973,15 +974,8 @@ class ApproachDetectionDiagnosticsGenerator:
         display_names = {column.canonical_doc_key: column.doc_display_name for column in section_columns}
         for section_column in section_columns:
             counts[section_column.canonical_doc_key] += 1
-        section_group_headers = "".join(
-            f'<th class="group-header section-group" id="group-header-{doc_key}" data-doc-key="{doc_key}" colspan="{counts[doc_key]}">{html.escape(display_names[doc_key])}</th>'
-            for doc_key in doc_order
-        )
-        return (
-            '<th class="group-header sticky-group" colspan="3">Run metadata</th>'
-            f'<th class="group-header" colspan="{len(label_columns)}">Emitted labels</th>'
-            f"{section_group_headers}"
-        )
+        section_group_headers = "".join(f'<th class="group-header section-group" id="group-header-{doc_key}" data-doc-key="{doc_key}" colspan="{counts[doc_key]}">{html.escape(display_names[doc_key])}</th>' for doc_key in doc_order)
+        return f'<th class="group-header sticky-group" colspan="3">Run metadata</th><th class="group-header" colspan="{len(label_columns)}">Emitted labels</th>{section_group_headers}'
 
     def _render_column_header(
         self,
@@ -1000,27 +994,19 @@ class ApproachDetectionDiagnosticsGenerator:
 
     def _render_section_header(self, section_column: SectionColumn, expected_section_ranges: tuple[ExpectedSectionRange, ...]) -> str:
         lineage_text = " > ".join(section_column.section_lineage)
-        tooltip = (
-            f"{section_column.doc_display_name}\n"
-            f"section_id: {section_column.section_id}\n"
-            f"title: {section_column.title}\n"
-            f"lineage: {lineage_text}\n"
-            f"position: {section_column.position}"
-        )
-        target_prefix = "🎯 " if _section_column_is_expected(section_column, expected_section_ranges) else ""
+        tooltip = f"{section_column.doc_display_name}\nsection_id: {section_column.section_id}\ntitle: {section_column.title}\nlineage: {lineage_text}\nposition: {section_column.position}"
+        target_prefix = "🎯 " if section_column.is_target or _section_column_is_expected(section_column, expected_section_ranges) else ""
+        display_label = section_column.display_label or _display_section_header(section_column.section_id)
         return (
             f'<th class="section-col {section_column.canonical_doc_key}" '
             f'data-section-key="{html.escape(section_column.column_key)}" '
             f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
-            f'title="{html.escape(tooltip)}">{target_prefix}{html.escape(_display_section_header(section_column.section_id))}</th>'
+            f'title="{html.escape(tooltip)}">{target_prefix}{html.escape(display_label)}</th>'
         )
 
     def _render_controls(self, section_columns: tuple[SectionColumn, ...]) -> str:
         display_names = {column.canonical_doc_key: column.doc_display_name for column in section_columns}
-        doc_toggles = "\n      ".join(
-            f'<label><input type="checkbox" class="doc-toggle" data-doc-key="{doc_key}" checked> {html.escape(display_names[doc_key])}</label>'
-            for doc_key in _doc_order_from_columns(section_columns)
-        )
+        doc_toggles = "\n      ".join(f'<label><input type="checkbox" class="doc-toggle" data-doc-key="{doc_key}" checked> {html.escape(display_names[doc_key])}</label>' for doc_key in _doc_order_from_columns(section_columns))
         return f"""
     <section class="controls">
       <button type="button" data-sort-mode="question">Question order</button>
@@ -1036,15 +1022,7 @@ class ApproachDetectionDiagnosticsGenerator:
         spurious_labels = [label for label in label_columns if label not in expected_labels]
         if not spurious_labels:
             return ""
-        checkboxes_html = "".join(
-            (
-                f'<label class="spurious-filter-option">'
-                f'<input type="checkbox" class="spurious-label-filter" '
-                f'data-spurious-label="{html.escape(label)}"> '
-                f'{html.escape(label)}</label>'
-            )
-            for label in spurious_labels
-        )
+        checkboxes_html = "".join((f'<label class="spurious-filter-option"><input type="checkbox" class="spurious-label-filter" data-spurious-label="{html.escape(label)}"> {html.escape(label)}</label>') for label in spurious_labels)
         return f"""
     <section class="spurious-filter-panel">
       <strong>Spurious approach filter</strong>
@@ -1071,11 +1049,7 @@ class ApproachDetectionDiagnosticsGenerator:
         section_cells = tuple(self._render_section_cell(section_column, section_cells_by_key.get(section_column.column_key)) for section_column in section_columns)
         order_spurious = self._spurious_order_value(row, index)
         spurious_labels_attr = "|".join(row.spurious_labels)
-        question_tooltip = (
-            f"question_id: {row.question_id}\n\n"
-            f"question:\n{row.question_text}\n\n"
-            f"embedded question:\n{row.embedded_question_text}"
-        )
+        question_tooltip = f"question_id: {row.question_id}\n\nquestion:\n{row.question_text}\n\nembedded question:\n{row.embedded_question_text}"
         return (
             f'<tr data-order-question="{index}" '
             f'data-order-spurious="{order_spurious}" '
@@ -1085,8 +1059,8 @@ class ApproachDetectionDiagnosticsGenerator:
             f'<td class="sticky-1 metadata-col metadata-q" title="{html.escape(question_tooltip)}">{html.escape(row.question_id)}</td>'
             f'<td class="sticky-2 metadata-col metadata-run">{html.escape(_display_run_id(row.run_label))}</td>'
             f'<td class="sticky-3 metadata-col metadata-rec">{html.escape(_display_recommendation(row.recommendation or ""))}</td>'
-            f'{"".join((*label_cells, *section_cells))}'
-            '</tr>'
+            f"{''.join((*label_cells, *section_cells))}"
+            "</tr>"
         )
 
     def _render_label_cell(self, label: str, is_present: bool, is_spurious: bool) -> str:
@@ -1104,10 +1078,7 @@ class ApproachDetectionDiagnosticsGenerator:
             section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
             display_chunk = self._chunk_with_corpus_chunk_number(chunk, chunk_lookup, chunk_lookup_by_reference)
             entries_by_section.setdefault(_section_column_key(canonical_doc_key, section_id), []).append(display_chunk)
-        return {
-            column_key: _build_section_cell(chunks, row=row)
-            for column_key, chunks in entries_by_section.items()
-        }
+        return {column_key: _build_section_cell(chunks, row=row) for column_key, chunks in entries_by_section.items()}
 
     def _chunk_with_corpus_chunk_number(
         self,
@@ -1490,11 +1461,7 @@ def _fallback_overlapping_section_ids(
             """,
             (doc_key,),
         ).fetchall()
-    return {
-        str(row["section_id"])
-        for row in rows
-        if any(_section_id_overlaps_expected_range(str(row["section_id"]), expected_range) for expected_range in expected_ranges)
-    }
+    return {str(row["section_id"]) for row in rows if any(_section_id_overlaps_expected_range(str(row["section_id"]), expected_range) for expected_range in expected_ranges)}
 
 
 def _load_section_lookup(section_ids: set[str]) -> dict[str, SectionDisplayRecord]:
@@ -1588,10 +1555,7 @@ def _chunk_is_dropped(chunk: PromptChunk, *, row: QuestionRunDiagnostics) -> boo
 
 
 def _chunk_authority_lines(chunks: tuple[ChunkAuthorityRecord, ...]) -> str:
-    lines = [
-        f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}]"
-        for chunk in chunks
-    ]
+    lines = [f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}]" for chunk in chunks]
     return "\n".join(lines) if lines else "(none)"
 
 
@@ -1657,9 +1621,7 @@ def _markdown_dropped_chunk_lines(
         if section_cell is None or not section_cell.dropped_chunks:
             continue
         for chunk in section_cell.dropped_chunks:
-            lines.append(
-                f"- {section_column.doc_display_name} / {_display_section_header(section_column.section_id)} / {chunk.chunk_number} / {chunk.authority_category}"
-            )
+            lines.append(f"- {section_column.doc_display_name} / {_display_section_header(section_column.section_id)} / {chunk.chunk_number} / {chunk.authority_category}")
     return lines
 
 
@@ -1951,15 +1913,7 @@ def _extract_authority_diagnostics(a_response_path: Path) -> tuple[tuple[tuple[s
         return (), (), (), ()
     authority_resolution = payload.get("authority_resolution")
     dropped_documents_raw = authority_resolution.get("discarded_due_to_overlap") if isinstance(authority_resolution, dict) else []
-    dropped_documents = tuple(
-        sorted(
-            {
-                _canonical_doc_key(document)
-                for document in dropped_documents_raw
-                if isinstance(document, str) and document.strip()
-            }
-        )
-    )
+    dropped_documents = tuple(sorted({_canonical_doc_key(document) for document in dropped_documents_raw if isinstance(document, str) and document.strip()}))
     return (
         _extract_authority_references(authority_classification.get("primary_authority")),
         _extract_authority_references(authority_classification.get("supporting_authority")),
@@ -2029,6 +1983,19 @@ def _is_expected_chunk(doc_uid: str, chunk_number: str, expected_ranges: tuple[E
         if _section_number_in_range(chunk_number, expected_range.start, expected_range.end):
             return True
     return False
+
+
+def _expected_range_for_chunk(
+    doc_uid: str,
+    chunk_number: str,
+    expected_ranges: tuple[ExpectedSectionRange, ...],
+) -> ExpectedSectionRange | None:
+    for expected_range in expected_ranges:
+        if doc_uid != expected_range.document:
+            continue
+        if _section_number_in_range(chunk_number, expected_range.start, expected_range.end):
+            return expected_range
+    return None
 
 
 def _section_number_in_range(value: str, start: str, end: str) -> bool:

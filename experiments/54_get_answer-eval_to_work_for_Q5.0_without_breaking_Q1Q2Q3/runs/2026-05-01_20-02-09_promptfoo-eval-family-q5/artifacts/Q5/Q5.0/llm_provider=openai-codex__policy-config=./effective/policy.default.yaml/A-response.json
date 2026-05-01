@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Prise en compte du risque de défaut dans la mesure de la juste valeur d’un actif ou d’un passif selon IFRS 13",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I selected IFRS 13 because it is the single governing IFRS for defining and measuring fair value, and there was no competing higher- or equal-precedence document in the provided context that directly governs this generic fair value measurement issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is framed as a general fair value measurement question, which is directly addressed by IFRS 13."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "42", "43", "61", "62", "87", "89"],
+        "reason": "These paragraphs directly govern fair value measurement, including market participant assumptions, risk assumptions, and the treatment of non-performance and credit risk."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"],
+        "reason": "These paragraphs support the liability-side credit risk analysis by showing how changes in a liability’s own credit risk are identified and presented when fair value is applied under IFRS 9."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias39",
+        "references": ["81", "89", "95"],
+        "reason": "These hedge accounting paragraphs are topically related to fair value but do not help identify peer approaches for whether default risk is included in fair value."
+      },
+      {
+        "document": "ias41",
+        "references": ["8", "12", "16"],
+        "reason": "IAS 41 uses fair value concepts but does not materially contribute to identifying the relevant peer approaches for credit/default risk in fair value measurement."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset using market participant assumptions about collectability and risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "61", "62", "87", "89"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability or own equity instrument including non-performance risk and own credit standing",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "40", "42", "43", "44"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 measures an asset from the perspective of market participants and therefore captures risk assumptions relevant to the asset, which can include counterparty default risk where market participants would price it."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 separately requires the fair value of a liability to reflect non-performance risk, including the issuer’s own credit risk, making this a distinct top-level fair value measurement approach."
+    }
+  ]
+}

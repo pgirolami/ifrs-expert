@@ -308,3 +308,9 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
             - also changed the eval to allow `oui` in addition to `oui_sous_conditions`
         - 🎉 Recall was 100% on target documents and chunks
             - the evals were not run again because all failures were due to the `oui` recommendation which was acceptable
+
+- Evaluate generalization beyond IFRS 9
+    - [SME meeting](./sme-reviews/20260501-SME-REVIEW.md) to choose 5 questions to build answers for with the goal of building trust in the system
+    - [Experiment 52](../experiments/52_initial_eval-retrieve_for_Q6.0/EXPERIMENTS.md) evaluated retrieval on Q6.0 : 100% recall
+    - [Experiment 53](../experiments/53_get_answer-eval_to_work_for_Q9.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q9.0. Also checked non-regression on one question in Q1, Q2 and Q3
+    - [Experiment 54](../experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q5.0. Also checked non-regression on one question in Q1, Q2 and Q3, this required quite a few runs

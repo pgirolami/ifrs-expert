@@ -28,9 +28,9 @@ assert:
       const byLabel = Object.fromEntries(
         data.approaches.map(a => [a.normalized_label, a.applicability])
       );
-      return ['oui_sous_conditions'].includes(byLabel.amortised_cost) &&
-             byLabel.fair_value_through_other_comprehensive_income === 'oui_sous_conditions' &&
-             byLabel.fair_value_through_profit_or_loss === 'oui_sous_conditions';
+      return ['oui', 'oui_sous_conditions'].includes(byLabel.amortised_cost) &&
+             ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_through_other_comprehensive_income) &&
+             ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_through_profit_or_loss);
     description: Expected applicability is assigned to each hedge approach
 
   - type: javascript

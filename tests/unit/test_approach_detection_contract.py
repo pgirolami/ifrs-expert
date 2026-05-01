@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import yaml
+import pytest
 
 from experiments.analysis.approach_detection import approach_detection_contract as module
 
@@ -136,3 +137,54 @@ def test_compare_and_analyze_approach_detection_diagnostics(tmp_path: Path) -> N
     assert "## Approach Review" in rendered
     assert "Missing expected approach rows" in rendered
     assert "[diagnostics markdown](runs/2026-04-26_approach/diagnostics/approach_detection/approach_detection_diagnostics.md)" in rendered
+
+
+def test_approach_detection_headers_use_exact_expected_range_label_for_targets(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Target sections should display the exact expected paragraph range when one is available."""
+    generator = module.ApproachDetectionDiagnosticsGenerator(Path("."))
+    row = module.QuestionRunDiagnostics(
+        question_id="Q5.0",
+        question_text="question",
+        embedded_question_text="question",
+        family_id="Q5",
+        run_label="base",
+        artifact_dir=Path("/tmp/artifacts"),
+        recommendation="oui",
+        approaches=(),
+        labels=(),
+        missing_expected_labels=(),
+        spurious_labels=(),
+        prompt_chunks=(
+            module.PromptChunk(doc_uid="ifrs13", chunk_number="42", score=0.0, chunk_id="1", expected=True),
+            module.PromptChunk(doc_uid="ifrs13", chunk_number="43", score=0.68, chunk_id="2", expected=False),
+        ),
+        authoritative_references=(("ifrs13", "42"),),
+        secondary_references=(),
+        peripheral_references=(),
+        dropped_documents=(),
+    )
+    expected_ranges = (module.ExpectedSectionRange(document="ifrs13", start="42", end="42"),)
+    section_record = module.SectionDisplayRecord(
+        doc_uid="ifrs13",
+        section_id="IFRS13_g42-44",
+        title="Non-performance risk",
+        section_lineage=("International Financial Reporting Standard 13 Fair Value Measurement",),
+        position=16,
+    )
+    chunk_lookup = {
+        1: module.ChunkLookupRecord(chunk_db_id=1, doc_uid="ifrs13", chunk_number="42", containing_section_id="IFRS13_g42-44"),
+        2: module.ChunkLookupRecord(chunk_db_id=2, doc_uid="ifrs13", chunk_number="43", containing_section_id="IFRS13_g42-44"),
+    }
+
+    monkeypatch.setattr(module, "_load_chunk_lookup", lambda _ids: chunk_lookup)
+    monkeypatch.setattr(module, "_load_chunk_lookup_by_reference", lambda _references: {})
+    monkeypatch.setattr(module, "_load_expected_section_display_records", lambda _ranges: {"ifrs13": (section_record,)})
+    monkeypatch.setattr(module, "_load_section_lookup", lambda _section_ids: {"IFRS13_g42-44": section_record})
+
+    section_columns = generator._section_columns((row,), expected_ranges)
+
+    assert len(section_columns) == 1
+    assert section_columns[0].is_target
+    assert section_columns[0].display_label == "42-42"
+    html = generator._render_section_header(section_columns[0], expected_ranges)
+    assert "🎯 42-42" in html

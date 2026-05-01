@@ -1,0 +1,14 @@
+{
+  "experiment_name": "54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3",
+  "generated_at": "2026-05-01T18:16:13.442486+00:00",
+  "runs": [
+    {
+      "run_id": "2026-05-01_18-03-43_promptfoo-eval-family-q5",
+      "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+      "policy_name": "openai-codex",
+      "output_dir": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_18-03-43_promptfoo-eval-family-q5/diagnostics/document_routing",
+      "markdown_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_18-03-43_promptfoo-eval-family-q5/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/runs/2026-05-01_18-03-43_promptfoo-eval-family-q5/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}

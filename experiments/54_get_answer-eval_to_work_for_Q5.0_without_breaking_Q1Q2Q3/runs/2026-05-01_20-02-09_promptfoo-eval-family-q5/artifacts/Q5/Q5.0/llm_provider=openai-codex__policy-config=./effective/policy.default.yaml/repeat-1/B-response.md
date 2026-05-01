@@ -1,0 +1,91 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>Le risque de défaut de la contrepartie doit-il être pris en compte dans l'évaluation de la juste valeur d'un actif ou d'un passif ?
+
+**Reformulation**:
+>Prise en compte du risque de défaut/du risque de crédit dans l’évaluation de la juste valeur d’un actif ou d’un passif selon IFRS 13
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias39`, `ias41`)
+   - IFRS-S (standard) (`ifrs13`, `ifrs9`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs13`, `ifrs9`)
+
+## Hypothèses
+   - La question est comprise de manière générale, sans fait spécifique sur un instrument particulier, et vise l’évaluation de la juste valeur selon IFRS.
+   - On suppose qu’il s’agit d’une mesure de juste valeur entrant dans le champ d’IFRS 13.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Oui, le risque de défaut/crédit est pris en compte dans la juste valeur lorsqu’il fait partie des hypothèses des intervenants de marché. Pour un passif, IFRS 13 l’impose explicitement via le risque de non-exécution; pour un actif, il est inclus si les participants au marché le reflètent dans le prix de sortie.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Juste valeur d’un actif | OUI SOUS CONDITIONS | - Le risque de défaut de la contrepartie doit être un facteur que les intervenants de marché prendraient en compte dans le prix de sortie de l’actif. |
+| 2. Juste valeur d’un passif | OUI | - Pour un groupe d’actifs et passifs financiers mesuré sur une base nette, l’effet net du risque de crédit de contrepartie s’applique si des accords de compensation ou collatéral seraient pris en compte par les intervenants de marché. |
+
+### 1. Juste valeur d’un actif
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - Le risque de défaut de la contrepartie doit être un facteur que les intervenants de marché prendraient en compte dans le prix de sortie de l’actif.
+
+**Raisonnement**:
+Dans cette situation générale, IFRS 13 exige une mesure fondée sur les hypothèses des intervenants de marché et sur un prix de sortie, non sur une perspective propre à l’entité (IFRS 13 2, 3, 22, 24). Donc le risque de défaut de la contrepartie doit être retenu pour un actif si, et seulement si, ce risque est un facteur que les participants au marché incorporeraient dans le prix de vente à la date de mesure (IFRS 13 3, 22, 24).
+
+**Implications pratiques**: L’évaluation de l’actif doit intégrer l’effet du risque de crédit de la contrepartie lorsqu’il influence le prix de marché ou la technique de valorisation.
+
+**Référence**:
+ - ifrs13 2
+
+    >Fair value is a market‑based measurement, not an entity‑specific measurement. For some assets and liabilities, observable market transactions or market information might be available. For other assets and liabilities, observable market transactions and market information might not be available. However, the objective of a fair value measurement in both cases is the same—to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions (ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability).
+ - ifrs13 3
+
+    >When a price for an identical asset or liability is not observable, an entity measures fair value using another valuation technique that maximises the use of relevant observable inputs and minimises the use of unobservable inputs. Because fair value is a market‑based measurement, it is measured using the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk. As a result, an entity’s intention to hold an asset or to settle or otherwise fulfil a liability is not relevant when measuring fair value.
+ - ifrs13 22
+
+    >An entity shall measure the fair value of an asset or a liability using the assumptions that market participants would use when pricing the asset or liability, assuming that market participants act in their economic best interest.
+ - ifrs13 24
+
+    >Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) regardless of whether that price is directly observable or estimated using another valuation technique.
+
+### 2. Juste valeur d’un passif
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - Pour un groupe d’actifs et passifs financiers mesuré sur une base nette, l’effet net du risque de crédit de contrepartie s’applique si des accords de compensation ou collatéral seraient pris en compte par les intervenants de marché.
+
+**Raisonnement**:
+Dans cette situation, pour un passif, IFRS 13 requiert explicitement que la juste valeur reflète le risque de non-exécution, y compris le propre risque de crédit de l’entité (IFRS 13 42, 43). Ainsi, le risque de défaut doit être intégré dans la juste valeur du passif; pour des positions nettes avec une contrepartie, l’effet du risque de crédit de contrepartie est aussi inclus lorsque les participants au marché le considéreraient (IFRS 13 56).
+
+**Implications pratiques**: La valorisation du passif doit inclure le risque de non-exécution, notamment le risque de crédit propre, et le cas échéant les effets de compensation/collatéral sur l’exposition nette.
+
+**Référence**:
+ - ifrs13 42
+
+    >The fair value of a liability reflects the effect of non‑performance risk. Non‑performance risk includes, but may not be limited to, an entity’s own credit risk (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability.
+ - ifrs13 43
+
+    >When measuring the fair value of a liability, an entity shall take into account the effect of its credit risk (credit standing) and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:
+(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).
+(b)the terms of credit enhancements related to the liability, if any.
+ - ifrs13 56
+
+    >When using the exception in paragraph 48 to measure the fair value of a group of financial assets and financial liabilities entered into with a particular counterparty, the entity shall include the effect of the entity’s net exposure to the credit risk of that counterparty or the counterparty’s net exposure to the credit risk of the entity in the fair value measurement when market participants would take into account any existing arrangements that mitigate credit risk exposure in the event of default (eg a master netting agreement with the counterparty or an agreement that requires the exchange of collateral on the basis of each party’s net exposure to the credit risk of the other party). The fair value measurement shall reflect market participants’ expectations about the likelihood that such an arrangement would be legally enforceable in the event of default.
+ - ifrs9 B5.7.13
+
+    >IFRS 7 defines credit risk as ‘the risk that one party to a financial instrument will cause a financial loss for the other party by failing to discharge an obligation’. The requirement in paragraph 5.7.7(a) relates to the risk that the issuer will fail to perform on that particular liability. It does not necessarily relate to the creditworthiness of the issuer. For example, if an entity issues a collateralised liability and a non‑collateralised liability that are otherwise identical, the credit risk of those two liabilities will be different, even though they are issued by the same entity. The credit risk on the collateralised liability will be less than the credit risk of the non‑collateralised liability. The credit risk for a collateralised liability may be close to zero.

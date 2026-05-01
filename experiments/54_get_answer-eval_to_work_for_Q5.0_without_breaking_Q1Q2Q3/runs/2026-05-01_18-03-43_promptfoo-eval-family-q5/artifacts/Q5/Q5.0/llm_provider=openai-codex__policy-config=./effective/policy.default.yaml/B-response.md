@@ -1,0 +1,115 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>Le risque de défaut de la contrepartie doit-il être pris en compte dans l'évaluation de la juste valeur d'un actif ou d'un passif ?
+
+**Reformulation**:
+>Prise en compte du risque de défaut/crédit dans l’évaluation de la juste valeur d’un actif versus d’un passif selon IFRS 13
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias39`, `ias41`)
+   - IFRS-S (standard) (`ifrs13`, `ifrs9`)
+   - NAVIS (interpretation) (`navis-QRIFRS-C25305FB4F52CB-EFL`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs13`, `ifrs9`)
+   - NAVIS (interpretation) (`navis-QRIFRS-C25305FB4F52CB-EFL`)
+
+## Hypothèses
+   - La question vise une évaluation à la juste valeur entrant dans le champ d’IFRS 13.
+   - Aucun fait particulier n’est donné sur le type d’instrument ; la réponse est donc formulée séparément pour un actif et pour un passif.
+   - Pour un actif, on suppose que le risque de défaut pertinent est celui de la contrepartie ; pour un passif, celui de l’entité qui doit exécuter l’obligation.
+
+## Recommandation
+
+**OUI**
+
+Oui. En IFRS, la juste valeur d’un passif doit intégrer le risque de non-exécution, y compris le risque de crédit propre, et la juste valeur d’un actif doit refléter le risque de crédit de la contrepartie. La réponse dépend donc du côté actif ou passif, mais dans les deux cas le risque de défaut est pris en compte.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Évaluation à la juste valeur des passifs | OUI | - (non spécifiées) |
+| 2. Évaluation à la juste valeur des actifs | OUI | - (non spécifiées) |
+
+### 1. Évaluation à la juste valeur des passifs
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnement**:
+Dans cette situation, si l’instrument évalué à la juste valeur est un passif, le risque de défaut doit être pris en compte car la juste valeur d’un passif reflète le risque de non-exécution, y compris le risque de crédit propre de l’entité (IFRS 13 42, IFRS 13 43). Lorsque le prix de transfert n’est pas observable, l’évaluation reste fondée sur les hypothèses qu’un intervenant de marché utiliserait pour reprendre ou émettre le passif, avec les mêmes caractéristiques de crédit (IFRS 13 40, IFRS 13 41 ; navis-QRIFRS-C25305FB4F52CB-EFL 13382).
+
+**Implications pratiques**: Le passif à la juste valeur doit être ajusté pour le risque de non-exécution, notamment le risque de crédit propre.
+
+**Référence**:
+ - ifrs13 42
+
+    >The fair value of a liability reflects the effect of non‑performance risk. Non‑performance risk includes, but may not be limited to, an entity’s own credit risk (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability.
+ - ifrs13 43
+
+    >When measuring the fair value of a liability, an entity shall take into account the effect of its credit risk (credit standing) and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:
+(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).
+(b)the terms of credit enhancements related to the liability, if any.
+ - ifrs13 40
+
+    >When a quoted price for the transfer of an identical or a similar liability or entity’s own equity instrument is not available and the identical item is not held by another party as an asset, an entity shall measure the fair value of the liability or equity instrument using a valuation technique from the perspective of a market participant that owes the liability or has issued the claim on equity.
+ - ifrs13 41
+
+    >For example, when applying a present value technique an entity might take into account either of the following :
+(a)the future cash outflows that a market participant would expect to incur in fulfilling the obligation, including the compensation that a market participant would require for taking on the obligation (see paragraphs B31⁠–⁠B33).
+(b)the amount that a market participant would receive to enter into or issue an identical liability or equity instrument, using the assumptions that market participants would use when pricing the identical item (eg having the same credit characteristics) in the principal (or most advantageous) market for issuing a liability or an equity instrument with the same contractual terms.
+ - navis-QRIFRS-C25305FB4F52CB-EFL 13382
+
+    >Question Qu'est-ce que le risque de non-exécution d'un passif et doit-il être pris en compte dans l'évaluation de la juste valeur d'un passif ?
+Réponse Le risque de non-exécution d'un passif est le risque pour une entité de ne pas pouvoir faire face à ses engagements.
+Il comprend le risque de défaillance financière de l'entité (risque de crédit propre) ainsi que d'autres facteurs qui peuvent empêcher l'entité de remplir l'obligation qu'elle a envers un tiers : risque opérationnel, risque technologique, risque commercial, risque réglementaire, etc.
+Selon IFRS 13, la juste valeur d'un passif doit obligatoirement tenir compte de ce risque de non-exécution.
+Commentaires La juste valeur de tous les passifs (financiers ou non financiers) doit tenir compte du risque de non-exécution, c'est-à-dire de ce que l'entité serait capable de rembourser et non pas du montant qu'elle devrait payer pour éteindre le passif (IFRS 13.42).
+Ainsi, plus une entité a un risque élevé de défaillance, plus la valeur de ses passifs est réduite.
+Le risque de non-exécution comprend notamment le risque de crédit propre à l'entité (IFRS 13.42), c'est-à-dire le risque de défaillance financière de l'entité. Le risque de non-exécution inclut également d'autres facteurs qui peuvent empêcher l'entité de remplir l'obligation qu'elle a envers un tiers : risque opérationnel, risque technologique, risque commercial, risque réglementaire, etc.
+Le risque de non-exécution est présumé être le même avant et après le transfert du passif (IFRS 13.42).
+Recommandations de l'AMF Dans ses recommandations en vue de l'arrêté des comptes 2013, l'AMF invite à préciser en annexe la méthodologie utilisée pour le calcul des ajustements liés au risque de non-exécution et à indiquer les impacts comptabilisés s'ils sont significatifs (Rec. AMF 2013-19, Arrêté des Comptes 2013, § 2.1.1).
+Pour la méthode de calcul du risque de crédit propre dans l'évaluation d'une dette, voir n° 46130.
+
+### 2. Évaluation à la juste valeur des actifs
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnement**:
+Dans cette situation, si l’instrument évalué à la juste valeur est un actif, le risque de défaut de la contrepartie doit aussi être pris en compte, car la juste valeur repose sur les hypothèses de marché relatives au risque attaché à l’actif (IFRS 13 22, IFRS 13 24, IFRS 13 88). Le document d’interprétation confirme explicitement que l’évaluation d’un actif à la juste valeur doit tenir compte du risque de crédit de la contrepartie, avec en pratique des ajustements de type CVA pour certains dérivés (navis-QRIFRS-C25305FB4F52CB-EFL 13376).
+
+**Implications pratiques**: L’actif à la juste valeur doit intégrer le risque de crédit de la contrepartie, y compris via un ajustement de valorisation si nécessaire.
+
+**Référence**:
+ - ifrs13 22
+
+    >An entity shall measure the fair value of an asset or a liability using the assumptions that market participants would use when pricing the asset or liability, assuming that market participants act in their economic best interest.
+ - ifrs13 24
+
+    >Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) regardless of whether that price is directly observable or estimated using another valuation technique.
+ - ifrs13 88
+
+    >Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one when pricing the asset or liability. For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47).
+ - navis-QRIFRS-C25305FB4F52CB-EFL 13376
+
+    >Question Le risque de défaut de la contrepartie doit-il être pris en compte dans l'évaluation de la juste valeur d'un actif ou d'un passif ?
+Réponse Oui :- si l'instrument est un passif, sa juste valeur doit prendre en compte le risque de non-exécution de l'entreprise, incluant son risque de crédit propre ;
+- si l'instrument est un actif, sa juste valeur doit prendre en compte le risque de crédit de la contrepartie.
+Commentaires Selon IFRS 13.42, la juste valeur de tous les passifs doit tenir compte du risque de non-exécution de l'entreprise, qui comprend notamment le risque de crédit propre à l'entité (« own credit risk »), c'est-à-dire son risque de défaillance financière (voir n° 13382).
+L'évaluation d'un actif à la juste valeur doit quant à elle tenir compte du risque de défaillance de sa contrepartie.
+Remarque En pratique, pour certains instruments financiers, notamment les dérivés, les cotations de marché ou techniques d'évaluation ne tiennent pas compte du risque de crédit des contreparties. Afin d'y remédier, les cotations et évaluations sont alors ajustées. Ainsi, pour les instruments dérivés :- l'évaluation des passifs peut être ajustée afin de prendre en compte le risque de crédit propre : cet ajustement est communément appelé « Debit Valuation Adjustment »/DVA ;
+- l'évaluation des actifs peut être ajustée afin de prendre en compte le risque de crédit de la contrepartie : cet ajustement est communément appelé « Credit Value Adjustment »/CVA.
+Recommandations de l'AMF Dans ses recommandations en vue de l'arrêté des comptes 2013, l'AMF invite à préciser en annexe la méthodologie utilisée pour le calcul des ajustements liés au risque de non-exécution et à indiquer les impacts comptabilisés s'ils sont significatifs (Rec. AMF 2013-19, Arrêté des Comptes 2013, § 2.1.1).

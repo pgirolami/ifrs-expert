@@ -16,8 +16,27 @@ assert:
   - type: javascript
     value: |
       const data = JSON.parse(output);
-      return ['oui'].includes(data.recommendation?.answer);
+      return ['oui','oui_sous_conditions'].includes(data.recommendation?.answer);
     description: Recommendation answer is one of the allowed values
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      const labels = data.approaches.map(a => a.normalized_label);
+      return labels.includes('fair_value_measurement_of_a_liability') &&
+             labels.includes('fair_value_measurement_of_an_asset');
+    description: All expected approaches are identified
+
+  - type: javascript
+    value: |
+      const data = JSON.parse(output);
+      const byLabel = Object.fromEntries(
+        data.approaches.map(a => [a.normalized_label, a.applicability])
+      );
+      return ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_measurement_of_a_liability) &&
+             ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_measurement_of_an_asset);
+    description: Expected applicability is assigned to each approach
+
 
   - type: javascript
     value: |

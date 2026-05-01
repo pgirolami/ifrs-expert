@@ -1,0 +1,56 @@
+>Prise en compte du risque de défaut dans l’évaluation de la juste valeur d’un actif ou d’un passif selon IFRS 13
+
+Pour cette réponse, on considère que
+  - La question est comprise comme une question générale de mesure à la juste valeur selon IFRS 13, sans faits supplémentaires sur le type précis d’actif ou de passif.
+  - Pour un actif, le « risque de défaut de la contrepartie » est compris comme un risque affectant les flux de trésorerie que des participants de marché intégreraient dans le prix.
+  - Pour un passif, l’analyse est limitée au cadre IFRS 13 fourni : la juste valeur reflète le risque de non-exécution du passif, y compris le risque de crédit propre de l’émetteur, et non un risque de défaut d’une contrepartie au sens large.
+
+**Oui**, Oui pour un actif si ce risque de défaut est une hypothèse de marché qui affecte le prix de sortie. Pour un passif, IFRS 13 exige de tenir compte du risque de non-exécution, y compris du risque de crédit propre du débiteur, et non d’un risque de défaut de contrepartie formulé de manière générale.
+
+Dans cette situation, IFRS 13 n’impose pas un traitement autonome du risque de défaut de contrepartie, mais exige que la juste valeur d’un actif reflète les hypothèses et les risques que des participants de marché intégreraient dans le prix de sortie (IFRS 13 3, 22, 24). Donc, si le défaut de la contrepartie influence les flux ou le prix de marché de l’actif, il doit être pris en compte dans l’évaluation (IFRS 13 61, 87, 89)(IFRS 13 3, IFRS 13 22, IFRS 13 24, IFRS 13 61, IFRS 13 87, IFRS 13 89).
+Dans cette situation, pour un passif, IFRS 13 est explicite : la juste valeur doit refléter le risque de non-exécution, y compris le risque de crédit propre de l’entité débitrice (IFRS 13 42, 43). Ainsi, la prise en compte du risque de défaut est requise pour un passif, mais il s’agit du risque attaché au passif transféré, non d’un risque de défaut de la contrepartie formulé comme pour un actif (IFRS 13 41, 44)(IFRS 13 41, IFRS 13 42, IFRS 13 43, IFRS 13 44).
+
+**Citations**:
+ - [IFRS 13 3](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_3)
+
+    >When a price for an identical asset or liability is not observable, an entity measures fair value using another valuation technique that maximises the use of relevant observable inputs and minimises the use of unobservable inputs. Because fair value is a market‑based measurement, it is measured using **the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**. As a result, an entity’s intention to hold an asset or to settle or otherwise fulfil a liability is not relevant when measuring fair value.
+
+ - [IFRS 13 22](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_22)
+
+    >An entity shall measure the fair value of an asset or a liability using **the assumptions that market participants would use when pricing the asset or liability**, assuming that market participants act in their economic best interest.
+
+ - [IFRS 13 24](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_24)
+
+    >Fair value is **the price that would be received to sell an asset or paid to transfer a liability** in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) regardless of whether that price is directly observable or estimated using another valuation technique.
+
+ - [IFRS 13 61](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_61)
+
+    >An entity shall use valuation techniques that are appropriate in the circumstances and for which sufficient data are available to measure fair value, **maximising the use of relevant observable inputs and minimising the use of unobservable inputs**.
+
+ - [IFRS 13 87](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_87)
+
+    >Unobservable inputs shall be used to measure fair value to the extent that relevant observable inputs are not available, thereby allowing for situations in which there is little, if any, market activity for the asset or liability at the measurement date. However, the fair value measurement objective remains the same, ie **an exit price at the measurement date from the perspective of a market participant** that holds the asset or owes the liability. Therefore, unobservable inputs shall reflect **the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**.
+
+ - [IFRS 13 89](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_89)
+
+    >An entity shall develop unobservable inputs using the best information available in the circumstances, which might include the entity’s own data. In developing unobservable inputs, an entity may begin with its own data, but it shall adjust those data if reasonably available information indicates that other market participants would use different data or there is something particular to the entity that is not available to other market participants (eg an entity‑specific synergy). An entity need not undertake exhaustive efforts to obtain information about market participant assumptions. However, **an entity shall take into account all information about market participant assumptions that is reasonably available**. Unobservable inputs developed in the manner described above are considered market participant assumptions and meet the objective of a fair value measurement.
+
+ - [IFRS 13 41](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_41)
+
+    >For example, when applying a present value technique an entity might take into account either of the following :
+(a)the future cash outflows that a market participant would expect to incur in fulfilling the obligation, including **the compensation that a market participant would require for taking on the obligation** (see paragraphs B31⁠–⁠B33).
+(b)the amount that a market participant would receive to enter into or issue an identical liability or equity instrument, using **the assumptions that market participants would use when pricing the identical item** (eg having the same credit characteristics) in the principal (or most advantageous) market for issuing a liability or an equity instrument with the same contractual terms.
+
+ - [IFRS 13 42](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_42)
+
+    >The fair value of a liability **reflects the effect of non‑performance risk**. Non‑performance risk includes, but may not be limited to, **an entity’s own credit risk** (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability.
+
+ - [IFRS 13 43](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_43)
+
+    >When measuring the fair value of a liability, an entity shall take into account **the effect of its credit risk (credit standing)** and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:
+(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).
+(b)the terms of credit enhancements related to the liability, if any.
+
+ - [IFRS 13 44](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_44)
+
+    >The fair value of a liability reflects the effect of non‑performance risk on the basis of its unit of account. The issuer of a liability issued with an inseparable third‑party credit enhancement that is accounted for separately from the liability shall **not include the effect of the credit enhancement** (eg a third‑party guarantee of debt) in the fair value measurement of the liability. If the credit enhancement is accounted for separately from the liability, the issuer would take into account **its own credit standing and not that of the third party guarantor** when measuring the fair value of the liability.

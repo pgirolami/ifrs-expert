@@ -1,0 +1,130 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>En consolidation, est-il possible de mettre en place une documentation de couverture portant sur la composante change de dividendes intragroupe dès lors qu’une créance correspondante a été reconnue ?
+
+**Reformulation**:
+>Détermination, en comptes consolidés, des modèles de comptabilité de couverture potentiellement applicables à une exposition de change liée à des dividendes intragroupe ou à la créance correspondante reconnue
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias39`, `ias21`)
+   - IFRIC (interpretation) (`ifric16`)
+   - IFRS-S (standard) (`ifrs9`, `ifrs7`)
+
+**Retenue pour l'analyse**
+   - IAS-S (standard) (`ias21`)
+   - IFRS-S (standard) (`ifrs9`)
+
+## Hypothèses
+   - La question vise les comptes consolidés du groupe, non les comptes individuels ou séparés.
+   - Le dividende intragroupe a été déclaré et une créance intragroupe correspondante a déjà été comptabilisée à la date de désignation envisagée.
+   - La créance de dividende est un élément monétaire exposé au risque de change entre deux entités du groupe.
+   - Aucun fait ne permet de conclure que cette créance fait partie de l'investissement net dans une activité à l'étranger au sens d'IAS 21.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+En consolidation, une désignation est envisageable seulement si l'objet couvert est la créance intragroupe reconnue comme élément monétaire dont le risque de change n'est pas entièrement éliminé en consolidation. Dans ce cas, le modèle pertinent est en pratique la couverture de juste valeur; la couverture de flux de trésorerie n'est pas adaptée après comptabilisation de la créance, et la couverture d'investissement net ne vaut que si l'élément fait partie de l'investissement net.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Couverture de juste valeur | OUI SOUS CONDITIONS | - La créance de dividende doit être un élément monétaire intragroupe entre entités ayant des monnaies fonctionnelles différentes.<br>- Le risque de change sur cette créance doit donner lieu à des gains ou pertes de change non entièrement éliminés en consolidation. |
+| 2. Couverture de flux de trésorerie | NON | - (non spécifiées) |
+| 3. Couverture d'un investissement net | OUI SOUS CONDITIONS | - La créance de dividende doit former partie de l'investissement net dans une activité à l'étranger au sens d'IAS 21. |
+
+### 1. Couverture de juste valeur
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance de dividende doit être un élément monétaire intragroupe entre entités ayant des monnaies fonctionnelles différentes.
+   - Le risque de change sur cette créance doit donner lieu à des gains ou pertes de change non entièrement éliminés en consolidation.
+
+**Raisonnement**:
+Une créance de dividende déjà reconnue est, dans la situation décrite, un actif comptabilisé, ce qui correspond au périmètre d'un élément couvert possible en couverture de juste valeur (IFRS 9 6.3.1, 6.5.2(a)). En consolidation, un élément intragroupe n'est éligible que si son risque de change génère des écarts non entièrement éliminés; IFRS 9 vise expressément l'élément monétaire intragroupe entre entités à monnaies fonctionnelles différentes, en lien avec IAS 21 sur les écarts de change en consolidation (IFRS 9 6.3.6; IAS 21 45).
+
+**Implications pratiques**: La documentation de couverture peut porter sur la composante change de la créance reconnue, si les conditions d'éligibilité en consolidation sont remplies.
+
+**Référence**:
+ - ifrs9 6.3.1
+
+    >A hedged item can be a recognised asset or liability, an unrecognised firm commitment, a forecast transaction or a net investment in a foreign operation. The hedged item can be:
+(a)a single item; or
+(b)a group of items (subject to paragraphs 6.6.1⁠–⁠6.6.6 and B6.6.1⁠–⁠B6.6.16).
+A hedged item can also be a component of such an item or group of items (see paragraphs 6.3.7 and B6.3.7⁠–⁠B6.3.25).
+ - ifrs9 6.3.6
+
+    >However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates. In accordance with IAS 21, foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies. In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.
+ - ifrs9 6.5.2
+
+    >There are three types of hedging relationships:
+(a)fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability or an unrecognised firm commitment, or a component of any such item, that is attributable to a particular risk and could affect profit or loss.
+(b)cash flow hedge: a hedge of the exposure to variability in cash flows that is attributable to a particular risk associated with all, or a component of, a recognised asset or liability (such as all or some future interest payments on variable-rate debt) or a highly probable forecast transaction, and could affect profit or loss.
+(c)hedge of a net investment in a foreign operation as defined in IAS 21.
+ - ias21 45
+
+    >The incorporation of the results and financial position of a foreign operation with those of the reporting entity follows normal consolidation procedures, such as the elimination of intragroup balances and intragroup transactions of a subsidiary (see IFRS 10 Consolidated Financial Statements). However, an intragroup monetary asset (or liability), whether short‑term or long‑term, cannot be eliminated against the corresponding intragroup liability (or asset) without showing the results of currency fluctuations in the consolidated financial statements. This is because the monetary item represents a commitment to convert one currency into another and exposes the reporting entity to a gain or loss through currency fluctuations. Accordingly, in the consolidated financial statements of the reporting entity, such an exchange difference is recognised in profit or loss or, if it arises from the circumstances described in paragraph 32, it is recognised in other comprehensive income and accumulated in a separate component of equity until the disposal of the foreign operation.
+
+### 2. Couverture de flux de trésorerie
+
+**Applicabilité**: NON
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnement**:
+Dans les comptes consolidés, IFRS 9 admet un dividende intragroupe comme transaction future seulement au stade d'une transaction intragroupe hautement probable, sous conditions de devise et d'impact en résultat (IFRS 9 6.3.6, 6.5.2(b)). Or la question vise un stade postérieur, où la créance est déjà reconnue; à ce stade, l'exposition décrite est celle d'un élément monétaire existant, dont les écarts de change relèvent d'IAS 21 28, ce qui ne correspond pas ici au modèle le plus approprié.
+
+**Implications pratiques**: Après comptabilisation de la créance de dividende, la documentation ne devrait pas être structurée comme une couverture de flux de trésorerie de cette exposition de change.
+
+**Référence**:
+ - ifrs9 6.3.6
+
+    >However, as an exception to paragraph 6.3.5, the foreign currency risk of an intragroup monetary item (for example, a payable/receivable between two subsidiaries) may qualify as a hedged item in the consolidated financial statements if it results in an exposure to foreign exchange rate gains or losses that are not fully eliminated on consolidation in accordance with IAS 21 The Effects of Changes in Foreign Exchange Rates. In accordance with IAS 21, foreign exchange rate gains and losses on intragroup monetary items are not fully eliminated on consolidation when the intragroup monetary item is transacted between two group entities that have different functional currencies. In addition, the foreign currency risk of a highly probable forecast intragroup transaction may qualify as a hedged item in consolidated financial statements provided that the transaction is denominated in a currency other than the functional currency of the entity entering into that transaction and the foreign currency risk will affect consolidated profit or loss.
+ - ifrs9 6.5.2
+
+    >There are three types of hedging relationships:
+(a)fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability or an unrecognised firm commitment, or a component of any such item, that is attributable to a particular risk and could affect profit or loss.
+(b)cash flow hedge: a hedge of the exposure to variability in cash flows that is attributable to a particular risk associated with all, or a component of, a recognised asset or liability (such as all or some future interest payments on variable-rate debt) or a highly probable forecast transaction, and could affect profit or loss.
+(c)hedge of a net investment in a foreign operation as defined in IAS 21.
+ - ias21 28
+
+    >Exchange differences arising on the settlement of monetary items or on translating monetary items at rates different from those at which they were translated on initial recognition during the period or in previous financial statements shall be recognised in profit or loss in the period in which they arise, except as described in paragraph 32.
+
+### 3. Couverture d'un investissement net
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La créance de dividende doit former partie de l'investissement net dans une activité à l'étranger au sens d'IAS 21.
+
+**Raisonnement**:
+Ce modèle n'est pertinent que si la créance intragroupe fait partie de l'investissement net dans une activité à l'étranger; dans ce cas, IAS 21 impose en consolidation une comptabilisation initiale en OCI des écarts de change, avec recyclage à la cession (IAS 21 32, 33, 48), et IFRS 9 reconnaît la couverture d'un investissement net comme modèle distinct (IFRS 9 6.5.2(c)). Dans la situation posée, rien n'indique qu'une créance de dividende reconnue remplisse cette qualification; elle n'est donc applicable qu'à cette condition spécifique.
+
+**Implications pratiques**: Sauf qualification expresse en investissement net, ce modèle ne constitue pas la base normale de documentation pour une créance de dividende intragroupe reconnue.
+
+**Référence**:
+ - ifrs9 6.5.2
+
+    >There are three types of hedging relationships:
+(a)fair value hedge: a hedge of the exposure to changes in fair value of a recognised asset or liability or an unrecognised firm commitment, or a component of any such item, that is attributable to a particular risk and could affect profit or loss.
+(b)cash flow hedge: a hedge of the exposure to variability in cash flows that is attributable to a particular risk associated with all, or a component of, a recognised asset or liability (such as all or some future interest payments on variable-rate debt) or a highly probable forecast transaction, and could affect profit or loss.
+(c)hedge of a net investment in a foreign operation as defined in IAS 21.
+ - ias21 32
+
+    >Exchange differences arising on a monetary item that forms part of a reporting entity’s net investment in a foreign operation (see paragraph 15) shall be recognised in profit or loss in the separate financial statements of the reporting entity or the individual financial statements of the foreign operation, as appropriate. In the financial statements that include the foreign operation and the reporting entity (eg consolidated financial statements when the foreign operation is a subsidiary), such exchange differences shall be recognised initially in other comprehensive income and reclassified from equity to profit or loss on disposal of the net investment in accordance with paragraph 48.
+ - ias21 33
+
+    >When a monetary item forms part of a reporting entity’s net investment in a foreign operation and is denominated in the functional currency of the reporting entity, an exchange difference arises in the foreign operation’s individual financial statements in accordance with paragraph 28. If such an item is denominated in the functional currency of the foreign operation, an exchange difference arises in the reporting entity’s separate financial statements in accordance with paragraph 28. If such an item is denominated in a currency other than the functional currency of either the reporting entity or the foreign operation, an exchange difference arises in the reporting entity’s separate financial statements and in the foreign operation’s individual financial statements in accordance with paragraph 28. Such exchange differences are recognised in other comprehensive income in the financial statements that include the foreign operation and the reporting entity (ie financial statements in which the foreign operation is consolidated or accounted for using the equity method).
+ - ias21 48
+
+    >On the disposal of a foreign operation, the cumulative amount of the exchange differences relating to that foreign operation, recognised in other comprehensive income and accumulated in the separate component of equity, shall be reclassified from equity to profit or loss (as a reclassification adjustment) when the gain or loss on disposal is recognised (see IFRS 18 Presentation and Disclosure in Financial Statements).

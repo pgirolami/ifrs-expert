@@ -1,0 +1,74 @@
+{
+  "assumptions_fr": [
+    "La question vise une évaluation à la juste valeur selon IFRS, sans autre norme spécifique modifiant le principe de mesure.",
+    "Le terme « risque de défaut de la contrepartie » est compris, pour un actif, comme un facteur de crédit intégré par les intervenants de marché s’il influence le prix, et pour un passif comme le risque de non-exécution/crédit propre du débiteur."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui pour un passif: la juste valeur doit refléter le risque de non-exécution, y compris le risque de crédit propre (IFRS 13 42–44). Pour un actif, ce risque est pris en compte seulement s’il fait partie des hypothèses que les intervenants de marché utiliseraient pour le prix de sortie (IFRS 13 3, 22, 24)."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "fair_value_measurement_of_an_asset",
+      "label_fr": "Évaluation à la juste valeur d’un actif",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, IFRS n’impose pas une règle autonome visant toujours le « risque de défaut de la contrepartie » pour un actif; il faut mesurer la juste valeur selon les hypothèses des intervenants de marché et le prix de sortie (IFRS 13 3, IFRS 13 22, IFRS 13 24). Donc ce risque est pris en compte pour l’actif seulement s’il influence le prix qu’un intervenant de marché paierait ou recevrait à la date d’évaluation.",
+      "conditions_fr": [
+        "Le facteur de défaut de la contrepartie doit être pertinent dans la formation du prix de marché de l’actif.",
+        "L’évaluation doit refléter les hypothèses des intervenants de marché, et non l’intention propre de l’entité."
+      ],
+      "practical_implication_fr": "Pour un actif, intégrer l’effet de crédit de la contrepartie uniquement s’il affecte le prix de sortie observé ou estimé par les intervenants de marché.",
+      "references": [
+        {
+          "document": "ifrs13",
+          "section": "3",
+          "excerpt": "When a price for an identical asset or liability is not observable, an entity measures fair value using another valuation technique that maximises the use of relevant observable inputs and minimises the use of unobservable inputs. Because fair value is a market‑based measurement, it is measured using **the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**. As a result, an entity’s intention to hold an asset or to settle or otherwise fulfil a liability is not relevant when measuring fair value."
+        },
+        {
+          "document": "ifrs13",
+          "section": "22",
+          "excerpt": "An entity shall measure the fair value of an asset or a liability using **the assumptions that market participants would use when pricing the asset or liability**, assuming that market participants act in their economic best interest."
+        },
+        {
+          "document": "ifrs13",
+          "section": "24",
+          "excerpt": "Fair value is **the price that would be received to sell an asset or paid to transfer a liability** in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie **an exit price**) regardless of whether that price is directly observable or estimated using another valuation technique."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_measurement_of_a_liability",
+      "label_fr": "Évaluation à la juste valeur d’un passif",
+      "applicability": "oui",
+      "reasoning_fr": "Dans cette situation, pour un passif, IFRS 13 exige explicitement que la juste valeur reflète le risque de non-exécution, lequel inclut le risque de crédit propre de l’entité (IFRS 13 42, IFRS 13 43). La mesure suppose un transfert du passif à un intervenant de marché sans extinction, et une garantie de tiers séparée n’est pas incorporée dans la juste valeur du passif (IFRS 13 34, IFRS 13 44).",
+      "conditions_fr": [
+        "Si une amélioration de crédit fournie par un tiers est inséparable mais comptabilisée séparément, son effet n’est pas inclus dans la juste valeur du passif."
+      ],
+      "practical_implication_fr": "Pour un passif, inclure le risque de non-exécution, notamment le risque de crédit propre, dans la juste valeur au niveau de l’unité de compte pertinente.",
+      "references": [
+        {
+          "document": "ifrs13",
+          "section": "34",
+          "excerpt": "A fair value measurement assumes that a financial or non‑financial liability or an entity’s own equity instrument (eg equity interests issued as consideration in a business combination) is **transferred to a market participant at the measurement date**. The transfer of a liability or an entity’s own equity instrument assumes the following:\n(a)A liability **would remain outstanding** and the market participant transferee would be required to fulfil the obligation. The liability would not be settled with the counterparty or otherwise extinguished on the measurement date.\n(b)An entity’s own equity instrument would remain outstanding and the market participant transferee would take on the rights and responsibilities associated with the instrument. The instrument would not be cancelled or otherwise extinguished on the measurement date."
+        },
+        {
+          "document": "ifrs13",
+          "section": "42",
+          "excerpt": "The fair value of a liability **reflects the effect of non‑performance risk**. Non‑performance risk includes, but may not be limited to, **an entity’s own credit risk** (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability."
+        },
+        {
+          "document": "ifrs13",
+          "section": "43",
+          "excerpt": "When measuring the fair value of a liability, an entity shall **take into account the effect of its credit risk (credit standing)** and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:\n(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).\n(b)the terms of credit enhancements related to the liability, if any."
+        },
+        {
+          "document": "ifrs13",
+          "section": "44",
+          "excerpt": "The fair value of a liability reflects the effect of non‑performance risk **on the basis of its unit of account**. The issuer of a liability issued with an inseparable third‑party credit enhancement that is accounted for separately from the liability **shall not include the effect of the credit enhancement** (eg a third‑party guarantee of debt) in the fair value measurement of the liability. If the credit enhancement is accounted for separately from the liability, the issuer would take into account **its own credit standing and not that of the third party guarantor** when measuring the fair value of the liability."
+        }
+      ]
+    }
+  ]
+}

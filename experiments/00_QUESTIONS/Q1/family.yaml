@@ -19,7 +19,7 @@ assert:
       const labels = data.approaches.map(a => a.normalized_label);
       return labels.includes('cash_flow_hedge') &&
              labels.includes('fair_value_hedge') &&
-             labels.includes('hedge_of_a_net_investment_in_a_foreign_operation');
+             labels.includes('hedge_of_a_net_investment');
     description: All expected hedge approaches are identified
 
   - type: javascript
@@ -30,7 +30,7 @@ assert:
       );
       return ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_hedge) &&
              byLabel.cash_flow_hedge === 'non' &&
-             byLabel.hedge_of_a_net_investment_in_a_foreign_operation === 'non';
+             byLabel.hedge_of_a_net_investment === 'non';
     description: Expected applicability is assigned to each hedge approach
 
   - type: javascript

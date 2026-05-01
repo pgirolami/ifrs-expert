@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, en comptes consolidés, quels modèles de comptabilité de couverture IFRS peuvent être envisagés pour le risque de change lié à des dividendes intragroupe, en tenant compte des règles d’éligibilité des éléments intragroupe comme éléments couverts.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias39"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the required strict precedence rule that IFRS supersedes IAS for overlapping hedge-accounting eligibility, hedged-item and hedge-model questions, so IFRS 9 governs and IAS 39 is discarded.",
+    "discarded_due_to_overlap": ["ias39"],
+    "residual_uncertainty": "low — the issue is a hedge-accounting eligibility and model-identification question directly addressed by IFRS 9, while IAS 39 is legacy overlapping guidance."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["6.3.1", "6.3.5", "6.3.6", "6.4.1", "6.5.2", "6.5.4"],
+        "reason": "These paragraphs directly govern eligible hedged items in consolidation, the intragroup foreign-currency exceptions, hedge qualification and the named hedge accounting models."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias21",
+        "references": ["27", "32", "33", "45", "48"],
+        "reason": "These paragraphs explain when foreign exchange differences on monetary items remain relevant in consolidated financial statements and how IAS 21 interacts with hedge accounting."
+      },
+      {
+        "document": "ifric16",
+        "references": ["10", "12", "14", "15", "16", "17"],
+        "reason": "This Interpretation clarifies the distinct net investment hedge model and how foreign currency hedge accounting operates within a group."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs7",
+        "references": ["21A", "22A", "22B", "24A", "24B", "24C"],
+        "reason": "These paragraphs deal with hedge accounting disclosures, not the identification of the governing hedge accounting approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Hedge accounting relationship types available for foreign currency risk in consolidated financial statements",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["6.5.2", "6.5.4"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["6.3.5", "6.3.6"]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_hedge",
+        "cash_flow_hedge",
+        "hedge_of_a_net_investment_in_a_foreign_operation"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value hedge as a named hedge accounting model for recognised assets or liabilities exposed to a particular risk that could affect profit or loss."
+    },
+    {
+      "id": "approach_2",
+      "label": "Cash flow hedge",
+      "normalized_label": "cash_flow_hedge",
+      "rationale_for_inclusion": "IFRS 9 identifies cash flow hedge as a named hedge accounting model for variability in cash flows attributable to a particular risk, including forecast transactions."
+    },
+    {
+      "id": "approach_3",
+      "label": "Hedge of a net investment in a foreign operation",
+      "normalized_label": "hedge_of_a_net_investment_in_a_foreign_operation",
+      "rationale_for_inclusion": "IFRS 9 identifies hedge of a net investment in a foreign operation as a separate named hedge accounting model for foreign currency exposure within a group."
+    }
+  ]
+}

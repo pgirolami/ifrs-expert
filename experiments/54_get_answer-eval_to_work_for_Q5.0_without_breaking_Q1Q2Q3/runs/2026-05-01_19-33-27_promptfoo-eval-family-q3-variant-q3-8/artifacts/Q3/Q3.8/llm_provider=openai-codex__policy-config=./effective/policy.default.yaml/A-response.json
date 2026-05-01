@@ -1,0 +1,95 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination du sens du critère des flux de trésorerie contractuels constitués exclusivement de paiements de principal et d’intérêts pour le classement d’un actif financier selon IFRS 9",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias32"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence and governing-lineage rule by selecting IFRS 9 as the single governing standard because it directly defines and applies the solely payments of principal and interest test for classification of financial assets, whereas IAS 32 only defines financial instruments and does not govern this eligibility or classification question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question is squarely about the contractual cash flow characteristics test in IFRS 9."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.11", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18"],
+        "reason": "These paragraphs directly govern the solely payments of principal and interest test and its effect on financial asset classification."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["11", "13", "AG15", "AG16"],
+        "reason": "This standard defines financial instruments and derivatives but does not govern the solely payments of principal and interest classification test."
+      },
+      {
+        "document": "ifric12",
+        "references": ["16", "23", "24"],
+        "reason": "This interpretation shows that some service concession receivables are financial assets accounted for under IFRS 9, but it does not define the solely payments of principal and interest criterion."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["16", "40", "54", "58"],
+        "reason": "This standard refers to IFRS 9 classification in business combinations, but it does not provide the governing analysis for the contractual cash flow test."
+      },
+      {
+        "document": "ias19",
+        "references": ["114", "132"],
+        "reason": "This standard is only tangentially related through references to financial instruments and offsetting, not to the classification of financial assets under IFRS 9."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets measured at amortised cost when held to collect contractual cash flows and the cash flows are solely payments of principal and interest",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets measured at fair value through other comprehensive income when both collecting contractual cash flows and selling are integral and the cash flows are solely payments of principal and interest",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets measured at fair value through profit or loss when the contractual cash flows are not solely payments of principal and interest or the asset is otherwise outside the qualifying business models",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level classification outcome for financial assets whose business model is hold to collect and whose contractual cash flows are solely payments of principal and interest."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a separate top-level classification outcome when both collecting contractual cash flows and selling are integral and the cash flows are solely payments of principal and interest."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the remaining top-level classification outcome, including where contractual terms introduce exposure inconsistent with solely payments of principal and interest."
+    }
+  ]
+}

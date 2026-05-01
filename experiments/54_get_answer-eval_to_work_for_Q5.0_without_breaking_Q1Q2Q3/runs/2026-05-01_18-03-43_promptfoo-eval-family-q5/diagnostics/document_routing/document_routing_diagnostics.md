@@ -1,0 +1,6 @@
+This table shows every document retrieved for each question. The target documents from the family file appear first after the question and total columns, and the remaining retrieved documents are ordered by how often they were retrieved across questions.
+
+| Question | Total | IFRS 13 | IAS 39 | IAS 41 | IFRS 9 | NAVIS qrifrs c 25305fb 4f 52cb efl |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Q5.0 | 5 | <span style="display:block; background-color: #dde8da; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.74 / <strong>2</strong></span> | <span style="display:block; background-color: #f8d7da; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.64 / <strong>5</strong></span> | <span style="display:block; background-color: #efdcda; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.65 / <strong>4</strong></span> | <span style="display:block; background-color: #e6e2da; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.68 / <strong>3</strong></span> | <span style="display:block; background-color: #d4edda; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.81 / <strong>1</strong></span> |
+|  | Total | 1 (0.74-0.74) | 1 (0.64-0.64) | 1 (0.65-0.65) | 1 (0.68-0.68) | 1 (0.81-0.81) |
