@@ -223,7 +223,7 @@ chunk_retrieval_strategies:
           full_doc_threshold: 0
           reference_expansion:
             enabled: true
-            depth: 2
+            depth: 1
             max_chunks_per_seed: 1000
             max_chunks_per_doc: 1000
             section_target_max_chunks: 3
