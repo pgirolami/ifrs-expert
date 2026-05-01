@@ -29,7 +29,6 @@ from experiments.analysis.approach_detection.approach_detection_contract import 
     _default_db_path,
     _format_score_range,
     _format_section_cell_summary,
-    _lexicographic_chunk_key,
     _load_chunk_lookup,
     _load_chunk_lookup_by_reference,
     _load_expected_section_display_records,
@@ -37,6 +36,7 @@ from experiments.analysis.approach_detection.approach_detection_contract import 
     _section_background_color,
     _section_column_is_expected,
     _section_column_key,
+    _section_id_overlaps_expected_range,
     _section_sort_key,
 )
 from experiments.analysis.document_routing.document_routing_contract import humanize_doc_uid, resolve_experiment_dir
@@ -162,6 +162,17 @@ class RangeSummary:
     mean_best_rank: float | None
     score_min: float | None
     score_max: float | None
+
+
+@dataclass(frozen=True)
+class SectionHeaderMetadata:
+    """Display metadata for one section column header."""
+
+    display_label: str
+    observed_range: str
+    provenance_marker: str
+    provenance_summary: str
+    marker_leading_break: bool = False
 
 
 @dataclass(frozen=True)
@@ -434,13 +445,13 @@ class TargetChunkRetrievalDiagnosticsGenerator:
     def render_html(self, diagnostics: RunDiagnostics) -> str:
         """Render target chunk diagnostics as an approach-detection-style HTML matrix."""
         section_columns = self._section_columns(diagnostics.rows, diagnostics.expected_section_ranges)
-        header_text_by_column = self._section_header_text_by_column(diagnostics.rows, section_columns)
+        header_metadata_by_column = self._section_header_metadata_by_column(diagnostics.rows, section_columns, diagnostics.expected_section_ranges)
         rows_html = "\n".join(
             self._render_html_row(index, row, section_columns)
             for index, row in enumerate(sorted(diagnostics.rows, key=lambda item: _question_sort_key(item.question_id)))
         )
         group_header_html = self._render_group_header(section_columns)
-        column_header_html = self._render_column_header(section_columns, diagnostics.expected_section_ranges, header_text_by_column)
+        column_header_html = self._render_column_header(section_columns, header_metadata_by_column)
         controls_html = self._render_controls(section_columns)
         script_html = self._render_script(section_columns)
         style_html = self._render_style()
@@ -459,6 +470,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
        <strong>Provider:</strong> {html.escape(diagnostics.provider_name)}<br>
        <strong>Policy:</strong> {html.escape(diagnostics.policy_name)}<br>
        <strong>Generated:</strong> {html.escape(diagnostics.generated_at)}</p>
+        <p><strong>Legend:</strong> 🎯 exact target range, ↳ nested subrange of the previous discovered range, 🧭 no retrieved chunks</p>
 
     {controls_html}
 
@@ -486,6 +498,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
     def render_run_markdown(self, diagnostics: RunDiagnostics) -> str:
         lines = [
             "This table checks whether the expected target paragraph ranges from the question family were retrieved for each question.",
+            "Headers use 🎯 for exact target ranges, ↳ for nested subranges of the previous discovered range, and 🧭 when no retrieved chunks are present.",
             "",
             "| Question | Target chunks | Expected ranges present | " + " | ".join(summary.display_label for summary in diagnostics.range_summaries) + " |",
             "| --- | ---: | ---: | " + " | ".join("---:" for _ in diagnostics.range_summaries) + " |",
@@ -555,37 +568,41 @@ class TargetChunkRetrievalDiagnosticsGenerator:
     def _render_column_header(
         self,
         section_columns: tuple[SectionColumn, ...],
-        expected_section_ranges: tuple[ExpectedSectionRange, ...],
-        header_text_by_column: dict[str, str],
+        header_metadata_by_column: dict[str, SectionHeaderMetadata],
     ) -> str:
         metadata_headers = (
             '<th class="sticky-1 metadata-col" title="Question id. Hover question cells for raw and embedded query text.">Q</th>',
             '<th class="sticky-2 metadata-col" title="Number of retrieved chunks from target documents.">🎯 chunks</th>',
         )
-        section_headers = tuple(self._render_section_header(section_column, expected_section_ranges, header_text_by_column) for section_column in section_columns)
+        section_headers = tuple(self._render_section_header(section_column, header_metadata_by_column) for section_column in section_columns)
         return "".join((*metadata_headers, *section_headers))
 
     def _render_section_header(
         self,
         section_column: SectionColumn,
-        expected_section_ranges: tuple[ExpectedSectionRange, ...],
-        header_text_by_column: dict[str, str],
+        header_metadata_by_column: dict[str, SectionHeaderMetadata],
     ) -> str:
+        metadata = header_metadata_by_column[section_column.column_key]
         lineage_text = " > ".join(section_column.section_lineage)
         tooltip = (
             f"{section_column.doc_display_name}\n"
             f"section_id: {section_column.section_id}\n"
             f"title: {section_column.title}\n"
             f"lineage: {lineage_text}\n"
-            f"position: {section_column.position}"
+            f"position: {section_column.position}\n"
+            f"display label: {metadata.display_label}\n"
+            f"observed range: {metadata.observed_range}\n"
+            f"provenance: {metadata.provenance_summary}"
         )
-        target_prefix = "🎯 " if _section_column_is_expected(section_column, expected_section_ranges) else ""
+        header_text = html.escape(metadata.provenance_marker)
+        if metadata.marker_leading_break:
+            header_text = f"<br>{header_text}"
         return (
             f'<th class="section-col {section_column.canonical_doc_key}" '
             f'data-section-key="{html.escape(section_column.column_key)}" '
             f'data-doc-key="{html.escape(section_column.canonical_doc_key)}" '
             f'data-is-target="{"1" if section_column.is_target else "0"}" '
-            f'title="{html.escape(tooltip)}">{target_prefix}{html.escape(header_text_by_column.get(section_column.column_key, _display_section_header(section_column.section_id)))}</th>'
+            f'title="{html.escape(tooltip)}">{header_text}{html.escape(metadata.display_label)}</th>'
         )
 
     def _render_controls(self, section_columns: tuple[SectionColumn, ...]) -> str:
@@ -794,12 +811,15 @@ class TargetChunkRetrievalDiagnosticsGenerator:
         retrieved_doc_counts: dict[str, int] = {}
         doc_display_names: dict[str, str] = {}
         for row in rows:
-            for chunk in row.chunks:
+            entries = self._chunk_section_entries(row, chunk_lookup, chunk_lookup_by_reference)
+            display_section_ids = _display_section_ids_for_entries(entries, row.expected_ranges)
+            for index, entry in enumerate(entries):
+                chunk = entry.chunk
                 canonical_doc_key = _canonical_doc_key(chunk.doc_uid)
                 if chunk.score > 0.0:
                     retrieved_doc_counts[canonical_doc_key] = retrieved_doc_counts.get(canonical_doc_key, 0) + 1
                 doc_display_names.setdefault(canonical_doc_key, _display_doc_uid(chunk.doc_uid))
-                section_id = self._section_id_for_chunk(chunk, chunk_lookup, chunk_lookup_by_reference)
+                section_id = display_section_ids[index]
                 observed_section_ids_by_doc.setdefault(canonical_doc_key, set()).add(section_id)
 
         for canonical_doc_key, records in expected_display_records.items():
@@ -822,7 +842,7 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                 self._section_display_record(canonical_doc_key, section_id, section_lookup)
                 for section_id in observed_section_ids_by_doc[canonical_doc_key]
             ]
-            display_records.sort(key=lambda record: _lexicographic_chunk_key(_display_section_header(record.section_id)))
+            display_records.sort(key=lambda record: _section_header_sort_key(record.section_id))
             columns.extend(
                 SectionColumn(
                     column_key=_section_column_key(canonical_doc_key, record.section_id),
@@ -847,22 +867,41 @@ class TargetChunkRetrievalDiagnosticsGenerator:
                 )
                 for record in display_records
             )
-        return tuple(columns)
+        exact_target_ranges_by_doc = {
+            (_canonical_doc_key(expected_range.document), f"{expected_range.start}-{expected_range.end}")
+            for expected_range in expected_section_ranges
+        }
+        return tuple(
+            column
+            for column in columns
+            if (
+                column.section_id.startswith(f"{column.canonical_doc_key}_")
+                or (_canonical_doc_key(column.canonical_doc_key), _strip_corpus_prefix(_display_section_header(column.section_id)))
+                not in exact_target_ranges_by_doc
+            )
+        )
 
     def _section_cells(self, row: QuestionDiagnostics) -> dict[str, SectionCell]:
         chunk_lookup = _load_chunk_lookup(_collect_chunk_db_ids((row,)))
         chunk_lookup_by_reference = _load_chunk_lookup_by_reference(_collect_chunk_references((row,)))
         entries_by_section: dict[str, list[RetrievedChunk]] = {}
         entries = self._chunk_section_entries(row, chunk_lookup, chunk_lookup_by_reference)
-        display_section_ids = _display_section_ids_for_entries(entries)
+        display_section_ids = _display_section_ids_for_entries(entries, row.expected_ranges)
         for index, entry in enumerate(entries):
             section_id = display_section_ids[index]
             display_chunk = self._chunk_with_corpus_chunk_number(entry.chunk, chunk_lookup, chunk_lookup_by_reference)
             entries_by_section.setdefault(_section_column_key(entry.canonical_doc_key, section_id), []).append(display_chunk)
-        return {
-            column_key: _build_section_cell(chunks, row=row)
-            for column_key, chunks in entries_by_section.items()
-        }
+        cells_by_key: dict[str, SectionCell] = {}
+        for column_key, chunks in entries_by_section.items():
+            section_id = column_key.split("::", maxsplit=1)[1]
+            observed_range = _display_observed_chunk_range(section_id, [chunk.chunk_number for chunk in chunks])
+            is_target_column = any(
+                _canonical_doc_key(expected_range.document) == _canonical_doc_key(chunks[0].doc_uid)
+                and observed_range == f"{expected_range.start}-{expected_range.end}"
+                for expected_range in row.expected_ranges
+            )
+            cells_by_key[column_key] = _build_section_cell(chunks, row=row, is_target_column=is_target_column)
+        return cells_by_key
 
     def _chunk_section_entries(
         self,
@@ -882,16 +921,107 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             )
         return entries
 
-    def _section_header_text_by_column(
+    def _section_header_metadata_by_column(
         self,
         rows: tuple[QuestionDiagnostics, ...],
         section_columns: tuple[SectionColumn, ...],
-    ) -> dict[str, str]:
-        del rows
-        return {
-            section_column.column_key: _display_section_header(section_column.section_id)
-            for section_column in section_columns
-        }
+        expected_section_ranges: tuple[ExpectedSectionRange, ...],
+    ) -> dict[str, SectionHeaderMetadata]:
+        chunk_numbers_by_column: dict[str, list[str]] = {section_column.column_key: [] for section_column in section_columns}
+        provenance_by_column: dict[str, list[str]] = {section_column.column_key: [] for section_column in section_columns}
+        score_by_column: dict[str, list[float]] = {section_column.column_key: [] for section_column in section_columns}
+        for row in rows:
+            section_cells = self._section_cells(row)
+            for section_column in section_columns:
+                section_cell = section_cells.get(section_column.column_key)
+                if section_cell is None:
+                    continue
+                chunk_numbers_by_column[section_column.column_key].extend(section_cell.retrieved_chunk_numbers)
+                score_by_column[section_column.column_key].extend(section_cell.retrieved_scores)
+                for chunk in section_cell.retrieved_chunks:
+                    if chunk.provenance is None:
+                        continue
+                    if chunk.provenance not in provenance_by_column[section_column.column_key]:
+                        provenance_by_column[section_column.column_key].append(chunk.provenance)
+
+        target_column_keys = self._target_column_keys(section_columns, expected_section_ranges, chunk_numbers_by_column)
+
+        metadata_by_column: dict[str, SectionHeaderMetadata] = {}
+        last_non_arrow_range_by_doc: dict[str, str] = {}
+        for section_column in section_columns:
+            observed_range = _display_observed_chunk_range(section_column.section_id, chunk_numbers_by_column[section_column.column_key])
+            expected_section_id = None
+            for expected_range in expected_section_ranges:
+                if _canonical_doc_key(expected_range.document) != section_column.canonical_doc_key:
+                    continue
+                if f"{expected_range.start}-{expected_range.end}" == observed_range:
+                    expected_section_id = f"{section_column.canonical_doc_key}_{expected_range.start}-{expected_range.end}"
+                    break
+            exact_target_labels = tuple(
+                expected_range.display_label.removeprefix(f"{section_column.doc_display_name} ").strip()
+                for expected_range in expected_section_ranges
+                if _canonical_doc_key(expected_range.document) == section_column.canonical_doc_key
+                and observed_range == f"{expected_range.start}-{expected_range.end}"
+            )
+            is_target_header = section_column.column_key in target_column_keys and section_column.section_id == expected_section_id
+            marker_leading_break = False
+            if is_target_header:
+                display_label = " / ".join(dict.fromkeys(exact_target_labels))
+                provenance_marker = "🎯 "
+                last_non_arrow_range_by_doc[section_column.canonical_doc_key] = observed_range
+            else:
+                display_label = _strip_corpus_prefix(_display_section_header(section_column.section_id))
+                previous_non_arrow_range = last_non_arrow_range_by_doc.get(section_column.canonical_doc_key)
+                if previous_non_arrow_range is not None and _is_strict_subrange(observed_range, previous_non_arrow_range):
+                    provenance_marker = "↳ "
+                    marker_leading_break = True
+                else:
+                    provenance_marker = ""
+                    last_non_arrow_range_by_doc[section_column.canonical_doc_key] = observed_range
+            metadata_by_column[section_column.column_key] = SectionHeaderMetadata(
+                display_label=display_label,
+                observed_range=observed_range,
+                provenance_marker=provenance_marker,
+                provenance_summary=_header_provenance_summary(
+                    provenances=provenance_by_column[section_column.column_key],
+                    scores=score_by_column[section_column.column_key],
+                ),
+                marker_leading_break=marker_leading_break,
+            )
+        return metadata_by_column
+
+    def _target_column_keys(
+        self,
+        section_columns: tuple[SectionColumn, ...],
+        expected_section_ranges: tuple[ExpectedSectionRange, ...],
+        chunk_numbers_by_column: dict[str, list[str]],
+    ) -> set[str]:
+        target_column_keys: set[str] = set()
+        for expected_range in expected_section_ranges:
+            expected_section_id = f"{_canonical_doc_key(expected_range.document)}_{expected_range.start}-{expected_range.end}"
+            matching_columns = [
+                section_column
+                for section_column in section_columns
+                if _canonical_doc_key(expected_range.document) == section_column.canonical_doc_key
+                and _section_id_overlaps_expected_range(section_column.section_id, expected_range)
+            ]
+            exact_matching_columns = [
+                section_column
+                for section_column in matching_columns
+                if _display_observed_chunk_range(section_column.section_id, chunk_numbers_by_column[section_column.column_key])
+                == f"{expected_range.start}-{expected_range.end}"
+            ]
+            if not exact_matching_columns:
+                continue
+            exact_matching_columns.sort(
+                key=lambda section_column: (
+                    0 if section_column.section_id == expected_section_id else 1,
+                    section_column.position,
+                    _section_header_sort_key(section_column.section_id),
+                )
+            )
+            target_column_keys.add(exact_matching_columns[0].column_key)
+        return target_column_keys
 
     def _section_id_for_chunk(
         self,
@@ -1134,9 +1264,17 @@ class TargetChunkRetrievalDiagnosticsGenerator:
             payload = _parse_promptfoo_response(promptfoo_response)
         except (TypeError, json.JSONDecodeError):
             payload = {}
-        if isinstance(payload.get("chunks"), list) and payload["chunks"]:
+        if _payload_has_chunk_provenance(payload):
             return payload
+
         fallback_payload = self._load_answer_chunk_artifact(run_artifacts_dir=run_artifacts_dir, question_source=question_source)
+        if _payload_has_chunk_provenance(fallback_payload):
+            return fallback_payload
+
+        provenance_payload = self._load_document_routing_chunk_artifact(run_artifacts_dir=run_artifacts_dir, question_source=question_source)
+        if provenance_payload is not None:
+            return provenance_payload
+
         if fallback_payload is not None:
             return fallback_payload
         return payload
@@ -1154,6 +1292,18 @@ class TargetChunkRetrievalDiagnosticsGenerator:
         if not candidates:
             return None
         return _load_json_object(candidates[-1])
+
+    def _load_document_routing_chunk_artifact(
+        self,
+        *,
+        run_artifacts_dir: Path,
+        question_source: PromptfooTestCase,
+    ) -> dict[str, object] | None:
+        run_dir = run_artifacts_dir.parent
+        raw_path = run_dir / DEFAULT_DIAGNOSTICS_DIRNAME / "document_routing" / DEFAULT_RAW_DIRNAME / f"{question_source.question_id}.retrieve.json"
+        if not raw_path.exists():
+            return None
+        return _load_json_object(raw_path)
 
     def _build_range_summaries(
         self,
@@ -1405,6 +1555,21 @@ def _parse_chunks(payload: dict[str, object]) -> tuple[RetrievedChunk, ...]:
     return tuple(parsed)
 
 
+def _payload_has_chunk_provenance(payload: dict[str, object] | None) -> bool:
+    if payload is None:
+        return False
+    chunks = payload.get("chunks")
+    if not isinstance(chunks, list) or not chunks:
+        return False
+    for raw_chunk in chunks:
+        if not isinstance(raw_chunk, dict):
+            continue
+        provenance = raw_chunk.get("provenance")
+        if isinstance(provenance, str) and provenance:
+            return True
+    return False
+
+
 def _coverage_for_range(expected_range: ExpectedSectionRange, chunks: tuple[RetrievedChunk, ...]) -> RangeCoverage:
     matching = [chunk for chunk in chunks if chunk.doc_uid == expected_range.document and _chunk_number_in_range(chunk.chunk_number, expected_range.start, expected_range.end)]
     non_expansion = [chunk for chunk in matching if chunk.score > 0]
@@ -1471,7 +1636,12 @@ def _chunk_db_id(chunk: RetrievedChunk) -> int | None:
     return int(chunk.chunk_id)
 
 
-def _display_section_ids_for_entries(entries: list[ChunkSectionEntry]) -> dict[int, str]:
+def _display_section_ids_for_entries(entries: list[ChunkSectionEntry], expected_ranges: tuple[RangeCoverage, ...]) -> dict[int, str]:
+    exact_target_section_ids = {
+        index: _exact_target_section_id(entry.chunk, expected_ranges)
+        for index, entry in enumerate(entries)
+        if _exact_target_section_id(entry.chunk, expected_ranges) is not None
+    }
     scored_section_ids = {
         entry.actual_section_id
         for entry in entries
@@ -1487,9 +1657,18 @@ def _display_section_ids_for_entries(entries: list[ChunkSectionEntry]) -> dict[i
         ancestor_section_ids=scored_section_ids,
     )
     return {
-        index: ancestor_section_ids.get(entry.actual_section_id, entry.actual_section_id)
+        index: exact_target_section_ids.get(index, ancestor_section_ids.get(entry.actual_section_id, entry.actual_section_id))
         for index, entry in enumerate(entries)
     }
+
+
+def _exact_target_section_id(chunk: RetrievedChunk, expected_ranges: tuple[RangeCoverage, ...]) -> str | None:
+    for expected_range in expected_ranges:
+        if _canonical_doc_key(expected_range.document) != _canonical_doc_key(chunk.doc_uid):
+            continue
+        if _chunk_number_in_range(chunk.chunk_number, expected_range.start, expected_range.end):
+            return f"{_canonical_doc_key(expected_range.document)}_{expected_range.start}-{expected_range.end}"
+    return None
 
 
 def _nearest_scored_ancestor_section_ids(
@@ -1529,13 +1708,18 @@ def _nearest_scored_ancestor_section_ids(
     return nearest_by_descendant
 
 
-def _build_section_cell(chunks: list[RetrievedChunk], *, row: QuestionDiagnostics) -> SectionCell:
+def _build_section_cell(
+    chunks: list[RetrievedChunk],
+    *,
+    row: QuestionDiagnostics,
+    is_target_column: bool = True,
+) -> SectionCell:
     sorted_chunks = sorted(chunks, key=lambda chunk: (_section_sort_key(chunk.chunk_number), chunk.score))
     retrieved_chunks = sorted_chunks
     scored_retrieved_scores = tuple(chunk.score for chunk in retrieved_chunks if chunk.score > 0.0)
     retrieved_scores = scored_retrieved_scores or tuple(chunk.score for chunk in retrieved_chunks)
     retrieved_chunk_numbers = tuple(chunk.chunk_number for chunk in retrieved_chunks)
-    retrieved_chunk_records = tuple(_chunk_authority_record(chunk, row=row) for chunk in retrieved_chunks)
+    retrieved_chunk_records = tuple(_chunk_authority_record(chunk, row=row, is_target_column=is_target_column) for chunk in retrieved_chunks)
     return SectionCell(
         retrieved_scores=retrieved_scores,
         retrieved_display_text=_format_score_range(retrieved_scores),
@@ -1551,13 +1735,14 @@ def _build_section_cell(chunks: list[RetrievedChunk], *, row: QuestionDiagnostic
     )
 
 
-def _chunk_authority_record(chunk: RetrievedChunk, *, row: QuestionDiagnostics) -> ChunkAuthorityRecord:
-    authority_category = "authoritative" if _is_expected_chunk(chunk.doc_uid, chunk.chunk_number, row.expected_ranges) else "secondary"
+def _chunk_authority_record(chunk: RetrievedChunk, *, row: QuestionDiagnostics, is_target_column: bool = True) -> ChunkAuthorityRecord:
+    authority_category = "authoritative" if is_target_column and _is_expected_chunk(chunk.doc_uid, chunk.chunk_number, row.expected_ranges) else "secondary"
     return ChunkAuthorityRecord(
         chunk_number=chunk.chunk_number,
         score=chunk.score,
         authority_category=authority_category,
         dropped=False,
+        provenance=chunk.provenance,
     )
 
 
@@ -1573,29 +1758,61 @@ def _is_expected_chunk(doc_uid: str, chunk_number: str, expected_ranges: tuple[R
 
 def _chunk_authority_lines(chunks: tuple[ChunkAuthorityRecord, ...]) -> str:
     lines = [
-        f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}]"
+        f"- {chunk.chunk_number} ({chunk.score:.2f}) [{chunk.authority_category}] provenance={_chunk_provenance_text(chunk)}"
         for chunk in chunks
     ]
     return "\n".join(lines) if lines else "(none)"
 
 
+def _chunk_provenance_text(chunk: ChunkAuthorityRecord) -> str:
+    if chunk.provenance is not None:
+        return chunk.provenance
+    return "(missing)"
+
+
+def _header_provenance_summary(*, provenances: list[str], scores: list[float]) -> str:
+    if provenances:
+        unique_provenances = list(dict.fromkeys(provenances))
+        return ", ".join(unique_provenances)
+    if scores:
+        return "no provenance recorded"
+    return "(missing)"
+
+
+def _is_strict_subrange(candidate_range: str, container_range: str) -> bool:
+    candidate_start, candidate_end = _range_bounds(candidate_range)
+    container_start, container_end = _range_bounds(container_range)
+    candidate_bounds = (_section_sort_key(candidate_start), _section_sort_key(candidate_end))
+    container_bounds = (_section_sort_key(container_start), _section_sort_key(container_end))
+    return candidate_bounds != container_bounds and container_bounds[0] <= candidate_bounds[0] <= candidate_bounds[1] <= container_bounds[1]
+
+
+def _range_bounds(range_text: str) -> tuple[str, str]:
+    if "-" not in range_text:
+        return range_text, range_text
+    start, end = range_text.split("-", maxsplit=1)
+    return start, end
+
+
 def _display_observed_chunk_range(section_id: str, chunk_numbers: list[str]) -> str:
     if not chunk_numbers:
-        return _display_section_header(section_id)
+        return _strip_corpus_prefix(_display_section_header(section_id))
     display_header = _display_section_header(section_id)
-    prefix_match = re.match(r"([A-Za-z]+)", display_header)
-    section_prefix = "" if prefix_match is None else prefix_match.group(1)
     range_candidates = [chunk_number for chunk_number in chunk_numbers if _is_paragraph_chunk_number(chunk_number)]
     sorted_chunk_numbers = sorted(set(range_candidates or chunk_numbers), key=_section_sort_key)
     first_chunk = sorted_chunk_numbers[0]
     last_chunk = sorted_chunk_numbers[-1]
     range_text = first_chunk if first_chunk == last_chunk else f"{first_chunk}-{last_chunk}"
-    if range_text.startswith(section_prefix):
-        return range_text
-    range_prefix_match = re.match(r"([A-Za-z]+)", range_text)
-    range_prefix = "" if range_prefix_match is None else range_prefix_match.group(1)
-    group_prefix = section_prefix.removesuffix(range_prefix) if range_prefix else section_prefix
-    return f"{group_prefix}{range_text}"
+    return _strip_corpus_prefix(range_text)
+
+
+def _strip_corpus_prefix(range_text: str) -> str:
+    return range_text.removeprefix("sg").removeprefix("g")
+
+
+def _section_header_sort_key(section_id: str) -> tuple[str, ...]:
+    display_header = _strip_corpus_prefix(_display_section_header(section_id))
+    return _section_sort_key(display_header)
 
 
 def _is_paragraph_chunk_number(chunk_number: str) -> bool:

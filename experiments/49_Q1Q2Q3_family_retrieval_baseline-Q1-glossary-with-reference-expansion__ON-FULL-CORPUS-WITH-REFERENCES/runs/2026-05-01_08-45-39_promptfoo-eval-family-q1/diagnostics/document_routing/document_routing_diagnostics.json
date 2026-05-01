@@ -1,9 +1,9 @@
 {
-  "experiment_name": "50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion",
+  "experiment_name": "49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES",
   "provider_name": "Q1 retrieval non-regression gate",
   "run_id": "2026-05-01_08-45-39_promptfoo-eval-family-q1",
-  "generated_at": "2026-05-01T08:46:40.212569+00:00",
-  "promptfoo_db_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/.promptfoo/promptfoo.db",
+  "generated_at": "2026-05-01T10:01:19.601607+00:00",
+  "promptfoo_db_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/.promptfoo/promptfoo.db",
   "eval_id": "eval-xRi-2026-05-01T08:45:42",
   "question_families": [
     "Q1¤"
@@ -173,8 +173,8 @@
     "Q1.21",
     "Q1.22"
   ],
-  "policy_file": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/policy.default.yaml",
-  "effective_policy_file": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/policy.default.yaml",
+  "policy_file": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/policy.default.yaml",
+  "effective_policy_file": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/policy.default.yaml",
   "policy_name": "standards_only_through_chunks__enriched",
   "policy": {
     "querying": {
@@ -569,8 +569,8 @@
       "response_format": "markdown"
     }
   },
-  "glossary_file": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
-  "effective_glossary_file": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
+  "glossary_file": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
+  "effective_glossary_file": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/effective/en-fr-glossary.yaml",
   "target_documents": [
     "ifrs9",
     "ias39",

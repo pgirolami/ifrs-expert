@@ -122,6 +122,7 @@ class ChunkAuthorityRecord:
     score: float
     authority_category: str
     dropped: bool
+    provenance: str | None = None
 
 
 @dataclass(frozen=True)

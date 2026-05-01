@@ -1,30 +1,30 @@
 {
-  "experiment_name": "50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion",
-  "generated_at": "2026-05-01T08:46:40.340406+00:00",
+  "experiment_name": "49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES",
+  "generated_at": "2026-05-01T10:01:19.746113+00:00",
   "runs": [
     {
       "run_id": "2026-05-01_08-45-39_promptfoo-eval-family-q1",
       "provider_name": "Q1 retrieval non-regression gate",
       "policy_name": "standards_only_through_chunks__enriched",
-      "output_dir": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing",
-      "markdown_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
-      "json_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
+      "output_dir": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing",
+      "markdown_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q1/diagnostics/document_routing/document_routing_diagnostics.json"
     },
     {
       "run_id": "2026-05-01_08-45-39_promptfoo-eval-family-q2",
       "provider_name": "Q1 retrieval non-regression gate",
       "policy_name": "standards_only_through_chunks__enriched",
-      "output_dir": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing",
-      "markdown_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.md",
-      "json_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.json"
+      "output_dir": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing",
+      "markdown_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q2/diagnostics/document_routing/document_routing_diagnostics.json"
     },
     {
       "run_id": "2026-05-01_08-45-39_promptfoo-eval-family-q3",
       "provider_name": "Q1 retrieval non-regression gate",
       "policy_name": "standards_only_through_chunks__enriched",
-      "output_dir": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing",
-      "markdown_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.md",
-      "json_path": "experiments/50_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.json"
+      "output_dir": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing",
+      "markdown_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/document_routing/document_routing_diagnostics.json"
     }
   ]
 }

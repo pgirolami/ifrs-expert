@@ -151,7 +151,7 @@ def test_target_chunk_html_treats_section_expanded_targets_as_retrieved() -> Non
     )
     generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
     section_cells = generator._section_cells(row)
-    parent_key = module._section_column_key("ifrs9", "IFRS09_gB4.1.7-B4.1.26")
+    parent_key = module._section_column_key("ifrs9", "ifrs9_B4.1.7-B4.1.26")
     child_key = module._section_column_key("ifrs9", "IFRS09_gB4.1.9A-B4.1.9E")
 
     assert parent_key in section_cells
@@ -169,6 +169,479 @@ def test_target_chunk_html_treats_section_expanded_targets_as_retrieved() -> Non
     assert cell.retrieved_chunk_numbers == ("B4.1.9A",)
     assert cell.retrieved_chunks[0].authority_category == "authoritative"
     assert not cell.dropped_chunks
+
+
+def test_target_chunk_headers_show_exact_targets_and_provenance(tmp_path: Path) -> None:
+    """Headers should keep the exact target ranges visible and expose provenance markers."""
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    chunks = (
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.10",
+            chunk_id="fake-1",
+            score=0.91,
+            rank=0,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.10-B4.1.19",
+            text_sha256=None,
+            provenance="seed-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.19",
+            chunk_id="fake-2",
+            score=0.0,
+            rank=1,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.10-B4.1.19",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.7",
+            chunk_id="fake-3",
+            score=0.0,
+            rank=2,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.26",
+            chunk_id="fake-4",
+            score=0.0,
+            rank=3,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+    )
+    row = module.QuestionDiagnostics(
+        question_id="Q2.0",
+        run_id="run",
+        question_path=Path("Q2.0.txt"),
+        question_text="question",
+        embedded_question_text="question",
+        question_text_sha256="sha",
+        chunks=chunks,
+        target_documents=("ifrs9",),
+        expected_ranges=(
+            module.RangeCoverage(
+                key="ifrs9:B4.1.7-B4.1.9",
+                document="ifrs9",
+                start="B4.1.7",
+                end="B4.1.9",
+                display_label="IFRS 9 B4.1.7-B4.1.9",
+                present=True,
+                chunk_count=1,
+                best_rank=0,
+                best_score=0.91,
+                chunk_numbers=("99.7",),
+            ),
+            module.RangeCoverage(
+                key="ifrs9:B4.1.10-B4.1.19",
+                document="ifrs9",
+                start="B4.1.10",
+                end="B4.1.19",
+                display_label="IFRS 9 B4.1.10-B4.1.19",
+                present=True,
+                chunk_count=2,
+                best_rank=0,
+                best_score=0.91,
+                chunk_numbers=("99.10", "99.11"),
+            ),
+        ),
+    )
+    section_columns = (
+        module.SectionColumn(
+            column_key=module._section_column_key("ifrs9", "ifrs9_B4.1.10-B4.1.19"),
+            canonical_doc_key="ifrs9",
+            doc_display_name="IFRS 9",
+            section_id="ifrs9_B4.1.10-B4.1.19",
+            title="target",
+            section_lineage=("ifrs9_B4.1.10-B4.1.19",),
+            position=1,
+            is_target=True,
+        ),
+        module.SectionColumn(
+            column_key=module._section_column_key("ifrs9", "IFRS09_B4.1.7-B4.1.26"),
+            canonical_doc_key="ifrs9",
+            doc_display_name="IFRS 9",
+            section_id="IFRS09_B4.1.7-B4.1.26",
+            title="expanded",
+            section_lineage=("IFRS09_B4.1.7-B4.1.26",),
+            position=2,
+            is_target=False,
+        ),
+    )
+    metadata_by_column = generator._section_header_metadata_by_column(
+        rows=(row,),
+        section_columns=section_columns,
+        expected_section_ranges=(
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.7", end="B4.1.9"),
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.10", end="B4.1.19"),
+        ),
+    )
+
+    assert metadata_by_column[section_columns[0].column_key].display_label == "B4.1.10-B4.1.19"
+    assert metadata_by_column[section_columns[0].column_key].provenance_marker == "🎯 "
+    assert metadata_by_column[section_columns[1].column_key].display_label == "B4.1.7-B4.1.26"
+    assert metadata_by_column[section_columns[1].column_key].provenance_marker == ""
+
+    diagnostics = module.RunDiagnostics(
+        experiment_name="experiment",
+        provider_name="provider",
+        run_id="run",
+        generated_at="2026-05-01T00:00:00+00:00",
+        promptfoo_db_path="db",
+        eval_id="eval",
+        question_families=("Q2",),
+        question_sources=(module.PromptfooTestCase(family_id="Q2", question_path=Path("Q2.0.txt"), description="desc"),),
+        question_ids=("Q2.0",),
+        policy_name="policy",
+        target_documents=("ifrs9",),
+        expected_section_ranges=(
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.7", end="B4.1.9"),
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.10", end="B4.1.19"),
+        ),
+        rows=(row,),
+        range_summaries=(
+            module.RangeSummary(
+                key="ifrs9:B4.1.7-B4.1.9",
+                document="ifrs9",
+                start="B4.1.7",
+                end="B4.1.9",
+                display_label="IFRS 9 B4.1.7-B4.1.9",
+                question_count=1,
+                present_count=1,
+                mean_best_rank=0.0,
+                score_min=0.91,
+                score_max=0.91,
+            ),
+            module.RangeSummary(
+                key="ifrs9:B4.1.10-B4.1.19",
+                document="ifrs9",
+                start="B4.1.10",
+                end="B4.1.19",
+                display_label="IFRS 9 B4.1.10-B4.1.19",
+                question_count=1,
+                present_count=1,
+                mean_best_rank=0.0,
+                score_min=0.91,
+                score_max=0.91,
+            ),
+        ),
+    )
+    html = generator.render_html(diagnostics)
+    markdown = generator.render_run_markdown(diagnostics)
+
+    assert "Legend:" in html
+    assert "🎯 exact target range" in html
+    assert "↳ nested subrange of the previous discovered range" in html
+    assert "B4.1.10-B4.1.19" in html
+    assert "🎯 " in html
+    assert "B4.1.7-B4.1.26" in html
+    assert "Headers use 🎯 for exact target ranges" in markdown
+    assert "nested subranges of the previous discovered range" in markdown
+
+
+def test_target_chunk_headers_keep_exact_target_and_broader_overlap_separate() -> None:
+    """Exact target headers should not be duplicated or downgraded by a broader overlap."""
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    chunks = (
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.10",
+            chunk_id="fake-1",
+            score=0.91,
+            rank=0,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.10-B4.1.19",
+            text_sha256=None,
+            provenance="seed-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.19",
+            chunk_id="fake-2",
+            score=0.0,
+            rank=1,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.10-B4.1.19",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.7",
+            chunk_id="fake-3",
+            score=0.0,
+            rank=2,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.26",
+            chunk_id="fake-4",
+            score=0.0,
+            rank=3,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="section-source",
+        ),
+    )
+    row = module.QuestionDiagnostics(
+        question_id="Q2.1",
+        run_id="run",
+        question_path=Path("Q2.1.txt"),
+        question_text="question",
+        embedded_question_text="question",
+        question_text_sha256="sha",
+        chunks=chunks,
+        target_documents=("ifrs9",),
+        expected_ranges=(
+            module.RangeCoverage(
+                key="ifrs9:B4.1.7-B4.1.9",
+                document="ifrs9",
+                start="B4.1.7",
+                end="B4.1.9",
+                display_label="IFRS 9 B4.1.7-B4.1.9",
+                present=True,
+                chunk_count=1,
+                best_rank=0,
+                best_score=0.91,
+                chunk_numbers=("B4.1.7",),
+            ),
+            module.RangeCoverage(
+                key="ifrs9:B4.1.10-B4.1.19",
+                document="ifrs9",
+                start="B4.1.10",
+                end="B4.1.19",
+                display_label="IFRS 9 B4.1.10-B4.1.19",
+                present=True,
+                chunk_count=2,
+                best_rank=0,
+                best_score=0.91,
+                chunk_numbers=("B4.1.10", "B4.1.19"),
+            ),
+        ),
+    )
+    diagnostics = module.RunDiagnostics(
+        experiment_name="experiment",
+        provider_name="provider",
+        run_id="run",
+        generated_at="2026-05-01T00:00:00+00:00",
+        promptfoo_db_path="db",
+        eval_id="eval",
+        question_families=("Q2",),
+        question_sources=(module.PromptfooTestCase(family_id="Q2", question_path=Path("Q2.1.txt"), description="desc"),),
+        question_ids=("Q2.1",),
+        policy_name="policy",
+        target_documents=("ifrs9",),
+        expected_section_ranges=(
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.7", end="B4.1.9"),
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.10", end="B4.1.19"),
+        ),
+        rows=(row,),
+        range_summaries=(),
+    )
+    html = generator.render_html(diagnostics)
+
+    assert html.count("🎯 B4.1.10-B4.1.19") == 1
+    assert "ifrs9::IFRS09_gB4.1.10-B4.1.19" not in html
+    assert "🎯 B4.1.7-B4.1.26" not in html
+    assert "B4.1.7-B4.1.26" in html
+
+
+def test_target_chunk_headers_render_arrow_marker_on_new_line() -> None:
+    """The arrow marker should be rendered on its own line when present."""
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    section_column = module.SectionColumn(
+        column_key=module._section_column_key("ifrs9", "IFRS09_gB4.1.7-B4.1.26"),
+        canonical_doc_key="ifrs9",
+        doc_display_name="IFRS 9",
+        section_id="IFRS09_gB4.1.7-B4.1.26",
+        title="expanded",
+        section_lineage=("IFRS09_gB4.1.7-B4.1.26",),
+        position=2,
+        is_target=False,
+    )
+    html = generator._render_section_header(
+        section_column,
+        {
+            section_column.column_key: module.SectionHeaderMetadata(
+                display_label="B4.1.7-B4.1.26",
+                observed_range="B4.1.7-B4.1.26",
+                provenance_marker="↳ ",
+                provenance_summary="expanded-source",
+                marker_leading_break=True,
+            )
+        },
+    )
+
+    assert "<br>↳ B4.1.7-B4.1.26" in html
+
+
+def test_display_observed_chunk_range_strips_corpus_prefix() -> None:
+    """Observed ranges should not surface the synthetic corpus g prefix."""
+    assert module._display_observed_chunk_range("IAS32_g17-20", ["17", "20"]) == "17-20"
+    assert module._display_observed_chunk_range("IAS32_sgAG94-AG97", ["AG94", "AG97"]) == "AG94-AG97"
+
+
+def test_section_header_sort_key_orders_ranges_naturally() -> None:
+    """Section headers should use natural section ordering, not lexicographic ordering."""
+    section_ids = [
+        "IFRS09_B4.1.20-B4.1.26",
+        "IFRS09_gB4.1.9A-B4.1.9E",
+        "IFRS09_B4.1.7-B4.1.9",
+    ]
+
+    assert sorted(section_ids, key=module._section_header_sort_key) == [
+        "IFRS09_B4.1.7-B4.1.9",
+        "IFRS09_gB4.1.9A-B4.1.9E",
+        "IFRS09_B4.1.20-B4.1.26",
+    ]
+
+
+def test_target_chunk_headers_choose_one_exact_target_column_per_range() -> None:
+    """Only one column should claim the exact target marker for a single expected range."""
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    chunks = (
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.7",
+            chunk_id="fake-1",
+            score=0.82,
+            rank=0,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_B4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="direct-source",
+        ),
+        module.RetrievedChunk(
+            doc_uid="ifrs9",
+            chunk_number="B4.1.26",
+            chunk_id="fake-2",
+            score=0.0,
+            rank=1,
+            document_type="ifrs",
+            document_kind="required",
+            containing_section_id="IFRS09_gB4.1.7-B4.1.26",
+            text_sha256=None,
+            provenance="expanded-source",
+        ),
+    )
+    row = module.QuestionDiagnostics(
+        question_id="Q3.0",
+        run_id="run",
+        question_path=Path("Q3.0.txt"),
+        question_text="question",
+        embedded_question_text="question",
+        question_text_sha256="sha",
+        chunks=chunks,
+        target_documents=("ifrs9",),
+        expected_ranges=(
+            module.RangeCoverage(
+                key="ifrs9:B4.1.7-B4.1.26",
+                document="ifrs9",
+                start="B4.1.7",
+                end="B4.1.26",
+                display_label="IFRS 9 B4.1.7-B4.1.26",
+                present=True,
+                chunk_count=2,
+                best_rank=0,
+                best_score=0.82,
+                chunk_numbers=("99.7", "99.26"),
+            ),
+        ),
+    )
+    section_columns = (
+        module.SectionColumn(
+            column_key=module._section_column_key("ifrs9", "ifrs9_B4.1.7-B4.1.26"),
+            canonical_doc_key="ifrs9",
+            doc_display_name="IFRS 9",
+            section_id="ifrs9_B4.1.7-B4.1.26",
+            title="target",
+            section_lineage=("ifrs9_B4.1.7-B4.1.26",),
+            position=1,
+            is_target=True,
+        ),
+        module.SectionColumn(
+            column_key=module._section_column_key("ifrs9", "IFRS09_gB4.1.7-B4.1.26"),
+            canonical_doc_key="ifrs9",
+            doc_display_name="IFRS 9",
+            section_id="IFRS09_gB4.1.7-B4.1.26",
+            title="expanded",
+            section_lineage=("IFRS09_gB4.1.7-B4.1.26",),
+            position=2,
+            is_target=True,
+        ),
+    )
+    metadata_by_column = generator._section_header_metadata_by_column(
+        rows=(row,),
+        section_columns=section_columns,
+        expected_section_ranges=(
+            module.ExpectedSectionRange(document="ifrs9", start="B4.1.7", end="B4.1.26"),
+        ),
+    )
+
+    target_labels = [metadata.provenance_marker + metadata.display_label for metadata in metadata_by_column.values() if metadata.provenance_marker == "🎯 "]
+    assert target_labels == ["🎯 B4.1.7-B4.1.26"]
+    assert metadata_by_column[section_columns[1].column_key].provenance_marker != "🎯 "
+
+    html = generator.render_html(
+        module.RunDiagnostics(
+            experiment_name="experiment",
+            provider_name="provider",
+            run_id="run",
+            generated_at="2026-05-01T00:00:00+00:00",
+            promptfoo_db_path="db",
+            eval_id="eval",
+            question_families=("Q3",),
+            question_sources=(module.PromptfooTestCase(family_id="Q3", question_path=Path("Q3.0.txt"), description="desc"),),
+            question_ids=("Q3.0",),
+            policy_name="policy",
+            target_documents=("ifrs9",),
+            expected_section_ranges=(
+                module.ExpectedSectionRange(document="ifrs9", start="B4.1.7", end="B4.1.26"),
+            ),
+            rows=(row,),
+            range_summaries=(
+                module.RangeSummary(
+                    key="ifrs9:B4.1.7-B4.1.26",
+                    document="ifrs9",
+                    start="B4.1.7",
+                    end="B4.1.26",
+                    display_label="IFRS 9 B4.1.7-B4.1.26",
+                    question_count=1,
+                    present_count=1,
+                    mean_best_rank=0.0,
+                    score_min=0.82,
+                    score_max=0.82,
+                ),
+            ),
+        )
+    )
+    assert "Legend:" in html
+    assert "🎯 exact target range" in html
+    assert "↳ nested subrange of the previous discovered range" in html
 
 
 def test_analyze_target_chunk_retrieval_diagnostics_appends_section(tmp_path: Path) -> None:
@@ -228,3 +701,41 @@ def test_load_chunk_payload_falls_back_to_answer_artifact(tmp_path: Path) -> Non
     )
 
     assert payload["chunks"][0]["chunk_number"] == "6.3.1"
+
+
+def test_load_chunk_payload_falls_back_to_document_routing_raw_for_provenance(tmp_path: Path) -> None:
+    """The loader should recover provenance from the raw document-routing artifact when needed."""
+    generator = module.TargetChunkRetrievalDiagnosticsGenerator(_repo_root())
+    run_dir = tmp_path / "runs" / "run-1"
+    artifacts_dir = run_dir / "artifacts"
+    document_routing_raw = run_dir / "diagnostics" / "document_routing" / "raw"
+    document_routing_raw.mkdir(parents=True, exist_ok=True)
+    (document_routing_raw / "Q1.0.retrieve.json").write_text(
+        json.dumps(
+            {
+                "chunks": [
+                    {
+                        "doc_uid": "ifrs9",
+                        "chunk_number": "6.3.1",
+                        "chunk_id": "IFRS9_6.3.1",
+                        "score": 0.91,
+                        "provenance": "top_similarity",
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    payload = generator._load_chunk_payload(
+        promptfoo_response=json.dumps({"output": json.dumps({"recommendation": {"answer": "oui"}})}, ensure_ascii=False),
+        run_artifacts_dir=artifacts_dir,
+        question_source=module.PromptfooTestCase(
+            family_id="Q1",
+            question_path=Path("experiments/00_QUESTIONS/Q1/Q1.0.txt"),
+            description="promptfoo test",
+        ),
+    )
+
+    assert payload["chunks"][0]["provenance"] == "top_similarity"
