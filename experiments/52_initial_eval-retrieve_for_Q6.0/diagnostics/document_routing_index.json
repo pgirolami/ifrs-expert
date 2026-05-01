@@ -1,0 +1,14 @@
+{
+  "experiment_name": "52_initial_eval-retrieve_for_Q6.0",
+  "generated_at": "2026-05-01T15:36:22.279057+00:00",
+  "runs": [
+    {
+      "run_id": "2026-05-01_15-36-03_promptfoo-eval-family-q6",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/52_initial_eval-retrieve_for_Q6.0/runs/2026-05-01_15-36-03_promptfoo-eval-family-q6/diagnostics/document_routing",
+      "markdown_path": "experiments/52_initial_eval-retrieve_for_Q6.0/runs/2026-05-01_15-36-03_promptfoo-eval-family-q6/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/52_initial_eval-retrieve_for_Q6.0/runs/2026-05-01_15-36-03_promptfoo-eval-family-q6/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}

@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Target Chunk Retrieval Diagnostics</title>
+  
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #1f2937; background: #f8fafc; }
+  main { padding: 1rem; }
+  h1 { margin-top: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; align-items: center; }
+  .table-wrap { overflow: auto; border: 1px solid #d1d5db; background: #ffffff; }
+  table { border-collapse: collapse; font-size: 12px; width: max-content; min-width: 100%; }
+  th, td { border: 1px solid #d1d5db; padding: 0.35rem 0.5rem; text-align: center; white-space: nowrap; }
+  thead th { position: sticky; top: 0; z-index: 3; background: #f3f4f6; }
+  .group-header { background: #e5e7eb; font-weight: 700; }
+  .metadata-col { text-align: left; background: #ffffff; }
+  .metadata-q, .metadata-rec { text-align: center; }
+  .sticky-1, .sticky-2 { position: sticky; z-index: 2; background: #ffffff; }
+  .sticky-1 { left: 0; min-width: 56px; }
+  .sticky-2 { left: 56px; min-width: 74px; }
+  thead .sticky-1, thead .sticky-2 { z-index: 4; background: #f3f4f6; }
+  .section-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.3; }
+  .section-cell-score { display: block; font-weight: 600; }
+  .section-cell-authority { display: block; font-size: 11px; color: #374151; }
+  button { cursor: pointer; }
+</style>
+
+</head>
+<body>
+  <main>
+    <h1>Target Chunk Retrieval Diagnostics</h1>
+    <p><strong>Experiment:</strong> 52_initial_eval-retrieve_for_Q6.0<br>
+       <strong>Provider:</strong> Q1 retrieval non-regression gate<br>
+       <strong>Policy:</strong> standards_only_through_chunks__enriched<br>
+       <strong>Generated:</strong> 2026-05-01T15:36:22.381806+00:00</p>
+        <p><strong>Legend:</strong> 🎯 exact target range, ↳ nested subrange of the previous discovered range, 🧭 no retrieved chunks</p>
+
+    
+    <section class="controls">
+      <button type="button" data-sort-mode="question">Question order</button>
+      <button type="button" data-sort-mode="missing">Missing-first</button>
+      <label><input type="checkbox" id="missing-only"> Show only rows with missing targets</label>
+      <label><input type="checkbox" id="hide-empty-columns" checked> Hide empty target columns</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs10" checked> IFRS 10</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ias28" checked> IAS 28</label>
+      <label><input type="checkbox" class="doc-toggle" data-doc-key="ifrs3" checked> IFRS 3</label>
+    </section>
+
+
+    <div class="table-wrap">
+      <table id="matrix-table">
+        <thead>
+          <tr>
+            <th class="group-header sticky-group" colspan="2" title="Question metadata">Run metadata</th><th class="group-header section-group" id="group-header-ifrs10" data-doc-key="ifrs10" colspan="13" title="IFRS 10">IFRS 10</th><th class="group-header section-group" id="group-header-ias28" data-doc-key="ias28" colspan="3" title="IAS 28">IAS 28</th><th class="group-header section-group" id="group-header-ifrs3" data-doc-key="ifrs3" colspan="15" title="IFRS 3">IFRS 3</th>
+          </tr>
+          <tr>
+            <th class="sticky-1 metadata-col" title="Question id. Hover question cells for raw and embedded query text.">Q</th><th class="sticky-2 metadata-col" title="Number of retrieved chunks from target documents.">🎯 chunks</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_g5-18" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_g5-18
+title: Control
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Control
+position: 4
+display label: 5-18
+observed range: 5-18
+provenance: top_similarity, enclosing_section_expansion, referenced_chunk">5-18</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_10-12" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_10-12
+title: ifrs10_10-12
+lineage: ifrs10_10-12
+position: 999999
+display label: 10-12
+observed range: 10-12
+provenance: referenced_chunk, top_similarity">🎯 10-12</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_g10-14" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_g10-14
+title: Power
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Control &gt; Power
+position: 5
+display label: 10-14
+observed range: 10-14
+provenance: (missing)">10-14</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_gB2-B85" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_gB2-B85
+title: Assessing control
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control
+position: 16
+display label: B2-B85
+observed range: B2-B85
+provenance: top_similarity, referenced_chunk, enclosing_section_expansion">B2-B85</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_gB9-B54" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_gB9-B54
+title: Power
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power
+position: 18
+display label: B9-B54
+observed range: B13-B54
+provenance: referenced_chunk, top_similarity"><br>↳ B9-B54</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_B11-B12" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_B11-B12
+title: ifrs10_B11-B12
+lineage: ifrs10_B11-B12
+position: 999999
+display label: B11-B12
+observed range: B11-B12
+provenance: referenced_chunk">🎯 B11-B12</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_gB11-B13" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_gB11-B13
+title: Relevant activities and direction of relevant activities
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power &gt; Relevant activities and direction of relevant activities
+position: 19
+display label: B11-B13
+observed range: B11-B13
+provenance: (missing)">B11-B13</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_gB14-B28" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_gB14-B28
+title: Rights that give an investor power over an investee
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power &gt; Rights that give an investor power over an investee
+position: 20
+display label: B14-B28
+observed range: B26-B28
+provenance: referenced_chunk, enclosing_section_expansion">B14-B28</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_B16-B17" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_B16-B17
+title: ifrs10_B16-B17
+lineage: ifrs10_B16-B17
+position: 999999
+display label: B16-B17
+observed range: B16-B17
+provenance: referenced_chunk">🎯 B16-B17</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_B22-B25" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_B22-B25
+title: ifrs10_B22-B25
+lineage: ifrs10_B22-B25
+position: 999999
+display label: B22-B25
+observed range: B22-B25
+provenance: referenced_chunk">🎯 B22-B25</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_B36-B36" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_B36-B36
+title: ifrs10_B36-B36
+lineage: ifrs10_B36-B36
+position: 999999
+display label: B36-B36
+observed range: B36
+provenance: referenced_chunk">B36-B36</th><th class="section-col ifrs10" data-section-key="ifrs10::IFRS10_gB36-B37" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: IFRS10_gB36-B37
+title: Majority of the voting rights but no power
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power &gt; Voting rights &gt; Majority of the voting rights but no power
+position: 26
+display label: B36-B37
+observed range: B36-B37
+provenance: (missing)">B36-B37</th><th class="section-col ifrs10" data-section-key="ifrs10::ifrs10_B47-B50" data-doc-key="ifrs10" data-is-target="1" title="IFRS 10
+section_id: ifrs10_B47-B50
+title: ifrs10_B47-B50
+lineage: ifrs10_B47-B50
+position: 999999
+display label: B47-B50
+observed range: B47-B50
+provenance: referenced_chunk">🎯 B47-B50</th><th class="section-col ias28" data-section-key="ias28::IAS28_g5-9" data-doc-key="ias28" data-is-target="0" title="IAS 28
+section_id: IAS28_g5-9
+title: Significant influence
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Significant influence
+position: 4
+display label: 5-9
+observed range: 5-9
+provenance: top_similarity, enclosing_section_expansion">5-9</th><th class="section-col ias28" data-section-key="ias28::IAS28_g10-15" data-doc-key="ias28" data-is-target="0" title="IAS 28
+section_id: IAS28_g10-15
+title: Equity method
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Equity method
+position: 5
+display label: 10-15
+observed range: 10-15
+provenance: enclosing_section_expansion, top_similarity">10-15</th><th class="section-col ias28" data-section-key="ias28::IAS28_g16-43" data-doc-key="ias28" data-is-target="0" title="IAS 28
+section_id: IAS28_g16-43
+title: Application of the equity method
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Application of the equity method
+position: 6
+display label: 16-43
+observed range: 16-43
+provenance: top_similarity, referenced_chunk, enclosing_section_expansion">16-43</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_g3-3" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_g3-3
+title: Identifying a business combination
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Identifying a business combination
+position: 3
+display label: 3-3
+observed range: 3
+provenance: referenced_chunk">3-3</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_g6-7" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_g6-7
+title: Identifying the acquirer
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Identifying the acquirer
+position: 5
+display label: 6-7
+observed range: 6-7
+provenance: enclosing_section_expansion, top_similarity">6-7</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_g18-20" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_g18-20
+title: Measurement principle
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Recognising and measuring the identifiable assets acquired, the liabilities assumed and any non‑controlling interest in the acquiree &gt; Measurement principle
+position: 11
+display label: 18-20
+observed range: 18-20
+provenance: enclosing_section_expansion, top_similarity">18-20</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_g41-42A" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_g41-42A
+title: A business combination achieved in stages
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Additional guidance for applying the acquisition method to particular types of business combinations &gt; A business combination achieved in stages
+position: 31
+display label: 41-42A
+observed range: 41-42A
+provenance: top_similarity, enclosing_section_expansion">41-42A</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_g43-44" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_g43-44
+title: A business combination achieved without the transfer of consideration
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Additional guidance for applying the acquisition method to particular types of business combinations &gt; A business combination achieved without the transfer of consideration
+position: 32
+display label: 43-44
+observed range: 43-44
+provenance: enclosing_section_expansion, top_similarity">43-44</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB1-B4" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB1-B4
+title: Business combinations of entities under common control (application of paragraph 2(c))
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Business combinations of entities under common control (application of paragraph 2(c))
+position: 51
+display label: B1-B4
+observed range: B1-B4
+provenance: enclosing_section_expansion, top_similarity">B1-B4</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB7A-B7C" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB7A-B7C
+title: Optional test to identify concentration of fair value
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Definition of a business (application of paragraph 3) &gt; Optional test to identify concentration of fair value
+position: 54
+display label: B7A-B7C
+observed range: B7A-B7C
+provenance: enclosing_section_expansion, top_similarity">B7A-B7C</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB13-B18" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB13-B18
+title: Identifying the acquirer (application of paragraphs 6 and 7)
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Identifying the acquirer (application of paragraphs 6 and 7)
+position: 57
+display label: B13-B18
+observed range: B13-B18
+provenance: referenced_chunk, top_similarity, enclosing_section_expansion_for_referenced_chunk">B13-B18</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB19-B27" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB19-B27
+title: Reverse acquisitions
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions
+position: 58
+display label: B19-B27
+observed range: B19
+provenance: referenced_chunk, enclosing_section_expansion_for_referenced_chunk">B19-B27</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB20-B20" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB20-B20
+title: Measuring the consideration transferred
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Measuring the consideration transferred
+position: 59
+display label: B20-B20
+observed range: B20
+provenance: referenced_chunk">B20-B20</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB21-B22" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB21-B22
+title: Preparation and presentation of consolidated financial statements
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Preparation and presentation of consolidated financial statements
+position: 60
+display label: B21-B22
+observed range: B21-B22
+provenance: referenced_chunk">B21-B22</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB23-B24" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB23-B24
+title: Non‑controlling interest
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Non‑controlling interest
+position: 61
+display label: B23-B24
+observed range: B23-B24
+provenance: referenced_chunk">B23-B24</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB25-B27" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB25-B27
+title: Earnings per share
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Earnings per share
+position: 62
+display label: B25-B27
+observed range: B25-B27
+provenance: referenced_chunk">B25-B27</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB31-B40" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB31-B40
+title: Intangible assets
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Recognising particular assets acquired and liabilities assumed (application of paragraphs 10⁠–⁠13) &gt; Intangible assets
+position: 64
+display label: B31-B40
+observed range: B31-B40
+provenance: enclosing_section_expansion, top_similarity">B31-B40</th><th class="section-col ifrs3" data-section-key="ifrs3::IFRS03_gB44-B45" data-doc-key="ifrs3" data-is-target="0" title="IFRS 3
+section_id: IFRS03_gB44-B45
+title: Non‑controlling interest in an acquiree
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Measuring the fair value of particular identifiable assets and a non‑controlling interest in an acquiree (application of paragraphs 18 and 19) &gt; Non‑controlling interest in an acquiree
+position: 71
+display label: B44-B45
+observed range: B44-B45
+provenance: top_similarity, enclosing_section_expansion">B44-B45</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-order-question="0" data-order-missing="1:000:Q6.0:0000" data-has-missing="0" data-question-id="Q6.0"><td class="sticky-1 metadata-col metadata-q" title="question_id: Q6.0
+
+question:
+Comment déterminer si un investisseur détient le pouvoir sur une entité ?
+
+embedded question:
+Comment déterminer si un investisseur détient le pouvoir sur une entité ?">Q6.0</td><td class="sticky-2 metadata-col metadata-rec" title="target document chunks: 102
+expected ranges present: 6/6
+target documents: IFRS 10">102</td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_g5-18" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(261 70% 63.0%)" data-visible-bg="hsl(261 70% 63.0%)" title="IFRS 10
+section_id: IFRS10_g5-18
+title: Control
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Control
+
+retrieved chunks:
+- 5 (0.69) [secondary] provenance=top_similarity
+- 6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 7 (0.69) [secondary] provenance=top_similarity
+- 8 (0.00) [secondary] provenance=referenced_chunk
+- 9 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=referenced_chunk
+- 14 (0.00) [secondary] provenance=referenced_chunk
+- 15 (0.00) [secondary] provenance=referenced_chunk
+- 16 (0.00) [secondary] provenance=referenced_chunk
+- 17 (0.00) [secondary] provenance=referenced_chunk
+- 18 (0.00) [secondary] provenance=referenced_chunk
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion
+- E4 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 5 (0.69) [secondary] provenance=top_similarity
+- 6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 7 (0.69) [secondary] provenance=top_similarity
+- 8 (0.00) [secondary] provenance=referenced_chunk
+- 9 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=referenced_chunk
+- 14 (0.00) [secondary] provenance=referenced_chunk
+- 15 (0.00) [secondary] provenance=referenced_chunk
+- 16 (0.00) [secondary] provenance=referenced_chunk
+- 17 (0.00) [secondary] provenance=referenced_chunk
+- 18 (0.00) [secondary] provenance=referenced_chunk
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion
+- E4 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(261 70% 63.0%);"><span class="section-cell-score">0.69-0.69</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_10-12" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-retrieved-bg="hsl(261 70% 63.2%)" data-visible-bg="hsl(261 70% 63.2%)" title="IFRS 10
+section_id: ifrs10_10-12
+title: ifrs10_10-12
+lineage: ifrs10_10-12
+
+retrieved chunks:
+- 10 (0.00) [authoritative] provenance=referenced_chunk
+- 11 (0.00) [authoritative] provenance=referenced_chunk
+- 12 (0.69) [authoritative] provenance=top_similarity
+
+visible context chunks:
+- 10 (0.00) [authoritative] provenance=referenced_chunk
+- 11 (0.00) [authoritative] provenance=referenced_chunk
+- 12 (0.69) [authoritative] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" style="background-color: hsl(261 70% 63.2%);"><span class="section-cell-score">0.69</span><span class="section-cell-authority">🎯</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_g10-14" data-doc-key="ifrs10" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_gB2-B85" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.73&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.73&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(261 70% 62.0%)" data-visible-bg="hsl(261 70% 62.0%)" title="IFRS 10
+section_id: IFRS10_gB2-B85
+title: Assessing control
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control
+
+retrieved chunks:
+- B2 (0.73) [secondary] provenance=top_similarity
+- B3 (0.00) [secondary] provenance=referenced_chunk
+- B4 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5 (0.00) [secondary] provenance=enclosing_section_expansion
+- B6 (0.00) [secondary] provenance=enclosing_section_expansion
+- B7 (0.00) [secondary] provenance=enclosing_section_expansion
+- B8 (0.00) [secondary] provenance=enclosing_section_expansion
+- B9 (0.72) [secondary] provenance=top_similarity
+- B10 (0.00) [secondary] provenance=referenced_chunk
+- B55 (0.69) [secondary] provenance=top_similarity
+- B56 (0.00) [secondary] provenance=referenced_chunk
+- B57 (0.00) [secondary] provenance=referenced_chunk
+- B58 (0.00) [secondary] provenance=referenced_chunk
+- B59 (0.00) [secondary] provenance=enclosing_section_expansion
+- B60 (0.00) [secondary] provenance=enclosing_section_expansion
+- B61 (0.00) [secondary] provenance=enclosing_section_expansion
+- B62 (0.00) [secondary] provenance=enclosing_section_expansion
+- B63 (0.00) [secondary] provenance=enclosing_section_expansion
+- B64 (0.00) [secondary] provenance=enclosing_section_expansion
+- B65 (0.00) [secondary] provenance=enclosing_section_expansion
+- B66 (0.00) [secondary] provenance=enclosing_section_expansion
+- B67 (0.00) [secondary] provenance=enclosing_section_expansion
+- B68 (0.00) [secondary] provenance=enclosing_section_expansion
+- B69 (0.00) [secondary] provenance=enclosing_section_expansion
+- B70 (0.00) [secondary] provenance=enclosing_section_expansion
+- B71 (0.00) [secondary] provenance=enclosing_section_expansion
+- B72 (0.00) [secondary] provenance=enclosing_section_expansion
+- B73 (0.00) [secondary] provenance=enclosing_section_expansion
+- B74 (0.00) [secondary] provenance=enclosing_section_expansion
+- B75 (0.00) [secondary] provenance=enclosing_section_expansion
+- B76 (0.69) [secondary] provenance=top_similarity
+- B77 (0.00) [secondary] provenance=enclosing_section_expansion
+- B78 (0.00) [secondary] provenance=enclosing_section_expansion
+- B79 (0.00) [secondary] provenance=enclosing_section_expansion
+- B80 (0.00) [secondary] provenance=referenced_chunk
+- B81 (0.00) [secondary] provenance=referenced_chunk
+- B82 (0.00) [secondary] provenance=referenced_chunk
+- B83 (0.00) [secondary] provenance=referenced_chunk
+- B84 (0.00) [secondary] provenance=referenced_chunk
+- B85 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B2 (0.73) [secondary] provenance=top_similarity
+- B3 (0.00) [secondary] provenance=referenced_chunk
+- B4 (0.00) [secondary] provenance=enclosing_section_expansion
+- B5 (0.00) [secondary] provenance=enclosing_section_expansion
+- B6 (0.00) [secondary] provenance=enclosing_section_expansion
+- B7 (0.00) [secondary] provenance=enclosing_section_expansion
+- B8 (0.00) [secondary] provenance=enclosing_section_expansion
+- B9 (0.72) [secondary] provenance=top_similarity
+- B10 (0.00) [secondary] provenance=referenced_chunk
+- B55 (0.69) [secondary] provenance=top_similarity
+- B56 (0.00) [secondary] provenance=referenced_chunk
+- B57 (0.00) [secondary] provenance=referenced_chunk
+- B58 (0.00) [secondary] provenance=referenced_chunk
+- B59 (0.00) [secondary] provenance=enclosing_section_expansion
+- B60 (0.00) [secondary] provenance=enclosing_section_expansion
+- B61 (0.00) [secondary] provenance=enclosing_section_expansion
+- B62 (0.00) [secondary] provenance=enclosing_section_expansion
+- B63 (0.00) [secondary] provenance=enclosing_section_expansion
+- B64 (0.00) [secondary] provenance=enclosing_section_expansion
+- B65 (0.00) [secondary] provenance=enclosing_section_expansion
+- B66 (0.00) [secondary] provenance=enclosing_section_expansion
+- B67 (0.00) [secondary] provenance=enclosing_section_expansion
+- B68 (0.00) [secondary] provenance=enclosing_section_expansion
+- B69 (0.00) [secondary] provenance=enclosing_section_expansion
+- B70 (0.00) [secondary] provenance=enclosing_section_expansion
+- B71 (0.00) [secondary] provenance=enclosing_section_expansion
+- B72 (0.00) [secondary] provenance=enclosing_section_expansion
+- B73 (0.00) [secondary] provenance=enclosing_section_expansion
+- B74 (0.00) [secondary] provenance=enclosing_section_expansion
+- B75 (0.00) [secondary] provenance=enclosing_section_expansion
+- B76 (0.69) [secondary] provenance=top_similarity
+- B77 (0.00) [secondary] provenance=enclosing_section_expansion
+- B78 (0.00) [secondary] provenance=enclosing_section_expansion
+- B79 (0.00) [secondary] provenance=enclosing_section_expansion
+- B80 (0.00) [secondary] provenance=referenced_chunk
+- B81 (0.00) [secondary] provenance=referenced_chunk
+- B82 (0.00) [secondary] provenance=referenced_chunk
+- B83 (0.00) [secondary] provenance=referenced_chunk
+- B84 (0.00) [secondary] provenance=referenced_chunk
+- B85 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.73&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.73&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(261 70% 62.0%);"><span class="section-cell-score">0.69-0.73</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_gB9-B54" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.70&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.70&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(261 70% 62.0%)" data-visible-bg="hsl(261 70% 62.0%)" title="IFRS 10
+section_id: IFRS10_gB9-B54
+title: Power
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power
+
+retrieved chunks:
+- B13 (0.00) [secondary] provenance=referenced_chunk
+- B14 (0.69) [secondary] provenance=top_similarity
+- B15 (0.00) [secondary] provenance=referenced_chunk
+- B18 (0.70) [secondary] provenance=top_similarity
+- B19 (0.00) [secondary] provenance=referenced_chunk
+- B20 (0.00) [secondary] provenance=referenced_chunk
+- B21 (0.00) [secondary] provenance=referenced_chunk
+- B29 (0.00) [secondary] provenance=referenced_chunk
+- B30 (0.00) [secondary] provenance=referenced_chunk
+- B31 (0.00) [secondary] provenance=referenced_chunk
+- B32 (0.00) [secondary] provenance=referenced_chunk
+- B33 (0.00) [secondary] provenance=referenced_chunk
+- B34 (0.00) [secondary] provenance=referenced_chunk
+- B35 (0.00) [secondary] provenance=referenced_chunk
+- B37 (0.00) [secondary] provenance=referenced_chunk
+- B38 (0.00) [secondary] provenance=referenced_chunk
+- B39 (0.00) [secondary] provenance=referenced_chunk
+- B40 (0.00) [secondary] provenance=referenced_chunk
+- B41 (0.00) [secondary] provenance=referenced_chunk
+- B42 (0.00) [secondary] provenance=referenced_chunk
+- B43 (0.70) [secondary] provenance=top_similarity
+- B44 (0.00) [secondary] provenance=referenced_chunk
+- B45 (0.00) [secondary] provenance=referenced_chunk
+- B46 (0.00) [secondary] provenance=referenced_chunk
+- B51 (0.00) [secondary] provenance=referenced_chunk
+- B52 (0.00) [secondary] provenance=referenced_chunk
+- B53 (0.00) [secondary] provenance=referenced_chunk
+- B54 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B13 (0.00) [secondary] provenance=referenced_chunk
+- B14 (0.69) [secondary] provenance=top_similarity
+- B15 (0.00) [secondary] provenance=referenced_chunk
+- B18 (0.70) [secondary] provenance=top_similarity
+- B19 (0.00) [secondary] provenance=referenced_chunk
+- B20 (0.00) [secondary] provenance=referenced_chunk
+- B21 (0.00) [secondary] provenance=referenced_chunk
+- B29 (0.00) [secondary] provenance=referenced_chunk
+- B30 (0.00) [secondary] provenance=referenced_chunk
+- B31 (0.00) [secondary] provenance=referenced_chunk
+- B32 (0.00) [secondary] provenance=referenced_chunk
+- B33 (0.00) [secondary] provenance=referenced_chunk
+- B34 (0.00) [secondary] provenance=referenced_chunk
+- B35 (0.00) [secondary] provenance=referenced_chunk
+- B37 (0.00) [secondary] provenance=referenced_chunk
+- B38 (0.00) [secondary] provenance=referenced_chunk
+- B39 (0.00) [secondary] provenance=referenced_chunk
+- B40 (0.00) [secondary] provenance=referenced_chunk
+- B41 (0.00) [secondary] provenance=referenced_chunk
+- B42 (0.00) [secondary] provenance=referenced_chunk
+- B43 (0.70) [secondary] provenance=top_similarity
+- B44 (0.00) [secondary] provenance=referenced_chunk
+- B45 (0.00) [secondary] provenance=referenced_chunk
+- B46 (0.00) [secondary] provenance=referenced_chunk
+- B51 (0.00) [secondary] provenance=referenced_chunk
+- B52 (0.00) [secondary] provenance=referenced_chunk
+- B53 (0.00) [secondary] provenance=referenced_chunk
+- B54 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.70&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.69-0.70&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(261 70% 62.0%);"><span class="section-cell-score">0.69-0.70</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_B11-B12" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: ifrs10_B11-B12
+title: ifrs10_B11-B12
+lineage: ifrs10_B11-B12
+
+retrieved chunks:
+- B11 (0.00) [authoritative] provenance=referenced_chunk
+- B12 (0.00) [authoritative] provenance=referenced_chunk
+
+visible context chunks:
+- B11 (0.00) [authoritative] provenance=referenced_chunk
+- B12 (0.00) [authoritative] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🎯</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_gB11-B13" data-doc-key="ifrs10" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_gB14-B28" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: IFRS10_gB14-B28
+title: Rights that give an investor power over an investee
+lineage: International Financial Reporting Standard 10 Consolidated Financial Statements &gt; Appendices &gt; Appendix B Application guidance &gt; Assessing control &gt; Power &gt; Rights that give an investor power over an investee
+
+retrieved chunks:
+- B26 (0.00) [secondary] provenance=referenced_chunk
+- B27 (0.00) [secondary] provenance=referenced_chunk
+- B28 (0.00) [secondary] provenance=referenced_chunk
+- E12 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B26 (0.00) [secondary] provenance=referenced_chunk
+- B27 (0.00) [secondary] provenance=referenced_chunk
+- B28 (0.00) [secondary] provenance=referenced_chunk
+- E12 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_B16-B17" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: ifrs10_B16-B17
+title: ifrs10_B16-B17
+lineage: ifrs10_B16-B17
+
+retrieved chunks:
+- B16 (0.00) [authoritative] provenance=referenced_chunk
+- B17 (0.00) [authoritative] provenance=referenced_chunk
+
+visible context chunks:
+- B16 (0.00) [authoritative] provenance=referenced_chunk
+- B17 (0.00) [authoritative] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🎯</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_B22-B25" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: ifrs10_B22-B25
+title: ifrs10_B22-B25
+lineage: ifrs10_B22-B25
+
+retrieved chunks:
+- B22 (0.00) [authoritative] provenance=referenced_chunk
+- B23 (0.00) [authoritative] provenance=referenced_chunk
+- B24 (0.00) [authoritative] provenance=referenced_chunk
+- B25 (0.00) [authoritative] provenance=referenced_chunk
+
+visible context chunks:
+- B22 (0.00) [authoritative] provenance=referenced_chunk
+- B23 (0.00) [authoritative] provenance=referenced_chunk
+- B24 (0.00) [authoritative] provenance=referenced_chunk
+- B25 (0.00) [authoritative] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🎯</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_B36-B36" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: ifrs10_B36-B36
+title: ifrs10_B36-B36
+lineage: ifrs10_B36-B36
+
+retrieved chunks:
+- B36 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B36 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs10" data-section-key="ifrs10::IFRS10_gB36-B37" data-doc-key="ifrs10" data-has-retrieved="0" data-has-visible="0"></td><td class="section-cell ifrs10" data-section-key="ifrs10::ifrs10_B47-B50" data-doc-key="ifrs10" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" data-retrieved-bg="hsl(261 35% 97.5%)" data-visible-bg="hsl(261 35% 97.5%)" title="IFRS 10
+section_id: ifrs10_B47-B50
+title: ifrs10_B47-B50
+lineage: ifrs10_B47-B50
+
+retrieved chunks:
+- B47 (0.00) [authoritative] provenance=referenced_chunk
+- B48 (0.00) [authoritative] provenance=referenced_chunk
+- B49 (0.00) [authoritative] provenance=referenced_chunk
+- B50 (0.00) [authoritative] provenance=referenced_chunk
+
+visible context chunks:
+- B47 (0.00) [authoritative] provenance=referenced_chunk
+- B48 (0.00) [authoritative] provenance=referenced_chunk
+- B49 (0.00) [authoritative] provenance=referenced_chunk
+- B50 (0.00) [authoritative] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🎯&lt;/span&gt;" style="background-color: hsl(261 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🎯</span></td><td class="section-cell ias28" data-section-key="ias28::IAS28_g5-9" data-doc-key="ias28" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(141 70% 68.8%)" data-visible-bg="hsl(141 70% 68.8%)" title="IAS 28
+section_id: IAS28_g5-9
+title: Significant influence
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Significant influence
+
+retrieved chunks:
+- 5 (0.62) [secondary] provenance=top_similarity
+- 6 (0.64) [secondary] provenance=top_similarity
+- 7 (0.61) [secondary] provenance=top_similarity
+- 8 (0.00) [secondary] provenance=enclosing_section_expansion
+- 9 (0.61) [secondary] provenance=top_similarity
+- E1 (0.58) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 5 (0.62) [secondary] provenance=top_similarity
+- 6 (0.64) [secondary] provenance=top_similarity
+- 7 (0.61) [secondary] provenance=top_similarity
+- 8 (0.00) [secondary] provenance=enclosing_section_expansion
+- 9 (0.61) [secondary] provenance=top_similarity
+- E1 (0.58) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(141 70% 68.8%);"><span class="section-cell-score">0.58-0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias28" data-section-key="ias28::IAS28_g10-15" data-doc-key="ias28" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(141 70% 74.8%)" data-visible-bg="hsl(141 70% 74.8%)" title="IAS 28
+section_id: IAS28_g10-15
+title: Equity method
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Equity method
+
+retrieved chunks:
+- 10 (0.00) [secondary] provenance=enclosing_section_expansion
+- 11 (0.59) [secondary] provenance=top_similarity
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=enclosing_section_expansion
+- 14 (0.00) [secondary] provenance=enclosing_section_expansion
+- 14A (0.00) [secondary] provenance=enclosing_section_expansion
+- 15 (0.00) [secondary] provenance=enclosing_section_expansion
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 10 (0.00) [secondary] provenance=enclosing_section_expansion
+- 11 (0.59) [secondary] provenance=top_similarity
+- 12 (0.00) [secondary] provenance=enclosing_section_expansion
+- 13 (0.00) [secondary] provenance=enclosing_section_expansion
+- 14 (0.00) [secondary] provenance=enclosing_section_expansion
+- 14A (0.00) [secondary] provenance=enclosing_section_expansion
+- 15 (0.00) [secondary] provenance=enclosing_section_expansion
+- E2 (0.00) [secondary] provenance=enclosing_section_expansion
+- E3 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.59&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(141 70% 74.8%);"><span class="section-cell-score">0.59</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ias28" data-section-key="ias28::IAS28_g16-43" data-doc-key="ias28" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(141 70% 69.0%)" data-visible-bg="hsl(141 70% 69.0%)" title="IAS 28
+section_id: IAS28_g16-43
+title: Application of the equity method
+lineage: International Accounting Standard 28 Investments in Associates and Joint Ventures &gt; Application of the equity method
+
+retrieved chunks:
+- 16 (0.58) [secondary] provenance=top_similarity
+- 17 (0.00) [secondary] provenance=referenced_chunk
+- 18 (0.62) [secondary] provenance=top_similarity
+- 19 (0.64) [secondary] provenance=top_similarity
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+- 21 (0.00) [secondary] provenance=enclosing_section_expansion
+- 22 (0.00) [secondary] provenance=enclosing_section_expansion
+- 23 (0.00) [secondary] provenance=enclosing_section_expansion
+- 24 (0.00) [secondary] provenance=enclosing_section_expansion
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion
+- 26 (0.00) [secondary] provenance=enclosing_section_expansion
+- 27 (0.00) [secondary] provenance=enclosing_section_expansion
+- 28 (0.00) [secondary] provenance=enclosing_section_expansion
+- 29 (0.00) [secondary] provenance=enclosing_section_expansion
+- 30 (0.00) [secondary] provenance=enclosing_section_expansion
+- 31 (0.00) [secondary] provenance=enclosing_section_expansion
+- 31A (0.00) [secondary] provenance=enclosing_section_expansion
+- 31B (0.00) [secondary] provenance=enclosing_section_expansion
+- 32 (0.00) [secondary] provenance=enclosing_section_expansion
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion
+- 34 (0.00) [secondary] provenance=enclosing_section_expansion
+- 35 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36A (0.59) [secondary] provenance=top_similarity
+- 37 (0.00) [secondary] provenance=enclosing_section_expansion
+- 38 (0.00) [secondary] provenance=enclosing_section_expansion
+- 39 (0.00) [secondary] provenance=enclosing_section_expansion
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41A (0.00) [secondary] provenance=enclosing_section_expansion
+- 41B (0.00) [secondary] provenance=enclosing_section_expansion
+- 41C (0.00) [secondary] provenance=enclosing_section_expansion
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- E4 (0.00) [secondary] provenance=enclosing_section_expansion
+- E5 (0.00) [secondary] provenance=enclosing_section_expansion
+- E6 (0.00) [secondary] provenance=enclosing_section_expansion
+- E7 (0.00) [secondary] provenance=enclosing_section_expansion
+- E8 (0.00) [secondary] provenance=enclosing_section_expansion
+- E9 (0.00) [secondary] provenance=enclosing_section_expansion
+- E10 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 16 (0.58) [secondary] provenance=top_similarity
+- 17 (0.00) [secondary] provenance=referenced_chunk
+- 18 (0.62) [secondary] provenance=top_similarity
+- 19 (0.64) [secondary] provenance=top_similarity
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+- 21 (0.00) [secondary] provenance=enclosing_section_expansion
+- 22 (0.00) [secondary] provenance=enclosing_section_expansion
+- 23 (0.00) [secondary] provenance=enclosing_section_expansion
+- 24 (0.00) [secondary] provenance=enclosing_section_expansion
+- 25 (0.00) [secondary] provenance=enclosing_section_expansion
+- 26 (0.00) [secondary] provenance=enclosing_section_expansion
+- 27 (0.00) [secondary] provenance=enclosing_section_expansion
+- 28 (0.00) [secondary] provenance=enclosing_section_expansion
+- 29 (0.00) [secondary] provenance=enclosing_section_expansion
+- 30 (0.00) [secondary] provenance=enclosing_section_expansion
+- 31 (0.00) [secondary] provenance=enclosing_section_expansion
+- 31A (0.00) [secondary] provenance=enclosing_section_expansion
+- 31B (0.00) [secondary] provenance=enclosing_section_expansion
+- 32 (0.00) [secondary] provenance=enclosing_section_expansion
+- 33 (0.00) [secondary] provenance=enclosing_section_expansion
+- 34 (0.00) [secondary] provenance=enclosing_section_expansion
+- 35 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36 (0.00) [secondary] provenance=enclosing_section_expansion
+- 36A (0.59) [secondary] provenance=top_similarity
+- 37 (0.00) [secondary] provenance=enclosing_section_expansion
+- 38 (0.00) [secondary] provenance=enclosing_section_expansion
+- 39 (0.00) [secondary] provenance=enclosing_section_expansion
+- 40 (0.00) [secondary] provenance=enclosing_section_expansion
+- 41A (0.00) [secondary] provenance=enclosing_section_expansion
+- 41B (0.00) [secondary] provenance=enclosing_section_expansion
+- 41C (0.00) [secondary] provenance=enclosing_section_expansion
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- E4 (0.00) [secondary] provenance=enclosing_section_expansion
+- E5 (0.00) [secondary] provenance=enclosing_section_expansion
+- E6 (0.00) [secondary] provenance=enclosing_section_expansion
+- E7 (0.00) [secondary] provenance=enclosing_section_expansion
+- E8 (0.00) [secondary] provenance=enclosing_section_expansion
+- E9 (0.00) [secondary] provenance=enclosing_section_expansion
+- E10 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.58-0.64&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(141 70% 69.0%);"><span class="section-cell-score">0.58-0.64</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_g3-3" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_g3-3
+title: Identifying a business combination
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Identifying a business combination
+
+retrieved chunks:
+- 3 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- 3 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_g6-7" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 79.2%)" data-visible-bg="hsl(289 70% 79.2%)" title="IFRS 3
+section_id: IFRS03_g6-7
+title: Identifying the acquirer
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Identifying the acquirer
+
+retrieved chunks:
+- 6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 7 (0.00) [secondary] provenance=enclosing_section_expansion
+- E7 (0.55) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 6 (0.00) [secondary] provenance=enclosing_section_expansion
+- 7 (0.00) [secondary] provenance=enclosing_section_expansion
+- E7 (0.55) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 79.2%);"><span class="section-cell-score">0.55</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_g18-20" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 78.8%)" data-visible-bg="hsl(289 70% 78.8%)" title="IFRS 3
+section_id: IFRS03_g18-20
+title: Measurement principle
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Recognising and measuring the identifiable assets acquired, the liabilities assumed and any non‑controlling interest in the acquiree &gt; Measurement principle
+
+retrieved chunks:
+- 18 (0.00) [secondary] provenance=enclosing_section_expansion
+- 19 (0.55) [secondary] provenance=top_similarity
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 18 (0.00) [secondary] provenance=enclosing_section_expansion
+- 19 (0.55) [secondary] provenance=top_similarity
+- 20 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 78.8%);"><span class="section-cell-score">0.55</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_g41-42A" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 80.0%)" data-visible-bg="hsl(289 70% 80.0%)" title="IFRS 3
+section_id: IFRS03_g41-42A
+title: A business combination achieved in stages
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Additional guidance for applying the acquisition method to particular types of business combinations &gt; A business combination achieved in stages
+
+retrieved chunks:
+- 41 (0.54) [secondary] provenance=top_similarity
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 42A (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- 41 (0.54) [secondary] provenance=top_similarity
+- 42 (0.00) [secondary] provenance=enclosing_section_expansion
+- 42A (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 80.0%);"><span class="section-cell-score">0.54</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_g43-44" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.53&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.53&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 80.8%)" data-visible-bg="hsl(289 70% 80.8%)" title="IFRS 3
+section_id: IFRS03_g43-44
+title: A business combination achieved without the transfer of consideration
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; The acquisition method &gt; Additional guidance for applying the acquisition method to particular types of business combinations &gt; A business combination achieved without the transfer of consideration
+
+retrieved chunks:
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- 44 (0.53) [secondary] provenance=top_similarity
+
+visible context chunks:
+- 43 (0.00) [secondary] provenance=enclosing_section_expansion
+- 44 (0.53) [secondary] provenance=top_similarity
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.53&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.53&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 80.8%);"><span class="section-cell-score">0.53</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB1-B4" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.56&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.56&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 77.8%)" data-visible-bg="hsl(289 70% 77.8%)" title="IFRS 3
+section_id: IFRS03_gB1-B4
+title: Business combinations of entities under common control (application of paragraph 2(c))
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Business combinations of entities under common control (application of paragraph 2(c))
+
+retrieved chunks:
+- B1 (0.00) [secondary] provenance=enclosing_section_expansion
+- B2 (0.56) [secondary] provenance=top_similarity
+- B3 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4 (0.00) [secondary] provenance=enclosing_section_expansion
+- E11 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B1 (0.00) [secondary] provenance=enclosing_section_expansion
+- B2 (0.56) [secondary] provenance=top_similarity
+- B3 (0.00) [secondary] provenance=enclosing_section_expansion
+- B4 (0.00) [secondary] provenance=enclosing_section_expansion
+- E11 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.56&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.56&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 77.8%);"><span class="section-cell-score">0.56</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB7A-B7C" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 79.7%)" data-visible-bg="hsl(289 70% 79.7%)" title="IFRS 3
+section_id: IFRS03_gB7A-B7C
+title: Optional test to identify concentration of fair value
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Definition of a business (application of paragraph 3) &gt; Optional test to identify concentration of fair value
+
+retrieved chunks:
+- B7A (0.00) [secondary] provenance=enclosing_section_expansion
+- B7B (0.54) [secondary] provenance=top_similarity
+- B7C (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B7A (0.00) [secondary] provenance=enclosing_section_expansion
+- B7B (0.54) [secondary] provenance=top_similarity
+- B7C (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 79.7%);"><span class="section-cell-score">0.54</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB13-B18" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.61&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.61&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 71.9%)" data-visible-bg="hsl(289 70% 71.9%)" title="IFRS 3
+section_id: IFRS03_gB13-B18
+title: Identifying the acquirer (application of paragraphs 6 and 7)
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Identifying the acquirer (application of paragraphs 6 and 7)
+
+retrieved chunks:
+- B13 (0.00) [secondary] provenance=referenced_chunk
+- B14 (0.00) [secondary] provenance=referenced_chunk
+- B15 (0.61) [secondary] provenance=top_similarity
+- B16 (0.00) [secondary] provenance=referenced_chunk
+- B17 (0.00) [secondary] provenance=referenced_chunk
+- B18 (0.54) [secondary] provenance=top_similarity
+- E12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B13 (0.00) [secondary] provenance=referenced_chunk
+- B14 (0.00) [secondary] provenance=referenced_chunk
+- B15 (0.61) [secondary] provenance=top_similarity
+- B16 (0.00) [secondary] provenance=referenced_chunk
+- B17 (0.00) [secondary] provenance=referenced_chunk
+- B18 (0.54) [secondary] provenance=top_similarity
+- E12 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E13 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.61&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.54-0.61&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 71.9%);"><span class="section-cell-score">0.54-0.61</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB19-B27" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_gB19-B27
+title: Reverse acquisitions
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions
+
+retrieved chunks:
+- B19 (0.00) [secondary] provenance=referenced_chunk
+- E14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E15 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+visible context chunks:
+- B19 (0.00) [secondary] provenance=referenced_chunk
+- E14 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+- E15 (0.00) [secondary] provenance=enclosing_section_expansion_for_referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB20-B20" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_gB20-B20
+title: Measuring the consideration transferred
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Measuring the consideration transferred
+
+retrieved chunks:
+- B20 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B20 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB21-B22" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_gB21-B22
+title: Preparation and presentation of consolidated financial statements
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Preparation and presentation of consolidated financial statements
+
+retrieved chunks:
+- B21 (0.00) [secondary] provenance=referenced_chunk
+- B22 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B21 (0.00) [secondary] provenance=referenced_chunk
+- B22 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB23-B24" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_gB23-B24
+title: Non‑controlling interest
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Non‑controlling interest
+
+retrieved chunks:
+- B23 (0.00) [secondary] provenance=referenced_chunk
+- B24 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B23 (0.00) [secondary] provenance=referenced_chunk
+- B24 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB25-B27" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 35% 97.5%)" data-visible-bg="hsl(289 35% 97.5%)" title="IFRS 3
+section_id: IFRS03_gB25-B27
+title: Earnings per share
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Reverse acquisitions &gt; Earnings per share
+
+retrieved chunks:
+- B25 (0.00) [secondary] provenance=referenced_chunk
+- B26 (0.00) [secondary] provenance=referenced_chunk
+- B27 (0.00) [secondary] provenance=referenced_chunk
+
+visible context chunks:
+- B25 (0.00) [secondary] provenance=referenced_chunk
+- B26 (0.00) [secondary] provenance=referenced_chunk
+- B27 (0.00) [secondary] provenance=referenced_chunk
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.00&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 35% 97.5%);"><span class="section-cell-score">0.00</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB31-B40" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 78.6%)" data-visible-bg="hsl(289 70% 78.6%)" title="IFRS 3
+section_id: IFRS03_gB31-B40
+title: Intangible assets
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Recognising particular assets acquired and liabilities assumed (application of paragraphs 10⁠–⁠13) &gt; Intangible assets
+
+retrieved chunks:
+- B31 (0.00) [secondary] provenance=enclosing_section_expansion
+- B32 (0.55) [secondary] provenance=top_similarity
+- B33 (0.00) [secondary] provenance=enclosing_section_expansion
+- B34 (0.00) [secondary] provenance=enclosing_section_expansion
+- B35 (0.00) [secondary] provenance=enclosing_section_expansion
+- B36 (0.00) [secondary] provenance=enclosing_section_expansion
+- B37 (0.00) [secondary] provenance=enclosing_section_expansion
+- B38 (0.00) [secondary] provenance=enclosing_section_expansion
+- B39 (0.00) [secondary] provenance=enclosing_section_expansion
+- B40 (0.00) [secondary] provenance=enclosing_section_expansion
+- E16 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B31 (0.00) [secondary] provenance=enclosing_section_expansion
+- B32 (0.55) [secondary] provenance=top_similarity
+- B33 (0.00) [secondary] provenance=enclosing_section_expansion
+- B34 (0.00) [secondary] provenance=enclosing_section_expansion
+- B35 (0.00) [secondary] provenance=enclosing_section_expansion
+- B36 (0.00) [secondary] provenance=enclosing_section_expansion
+- B37 (0.00) [secondary] provenance=enclosing_section_expansion
+- B38 (0.00) [secondary] provenance=enclosing_section_expansion
+- B39 (0.00) [secondary] provenance=enclosing_section_expansion
+- B40 (0.00) [secondary] provenance=enclosing_section_expansion
+- E16 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.55&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 78.6%);"><span class="section-cell-score">0.55</span><span class="section-cell-authority">🔎</span></td><td class="section-cell ifrs3" data-section-key="ifrs3::IFRS03_gB44-B45" data-doc-key="ifrs3" data-has-retrieved="1" data-has-visible="1" data-retrieved-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.57&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-visible-text="&lt;span class=&quot;section-cell-score&quot;&gt;0.57&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" data-retrieved-bg="hsl(289 70% 76.8%)" data-visible-bg="hsl(289 70% 76.8%)" title="IFRS 3
+section_id: IFRS03_gB44-B45
+title: Non‑controlling interest in an acquiree
+lineage: International Financial Reporting Standard 3 Business Combinations &gt; Appendices &gt; Appendix B Application guidance &gt; Measuring the fair value of particular identifiable assets and a non‑controlling interest in an acquiree (application of paragraphs 18 and 19) &gt; Non‑controlling interest in an acquiree
+
+retrieved chunks:
+- B44 (0.57) [secondary] provenance=top_similarity
+- B45 (0.00) [secondary] provenance=enclosing_section_expansion
+
+visible context chunks:
+- B44 (0.57) [secondary] provenance=top_similarity
+- B45 (0.00) [secondary] provenance=enclosing_section_expansion
+
+dropped chunks:
+(none)
+
+retrieved summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.57&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;
+visible summary: &lt;span class=&quot;section-cell-score&quot;&gt;0.57&lt;/span&gt;&lt;span class=&quot;section-cell-authority&quot;&gt;🔎&lt;/span&gt;" style="background-color: hsl(289 70% 76.8%);"><span class="section-cell-score">0.57</span><span class="section-cell-authority">🔎</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  
+<script>
+  const tableBody = document.querySelector('#matrix-table tbody');
+  const sortButtons = document.querySelectorAll('button[data-sort-mode]');
+  const missingOnlyCheckbox = document.getElementById('missing-only');
+  const hideEmptyCheckbox = document.getElementById('hide-empty-columns');
+  const docToggles = document.querySelectorAll('.doc-toggle');
+  const sectionKeys = ["ifrs10::IFRS10_g5-18", "ifrs10::ifrs10_10-12", "ifrs10::IFRS10_g10-14", "ifrs10::IFRS10_gB2-B85", "ifrs10::IFRS10_gB9-B54", "ifrs10::ifrs10_B11-B12", "ifrs10::IFRS10_gB11-B13", "ifrs10::IFRS10_gB14-B28", "ifrs10::ifrs10_B16-B17", "ifrs10::ifrs10_B22-B25", "ifrs10::ifrs10_B36-B36", "ifrs10::IFRS10_gB36-B37", "ifrs10::ifrs10_B47-B50", "ias28::IAS28_g5-9", "ias28::IAS28_g10-15", "ias28::IAS28_g16-43", "ifrs3::IFRS03_g3-3", "ifrs3::IFRS03_g6-7", "ifrs3::IFRS03_g18-20", "ifrs3::IFRS03_g41-42A", "ifrs3::IFRS03_g43-44", "ifrs3::IFRS03_gB1-B4", "ifrs3::IFRS03_gB7A-B7C", "ifrs3::IFRS03_gB13-B18", "ifrs3::IFRS03_gB19-B27", "ifrs3::IFRS03_gB20-B20", "ifrs3::IFRS03_gB21-B22", "ifrs3::IFRS03_gB23-B24", "ifrs3::IFRS03_gB25-B27", "ifrs3::IFRS03_gB31-B40", "ifrs3::IFRS03_gB44-B45"];
+  let currentSortMode = 'question';
+
+  function visibleRows() {
+    return Array.from(tableBody.querySelectorAll('tr')).filter((row) => row.style.display !== 'none');
+  }
+  function sortRows(mode) {
+    currentSortMode = mode;
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    rows.sort((left, right) => {
+      const leftValue = left.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      const rightValue = right.dataset[mode === 'question' ? 'orderQuestion' : 'orderMissing'];
+      if (mode === 'question') { return Number(leftValue) - Number(rightValue); }
+      return leftValue.localeCompare(rightValue);
+    });
+    rows.forEach((row) => tableBody.appendChild(row));
+  }
+  function applyRowVisibility() {
+    const missingOnly = missingOnlyCheckbox.checked;
+    Array.from(tableBody.querySelectorAll('tr')).forEach((row) => {
+      const hasMissing = row.dataset.hasMissing === '1';
+      row.style.display = (!missingOnly || hasMissing) ? '' : 'none';
+    });
+  }
+  function updateSectionVisibility() {
+    const enabledDocs = new Set(Array.from(docToggles).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.dataset.docKey));
+    const rows = visibleRows();
+    const hideEmpty = hideEmptyCheckbox.checked;
+    const docKeys = ["ifrs10", "ias28", "ifrs3"];
+    const visibleCounts = Object.fromEntries(docKeys.map((docKey) => [docKey, 0]));
+    sectionKeys.forEach((sectionKey) => {
+      const header = document.querySelector(`th[data-section-key="${sectionKey}"]`);
+      if (!header) { return; }
+      const docKey = header.dataset.docKey;
+      let visible = enabledDocs.has(docKey);
+      if (visible && hideEmpty) {
+        visible = header.dataset.isTarget === '1' || rows.some((row) => {
+          const cell = row.querySelector(`td[data-section-key="${sectionKey}"]`);
+          return cell && cell.dataset.hasRetrieved === '1';
+        });
+      }
+      header.style.display = visible ? '' : 'none';
+      document.querySelectorAll(`td[data-section-key="${sectionKey}"]`).forEach((cell) => { cell.style.display = visible ? '' : 'none'; });
+      if (visible) { visibleCounts[docKey] += 1; }
+    });
+    docKeys.forEach((docKey) => {
+      const groupHeader = document.getElementById(`group-header-${docKey}`);
+      if (!groupHeader) { return; }
+      const visibleCount = visibleCounts[docKey];
+      groupHeader.style.display = visibleCount > 0 ? '' : 'none';
+      groupHeader.colSpan = Math.max(visibleCount, 1);
+    });
+  }
+  function applyAll() {
+    applyRowVisibility();
+    sortRows(currentSortMode);
+    updateSectionVisibility();
+  }
+  sortButtons.forEach((button) => button.addEventListener('click', () => { sortRows(button.dataset.sortMode); updateSectionVisibility(); }));
+  missingOnlyCheckbox.addEventListener('change', applyAll);
+  hideEmptyCheckbox.addEventListener('change', updateSectionVisibility);
+  docToggles.forEach((checkbox) => checkbox.addEventListener('change', updateSectionVisibility));
+  applyAll();
+</script>
+
+</body>
+</html>

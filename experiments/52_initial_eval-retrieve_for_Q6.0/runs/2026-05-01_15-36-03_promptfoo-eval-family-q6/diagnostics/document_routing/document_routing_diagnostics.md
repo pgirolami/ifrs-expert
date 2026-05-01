@@ -1,0 +1,6 @@
+This table shows every document retrieved for each question. The target documents from the family file appear first after the question and total columns, and the remaining retrieved documents are ordered by how often they were retrieved across questions.
+
+| Question | Total | IFRS 10 | IAS 24 | IAS 28 | IFRS 3 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Q6.0 | 4 | <span style="display:block; background-color: #d4edda; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.73 / <strong>1</strong></span> | <span style="display:block; background-color: #ecdeda; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.62 / <strong>3</strong></span> | <span style="display:block; background-color: #e0e6da; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.64 / <strong>2</strong></span> | <span style="display:block; background-color: #f8d7da; padding: 0.1rem 0.35rem; border-radius: 0.25rem; text-align: center;">0.61 / <strong>4</strong></span> |
+|  | Total | 1 (0.73-0.73) | 1 (0.62-0.62) | 1 (0.64-0.64) | 1 (0.61-0.61) |
