@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Classification IFRS 9 d’un actif financier au regard du critère des flux de trésorerie contractuels constitués uniquement de remboursements de principal et de paiements d’intérêts",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule and selected IFRS 9 as the sole governing lineage because it directly governs the classification and subsequent measurement of financial assets based on business model and solely payments of principal and interest characteristics.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low: the context contains only IFRS 9 and it directly addresses the classification question."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.4"],
+        "reason": "These paragraphs directly govern the classification and subsequent measurement categories for financial assets, including assets with solely payments of principal and interest cash flows."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8A"],
+        "reason": "These paragraphs clarify what principal and interest mean and how the solely payments of principal and interest test is assessed."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.9", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14"],
+        "reason": "These paragraphs constrain and illustrate when contractual features do or do not remain consistent with a basic lending arrangement."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.16A", "B4.1.17", "B4.1.20", "B4.1.21", "B4.1.23", "B4.1.24", "B4.1.26"],
+        "reason": "These paragraphs add relevant clarifications for non-recourse and contractually linked instruments when assessing the cash flow characteristics."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["4.1.5"],
+        "reason": "This paragraph provides an alternative route to the same fair value through profit or loss measurement basis through the fair value option."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["E13", "E14"],
+        "reason": "These agenda decisions concern the separate equity instrument election context and are not needed to identify the peer approaches for a principal-and-interest debt-type asset."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Debt-type financial assets with solely payments of principal and interest held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Debt-type financial assets with solely payments of principal and interest held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets measured at fair value through profit or loss, including assets outside the other categories or assets designated to avoid an accounting mismatch",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "4.1.5"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level measurement category for financial assets whose cash flows are solely payments of principal and interest when the business model is to hold assets to collect those cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a separate top-level measurement category for financial assets whose cash flows are solely payments of principal and interest when the business model is both collecting and selling."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual and also optionally designated top-level measurement category for financial assets."
+    }
+  ]
+}

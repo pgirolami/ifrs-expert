@@ -1,0 +1,74 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Qualification IFRS 9 des flux de trésorerie contractuels d’un actif financier comme étant uniquement des remboursements de principal et d’intérêts, et incidence sur la catégorie de mesure",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because the question concerns the SPPI test and classification of a financial asset, and under the precedence rule IFRS governs this issue directly with no higher-precedence overlapping document in the provided context.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question maps directly to IFRS 9 paragraphs on contractual cash flow characteristics and subsequent measurement categories."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.11", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.18"],
+        "reason": "These paragraphs directly define the SPPI condition, explain that it corresponds to a basic lending arrangement, and link that condition to the financial asset classification outcomes."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets measured at amortised cost when the business model is hold to collect and the contractual cash flows are solely payments of principal and interest",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.1", "4.1.2", "4.1.3", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets measured at fair value through other comprehensive income when the business model is both collect and sell and the contractual cash flows are solely payments of principal and interest",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.1", "4.1.2A", "4.1.3", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets measured at fair value through profit or loss when they do not meet the amortised cost or fair value through other comprehensive income conditions, including failure of the SPPI condition",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.16"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats this as a distinct top-level measurement category when the SPPI condition is met and the business model is to hold assets to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 treats this as a distinct top-level measurement category when the SPPI condition is met and the business model is achieved by both collecting contractual cash flows and selling financial assets."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 treats this as the residual top-level measurement category, including where contractual cash flows are not solely payments of principal and interest."
+    }
+  ]
+}

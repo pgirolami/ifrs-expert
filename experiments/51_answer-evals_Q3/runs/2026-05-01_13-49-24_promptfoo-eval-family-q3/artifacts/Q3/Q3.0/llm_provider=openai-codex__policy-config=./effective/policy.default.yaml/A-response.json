@@ -1,0 +1,111 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination du critère SPPI (« solely payments of principal and interest ») pour la classification des actifs financiers selon IFRS 9",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 as the single governing lineage because the question concerns the classification eligibility of financial assets based on contractual cash flow characteristics, and under the strict precedence rule IFRS supersedes overlapping legacy IAS guidance.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty, because the cited IFRS 9 paragraphs directly define principal, interest, and the SPPI assessment used for classification."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "4.1.4"],
+        "reason": "These paragraphs directly govern how SPPI affects the classification and measurement basis of financial assets."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.7", "B4.1.7A", "B4.1.7B", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.9A", "B4.1.9B", "B4.1.9C", "B4.1.9D", "B4.1.9E"],
+        "reason": "These paragraphs clarify the meaning of a basic lending arrangement, principal, interest and time value of money in the SPPI test."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14"],
+        "reason": "These paragraphs illustrate how contingent, prepayment, extension and other contractual features affect the SPPI assessment."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "B4.1.19"],
+        "reason": "These paragraphs constrain the SPPI analysis for investments in specific assets, non-recourse features, and de minimis or non-genuine clauses."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.20", "B4.1.20A", "B4.1.21", "B4.1.22", "B4.1.23", "B4.1.24", "B4.1.25", "B4.1.26"],
+        "reason": "These paragraphs provide a distinct SPPI assessment framework for contractually linked instruments and tranches."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["3.2.1", "3.2.2", "3.2.3", "3.2.4", "3.2.5", "3.2.6", "3.2.7", "3.2.8", "3.2.9", "3.2.10", "3.2.11", "3.2.12", "3.2.13", "3.2.14", "3.2.15", "3.2.16", "3.2.17", "3.2.18", "3.2.19", "3.2.20", "3.2.21", "3.2.22", "3.2.23", "E7", "E8", "E9", "E10", "E11", "E12", "B3.2.10", "B3.2.11"],
+        "reason": "These derecognition requirements are topically related to financial assets but do not help identify peer classification approaches for the SPPI issue."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["4.1.5"],
+        "reason": "The fair value option is a separate designation mechanism and not needed to identify the peer approaches arising from the SPPI question itself."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["E13", "E14", "E30"],
+        "reason": "These agenda decisions address other classification or presentation fact patterns and are not necessary to identify the peer top-level approaches here."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and held in a hold-to-collect business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.7", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and held in a collect-and-sell business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that do not meet the solely payments of principal and interest condition or otherwise fall outside the two SPPI-based categories",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.16", "B4.1.21", "B4.1.26"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level measurement approach for financial assets that meet the SPPI condition and are held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a top-level measurement approach for financial assets that meet the SPPI condition and are held both to collect cash flows and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the top-level measurement approach for financial assets that fail the SPPI condition or are otherwise not within the two SPPI-based categories."
+    }
+  ]
+}

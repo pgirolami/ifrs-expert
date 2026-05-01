@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Définition du critère SPPI (« solely payments of principal and interest ») pour la classification des actifs financiers selon IFRS 9",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the stated precedence rule by selecting the IFRS standard that directly governs the SPPI classification criterion for financial assets; no lower-precedence overlapping governing document addresses the same eligibility question more directly.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty: IFRS 9 directly contains the SPPI test and the related classification outcomes for financial assets."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.7B", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.9A", "B4.1.9B", "B4.1.9C", "B4.1.9D", "B4.1.9E", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "4.1.4"],
+        "reason": "These paragraphs directly define principal and interest, explain the SPPI assessment, and link that assessment to the classification categories for financial assets."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias32",
+        "references": ["11", "13"],
+        "reason": "These paragraphs support the analysis by defining a financial asset as a contractual right and clarifying the contractual nature of financial instruments."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifric12",
+        "references": ["16", "23", "24", "25"],
+        "reason": "This authority addresses service concession consideration and only incidentally refers to IFRS 9 measurement categories rather than the SPPI definition itself."
+      },
+      {
+        "document": "ias19",
+        "references": ["63", "114", "116", "125"],
+        "reason": "This authority relates to employee benefits and plan assets, not the SPPI classification test for financial assets."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["40", "58"],
+        "reason": "This authority concerns contingent consideration in business combinations and is not relevant to identifying peer approaches for the SPPI criterion."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and that are held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.7B", "B4.1.8", "B4.1.8A", "B4.1.9A", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and that are held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.7B", "B4.1.8", "B4.1.8A", "B4.1.9A", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that do not meet the SPPI condition or do not fall within an eligible business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level classification outcome for financial assets that meet the SPPI condition and are held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a top-level classification outcome for financial assets that meet the SPPI condition and are held both to collect cash flows and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual top-level classification outcome when the SPPI condition is not met or the asset is not within an eligible business model."
+    }
+  ]
+}

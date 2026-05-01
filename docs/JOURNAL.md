@@ -283,5 +283,28 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - Added provenance tags so diagnostics can distinguish seed similarity, reference expansion, and section fan-out
         - Kept the expansion bounded with policy-controlled depth and per-seed / per-document caps
     - [Experiment 48](../experiments/48_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion/EXPERIMENTS.md) shows that with level 1 cross-reference expansion and (by increasing chunk retrieval to k=10 per document) we achieve 100% recall on documents & target chunks across Q1, Q2, Q3
-    - Re-ingest the IFRS corpus so the database contains all cross-references
-        - [Experiment 49](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/EXPERIMENTS.md) shows that the ingestion didn't't produce a regression on Q1, Q2 & Q3 retrieval evals
+
+### 2026-04-30
+- Cross-reference expansion implementation continued
+    - Section references now retrieve only top-k chunks in section rather than all chunks in section, to decrease size of prompts
+    - Ingest non-annotations cross-reference in IFRS: they are materialized by links
+- Added clearer provenance of chunks to help diagnose why chunks are included in the context
+- Update pre-commit hook to run retrieval evals on one question in each of Q1, Q2 and Q3. This will make it easier to spot retrieval regressions
+
+### 2026-05-01
+- Re-ingest the IFRS corpus so the database contains all cross-references
+    - Check this ingestion didn't produce a regression on Q1, Q2 & Q3 retrieval evals
+        - [Experiment 49](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/EXPERIMENTS.md)
+- Update the target chunks diagnostics to clean up the table headers that could be misleading ([example](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html))
+
+- Ran answer eval on Q2 & Q3 and solved minor issues
+    - [Experiment 50](../experiments/50_answer-evals_Q2/EXPERIMENTS.md)
+        - the first run [approach identification diagnostics](experiments/50_answer-evals_Q2/runs/2026-05-01_10-39-08_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) showed many different approach labels that overlapped. For example : `fair_value_profit`, `fair_value_profit_loss`, `fair_value_through_profit_or_loss` and `fvtpl`.
+            - To make run results easier to evaluate, the A prompt was updated to normalize labels
+        - the second run returned only the [3 expected approaches](../experiments/50_answer-evals_Q2/runs/2026-05-01_13-20-27_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) across all runs and questions
+        - 🎉 Recall was 100% on target documents and chunks and the evals all passed 
+    - [Experiment 51](../experiments/51_answer-evals_Q3/EXPERIMENTS.md)
+        - the first run [approach identification diagnostics](experiments/51_answer-evals_Q3/runs/2026-05-01_13-49-24_promptfoo-eval-family-q3/diagnostics/approach_detection/approach_detection_diagnostics.html) failed because of a bug in the eval
+            - also changed the eval to allow `oui` in addition to `oui_sous_conditions`
+        - 🎉 Recall was 100% on target documents and chunks
+            - the evals were not run again because all failures were due to the `oui` recommendation which was acceptable

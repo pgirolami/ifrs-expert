@@ -15,16 +15,22 @@ def setup_logging() -> None:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
 
+    for handler in list(root_logger.handlers):
+        if isinstance(handler, logging.FileHandler) and Path(handler.baseFilename) == log_path.resolve():
+            continue
+        root_logger.removeHandler(handler)
+        handler.close()
+
     for handler in root_logger.handlers:
         if isinstance(handler, logging.FileHandler) and Path(handler.baseFilename) == log_path.resolve():
-            return
+            break
+    else:
+        handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")
+        handler.setLevel(logging.INFO)
 
-    handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")
-    handler.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(fmt="%(asctime)s - %(message)s", datefmt="%H:%M:%S")
-    handler.setFormatter(formatter)
-    root_logger.addHandler(handler)
+        formatter = logging.Formatter(fmt="%(asctime)s - %(message)s", datefmt="%H:%M:%S")
+        handler.setFormatter(formatter)
+        root_logger.addHandler(handler)
 
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("huggingface_hub").setLevel(logging.WARNING)

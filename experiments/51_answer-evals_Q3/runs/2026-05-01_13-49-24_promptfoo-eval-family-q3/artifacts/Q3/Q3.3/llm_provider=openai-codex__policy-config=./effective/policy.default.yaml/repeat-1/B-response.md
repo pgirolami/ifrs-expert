@@ -1,0 +1,121 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>Peut-on expliquer ce qu’est un actif financier caractérisé par des flux contractuels composés uniquement de principal et d’intérêts ?
+
+**Reformulation**:
+>Détermination, en IFRS 9, de la signification du critère de flux contractuels composés uniquement de principal et d’intérêts (« SPPI ») pour la classification ultérieure d’un actif financier
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias32`, `ias7`)
+   - IFRIC (interpretation) (`ifric12`)
+   - IFRS-S (standard) (`ifrs9`, `ifrs3`)
+
+**Retenue pour l'analyse**
+   - IAS-S (standard) (`ias32`)
+   - IFRS-S (standard) (`ifrs9`)
+
+## Hypothèses
+   - La question est comprise comme une demande générale d’explication du critère SPPI en IFRS 9, sans instrument précis ni modèle économique déterminé.
+   - On suppose qu’il s’agit d’un actif financier au sens d’IAS 32 et relevant de la classification ultérieure d’IFRS 9.
+
+## Recommandation
+
+**OUI**
+
+Oui. En IFRS 9, un actif financier à flux SPPI est un actif dont les flux contractuels, à des dates spécifiées, correspondent uniquement au remboursement du principal et à des intérêts rémunérant une relation de prêt de base. Ce critère sert ensuite à départager le coût amorti et la JVOCI selon le modèle économique; à défaut, la catégorie résiduelle est la JVRN.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - L’actif est détenu dans un modèle économique dont l’objectif est de détenir pour encaisser les flux contractuels.<br>- Les flux contractuels donnent lieu, à des dates spécifiées, uniquement à des paiements de principal et d’intérêts sur le principal restant dû. |
+| 2. Juste valeur par autres éléments du résultat global | OUI SOUS CONDITIONS | - L’actif est détenu dans un modèle économique dont l’objectif est atteint à la fois par la perception des flux contractuels et par la vente d’actifs financiers.<br>- Les flux contractuels donnent lieu, à des dates spécifiées, uniquement à des paiements de principal et d’intérêts sur le principal restant dû. |
+| 3. Juste valeur par résultat | OUI | - (non spécifiées) |
+
+### 1. Coût amorti
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’actif est détenu dans un modèle économique dont l’objectif est de détenir pour encaisser les flux contractuels.
+   - Les flux contractuels donnent lieu, à des dates spécifiées, uniquement à des paiements de principal et d’intérêts sur le principal restant dû.
+
+**Raisonnement**:
+Dans cette situation, le coût amorti peut illustrer l’utilité du critère SPPI, mais il ne s’applique que si l’actif est détenu dans un modèle visant à encaisser les flux contractuels et si ces flux sont SPPI (IFRS 9 4.1.2). Le principal est la juste valeur initiale, et l’intérêt rémunère le temps, le risque de crédit, d’autres risques/coûts de prêt de base et une marge (IFRS 9 4.1.3, IFRS 9 B4.1.7A).
+
+**Implications pratiques**: Si ces conditions sont réunies, un actif à flux SPPI peut être classé au coût amorti.
+
+**Référence**:
+ - ifrs9 4.1.2
+
+    >A financial asset shall be measured at amortised cost if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is to hold financial assets in order to collect contractual cash flows and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 4.1.3
+
+    >For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) :
+(a)principal is the fair value of the financial asset at initial recognition. Paragraph B4.1.7B provides additional guidance on the meaning of principal.
+(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin. Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money.
+ - ifrs9 B4.1.7A
+
+    >Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+
+### 2. Juste valeur par autres éléments du résultat global
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’actif est détenu dans un modèle économique dont l’objectif est atteint à la fois par la perception des flux contractuels et par la vente d’actifs financiers.
+   - Les flux contractuels donnent lieu, à des dates spécifiées, uniquement à des paiements de principal et d’intérêts sur le principal restant dû.
+
+**Raisonnement**:
+Dans cette situation, la JVOCI constitue aussi une issue possible pour un actif à flux SPPI, mais seulement si le modèle économique combine encaissement des flux contractuels et ventes (IFRS 9 4.1.2A). Le contenu du test SPPI reste le même: seuls principal et intérêts relevant d’une relation de prêt de base sont admis (IFRS 9 4.1.3, IFRS 9 B4.1.7).
+
+**Implications pratiques**: Si le modèle économique est mixte et que le test SPPI est satisfait, l’actif peut être classé en JVOCI.
+
+**Référence**:
+ - ifrs9 4.1.2A
+
+    >A financial asset shall be measured at fair value through other comprehensive income if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 4.1.3
+
+    >For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) :
+(a)principal is the fair value of the financial asset at initial recognition. Paragraph B4.1.7B provides additional guidance on the meaning of principal.
+(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin. Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money.
+ - ifrs9 B4.1.7
+
+    >Paragraph 4.1.1(b) requires an entity to classify a financial asset on the basis of its contractual cash flow characteristics if the financial asset is held within a business model whose objective is to hold assets to collect contractual cash flows or within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets, unless paragraph 4.1.5 applies. To do so, the condition in paragraphs 4.1.2(b) and 4.1.2A(b) requires an entity to determine whether the asset’s contractual cash flows are solely payments of principal and interest on the principal amount outstanding.
+
+### 3. Juste valeur par résultat
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnement**:
+Dans cette situation explicative, la JVRN est la catégorie résiduelle utile pour comprendre le critère SPPI: si l’actif ne satisfait pas les conditions du coût amorti ou de la JVOCI, il relève de la JVRN (IFRS 9 4.1.4). C’est notamment le cas lorsque les flux exposent le porteur à des risques incompatibles avec une relation de prêt de base, comme les prix d’actions, de matières premières ou un effet de levier (IFRS 9 B4.1.7A, IFRS 9 B4.1.9).
+
+**Implications pratiques**: Si le test SPPI échoue ou si le modèle économique requis manque, l’actif est classé en JVRN.
+
+**Référence**:
+ - ifrs9 4.1.4
+
+    >A financial asset shall be measured at fair value through profit or loss unless it is measured at amortised cost in accordance with paragraph 4.1.2 or at fair value through other comprehensive income in accordance with paragraph 4.1.2A. However an entity may make an irrevocable election at initial recognition for particular investments in equity instruments that would otherwise be measured at fair value through profit or loss to present subsequent changes in fair value in other comprehensive income (see paragraphs 5.7.5⁠–⁠5.7.6). E13, E14
+ - ifrs9 B4.1.7A
+
+    >Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+ - ifrs9 B4.1.9
+
+    >Leverage is a contractual cash flow characteristic of some financial assets. Leverage increases the variability of the contractual cash flows with the result that they do not have the economic characteristics of interest. Stand‑alone option, forward and swap contracts are examples of financial assets that include such leverage. Thus, such contracts do not meet the condition in paragraphs 4.1.2(b) and 4.1.2A(b) and cannot be subsequently measured at amortised cost or fair value through other comprehensive income.

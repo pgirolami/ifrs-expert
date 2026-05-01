@@ -14,7 +14,7 @@ repos:
         pass_filenames: false
         files: ^src/.*
       - id: retrieval-evals
-        name: retrieval evals
+        name: retrieval evals (requires ingested IFRS corpus)
         entry: uv run python scripts/run_retrieval_eval_hook.py --pair Q1 Q1.4 --pair Q2 Q2.3 --pair Q3 Q3.8
         language: system
         pass_filenames: false

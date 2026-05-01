@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "détermination de la signification du critère de flux de trésorerie contractuels constitués uniquement de paiements de principal et d’intérêts (« SPPI ») pour la classification d’un actif financier selon IFRS 9",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because it directly governs the classification of financial assets and expressly defines when contractual cash flows are solely payments of principal and interest; no higher-precedence competing document in the provided context governs that same issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low; the question is squarely about the IFRS 9 contractual cash flow characteristics test and no overlapping governing lineage competes with it in the provided documents."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "B4.1.19", "B4.1.20", "B4.1.21", "B4.1.22", "B4.1.23", "B4.1.24", "B4.1.25", "B4.1.26"],
+        "reason": "These paragraphs directly define the SPPI test and its role in classifying financial assets."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias32",
+        "references": ["11", "13", "AG15", "AG16", "AG20", "AG22", "AG23"],
+        "reason": "These paragraphs help frame what counts as a financial instrument and distinguish financial from non-financial or commodity-linked contractual exposures."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifric12",
+        "references": ["16", "23", "24", "25"],
+        "reason": "This interpretation discusses financial assets in service concession arrangements, but not the SPPI meaning or peer classification approaches for general financial assets."
+      },
+      {
+        "document": "ias19",
+        "references": ["114", "124", "125", "143"],
+        "reason": "These paragraphs mention financial instruments in employee benefit contexts but do not help identify SPPI-based classification approaches."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["15", "16", "40", "54", "58"],
+        "reason": "These paragraphs refer to IFRS 9 classifications in business combinations, but they do not add to the identification of SPPI-based peer accounting approaches."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and are held in a collect business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and are held in a collect and sell business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.12", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that fail the solely payments of principal and interest test or otherwise do not meet the conditions for the other two measurement categories",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.8A", "B4.1.9", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "B4.1.20", "B4.1.21", "B4.1.26"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 uses this as a top-level subsequent measurement category for financial assets whose contractual cash flows are solely payments of principal and interest and that are held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 uses this as a top-level subsequent measurement category for financial assets whose contractual cash flows are solely payments of principal and interest and that are held in a collect-and-sell business model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 uses this as the top-level measurement category for financial assets that do not satisfy the solely payments of principal and interest condition or otherwise do not qualify for the other measurement categories."
+    }
+  ]
+}

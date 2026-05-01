@@ -1,0 +1,106 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination du critère des flux de trésorerie contractuels « exclusivement des paiements de principal et d’intérêts » d’un actif financier au titre d’IFRS 9, dans le cadre de sa classification ultérieure",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because it directly governs the contractual cash flow characteristics test for financial assets, including whether cash flows are solely payments of principal and interest, and no overlapping higher-precedence governing document in the provided context addresses that same issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low; the question is squarely about the IFRS 9 SPPI criterion and the provided context contains the directly governing paragraphs and application guidance."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.11", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.17", "B4.1.18"],
+        "reason": "These paragraphs directly define and explain when contractual cash flows are solely payments of principal and interest and how that affects financial asset classification."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.4", "B4.1.5", "B4.1.6"],
+        "reason": "These paragraphs provide the distinct residual measurement model when the SPPI criterion is not met or the asset is managed on a fair value or trading basis."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["E13"],
+        "reason": "This agenda decision confirms that IFRS 9 classification turns on the IAS 32 definition of an equity instrument and helps distinguish SPPI-type debt assets from equity investments."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias32",
+        "references": ["11", "AG15", "AG16"],
+        "reason": "IAS 32 helps identify what is a financial asset or derivative, but it does not govern the SPPI test or the subsequent measurement categories for financial assets."
+      },
+      {
+        "document": "ifric12",
+        "references": ["16", "23", "24", "25"],
+        "reason": "IFRIC 12 refers to IFRS 9 measurement categories for service concession receivables, but it does not define the SPPI criterion itself."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["16", "40", "54", "58"],
+        "reason": "IFRS 3 references classification under IFRS 9 in business combinations, but it is not relevant to identifying peer approaches for the SPPI issue itself."
+      },
+      {
+        "document": "ias19",
+        "references": ["114", "132", "143"],
+        "reason": "IAS 19 mentions financial instruments and IAS 32 in other contexts, but it is unrelated to the SPPI classification analysis for financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and are held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with contractual cash flows that are solely payments of principal and interest and are held both to collect contractual cash flows and to sell financial assets",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.10", "B4.1.11", "B4.1.13"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that do not qualify for a SPPI-based category or are managed on a fair value or trading basis",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.5", "B4.1.6", "B4.1.9", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.17", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats amortised cost as a top-level measurement category for debt-type financial assets whose contractual cash flows are solely payments of principal and interest and that are held to collect those cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 treats fair value through other comprehensive income as a separate top-level measurement category for financial assets that meet the SPPI criterion and are managed both to collect contractual cash flows and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 uses fair value through profit or loss as the residual top-level measurement category where the contractual cash flows are not solely payments of principal and interest or the business model is inconsistent with the SPPI-based categories."
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "qualification IFRS 9 d’un actif financier dont les flux de trésorerie contractuels sont uniquement des remboursements de principal et d’intérêts, et identification des catégories de mesure possibles",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because it directly governs the classification and subsequent measurement of financial assets, including the solely payments of principal and interest condition, and no higher-precedence overlapping standard in the provided context addresses that same eligibility and measurement question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low: the question maps directly to the IFRS 9 SPPI test and related measurement categories."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "4.1.4", "4.1.5", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.11", "B4.1.13", "B4.1.14", "B4.1.15"],
+        "reason": "These paragraphs directly define the SPPI condition and the resulting IFRS 9 measurement categories for financial assets."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ias7",
+        "references": ["6", "7", "8", "9", "10", "14", "16", "17", "34A"],
+        "reason": "This document addresses cash flow statement classification and cash equivalents, not IFRS 9 classification of financial assets based on contractual cash flows."
+      },
+      {
+        "document": "ifrs17",
+        "references": ["10", "11", "33", "34", "B65", "B66"],
+        "reason": "This document addresses insurance contract accounting and only indirectly references IFRS 9 for separated components."
+      },
+      {
+        "document": "ias39",
+        "references": ["74", "81", "86", "88", "95", "96", "103"],
+        "reason": "This document in the provided context addresses hedge accounting rather than the IFRS 9 SPPI-based classification and measurement of financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Debt instrument with SPPI cash flows held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.1", "4.1.2", "4.1.3", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Debt instrument with SPPI cash flows held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.1", "4.1.2A", "4.1.3", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Residual or designated fair value measurement for financial assets, including assets not measured under the SPPI business model categories or assets designated to eliminate an accounting mismatch",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "4.1.5"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats a financial asset with SPPI cash flows as measured at amortised cost when it is held within a hold-to-collect business model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 treats a financial asset with SPPI cash flows as measured at fair value through other comprehensive income when the business model is both collecting contractual cash flows and selling."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 uses fair value through profit or loss as the residual category and also permits designation at fair value through profit or loss to eliminate or significantly reduce an accounting mismatch."
+    }
+  ]
+}

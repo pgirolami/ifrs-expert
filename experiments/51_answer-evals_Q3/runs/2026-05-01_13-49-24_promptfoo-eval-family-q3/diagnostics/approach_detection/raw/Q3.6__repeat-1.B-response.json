@@ -1,0 +1,82 @@
+{
+  "assumptions_fr": [
+    "La question vise un actif financier déjà qualifié d'actif financier au sens d'IAS 32 et porte uniquement sur sa définition au regard du critère SPPI d'IFRS 9.",
+    "Aucun fait complémentaire n'est fourni sur le modèle de gestion de l'entité ni sur une éventuelle désignation à la juste valeur par résultat à l'origine."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "On peut définir l'actif comme un instrument de dette dont les flux contractuels sont uniquement des remboursements de principal et des intérêts, c'est-à-dire des flux compatibles avec un prêt de base. Toutefois, en IFRS 9, cette caractéristique ne suffit pas seule à fixer sa catégorie comptable, qui dépend aussi du business model et, le cas échéant, d'une désignation en JV résultat."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "amortised_cost",
+      "label_fr": "Coût amorti",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, le respect du critère SPPI permet seulement d'entrer dans le champ possible du coût amorti, mais ne suffit pas à lui seul. IFRS 9 exige aussi que l'actif soit détenu dans un modèle visant à collecter les flux contractuels (IFRS 9 4.1.2), les flux SPPI correspondant à un \"basic lending arrangement\" (IFRS 9 B4.1.7A).",
+      "conditions_fr": [
+        "L'actif doit être détenu dans un modèle économique dont l'objectif est de collecter les flux contractuels."
+      ],
+      "practical_implication_fr": "Si cette condition de modèle économique est remplie, l'actif SPPI peut être classé au coût amorti.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "4.1.2",
+          "excerpt": "A financial asset shall be measured at amortised cost if both of the following conditions are met: **(a)the financial asset is held within a business model whose objective is to hold financial assets in order to collect contractual cash flows and (b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.** Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions."
+        },
+        {
+          "document": "ifrs9",
+          "section": "B4.1.7A",
+          "excerpt": "Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are **consistent with a basic lending arrangement**. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, **do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding**. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "label_fr": "Juste valeur par autres éléments du résultat global",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, un actif respectant SPPI peut aussi relever de la JV par OCI si l'objectif du portefeuille est à la fois de collecter les flux et de vendre les actifs (IFRS 9 4.1.2A). Le critère SPPI reste défini par des paiements de principal et d'intérêts sur le principal restant dû (IFRS 9 4.1.3).",
+      "conditions_fr": [
+        "L'actif doit être détenu dans un modèle économique dont l'objectif est à la fois de collecter les flux contractuels et de vendre les actifs."
+      ],
+      "practical_implication_fr": "Si ce modèle mixte est démontré, l'actif SPPI peut être classé en JV par OCI.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "4.1.2A",
+          "excerpt": "A financial asset shall be measured at fair value through other comprehensive income if both of the following conditions are met: **(a)the financial asset is held within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets and (b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.** Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions."
+        },
+        {
+          "document": "ifrs9",
+          "section": "4.1.3",
+          "excerpt": "For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) : **(a)principal is the fair value of the financial asset at initial recognition.** Paragraph B4.1.7B provides additional guidance on the meaning of principal. **(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin.** Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "label_fr": "Juste valeur par résultat",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Dans cette situation, même si l'actif respecte SPPI, il peut relever de la JV résultat soit parce qu'il ne satisfait pas aux conditions de coût amorti ou de JV par OCI (IFRS 9 4.1.4), soit parce qu'il est irrévocablement désigné ainsi à l'origine pour réduire une incohérence comptable (IFRS 9 4.1.5). Le seul critère SPPI ne donne donc pas, à lui seul, la catégorie finale.",
+      "conditions_fr": [
+        "L'actif n'est pas détenu dans un modèle éligible au coût amorti ou à la JV par OCI.",
+        "Ou l'entité exerce à l'origine une désignation irrévocable en JV résultat pour éliminer ou réduire significativement une incohérence comptable."
+      ],
+      "practical_implication_fr": "Un actif SPPI n'est pas nécessairement hors JV résultat ; cette catégorie demeure résiduelle ou optionnelle par désignation.",
+      "references": [
+        {
+          "document": "ifrs9",
+          "section": "4.1.4",
+          "excerpt": "A financial asset shall be measured at fair value through profit or loss **unless it is measured at amortised cost in accordance with paragraph 4.1.2 or at fair value through other comprehensive income in accordance with paragraph 4.1.2A**. However an entity may make an irrevocable election at initial recognition for particular investments in equity instruments that would otherwise be measured at fair value through profit or loss to present subsequent changes in fair value in other comprehensive income (see paragraphs 5.7.5⁠–⁠5.7.6). E13, E14"
+        },
+        {
+          "document": "ifrs9",
+          "section": "4.1.5",
+          "excerpt": "Despite paragraphs 4.1.1⁠–⁠4.1.4, **an entity may, at initial recognition, irrevocably designate a financial asset as measured at fair value through profit or loss if doing so eliminates or significantly reduces a measurement or recognition inconsistency** (sometimes referred to as an ‘accounting mismatch’) that would otherwise arise from measuring assets or liabilities or recognising the gains and losses on them on different bases (see paragraphs B4.1.29⁠–⁠B4.1.32)."
+        }
+      ]
+    }
+  ]
+}

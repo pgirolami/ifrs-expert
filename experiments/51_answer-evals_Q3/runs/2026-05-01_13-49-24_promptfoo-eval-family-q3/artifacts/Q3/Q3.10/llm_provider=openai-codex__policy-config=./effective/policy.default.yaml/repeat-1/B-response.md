@@ -1,0 +1,118 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>Certains actifs ne génèrent contractuellement que des paiements de principal et d’intérêts.
+Quelle est la définition exacte d’un tel actif dans ce contexte ?
+
+**Reformulation**:
+>Définition IFRS du critère des flux de trésorerie contractuels constitués uniquement de remboursements de principal et d’intérêts (SPPI) pour la classification des actifs financiers
+
+## Documentation
+**Consultée**
+   - IFRS-S (standard) (`ifrs9`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs9`)
+
+## Hypothèses
+   - La question vise la définition IFRS 9 du critère SPPI (« solely payments of principal and interest ») appliqué à un actif financier.
+   - Aucun fait supplémentaire n’est donné sur le modèle économique de détention ni sur une éventuelle désignation à la juste valeur par résultat.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Un actif répond à ce critère si ses flux contractuels donnent, à des dates déterminées, uniquement des paiements de principal et d’intérêts sur le principal restant dû. Cette définition permet ensuite l’éligibilité au coût amorti ou à la FVOCI selon le modèle économique; sinon, l’actif est en FVTPL.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - L’actif est détenu dans un modèle économique dont l’objectif est de percevoir les flux contractuels. |
+| 2. Juste valeur par autres éléments du résultat global | OUI SOUS CONDITIONS | - L’actif est détenu dans un modèle économique dont l’objectif est à la fois de percevoir les flux contractuels et de vendre. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - L’actif ne remplit pas le critère SPPI ou ne relève pas d’un modèle économique éligible au coût amorti/FVOCI.<br>- Ou l’entité exerce à la comptabilisation initiale la désignation irrévocable à la FVTPL pour réduire un mismatch comptable. |
+
+### 1. Coût amorti
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’actif est détenu dans un modèle économique dont l’objectif est de percevoir les flux contractuels.
+
+**Raisonnement**:
+Dans cette situation, le traitement au coût amorti n’est possible que si l’actif satisfait la définition SPPI et est détenu dans un modèle visant à encaisser les flux contractuels (IFRS 9 4.1.2). La définition exacte renvoie à des flux contractuels donnant lieu, à des dates spécifiées, à **seuls** paiements de principal et d’intérêts; le principal est la juste valeur initiale et l’intérêt rémunère le temps, le risque de crédit, d’autres risques/coûts de base et une marge (IFRS 9 4.1.3, B4.1.7A).
+
+**Implications pratiques**: Si le critère SPPI est rempli et que le modèle est « hold to collect », l’actif peut être classé au coût amorti.
+
+**Référence**:
+ - ifrs9 4.1.2
+
+    >A financial asset shall be measured at amortised cost if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is to hold financial assets in order to collect contractual cash flows and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 4.1.3
+
+    >For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) :
+(a)principal is the fair value of the financial asset at initial recognition. Paragraph B4.1.7B provides additional guidance on the meaning of principal.
+(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin. Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money.
+ - ifrs9 B4.1.7A
+
+    >Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+
+### 2. Juste valeur par autres éléments du résultat global
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’actif est détenu dans un modèle économique dont l’objectif est à la fois de percevoir les flux contractuels et de vendre.
+
+**Raisonnement**:
+Dans cette situation, la FVOCI n’est envisageable que si la même définition SPPI est satisfaite et si le modèle économique combine encaissement des flux et ventes (IFRS 9 4.1.2A). La définition ne change pas: il faut uniquement des paiements de principal et d’intérêts au sens d’IFRS 9 4.1.3, dans le cadre d’un arrangement de prêt de base (IFRS 9 B4.1.7 et B4.1.7A).
+
+**Implications pratiques**: Si le critère SPPI est rempli et que le modèle est « collect and sell », l’actif peut être classé en FVOCI.
+
+**Référence**:
+ - ifrs9 4.1.2A
+
+    >A financial asset shall be measured at fair value through other comprehensive income if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 4.1.3
+
+    >For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) :
+(a)principal is the fair value of the financial asset at initial recognition. Paragraph B4.1.7B provides additional guidance on the meaning of principal.
+(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin. Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money.
+ - ifrs9 B4.1.7
+
+    >Paragraph 4.1.1(b) requires an entity to classify a financial asset on the basis of its contractual cash flow characteristics if the financial asset is held within a business model whose objective is to hold assets to collect contractual cash flows or within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets, unless paragraph 4.1.5 applies. To do so, the condition in paragraphs 4.1.2(b) and 4.1.2A(b) requires an entity to determine whether the asset’s contractual cash flows are solely payments of principal and interest on the principal amount outstanding.
+ - ifrs9 B4.1.7A
+
+    >Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+
+### 3. Juste valeur par résultat
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - L’actif ne remplit pas le critère SPPI ou ne relève pas d’un modèle économique éligible au coût amorti/FVOCI.
+   - Ou l’entité exerce à la comptabilisation initiale la désignation irrévocable à la FVTPL pour réduire un mismatch comptable.
+
+**Raisonnement**:
+Dans cette situation, la FVTPL est le traitement résiduel si l’actif ne remplit pas la définition SPPI ou s’il n’entre pas dans les modèles économiques des paragraphes 4.1.2 ou 4.1.2A (IFRS 9 4.1.4). Même si l’actif a des flux SPPI, il peut encore être désigné irrévocablement à la FVTPL à l’origine pour éliminer ou réduire significativement une incohérence comptable (IFRS 9 4.1.5).
+
+**Implications pratiques**: À défaut d’éligibilité au coût amorti ou à la FVOCI, ou en cas de désignation valable, l’actif est mesuré à la FVTPL.
+
+**Référence**:
+ - ifrs9 4.1.4
+
+    >A financial asset shall be measured at fair value through profit or loss unless it is measured at amortised cost in accordance with paragraph 4.1.2 or at fair value through other comprehensive income in accordance with paragraph 4.1.2A. However an entity may make an irrevocable election at initial recognition for particular investments in equity instruments that would otherwise be measured at fair value through profit or loss to present subsequent changes in fair value in other comprehensive income (see paragraphs 5.7.5⁠–⁠5.7.6). E13, E14
+ - ifrs9 4.1.5
+
+    >Despite paragraphs 4.1.1⁠–⁠4.1.4, an entity may, at initial recognition, irrevocably designate a financial asset as measured at fair value through profit or loss if doing so eliminates or significantly reduces a measurement or recognition inconsistency (sometimes referred to as an ‘accounting mismatch’) that would otherwise arise from measuring assets or liabilities or recognising the gains and losses on them on different bases (see paragraphs B4.1.29⁠–⁠B4.1.32).

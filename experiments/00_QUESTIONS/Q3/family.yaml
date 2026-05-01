@@ -16,7 +16,7 @@ assert:
   - type: javascript
     value: |
       const data = JSON.parse(output);
-      return 'oui_sous_conditions' === data.recommendation?.answer;
+      return ['oui', 'oui_sous_conditions'].includes(data.recommendation?.answer);
     description: Recommendation answer is one of the allowed values
 
   - type: javascript

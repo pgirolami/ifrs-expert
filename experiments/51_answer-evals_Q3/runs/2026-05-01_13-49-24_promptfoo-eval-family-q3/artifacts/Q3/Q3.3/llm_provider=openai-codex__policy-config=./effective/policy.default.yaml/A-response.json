@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, au regard d’IFRS 9, ce qu’est un actif financier dont les flux de trésorerie contractuels sont uniquement des paiements de principal et d’intérêts, dans le cadre de la classification des actifs financiers",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I selected IFRS 9 because it directly governs the classification of financial assets and the solely payments of principal and interest condition; no other document in the context governs the same issue at a higher or competing level, and IFRS would supersede any overlapping IAS guidance if such overlap existed.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question directly targets the SPPI notion that is explicitly defined and elaborated in IFRS 9."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A", "B4.1.8", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.18", "B4.1.21", "B4.1.23", "B4.1.24", "B4.1.25", "B4.1.26"],
+        "reason": "These paragraphs directly define the SPPI condition and how it drives classification of financial assets."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias32",
+        "references": ["11"],
+        "reason": "It supports the analysis only by defining financial assets and equity instruments, which helps distinguish debt-like cash flows from equity-type returns."
+      },
+      {
+        "document": "ifric12",
+        "references": ["23", "24", "25"],
+        "reason": "It illustrates that when a receivable is a financial asset within IFRS 9, the subsequent measurement models are those in IFRS 9."
+      },
+      {
+        "document": "ifrs3",
+        "references": ["15", "16"],
+        "reason": "It confirms that acquired financial assets are classified under IFRS 9 using IFRS 9 measurement categories."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias7",
+        "references": ["7", "9", "14", "15", "16", "31", "34A", "34B", "43"],
+        "reason": "It addresses cash equivalents and statement of cash flows presentation, not SPPI classification of financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets that meet the SPPI condition and are held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.7", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets that meet the SPPI condition and are held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.7", "B4.1.7A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets that do not fall into the amortised cost or fair value through other comprehensive income models, including those failing SPPI",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.16", "B4.1.17", "B4.1.26"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level measurement model for financial assets that satisfy SPPI and are held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a top-level measurement model for financial assets that satisfy SPPI and are held both to collect and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual top-level measurement model, including where the contractual cash flows are not solely payments of principal and interest."
+    }
+  ]
+}
