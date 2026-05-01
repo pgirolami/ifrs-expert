@@ -1,0 +1,159 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation du critère SPPI (« prêt basique ») pour un actif financier comportant des clauses contractuelles contingentes pouvant modifier le calendrier ou le montant des flux de trésorerie, et incidence sur sa catégorie de mesure IFRS 9",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs9"
+    ],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS and selected IFRS 9 because it directly governs the SPPI test and the resulting classification and measurement of financial assets.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about SPPI and financial asset classification, which is directly addressed by IFRS 9."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.1",
+          "4.1.2",
+          "4.1.2A",
+          "4.1.3",
+          "4.1.4",
+          "B4.1.7",
+          "B4.1.10",
+          "B4.1.10A",
+          "B4.1.11",
+          "B4.1.18"
+        ],
+        "reason": "These paragraphs directly govern the SPPI assessment for contractual features that can change cash flow timing or amount and the resulting measurement categories."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "B4.1.7A",
+          "B4.1.8A",
+          "B4.1.9",
+          "B4.1.13",
+          "B4.1.14"
+        ],
+        "reason": "These paragraphs clarify the meaning of a basic lending arrangement and provide examples of features that are or are not consistent with SPPI."
+      },
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.5"
+        ],
+        "reason": "This paragraph adds the distinct fair value through profit or loss designation model where an accounting mismatch is eliminated or significantly reduced."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs17",
+        "references": [
+          "33",
+          "34",
+          "36"
+        ],
+        "reason": "These paragraphs address insurance contract cash flows and discounting, not SPPI classification of financial assets."
+      },
+      {
+        "document": "ias33",
+        "references": [
+          "5",
+          "33",
+          "45"
+        ],
+        "reason": "These paragraphs concern earnings per share and potential ordinary shares, which are not relevant to identifying IFRS 9 classification approaches."
+      },
+      {
+        "document": "ias39",
+        "references": [
+          "81",
+          "88",
+          "95"
+        ],
+        "reason": "These paragraphs address hedge accounting rather than the SPPI classification test for financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets that satisfy SPPI and are held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2",
+            "4.1.3",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "amortised_cost"
+      ]
+    },
+    {
+      "family": "Financial assets that satisfy SPPI and are held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2A",
+            "4.1.3",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_oci"
+      ]
+    },
+    {
+      "family": "Financial assets that do not qualify for SPPI or are otherwise measured at fair value through profit or loss",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.4",
+            "4.1.5",
+            "B4.1.7A",
+            "B4.1.8A",
+            "B4.1.9",
+            "B4.1.14"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_profit_loss"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats amortised cost as a top-level measurement model when the asset passes SPPI and the business model is hold to collect."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through OCI",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 treats FVOCI as a separate top-level measurement model when the asset passes SPPI and the business model is both collect and sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 treats FVTPL as the residual and also optionally designated top-level measurement model when SPPI is not met or the fair value option is used."
+    }
+  ]
+}

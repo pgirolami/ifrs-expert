@@ -1,0 +1,106 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation du critère SPPI (« prêt basique ») en IFRS 9 pour un actif financier dont des termes contractuels peuvent modifier le calendrier ou le montant des flux de trésorerie, notamment en cas d’événement déclencheur.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the precedence rule strictly and selected IFRS 9 because it is the only IFRS standard in the context that directly governs classification of financial assets and the SPPI test; no overlapping IAS standard in the context governs this same classification issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is directly about SPPI under IFRS 9, and the cited IFRS 9 paragraphs explicitly address contingent or changing contractual cash flows."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "4.1.4"],
+        "reason": "These paragraphs directly govern classification outcomes and make SPPI a core condition for amortised cost and FVOCI."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.7", "B4.1.7A", "B4.1.8A", "B4.1.9"],
+        "reason": "These paragraphs directly define the basic lending arrangement concept used in the SPPI analysis."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14", "B4.1.18"],
+        "reason": "These paragraphs directly address contractual terms that can change the timing or amount of cash flows and when such features can or cannot still satisfy SPPI."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.5"],
+        "reason": "This paragraph adds the distinct classification possibility of FVTPL by designation despite the default classification logic."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs17",
+        "references": ["33", "34", "36", "B59", "B96", "B97", "B98", "B113"],
+        "reason": "These paragraphs address insurance contract cash flows and discounting, not IFRS 9 SPPI classification of financial assets."
+      },
+      {
+        "document": "ias39",
+        "references": ["74", "81", "88", "89", "95", "102D", "AG108"],
+        "reason": "These paragraphs concern hedge accounting rather than the SPPI classification test for financial assets."
+      },
+      {
+        "document": "ias2",
+        "references": ["6", "18"],
+        "reason": "These paragraphs concern inventories and financing elements in purchase arrangements, not the SPPI test under IFRS 9."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with SPPI cash flows held in a hold-to-collect business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.13", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Financial assets with SPPI cash flows held in a hold-to-collect-and-sell business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.13", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_oci"]
+    },
+    {
+      "family": "Financial assets not qualifying for the SPPI-based categories or otherwise classified under the residual category",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "4.1.5", "B4.1.9", "B4.1.14"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_profit_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised Cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats amortised cost as a top-level measurement category when the asset has SPPI cash flows and is held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair Value through Other Comprehensive Income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 treats FVOCI as a top-level measurement category when the asset has SPPI cash flows and is managed both to collect and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair Value through Profit or Loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 treats FVTPL as the residual top-level measurement category, including where contractual features cause the cash flows not to be solely payments of principal and interest."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Évaluation du critère SPPI (« prêt basique ») pour un actif financier dont les flux contractuels peuvent changer en montant ou en échéancier, y compris à cause d’un événement déclencheur",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs9"
+    ],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule and selected IFRS 9 because it directly governs classification of financial assets and the SPPI test, and no higher-precedence competing document in the context governs the same issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because IFRS 9 explicitly addresses contractual cash flow characteristics, contingent features, and classification consequences for SPPI."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.1",
+          "4.1.2",
+          "4.1.2A",
+          "4.1.3",
+          "4.1.4",
+          "B4.1.7",
+          "B4.1.7A",
+          "B4.1.10",
+          "B4.1.10A",
+          "B4.1.11",
+          "B4.1.12",
+          "B4.1.12A",
+          "B4.1.18"
+        ],
+        "reason": "These paragraphs directly govern the SPPI assessment for contractual terms that may change cash flow timing or amount and the resulting measurement categories."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "B4.1.8A",
+          "B4.1.9",
+          "B4.1.9A",
+          "B4.1.9B",
+          "B4.1.9C",
+          "B4.1.9D",
+          "B4.1.9E",
+          "B4.1.13",
+          "B4.1.14",
+          "B4.1.15",
+          "B4.1.16",
+          "B4.1.16A",
+          "B4.1.17",
+          "B4.1.19",
+          "B4.1.20",
+          "B4.1.20A",
+          "B4.1.21",
+          "B4.1.22",
+          "B4.1.23",
+          "B4.1.24",
+          "B4.1.25",
+          "B4.1.26"
+        ],
+        "reason": "These paragraphs clarify what is and is not consistent with a basic lending arrangement and illustrate boundaries of the SPPI analysis."
+      },
+      {
+        "document": "ifrs19",
+        "references": [
+          "56B"
+        ],
+        "reason": "This disclosure requirement confirms the relevance of contractual terms that change cash flows based on contingent events not directly related to basic lending risks and costs."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs19",
+        "references": [
+          "42",
+          "43",
+          "44",
+          "47",
+          "48",
+          "52",
+          "56"
+        ],
+        "reason": "These are disclosure provisions for financial instruments generally and do not help identify the peer accounting approaches for the SPPI classification issue."
+      },
+      {
+        "document": "ias39",
+        "references": [
+          "74",
+          "75",
+          "76",
+          "81",
+          "85",
+          "86",
+          "88",
+          "89",
+          "95",
+          "102D",
+          "102P",
+          "102Q",
+          "AG103",
+          "AG108"
+        ],
+        "reason": "These hedge accounting provisions are topically related to financial instruments but do not govern the SPPI classification question."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets eligible for non-FVTPL classification because contractual cash flows satisfy SPPI, with business model determining the measurement category",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.1",
+            "4.1.2",
+            "4.1.2A",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11",
+            "B4.1.12",
+            "B4.1.12A",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "amortised_cost",
+        "fair_value_through_oci"
+      ]
+    },
+    {
+      "family": "Financial assets required to be measured at FVTPL because contractual cash flows do not satisfy SPPI",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.4",
+            "B4.1.7A",
+            "B4.1.8A",
+            "B4.1.9",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.14",
+            "B4.1.15",
+            "B4.1.16",
+            "B4.1.16A",
+            "B4.1.17",
+            "B4.1.20",
+            "B4.1.21",
+            "B4.1.25",
+            "B4.1.26"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_through_profit_or_loss"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised Cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level measurement model when the asset both satisfies SPPI and is held in a hold-to-collect business model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair Value through Other Comprehensive Income",
+      "normalized_label": "fair_value_through_oci",
+      "rationale_for_inclusion": "IFRS 9 identifies FVOCI as a top-level measurement model when the asset satisfies SPPI and is held in a collect-and-sell business model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair Value through Profit or Loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies FVTPL as the residual top-level measurement model, including where contractual cash flows fail the SPPI test."
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation, au titre d’IFRS 9, du respect du critère SPPI (« prêt basique ») pour un actif financier comportant des clauses contractuelles ou des événements déclencheurs modifiant le calendrier ou le montant des flux de trésorerie",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs9"
+    ],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule by selecting IFRS 9 as the single governing lineage because it directly governs the SPPI test and the resulting classification of financial assets, and no higher-precedence overlapping document in the context competes with it on this issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about SPPI and classification of financial assets, which IFRS 9 directly governs."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.1",
+          "4.1.2",
+          "4.1.2A",
+          "4.1.3",
+          "4.1.4",
+          "B4.1.7",
+          "B4.1.10",
+          "B4.1.10A",
+          "B4.1.11",
+          "B4.1.12",
+          "B4.1.18"
+        ],
+        "reason": "These paragraphs directly govern the SPPI assessment, including contractual terms that can change timing or amount of cash flows, and the resulting classification outcomes."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs17",
+        "references": [
+          "10",
+          "11",
+          "13"
+        ],
+        "reason": "These paragraphs address separation of components in insurance contracts and only point to IFRS 9 in a different scope context."
+      },
+      {
+        "document": "ias32",
+        "references": [
+          "11",
+          "15",
+          "16",
+          "17"
+        ],
+        "reason": "These paragraphs concern liability-versus-equity classification and do not govern the SPPI test for financial assets."
+      },
+      {
+        "document": "ias39",
+        "references": [
+          "74",
+          "81",
+          "86",
+          "88",
+          "89",
+          "95"
+        ],
+        "reason": "These paragraphs deal with hedge accounting rather than SPPI classification of financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets that satisfy SPPI and are held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11",
+            "B4.1.12",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "amortised_cost"
+      ]
+    },
+    {
+      "family": "Financial assets that satisfy SPPI and are held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2A",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11",
+            "B4.1.12",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_oci"
+      ]
+    },
+    {
+      "family": "Financial assets that do not qualify for SPPI-based classification or otherwise fall outside the amortised cost/FVOCI models",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.4",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_profit"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised Cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats this as a top-level measurement category when the asset passes SPPI and is held in a hold-to-collect business model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair Value through Other Comprehensive Income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 treats this as a distinct top-level measurement category when the asset passes SPPI and is held in a collect-and-sell business model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair Value through Profit or Loss",
+      "normalized_label": "fair_value_profit",
+      "rationale_for_inclusion": "IFRS 9 treats this as the residual top-level measurement category when SPPI-based classification is not met or the asset is otherwise not classified at amortised cost or FVOCI."
+    }
+  ]
+}

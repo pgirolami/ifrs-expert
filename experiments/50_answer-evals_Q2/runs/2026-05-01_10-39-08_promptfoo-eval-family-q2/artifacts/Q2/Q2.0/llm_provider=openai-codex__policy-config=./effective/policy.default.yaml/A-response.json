@@ -1,0 +1,81 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si des flux contractuels variables ou contingents peuvent satisfaire au critère SPPI (« prêt basique ») d’IFRS 9 et, par conséquent, quelles bases de classement ultérieur d’un actif financier restent ouvertes.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9", "ias39"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS for overlapping classification and cash-flow-characteristics questions, so IFRS 9 is the single governing lineage for the SPPI assessment of financial assets and IAS 39 is discarded.",
+    "discarded_due_to_overlap": ["ias39"],
+    "residual_uncertainty": "Low uncertainty because the question directly concerns the SPPI test and resulting classification of financial assets, which is expressly governed by IFRS 9."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "4.1.4", "B4.1.7", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.13", "B4.1.14", "B4.1.18"],
+        "reason": "These paragraphs directly govern whether contingent or cash-flow-changing contractual terms meet SPPI and how that affects classification."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.7A", "B4.1.8A", "B4.1.9", "B4.1.9A", "B4.1.9B", "B4.1.9C", "B4.1.9D", "B4.1.9E", "B4.1.12", "B4.1.12A", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17"],
+        "reason": "These paragraphs clarify the meaning of a basic lending arrangement and constrain how modified, contingent, leveraged, prepaid or non-recourse cash flows are analysed under SPPI."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs17",
+        "references": ["33", "34", "36", "B59", "B74", "B75", "B76", "B96", "B97", "B113"],
+        "reason": "These paragraphs address insurance contract cash flows and discounting, not SPPI classification of financial assets under IFRS 9."
+      },
+      {
+        "document": "ias2",
+        "references": ["6", "7", "18"],
+        "reason": "These paragraphs relate to inventories and financing components in inventory purchases, not the SPPI test for financial assets."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Debt financial assets with contractual cash flows that satisfy SPPI, leaving cost-based classification models available subject to business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.13", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost", "fvoci_debt"]
+    },
+    {
+      "family": "Debt financial assets whose contractual cash flows fail SPPI because contingent or modified terms introduce exposure inconsistent with a basic lending arrangement",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.7A", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.10A", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.17"]
+        }
+      ],
+      "mapped_approaches": ["fvtpl"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 permits amortised cost when SPPI is met and the business model is to hold assets to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fvoci_debt",
+      "rationale_for_inclusion": "IFRS 9 permits FVOCI for debt assets when SPPI is met and the business model is achieved by both collecting contractual cash flows and selling assets."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fvtpl",
+      "rationale_for_inclusion": "IFRS 9 requires FVTPL when the contractual cash flows do not qualify as SPPI, including where contingent terms create exposure inconsistent with a basic lending arrangement."
+    }
+  ]
+}

@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
+import yaml
+
 
 def _repo_root() -> Path:
     """Return repository root."""
@@ -218,6 +220,30 @@ def test_builder_rewrites_exec_provider_to_absolute_script_path(tmp_path: Path) 
     generated = builder.build_text(output_path=output_path)
 
     assert f"exec:uv run python {_repo_root() / 'scripts' / 'run_answer.py'}" in generated
+
+
+def test_family_javascript_assertions_do_not_end_with_dangling_operator() -> None:
+    """JavaScript assertions should be syntactically complete before Promptfoo compiles them."""
+    questions_root = _repo_root() / "experiments" / "00_QUESTIONS"
+    for family_path in sorted(questions_root.glob("*/family.yaml")):
+        family = yaml.safe_load(family_path.read_text(encoding="utf-8"))
+        assert isinstance(family, dict), f"Expected mapping in {family_path}"
+
+        assertions = family.get("assert", [])
+        assert isinstance(assertions, list), f"Expected assert list in {family_path}"
+
+        for assertion_index, assertion in enumerate(assertions):
+            if not isinstance(assertion, dict):
+                continue
+            if assertion.get("type") != "javascript":
+                continue
+
+            value = assertion.get("value")
+            assert isinstance(value, str), f"Expected string assertion value in {family_path} at index {assertion_index}"
+
+            stripped_value = value.rstrip()
+            assert not stripped_value.endswith("&&"), f"Dangling '&&' in {family_path} at assertion index {assertion_index}"
+            assert not stripped_value.endswith("||"), f"Dangling '||' in {family_path} at assertion index {assertion_index}"
 
 
 def test_builder_rewrites_retrieve_exec_provider_to_absolute_script_path(tmp_path: Path) -> None:

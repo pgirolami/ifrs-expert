@@ -10,7 +10,7 @@ assert:
       return Array.isArray(data.assumptions_fr) &&
              data.assumptions_fr.length >= 1 &&
              Array.isArray(data.approaches) &&
-             data.approaches.length >= 1 &&
+             data.approaches.length >= 1;
     description: Core structured fields are present and non-empty
 
   - type: javascript

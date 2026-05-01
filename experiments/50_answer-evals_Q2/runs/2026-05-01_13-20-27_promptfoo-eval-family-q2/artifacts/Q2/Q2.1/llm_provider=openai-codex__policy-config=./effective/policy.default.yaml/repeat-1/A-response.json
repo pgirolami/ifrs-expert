@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Évaluation du critère SPPI (« solely payments of principal and interest ») pour un actif financier dont les clauses contractuelles peuvent modifier le calendrier ou le montant des flux de trésorerie, y compris via un événement déclencheur, dans le cadre de sa classification IFRS 9.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule by first identifying the document that directly governs financial asset classification and the SPPI test; IFRS 9 is the only candidate governing standard in the provided context for this issue, so no lower-precedence or overlapping governing lineage is used.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about SPPI and classification of financial assets, which is directly governed by IFRS 9."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "4.1.4", "4.1.5", "B4.1.7", "B4.1.7A", "B4.1.8A", "B4.1.9", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14", "B4.1.18"],
+        "reason": "These paragraphs directly govern the SPPI assessment for contractual terms that can change the timing or amount of cash flows and the resulting classification outcomes."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs19",
+        "references": ["44", "56B"],
+        "reason": "These paragraphs concern disclosure consequences of financial instrument categories and contingent cash flow terms, not the governing classification or SPPI test itself."
+      },
+      {
+        "document": "ias39",
+        "references": ["74", "81", "86", "88", "95", "103"],
+        "reason": "This material relates to hedge accounting rather than the IFRS 9 SPPI classification issue raised by the question."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Subsequent measurement for financial assets with SPPI cash flows held to collect contractual cash flows",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "4.1.3", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Subsequent measurement for financial assets with SPPI cash flows held both to collect contractual cash flows and to sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "4.1.3", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.12", "B4.1.12A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Residual or designated fair value measurement when financial assets do not fall into the SPPI-based categories or are designated to eliminate an accounting mismatch",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "4.1.5", "B4.1.7A", "B4.1.8A", "B4.1.9", "B4.1.14", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a top-level measurement category when the business model is hold to collect and the contractual cash flows satisfy SPPI."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a separate top-level measurement category when the business model is both collecting contractual cash flows and selling, and the cash flows satisfy SPPI."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the residual top-level category when the asset is not measured at amortised cost or fair value through other comprehensive income, and it also permits designation into this category in specified circumstances."
+    }
+  ]
+}

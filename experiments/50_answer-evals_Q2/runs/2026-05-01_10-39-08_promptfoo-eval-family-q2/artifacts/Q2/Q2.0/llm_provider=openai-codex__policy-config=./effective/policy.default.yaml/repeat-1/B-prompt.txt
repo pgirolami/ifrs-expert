@@ -1,0 +1,450 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ifrs9" document_type="IFRS-S" document_kind="standard">
+<chunk id="46551" doc_uid="ifrs9" paragraph="4.1.1" score="0.0000">
+Unless paragraph 4.1.5 applies, an entity shall classify financial assets as subsequently measured at amortised cost, fair value through other comprehensive income or fair value through profit or loss on the basis of both:
+(a)the entity’s business model for managing the financial assets and
+(b)the contractual cash flow characteristics of the financial asset.
+</chunk>
+
+<chunk id="46552" doc_uid="ifrs9" paragraph="4.1.2" score="0.0000">
+A financial asset shall be measured at amortised cost if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is to hold financial assets in order to collect contractual cash flows and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+</chunk>
+
+<chunk id="46553" doc_uid="ifrs9" paragraph="4.1.2A" score="0.0000">
+A financial asset shall be measured at fair value through other comprehensive income if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+</chunk>
+
+<chunk id="46554" doc_uid="ifrs9" paragraph="4.1.3" score="0.0000">
+For the purpose of applying paragraphs 4.1.2(b) and 4.1.2A(b) :
+(a)principal is the fair value of the financial asset at initial recognition. Paragraph B4.1.7B provides additional guidance on the meaning of principal.
+(b)interest consists of consideration for the time value of money, for the credit risk associated with the principal amount outstanding during a particular period of time and for other basic lending risks and costs, as well as a profit margin. Paragraphs B4.1.7A and B4.1.9A⁠–⁠B4.1.9E provide additional guidance on the meaning of interest, including the meaning of the time value of money.
+</chunk>
+
+<chunk id="46555" doc_uid="ifrs9" paragraph="4.1.4" score="0.0000">
+A financial asset shall be measured at fair value through profit or loss unless it is measured at amortised cost in accordance with paragraph 4.1.2 or at fair value through other comprehensive income in accordance with paragraph 4.1.2A. However an entity may make an irrevocable election at initial recognition for particular investments in equity instruments that would otherwise be measured at fair value through profit or loss to present subsequent changes in fair value in other comprehensive income (see paragraphs 5.7.5⁠–⁠5.7.6). E13, E14
+</chunk>
+
+<chunk id="46558" doc_uid="ifrs9" paragraph="4.1.5" score="0.0000">
+Despite paragraphs 4.1.1⁠–⁠4.1.4, an entity may, at initial recognition, irrevocably designate a financial asset as measured at fair value through profit or loss if doing so eliminates or significantly reduces a measurement or recognition inconsistency (sometimes referred to as an ‘accounting mismatch’) that would otherwise arise from measuring assets or liabilities or recognising the gains and losses on them on different bases (see paragraphs B4.1.29⁠–⁠B4.1.32).
+</chunk>
+
+<chunk id="46773" doc_uid="ifrs9" paragraph="B4.1.7" score="0.0000">
+Paragraph 4.1.1(b) requires an entity to classify a financial asset on the basis of its contractual cash flow characteristics if the financial asset is held within a business model whose objective is to hold assets to collect contractual cash flows or within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets, unless paragraph 4.1.5 applies. To do so, the condition in paragraphs 4.1.2(b) and 4.1.2A(b) requires an entity to determine whether the asset’s contractual cash flows are solely payments of principal and interest on the principal amount outstanding.
+</chunk>
+
+<chunk id="46774" doc_uid="ifrs9" paragraph="B4.1.7A" score="0.6682">
+Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+</chunk>
+
+<chunk id="46778" doc_uid="ifrs9" paragraph="B4.1.8A" score="0.0000">
+In assessing whether the contractual cash flows of a financial asset are consistent with a basic lending arrangement, an entity may have to consider the different elements of interest separately. The assessment of interest focuses on what an entity is being compensated for, rather than how much compensation an entity receives. Nonetheless, the amount of compensation an entity receives may indicate that the entity is being compensated for something other than basic lending risks and costs. Contractual cash flows are inconsistent with a basic lending arrangement if they are indexed to a variable that is not a basic lending risk or cost (for example, the value of equity instruments or the price of a commodity) or if they represent a share of the debtor’s revenue or profit, even if such contractual terms are common in the market in which the entity operates.
+</chunk>
+
+<chunk id="46779" doc_uid="ifrs9" paragraph="B4.1.9" score="0.0000">
+Leverage is a contractual cash flow characteristic of some financial assets. Leverage increases the variability of the contractual cash flows with the result that they do not have the economic characteristics of interest. Stand‑alone option, forward and swap contracts are examples of financial assets that include such leverage. Thus, such contracts do not meet the condition in paragraphs 4.1.2(b) and 4.1.2A(b) and cannot be subsequently measured at amortised cost or fair value through other comprehensive income.
+</chunk>
+
+<chunk id="46785" doc_uid="ifrs9" paragraph="B4.1.10" score="0.7061">
+If a financial asset contains a contractual term that could change the timing or amount of contractual cash flows (for example, if the asset can be prepaid before maturity or its term can be extended), the entity must determine whether the contractual cash flows that could arise over the life of the instrument due to that contractual term are solely payments of principal and interest on the principal amount outstanding. To make this determination, the entity must assess the contractual cash flows that could arise both before, and after, the change in contractual cash flows, irrespective of the probability of the change in contractual cash flows occurring. The entity may also need to assess the nature of any contingent event (ie the trigger) that would change the timing or amount of the contractual cash flows. While the nature of the contingent event in itself is not a determinative factor in assessing whether the contractual cash flows are solely payments of principal and interest, it may be an indicator. For example, compare a financial instrument with an interest rate that is reset to a higher rate if the debtor misses a particular number of payments to a financial instrument with an interest rate that is reset to a higher rate if a specified equity index reaches a particular level. It is more likely in the former case that the contractual cash flows over the life of the instrument will be solely payments of principal and interest on the principal amount outstanding because of the relationship between missed payments and an increase in credit risk. In the former case, the nature of the contingent event relates directly to, and the contractual cash flows change in the same direction as, changes in basic lending risks and costs. (See also paragraph B4.1.18.)
+</chunk>
+
+<chunk id="46786" doc_uid="ifrs9" paragraph="B4.1.10A" score="0.6668">
+In some cases, a contingent feature gives rise to contractual cash flows that are consistent with a basic lending arrangement both before and after the change in contractual cash flows, but the nature of the contingent event itself does not relate directly to changes in basic lending risks and costs. For example, the interest rate on a loan is adjusted by a specified amount if the debtor achieves a contractually specified reduction in carbon emissions. In such a case, when applying paragraph B4.1.10, the financial asset has contractual cash flows that are solely payments of principal and interest on the principal amount outstanding if, and only if, in all contractually possible scenarios, the contractual cash flows would not be significantly different from the contractual cash flows on a financial instrument with identical contractual terms, but without such a contingent feature. In some circumstances, the entity may be able to make that determination by performing a qualitative assessment; but, in other circumstances, it may be necessary to perform a quantitative assessment. If it is clear, with little or no analysis, that the contractual cash flows are not significantly different, an entity need not perform a detailed assessment.
+</chunk>
+
+<chunk id="46787" doc_uid="ifrs9" paragraph="B4.1.11" score="0.6745">
+The following are examples of contractual terms that result in contractual cash flows that are solely payments of principal and interest on the principal amount outstanding:
+(a)a variable interest rate that consists of consideration for the time value of money, the credit risk associated with the principal amount outstanding during a particular period of time (the consideration for credit risk may be determined at initial recognition only, and so may be fixed) and other basic lending risks and costs, as well as a profit margin;
+(b)a contractual term that permits the issuer (ie the debtor) to prepay a debt instrument or permits the holder (ie the creditor) to put a debt instrument back to the issuer before maturity and the prepayment amount substantially represents unpaid amounts of principal and interest on the principal amount outstanding, which may include reasonable compensation for the early termination of the contract; and
+(c)a contractual term that permits the issuer or the holder to extend the contractual term of a debt instrument (ie an extension option) and the terms of the extension option result in contractual cash flows during the extension period that are solely payments of principal and interest on the principal amount outstanding, which may include reasonable additional compensation for the extension of the contract.
+</chunk>
+
+<chunk id="46788" doc_uid="ifrs9" paragraph="B4.1.12" score="0.0000">
+Despite paragraph B4.1.10, a financial asset that would otherwise meet the condition in paragraphs 4.1.2(b) and 4.1.2A(b) but does not do so only as a result of a contractual term that permits (or requires) the issuer to prepay a debt instrument or permits (or requires) the holder to put a debt instrument back to the issuer before maturity is eligible to be measured at amortised cost or fair value through other comprehensive income (subject to meeting the condition in paragraph 4.1.2(a) or the condition in paragraph 4.1.2A(a)) if:
+(a)the entity acquires or originates the financial asset at a premium or discount to the contractual par amount;
+(b)the prepayment amount substantially represents the contractual par amount and accrued (but unpaid) contractual interest, which may include reasonable compensation for the early termination of the contract; and
+(c)when the entity initially recognises the financial asset, the fair value of the prepayment feature is insignificant.
+</chunk>
+
+<chunk id="46789" doc_uid="ifrs9" paragraph="B4.1.12A" score="0.0000">
+For the purpose of applying paragraphs B4.1.11(b) and B4.1.12(b), irrespective of the event or circumstance that causes the early termination of the contract, a party may pay or receive reasonable compensation for that early termination. For example, a party may pay or receive reasonable compensation when it chooses to terminate the contract early (or otherwise causes the early termination to occur).
+</chunk>
+
+<chunk id="46790" doc_uid="ifrs9" paragraph="B4.1.13" score="0.0000">
+The following examples illustrate contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. This list of examples is not exhaustive.
+InstrumentAInstrumentAisabondwithastatedmaturitydate.Paymentsofprincipalandinterestontheprincipalamountoutstandingarelinkedtoaninflationindexofthecurrencyinwhichtheinstrumentisissued.Theinflationlinkisnotleveragedandtheprincipalisprotected.The contractual cash flows are solely payments of principal and interest on the principal amount outstanding. Linking payments of principal and interest on the principal amount outstanding to an unleveraged inflation index resets the time value of money to a current level. In other words, the interest rate on the instrument reflects ‘real’ interest. Thus, the interest amounts are consideration for the time value of money on the principal amount outstanding.
+However, if the interest payments were indexed to another variable such as the debtor’s performance (eg the debtor’s net income) or an equity index, the contractual cash flows are not payments of principal and interest on the principal amount outstanding (unless the indexing to the debtor’s performance results in an adjustment that only compensates the holder for changes in the credit risk of the instrument, such that contractual cash flows are solely payments of principal and interest). That is because the contractual cash flows reflect a return that is inconsistent with a basic lending arrangement (see paragraph B4.1.7A).
+InstrumentBInstrumentBisavariableinterestrateinstrumentwithastatedmaturitydatethatpermitstheborrowertochoosethemarketinterestrateonanongoingbasis.Forexample,ateachinterestrateresetdate,theborrowercanchoosetopaythree‑monthLIBORforathree‑monthtermorone-monthLIBORforaone-monthterm.The contractual cash flows are solely payments of principal and interest on the principal amount outstanding as long as the interest paid over the life of the instrument reflects consideration for the time value of money, for the credit risk associated with the instrument and for other basic lending risks and costs, as well as a profit margin (see paragraph B4.1.7A). The fact that the LIBOR interest rate is reset during the life of the instrument does not in itself disqualify the instrument.
+However, if the borrower is able to choose to pay a one-month interest rate that is reset every three months, the interest rate is reset with a frequency that does not match the tenor of the interest rate. Consequently, the time value of money element is modified. Similarly, if an instrument has a contractual interest rate that is based on a term that can exceed the instrument’s remaining life (for example, if an instrument with a five‑year maturity pays a variable rate that is reset periodically but always reflects a five‑year maturity), the time value of money element is modified. That is because the interest payable in each period is disconnected from the interest period.
+In such cases, the entity must qualitatively or quantitatively assess the contractual cash flows against those on an instrument that is identical in all respects except the tenor of the interest rate matches the interest period to determine if the cash flows are solely payments of principal and interest on the principal amount outstanding. (But see paragraph B4.1.9E for guidance on regulated interest rates.)
+For example, in assessing a bond with a five‑year term that pays a variable rate that is reset every six months but always reflects a five‑year maturity, an entity considers the contractual cash flows on an instrument that resets every six months to a six‑month interest rate but is otherwise identical.
+The same analysis would apply if the borrower is able to choose between the lender’s various published interest rates (eg the borrower can choose between the lender’s published one‑month variable interest rate and the lender’s published three‑month variable interest rate).
+InstrumentCInstrumentCisabondwithastatedmaturitydateandpaysavariablemarketinterestrate.Thatvariableinterestrateiscapped.The contractual cash flows of both:
+(a)an instrument that has a fixed interest rate and
+(b)an instrument that has a variable interest rate
+are payments of principal and interest on the principal amount outstanding as long as the interest reflects consideration for the time value of money, for the credit risk associated with the instrument during the term of the instrument and for other basic lending risks and costs, as well as a profit margin. (See paragraph B4.1.7A)
+Consequently, an instrument that is a combination of (a) and (b) (eg a bond with an interest rate cap) can have cash flows that are solely payments of principal and interest on the principal amount outstanding. Such a contractual term may reduce cash flow variability by setting a limit on a variable interest rate (eg an interest rate cap or floor) or increase the cash flow variability because a fixed rate becomes variable.
+InstrumentDInstrumentDisafullrecourseloanandissecuredbycollateral.
+InstrumentEInstrumentEisissuedbyaregulatedbankandhasastatedmaturitydate.Theinstrumentpaysafixedinterestrateandallcontractualcashflowsarenon-discretionary.However,theissuerissubjecttolegislationthatpermitsorrequiresanationalresolvingauthoritytoimposelossesonholdersofparticularinstruments,includingInstrumentE,inparticularcircumstances.Forexample,thenationalresolvingauthorityhasthepowertowritedowntheparamountofInstrumentEortoconvertitintoafixednumberoftheissuer’sordinarysharesifthenationalresolvingauthoritydeterminesthattheissuerishavingseverefinancialdifficulties,needsadditionalregulatorycapitaloris‘failing’.The holder would analyse the contractual terms of the financial instrument to determine whether they give rise to cash flows that are solely payments of principal and interest on the principal amount outstanding and thus are consistent with a basic lending arrangement.
+That analysis would not consider the payments that arise only as a result of the national resolving authority’s power to impose losses on the holders of Instrument E. That is because that power, and the resulting payments, are not contractual terms of the financial instrument.
+In contrast, the contractual cash flows would not be solely payments of principal and interest on the principal amount outstanding if the contractual terms of the financial instrument permit or require the issuer or another entity to impose losses on the holder (eg by writing down the par amount or by converting the instrument into a fixed number of the issuer’s ordinary shares) as long as those contractual terms are genuine, even if the probability is remote that such a loss will be imposed.
+InstrumentEAInstrumentEAisaloanwithaninterestratethatisadjustedeveryreportingperiodbyafixednumberofbasispointsifthedebtorachievesacontractuallyspecifiedreductionincarbonemissionsduringtheprecedingreportingperiod.Themaximumpossiblecumulativeadjustmentswouldnotsignificantlychangetheinterestrateontheloan.The contractual cash flows are solely payments of principal and interest on the principal amount outstanding.
+The entity considers whether the contractual cash flows that could arise both before and after each change in contractual cash flows are solely payments of principal and interest (see paragraph B4.1.10).
+If the contingent event of achieving the carbon emissions target occurs, the interest rate is adjusted by a fixed number of basis points, resulting in contractual cash flows that are consistent with a basic lending arrangement. It is only because the nature of the contingent event itself does not relate directly to changes in basic lending risks and costs that the entity cannot conclude – without further assessment – whether the cash flows on the financial asset are solely payments of principal and interest.
+The entity therefore assesses whether, in all contractually possible scenarios, the contractual cash flows would not be significantly different from the contractual cash flows on a financial instrument with identical contractual terms, but without the contingent feature linked to carbon emissions (see paragraph B4.1.10A).
+Because any adjustments over the life of the instrument would not result in contractual cash flows that are significantly different, the entity concludes that the loan has contractual cash flows that are solely payments of principal and interest on the principal amount outstanding.
+</chunk>
+
+<chunk id="46791" doc_uid="ifrs9" paragraph="B4.1.14" score="0.0000">
+The following examples illustrate contractual cash flows that are not solely payments of principal and interest on the principal amount outstanding. This list of examples is not exhaustive.
+InstrumentFInstrumentFisabondthatisconvertibleintoafixednumberofequityinstrumentsoftheissuer.The holder would analyse the convertible bond in its entirety.
+The contractual cash flows are not payments of principal and interest on the principal amount outstanding because they reflect a return that is inconsistent with a basic lending arrangement (see paragraph B4.1.7A); ie the return is linked to the value of the equity of the issuer.
+InstrumentGInstrumentGisaloanthatpaysaninversefloatinginterestrate(ietheinterestratehasaninverserelationshiptomarketinterestrates).The contractual cash flows are not solely payments of principal and interest on the principal amount outstanding.
+The interest amounts are not consideration for the time value of money on the principal amount outstanding.
+InstrumentHInstrumentHisaperpetualinstrumentbuttheissuermaycalltheinstrumentatanypointandpaytheholdertheparamountplusaccruedinterestdue.InstrumentHpaysamarketinterestratebutpaymentofinterestcannotbemadeunlesstheissuerisabletoremainsolventimmediatelyafterwards.Deferredinterestdoesnotaccrueadditionalinterest.The contractual cash flows are not payments of principal and interest on the principal amount outstanding. That is because the issuer may be required to defer interest payments and additional interest does not accrue on those deferred interest amounts. As a result, interest amounts are not consideration for the time value of money on the principal amount outstanding.
+If interest accrued on the deferred amounts, the contractual cash flows could be payments of principal and interest on the principal amount outstanding.
+The fact that Instrument H is perpetual does not in itself mean that the contractual cash flows are not payments of principal and interest on the principal amount outstanding. In effect, a perpetual instrument has continuous (multiple) extension options. Such options may result in contractual cash flows that are payments of principal and interest on the principal amount outstanding if interest payments are mandatory and must be paid in perpetuity.
+Also, the fact that Instrument H is callable does not mean that the contractual cash flows are not payments of principal and interest on the principal amount outstanding unless it is callable at an amount that does not substantially reflect payment of outstanding principal and interest on that principal amount outstanding. Even if the callable amount includes an amount that reasonably compensates the holder for the early termination of the instrument, the contractual cash flows could be payments of principal and interest on the principal amount outstanding. (See also paragraph B4.1.12.)
+InstrumentIInstrumentIisaloanwithaninterestratethatisadjustedeveryreportingperiodtotrackthemovementsinamarket-determinedcarbonpriceindexduringtheprecedingreportingperiod.The contractual cash flows are not solely payments of principal and interest on the principal amount outstanding.
+The contractual cash flows are indexed to a variable (the carbon price index), which is not a basic lending risk or cost. The contractual cash flows are therefore inconsistent with a basic lending arrangement (see paragraph B4.1.8A).
+</chunk>
+
+<chunk id="46796" doc_uid="ifrs9" paragraph="B4.1.18" score="0.0000">
+A contractual cash flow characteristic does not affect the classification of the financial asset if it could have only a de minimis effect on the contractual cash flows of the financial asset. To make this determination, an entity must consider the possible effect of the contractual cash flow characteristic in each reporting period and cumulatively over the life of the financial instrument. In addition, if a contractual cash flow characteristic could have an effect on the contractual cash flows that is more than de minimis (either in a single reporting period or cumulatively) but that cash flow characteristic is not genuine, it does not affect the classification of a financial asset. A cash flow characteristic is not genuine if it affects the instrument’s contractual cash flows only on the occurrence of an event that is extremely rare, highly abnormal and very unlikely to occur.
+</chunk>
+</Document>
+</context>
+
+<question>
+Un instrument assorti de termes contractuels pouvant modifier l'échéancier ou le montant des flux de
+trésorerie (par exemple, à la suite de la survenance d'un événement déclencheur) peut-il respecter le critère
+de « prêt basique » (SPPI) ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation du critère SPPI (« prêt basique ») en IFRS 9 pour un actif financier dont des termes contractuels peuvent modifier le calendrier ou le montant des flux de trésorerie, notamment en cas d’événement déclencheur.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs9"
+    ],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the precedence rule strictly and selected IFRS 9 because it is the only IFRS standard in the context that directly governs classification of financial assets and the SPPI test; no overlapping IAS standard in the context governs this same classification issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is directly about SPPI under IFRS 9, and the cited IFRS 9 paragraphs explicitly address contingent or changing contractual cash flows."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.1",
+          "4.1.2",
+          "4.1.2A",
+          "4.1.3",
+          "4.1.4"
+        ],
+        "reason": "These paragraphs directly govern classification outcomes and make SPPI a core condition for amortised cost and FVOCI."
+      },
+      {
+        "document": "ifrs9",
+        "references": [
+          "B4.1.7",
+          "B4.1.7A",
+          "B4.1.8A",
+          "B4.1.9"
+        ],
+        "reason": "These paragraphs directly define the basic lending arrangement concept used in the SPPI analysis."
+      },
+      {
+        "document": "ifrs9",
+        "references": [
+          "B4.1.10",
+          "B4.1.10A",
+          "B4.1.11",
+          "B4.1.12",
+          "B4.1.12A",
+          "B4.1.13",
+          "B4.1.14",
+          "B4.1.18"
+        ],
+        "reason": "These paragraphs directly address contractual terms that can change the timing or amount of cash flows and when such features can or cannot still satisfy SPPI."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": [
+          "4.1.5"
+        ],
+        "reason": "This paragraph adds the distinct classification possibility of FVTPL by designation despite the default classification logic."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs17",
+        "references": [
+          "33",
+          "34",
+          "36",
+          "B59",
+          "B96",
+          "B97",
+          "B98",
+          "B113"
+        ],
+        "reason": "These paragraphs address insurance contract cash flows and discounting, not IFRS 9 SPPI classification of financial assets."
+      },
+      {
+        "document": "ias39",
+        "references": [
+          "74",
+          "81",
+          "88",
+          "89",
+          "95",
+          "102D",
+          "AG108"
+        ],
+        "reason": "These paragraphs concern hedge accounting rather than the SPPI classification test for financial assets."
+      },
+      {
+        "document": "ias2",
+        "references": [
+          "6",
+          "18"
+        ],
+        "reason": "These paragraphs concern inventories and financing elements in purchase arrangements, not the SPPI test under IFRS 9."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Financial assets with SPPI cash flows held in a hold-to-collect business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11",
+            "B4.1.12",
+            "B4.1.13",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "amortised_cost"
+      ]
+    },
+    {
+      "family": "Financial assets with SPPI cash flows held in a hold-to-collect-and-sell business model",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.2A",
+            "B4.1.10",
+            "B4.1.10A",
+            "B4.1.11",
+            "B4.1.12",
+            "B4.1.13",
+            "B4.1.18"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_oci"
+      ]
+    },
+    {
+      "family": "Financial assets not qualifying for the SPPI-based categories or otherwise classified under the residual category",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": [
+            "4.1.4",
+            "4.1.5",
+            "B4.1.9",
+            "B4.1.14"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_profit_loss"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised Cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 treats amortised cost as a top-level measurement category when the asset has SPPI cash flows and is held to collect contractual cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair Value through Other Comprehensive Income",
+      "normalized_label": "fair_value_oci",
+      "rationale_for_inclusion": "IFRS 9 treats FVOCI as a top-level measurement category when the asset has SPPI cash flows and is managed both to collect and to sell."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair Value through Profit or Loss",
+      "normalized_label": "fair_value_profit_loss",
+      "rationale_for_inclusion": "IFRS 9 treats FVTPL as the residual top-level measurement category, including where contractual features cause the cash flows not to be solely payments of principal and interest."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "paragraph attribute",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ]
+}

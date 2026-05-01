@@ -1,0 +1,125 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-01
+
+## Question
+
+**Utilisateur**:
+>Un instrument dont les termes contractuels peuvent modifier l’échéancier ou le montant des flux de trésorerie, notamment en cas de survenance d’un événement déclencheur, peut-il satisfaire au critère de « prêt basique » (SPPI) ?
+
+**Reformulation**:
+>Évaluation du critère SPPI (« solely payments of principal and interest ») pour un actif financier dont les clauses contractuelles peuvent modifier le calendrier ou le montant des flux de trésorerie, y compris via un événement déclencheur, dans le cadre de sa classification IFRS 9.
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias39`)
+   - IFRS-S (standard) (`ifrs9`, `ifrs19`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs9`)
+
+## Hypothèses
+   - On suppose qu’il s’agit d’un actif financier entrant dans le champ d’IFRS 9.
+   - On suppose que les faits fournis ne permettent pas de conclure sur le modèle économique; la question porte principalement sur le test SPPI des clauses modifiant le calendrier ou le montant des flux.
+   - On suppose qu’aucune autre caractéristique contractuelle non mentionnée (par exemple levier, indexation à des actions ou matières premières) ne modifie l’analyse.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Oui, un tel instrument peut satisfaire au critère SPPI si, dans tous les scénarios contractuellement possibles, les flux restent des paiements de principal et d’intérêt et demeurent compatibles avec un prêt basique. Si la clause introduit une exposition à des risques non basiques ou des flux significativement différents, le test SPPI échoue et la mesure bascule vers la juste valeur par résultat.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Coût amorti | OUI SOUS CONDITIONS | - Les flux contractuels, dans tous les scénarios contractuellement possibles, restent uniquement des paiements de principal et d’intérêt.<br>- Si l’événement déclencheur n’est pas directement lié aux risques et coûts de prêt basiques, les flux ne sont pas significativement différents de ceux d’un instrument identique sans cette clause.<br>- L’actif est détenu dans un modèle économique visant à encaisser les flux contractuels. |
+| 2. Juste valeur par autres éléments du résultat global | OUI SOUS CONDITIONS | - Les flux contractuels, avant et après activation de la clause, satisfont au test SPPI.<br>- Si l’événement déclencheur n’est pas directement lié aux risques et coûts de prêt basiques, les flux ne sont pas significativement différents de ceux d’un instrument identique sans cette clause.<br>- L’actif est détenu dans un modèle économique visant à la fois l’encaissement des flux contractuels et la vente. |
+| 3. Juste valeur par résultat | OUI SOUS CONDITIONS | - La clause fait échouer le test SPPI en introduisant des flux non compatibles avec un prêt basique.<br>- Ou l’entité désigne irrévocablement l’actif à la JVR à l’origine pour éliminer ou réduire significativement une incohérence comptable. |
+
+### 1. Coût amorti
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - Les flux contractuels, dans tous les scénarios contractuellement possibles, restent uniquement des paiements de principal et d’intérêt.
+   - Si l’événement déclencheur n’est pas directement lié aux risques et coûts de prêt basiques, les flux ne sont pas significativement différents de ceux d’un instrument identique sans cette clause.
+   - L’actif est détenu dans un modèle économique visant à encaisser les flux contractuels.
+
+**Raisonnement**:
+Dans cette situation, une clause pouvant modifier l’échéancier ou le montant des flux n’exclut pas automatiquement SPPI; IFRS 9 exige d’examiner les flux pouvant survenir avant et après le changement, indépendamment de sa probabilité, et de vérifier qu’ils restent uniquement principal et intérêts (IFRS 9 B4.1.10). Si cette condition est satisfaite, l’actif peut relever du coût amorti, mais seulement si le modèle économique est de détenir pour encaisser les flux contractuels (IFRS 9 4.1.2). Si l’événement déclencheur ne se rattache pas directement aux risques et coûts de prêt basiques, il faut en plus vérifier que les flux ne seraient pas significativement différents d’un instrument identique sans cette clause (IFRS 9 B4.1.10A).
+
+**Implications pratiques**: Le coût amorti est possible seulement si la clause variable passe le test SPPI et si le modèle économique est « hold to collect ».
+
+**Référence**:
+ - ifrs9 4.1.2
+
+    >A financial asset shall be measured at amortised cost if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is to hold financial assets in order to collect contractual cash flows and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 B4.1.10
+
+    >If a financial asset contains a contractual term that could change the timing or amount of contractual cash flows (for example, if the asset can be prepaid before maturity or its term can be extended), the entity must determine whether the contractual cash flows that could arise over the life of the instrument due to that contractual term are solely payments of principal and interest on the principal amount outstanding. To make this determination, the entity must assess the contractual cash flows that could arise both before, and after, the change in contractual cash flows, irrespective of the probability of the change in contractual cash flows occurring. The entity may also need to assess the nature of any contingent event (ie the trigger) that would change the timing or amount of the contractual cash flows. While the nature of the contingent event in itself is not a determinative factor in assessing whether the contractual cash flows are solely payments of principal and interest, it may be an indicator. For example, compare a financial instrument with an interest rate that is reset to a higher rate if the debtor misses a particular number of payments to a financial instrument with an interest rate that is reset to a higher rate if a specified equity index reaches a particular level. It is more likely in the former case that the contractual cash flows over the life of the instrument will be solely payments of principal and interest on the principal amount outstanding because of the relationship between missed payments and an increase in credit risk. In the former case, the nature of the contingent event relates directly to, and the contractual cash flows change in the same direction as, changes in basic lending risks and costs. (See also paragraph B4.1.18.)
+ - ifrs9 B4.1.10A
+
+    >In some cases, a contingent feature gives rise to contractual cash flows that are consistent with a basic lending arrangement both before and after the change in contractual cash flows, but the nature of the contingent event itself does not relate directly to changes in basic lending risks and costs. For example, the interest rate on a loan is adjusted by a specified amount if the debtor achieves a contractually specified reduction in carbon emissions. In such a case, when applying paragraph B4.1.10, the financial asset has contractual cash flows that are solely payments of principal and interest on the principal amount outstanding if, and only if, in all contractually possible scenarios, the contractual cash flows would not be significantly different from the contractual cash flows on a financial instrument with identical contractual terms, but without such a contingent feature. In some circumstances, the entity may be able to make that determination by performing a qualitative assessment; but, in other circumstances, it may be necessary to perform a quantitative assessment. If it is clear, with little or no analysis, that the contractual cash flows are not significantly different, an entity need not perform a detailed assessment.
+
+### 2. Juste valeur par autres éléments du résultat global
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - Les flux contractuels, avant et après activation de la clause, satisfont au test SPPI.
+   - Si l’événement déclencheur n’est pas directement lié aux risques et coûts de prêt basiques, les flux ne sont pas significativement différents de ceux d’un instrument identique sans cette clause.
+   - L’actif est détenu dans un modèle économique visant à la fois l’encaissement des flux contractuels et la vente.
+
+**Raisonnement**:
+Dans cette situation, la présence d’une clause modifiant les flux n’empêche pas à elle seule une classification FVOCI si le test SPPI est satisfait selon l’analyse d’IFRS 9 B4.1.10 et, le cas échéant, B4.1.10A. En plus, IFRS 9 exige ici un modèle économique dont l’objectif est à la fois de percevoir les flux contractuels et de vendre les actifs financiers (IFRS 9 4.1.2A). Ainsi, l’instrument peut relever du FVOCI seulement si la clause demeure compatible avec un prêt basique et si ce modèle économique précis est établi.
+
+**Implications pratiques**: Le FVOCI est possible si la clause variable passe le test SPPI et si le modèle économique est « collect and sell ».
+
+**Référence**:
+ - ifrs9 4.1.2A
+
+    >A financial asset shall be measured at fair value through other comprehensive income if both of the following conditions are met:
+(a)the financial asset is held within a business model whose objective is achieved by both collecting contractual cash flows and selling financial assets and
+(b)the contractual terms of the financial asset give rise on specified dates to cash flows that are solely payments of principal and interest on the principal amount outstanding.
+Paragraphs B4.1.1⁠–⁠B4.1.26 provide guidance on how to apply these conditions.
+ - ifrs9 B4.1.10
+
+    >If a financial asset contains a contractual term that could change the timing or amount of contractual cash flows (for example, if the asset can be prepaid before maturity or its term can be extended), the entity must determine whether the contractual cash flows that could arise over the life of the instrument due to that contractual term are solely payments of principal and interest on the principal amount outstanding. To make this determination, the entity must assess the contractual cash flows that could arise both before, and after, the change in contractual cash flows, irrespective of the probability of the change in contractual cash flows occurring. The entity may also need to assess the nature of any contingent event (ie the trigger) that would change the timing or amount of the contractual cash flows. While the nature of the contingent event in itself is not a determinative factor in assessing whether the contractual cash flows are solely payments of principal and interest, it may be an indicator. For example, compare a financial instrument with an interest rate that is reset to a higher rate if the debtor misses a particular number of payments to a financial instrument with an interest rate that is reset to a higher rate if a specified equity index reaches a particular level. It is more likely in the former case that the contractual cash flows over the life of the instrument will be solely payments of principal and interest on the principal amount outstanding because of the relationship between missed payments and an increase in credit risk. In the former case, the nature of the contingent event relates directly to, and the contractual cash flows change in the same direction as, changes in basic lending risks and costs. (See also paragraph B4.1.18.)
+ - ifrs9 B4.1.10A
+
+    >In some cases, a contingent feature gives rise to contractual cash flows that are consistent with a basic lending arrangement both before and after the change in contractual cash flows, but the nature of the contingent event itself does not relate directly to changes in basic lending risks and costs. For example, the interest rate on a loan is adjusted by a specified amount if the debtor achieves a contractually specified reduction in carbon emissions. In such a case, when applying paragraph B4.1.10, the financial asset has contractual cash flows that are solely payments of principal and interest on the principal amount outstanding if, and only if, in all contractually possible scenarios, the contractual cash flows would not be significantly different from the contractual cash flows on a financial instrument with identical contractual terms, but without such a contingent feature. In some circumstances, the entity may be able to make that determination by performing a qualitative assessment; but, in other circumstances, it may be necessary to perform a quantitative assessment. If it is clear, with little or no analysis, that the contractual cash flows are not significantly different, an entity need not perform a detailed assessment.
+
+### 3. Juste valeur par résultat
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La clause fait échouer le test SPPI en introduisant des flux non compatibles avec un prêt basique.
+   - Ou l’entité désigne irrévocablement l’actif à la JVR à l’origine pour éliminer ou réduire significativement une incohérence comptable.
+
+**Raisonnement**:
+Dans cette situation, la JVR est applicable si la clause de modification des flux fait échouer SPPI, par exemple si elle introduit une exposition à des risques sans lien avec un prêt basique, tels qu’un indice actions ou un prix de matière première, ou un levier (IFRS 9 B4.1.7A, B4.1.8A, B4.1.9). IFRS 9 prévoit alors la JVR comme catégorie résiduelle lorsque l’actif ne remplit pas les conditions du coût amorti ou du FVOCI (IFRS 9 4.1.4). Elle peut aussi être retenue par désignation irrévocable initiale pour éliminer ou réduire significativement une incohérence comptable (IFRS 9 4.1.5).
+
+**Implications pratiques**: Si SPPI n’est pas respecté, ou en cas de désignation pour mismatch comptable, l’instrument est mesuré à la juste valeur par résultat.
+
+**Référence**:
+ - ifrs9 4.1.4
+
+    >A financial asset shall be measured at fair value through profit or loss unless it is measured at amortised cost in accordance with paragraph 4.1.2 or at fair value through other comprehensive income in accordance with paragraph 4.1.2A. However an entity may make an irrevocable election at initial recognition for particular investments in equity instruments that would otherwise be measured at fair value through profit or loss to present subsequent changes in fair value in other comprehensive income (see paragraphs 5.7.5⁠–⁠5.7.6). E13, E14
+ - ifrs9 4.1.5
+
+    >Despite paragraphs 4.1.1⁠–⁠4.1.4, an entity may, at initial recognition, irrevocably designate a financial asset as measured at fair value through profit or loss if doing so eliminates or significantly reduces a measurement or recognition inconsistency (sometimes referred to as an ‘accounting mismatch’) that would otherwise arise from measuring assets or liabilities or recognising the gains and losses on them on different bases (see paragraphs B4.1.29⁠–⁠B4.1.32).
+ - ifrs9 B4.1.7A
+
+    >Contractual cash flows that are solely payments of principal and interest on the principal amount outstanding are consistent with a basic lending arrangement. In a basic lending arrangement, consideration for the time value of money (see paragraphs B4.1.9A⁠–⁠B4.1.9E) and credit risk are typically the most significant elements of interest. However, in such an arrangement, interest can also include consideration for other basic lending risks (for example, liquidity risk) and costs (for example, administrative costs) associated with holding the financial asset for a particular period of time. In addition, interest can include a profit margin that is consistent with a basic lending arrangement. In extreme economic circumstances, interest can be negative if, for example, the holder of a financial asset either explicitly or implicitly pays for the deposit of its money for a particular period of time (and that fee exceeds the consideration that the holder receives for the time value of money, credit risk and other basic lending risks and costs). However, contractual terms that introduce exposure to risks or volatility in the contractual cash flows that is unrelated to a basic lending arrangement, such as exposure to changes in equity prices or commodity prices, do not give rise to contractual cash flows that are solely payments of principal and interest on the principal amount outstanding. An originated or a purchased financial asset can be a basic lending arrangement irrespective of whether it is a loan in its legal form.
+ - ifrs9 B4.1.8A
+
+    >In assessing whether the contractual cash flows of a financial asset are consistent with a basic lending arrangement, an entity may have to consider the different elements of interest separately. The assessment of interest focuses on what an entity is being compensated for, rather than how much compensation an entity receives. Nonetheless, the amount of compensation an entity receives may indicate that the entity is being compensated for something other than basic lending risks and costs. Contractual cash flows are inconsistent with a basic lending arrangement if they are indexed to a variable that is not a basic lending risk or cost (for example, the value of equity instruments or the price of a commodity) or if they represent a share of the debtor’s revenue or profit, even if such contractual terms are common in the market in which the entity operates.
+ - ifrs9 B4.1.9
+
+    >Leverage is a contractual cash flow characteristic of some financial assets. Leverage increases the variability of the contractual cash flows with the result that they do not have the economic characteristics of interest. Stand‑alone option, forward and swap contracts are examples of financial assets that include such leverage. Thus, such contracts do not meet the condition in paragraphs 4.1.2(b) and 4.1.2A(b) and cannot be subsequently measured at amortised cost or fair value through other comprehensive income.

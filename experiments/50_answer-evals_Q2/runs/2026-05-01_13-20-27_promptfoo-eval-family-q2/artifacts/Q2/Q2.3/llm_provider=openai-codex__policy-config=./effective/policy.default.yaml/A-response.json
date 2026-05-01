@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation du critère SPPI (« prêt basique ») en IFRS 9 pour un actif financier dont des clauses contractuelles contingentes peuvent modifier le calendrier ou le montant des flux de trésorerie",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs9"],
+    "selected_primary_document": "ifrs9",
+    "selection_reason": "I applied the strict precedence rule and selected IFRS 9 because it is the single governing standard that directly determines SPPI classification and the resulting measurement categories for financial assets; no overlapping higher- or lower-precedence document in the provided context governs this same issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about the IFRS 9 SPPI test for financial assets, and no competing governing lineage in the provided context addresses that same classification issue."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["4.1.1", "4.1.2", "4.1.2A", "4.1.3", "B4.1.7", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.18"],
+        "reason": "These paragraphs directly govern the SPPI assessment, including contractual terms that can change timing or amount of cash flows and the resulting measurement categories."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["B4.1.7A", "B4.1.8A", "B4.1.9", "B4.1.9A", "B4.1.9B", "B4.1.9C", "B4.1.9D", "B4.1.9E", "B4.1.12", "B4.1.12A", "B4.1.13", "B4.1.14", "B4.1.15", "B4.1.16", "B4.1.16A", "B4.1.17", "B4.1.19", "B4.1.20", "B4.1.21", "B4.1.22", "B4.1.23", "B4.1.24", "B4.1.25", "B4.1.26", "4.1.4", "4.1.5"],
+        "reason": "These paragraphs clarify what is or is not a basic lending arrangement, illustrate contingent and modified cash-flow features, and confirm the fallback measurement category and fair value option."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Debt financial assets eligible for cost-based subsequent measurement when SPPI is met and the business model is hold to collect",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["amortised_cost"]
+    },
+    {
+      "family": "Debt financial assets eligible for mixed measurement when SPPI is met and the business model is both collect and sell",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.2A", "B4.1.10", "B4.1.10A", "B4.1.11", "B4.1.18"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_other_comprehensive_income"]
+    },
+    {
+      "family": "Financial assets measured at fair value through profit or loss when SPPI is not met or when other IFRS 9 classification conditions are not met",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.4", "B4.1.9", "B4.1.14", "B4.1.16", "B4.1.21", "B4.1.26"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    },
+    {
+      "family": "Optional fair value designation to eliminate or significantly reduce an accounting mismatch",
+      "authority_basis": [
+        {
+          "document": "ifrs9",
+          "references": ["4.1.5"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_through_profit_or_loss"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Amortised cost",
+      "normalized_label": "amortised_cost",
+      "rationale_for_inclusion": "IFRS 9 identifies amortised cost as a distinct subsequent measurement basis when the asset meets SPPI and is held in a hold-to-collect business model."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value through other comprehensive income",
+      "normalized_label": "fair_value_through_other_comprehensive_income",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through other comprehensive income as a distinct subsequent measurement basis when the asset meets SPPI and is held in a collect-and-sell business model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Fair value through profit or loss",
+      "normalized_label": "fair_value_through_profit_or_loss",
+      "rationale_for_inclusion": "IFRS 9 identifies fair value through profit or loss as the distinct residual measurement basis when the asset does not qualify for amortised cost or fair value through other comprehensive income, including where cash-flow features are inconsistent with a basic lending arrangement."
+    }
+  ]
+}
