@@ -1,5 +1,5 @@
 This table checks whether the expected target paragraph ranges from the question family were retrieved for each question.
-Headers use 🎯 for exact target ranges, ↳ for discovered ranges, and 🧭 when no retrieved chunks are present.
+Headers use 🎯 for exact target ranges, ↳ for nested subranges of the previous discovered range, and 🧭 when no retrieved chunks are present.
 
 | Question | Target chunks | Expected ranges present | IFRS 9 6.3.1-6.3.6 | IFRS 9 B6.3.1-B6.3.6 | IFRIC 16 10-13 |
 | --- | ---: | ---: | ---: | ---: | ---: |

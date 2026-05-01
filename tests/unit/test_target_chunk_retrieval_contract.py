@@ -739,3 +739,5 @@ def test_load_chunk_payload_falls_back_to_document_routing_raw_for_provenance(tm
     )
 
     assert payload["chunks"][0]["provenance"] == "top_similarity"
+    parsed_chunks = module._parse_chunks(payload)
+    assert parsed_chunks[0].provenance == "top_similarity"

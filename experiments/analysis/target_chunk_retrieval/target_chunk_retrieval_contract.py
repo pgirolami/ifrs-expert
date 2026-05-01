@@ -1550,6 +1550,7 @@ def _parse_chunks(payload: dict[str, object]) -> tuple[RetrievedChunk, ...]:
                 document_kind=_optional_str(chunk.get("document_kind")),
                 containing_section_id=_optional_str(chunk.get("containing_section_id")),
                 text_sha256=None if text is None else _sha256_text(text),
+                provenance=_optional_str(chunk.get("provenance")),
             )
         )
     return tuple(parsed)
