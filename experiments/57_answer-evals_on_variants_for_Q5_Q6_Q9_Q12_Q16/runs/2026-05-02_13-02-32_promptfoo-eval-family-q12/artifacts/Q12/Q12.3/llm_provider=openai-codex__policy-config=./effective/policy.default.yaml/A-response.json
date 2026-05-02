@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation de la durée de location d’un bail renouvelable par tacite reconduction ou sans terme défini afin de déterminer l’éligibilité à l’exemption de courte durée d’IFRS 16",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs16"],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I applied the strict precedence rule and selected IFRS 16 because it directly governs lease term determination and the short-term lease exemption for lessees; no other document in the context governs the same eligibility question at a higher or competing level.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely within IFRS 16 because it asks how to assess lease term for purposes of the short-term lease exemption."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["5", "6", "7", "8", "18", "19", "20", "21", "B34", "B35", "B37", "B38", "B39", "B40"],
+        "reason": "These paragraphs directly govern the short-term lease exemption and the determination and reassessment of lease term, including enforceability and renewal/termination features."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["E10", "E11", "B41"],
+        "reason": "These embedded agenda-decision and illustrative paragraphs clarify how to determine lease term for cancellable or renewable leases and how economic incentives affect that assessment."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias16",
+        "references": ["50", "51", "56", "57", "E3"],
+        "reason": "These paragraphs address useful life and depreciation of leasehold improvements, which may inform economics but do not identify peer accounting approaches for the short-term lease exemption itself."
+      },
+      {
+        "document": "ias12",
+        "references": ["5", "15", "22A", "24", "47", "51", "51A", "58"],
+        "reason": "These paragraphs deal with income taxes and deferred tax, which are not relevant to identifying the lease accounting approaches for this eligibility question."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Exemption model for leases that qualify as short-term leases based on the determined lease term",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "7", "8", "18", "19", "B34", "B35", "B37", "B38", "B39", "B40", "E10", "E11"]
+        }
+      ],
+      "mapped_approaches": ["short_term_lease_exemption"]
+    },
+    {
+      "family": "General lessee model when the determined lease term does not support short-term lease treatment",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "18", "19", "20", "21", "B34", "E10"]
+        }
+      ],
+      "mapped_approaches": ["general_lessee_lease_model"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct lessee accounting model when, after determining the enforceable lease term, the lease qualifies for the short-term exemption."
+    },
+    {
+      "id": "approach_2",
+      "label": "General lessee lease model",
+      "normalized_label": "general_lessee_lease_model",
+      "rationale_for_inclusion": "IFRS 16 requires application of the general recognition model when the determined lease term means the lease does not qualify for the short-term exemption."
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "assumptions_fr": [
+    "La question est comprise comme une question générale de mesure de la juste valeur en IFRS, sans faits spécifiques sur le type d’instrument, le marché ou la technique d’évaluation.",
+    "On suppose que la juste valeur est mesurée à la date d’évaluation selon IFRS 13, et que l’analyse doit couvrir séparément un actif isolé, un passif isolé et, le cas échéant, un portefeuille éligible géré sur une base nette.",
+    "La référence au risque de crédit de la contrepartie est comprise, pour un actif, comme le risque de non-exécution du débiteur/contrepartie, et pour un passif, comme le risque de crédit propre de l’entité obligée."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, le risque de crédit intervient dans la juste valeur, mais sa forme dépend de l’objet mesuré. Pour un actif, il entre via les hypothèses de marché et les ajustements de risque; pour un passif, via le risque de non-exécution incluant le risque de crédit propre; pour un portefeuille, seulement si l’exception de net exposure d’IFRS 13 est remplie."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "stand_alone_asset_fair_value",
+      "label_fr": "Juste valeur d’un actif pris isolément",
+      "applicability": "oui",
+      "reasoning_fr": "Dans cette situation générale, si l’élément mesuré est un actif, IFRS 13 impose une juste valeur fondée sur un prix de sortie et sur les hypothèses des participants au marché, non sur l’intention de l’entité (IFRS 13 2, 22, 24). Le risque de crédit de la contrepartie intervient alors s’il affecte les flux ou le prix qu’un participant au marché retiendrait, y compris via des ajustements de risque dans les techniques d’évaluation (IFRS 13 87, 88, B13).",
+      "conditions_fr": [],
+      "practical_implication_fr": "Pour un actif, il faut incorporer dans les inputs ou ajustements de valorisation le risque de défaut du débiteur/contrepartie tel que le marché le prixerait.",
+      "references": [
+        {
+          "document": "ifrs13",
+          "section": "2",
+          "excerpt": "Fair value is a market‑based measurement, not an entity‑specific measurement. For some assets and liabilities, observable market transactions or market information might be available. For other assets and liabilities, observable market transactions and market information might not be available. However, the objective of a fair value measurement in both cases is the same—**to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions** (ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability)."
+        },
+        {
+          "document": "ifrs13",
+          "section": "22",
+          "excerpt": "An entity shall measure the fair value of an asset or a liability **using the assumptions that market participants would use when pricing the asset or liability**, assuming that market participants act in their economic best interest."
+        },
+        {
+          "document": "ifrs13",
+          "section": "24",
+          "excerpt": "Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (**ie an exit price**) regardless of whether that price is directly observable or estimated using another valuation technique."
+        },
+        {
+          "document": "ifrs13",
+          "section": "87",
+          "excerpt": "Unobservable inputs shall be used to measure fair value to the extent that relevant observable inputs are not available, thereby allowing for situations in which there is little, if any, market activity for the asset or liability at the measurement date. However, the fair value measurement objective remains the same, ie **an exit price at the measurement date from the perspective of a market participant** that holds the asset or owes the liability. Therefore, unobservable inputs shall reflect **the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**."
+        },
+        {
+          "document": "ifrs13",
+          "section": "88",
+          "excerpt": "Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. **A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one** when pricing the asset or liability. For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47)."
+        },
+        {
+          "document": "ifrs13",
+          "section": "B13",
+          "excerpt": "Present value (ie an application of the income approach) is a tool used to link future amounts (eg cash flows or values) to a present amount using a discount rate. A fair value measurement of an asset or a liability using a present value technique captures all the following elements from the perspective of market participants at the measurement date: (a) an estimate of future cash flows for the asset or liability being measured. (b) expectations about possible variations in the amount and timing of the cash flows representing the uncertainty inherent in the cash flows. (c) the time value of money, represented by the rate on risk‑free monetary assets that have maturity dates or durations that coincide with the period covered by the cash flows and pose neither uncertainty in timing nor risk of default to the holder (ie a risk‑free interest rate). (d) **the price for bearing the uncertainty inherent in the cash flows (ie a risk premium).** (e) other factors that market participants would take into account in the circumstances. (f) for a liability, the non‑performance risk relating to that liability, including the entity’s (ie the obligor’s) own credit risk."
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "stand_alone_liability_fair_value",
+      "label_fr": "Juste valeur d’un passif pris isolément",
+      "applicability": "oui",
+      "reasoning_fr": "Si l’élément mesuré est un passif, IFRS 13 exige explicitement que la juste valeur reflète le risque de non-exécution, lequel inclut le risque de crédit propre de l’entité (IFRS 13 42, 43). Pour un passif évalué par actualisation, les sorties de trésorerie et/ou le taux doivent aussi intégrer la compensation pour le risque que demanderait un participant au marché, sans double comptage (IFRS 13 B31, B33).",
+      "conditions_fr": [],
+      "practical_implication_fr": "Pour un passif, la juste valeur doit intégrer le risque de crédit propre et, le cas échéant, les effets d’améliorations de crédit selon l’unité de compte IFRS 13.",
+      "references": [
+        {
+          "document": "ifrs13",
+          "section": "42",
+          "excerpt": "The fair value of a liability **reflects the effect of non‑performance risk**. **Non‑performance risk includes, but may not be limited to, an entity’s own credit risk** (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability."
+        },
+        {
+          "document": "ifrs13",
+          "section": "43",
+          "excerpt": "When measuring the fair value of a liability, an entity shall **take into account the effect of its credit risk (credit standing)** and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example: (a) whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability). (b) the terms of credit enhancements related to the liability, if any."
+        },
+        {
+          "document": "ifrs13",
+          "section": "B31",
+          "excerpt": "When using a present value technique to measure the fair value of a liability that is not held by another party as an asset (eg a decommissioning liability), an entity shall, among other things, estimate the future cash outflows that market participants would expect to incur in fulfilling the obligation. Those future cash outflows shall include **market participants’ expectations about the costs of fulfilling the obligation and the compensation that a market participant would require for taking on the obligation**. Such compensation includes the return that a market participant would require for the following: (a) undertaking the activity (ie the value of fulfilling the obligation; eg by using resources that could be used for other activities); and (b) **assuming the risk associated with the obligation** (ie a risk premium that reflects the risk that the actual cash outflows might differ from the expected cash outflows; see paragraph B33)."
+        },
+        {
+          "document": "ifrs13",
+          "section": "B33",
+          "excerpt": "An entity can include a risk premium in the fair value measurement of a liability or an entity’s own equity instrument that is not held by another party as an asset in one of the following ways: (a) by adjusting the cash flows (ie as an increase in the amount of cash outflows); or (b) by adjusting the rate used to discount the future cash flows to their present values (ie as a reduction in the discount rate). **An entity shall ensure that it does not double‑count or omit adjustments for risk**. For example, if the estimated cash flows are increased to take into account the compensation for assuming the risk associated with the obligation, the discount rate should not be adjusted to reflect that risk."
+        },
+        {
+          "document": "ifrs9",
+          "section": "B5.7.13",
+          "excerpt": "IFRS 7 defines credit risk as ‘the risk that one party to a financial instrument will cause a financial loss for the other party by failing to discharge an obligation’. The requirement in paragraph 5.7.7(a) relates to **the risk that the issuer will fail to perform on that particular liability**. It does not necessarily relate to the creditworthiness of the issuer. For example, if an entity issues a collateralised liability and a non‑collateralised liability that are otherwise identical, the credit risk of those two liabilities will be different, even though they are issued by the same entity. The credit risk on the collateralised liability will be less than the credit risk of the non‑collateralised liability. The credit risk for a collateralised liability may be close to zero."
+        }
+      ]
+    },
+    {
+      "id": "approach_3",
+      "normalized_label": "net_exposure_portfolio_fair_value",
+      "label_fr": "Juste valeur d’un portefeuille en exposition nette",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Cette approche ne s’applique dans la situation posée que si l’entité mesure un groupe d’actifs et de passifs financiers géré sur une base d’exposition nette, et non un instrument isolé (IFRS 13 48, 49). Dans ce cas seulement, la juste valeur peut inclure l’exposition nette au risque de crédit de la contrepartie ou au risque de crédit propre, en tenant compte des accords de compensation ou de collatéral juridiquement opposables (IFRS 13 56).",
+      "conditions_fr": [
+        "L’élément mesuré est un groupe d’actifs et de passifs financiers, et non un actif ou passif isolé.",
+        "Le groupe est géré sur la base de l’exposition nette à un risque de marché particulier ou au risque de crédit d’une contrepartie conformément à une stratégie documentée.",
+        "Cette base nette est utilisée dans l’information fournie aux principaux dirigeants.",
+        "Les instruments du groupe sont requis ou désignés à la juste valeur au bilan à chaque clôture."
+      ],
+      "practical_implication_fr": "Si les critères sont remplis, l’évaluation tient compte du risque de crédit net de la contrepartie et des effets de netting/collatéral attendus par le marché.",
+      "references": [
+        {
+          "document": "ifrs13",
+          "section": "48",
+          "excerpt": "An entity that holds a group of financial assets and financial liabilities is exposed to market risks (as defined in IFRS 7) and to the credit risk (as defined in IFRS 7) of each of the counterparties. If the entity manages that group of financial assets and financial liabilities on the basis of its net exposure to either market risks or credit risk, **the entity is permitted to apply an exception to this IFRS for measuring fair value**. That exception permits an entity to measure the fair value of a group of financial assets and financial liabilities on the basis of the price that would be received to sell a net long position (ie an asset) for a particular risk exposure or paid to transfer a net short position (ie a liability) for a particular risk exposure in an orderly transaction between market participants at the measurement date under current market conditions. Accordingly, an entity shall measure the fair value of the group of financial assets and financial liabilities consistently with how market participants would price the net risk exposure at the measurement date."
+        },
+        {
+          "document": "ifrs13",
+          "section": "49",
+          "excerpt": "An entity is permitted to use the exception in paragraph 48 only if the entity does all the following: (a) **manages the group of financial assets and financial liabilities on the basis of the entity’s net exposure** to a particular market risk (or risks) or to the credit risk of a particular counterparty in accordance with the entity’s documented risk management or investment strategy; (b) provides information on that basis about the group of financial assets and financial liabilities to the entity’s key management personnel, as defined in IAS 24 Related Party Disclosures ; and (c) **is required or has elected to measure those financial assets and financial liabilities at fair value** in the statement of financial position at the end of each reporting period."
+        },
+        {
+          "document": "ifrs13",
+          "section": "56",
+          "excerpt": "When using the exception in paragraph 48 to measure the fair value of a group of financial assets and financial liabilities entered into with a particular counterparty, the entity shall include **the effect of the entity’s net exposure to the credit risk of that counterparty or the counterparty’s net exposure to the credit risk of the entity** in the fair value measurement when market participants would take into account any existing arrangements that mitigate credit risk exposure in the event of default (eg a master netting agreement with the counterparty or an agreement that requires the exchange of collateral on the basis of each party’s net exposure to the credit risk of the other party). **The fair value measurement shall reflect market participants’ expectations about the likelihood that such an arrangement would be legally enforceable in the event of default.**"
+        }
+      ]
+    }
+  ]
+}

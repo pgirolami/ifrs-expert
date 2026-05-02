@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Qualification d’un bail comme contrat de courte durée au sens d’IFRS 16 lorsque la durée initiale est inférieure ou égale à un an mais que le bail peut se renouveler automatiquement, ce qui dépend de la détermination de la lease term et de la période exécutoire.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs16"],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I applied the strict precedence rule by selecting IFRS 16 because it is the IFRS standard that directly governs lease term determination and the short-term lease exemption; no other candidate document provides an overlapping governing model for this eligibility question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — IFRS 16 directly addresses both short-term lease treatment and lease term/enforceability, which are the core elements of the question."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["5", "6", "7", "B34", "B35", "B36", "B37", "B38", "B39", "B40", "B41"],
+        "reason": "These paragraphs directly govern the short-term lease exemption and the determination of lease term and enforceability needed to assess that exemption."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["E10", "E11"],
+        "reason": "These agenda decisions clarify how cancellable or renewable leases and leasehold-improvement economics affect the enforceable period and lease term assessment."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias16",
+        "references": ["50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "E3"],
+        "reason": "These paragraphs address depreciation and useful life of property, plant and equipment, which are related to leasehold improvements but do not identify the peer approaches for short-term lease classification."
+      },
+      {
+        "document": "ifrs16",
+        "references": ["3", "4", "8", "100", "101", "102", "102A", "B14", "B15", "B16", "B17", "B18", "B19", "E5", "B20", "E6", "B24", "E8", "E9", "B25", "B26", "B27", "B28", "B29", "B30", "B31", "B42"],
+        "reason": "These paragraphs concern scope, identified asset, lease definition, sale-and-leaseback, and variable payment mechanics, which are not needed to identify the top-level approaches for the short-term lease issue."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Short-term lease exemption based on lease term not exceeding twelve months",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "7", "B34", "B35", "B36", "B37", "B38", "B39", "B40", "B41", "E10", "E11"]
+        }
+      ],
+      "mapped_approaches": ["short_term_lease_exemption"]
+    },
+    {
+      "family": "General lessee accounting when the lease term extends beyond the short-term threshold",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "7", "B34", "B35", "B36", "B37", "B38", "B39", "B40", "B41", "E10", "E11"]
+        }
+      ],
+      "mapped_approaches": ["general_lessee_lease_accounting"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct lessee election not to apply the normal recognition model to leases that qualify as short-term based on the determined lease term."
+    },
+    {
+      "id": "approach_2",
+      "label": "General lessee lease accounting",
+      "normalized_label": "general_lessee_lease_accounting",
+      "rationale_for_inclusion": "If the lease term determined under IFRS 16 extends beyond the short-term threshold, the lease falls into the standard lessee accounting model rather than the exemption."
+    }
+  ]
+}

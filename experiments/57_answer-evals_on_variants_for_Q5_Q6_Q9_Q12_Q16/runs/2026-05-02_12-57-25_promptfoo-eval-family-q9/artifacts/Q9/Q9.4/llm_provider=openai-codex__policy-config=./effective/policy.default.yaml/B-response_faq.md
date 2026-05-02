@@ -1,0 +1,32 @@
+>Déterminer, pour une licence de propriété intellectuelle relevant d’IFRS 15, si le revenu doit être comptabilisé selon un modèle de droit d’accès sur la durée de la licence ou selon un modèle de droit d’utilisation à un moment donné.
+
+Pour cette réponse, on considère que
+  - On suppose que la licence de propriété intellectuelle constitue une obligation de prestation distincte au sens d’IFRS 15, de sorte que les paragraphes spécifiques aux licences s’appliquent directement.
+  - On suppose que la question porte uniquement sur le moment de comptabilisation du revenu lié à la licence, hors autres biens ou services promis dans le contrat.
+  - En l’absence de faits complémentaires sur la nature de la propriété intellectuelle et sur les activités continues du concédant, il faut répondre de manière conditionnelle entre les deux modèles prévus par IFRS 15.
+
+**Oui**, Sous IFRS 15, le revenu n’est pas automatiquement reconnu soit à la mise à disposition soit étalé dans tous les cas. Il dépend de la nature de la promesse: droit d’accès sur la durée si les critères d’IFRS 15 B58 sont remplis, sinon droit d’utilisation comptabilisé à un moment donné selon IFRS 15 B61.
+
+Dans cette situation, l’étalement du revenu pendant la période autorisée s’applique seulement si la licence donne un droit d’accès et non un simple droit d’utilisation. IFRS 15 B58 exige que l’entité mène des activités affectant significativement la PI, que le client en subisse directement les effets, et que ces activités ne constituent pas un bien ou service distinct; dans ce cas, la prestation est satisfaite au fil du temps selon IFRS 15 B60 et IFRS 15 35(a)(IFRS 15 B58, IFRS 15 B60, IFRS 15 35).
+Dans cette situation, la comptabilisation à la mise à disposition s’applique si les critères du droit d’accès ne sont pas remplis. IFRS 15 B61 prévoit alors que la promesse est un droit d’utiliser la PI telle qu’elle existe au moment de l’octroi et que le revenu est reconnu à un moment donné; toutefois, il ne peut pas être reconnu avant le début de la période pendant laquelle le client peut utiliser et tirer bénéfice de la licence (IFRS 15 B61, IFRS 15 38)(IFRS 15 B61, IFRS 15 38).
+
+**Citations**:
+ - [IFRS 15 B58](https://www.ifrs.org/issued-standards/list-of-standards/ifrs15/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs15/#/IFRS15_B58)
+
+    >The nature of an entity’s promise in granting a licence is a promise to provide a right to access the entity’s intellectual property if **all of the following criteria are met**: **(a) the contract requires, or the customer reasonably expects, that the entity will undertake activities that significantly affect the intellectual property** to which the customer has rights (see paragraphs B59 and B59A); **(b) the rights granted by the licence directly expose the customer to any positive or negative effects of the entity’s activities** identified in paragraph B58(a) ; and **(c) those activities do not result in the transfer of a good or a service to the customer as those activities occur** (see paragraph 25).
+
+ - [IFRS 15 B60](https://www.ifrs.org/issued-standards/list-of-standards/ifrs15/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs15/#/IFRS15_B60)
+
+    >If the criteria in paragraph B58 are met, an entity shall account for the promise to grant a licence as a **performance obligation satisfied over time** because the customer will simultaneously receive and consume the benefit from the entity’s performance of providing access to its intellectual property as the performance occurs (see paragraph **35(a)**). An entity shall apply paragraphs **39–45** to select an appropriate method to measure its progress towards complete satisfaction of that performance obligation to provide access.
+
+ - [IFRS 15 35](https://www.ifrs.org/issued-standards/list-of-standards/ifrs15/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs15/#/IFRS15_35)
+
+    >An entity transfers control of a good or service over time and, therefore, satisfies a performance obligation and recognises revenue over time, if one of the following criteria is met: **(a) the customer simultaneously receives and consumes the benefits provided by the entity’s performance as the entity performs** (see paragraphs B3–B4);
+
+ - [IFRS 15 B61](https://www.ifrs.org/issued-standards/list-of-standards/ifrs15/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs15/#/IFRS15_B61)
+
+    >If the criteria in paragraph B58 are not met, the nature of an entity’s promise is to provide a **right to use** the entity’s intellectual property as that intellectual property exists (in terms of form and functionality) **at the point in time at which the licence is granted to the customer**. This means that the customer can direct the use of, and obtain substantially all of the remaining benefits from, the licence **at the point in time at which the licence transfers**. An entity shall account for the promise to provide a right to use the entity’s intellectual property as a **performance obligation satisfied at a point in time**. An entity shall apply paragraph **38** to determine the point in time at which the licence transfers to the customer. **However, revenue cannot be recognised for a licence that provides a right to use the entity’s intellectual property before the beginning of the period during which the customer is able to use and benefit from the licence.**
+
+ - [IFRS 15 38](https://www.ifrs.org/issued-standards/list-of-standards/ifrs15/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs15/#/IFRS15_38)
+
+    >If a performance obligation is not satisfied over time in accordance with paragraphs 35–37, an entity satisfies the performance obligation **at a point in time**. To determine the point in time at which a customer obtains control of a promised asset and the entity satisfies a performance obligation, the entity shall consider the requirements for control in paragraphs 31–34. In addition, an entity shall consider indicators of the transfer of control, which include, but are not limited to, the following: **(a) The entity has a present right to payment for the asset** ... **(b) The customer has legal title to the asset** ... **(c) The entity has transferred physical possession of the asset** ... **(d) The customer has the significant risks and rewards of ownership of the asset** ... **(e) The customer has accepted the asset** ...

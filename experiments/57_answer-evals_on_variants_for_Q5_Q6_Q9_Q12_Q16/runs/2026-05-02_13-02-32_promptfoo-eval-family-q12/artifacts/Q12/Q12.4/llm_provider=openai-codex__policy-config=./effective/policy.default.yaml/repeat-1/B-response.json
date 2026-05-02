@@ -1,0 +1,91 @@
+{
+  "assumptions_fr": [
+    "Le bail ne comporte pas d’option d’achat, comme indiqué dans la question.",
+    "La durée initiale contractuelle est inférieure ou égale à douze mois.",
+    "La poursuite automatique du bail peut résulter soit d’un mécanisme de renouvellement, soit d’un droit de résiliation avec préavis, de sorte que la durée du bail doit être appréciée au regard de la période exécutoire et des incitations économiques."
+  ],
+  "recommendation": {
+    "answer": "non",
+    "justification": "La reconduction automatique n’empêche pas, à elle seule, la qualification de contrat de courte durée. Il faut déterminer la lease term en appliquant la période exécutoire et les options de terminaison/renouvellement; si cette durée n’excède pas 12 mois, l’exemption peut être retenue, sinon le modèle général s’applique."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "short_term_lease_exemption",
+      "label_fr": "Exemption des contrats de courte durée",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L’exemption peut s’appliquer dans cette situation seulement si, après analyse de la durée du bail, celui-ci reste d’au plus douze mois et sans option d’achat (IFRS 16 5). La reconduction automatique ne l’exclut pas mécaniquement, car la durée dépend de la période exécutoire et des droits de résiliation de chaque partie, ainsi que des incitations économiques à ne pas résilier (IFRS 16 B34, B35, B37; IFRS 16 E10). Si cette analyse conduit à une durée excédant douze mois, le bail ne peut pas être traité comme court terme.",
+      "conditions_fr": [
+        "La durée du bail déterminée en substance, y compris la période exécutoire et les périodes que le preneur est raisonnablement certain de conserver, ne dépasse pas douze mois.",
+        "Il n’existe pas d’incitation économique plus que négligeable qui rende le contrat exécutoire au-delà de la période initiale ou du préavis de résiliation."
+      ],
+      "practical_implication_fr": "Si ces conditions sont remplies, les paiements de loyers peuvent être comptabilisés en charge selon IFRS 16 6.",
+      "references": [
+        {
+          "document": "ifrs16",
+          "section": "5",
+          "excerpt": "A lessee may elect not to apply the requirements in paragraphs 22⁠–⁠49 to: (a)**short-term leases** ; and (b)leases for which the underlying asset is of low value (as described in paragraphs B3⁠–⁠B8)."
+        },
+        {
+          "document": "ifrs16",
+          "section": "6",
+          "excerpt": "If a lessee elects not to apply the requirements in paragraphs 22⁠–⁠49 to either short-term leases or leases for which the underlying asset is of low value, the lessee shall recognise the lease payments associated with those leases as an expense on either a straight-line basis over the lease term or another systematic basis. The lessee shall apply another systematic basis if that basis is more representative of the pattern of the lessee’s benefit."
+        },
+        {
+          "document": "ifrs16",
+          "section": "B34",
+          "excerpt": "In determining the lease term and assessing the length of the non-cancellable period of a lease, an entity shall apply the definition of a contract and determine the period for which the contract is enforceable. A lease is no longer enforceable when **the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty**. E10"
+        },
+        {
+          "document": "ifrs16",
+          "section": "B35",
+          "excerpt": "If only a lessee has the right to terminate a lease, that right is considered to be an option to terminate the lease available to the lessee that an entity considers when determining the lease term. **If only a lessor has the right to terminate a lease, the non-cancellable period of the lease includes the period covered by the option to terminate the lease.**"
+        },
+        {
+          "document": "ifrs16",
+          "section": "B37",
+          "excerpt": "At the commencement date, an entity assesses whether the lessee is reasonably certain to exercise an option to extend the lease or to purchase the underlying asset, or not to exercise an option to terminate the lease. **The entity considers all relevant facts and circumstances that create an economic incentive for the lessee to exercise, or not to exercise, the option**, including any expected changes in facts and circumstances from the commencement date until the exercise date of the option."
+        },
+        {
+          "document": "ifrs16",
+          "section": "E10",
+          "excerpt": "[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ + The Committee observed that, in applying paragraph B34 and determining the enforceable period of the lease described in the request, an entity considers: (a)**the broader economics of the contract, and not only contractual termination payments**. For example, if either party has an economic incentive not to terminate the lease such that it would incur a penalty on termination that is more than insignificant, the contract is enforceable beyond the date on which the contract can be terminated; and (b)**whether each of the parties has the right to terminate the lease without permission from the other party with no more than an insignificant penalty**. Applying paragraph B34, a lease is no longer enforceable only when both parties have such a right. Consequently, if only one party has the right to terminate the lease without permission from the other party with no more than an insignificant penalty, the contract is enforceable beyond the date on which the contract can be terminated by that party. If an entity concludes that the contract is enforceable beyond the notice period of a cancellable lease (or the initial period of a renewable lease), it then applies paragraphs 19 and B37⁠–⁠B40 of IFRS 16 to assess whether the lessee is reasonably certain not to exercise the option to terminate the lease. …]"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "right_of_use_asset_and_lease_liability",
+      "label_fr": "Actif de droit d’utilisation et passif de loyer",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ce traitement s’applique si le bail ne peut pas bénéficier de l’exemption courte durée, c’est-à-dire si la durée du bail déterminée selon la période exécutoire et les options excède douze mois en substance (IFRS 16 B34, B37; IFRS 16 E10). IFRS 16 6 distingue expressément cette exemption du modèle général des paragraphes 22–49: en dehors de l’exemption, le preneur applique la comptabilisation normale du bail.",
+      "conditions_fr": [
+        "L’analyse de la période exécutoire et des incitations économiques conduit à une durée du bail supérieure à douze mois.",
+        "Le preneur ne retient pas, ou ne peut pas retenir, l’exemption de courte durée."
+      ],
+      "practical_implication_fr": "Le preneur comptabilise alors le bail selon le modèle général d’IFRS 16, et non en simple charge locative.",
+      "references": [
+        {
+          "document": "ifrs16",
+          "section": "6",
+          "excerpt": "If a lessee elects not to apply the requirements in paragraphs 22⁠–⁠49 to either short-term leases or leases for which the underlying asset is of low value, the lessee shall recognise the lease payments associated with those leases as an expense on either a straight-line basis over the lease term or another systematic basis. The lessee shall apply another systematic basis if that basis is more representative of the pattern of the lessee’s benefit."
+        },
+        {
+          "document": "ifrs16",
+          "section": "B34",
+          "excerpt": "In determining the lease term and assessing the length of the non-cancellable period of a lease, an entity shall apply the definition of a contract and determine the period for which the contract is enforceable. A lease is no longer enforceable when **the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty**. E10"
+        },
+        {
+          "document": "ifrs16",
+          "section": "B37",
+          "excerpt": "At the commencement date, an entity assesses whether the lessee is reasonably certain to exercise an option to extend the lease or to purchase the underlying asset, or not to exercise an option to terminate the lease. **The entity considers all relevant facts and circumstances that create an economic incentive for the lessee to exercise, or not to exercise, the option**, including any expected changes in facts and circumstances from the commencement date until the exercise date of the option."
+        },
+        {
+          "document": "ifrs16",
+          "section": "E10",
+          "excerpt": "[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ + The Committee observed that, in applying paragraph B34 and determining the enforceable period of the lease described in the request, an entity considers: (a)**the broader economics of the contract, and not only contractual termination payments**. For example, if either party has an economic incentive not to terminate the lease such that it would incur a penalty on termination that is more than insignificant, the contract is enforceable beyond the date on which the contract can be terminated; and (b)**whether each of the parties has the right to terminate the lease without permission from the other party with no more than an insignificant penalty**. Applying paragraph B34, a lease is no longer enforceable only when both parties have such a right. Consequently, if only one party has the right to terminate the lease without permission from the other party with no more than an insignificant penalty, the contract is enforceable beyond the date on which the contract can be terminated by that party. If an entity concludes that the contract is enforceable beyond the notice period of a cancellable lease (or the initial period of a renewable lease), it then applies paragraphs 19 and B37⁠–⁠B40 of IFRS 16 to assess whether the lessee is reasonably certain not to exercise the option to terminate the lease. …]"
+        }
+      ]
+    }
+  ]
+}

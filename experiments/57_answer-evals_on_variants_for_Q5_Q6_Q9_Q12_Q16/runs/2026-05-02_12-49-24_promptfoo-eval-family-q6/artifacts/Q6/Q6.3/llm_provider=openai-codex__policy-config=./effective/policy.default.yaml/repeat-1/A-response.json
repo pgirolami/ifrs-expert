@@ -1,0 +1,112 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation, au regard d’IFRS 10, de la suffisance des droits détenus par un investisseur pour lui conférer le pouvoir de diriger les activités pertinentes d’une entité dans l’analyse du contrôle.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs10"],
+    "selected_primary_document": "ifrs10",
+    "selection_reason": "I selected IFRS 10 because it directly governs the control assessment for an investee, and under the precedence rule no other document in the provided set addresses that same control-of-an-investee issue at an overlapping governing level.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the question is squarely about control over an investee, which is directly addressed by IFRS 10."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["6", "7", "10", "11", "13", "14", "B2", "B3", "B5", "B8", "B9", "B10", "B14", "B15", "B17", "B18", "B19", "B20", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B34", "B35", "B38", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50", "B51", "B52", "B53", "B54", "B80", "B81", "B82", "B84"],
+        "reason": "These paragraphs directly govern how to assess whether an investor's rights are sufficient to give power over the investee's relevant activities."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["8", "E3", "E4", "E12"],
+        "reason": "These materials clarify reassessment and protective-rights questions that constrain how sufficiency of rights is analysed."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["31", "33", "35", "38", "B34", "B35", "B36", "B37"],
+        "reason": "This document addresses control for revenue recognition and principal-versus-agent in customer contracts, not control of an investee under IFRS 10."
+      },
+      {
+        "document": "ias28",
+        "references": ["5", "6", "7", "8", "9", "16"],
+        "reason": "This document addresses significant influence and the equity method rather than control of an investee."
+      },
+      {
+        "document": "ias24",
+        "references": ["13", "14", "18", "19", "21"],
+        "reason": "This document addresses related party disclosures, not the control assessment."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Power conveyed through majority voting rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B34", "B35", "B36", "B37"]
+        }
+      ],
+      "mapped_approaches": ["majority_voting_rights"]
+    },
+    {
+      "family": "Power conveyed through less-than-majority voting rights when rights are still sufficient in practice",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46"]
+        }
+      ],
+      "mapped_approaches": ["de_facto_control_through_voting_rights"]
+    },
+    {
+      "family": "Power conveyed through contractual or other decision-making rights where voting rights are not the dominant factor",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["11", "B8", "B15", "B17", "B18", "B19", "B20", "B21", "B51", "B52", "B53", "B54"]
+        }
+      ],
+      "mapped_approaches": ["contractual_power_over_relevant_activities"]
+    },
+    {
+      "family": "Power conveyed through substantive potential voting rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B47", "B48", "B49", "B50", "B22", "B23", "B24"]
+        }
+      ],
+      "mapped_approaches": ["substantive_potential_voting_rights"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Majority voting rights",
+      "normalized_label": "majority_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 identifies majority voting rights as a direct top-level route to power when those rights are substantive and give the current ability to direct relevant activities."
+    },
+    {
+      "id": "approach_2",
+      "label": "De facto control through voting rights",
+      "normalized_label": "de_facto_control_through_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 recognises that an investor can have power with less than a majority of voting rights when its holding and surrounding facts give it the practical ability to direct relevant activities unilaterally."
+    },
+    {
+      "id": "approach_3",
+      "label": "Contractual power over relevant activities",
+      "normalized_label": "contractual_power_over_relevant_activities",
+      "rationale_for_inclusion": "IFRS 10 provides a distinct control model for situations in which voting rights are not dominant and power arises from contractual or other decision-making rights."
+    },
+    {
+      "id": "approach_4",
+      "label": "Substantive potential voting rights",
+      "normalized_label": "substantive_potential_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 treats substantive potential voting rights as a separate route by which an investor may obtain the current ability to direct relevant activities."
+    }
+  ]
+}

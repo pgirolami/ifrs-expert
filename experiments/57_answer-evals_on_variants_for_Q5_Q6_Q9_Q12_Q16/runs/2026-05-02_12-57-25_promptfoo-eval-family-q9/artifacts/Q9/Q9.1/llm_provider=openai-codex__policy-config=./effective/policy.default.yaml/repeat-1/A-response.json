@@ -1,0 +1,100 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, en IFRS 15, si le revenu d’une licence de propriété intellectuelle est reconnu selon le modèle du droit d’accès ou selon le modèle du droit d’utilisation, et donc sur la durée ou à un moment précis.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs15", "ifrs16"],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I applied the strict precedence rule by selecting the IFRS Standard that directly governs revenue recognition for licences of intellectual property; IFRS 15 specifically addresses licences and their timing of revenue recognition, whereas IFRS 16 addresses leases and does not govern this revenue issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question expressly concerns revenue recognition for a licence of intellectual property, which is directly addressed in IFRS 15 paragraphs B52–B63B."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["B52", "B53", "B56", "B58", "B60", "B61"],
+        "reason": "These paragraphs directly govern how to determine whether a licence gives a right to access or a right to use intellectual property and therefore whether revenue is recognised over time or at a point in time."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["B54", "B55"],
+        "reason": "These paragraphs clarify that if the licence is not distinct, it is combined with other promised goods or services and the general performance obligation timing model applies instead."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["26", "27", "29", "30"],
+        "reason": "These paragraphs support the distinctness assessment that determines whether the licence timing guidance applies as a separate performance obligation."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["35", "38"],
+        "reason": "These paragraphs provide the underlying over-time versus point-in-time recognition models that the licence guidance maps into."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B62"],
+        "reason": "This paragraph constrains the analysis by stating which licence features should be disregarded when determining whether the licence is a right to access or a right to use."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["B63", "B63A", "B63B"],
+        "reason": "These paragraphs provide a royalty-specific overlay that may affect timing of revenue recognition after the licence model has been identified."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["23", "24", "36", "38", "81", "100"],
+        "reason": "This standard relates to lease accounting and sale-and-leaseback transactions, not to revenue recognition for licences of intellectual property under IFRS 15."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence timing models under IFRS 15",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B56", "B58", "B60", "B61"]
+        }
+      ],
+      "mapped_approaches": ["right_to_access_intellectual_property", "right_to_use_intellectual_property"]
+    },
+    {
+      "family": "Distinctness gate for applying the licence-specific timing guidance",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B53", "B54", "B55", "26", "27", "29", "30"]
+        }
+      ],
+      "mapped_approaches": ["right_to_access_intellectual_property", "right_to_use_intellectual_property"]
+    },
+    {
+      "family": "General revenue recognition timing consequences linked to the licence models",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["35", "38"]
+        }
+      ],
+      "mapped_approaches": ["right_to_access_intellectual_property", "right_to_use_intellectual_property"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats a licence as a right to access intellectual property when the criteria in paragraph B58 are met, with revenue recognised over time under paragraph B60."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 treats a licence as a right to use intellectual property when the paragraph B58 criteria are not met, with revenue recognised at a point in time under paragraph B61."
+    }
+  ]
+}

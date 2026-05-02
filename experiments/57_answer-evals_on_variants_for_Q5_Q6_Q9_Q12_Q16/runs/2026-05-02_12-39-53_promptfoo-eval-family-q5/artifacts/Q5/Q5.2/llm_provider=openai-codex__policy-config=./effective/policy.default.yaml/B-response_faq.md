@@ -1,0 +1,82 @@
+>Déterminer si la juste valeur doit intégrer le risque de non-exécution ou de défaut dans une perspective de marché, et comment cette logique se décline pour un actif par rapport à un passif.
+
+Pour cette réponse, on considère que
+  - La question est analysée au regard de la définition et des principes généraux de la juste valeur en IFRS, sans fait spécifique sur le type précis d’instrument ni sur une désignation particulière à la juste valeur par résultat.
+  - On suppose que l’instrument est mesuré à la juste valeur à la date de mesure considérée.
+  - On suppose que la question vise le contenu économique de la juste valeur dans une perspective de marché, et non la présentation du résultat ou des variations de juste valeur.
+
+**Oui**, Oui. En IFRS 13, la juste valeur reflète les hypothèses des participants de marché, y compris le risque, pour un actif comme pour un passif. Pour un passif, cela inclut explicitement le risque de non-exécution; pour un actif, le risque de défaut de la contrepartie est reflété via les flux et/ou la prime de risque que les participants de marché intégreraient.
+
+Dans cette situation, l’approche s’applique car IFRS 13 impose une mesure de juste valeur fondée sur des hypothèses de marché et non sur l’intention propre de l’entité (IFRS 13 2, 3, 22, 24). Pour un actif, si le risque de défaut de la contrepartie affecte les flux ou le prix que des participants de marché paieraient, il doit être reflété, y compris via une prime de risque; l’absence d’ajustement au risque ne représenterait pas fidèlement la juste valeur (IFRS 13 87, 88, B15, B16)(IFRS 13 2, IFRS 13 3, IFRS 13 22, IFRS 13 24, IFRS 13 87, IFRS 13 88, IFRS 13 B15, IFRS 13 B16).
+Dans cette situation, l’approche s’applique également car IFRS 13 mesure un passif selon le prix de transfert entre participants de marché à la date de mesure (IFRS 13 9, 15, 24). Pour un passif, les hypothèses de marché doivent inclure la compensation exigée pour assumer l’obligation et le risque que les sorties diffèrent des attentes; cela couvre le risque de non-exécution/non-performance dans la juste valeur (IFRS 13 22, 87, 88, B31, B33). IFRS 9 confirme en outre que, pour un passif financier à la juste valeur, le risque de crédit du passif est une composante distincte de la variation de juste valeur (IFRS 9 5.7.7, B5.7.13, B5.7.16)(IFRS 13 9, IFRS 13 15, IFRS 13 24, IFRS 13 22, IFRS 13 87, IFRS 13 88, IFRS 13 B31, IFRS 13 B33, IFRS 9 5.7.7, IFRS 9 B5.7.13, IFRS 9 B5.7.16).
+
+**Citations**:
+ - [IFRS 13 2](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_2)
+
+    >Fair value is a market‑based measurement, not an entity‑specific measurement. For some assets and liabilities, observable market transactions or market information might be available. For other assets and liabilities, observable market transactions and market information might not be available. However, the objective of a fair value measurement in both cases is the same—**to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions** (ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability).
+
+ - [IFRS 13 3](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_3)
+
+    >When a price for an identical asset or liability is not observable, an entity measures fair value using another valuation technique that **maximises the use of relevant observable inputs and minimises the use of unobservable inputs**. Because fair value is a market‑based measurement, **it is measured using the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**. As a result, an entity’s intention to hold an asset or to settle or otherwise fulfil a liability is not relevant when measuring fair value.
+
+ - [IFRS 13 22](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_22)
+
+    >An entity shall measure the fair value of an asset or a liability **using the assumptions that market participants would use when pricing the asset or liability**, assuming that market participants act in their economic best interest.
+
+ - [IFRS 13 24](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_24)
+
+    >Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) **regardless of whether that price is directly observable or estimated using another valuation technique**.
+
+ - [IFRS 13 87](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_87)
+
+    >Unobservable inputs shall be used to measure fair value to the extent that relevant observable inputs are not available, thereby allowing for situations in which there is little, if any, market activity for the asset or liability at the measurement date. However, **the fair value measurement objective remains the same, ie an exit price at the measurement date from the perspective of a market participant** that holds the asset or owes the liability. Therefore, **unobservable inputs shall reflect the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk**.
+
+ - [IFRS 13 88](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_88)
+
+    >Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. **A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one when pricing the asset or liability.** For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47).
+
+ - [IFRS 13 B15](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_B15)
+
+    >A fair value measurement using present value techniques is made under conditions of uncertainty because the cash flows used are estimates rather than known amounts. **In many cases both the amount and timing of the cash flows are uncertain.** Even contractually fixed amounts, such as the payments on a loan, are uncertain if there is risk of default.
+
+ - [IFRS 13 B16](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_B16)
+
+    >Market participants generally seek compensation (ie a risk premium) for bearing the uncertainty inherent in the cash flows of an asset or a liability. **A fair value measurement should include a risk premium reflecting the amount that market participants would demand as compensation for the uncertainty inherent in the cash flows.** Otherwise, the measurement would not faithfully represent fair value. In some cases determining the appropriate risk premium might be difficult. However, **the degree of difficulty alone is not a sufficient reason to exclude a risk premium**.
+
+ - [IFRS 13 9](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_9)
+
+    >This IFRS defines fair value as **the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction between market participants at the measurement date**.
+
+ - [IFRS 13 15](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_15)
+
+    >A fair value measurement assumes that the asset or liability is exchanged in an orderly transaction between market participants **to sell the asset or transfer the liability at the measurement date under current market conditions**.
+
+ - [IFRS 13 B31](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_B31)
+
+    >When using a present value technique to measure the fair value of a liability that is not held by another party as an asset (eg a decommissioning liability), an entity shall, among other things, estimate the future cash outflows that market participants would expect to incur in fulfilling the obligation. Those future cash outflows shall include **market participants’ expectations about the costs of fulfilling the obligation and the compensation that a market participant would require for taking on the obligation**. Such compensation includes the return that a market participant would require for the following:
+(a) undertaking the activity (ie the value of fulfilling the obligation; eg by using resources that could be used for other activities); and
+(b) **assuming the risk associated with the obligation (ie a risk premium that reflects the risk that the actual cash outflows might differ from the expected cash outflows**; see paragraph B33).
+
+ - [IFRS 13 B33](https://www.ifrs.org/issued-standards/list-of-standards/ifrs13/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs13/#/IFRS13_B33)
+
+    >An entity can include a risk premium in the fair value measurement of a liability or an entity’s own equity instrument that is not held by another party as an asset in one of the following ways:
+(a) by adjusting the cash flows (ie as an increase in the amount of cash outflows); or
+(b) by adjusting the rate used to discount the future cash flows to their present values (ie as a reduction in the discount rate).
+**An entity shall ensure that it does not double‑count or omit adjustments for risk.** For example, if the estimated cash flows are increased to take into account the compensation for assuming the risk associated with the obligation, the discount rate should not be adjusted to reflect that risk.
+
+ - [IFRS 9 5.7.7](https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs-9-financial-instruments/#/IFRS9_577)
+
+    >An entity shall present a gain or loss on a financial liability that is designated as at fair value through profit or loss in accordance with paragraph 4.2.2 or paragraph 4.3.5 as follows:
+(a) **The amount of change in the fair value of the financial liability that is attributable to changes in the credit risk of that liability shall be presented in other comprehensive income** (see paragraphs B5.7.13⁠–⁠B5.7.20), and
+(b) the remaining amount of change in the fair value of the liability shall be presented in profit or loss
+unless the treatment of the effects of changes in the liability’s credit risk described in (a) would create or enlarge an accounting mismatch in profit or loss (in which case paragraph 5.7.8 applies). Paragraphs B5.7.5⁠–⁠B5.7.7 and B5.7.10⁠–⁠B5.7.12 provide guidance on determining whether an accounting mismatch would be created or enlarged.
+
+ - [IFRS 9 B5.7.13](https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs-9-financial-instruments/#/IFRS9_B5713)
+
+    >IFRS 7 defines credit risk as ‘the risk that one party to a financial instrument will cause a financial loss for the other party by failing to discharge an obligation’. **The requirement in paragraph 5.7.7(a) relates to the risk that the issuer will fail to perform on that particular liability.** It does not necessarily relate to the creditworthiness of the issuer. For example, if an entity issues a collateralised liability and a non‑collateralised liability that are otherwise identical, the credit risk of those two liabilities will be different, even though they are issued by the same entity. The credit risk on the collateralised liability will be less than the credit risk of the non‑collateralised liability. The credit risk for a collateralised liability may be close to zero.
+
+ - [IFRS 9 B5.7.16](https://www.ifrs.org/issued-standards/list-of-standards/ifrs-9-financial-instruments/content/dam/ifrs/publications/html-standards/english/2026/issued/ifrs-9-financial-instruments/#/IFRS9_B5716)
+
+    >For the purposes of applying the requirement in paragraph 5.7.7(a), an entity shall determine the amount of change in the fair value of the financial liability that is attributable to changes in the credit risk of that liability either:
+(a) as the amount of change in its fair value that is not attributable to changes in market conditions that give rise to market risk (see paragraphs B5.7.17 and B5.7.18); or
+(b) **using an alternative method the entity believes more faithfully represents the amount of change in the liability’s fair value that is attributable to changes in its credit risk**.

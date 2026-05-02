@@ -1,0 +1,65 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, en IFRS 15, le modèle de comptabilisation du chiffre d’affaires applicable à une licence de propriété intellectuelle, c’est-à-dire si la licence confère un droit d’accès ou un droit d’utilisation de la propriété intellectuelle.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs15", "ifrs3"],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I applied the strict precedence and scope rule and selected IFRS 15 because it directly governs revenue recognition for licences of intellectual property, whereas IFRS 3 addresses business combinations and does not govern this revenue-timing issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty: the question is expressly about revenue recognition for a licence granted to a customer, which is directly addressed by IFRS 15 paragraphs B52–B63."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["B52", "B53", "B54", "B55", "B56", "B58", "B59", "B59A", "B60", "B61", "B62"],
+        "reason": "These paragraphs directly govern how to determine the nature of a licence promise and whether revenue is recognised over time or at a point in time."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": ["24", "25"],
+        "reason": "These paragraphs clarify implied promises and confirm that activities that do not transfer a good or service are not separate performance obligations, which supports the licence analysis."
+      },
+      {
+        "document": "ifrs15",
+        "references": ["31", "32", "35", "38"],
+        "reason": "These general revenue recognition paragraphs provide the broader timing framework that the licence guidance applies or refers back to."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs3",
+        "references": ["8", "15", "18", "32", "37", "51", "53", "56", "B31", "B32", "B42", "B64"],
+        "reason": "This document concerns business combinations and acquired intangible assets, not revenue recognition for licences granted to customers."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence timing models under IFRS 15",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": ["B56", "B58", "B60", "B61"]
+        }
+      ],
+      "mapped_approaches": ["right_to_access_intellectual_property", "right_to_use_intellectual_property"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as one of the two licence models when the customer receives access to intellectual property as it exists throughout the licence period."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as the alternative licence model when the customer receives the right to use intellectual property as it exists at the point the licence is granted."
+    }
+  ]
+}

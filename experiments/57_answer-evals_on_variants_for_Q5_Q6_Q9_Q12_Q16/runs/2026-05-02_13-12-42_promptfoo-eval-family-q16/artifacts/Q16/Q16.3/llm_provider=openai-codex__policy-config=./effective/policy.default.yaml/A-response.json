@@ -1,0 +1,58 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone crée, au titre d’IAS 37, une obligation actuelle résultant d’un événement passé conduisant à la comptabilisation d’une provision pour des crédits carbone à acquérir et utiliser ultérieurement.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias37"],
+    "selected_primary_document": "ias37",
+    "selection_reason": "I applied the stated precedence rule and selected IAS 37 as the single governing lineage because it is the only candidate document provided that directly addresses provisions, contingent liabilities, constructive obligations, present obligations and future operating costs for this issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low; the context contains only one governing document lineage and the question squarely concerns IAS 37 recognition of obligations arising from voluntary climate-related commitments."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": ["10", "15", "16", "17", "18", "19", "20", "21", "23", "24", "25", "E6"],
+        "reason": "These paragraphs directly govern whether a voluntary climate commitment creates a present legal or constructive obligation and whether that obligation is recognised as a provision or treated as a contingent liability."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Recognised present obligation under IAS 37",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "17", "23", "24", "25", "E6"]
+        }
+      ],
+      "mapped_approaches": ["provision"]
+    },
+    {
+      "family": "Unrecognised obligation under IAS 37",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "15", "16", "23"]
+        }
+      ],
+      "mapped_approaches": ["contingent_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 identifies a provision as the recognised model when a present legal or constructive obligation from a past event exists, an outflow is probable and the amount can be estimated reliably."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 identifies a contingent liability as the alternative named model when the obligation is only possible or when a present obligation exists but fails the recognition criteria for a provision."
+    }
+  ]
+}

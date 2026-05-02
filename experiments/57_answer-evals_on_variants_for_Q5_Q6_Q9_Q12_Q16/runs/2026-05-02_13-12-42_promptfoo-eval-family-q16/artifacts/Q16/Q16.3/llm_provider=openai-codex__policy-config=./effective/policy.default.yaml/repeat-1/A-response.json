@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone crée une obligation actuelle au sens d’IAS 37 pour les crédits carbone à acquérir ultérieurement, conduisant soit à une provision, soit à un passif éventuel.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias37"],
+    "selected_primary_document": "ias37",
+    "selection_reason": "Only IAS 37 is provided as a candidate governing document, so no overlapping-document elimination was required; the issue is therefore resolved within the IAS 37 lineage, applying the stated precedence rule only insofar as no higher-precedence overlapping document is present.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low; the context directly includes IAS 37 definitions, recognition criteria, and the climate-related commitments agenda decision addressing the same type of voluntary emissions commitment."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": ["10", "13", "15", "16", "17", "18", "19", "20", "23", "25", "26"],
+        "reason": "These paragraphs directly define present obligation, constructive obligation, provisions, contingent liabilities, and the recognition threshold relevant to the question."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias37",
+        "references": ["E6"],
+        "reason": "This agenda decision directly clarifies how IAS 37 applies to voluntary climate-related commitments and carbon-credit offsetting obligations."
+      },
+      {
+        "document": "ias37",
+        "references": ["21", "22"],
+        "reason": "These paragraphs help distinguish when an event or later change creates an obligating event rather than a mere intention or proposed future requirement."
+      },
+      {
+        "document": "ias37",
+        "references": ["24"],
+        "reason": "This paragraph supports the probability assessment when similar obligations are considered as a class, though it is secondary to the core issue."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias37",
+        "references": ["11", "12"],
+        "reason": "These paragraphs distinguish provisions from trade payables and explain terminology, but they do not drive the peer treatment approaches for this issue."
+      },
+      {
+        "document": "ias37",
+        "references": ["E4"],
+        "reason": "This agenda decision concerns tax deposits and contingent assets, which is topically related to IAS 37 definitions but not relevant to carbon-credit provision approaches."
+      },
+      {
+        "document": "ias37",
+        "references": ["E5"],
+        "reason": "This agenda decision concerns government-imposed negative emission credits and helps by analogy, but the voluntary commitment fact pattern is addressed more directly elsewhere."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognised liability model under IAS 37 when a present obligation exists and recognition criteria are met",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "17", "18", "19", "23", "25", "E6"]
+        }
+      ],
+      "mapped_approaches": ["provision"]
+    },
+    {
+      "family": "Unrecognised obligation model under IAS 37 when obligation existence or recognition criteria remain uncertain",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "15", "16", "23", "26"]
+        }
+      ],
+      "mapped_approaches": ["contingent_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 treats a provision as the recognised model for a present legal or constructive obligation with probable outflow and reliable estimate, including offset obligations once the relevant emissions have occurred."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 treats a contingent liability as the peer unrecognised model when the obligation is only possible or when a present obligation fails the recognition criteria."
+    }
+  ]
+}

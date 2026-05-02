@@ -1,0 +1,109 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-02
+
+## Question
+
+**Utilisateur**:
+>Le traitement du revenu issu d’une licence de propriété intellectuelle dépend de la nature du droit transféré. Quels critères IFRS permettent de choisir entre une reconnaissance ponctuelle et une reconnaissance étalée ?
+
+**Reformulation**:
+>Déterminer, pour une licence de propriété intellectuelle au titre d’IFRS 15, si le droit transféré est un droit d’accès ou un droit d’utilisation afin de choisir entre une reconnaissance du revenu sur la durée ou à un moment donné.
+
+## Documentation
+**Consultée**
+   - IFRS-S (standard) (`ifrs15`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs15`)
+
+## Hypothèses
+   - La question porte sur une licence de propriété intellectuelle relevant d’IFRS 15 et demande les critères de choix entre reconnaissance ponctuelle et étalée, sans faits contractuels supplémentaires.
+   - Le modèle spécifique des licences n’est appliqué tel quel que si la licence est une obligation de prestation distincte ; sinon, la licence est combinée avec les autres promesses du contrat et le rythme de reconnaissance se détermine au niveau de l’obligation combinée (IFRS 15 B53–B55, 27–30).
+   - Aucune analyse spécifique des redevances assises sur les ventes ou l’usage n’est demandée ici ; la réponse vise seulement le choix entre droit d’accès et droit d’utilisation.
+
+## Recommandation
+
+**OUI SOUS CONDITIONS**
+
+Sous IFRS 15, il faut d’abord vérifier si la licence est distincte. Si oui, le revenu est reconnu sur la durée seulement si les critères du droit d’accès sont tous remplis ; sinon, il est reconnu à un moment donné comme droit d’utilisation.
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Droit d’accès à la propriété intellectuelle | OUI SOUS CONDITIONS | - La licence est distincte des autres biens ou services promis dans le contrat.<br>- Le contrat impose, ou le client attend raisonnablement, des activités de l’entité qui affectent significativement la PI.<br>- Le client est directement exposé aux effets positifs ou négatifs de ces activités.<br>- Ces activités ne transfèrent pas séparément un bien ou un service au client au fur et à mesure. |
+| 2. Droit d’utilisation de la propriété intellectuelle | OUI SOUS CONDITIONS | - La licence est distincte des autres biens ou services promis dans le contrat.<br>- Les critères cumulatifs du droit d’accès prévus par IFRS 15 B58 ne sont pas remplis.<br>- La période d’utilisation ou les moyens permettant l’usage immédiat de la licence ont commencé ou ont été mis à disposition du client. |
+
+### 1. Droit d’accès à la propriété intellectuelle
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La licence est distincte des autres biens ou services promis dans le contrat.
+   - Le contrat impose, ou le client attend raisonnablement, des activités de l’entité qui affectent significativement la PI.
+   - Le client est directement exposé aux effets positifs ou négatifs de ces activités.
+   - Ces activités ne transfèrent pas séparément un bien ou un service au client au fur et à mesure.
+
+**Raisonnement**:
+Dans cette situation, ce traitement ne s’applique que si la licence est distincte puis si la promesse consiste à donner accès à une PI évolutive, et non simplement à remettre un droit figé (IFRS 15 B56). Les trois critères cumulatifs sont : activités attendues de l’entité affectant significativement la PI, exposition directe du client à leurs effets, et absence de transfert d’un bien ou service distinct au fur et à mesure (IFRS 15 B58, B59A). Si ces critères sont remplis, le revenu est reconnu sur la durée (IFRS 15 B60).
+
+**Implications pratiques**: Le revenu de licence est reconnu sur la durée, selon une méthode de mesure de l’avancement appropriée.
+
+**Référence**:
+ - ifrs15 B56
+
+    >If the promise to grant the licence is distinct from the other promised goods or services in the contract and, therefore, the promise to grant the licence is a separate performance obligation, an entity shall determine whether the licence transfers to a customer either at a point in time or over time. In making this determination, an entity shall consider whether the nature of the entity’s promise in granting the licence to a customer is to provide the customer with either:
+(a)a right to access the entity’s intellectual property as it exists throughout the licence period; or
+(b)a right to use the entity’s intellectual property as it exists at the point in time at which the licence is granted.
+ - ifrs15 B58
+
+    >The nature of an entity’s promise in granting a licence is a promise to provide a right to access the entity’s intellectual property if all of the following criteria are met:
+(a)the contract requires, or the customer reasonably expects, that the entity will undertake activities that significantly affect the intellectual property to which the customer has rights (see paragraphs B59 and B59A);
+(b)the rights granted by the licence directly expose the customer to any positive or negative effects of the entity’s activities identified in paragraph B58(a) ; and
+(c)those activities do not result in the transfer of a good or a service to the customer as those activities occur (see paragraph 25).
+ - ifrs15 B59A
+
+    >An entity’s activities significantly affect the intellectual property to which the customer has rights when either:
+(a)those activities are expected to significantly change the form (for example, the design or content) or the functionality (for example, the ability to perform a function or task) of the intellectual property; or
+(b)the ability of the customer to obtain benefit from the intellectual property is substantially derived from, or dependent upon, those activities. For example, the benefit from a brand is often derived from, or dependent upon, the entity’s ongoing activities that support or maintain the value of the intellectual property.
+Accordingly, if the intellectual property to which the customer has rights has significant stand-alone functionality, a substantial portion of the benefit of that intellectual property is derived from that functionality. Consequently, the ability of the customer to obtain benefit from that intellectual property would not be significantly affected by the entity’s activities unless those activities significantly change its form or functionality. Types of intellectual property that often have significant stand-alone functionality include software, biological compounds or drug formulas, and completed media content (for example, films, television shows and music recordings).
+ - ifrs15 B60
+
+    >If the criteria in paragraph B58 are met, an entity shall account for the promise to grant a licence as a performance obligation satisfied over time because the customer will simultaneously receive and consume the benefit from the entity’s performance of providing access to its intellectual property as the performance occurs (see paragraph 35(a)). An entity shall apply paragraphs 39⁠–⁠45 to select an appropriate method to measure its progress towards complete satisfaction of that performance obligation to provide access.
+
+### 2. Droit d’utilisation de la propriété intellectuelle
+
+**Applicabilité**: OUI SOUS CONDITIONS
+
+**Conditions**:
+   - La licence est distincte des autres biens ou services promis dans le contrat.
+   - Les critères cumulatifs du droit d’accès prévus par IFRS 15 B58 ne sont pas remplis.
+   - La période d’utilisation ou les moyens permettant l’usage immédiat de la licence ont commencé ou ont été mis à disposition du client.
+
+**Raisonnement**:
+Dans cette situation, ce traitement s’applique si la licence est distincte mais que les critères du droit d’accès ne sont pas remplis (IFRS 15 B56, B61). La promesse est alors de fournir un droit d’utiliser la PI telle qu’elle existe à la date d’octroi ; le revenu est reconnu à un moment donné, lors du transfert de la licence selon les indicateurs de contrôle d’IFRS 15 38, sans reconnaissance avant que le client puisse effectivement utiliser et tirer avantage de la licence (IFRS 15 B61). Les restrictions de temps, de zone ou d’usage ne changent pas cette conclusion (IFRS 15 B62).
+
+**Implications pratiques**: Le revenu de licence est reconnu ponctuellement au moment où le contrôle de la licence est transféré au client.
+
+**Référence**:
+ - ifrs15 B56
+
+    >If the promise to grant the licence is distinct from the other promised goods or services in the contract and, therefore, the promise to grant the licence is a separate performance obligation, an entity shall determine whether the licence transfers to a customer either at a point in time or over time. In making this determination, an entity shall consider whether the nature of the entity’s promise in granting the licence to a customer is to provide the customer with either:
+(a)a right to access the entity’s intellectual property as it exists throughout the licence period; or
+(b)a right to use the entity’s intellectual property as it exists at the point in time at which the licence is granted.
+ - ifrs15 B61
+
+    >If the criteria in paragraph B58 are not met, the nature of an entity’s promise is to provide a right to use the entity’s intellectual property as that intellectual property exists (in terms of form and functionality) at the point in time at which the licence is granted to the customer. This means that the customer can direct the use of, and obtain substantially all of the remaining benefits from, the licence at the point in time at which the licence transfers. An entity shall account for the promise to provide a right to use the entity’s intellectual property as a performance obligation satisfied at a point in time. An entity shall apply paragraph 38 to determine the point in time at which the licence transfers to the customer. However, revenue cannot be recognised for a licence that provides a right to use the entity’s intellectual property before the beginning of the period during which the customer is able to use and benefit from the licence. For example, if a software licence period begins before an entity provides (or otherwise makes available) to the customer a code that enables the customer to immediately use the software, the entity would not recognise revenue before that code has been provided (or otherwise made available).
+ - ifrs15 38
+
+    >If a performance obligation is not satisfied over time in accordance with paragraphs 35⁠–⁠37, an entity satisfies the performance obligation at a point in time. To determine the point in time at which a customer obtains control of a promised asset and the entity satisfies a performance obligation, the entity shall consider the requirements for control in paragraphs 31⁠–⁠34. In addition, an entity shall consider indicators of the transfer of control, which include, but are not limited to, the following:
+(a)The entity has a present right to payment for the asset—if a customer is presently obliged to pay for an asset, then that may indicate that the customer has obtained the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset in exchange.
+(b)The customer has legal title to the asset—legal title may indicate which party to a contract has the ability to direct the use of, and obtain substantially all of the remaining benefits from, an asset or to restrict the access of other entities to those benefits. Therefore, the transfer of legal title of an asset may indicate that the customer has obtained control of the asset. If an entity retains legal title solely as protection against the customer’s failure to pay, those rights of the entity would not preclude the customer from obtaining control of an asset.
+(c)The entity has transferred physical possession of the asset—the customer’s physical possession of an asset may indicate that the customer has the ability to direct the use of, and obtain substantially all of the remaining benefits from, the asset or to restrict the access of other entities to those benefits. However, physical possession may not coincide with control of an asset. For example, in some repurchase agreements and in some consignment arrangements, a customer or consignee may have physical possession of an asset that the entity controls. Conversely, in some bill-and-hold arrangements, the entity may have physical...
+ - ifrs15 B62
+
+    >An entity shall disregard the following factors when determining whether a licence provides a right to access the entity’s intellectual property or a right to use the entity’s intellectual property:
+(a)Restrictions of time, geographical region or use—those restrictions define the attributes of the promised licence, rather than define whether the entity satisfies its performance obligation at a point in time or over time.
+(b)Guarantees provided by the entity that it has a valid patent to intellectual property and that it will defend that patent from unauthorised use—a promise to defend a patent right is not a performance obligation because the act of defending a patent protects the value of the entity’s intellectual property assets and provides assurance to the customer that the licence transferred meets the specifications of the licence promised in the contract.

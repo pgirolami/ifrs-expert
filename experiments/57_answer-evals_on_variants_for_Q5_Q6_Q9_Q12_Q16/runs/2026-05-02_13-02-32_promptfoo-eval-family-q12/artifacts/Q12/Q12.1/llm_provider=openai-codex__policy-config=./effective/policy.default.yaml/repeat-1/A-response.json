@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination de l’éligibilité d’un contrat de location à l’exemption IFRS 16 pour les contrats de courte durée, en particulier lorsque la durée contractuelle est d’un an ou moins mais que le contrat est renouvelable tacitement ou conclu pour une durée indéterminée.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs16"],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I applied the strict precedence rule by selecting IFRS 16 as the single governing lineage because it directly governs lease-term determination and the short-term lease exemption, and no higher- or equal-precedence competing document in the context governs that same eligibility question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low; IFRS 16 expressly contains both the short-term lease exemption and the lease-term/enforceability guidance needed to identify the relevant accounting approaches."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["5", "6", "7", "8", "B34", "B35", "B36", "B37", "B38", "B39", "B40"],
+        "reason": "These paragraphs directly govern the short-term lease exemption and the determination of lease term and enforceable period for lessee accounting."
+      },
+      {
+        "document": "ifrs16",
+        "references": ["22", "26", "29", "36", "38"],
+        "reason": "These paragraphs directly govern the default lessee accounting model when the short-term lease exemption is not applied."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["E10"],
+        "reason": "This agenda decision clarifies how to determine the enforceable period and lease term for cancellable or renewable leases, which constrains assessment of short-term status."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias37",
+        "references": ["5"],
+        "reason": "This paragraph acknowledges short-term leases in the context of onerous contracts, but it does not govern eligibility for the IFRS 16 short-term lease exemption."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Exempt lessee accounting for short-term leases",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "7", "8"]
+        },
+        {
+          "document": "ifrs16",
+          "references": ["B34", "B35", "B36", "B37", "B38", "B39", "B40", "E10"]
+        }
+      ],
+      "mapped_approaches": ["short_term_lease_exemption"]
+    },
+    {
+      "family": "General lessee recognition and subsequent measurement model",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["22", "26", "29", "36", "38"]
+        }
+      ],
+      "mapped_approaches": ["right_of_use_asset_and_lease_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct lessee accounting model for leases that qualify as short-term leases."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right-of-use asset and lease liability",
+      "normalized_label": "right_of_use_asset_and_lease_liability",
+      "rationale_for_inclusion": "IFRS 16 provides the default lessee accounting model when a lease is not accounted for using the short-term lease exemption."
+    }
+  ]
+}

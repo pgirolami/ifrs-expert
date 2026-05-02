@@ -1,0 +1,88 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si, dans une mesure de juste valeur fondée sur le marché, le risque de non-exécution ou de défaut doit être intégré tant pour un actif que pour un passif.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule by selecting the single document that directly governs fair value measurement generally: IFRS 13 defines fair value and the measurement framework for assets and liabilities, whereas IFRS 9 only uses fair value within narrower financial instrument models and therefore does not govern this measurement issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is directly about the fair value measurement framework, which IFRS 13 expressly governs."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "61", "67", "87", "88", "89", "B16", "B31", "B32", "B33"],
+        "reason": "These paragraphs directly govern fair value as a market-based exit price using market participant assumptions about risk for both assets and liabilities."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.1.1", "B5.1.1", "B5.1.2A", "B5.7.13", "B5.7.16", "B5.7.17", "B5.7.18", "B5.7.19", "B5.7.20"],
+        "reason": "These paragraphs support the application of fair value to financial instruments and clarify how liability credit risk is isolated and measured using observable inputs where possible."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias26",
+        "references": ["32", "33"],
+        "reason": "These paragraphs require certain plan investments to be carried at fair value but do not help identify peer approaches for whether default or non-performance risk is reflected in fair value."
+      },
+      {
+        "document": "ias8",
+        "references": ["7", "10", "11", "31A", "31I", "32", "34A", "36"],
+        "reason": "These paragraphs address policy selection and estimation uncertainty generally rather than the specific fair value risk question."
+      },
+      {
+        "document": "ifric17",
+        "references": ["11", "12", "13", "14"],
+        "reason": "These paragraphs concern measuring a dividend payable at fair value, not the general treatment of default or non-performance risk in fair value."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset incorporates market participant assumptions about counterparty default risk in expected cash flows or discount rates.",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "61", "67", "87", "88", "89", "B16"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["5.1.1", "B5.1.1", "B5.1.2A"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability incorporates non-performance risk, including the risk that the obligation will not be fulfilled, through market participant assumptions and required compensation.",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "9", "15", "22", "24", "87", "88", "89", "B31", "B32", "B33"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["B5.7.13", "B5.7.16", "B5.7.17", "B5.7.18", "B5.7.19", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 requires asset fair value to reflect market participant assumptions and risk, which for an asset includes the risk affecting the collectibility or realization of the asset's cash flows."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 requires liability fair value to reflect market participant assumptions and risk, including non-performance risk and compensation a market participant would require to assume the obligation."
+    }
+  ]
+}

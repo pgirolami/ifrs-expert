@@ -1,0 +1,74 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "La prise en compte du risque de non-exécution dans la mesure de la juste valeur, notamment le risque de crédit de la contrepartie pour un actif et le risque de non-performance propre pour un passif.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule by selecting the single IFRS standard that directly governs fair value measurement and related risk assumptions; no other provided document directly governs this same measurement issue at an overlapping level.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question is explicitly about fair value measurement and IFRS 13 is the dedicated governing standard for that topic."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "36", "42", "43", "44", "56", "61", "62", "67", "87", "88", "89", "B2", "B15", "B16", "B31", "B33"],
+        "reason": "These paragraphs directly govern whether and how fair value reflects market-participant assumptions about credit risk and non-performance risk."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs2",
+        "references": ["10", "11", "16", "17", "30", "33"],
+        "reason": "This document addresses share-based payment measurement, not the general fair value non-performance-risk issue raised here."
+      },
+      {
+        "document": "ias36",
+        "references": ["18", "20", "30", "53A", "55", "56"],
+        "reason": "This document addresses recoverable amount and value in use, which is related to valuation but not to identifying peer fair value approaches for counterparty non-performance risk."
+      },
+      {
+        "document": "ias8",
+        "references": ["31A", "31I", "32", "34A"],
+        "reason": "This document addresses estimation uncertainty and accounting estimates generally, not the governing fair value treatment itself."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset incorporating market-participant assumptions about counterparty credit and other risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "61", "62", "67", "87", "88", "89", "B15", "B16"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability or own equity instrument incorporating non-performance risk including own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "40", "42", "43", "44", "56", "B31", "B33"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 requires fair value to reflect market-participant assumptions about risk, which can include the counterparty's likelihood of non-performance when pricing an asset."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 explicitly requires the fair value of a liability to reflect non-performance risk, including the issuer's own credit risk."
+    }
+  ]
+}

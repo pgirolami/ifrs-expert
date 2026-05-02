@@ -72,4 +72,20 @@ assert_retrieve:
 variants:
   - id: Q12.0
     file: Q12.0.txt
-    description: Something
+    description: Short-term lease exemption with renewal
+
+  - id: Q12.1
+    file: Q12.1.txt
+    description: Short-term lease exemption wording variant
+
+  - id: Q12.2
+    file: Q12.2.txt
+    description: Short-term lease exemption wording variant
+
+  - id: Q12.3
+    file: Q12.3.txt
+    description: Short-term lease exemption wording variant
+
+  - id: Q12.4
+    file: Q12.4.txt
+    description: Short-term lease exemption wording variant

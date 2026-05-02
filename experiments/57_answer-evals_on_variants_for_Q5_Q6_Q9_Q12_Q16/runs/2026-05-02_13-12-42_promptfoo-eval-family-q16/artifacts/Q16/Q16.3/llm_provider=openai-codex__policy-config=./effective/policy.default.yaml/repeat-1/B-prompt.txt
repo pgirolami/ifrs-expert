@@ -1,0 +1,435 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ias37" document_type="IAS-S" document_kind="standard">
+<chunk id="60146" doc_uid="ias37" paragraph="10" score="0.5350">
+The following terms are used in this Standard with the meanings specified:
+A provision is a liability of uncertain timing or amount.
+A liability is a present obligation of the entity arising from past events, the settlement of which is expected to result in an outflow from the entity of resources embodying economic benefits. 1
+An obligating event is an event that creates a legal or constructive obligation that results in an entity having no realistic alternative to settling that obligation.
+A legal obligation is an obligation that derives from:
+(a)a contract (through its explicit or implicit terms);
+(b)legislation; or
+(c)other operation of law.
+A constructive obligation is an obligation that derives from an entity’s actions where:
+(a)by an established pattern of past practice, published policies or a sufficiently specific current statement, the entity has indicated to other parties that it will accept certain responsibilities; and
+(b)as a result, the entity has created a valid expectation on the part of those other parties that it will discharge those responsibilities.
+A contingent liability is:
+(a)a possible obligation that arises from past events and whose existence will be confirmed only by the occurrence or non‑occurrence of one or more uncertain future events not wholly within the control of the entity; or
+(b)a present obligation that arises from past events but is not recognised because:
+(i)it is not probable that an outflow of resources embodying economic benefits will be required to settle the obligation; or
+(ii)the amount of the obligation cannot be measured with sufficient reliability.
+A contingent asset is a possible asset that arises from past events and whose existence will be confirmed only by the occurrence or non‑occurrence of one or more uncertain future events not wholly within the control of the entity. E4
+An onerous contract is a contract in which the unavoidable costs of meeting the obligations under the contract exceed the economic benefits expected to be received under it.
+A restructuring is a programme that is planned and controlled by management, and materially changes either:
+(a)the scope of a business undertaken by an entity; or
+(b)the manner in which that business is conducted.
+</chunk>
+
+<chunk id="60150" doc_uid="ias37" paragraph="13" score="0.0000">
+This Standard distinguishes between:
+(a)provisions – which are recognised as liabilities (assuming that a reliable estimate can be made) because they are present obligations and it is probable that an outflow of resources embodying economic benefits will be required to settle the obligations; and
+(b)contingent liabilities – which are not recognised as liabilities because they are either:
+(i)possible obligations, as it has yet to be confirmed whether the entity has a present obligation that could lead to an outflow of resources embodying economic benefits; or
+(ii)present obligations that do not meet the recognition criteria in this Standard (because either it is not probable that an outflow of resources embodying economic benefits will be required to settle the obligation, or a sufficiently reliable estimate of the amount of the obligation cannot be made).
+</chunk>
+
+<chunk id="60152" doc_uid="ias37" paragraph="15" score="0.0000">
+In rare cases it is not clear whether there is a present obligation. In these cases, a past event is deemed to give rise to a present obligation if, taking account of all available evidence, it is more likely than not that a present obligation exists at the end of the reporting period.
+</chunk>
+
+<chunk id="60153" doc_uid="ias37" paragraph="16" score="0.0000">
+In almost all cases it will be clear whether a past event has given rise to a present obligation. In rare cases, for example in a lawsuit, it may be disputed either whether certain events have occurred or whether those events result in a present obligation. In such a case, an entity determines whether a present obligation exists at the end of the reporting period by taking account of all available evidence, including, for example, the opinion of experts. The evidence considered includes any additional evidence provided by events after the reporting period. On the basis of such evidence:
+(a)where it is more likely than not that a present obligation exists at the end of the reporting period, the entity recognises a provision (if the recognition criteria are met); and
+(b)where it is more likely that no present obligation exists at the end of the reporting period, the entity discloses a contingent liability, unless the possibility of an outflow of resources embodying economic benefits is remote (see paragraph 86).
+</chunk>
+
+<chunk id="60154" doc_uid="ias37" paragraph="17" score="0.0000">
+A past event that leads to a present obligation is called an obligating event. For an event to be an obligating event, it is necessary that the entity has no realistic alternative to settling the obligation created by the event. This is the case only:
+(a)where the settlement of the obligation can be enforced by law; or
+(b)in the case of a constructive obligation, where the event (which may be an action of the entity) creates valid expectations in other parties that the entity will discharge the obligation.
+</chunk>
+
+<chunk id="60155" doc_uid="ias37" paragraph="18" score="0.0000">
+Financial statements deal with the financial position of an entity at the end of its reporting period and not its possible position in the future. Therefore, no provision is recognised for costs that need to be incurred to operate in the future. The only liabilities recognised in an entity’s statement of financial position are those that exist at the end of the reporting period.
+</chunk>
+
+<chunk id="60156" doc_uid="ias37" paragraph="19" score="0.5739">
+It is only those obligations arising from past events existing independently of an entity’s future actions (ie the future conduct of its business) that are recognised as provisions. Examples of such obligations are penalties or clean‑up costs for unlawful environmental damage, both of which would lead to an outflow of resources embodying economic benefits in settlement regardless of the future actions of the entity. Similarly, an entity recognises a provision for the decommissioning costs of an oil installation or a nuclear power station to the extent that the entity is obliged to rectify damage already caused. In contrast, because of commercial pressures or legal requirements, an entity may intend or need to carry out expenditure to operate in a particular way in the future (for example, by fitting smoke filters in a certain type of factory). Because the entity can avoid the future expenditure by its future actions, for example by changing its method of operation, it has no present obligation for that future expenditure and no provision is recognised. E5, E6
+</chunk>
+
+<chunk id="60158" doc_uid="ias37" paragraph="E6" score="0.6052">
+[IFRIC® Update, March 2024, Agenda Decision, ‘ IAS 37 Provisions, Contingent Liabilities and Contingent Assets —Climate-related Commitments’ +
+The Committee received a request asking it to clarify:
+a.whether an entity’s commitment to reduce or offset its greenhouse gas emissions creates a constructive obligation for the entity;
+b.whether a constructive obligation created by such a commitment meets the criteria in IAS 37 for recognising a provision; and
+c.if a provision is recognised, whether the corresponding amount is recognised as an expense or as an asset when the provision is recognised.
+The Committee considered this request by reference to the following fact pattern.
+Fact pattern
+In 20X0 an entity, a manufacturer of household products, publicly states its commitment:
+a.to gradually reduce its annual greenhouse gas emissions, reducing them by at least 60% of their current level by 20X9; and
+b.to offset its remaining annual emissions in 20X9 and in subsequent years by buying carbon credits and retiring them from the carbon market.
+To support its statement, the entity publishes a transition plan setting out how it will gradually modify its manufacturing methods between 20X1 and 20X9 to achieve the 60% reduction in its annual emissions by 20X9. The modifications will involve investing in more energy-efficient processes, buying energy from renewable sources and replacing existing petroleum-based product ingredients and packaging materials with lower-carbon alternatives. Management is confident that the entity can make all these modifications and continue to sell its products at a profit.
+In addition to publishing the transition plan, the entity takes several other actions that publicly affirm its intention to fulfil its commitments.
+Does the entity have a constructive obligation?
+Paragraph 10 of IAS 37 defines a constructive obligation as an obligation that derives from an entity’s actions where:
+a.by an established pattern of past practice, published policies or a sufficiently specific current statement, the entity has indicated to other parties that it will accept certain responsibilities; and
+b.as a result, the entity has created a valid expectation on the part of those other parties that it will discharge those responsibilities.
+Paragraph 20 of IAS 37 states that an obligation always involves another party to whom the obligation is owed, but that it is not necessary to know the identity of that party—the obligation may be to the public at large. The Committee observed that a constructive obligation to reduce or offset greenhouse gas emissions, if one exists, would be owed to all people adversely affected by the emissions so would extend to the public at large. The Committee further observed that whether an entity’s statement of its commitment to reduce or offset its emissions creates a valid expectation that it will fulfil the commitment—and hence creates a constructive obligation to do so—depends on the facts of the commitment and the circumstances surrounding it, including any actions the entity has taken that publicly affirm its intention to fulfil the commitment. Management would apply judgement to reach a conclusion at each reporting date considering all relevant facts and circumstances existing at that date. If the facts or circumstances change from one reporting date to the next, so too could the conclusion.
+If the entity’s statement has not created a constructive obligation, the entity does not recognise a provision. If the entity’s statement has created a constructive obligation, the next question to consider is whether that obligation satisfies the criteria for recognising a provision.
+Does the constructive obligation satisfy the criteria for recognising a provision?
+Paragraph 14 of IAS 37 requires an entity to recognise a provision when:
+a.the entity has a present obligation (legal or constructive) as a result of a past event;
+b.it is probable that an outflow of resources embodying economic benefits will be required to settle the obligation; and
+c.a reliable estimate can be made of the amount of the obligation.
+An entity recognises a provision only if all three of these recognition criteria are met.
+Present obligation as a result of a past event
+The first criterion for recognising a provision is that the entity has a present obligation as a result of a past event.
+The Committee observed that, just as the enactment of a law is not sufficient to give an entity a present legal obligation, the publication of a policy or statement is not sufficient to give an entity a present constructive obligation—an entity has a present legal or constructive obligation only when the event to which the law, policy or statement applies has occurred. For example, as illustrated in Illustrative Example 2B accompanying IAS 37, an entity with a widely published policy of cleaning up land it contaminates incurs a present obligation only when it contaminates land—publishing the policy is necessary but not sufficient to give the entity a present obligation.
+In explaining the requirement for a present obligation, paragraph 18 of IAS 37 states that ‘no provision is recognised for costs that need to be incurred to operate in the future’ and paragraph 19 of IAS 37 states that ‘it is only those obligations arising from past events existing independently of an entity’s future actions (ie the future conduct of its business) that are recognised as provisions’.
+Applying those paragraphs, the Committee concluded that if the commitments described in the fact pattern creates a constructive obligation for the entity:
+a.that obligation is not a present obligation as a result of a past event when the entity publicly states the commitments in 20X0. Neither stating a commitment nor taking actions that affirm the entity’s intention to fulfil that commitment are events that create a present obligation. The events that create a present obligation are the events to which the statement applies and those events have not occurred at the time the entity states its commitment. The costs that the entity will incur to reduce its annual greenhouse gas emissions and to offset the greenhouse gases it emits in 20X9 and in subsequent years are costs that it will need to incur to operate in the future—the obligations for those costs do not exist independently of the entity’s future actions.
+b.at any given date, the entity does not have a present obligation to reduce its emissions after that date, because the costs of operating with lower emissions in the future will remain costs that need to be incurred to operate in the future. The entity will at some future date have a liability to pay for resources it buys to carry out those future operations—for example, to pay for new plant or equipment—but only when it receives those resources in an exchange transaction.
+c.only when the entity has emitted the greenhouse gases that it has committed to offset will it have a present obligation to offset those greenhouse gases. The entity will have that present obligation only if and when it emits greenhouse gases in 20X9 and in subsequent years.
+Probable outflow of resources
+The second criterion for recognising a provision is that it is probable that an outflow of resources embodying economic benefits will be required to settle the obligation.
+The Committee concluded that if the commitments described in the fact pattern create a constructive obligation for the entity:
+a.settling the constructive obligation to reduce the entity’s annual greenhouse gas emissions will not require an outflow of resources embodying economic benefits. Although the entity will incur expenditure to modify its manufacturing methods, it will receive other resources—for example, property, plant, equipment, energy, product ingredients or packaging materials—in exchange, and will be able to use these resources to manufacture products it can sell at a profit.
+b.settling the constructive obligation to offset the entity’s remaining annual greenhouse gas emissions will require an outflow of resources embodying economic benefits. The entity will be required to buy and retire carbon credits without receiving any resources embodying economic benefits in exchange.
+Reliable estimate
+The final criterion for recognising a provision is that a reliable estimate can be made of the amount of the obligation.
+Paragraph 25 of IAS 37 states that 'except in extremely rare cases, an entity will be able to determine a range of possible outcomes and can therefore make an estimate of the obligation that is sufficiently reliable to use in recognising a provision’.
+The Committee concluded that in the fact pattern described, it is likely that the entity would be able to make a reliable estimate of the amount of a constructive obligation that satisfies the other recognition criteria.
+Conclusion on whether a provision is recognised
+The Committee concluded that in the fact pattern described:
+a.whether the entity’s statement of its commitments to reduce and offset its greenhouse gas emissions creates a constructive obligation to fulfil those commitments will depend on the facts of the statement and the circumstances surrounding it.
+b.if the statement creates a constructive obligation:
+i.the entity does not recognise a provision when it makes the statement in 20X0. At that time, the constructive obligation is not a present obligation as a result of a past event.
+ii.the entity does not recognise a provision between 20X0 and 20X9 because it does not have a present obligation as a result of a past event until it has emitted the greenhouse gases it has committed to offset.
+iii.as the entity emits greenhouse gases in 20X9 and in subsequent years, it will incur a present obligation to offset these past emissions. If the entity has not yet settled that obligation and a reliable estimate can be made of the amount of the obligation, the entity recognises a provision.
+If a provision is recognised, is the corresponding amount recognised as an expense or as an asset when the provision is recognised?
+The Committee observed that if a provision is recognised, the corresponding amount is recognised as an expense, rather than as an asset, unless it gives rise to—or forms part of the cost of—an item that qualifies for recognition as an asset in accordance with an IFRS Accounting Standard.
+Other accounting and disclosure implications
+The Committee observed that, irrespective of whether an entity’s commitment to reduce or offset its greenhouse gas emissions results in the recognition of a provision, the actions the entity plans to take to fulfil that commitment could affect the amounts at which it measures its other assets and liabilities and the information it discloses about them, as required by various IFRS Accounting Standards.
+Conclusion
+The Committee concluded that the principles and requirements in IFRS Accounting Standards provide an adequate basis for an entity to determine:
+a.whether an entity’s commitment to reduce or offset its greenhouse gas emissions creates a constructive obligation for the entity;
+b.the circumstances in which the entity recognises a provision for the costs of fulfilling a constructive obligation to reduce or offset its greenhouse gas emissions; and
+c.if a provision is recognised, whether the corresponding amount is recognised as an expense or as an asset when the provision is recognised.
+Consequently, the Committee decided not to add a standard-setting project to the work plan.]
+</chunk>
+
+<chunk id="60159" doc_uid="ias37" paragraph="20" score="0.0000">
+An obligation always involves another party to whom the obligation is owed. It is not necessary, however, to know the identity of the party to whom the obligation is owed—indeed the obligation may be to the public at large. Because an obligation always involves a commitment to another party, it follows that a management or board decision does not give rise to a constructive obligation at the end of the reporting period unless the decision has been communicated before the end of the reporting period to those affected by it in a sufficiently specific manner to raise a valid expectation in them that the entity will discharge its responsibilities.
+</chunk>
+
+<chunk id="60160" doc_uid="ias37" paragraph="21" score="0.5538">
+An event that does not give rise to an obligation immediately may do so at a later date, because of changes in the law or because an act (for example, a sufficiently specific public statement) by the entity gives rise to a constructive obligation. For example, when environmental damage is caused there may be no obligation to remedy the consequences. However, the causing of the damage will become an obligating event when a new law requires the existing damage to be rectified or when the entity publicly accepts responsibility for rectification in a way that creates a constructive obligation.
+</chunk>
+
+<chunk id="60161" doc_uid="ias37" paragraph="22" score="0.0000">
+Where details of a proposed new law have yet to be finalised, an obligation arises only when the legislation is virtually certain to be enacted as drafted. For the purpose of this Standard, such an obligation is treated as a legal obligation. Differences in circumstances surrounding enactment make it impossible to specify a single event that would make the enactment of a law virtually certain. In many cases it will be impossible to be virtually certain of the enactment of a law until it is enacted.
+</chunk>
+
+<chunk id="60162" doc_uid="ias37" paragraph="23" score="0.0000">
+For a liability to qualify for recognition there must be not only a present obligation but also the probability of an outflow of resources embodying economic benefits to settle that obligation. For the purpose of this Standard, 2 an outflow of resources or other event is regarded as probable if the event is more likely than not to occur, ie the probability that the event will occur is greater than the probability that it will not. Where it is not probable that a present obligation exists, an entity discloses a contingent liability, unless the possibility of an outflow of resources embodying economic benefits is remote (see paragraph 86).
+</chunk>
+
+<chunk id="60163" doc_uid="ias37" paragraph="24" score="0.0000">
+Where there are a number of similar obligations (eg product warranties or similar contracts) the probability that an outflow will be required in settlement is determined by considering the class of obligations as a whole. Although the likelihood of outflow for any one item may be small, it may well be probable that some outflow of resources will be needed to settle the class of obligations as a whole. If that is the case, a provision is recognised (if the other recognition criteria are met).
+</chunk>
+
+<chunk id="60164" doc_uid="ias37" paragraph="25" score="0.0000">
+The use of estimates is an essential part of the preparation of financial statements and does not undermine their reliability. This is especially true in the case of provisions, which by their nature are more uncertain than most other items in the statement of financial position. Except in extremely rare cases, an entity will be able to determine a range of possible outcomes and can therefore make an estimate of the obligation that is sufficiently reliable to use in recognising a provision.
+</chunk>
+
+<chunk id="60165" doc_uid="ias37" paragraph="26" score="0.0000">
+In the extremely rare case where no reliable estimate can be made, a liability exists that cannot be recognised. That liability is disclosed as a contingent liability (see paragraph 86).
+</chunk>
+</Document>
+</context>
+
+<question>
+Dans quelle mesure un engagement volontaire de contribution à la neutralité carbone crée-t-il une obligation actuelle imposant la comptabilisation d’une provision pour les crédits carbone à utiliser ultérieurement ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone crée une obligation actuelle au sens d’IAS 37 pour les crédits carbone à acquérir ultérieurement, conduisant soit à une provision, soit à un passif éventuel.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ias37"
+    ],
+    "selected_primary_document": "ias37",
+    "selection_reason": "Only IAS 37 is provided as a candidate governing document, so no overlapping-document elimination was required; the issue is therefore resolved within the IAS 37 lineage, applying the stated precedence rule only insofar as no higher-precedence overlapping document is present.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low; the context directly includes IAS 37 definitions, recognition criteria, and the climate-related commitments agenda decision addressing the same type of voluntary emissions commitment."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": [
+          "10",
+          "13",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "23",
+          "25",
+          "26"
+        ],
+        "reason": "These paragraphs directly define present obligation, constructive obligation, provisions, contingent liabilities, and the recognition threshold relevant to the question."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias37",
+        "references": [
+          "E6"
+        ],
+        "reason": "This agenda decision directly clarifies how IAS 37 applies to voluntary climate-related commitments and carbon-credit offsetting obligations."
+      },
+      {
+        "document": "ias37",
+        "references": [
+          "21",
+          "22"
+        ],
+        "reason": "These paragraphs help distinguish when an event or later change creates an obligating event rather than a mere intention or proposed future requirement."
+      },
+      {
+        "document": "ias37",
+        "references": [
+          "24"
+        ],
+        "reason": "This paragraph supports the probability assessment when similar obligations are considered as a class, though it is secondary to the core issue."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias37",
+        "references": [
+          "11",
+          "12"
+        ],
+        "reason": "These paragraphs distinguish provisions from trade payables and explain terminology, but they do not drive the peer treatment approaches for this issue."
+      },
+      {
+        "document": "ias37",
+        "references": [
+          "E4"
+        ],
+        "reason": "This agenda decision concerns tax deposits and contingent assets, which is topically related to IAS 37 definitions but not relevant to carbon-credit provision approaches."
+      },
+      {
+        "document": "ias37",
+        "references": [
+          "E5"
+        ],
+        "reason": "This agenda decision concerns government-imposed negative emission credits and helps by analogy, but the voluntary commitment fact pattern is addressed more directly elsewhere."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognised liability model under IAS 37 when a present obligation exists and recognition criteria are met",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": [
+            "10",
+            "13",
+            "17",
+            "18",
+            "19",
+            "23",
+            "25",
+            "E6"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "provision"
+      ]
+    },
+    {
+      "family": "Unrecognised obligation model under IAS 37 when obligation existence or recognition criteria remain uncertain",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": [
+            "10",
+            "13",
+            "15",
+            "16",
+            "23",
+            "26"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "contingent_liability"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 treats a provision as the recognised model for a present legal or constructive obligation with probable outflow and reliable estimate, including offset obligations once the relevant emissions have occurred."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 treats a contingent liability as the peer unrecognised model when the obligation is only possible or when a present obligation fails the recognition criteria."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "paragraph attribute",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ]
+}

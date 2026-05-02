@@ -1,0 +1,84 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si le risque de défaut doit être intégré dans l’évaluation à la juste valeur d’un actif ou d’un passif, et selon quelle perspective IFRS ce risque est incorporé.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule by selecting the IFRS that directly governs fair value measurement itself: IFRS 13 is the single governing standard for defining and measuring fair value, whereas IFRS 9 only uses or applies fair value within specific financial instrument models.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty: the question is explicitly about fair value measurement, which IFRS 13 directly governs."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "22", "24", "42", "43"],
+        "reason": "These paragraphs directly govern how fair value is measured and expressly address the inclusion of credit and non-performance risk."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.1.1", "5.1.1A", "B5.1.2A"],
+        "reason": "These paragraphs confirm that financial instruments are initially measured at fair value and link that measurement back to IFRS 13."
+      },
+      {
+        "document": "ifrs9",
+        "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"],
+        "reason": "These paragraphs clarify how changes in a financial liability’s own credit risk are identified and presented after fair value has been measured."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias40",
+        "references": ["32", "33", "40"],
+        "reason": "IAS 40 points investment property fair value measurements to IFRS 13 but does not add peer approaches for the credit-risk issue."
+      },
+      {
+        "document": "ias8",
+        "references": ["31A", "31I", "32", "32A", "34A"],
+        "reason": "IAS 8 addresses estimation uncertainty and changes in estimates, not the governing fair value treatment for counterparty default risk."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset incorporates market participant assumptions about the asset, including counterparty credit risk where relevant to expected cash flows or pricing inputs.",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "87", "88", "89"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability incorporates non-performance risk, including the entity’s own credit risk, from the perspective of a market participant transferee.",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "40", "42", "43", "44"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 measures assets using market participant assumptions, which can include counterparty default risk when that risk affects the asset’s pricing."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 expressly requires the fair value of a liability to reflect non-performance risk, including the issuer’s own credit risk."
+    }
+  ]
+}

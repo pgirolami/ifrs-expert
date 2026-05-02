@@ -1,0 +1,113 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, au regard d’IFRS 10, si un investisseur détient le pouvoir sur une entité au titre de l’évaluation du contrôle",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs10", "ifrs3", "ias28"],
+    "selected_primary_document": "ifrs10",
+    "selection_reason": "I applied the strict precedence rule that the standard directly governing control and power over an investee is IFRS 10, so it supersedes any lower-precedence or non-directly-governing IAS guidance and displaces overlapping control references in other documents for this issue.",
+    "discarded_due_to_overlap": ["ifrs3", "ias28"],
+    "residual_uncertainty": "Low uncertainty, because the question is explicitly about whether an investor has power over an entity, which is directly governed by IFRS 10."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["5", "6", "7", "8", "10", "11", "12", "13", "14", "B2", "B3", "B5", "B8", "B9", "B10", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B28", "B34", "B35", "B36", "B37", "B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50", "B51", "B52", "B53", "B54", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B68", "B69", "B70", "B71", "B72", "B73", "B74", "B75", "B80", "B81", "B82", "B83", "B84", "B85"],
+        "reason": "These paragraphs directly govern how power is identified as part of the IFRS 10 control assessment."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["E3"],
+        "reason": "This agenda decision clarifies reassessment of control when previously protective rights become exercisable."
+      },
+      {
+        "document": "ifrs10",
+        "references": ["E4"],
+        "reason": "This agenda decision illustrates how to identify relevant activities and assess power in structured lease vehicles."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Power obtained through voting rights that direct the relevant activities",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["11", "B34", "B35", "B36", "B37", "B38", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50"]
+        }
+      ],
+      "mapped_approaches": [
+        "voting_rights"
+      ]
+    },
+    {
+      "family": "Power obtained through contractual or other decision-making rights when voting rights are not the dominant factor",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["10", "11", "13", "14", "B8", "B9", "B10", "B14", "B15", "B16", "B17", "B22", "B23", "B24", "B25", "B26", "B27", "B28", "B51", "B52", "B53", "B54"]
+        },
+        {
+          "document": "ifrs10",
+          "references": ["E4"]
+        }
+      ],
+      "mapped_approaches": [
+        "contractual_rights"
+      ]
+    },
+    {
+      "family": "Power assessed through delegated decision-making rights by determining whether the decision maker is a principal or an agent",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["17", "18", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B68", "B69", "B70", "B71", "B72"]
+        }
+      ],
+      "mapped_approaches": [
+        "principal_agent_assessment"
+      ]
+    },
+    {
+      "family": "Power evidenced by practical ability and relationships with other parties, including de facto agents",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B18", "B19", "B20", "B21", "B73", "B74", "B75"]
+        }
+      ],
+      "mapped_approaches": [
+        "de_facto_power"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Voting rights",
+      "normalized_label": "voting_rights",
+      "rationale_for_inclusion": "IFRS 10 identifies voting rights, including substantive and potential voting rights, as a core top-level way in which power may arise."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contractual rights",
+      "normalized_label": "contractual_rights",
+      "rationale_for_inclusion": "IFRS 10 provides a distinct top-level model in which power arises from contractual or other rights rather than from voting rights."
+    },
+    {
+      "id": "approach_3",
+      "label": "Principal-agent assessment",
+      "normalized_label": "principal_agent_assessment",
+      "rationale_for_inclusion": "Where decision-making rights are delegated, IFRS 10 requires a distinct principal-versus-agent assessment to determine whether the decision maker has power."
+    },
+    {
+      "id": "approach_4",
+      "label": "De facto power",
+      "normalized_label": "de_facto_power",
+      "rationale_for_inclusion": "IFRS 10 separately recognizes situations in which practical ability and relationships with other parties provide evidence that an investor can direct relevant activities unilaterally."
+    }
+  ]
+}

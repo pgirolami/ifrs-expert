@@ -1,0 +1,339 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ifrs16" document_type="IFRS-S" document_kind="standard">
+<chunk id="49235" doc_uid="ifrs16" paragraph="5" score="0.6170">
+A lessee may elect not to apply the requirements in paragraphs 22⁠–⁠49 to:
+(a)short-term leases ; and
+(b)leases for which the underlying asset is of low value (as described in paragraphs B3⁠–⁠B8).
+</chunk>
+
+<chunk id="49236" doc_uid="ifrs16" paragraph="6" score="0.5990">
+If a lessee elects not to apply the requirements in paragraphs 22⁠–⁠49 to either short-term leases or leases for which the underlying asset is of low value, the lessee shall recognise the lease payments associated with those leases as an expense on either a straight-line basis over the lease term or another systematic basis. The lessee shall apply another systematic basis if that basis is more representative of the pattern of the lessee’s benefit.
+</chunk>
+
+<chunk id="49237" doc_uid="ifrs16" paragraph="7" score="0.6000">
+If a lessee accounts for short-term leases applying paragraph 6, the lessee shall consider the lease to be a new lease for the purposes of this Standard if:
+(a)there is a lease modification ; or
+(b)there is any change in the lease term (for example, the lessee exercises an option not previously included in its determination of the lease term).
+</chunk>
+
+<chunk id="49248" doc_uid="ifrs16" paragraph="18" score="0.6217">
+An entity shall determine the lease term as the non-cancellable period of a lease, together with both:
+(a)periods covered by an option to extend the lease if the lessee is reasonably certain to exercise that option; and
+(b)periods covered by an option to terminate the lease if the lessee is reasonably certain not to exercise that option.
+</chunk>
+
+<chunk id="49249" doc_uid="ifrs16" paragraph="19" score="0.0000">
+In assessing whether a lessee is reasonably certain to exercise an option to extend a lease, or not to exercise an option to terminate a lease, an entity shall consider all relevant facts and circumstances that create an economic incentive for the lessee to exercise the option to extend the lease, or not to exercise the option to terminate the lease, as described in paragraphs B37⁠–⁠B40.
+</chunk>
+
+<chunk id="49250" doc_uid="ifrs16" paragraph="20" score="0.0000">
+A lessee shall reassess whether it is reasonably certain to exercise an extension option, or not to exercise a termination option, upon the occurrence of either a significant event or a significant change in circumstances that:
+(a)is within the control of the lessee; and
+(b)affects whether the lessee is reasonably certain to exercise an option not previously included in its determination of the lease term, or not to exercise an option previously included in its determination of the lease term (as described in paragraph B41).
+</chunk>
+
+<chunk id="49251" doc_uid="ifrs16" paragraph="21" score="0.6092">
+An entity shall revise the lease term if there is a change in the non-cancellable period of a lease. For example, the non-cancellable period of a lease will change if:
+(a)the lessee exercises an option not previously included in the entity’s determination of the lease term;
+(b)the lessee does not exercise an option previously included in the entity’s determination of the lease term;
+(c)an event occurs that contractually obliges the lessee to exercise an option not previously included in the entity’s determination of the lease term; or
+(d)an event occurs that contractually prohibits the lessee from exercising an option previously included in the entity’s determination of the lease term.
+</chunk>
+
+<chunk id="49252" doc_uid="ifrs16" paragraph="22" score="0.0000">
+At the commencement date, a lessee shall recognise a right-of-use asset and a lease liability.
+</chunk>
+
+<chunk id="49383" doc_uid="ifrs16" paragraph="B34" score="0.6118">
+In determining the lease term and assessing the length of the non-cancellable period of a lease, an entity shall apply the definition of a contract and determine the period for which the contract is enforceable. A lease is no longer enforceable when the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty. E10
+</chunk>
+
+<chunk id="49384" doc_uid="ifrs16" paragraph="E10" score="0.0000">
+[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ +
+The Committee received a request about cancellable or renewable leases.
+The cancellable lease described in the request is one that does not specify a particular contractual term but continues indefinitely until either party to the contract gives notice to terminate. The contract includes a notice period of, for example, less than 12 months and the contract does not oblige either party to make a payment on termination. The renewable lease described in the request is one that specifies an initial period, and renews indefinitely at the end of the initial period unless terminated by either of the parties to the contract.
+The request asked two questions:
+(a)how to determine the lease term of a cancellable lease or a renewable lease. Specifically, the request asked whether, when applying paragraph B34 of IFRS 16 and assessing ‘no more than an insignificant penalty’, an entity considers the broader economics of the contract, and not only contractual termination payments. Such considerations might include, for example, the cost of abandoning or dismantling leasehold improvements.
+(b)whether the useful life of any related non-removable leasehold improvements is limited to the lease term determined applying IFRS 16. Non-removable leasehold improvements are, for example, fixtures and fittings acquired by the lessee and constructed on the underlying asset that is the subject of the cancellable or renewable lease. The lessee will use and benefit from the leasehold improvements only for as long as it uses the underlying asset.
+Lease term
+Paragraph 18 of IFRS 16 requires an entity to determine the lease term as the non-cancellable period of a lease, together with both (a) periods covered by an option to extend the lease if the lessee is reasonably certain to exercise that option; and (b) periods covered by an option to terminate the lease if the lessee is reasonably certain not to exercise that option.
+In determining the lease term and assessing the length of the non-cancellable period of a lease, paragraph B34 of IFRS 16 requires an entity to determine the period for which the contract is enforceable. Paragraph B34 specifies that ‘a lease is no longer enforceable when the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty’.
+Paragraph BC156 sets out the Board’s view that ‘the lease term should reflect an entity’s reasonable expectation of the period during which the underlying asset will be used because that approach provides the most useful information’.
+The Committee observed that, in applying paragraph B34 and determining the enforceable period of the lease described in the request, an entity considers:
+(a)the broader economics of the contract, and not only contractual termination payments. For example, if either party has an economic incentive not to terminate the lease such that it would incur a penalty on termination that is more than insignificant, the contract is enforceable beyond the date on which the contract can be terminated; and
+(b)whether each of the parties has the right to terminate the lease without permission from the other party with no more than an insignificant penalty. Applying paragraph B34, a lease is no longer enforceable only when both parties have such a right. Consequently, if only one party has the right to terminate the lease without permission from the other party with no more than an insignificant penalty, the contract is enforceable beyond the date on which the contract can be terminated by that party.
+If an entity concludes that the contract is enforceable beyond the notice period of a cancellable lease (or the initial period of a renewable lease), it then applies paragraphs 19 and B37⁠–⁠B40 of IFRS 16 to assess whether the lessee is reasonably certain not to exercise the option to terminate the lease.
+…
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to determine the lease term of cancellable and renewable leases. The Committee also concluded that the principles and requirements in IAS 16 and IFRS 16 provide an adequate basis for an entity to determine the useful life of any non-removable leasehold improvements relating to such a lease. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="49385" doc_uid="ifrs16" paragraph="B35" score="0.6284">
+If only a lessee has the right to terminate a lease, that right is considered to be an option to terminate the lease available to the lessee that an entity considers when determining the lease term. If only a lessor has the right to terminate a lease, the non-cancellable period of the lease includes the period covered by the option to terminate the lease.
+</chunk>
+
+<chunk id="49387" doc_uid="ifrs16" paragraph="B37" score="0.0000">
+At the commencement date, an entity assesses whether the lessee is reasonably certain to exercise an option to extend the lease or to purchase the underlying asset, or not to exercise an option to terminate the lease. The entity considers all relevant facts and circumstances that create an economic incentive for the lessee to exercise, or not to exercise, the option, including any expected changes in facts and circumstances from the commencement date until the exercise date of the option. Examples of factors to consider include, but are not limited to:
+(a)contractual terms and conditions for the optional periods compared with market rates, such as:
+(i)the amount of payments for the lease in any optional period;
+(ii)the amount of any variable payments for the lease or other contingent payments, such as payments resulting from termination penalties and residual value guarantees ; and
+(iii)the terms and conditions of any options that are exercisable after initial optional periods (for example, a purchase option that is exercisable at the end of an extension period at a rate that is currently below market rates).
+(b)significant leasehold improvements undertaken (or expected to be undertaken) over the term of the contract that are expected to have significant economic benefit for the lessee when the option to extend or terminate the lease, or to purchase the underlying asset, becomes exercisable; E11
+(c)costs relating to the termination of the lease, such as negotiation costs, relocation costs, costs of identifying another underlying asset suitable for the lessee’s needs, costs of integrating a new asset into the lessee’s operations, or termination penalties and similar costs, including costs associated with returning the underlying asset in a contractually specified condition or to a contractually specified location;
+(d)the importance of that underlying asset to the lessee’s operations, considering, for example, whether the underlying asset is a specialised asset, the location of the underlying asset and the availability of suitable alternatives; and
+(e)conditionality associated with exercising the option (ie when the option can be exercised only if one or more conditions are met), and the likelihood that those conditions will exist.
+</chunk>
+
+<chunk id="49390" doc_uid="ifrs16" paragraph="B39" score="0.6259">
+The shorter the non-cancellable period of a lease, the more likely a lessee is to exercise an option to extend the lease or not to exercise an option to terminate the lease. This is because the costs associated with obtaining a replacement asset are likely to be proportionately higher the shorter the non-cancellable period.
+</chunk>
+</Document>
+</context>
+
+<question>
+Le preneur dispose d’un contrat sans option d’achat dont la période initiale n’excède pas douze mois, avec tacite reconduction ou durée indéterminée. Peut-il ne pas reconnaître le droit d’utilisation et la dette de loyers au titre de l’exemption pour contrats courts ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination de l’éligibilité d’un contrat de location du preneur à l’exemption IFRS 16 pour contrats courts, en fonction de la durée de location et de la période exécutoire lorsqu’il existe une tacite reconduction ou une durée indéterminée.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs16"
+    ],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I selected IFRS 16 as the single governing lineage because it directly governs lessee lease recognition, lease term and the short-term lease exemption, and under the stated precedence rule no overlapping higher-precedence document displaces it.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the question is squarely about lessee lease accounting and exemption eligibility, which is directly addressed by IFRS 16."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": [
+          "5",
+          "6",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "B34",
+          "B35",
+          "B37",
+          "B39"
+        ],
+        "reason": "These paragraphs directly govern whether a lessee applies the short-term lease exemption or recognises a right-of-use asset and lease liability, including how lease term and enforceability are determined."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": [
+          "7",
+          "E10"
+        ],
+        "reason": "These references clarify how short-term lease treatment interacts with changes in lease term and how cancellable, renewable or indefinite arrangements are analysed through enforceability and economic penalties."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Short-term lease exemption based on lease term not exceeding 12 months and no purchase option",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": [
+            "5",
+            "6",
+            "18",
+            "B34",
+            "B35"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "short_term_lease_exemption"
+      ]
+    },
+    {
+      "family": "General lessee recognition model for leases outside the short-term exemption",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": [
+            "22",
+            "18",
+            "19",
+            "20",
+            "21",
+            "B34",
+            "B37",
+            "B39"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "right_of_use_model"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct optional lessee model for leases whose lease term does not exceed 12 months and that do not contain a purchase option."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right-of-use model",
+      "normalized_label": "right_of_use_model",
+      "rationale_for_inclusion": "IFRS 16 otherwise requires the lessee to recognise a right-of-use asset and a lease liability for the lease."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "paragraph attribute",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ]
+}

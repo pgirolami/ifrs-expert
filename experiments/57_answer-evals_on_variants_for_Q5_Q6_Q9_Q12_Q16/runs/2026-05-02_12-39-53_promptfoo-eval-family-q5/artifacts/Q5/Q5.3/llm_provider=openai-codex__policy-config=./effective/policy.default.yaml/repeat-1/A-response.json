@@ -1,0 +1,74 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "prise en compte du risque de crédit de la contrepartie dans la mesure de la juste valeur d’un actif ou d’un passif selon IFRS 13",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9", "ias39"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS and selected IFRS 13 because it is the governing standard for fair value measurement, while IAS 39 is discarded as overlapping legacy guidance and IFRS 9 does not govern the core fair value measurement framework raised by the question.",
+    "discarded_due_to_overlap": ["ias39"],
+    "residual_uncertainty": "low — IFRS 13 directly defines and governs fair value measurement, including risk assumptions and credit risk effects, which matches the question most closely."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "37", "38", "39", "42", "43", "44", "48", "49", "56", "61", "62", "86", "87", "88", "89", "B13", "B14", "B16", "B31", "B33"],
+        "reason": "These paragraphs directly govern how fair value incorporates market participant assumptions, credit risk, non-performance risk, and the portfolio exception for net credit exposure."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.7.7", "5.7.8", "B5.7.5", "B5.7.6", "B5.7.13", "B5.7.16", "B5.7.17", "B5.7.18", "B5.7.19", "B5.7.20"],
+        "reason": "These paragraphs help distinguish credit risk from other value drivers and illustrate measurement of the portion of fair value change attributable to a liability’s credit risk."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias36",
+        "references": ["18", "20", "30", "53A", "55", "56"],
+        "reason": "These paragraphs address impairment and value in use rather than the IFRS 13 fair value measurement issue itself."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value measurement of an individual asset or liability using market participant credit assumptions",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "9", "22", "24", "42", "43", "44", "61", "62", "86", "87", "88", "89", "B13", "B14", "B16", "B31", "B33"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["B5.7.13", "B5.7.16", "B5.7.17", "B5.7.18", "B5.7.19", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["individual_fair_value_measurement"]
+    },
+    {
+      "family": "Fair value measurement of a managed group of financial assets and financial liabilities on a net credit exposure basis",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["48", "49", "56"]
+        }
+      ],
+      "mapped_approaches": ["portfolio_exception"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Individual fair value measurement",
+      "normalized_label": "individual_fair_value_measurement",
+      "rationale_for_inclusion": "IFRS 13 requires fair value of a single asset or liability to reflect market participant assumptions about credit risk, including counterparty credit risk for assets and own credit risk as part of non-performance risk for liabilities."
+    },
+    {
+      "id": "approach_2",
+      "label": "Portfolio exception",
+      "normalized_label": "portfolio_exception",
+      "rationale_for_inclusion": "IFRS 13 provides a distinct measurement model permitting a managed group of financial assets and financial liabilities to be measured on the basis of net exposure to a counterparty’s credit risk when specified conditions are met."
+    }
+  ]
+}

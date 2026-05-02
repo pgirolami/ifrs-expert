@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si le risque de défaut de la contrepartie fait partie des hypothèses de marché à intégrer dans une évaluation à la juste valeur, et distinguer le traitement des actifs de celui des passifs.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule by selecting the single governing lineage that directly addresses fair value measurement itself: IFRS 13 is the dedicated IFRS for defining and measuring fair value, whereas IFRS 9 addresses classification, initial measurement and presentation consequences for financial instruments rather than the general fair value measurement question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is framed as a fair value measurement issue, and IFRS 13 is expressly the standard that defines fair value and sets the framework for measuring it."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "22", "24", "42", "43"],
+        "reason": "These paragraphs directly govern whether risk assumptions, including credit or non-performance risk, are incorporated in fair value."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["36", "37", "38", "40", "41", "48", "56", "61", "67", "87", "88", "89"],
+        "reason": "These paragraphs clarify how credit risk is incorporated for liabilities, liability-like items, and net counterparty exposures, and reinforce the broader risk-input framework."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.1.1", "5.1.1A", "B5.1.2A", "5.7.7", "5.7.8", "B5.7.16", "B5.7.20"],
+        "reason": "These paragraphs concern financial instrument initial measurement and presentation of changes in own credit risk, not the core identification of fair value measurement approaches."
+      },
+      {
+        "document": "ias40",
+        "references": ["32", "33", "40", "53", "55"],
+        "reason": "This standard uses IFRS 13 fair value for investment property but does not establish peer approaches for the credit-risk question itself."
+      },
+      {
+        "document": "ias8",
+        "references": ["31A", "31I", "32", "32A", "34A"],
+        "reason": "These paragraphs discuss estimation uncertainty and accounting estimates generally, not the governing fair value measurement approaches for credit risk."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset based on market participant assumptions, including relevant risk in the exit price",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "87", "88", "89"]
+        }
+      ],
+      "mapped_approaches": ["exit_price_for_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability or own equity instrument based on a transfer notion that incorporates non-performance risk, including own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "40", "41", "42", "43", "44"]
+        }
+      ],
+      "mapped_approaches": ["transfer_price_for_a_liability"]
+    },
+    {
+      "family": "Fair value of a net counterparty exposure for a managed group of financial assets and financial liabilities",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["48", "49", "56"]
+        }
+      ],
+      "mapped_approaches": ["net_exposure_to_credit_risk"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Exit price for an asset",
+      "normalized_label": "exit_price_for_an_asset",
+      "rationale_for_inclusion": "IFRS 13 measures an asset using market participant assumptions in an exit price, so relevant counterparty credit risk is included when market participants would price it."
+    },
+    {
+      "id": "approach_2",
+      "label": "Transfer price for a liability",
+      "normalized_label": "transfer_price_for_a_liability",
+      "rationale_for_inclusion": "IFRS 13 measures a liability on transfer and explicitly requires inclusion of non-performance risk, including the entity’s own credit risk."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net exposure to credit risk",
+      "normalized_label": "net_exposure_to_credit_risk",
+      "rationale_for_inclusion": "IFRS 13 provides a distinct portfolio exception allowing fair value to reflect net counterparty credit exposure when specified conditions are met."
+    }
+  ]
+}

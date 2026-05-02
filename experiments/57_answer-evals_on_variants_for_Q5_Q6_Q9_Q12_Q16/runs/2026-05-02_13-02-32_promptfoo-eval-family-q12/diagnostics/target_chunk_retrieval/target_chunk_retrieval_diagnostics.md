@@ -1,0 +1,11 @@
+This table checks whether the expected target paragraph ranges from the question family were retrieved for each question.
+Headers use 🎯 for exact target ranges, ↳ for nested subranges of the previous discovered range, and 🧭 when no retrieved chunks are present.
+
+| Question | Target chunks | Expected ranges present | IFRS 16 5-8 | IFRS 16 21-21 | IFRS 16 B34-B34 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Q12.0 | 57 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 1<br>score 0.61</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 8<br>score 0.61</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 47<br>score 0.60</span> |
+| Q12.1 | 69 | 2/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 22<br>score 0.59</span> | <span style="display:block; background-color:#f8d7da; padding:2px 4px;">missing</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 78<br>score 0.00</span> |
+| Q12.2 | 64 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 189<br>score 0.62</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 196<br>score 0.61</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 242<br>score 0.61</span> |
+| Q12.3 | 19 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 3<br>score 0.62</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 8<br>score 0.63</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 9<br>score 0.66</span> |
+| Q12.4 | 41 | 2/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 16<br>score 0.56</span> | <span style="display:block; background-color:#f8d7da; padding:2px 4px;">missing</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 42<br>score 0.00</span> |
+|  | Total |  | 5/5 | 3/5 | 5/5 |

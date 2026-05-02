@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si, dans une mesure de juste valeur, il faut intégrer le risque de non-exécution des obligations par la contrepartie, y compris le risque de crédit, et selon quel type d’ajustement de valorisation.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule and selected IFRS 13 because it is the single IFRS standard in the provided context that directly governs fair value measurement, including the treatment of risk and non-performance risk in fair value.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question is explicitly about fair value measurement and IFRS 13 directly addresses risk assumptions and non-performance risk."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "42", "43", "44", "61", "62", "67", "87", "88", "89", "B15", "B16", "B17", "B31", "B32", "B33"],
+        "reason": "These paragraphs directly govern whether and how risk, including non-performance and credit risk, is incorporated in fair value."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs2",
+        "references": ["10", "11", "16", "17", "30", "33", "37", "B2", "B4", "B6", "B7"],
+        "reason": "This standard addresses share-based payment measurement rather than the general fair value treatment of counterparty non-performance risk."
+      },
+      {
+        "document": "ias36",
+        "references": ["18", "20", "30", "32", "53A", "55", "56", "A15", "A18"],
+        "reason": "These paragraphs relate to impairment and value in use or recoverable amount, not the governing fair value model for the question asked."
+      },
+      {
+        "document": "ias8",
+        "references": ["31A", "31I", "32", "32A", "34A", "36"],
+        "reason": "These paragraphs concern estimation uncertainty and changes in estimates, not the substantive fair value treatment of counterparty default risk."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value includes market-participant risk assumptions, including non-performance risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "22", "24", "42", "43", "44", "87", "88", "89", "B15", "B16"]
+        }
+      ],
+      "mapped_approaches": [
+        "risk_adjusted_cash_flows",
+        "risk_adjusted_discount_rate"
+      ]
+    },
+    {
+      "family": "Present value techniques can incorporate non-performance risk through either cash flow or discount rate adjustments",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["61", "62", "B17", "B31", "B32", "B33"]
+        }
+      ],
+      "mapped_approaches": [
+        "risk_adjusted_cash_flows",
+        "risk_adjusted_discount_rate"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Risk-adjusted cash flows",
+      "normalized_label": "risk_adjusted_cash_flows",
+      "rationale_for_inclusion": "IFRS 13 permits non-performance risk to be incorporated by adjusting the expected cash outflows or cash inflows used in the valuation technique."
+    },
+    {
+      "id": "approach_2",
+      "label": "Risk-adjusted discount rate",
+      "normalized_label": "risk_adjusted_discount_rate",
+      "rationale_for_inclusion": "IFRS 13 permits non-performance risk to be incorporated by adjusting the rate used to discount future cash flows, provided risk is not double-counted."
+    }
+  ]
+}

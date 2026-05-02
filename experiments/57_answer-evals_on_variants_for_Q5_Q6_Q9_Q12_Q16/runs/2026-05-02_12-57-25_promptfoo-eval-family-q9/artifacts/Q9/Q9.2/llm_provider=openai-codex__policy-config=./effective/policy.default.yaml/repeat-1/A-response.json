@@ -1,0 +1,117 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, pour une licence de propriété intellectuelle relevant d’IFRS 15, si la promesse constitue un droit d’accès ou un droit d’utilisation afin de fixer une comptabilisation du chiffre d’affaires sur la durée ou à une date donnée.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs15",
+      "ifrs3"
+    ],
+    "selected_primary_document": "ifrs15",
+    "selection_reason": "I applied the strict precedence rule by selecting the single governing lineage that directly addresses revenue recognition for licences of intellectual property—IFRS 15—and excluding IFRS 3 from governance because it addresses business combinations rather than the same recognition issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — IFRS 15 explicitly contains the licence-specific revenue recognition model, while IFRS 3 does not govern this issue."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "B56",
+          "B58",
+          "B60",
+          "B61",
+          "B62"
+        ],
+        "reason": "These paragraphs directly govern whether a distinct licence transfers as a right to access or a right to use intellectual property."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs15",
+        "references": [
+          "B52",
+          "B53",
+          "B54",
+          "B55"
+        ],
+        "reason": "These paragraphs define licences and clarify that the licence model applies when the licence is distinct, otherwise the combined performance obligation is assessed under the general model."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "24",
+          "25"
+        ],
+        "reason": "These paragraphs help distinguish promised goods or services from activities that do not transfer a good or service, which is relevant to the right-to-access assessment."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "31",
+          "32",
+          "35",
+          "38"
+        ],
+        "reason": "These general revenue recognition paragraphs support the timing consequences once the licence model or combined performance obligation assessment is identified."
+      },
+      {
+        "document": "ifrs15",
+        "references": [
+          "B59",
+          "B59A"
+        ],
+        "reason": "These paragraphs clarify when the customer reasonably expects activities that significantly affect the intellectual property."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs3",
+        "references": [
+          "8",
+          "15",
+          "18",
+          "32",
+          "37",
+          "40",
+          "51",
+          "53"
+        ],
+        "reason": "This document relates to business combinations and does not contribute to identifying peer approaches for licence revenue recognition under IFRS 15."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Distinct licence of intellectual property classified by the nature of the promise",
+      "authority_basis": [
+        {
+          "document": "ifrs15",
+          "references": [
+            "B56",
+            "B58",
+            "B60",
+            "B61"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "right_to_access_intellectual_property",
+        "right_to_use_intellectual_property"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Right to access intellectual property",
+      "normalized_label": "right_to_access_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as one of the two licence-specific models when the customer receives access to intellectual property as it exists throughout the licence period."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right to use intellectual property",
+      "normalized_label": "right_to_use_intellectual_property",
+      "rationale_for_inclusion": "IFRS 15 identifies this as the alternative licence-specific model when the customer receives a right to use the intellectual property as it exists when the licence is granted."
+    }
+  ]
+}

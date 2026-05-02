@@ -1,0 +1,64 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination de l’éligibilité d’un contrat de location du preneur à l’exemption IFRS 16 pour contrats courts, en fonction de la durée de location et de la période exécutoire lorsqu’il existe une tacite reconduction ou une durée indéterminée.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs16"],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I selected IFRS 16 as the single governing lineage because it directly governs lessee lease recognition, lease term and the short-term lease exemption, and under the stated precedence rule no overlapping higher-precedence document displaces it.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the question is squarely about lessee lease accounting and exemption eligibility, which is directly addressed by IFRS 16."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["5", "6", "18", "19", "20", "21", "22", "B34", "B35", "B37", "B39"],
+        "reason": "These paragraphs directly govern whether a lessee applies the short-term lease exemption or recognises a right-of-use asset and lease liability, including how lease term and enforceability are determined."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["7", "E10"],
+        "reason": "These references clarify how short-term lease treatment interacts with changes in lease term and how cancellable, renewable or indefinite arrangements are analysed through enforceability and economic penalties."
+      }
+    ],
+    "peripheral_authority": []
+  },
+  "treatment_families": [
+    {
+      "family": "Short-term lease exemption based on lease term not exceeding 12 months and no purchase option",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "18", "B34", "B35"]
+        }
+      ],
+      "mapped_approaches": ["short_term_lease_exemption"]
+    },
+    {
+      "family": "General lessee recognition model for leases outside the short-term exemption",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["22", "18", "19", "20", "21", "B34", "B37", "B39"]
+        }
+      ],
+      "mapped_approaches": ["right_of_use_model"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct optional lessee model for leases whose lease term does not exceed 12 months and that do not contain a purchase option."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right-of-use model",
+      "normalized_label": "right_of_use_model",
+      "rationale_for_inclusion": "IFRS 16 otherwise requires the lessee to recognise a right-of-use asset and a lease liability for the lease."
+    }
+  ]
+}

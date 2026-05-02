@@ -1,0 +1,79 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Prise en compte du risque de défaut dans la mesure de la juste valeur d’un actif ou d’un passif selon IFRS 13",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I selected IFRS 13 because the question is about the fair value measurement basis itself, and IFRS 13 is the governing IFRS that defines fair value and sets the measurement framework; IFRS 9 only applies that framework in specific financial instrument contexts rather than governing the core measurement issue.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty, because IFRS 13 directly addresses how risk assumptions, including credit-related non-performance risk, enter fair value measurements for both assets and liabilities."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "22", "24", "34", "36", "42", "43", "44"],
+        "reason": "These paragraphs directly govern whether and how market-participant credit and non-performance risk are reflected in fair value for assets and liabilities."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"],
+        "reason": "These paragraphs confirm, in the financial liabilities context, that changes attributable to the liability’s own credit risk are part of fair value and provide supporting measurement guidance."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias39",
+        "references": ["89", "95", "102"],
+        "reason": "These hedge accounting provisions are topically related to fair value changes but do not help identify peer approaches for whether counterparty default risk is included in fair value."
+      },
+      {
+        "document": "ias41",
+        "references": ["8", "12", "16", "26"],
+        "reason": "These paragraphs use fair value in agriculture but do not contribute to identifying the relevant fair value credit-risk approaches for assets and liabilities."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset based on market participant assumptions about the asset’s risk characteristics",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "11", "22", "24"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_an_asset"]
+    },
+    {
+      "family": "Fair value of a liability reflecting transfer assumptions and non-performance risk including own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["34", "36", "42", "43", "44"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["5.7.7", "B5.7.13", "B5.7.16", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["fair_value_of_a_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "For an asset, fair value is measured using market participant assumptions about the asset, which includes relevant credit-related risk characteristics affecting the price a buyer would pay."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "For a liability, fair value explicitly reflects non-performance risk, including the issuer’s own credit risk, in the price to transfer the liability."
+    }
+  ]
+}

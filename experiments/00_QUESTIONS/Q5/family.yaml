@@ -66,4 +66,20 @@ assert_retrieve:
 variants:
   - id: Q5.0
     file: Q5.0.txt
-    description: Profit participating loan liability
+    description: Counterparty default risk in fair value measurement
+
+  - id: Q5.1
+    file: Q5.1.txt
+    description: Counterparty default risk fair value wording variant
+
+  - id: Q5.2
+    file: Q5.2.txt
+    description: Counterparty default risk fair value wording variant
+
+  - id: Q5.3
+    file: Q5.3.txt
+    description: Counterparty default risk fair value wording variant
+
+  - id: Q5.4
+    file: Q5.4.txt
+    description: Counterparty default risk fair value wording variant

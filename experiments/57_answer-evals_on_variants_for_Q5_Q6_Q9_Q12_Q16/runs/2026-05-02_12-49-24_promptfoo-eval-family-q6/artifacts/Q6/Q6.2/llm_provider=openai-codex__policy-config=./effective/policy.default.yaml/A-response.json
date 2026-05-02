@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Appréciation, au regard d’IFRS 10, de savoir si des droits détenus par un investisseur sont substantifs et lui donnent le pouvoir sur les activités pertinentes de l’entité pour conclure à un contrôle.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs10", "ifrs16", "ias28"],
+    "selected_primary_document": "ifrs10",
+    "selection_reason": "I applied the strict precedence rule by selecting the single governing lineage that directly addresses control of an investee and power from rights; IFRS 10 specifically governs this issue, while IFRS 16 and IAS 28 address different control or influence questions and therefore do not displace IFRS 10.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low; the question is explicitly about whether rights confer relevant power to conclude control, which is the core assessment in IFRS 10."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["5", "6", "7", "8", "10", "11", "12", "13", "14", "B2", "B3", "B5", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B28", "B34", "B35", "B36", "B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B68", "B69", "B70", "B71", "B72", "B73", "B74", "B75", "B80", "B81", "B82", "B84"],
+        "reason": "These paragraphs directly govern whether rights give an investor power over relevant activities and therefore control."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["E3", "E4", "E12"],
+        "reason": "These agenda decisions clarify reassessment of control and illustrate how to analyse relevant activities and protective rights."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["9", "B9", "B24", "B25", "B27", "B30"],
+        "reason": "This document addresses control of the use of an identified asset in lease identification, not control of an investee under IFRS 10."
+      },
+      {
+        "document": "ias28",
+        "references": ["5", "6", "7", "8", "9", "16"],
+        "reason": "This document addresses significant influence and the equity method, which are different from the IFRS 10 control assessment."
+      },
+      {
+        "document": "ias24",
+        "references": ["5", "14", "18", "19", "21"],
+        "reason": "This document concerns related party relationships and disclosures, not the control analysis itself."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Assessment of power through voting rights, including de facto power and substantive potential voting rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["11", "12", "B34", "B35", "B36", "B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50"]
+        }
+      ],
+      "mapped_approaches": ["power_through_voting_rights"]
+    },
+    {
+      "family": "Assessment of power through contractual or other rights when voting rights are not the dominant factor",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["10", "11", "13", "14", "B5", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B28"]
+        }
+      ],
+      "mapped_approaches": ["power_through_contractual_rights"]
+    },
+    {
+      "family": "Assessment of delegated decision-making rights by determining whether the decision maker is a principal or an agent",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["17", "18", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B68", "B69", "B70", "B71", "B72", "B73", "B74", "B75", "B84"]
+        }
+      ],
+      "mapped_approaches": ["power_through_delegated_decision_making_rights"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Power through voting rights",
+      "normalized_label": "power_through_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 treats voting rights, including less-than-majority holdings and substantive potential voting rights, as a distinct top-level route to power."
+    },
+    {
+      "id": "approach_2",
+      "label": "Power through contractual rights",
+      "normalized_label": "power_through_contractual_rights",
+      "rationale_for_inclusion": "IFRS 10 separately addresses cases in which contractual or other rights, rather than voting rights, direct the relevant activities."
+    },
+    {
+      "id": "approach_3",
+      "label": "Power through delegated decision-making rights",
+      "normalized_label": "power_through_delegated_decision_making_rights",
+      "rationale_for_inclusion": "IFRS 10 provides a distinct model for decision makers with delegated authority, requiring analysis of whether they act as principal or agent."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+This table checks whether the expected target paragraph ranges from the question family were retrieved for each question.
+Headers use 🎯 for exact target ranges, ↳ for nested subranges of the previous discovered range, and 🧭 when no retrieved chunks are present.
+
+| Question | Target chunks | Expected ranges present | IAS 37 10-10 | IAS 37 14-14 | IAS 37 17-20 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Q16.0 | 52 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 11<br>score 0.62</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 16<br>score 0.63</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 21<br>score 0.66</span> |
+| Q16.1 | 44 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 11<br>score 0.58</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 16<br>score 0.59</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 21<br>score 0.62</span> |
+| Q16.2 | 46 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 11<br>score 0.00</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 16<br>score 0.58</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 21<br>score 0.62</span> |
+| Q16.3 | 19 | 2/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 1<br>score 0.54</span> | <span style="display:block; background-color:#f8d7da; padding:2px 4px;">missing</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 10<br>score 0.57</span> |
+| Q16.4 | 41 | 3/3 | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 11<br>score 0.00</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">1 chunk(s)<br>rank 16<br>score 0.59</span> | <span style="display:block; background-color:#d4edda; padding:2px 4px;">4 chunk(s)<br>rank 21<br>score 0.59</span> |
+|  | Total |  | 5/5 | 4/5 | 5/5 |

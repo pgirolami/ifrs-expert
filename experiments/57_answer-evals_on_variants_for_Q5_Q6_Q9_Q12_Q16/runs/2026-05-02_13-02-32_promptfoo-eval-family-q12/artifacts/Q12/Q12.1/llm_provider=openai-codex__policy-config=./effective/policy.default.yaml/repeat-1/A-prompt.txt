@@ -1,0 +1,1199 @@
+You are an IFRS expert performing structured accounting analysis.
+
+<context>
+<Document name="ifrs3" document_type="IFRS-S" document_kind="standard">
+<chunk id="45008" doc_uid="ifrs3" paragraph="15" score="0.0000">
+At the acquisition date, the acquirer shall classify or designate the identifiable assets acquired and liabilities assumed as necessary to apply other IFRSs subsequently. The acquirer shall make those classifications or designations on the basis of the contractual terms, economic conditions, its operating or accounting policies and other pertinent conditions as they exist at the acquisition date.
+</chunk>
+
+<chunk id="45009" doc_uid="ifrs3" paragraph="16" score="0.0000">
+In some situations, IFRSs provide for different accounting depending on how an entity classifies or designates a particular asset or liability. Examples of classifications or designations that the acquirer shall make on the basis of the pertinent conditions as they exist at the acquisition date include but are not limited to:
+(a)classification of particular financial assets and liabilities as measured at fair value through profit or loss or at amortised cost, or as a financial asset measured at fair value through other comprehensive income in accordance with IFRS 9 Financial Instruments ;
+(b)designation of a derivative instrument as a hedging instrument in accordance with IFRS 9 ; and
+(c)assessment of whether an embedded derivative should be separated from a host contract in accordance with IFRS 9 (which is a matter of ‘classification’ as this IFRS uses that term).
+</chunk>
+
+<chunk id="45010" doc_uid="ifrs3" paragraph="17" score="0.6450">
+This IFRS provides an exception to the principle in paragraph 15 :
+(a)classification of a lease contract in which the acquiree is the lessor as either an operating lease or a finance lease in accordance with IFRS 16 Leases.
+(b)[deleted]
+The acquirer shall classify those contracts on the basis of the contractual terms and other factors at the inception of the contract (or, if the terms of the contract have been modified in a manner that would change its classification, at the date of that modification, which might be the acquisition date).
+</chunk>
+
+<chunk id="45011" doc_uid="ifrs3" paragraph="18" score="0.0000">
+The acquirer shall measure the identifiable assets acquired and the liabilities assumed at their acquisition‑date fair values.
+</chunk>
+
+<chunk id="45012" doc_uid="ifrs3" paragraph="19" score="0.0000">
+For each business combination, the acquirer shall measure at the acquisition date components of non‑controlling interests in the acquiree that are present ownership interests and entitle their holders to a proportionate share of the entity’s net assets in the event of liquidation at either:
+(a)fair value; or
+(b)the present ownership instruments’ proportionate share in the recognised amounts of the acquiree’s identifiable net assets.
+All other components of non‑controlling interests shall be measured at their acquisition‑date fair values, unless another measurement basis is required by IFRSs.
+</chunk>
+
+<chunk id="45013" doc_uid="ifrs3" paragraph="20" score="0.0000">
+Paragraphs 24⁠–⁠31A specify the types of identifiable assets and liabilities that include items for which this IFRS provides limited exceptions to the measurement principle.
+</chunk>
+
+<chunk id="45026" doc_uid="ifrs3" paragraph="28A" score="0.5919">
+The acquirer shall recognise right-of-use assets and lease liabilities for leases identified in accordance with IFRS 16 in which the acquiree is the lessee. The acquirer is not required to recognise right-of-use assets and lease liabilities for:
+(a)leases for which the lease term (as defined in IFRS 16) ends within 12 months of the acquisition date; or
+(b)leases for which the underlying asset is of low value (as described in paragraphs B3⁠–⁠B8 of IFRS 16).
+</chunk>
+
+<chunk id="45027" doc_uid="ifrs3" paragraph="28B" score="0.0000">
+The acquirer shall measure the lease liability at the present value of the remaining lease payments (as defined in IFRS 16) as if the acquired lease were a new lease at the acquisition date. The acquirer shall measure the right-of-use asset at the same amount as the lease liability, adjusted to reflect favourable or unfavourable terms of the lease when compared with market terms.
+</chunk>
+
+<chunk id="45107" doc_uid="ifrs3" paragraph="B31" score="0.0000">
+The acquirer shall recognise, separately from goodwill, the identifiable intangible assets acquired in a business combination. An intangible asset is identifiable if it meets either the separability criterion or the contractual‑legal criterion.
+</chunk>
+
+<chunk id="45108" doc_uid="ifrs3" paragraph="B32" score="0.0000">
+An intangible asset that meets the contractual‑legal criterion is identifiable even if the asset is not transferable or separable from the acquiree or from other rights and obligations. For example:
+(a)[deleted]
+(b)an acquiree owns and operates a nuclear power plant. The licence to operate that power plant is an intangible asset that meets the contractual‑legal criterion for recognition separately from goodwill, even if the acquirer cannot sell or transfer it separately from the acquired power plant. An acquirer may recognise the fair value of the operating licence and the fair value of the power plant as a single asset for financial reporting purposes if the useful lives of those assets are similar.
+(c)an acquiree owns a technology patent. It has licensed that patent to others for their exclusive use outside the domestic market, receiving a specified percentage of future foreign revenue in exchange. Both the technology patent and the related licence agreement meet the contractual‑legal criterion for recognition separately from goodwill even if selling or exchanging the patent and the related licence agreement separately from one another would not be practical.
+</chunk>
+
+<chunk id="45109" doc_uid="ifrs3" paragraph="B33" score="0.0000">
+The separability criterion means that an acquired intangible asset is capable of being separated or divided from the acquiree and sold, transferred, licensed, rented or exchanged, either individually or together with a related contract, identifiable asset or liability. An intangible asset that the acquirer would be able to sell, license or otherwise exchange for something else of value meets the separability criterion even if the acquirer does not intend to sell, license or otherwise exchange it. An acquired intangible asset meets the separability criterion if there is evidence of exchange transactions for that type of asset or an asset of a similar type, even if those transactions are infrequent and regardless of whether the acquirer is involved in them. For example, customer and subscriber lists are frequently licensed and thus meet the separability criterion. Even if an acquiree believes its customer lists have characteristics different from other customer lists, the fact that customer lists are frequently licensed generally means that the acquired customer list meets the separability criterion. However, a customer list acquired in a business combination would not meet the separability criterion if the terms of confidentiality or other agreements prohibit an entity from selling, leasing or otherwise exchanging information about its customers.
+</chunk>
+
+<chunk id="45110" doc_uid="ifrs3" paragraph="B34" score="0.0000">
+An intangible asset that is not individually separable from the acquiree or combined entity meets the separability criterion if it is separable in combination with a related contract, identifiable asset or liability. For example:
+(a)market participants exchange deposit liabilities and related depositor relationship intangible assets in observable exchange transactions. Therefore, the acquirer should recognise the depositor relationship intangible asset separately from goodwill. E16
+(b)an acquiree owns a registered trademark and documented but unpatented technical expertise used to manufacture the trademarked product. To transfer ownership of a trademark, the owner is also required to transfer everything else necessary for the new owner to produce a product or service indistinguishable from that produced by the former owner. Because the unpatented technical expertise must be separated from the acquiree or combined entity and sold if the related trademark is sold, it meets the separability criterion.
+</chunk>
+
+<chunk id="45111" doc_uid="ifrs3" paragraph="E16" score="0.0000">
+[IFRIC® Update, March 2009, Agenda Decision, ‘ IFRS 3 Business Combinations—Customer ‑related intangible assets’ +
+The IFRIC received a request to add an item to its agenda to provide guidance on the circumstances in which a non‑contractual customer relationship arises in a business combination. IFRS 3 (as revised in 2008) requires an acquirer to recognise the identifiable intangible assets of the acquiree separately from goodwill. An intangible asset is identifiable if it meets either the contractual‑legal criterion or the separable criterion in IAS 38 Intangible Assets. Contractual customer relationships are always recognised separately from goodwill because they meet the contractual‑legal criterion. However, non‑contractual customer relationships are recognised separately from goodwill only if they meet the separable criterion.
+The IFRIC noted that the IFRS Glossary defines the term ‘contract’. Paragraphs B31⁠–⁠B40 of IFRS 3 provide application guidance on the recognition of intangible assets and the different criteria related to whether they are established on the basis of a contract. The IFRIC also noted that paragraph IE28 in the illustrative examples accompanying IFRS 3 provides indicators for identifying the existence of a customer relationship between an entity and its customer and states that a customer relationship ‘may also arise through means other than contracts, such as through regular contact by sales or service representatives.’
+The IFRIC concluded that how the relationship is established helps to identify whether a customer relationship exists but should not be the primary basis for determining whether the acquirer recognises an intangible asset. The IFRIC noted that the criteria in paragraph IE28 might be more relevant. The existence of contractual relationships and information about a customer’s prior purchases would be important inputs in valuing a customer relationship intangible asset but should not determine whether it is recognised.
+In the light of the explicit guidance in IFRS 3, the IFRIC decided that developing an Interpretation reflecting its conclusion is not possible. Noting widespread confusion in practice on this issue, the IFRIC decided that it could be best resolved by referring it to the IASB and the FASB with a recommendation to review and amend IFRS 3 by:
+(i)removing the distinction between ‘contractual’ and ‘non‑contractual’ customer‑related intangible assets recognised in a business combination; and
+(ii)reviewing the indicators that identify the existence of a customer relationship in paragraph IE28 of IFRS 3 and including them in the standard.]
+</chunk>
+
+<chunk id="45112" doc_uid="ifrs3" paragraph="B35" score="0.0000">
+As part of a business combination, an acquirer may reacquire a right that it had previously granted to the acquiree to use one or more of the acquirer’s recognised or unrecognised assets. Examples of such rights include a right to use the acquirer’s trade name under a franchise agreement or a right to use the acquirer’s technology under a technology licensing agreement. A reacquired right is an identifiable intangible asset that the acquirer recognises separately from goodwill. Paragraph 29 provides guidance on measuring a reacquired right and paragraph 55 provides guidance on the subsequent accounting for a reacquired right.
+</chunk>
+
+<chunk id="45113" doc_uid="ifrs3" paragraph="B36" score="0.0000">
+If the terms of the contract giving rise to a reacquired right are favourable or unfavourable relative to the terms of current market transactions for the same or similar items, the acquirer shall recognise a settlement gain or loss. Paragraph B52 provides guidance for measuring that settlement gain or loss.
+</chunk>
+
+<chunk id="45114" doc_uid="ifrs3" paragraph="B37" score="0.0000">
+The acquirer subsumes into goodwill the value of an acquired intangible asset that is not identifiable as of the acquisition date. For example, an acquirer may attribute value to the existence of an assembled workforce, which is an existing collection of employees that permits the acquirer to continue to operate an acquired business from the acquisition date. An assembled workforce does not represent the intellectual capital of the skilled workforce—the (often specialised) knowledge and experience that employees of an acquiree bring to their jobs. Because the assembled workforce is not an identifiable asset to be recognised separately from goodwill, any value attributed to it is subsumed into goodwill.
+</chunk>
+
+<chunk id="45115" doc_uid="ifrs3" paragraph="B38" score="0.0000">
+The acquirer also subsumes into goodwill any value attributed to items that do not qualify as assets at the acquisition date. For example, the acquirer might attribute value to potential contracts the acquiree is negotiating with prospective new customers at the acquisition date. Because those potential contracts are not themselves assets at the acquisition date, the acquirer does not recognise them separately from goodwill. The acquirer should not subsequently reclassify the value of those contracts from goodwill for events that occur after the acquisition date. However, the acquirer should assess the facts and circumstances surrounding events occurring shortly after the acquisition to determine whether a separately recognisable intangible asset existed at the acquisition date.
+</chunk>
+
+<chunk id="45116" doc_uid="ifrs3" paragraph="B39" score="0.0000">
+After initial recognition, an acquirer accounts for intangible assets acquired in a business combination in accordance with the provisions of IAS 38 Intangible Assets. However, as described in paragraph 3 of IAS 38, the accounting for some acquired intangible assets after initial recognition is prescribed by other IFRSs.
+</chunk>
+
+<chunk id="45117" doc_uid="ifrs3" paragraph="B40" score="0.0000">
+The identifiability criteria determine whether an intangible asset is recognised separately from goodwill. However, the criteria neither provide guidance for measuring the fair value of an intangible asset nor restrict the assumptions used in measuring the fair value of an intangible asset. For example, the acquirer would take into account the assumptions that market participants would use when pricing the intangible asset, such as expectations of future contract renewals, in measuring fair value. It is not necessary for the renewals themselves to meet the identifiability criteria. (However, see paragraph 29, which establishes an exception to the fair value measurement principle for reacquired rights recognised in a business combination.) Paragraphs 36 and 37 of IAS 38 provide guidance for determining whether intangible assets should be combined into a single unit of account with other intangible or tangible assets.
+</chunk>
+</Document>
+
+<Document name="ifrs16" document_type="IFRS-S" document_kind="standard">
+<chunk id="49233" doc_uid="ifrs16" paragraph="3" score="0.5995">
+An entity shall apply this Standard to all leases, including leases of right-of-use assets in a sublease, except for:
+(a)leases to explore for or use minerals, oil, natural gas and similar non-regenerative resources;
+(b)leases of biological assets within the scope of IAS 41 Agriculture held by a lessee ;
+(c)service concession arrangements within the scope of IFRIC 12 Service Concession Arrangements ;
+(d)licences of intellectual property granted by a lessor within the scope of IFRS 15 Revenue from Contracts with Customers ; and
+(e)rights held by a lessee under licensing agreements within the scope of IAS 38 Intangible Assets for such items as motion picture films, video recordings, plays, manuscripts, patents and copyrights.
+</chunk>
+
+<chunk id="49234" doc_uid="ifrs16" paragraph="4" score="0.0000">
+A lessee may, but is not required to, apply this Standard to leases of intangible assets other than those described in paragraph 3(e).
+</chunk>
+
+<chunk id="49235" doc_uid="ifrs16" paragraph="5" score="0.5863">
+A lessee may elect not to apply the requirements in paragraphs 22⁠–⁠49 to:
+(a)short-term leases ; and
+(b)leases for which the underlying asset is of low value (as described in paragraphs B3⁠–⁠B8).
+</chunk>
+
+<chunk id="49236" doc_uid="ifrs16" paragraph="6" score="0.0000">
+If a lessee elects not to apply the requirements in paragraphs 22⁠–⁠49 to either short-term leases or leases for which the underlying asset is of low value, the lessee shall recognise the lease payments associated with those leases as an expense on either a straight-line basis over the lease term or another systematic basis. The lessee shall apply another systematic basis if that basis is more representative of the pattern of the lessee’s benefit.
+</chunk>
+
+<chunk id="49237" doc_uid="ifrs16" paragraph="7" score="0.5882">
+If a lessee accounts for short-term leases applying paragraph 6, the lessee shall consider the lease to be a new lease for the purposes of this Standard if:
+(a)there is a lease modification ; or
+(b)there is any change in the lease term (for example, the lessee exercises an option not previously included in its determination of the lease term).
+</chunk>
+
+<chunk id="49238" doc_uid="ifrs16" paragraph="8" score="0.0000">
+The election for short-term leases shall be made by class of underlying asset to which the right of use relates. A class of underlying asset is a grouping of underlying assets of a similar nature and use in an entity’s operations. The election for leases for which the underlying asset is of low value can be made on a lease-by-lease basis.
+</chunk>
+
+<chunk id="49252" doc_uid="ifrs16" paragraph="22" score="0.0000">
+At the commencement date, a lessee shall recognise a right-of-use asset and a lease liability.
+</chunk>
+
+<chunk id="49253" doc_uid="ifrs16" paragraph="23" score="0.0000">
+At the commencement date, a lessee shall measure the right-of-use asset at cost.
+</chunk>
+
+<chunk id="49254" doc_uid="ifrs16" paragraph="24" score="0.0000">
+The cost of the right-of-use asset shall comprise:
+(a)the amount of the initial measurement of the lease liability, as described in paragraph 26 ;
+(b)any lease payments made at or before the commencement date, less any lease incentives received;
+(c)any initial direct costs incurred by the lessee ; and
+(d)an estimate of costs to be incurred by the lessee in dismantling and removing the underlying asset, restoring the site on which it is located or restoring the underlying asset to the condition required by the terms and conditions of the lease, unless those costs are incurred to produce inventories. The lessee incurs the obligation for those costs either at the commencement date or as a consequence of having used the underlying asset during a particular period.
+</chunk>
+
+<chunk id="49255" doc_uid="ifrs16" paragraph="25" score="0.0000">
+A lessee shall recognise the costs described in paragraph 24(d) as part of the cost of the right-of-use asset when it incurs an obligation for those costs. A lessee applies IAS 2 Inventories to costs that are incurred during a particular period as a consequence of having used the right-of-use asset to produce inventories during that period. The obligations for such costs accounted for applying this Standard or IAS 2 are recognised and measured applying IAS 37 Provisions, Contingent Liabilities and Contingent Assets.
+</chunk>
+
+<chunk id="49256" doc_uid="ifrs16" paragraph="26" score="0.0000">
+At the commencement date, a lessee shall measure the lease liability at the present value of the lease payments that are not paid at that date. The lease payments shall be discounted using the interest rate implicit in the lease, if that rate can be readily determined. If that rate cannot be readily determined, the lessee shall use the lessee’s incremental borrowing rate.
+</chunk>
+
+<chunk id="49257" doc_uid="ifrs16" paragraph="27" score="0.0000">
+At the commencement date, the lease payments included in the measurement of the lease liability comprise the following payments for the right to use the underlying asset during the lease term that are not paid at the commencement date: E1
+(a)fixed payments (including in-substance fixed payments as described in paragraph B42), less any lease incentives receivable;
+(b)variable lease payments that depend on an index or a rate, initially measured using the index or rate as at the commencement date (as described in paragraph 28);
+(c)amounts expected to be payable by the lessee under residual value guarantees ;
+(d)the exercise price of a purchase option if the lessee is reasonably certain to exercise that option (assessed considering the factors described in paragraphs B37⁠–⁠B40); and
+(e)payments of penalties for terminating the lease, if the lease term reflects the lessee exercising an option to terminate the lease.
+</chunk>
+
+<chunk id="49258" doc_uid="ifrs16" paragraph="E1" score="0.0000">
+[IFRIC® Update, September 2021, Agenda Decision, ‘ IFRS 16 Leases —Non-refundable Value Added Tax on Lease Payments’ +
+The Committee received a request about how a lessee accounts for any non-refundable value added tax (VAT) charged on lease payments. In the fact pattern described in the request:
+a.the lessee operates in a jurisdiction in which VAT is charged on goods and services. A seller includes VAT in an invoice for payment issued to a purchaser. In the case of leases, VAT is charged when an invoice for payment is issued by a lessor to a lessee.
+b.the applicable legislation:
+i.requires a seller to collect VAT and remit it to the government; and
+ii.generally allows a purchaser to recover from the government VAT charged on payments for goods or services, including leases.
+c.because of the nature of its operations, the lessee can recover only a portion of the VAT charged on purchased goods or services. This includes VAT charged on payments it makes for leases. Consequently, a portion of the VAT the lessee pays is non-refundable.
+d.lease agreements require the lessee to make payments to the lessor that include amounts related to VAT charged in accordance with the applicable legislation.
+The request asked whether, in applying IFRS 16, the lessee includes non-refundable VAT as part of the lease payments for a lease.
+Outreach conducted by the Committee and comment letters on the Committee’s tentative agenda decision provided limited evidence:
+a.that non-refundable VAT on lease payments is material to affected lessees; and
+b.of diversity in the way lessees in similar circumstances account for non-refundable VAT on lease payments.
+The Committee has therefore not received evidence that the matter has widespread effect and has, or is expected to have, a material effect on those affected. Consequently, the Committee decided not to add a standard-setting project to the work plan.]
+</chunk>
+
+<chunk id="49259" doc_uid="ifrs16" paragraph="28" score="0.0000">
+Variable lease payments that depend on an index or a rate described in paragraph 27(b) include, for example, payments linked to a consumer price index, payments linked to a benchmark interest rate (such as LIBOR) or payments that vary to reflect changes in market rental rates.
+</chunk>
+
+<chunk id="49260" doc_uid="ifrs16" paragraph="29" score="0.0000">
+After the commencement date, a lessee shall measure the right-of-use asset applying a cost model, unless it applies either of the measurement models described in paragraphs 34 and 35.
+</chunk>
+
+<chunk id="49261" doc_uid="ifrs16" paragraph="30" score="0.0000">
+To apply a cost model, a lessee shall measure the right‑of‑use asset at cost:
+(a)less any accumulated depreciation and any accumulated impairment losses; and
+(b)adjusted for any remeasurement of the lease liability specified in paragraph 36(c).
+</chunk>
+
+<chunk id="49262" doc_uid="ifrs16" paragraph="31" score="0.0000">
+A lessee shall apply the depreciation requirements in IAS 16 Property, Plant and Equipment in depreciating the right-of-use asset, subject to the requirements in paragraph 32.
+</chunk>
+
+<chunk id="49263" doc_uid="ifrs16" paragraph="32" score="0.0000">
+If the lease transfers ownership of the underlying asset to the lessee by the end of the lease term or if the cost of the right-of-use asset reflects that the lessee will exercise a purchase option, the lessee shall depreciate the right-of-use asset from the commencement date to the end of the useful life of the underlying asset. Otherwise, the lessee shall depreciate the right-of-use asset from the commencement date to the earlier of the end of the useful life of the right-of-use asset or the end of the lease term.
+</chunk>
+
+<chunk id="49264" doc_uid="ifrs16" paragraph="33" score="0.0000">
+A lessee shall apply IAS 36 Impairment of Assets to determine whether the right-of-use asset is impaired and to account for any impairment loss identified.
+</chunk>
+
+<chunk id="49265" doc_uid="ifrs16" paragraph="34" score="0.0000">
+If a lessee applies the fair value model in IAS 40 Investment Property to its investment property, the lessee shall also apply that fair value model to right-of-use assets that meet the definition of investment property in IAS 40.
+</chunk>
+
+<chunk id="49266" doc_uid="ifrs16" paragraph="35" score="0.0000">
+If right-of-use assets relate to a class of property, plant and equipment to which the lessee applies the revaluation model in IAS 16, a lessee may elect to apply that revaluation model to all of the right-of-use assets that relate to that class of property, plant and equipment.
+</chunk>
+
+<chunk id="49267" doc_uid="ifrs16" paragraph="36" score="0.0000">
+After the commencement date, a lessee shall measure the lease liability by:
+(a)increasing the carrying amount to reflect interest on the lease liability;
+(b)reducing the carrying amount to reflect the lease payments made; and
+(c)remeasuring the carrying amount to reflect any reassessment or lease modifications specified in paragraphs 39⁠–⁠46, or to reflect revised in-substance fixed lease payments (see paragraph B42).
+</chunk>
+
+<chunk id="49268" doc_uid="ifrs16" paragraph="37" score="0.0000">
+Interest on the lease liability in each period during the lease term shall be the amount that produces a constant periodic rate of interest on the remaining balance of the lease liability. The periodic rate of interest is the discount rate described in paragraph 26, or if applicable the revised discount rate described in paragraph 41, paragraph 43 or paragraph 45(c).
+</chunk>
+
+<chunk id="49269" doc_uid="ifrs16" paragraph="38" score="0.0000">
+After the commencement date, a lessee shall recognise in profit or loss, unless the costs are included in the carrying amount of another asset applying other applicable Standards, both:
+(a)interest on the lease liability; and
+(b)variable lease payments not included in the measurement of the lease liability in the period in which the event or condition that triggers those payments occurs.
+</chunk>
+
+<chunk id="49270" doc_uid="ifrs16" paragraph="39" score="0.0000">
+After the commencement date, a lessee shall apply paragraphs 40⁠–⁠43 to remeasure the lease liability to reflect changes to the lease payments. A lessee shall recognise the amount of the remeasurement of the lease liability as an adjustment to the right-of-use asset. However, if the carrying amount of the right-of-use asset is reduced to zero and there is a further reduction in the measurement of the lease liability, a lessee shall recognise any remaining amount of the remeasurement in profit or loss.
+</chunk>
+
+<chunk id="49271" doc_uid="ifrs16" paragraph="40" score="0.0000">
+A lessee shall remeasure the lease liability by discounting the revised lease payments using a revised discount rate, if either:
+(a)there is a change in the lease term, as described in paragraphs 20⁠–⁠21. A lessee shall determine the revised lease payments on the basis of the revised lease term; or
+(b)there is a change in the assessment of an option to purchase the underlying asset, assessed considering the events and circumstances described in paragraphs 20⁠–⁠21 in the context of a purchase option. A lessee shall determine the revised lease payments to reflect the change in amounts payable under the purchase option.
+</chunk>
+
+<chunk id="49272" doc_uid="ifrs16" paragraph="41" score="0.0000">
+In applying paragraph 40, a lessee shall determine the revised discount rate as the interest rate implicit in the lease for the remainder of the lease term, if that rate can be readily determined, or the lessee’s incremental borrowing rate at the date of reassessment, if the interest rate implicit in the lease cannot be readily determined.
+</chunk>
+
+<chunk id="49273" doc_uid="ifrs16" paragraph="42" score="0.0000">
+A lessee shall remeasure the lease liability by discounting the revised lease payments, if either:
+(a)there is a change in the amounts expected to be payable under a residual value guarantee. A lessee shall determine the revised lease payments to reflect the change in amounts expected to be payable under the residual value guarantee.
+(b)there is a change in future lease payments resulting from a change in an index or a rate used to determine those payments, including for example a change to reflect changes in market rental rates following a market rent review. The lessee shall remeasure the lease liability to reflect those revised lease payments only when there is a change in the cash flows (ie when the adjustment to the lease payments takes effect). A lessee shall determine the revised lease payments for the remainder of the lease term based on the revised contractual payments.
+</chunk>
+
+<chunk id="49274" doc_uid="ifrs16" paragraph="43" score="0.0000">
+In applying paragraph 42, a lessee shall use an unchanged discount rate, unless the change in lease payments results from a change in floating interest rates. In that case, the lessee shall use a revised discount rate that reflects changes in the interest rate.
+</chunk>
+
+<chunk id="49275" doc_uid="ifrs16" paragraph="44" score="0.0000">
+A lessee shall account for a lease modification as a separate lease if both:
+(a)the modification increases the scope of the lease by adding the right to use one or more underlying assets ; and
+(b)the consideration for the lease increases by an amount commensurate with the stand-alone price for the increase in scope and any appropriate adjustments to that stand-alone price to reflect the circumstances of the particular contract.
+</chunk>
+
+<chunk id="49276" doc_uid="ifrs16" paragraph="45" score="0.0000">
+For a lease modification that is not accounted for as a separate lease, at the effective date of the lease modification a lessee shall:
+(a)allocate the consideration in the modified contract applying paragraphs 13⁠–⁠16 ;
+(b)determine the lease term of the modified lease applying paragraphs 18⁠–⁠19 ; and
+(c)remeasure the lease liability by discounting the revised lease payments using a revised discount rate. The revised discount rate is determined as the interest rate implicit in the lease for the remainder of the lease term, if that rate can be readily determined, or the lessee’s incremental borrowing rate at the effective date of the modification, if the interest rate implicit in the lease cannot be readily determined.
+</chunk>
+
+<chunk id="49277" doc_uid="ifrs16" paragraph="46" score="0.0000">
+For a lease modification that is not accounted for as a separate lease, the lessee shall account for the remeasurement of the lease liability by:
+(a)decreasing the carrying amount of the right-of-use asset to reflect the partial or full termination of the lease for lease modifications that decrease the scope of the lease. The lessee shall recognise in profit or loss any gain or loss relating to the partial or full termination of the lease.
+(b)making a corresponding adjustment to the right-of-use asset for all other lease modifications.
+</chunk>
+
+<chunk id="49278" doc_uid="ifrs16" paragraph="46A" score="0.0000">
+As a practical expedient, a lessee may elect not to assess whether a rent concession that meets the conditions in paragraph 46B is a lease modification. A lessee that makes this election shall account for any change in lease payments resulting from the rent concession the same way it would account for the change applying this Standard if the change were not a lease modification.
+</chunk>
+
+<chunk id="49279" doc_uid="ifrs16" paragraph="46B" score="0.0000">
+The practical expedient in paragraph 46A applies only to rent concessions occurring as a direct consequence of the covid-19 pandemic and only if all of the following conditions are met:
+(a)the change in lease payments results in revised consideration for the lease that is substantially the same as, or less than, the consideration for the lease immediately preceding the change;
+(b)any reduction in lease payments affects only payments originally due on or before 30 June 2022 (for example, a rent concession would meet this condition if it results in reduced lease payments on or before 30 June 2022 and increased lease payments that extend beyond 30 June 2022); and
+(c)there is no substantive change to other terms and conditions of the lease.
+</chunk>
+
+<chunk id="49280" doc_uid="ifrs16" paragraph="47" score="0.0000">
+A lessee shall either present in the statement of financial position, or disclose in the notes :
+(a)right-of-use assets separately from other assets. If a lessee does not present right-of-use assets separately in the statement of financial position, the lessee shall:
+(i)include right-of-use assets within the same line item as that within which the corresponding underlying assets would be presented if they were owned; and
+(ii)disclose which line items in the statement of financial position include those right-of-use assets.
+(b)lease liabilities separately from other liabilities. If the lessee does not present lease liabilities separately in the statement of financial position, the lessee shall disclose which line items in the statement of financial position include those liabilities.
+</chunk>
+
+<chunk id="49281" doc_uid="ifrs16" paragraph="48" score="0.0000">
+The requirement in paragraph 47(a) does not apply to right-of-use assets that meet the definition of investment property, which shall be presented in the statement of financial position as investment property.
+</chunk>
+
+<chunk id="49282" doc_uid="ifrs16" paragraph="49" score="0.0000">
+In the statement of profit or loss and other comprehensive income, a lessee shall present interest expense on the lease liability separately from the depreciation charge for the right-of-use asset. Paragraph 61 of IFRS 18 Presentation and Disclosure in Financial Statements requires an entity to classify in the financing category of the statement of profit or loss interest expense on the lease liability, identified by the entity applying paragraph 36(a).
+</chunk>
+
+<chunk id="49283" doc_uid="ifrs16" paragraph="50" score="0.0000">
+In the statement of cash flows, a lessee shall classify:
+(a)cash payments for the principal portion of the lease liability within financing activities;
+(b)cash payments for the interest portion of the lease liability applying the requirements in IAS 7 Statement of Cash Flows for interest paid ; and
+(c)short-term lease payments, payments for leases of low-value assets and variable lease payments not included in the measurement of the lease liability within operating activities.
+</chunk>
+
+<chunk id="49335" doc_uid="ifrs16" paragraph="100" score="0.0000">
+If the transfer of an asset by the seller- lessee satisfies the requirements of IFRS 15 to be accounted for as a sale of the asset:
+(a)the seller-lessee shall measure the right-of-use asset arising from the leaseback at the proportion of the previous carrying amount of the asset that relates to the right of use retained by the seller-lessee. Accordingly, the seller-lessee shall recognise only the amount of any gain or loss that relates to the rights transferred to the buyer- lessor. E3
+(b)the buyer-lessor shall account for the purchase of the asset applying applicable Standards, and for the lease applying the lessor accounting requirements in this Standard.
+</chunk>
+
+<chunk id="49336" doc_uid="ifrs16" paragraph="E3" score="0.5859">
+[IFRIC® Update, June 2020, Agenda Decision, ‘ IFRS 16 Leases —Sale and Leaseback with Variable Payments’ +
+The Committee received a request about a sale and leaseback transaction with variable payments. In the transaction described in the request:
+a.an entity (seller-lessee) enters into a sale and leaseback transaction whereby it transfers an item of property, plant and equipment (PPE) to another entity (buyer-lessor) and leases the asset back for five years.
+b.the transfer of the PPE satisfies the requirements in IFRS 15 Revenue from Contracts with Customers to be accounted for as a sale of the PPE. The amount paid by the buyer-lessor to the seller-lessee in exchange for the PPE equals the PPE’s fair value at the date of the transaction.
+c.payments for the lease (which are at market rates) include variable payments, calculated as a percentage of the seller-lessee’s revenue generated using the PPE during the five-year lease term. The seller-lessee has determined that the variable payments are not in-substance fixed payments as described in IFRS 16.
+The request asked how, in the transaction described, the seller-lessee measures the right-of-use asset arising from the leaseback, and thus determines the amount of any gain or loss recognised at the date of the transaction.
+The Committee observed that the requirements applicable to the transaction described in the request are in paragraph 100 of IFRS 16. Paragraph 100 states that ‘if the transfer of an asset by the seller-lessee satisfies the requirements of IFRS 15 to be accounted for as a sale of the asset: (a) the seller-lessee shall measure the right-of-use asset arising from the leaseback at the proportion of the previous carrying amount of the asset that relates to the right of use retained by the seller-lessee. Accordingly, the seller-lessee shall recognise only the amount of any gain or loss that relates to the rights transferred to the buyer-lessor. …’.
+Consequently, to measure the right-of-use asset arising from the leaseback, the seller-lessee determines the proportion of the PPE transferred to the buyer-lessor that relates to the right of use retained—it does so by comparing, at the date of the transaction, the right of use it retains via the leaseback to the rights comprising the entire PPE. IFRS 16 does not prescribe a method for determining that proportion. In the transaction described in the request, the seller-lessee could determine the proportion by comparing, for example, (a) the present value of expected payments for the lease (including those that are variable), with (b) the fair value of the PPE at the date of the transaction.
+The gain or loss the seller-lessee recognises at the date of the transaction is a consequence of its measurement of the right-of-use asset arising from the leaseback. Because the right of use the seller-lessee retains is not remeasured as a result of the transaction (it is measured as a proportion of the PPE’s previous carrying amount), the amount of the gain or loss recognised relates only to the rights transferred to the buyer-lessor. Applying paragraph 53(i) of IFRS 16, the seller-lessee discloses gains or losses arising from sale and leaseback transactions.
+The seller-lessee also recognises a liability at the date of the transaction, even if all the payments for the lease are variable and do not depend on an index or rate. The initial measurement of the liability is a consequence of how the right-of-use asset is measured—and the gain or loss on the sale and leaseback transaction determined—applying paragraph 100(a) of IFRS 16.
+lllustrative example
+Seller-lessee enters into a sale and leaseback transaction whereby it transfers an asset (PPE) to Buyer-lessor, and leases that PPE back for five years. The transfer of the PPE satisfies the requirements in IFRS 15 to be accounted for as a sale of the PPE.
+The carrying amount of the PPE in Seller-lessee’s financial statements at the date of the transaction is CU1,000,000, and the amount paid by Buyer-lessor for the PPE is CU1,800,000 (the fair value of the PPE at that date). All the payments for the lease (which are at market rates) are variable, calculated as a percentage of Seller-lessee’s revenue generated using the PPE during the five-year lease term. At the date of the transaction, the present value of the expected payments for the lease is CU450,000. There are no initial direct costs.
+Seller-lessee determines that it is appropriate to calculate the proportion of the PPE that relates to the right of use retained using the present value of expected payments for the lease. On this basis, the proportion of the PPE that relates to the right of use retained is 25%, calculated as CU450,000 (present value of expected payments for the lease) ÷ CU1,800,000 (fair value of the PPE). Consequently, the proportion of the PPE that relates to the rights transferred to Buyer-lessor is 75%, calculated as (CU1,800,000 − CU450,000) ÷ CU1,800,000.
+Applying paragraph 100(a), Seller-lessee:
+a.measures the right-of-use asset at CU250,000, calculated as CU1,000,000 (previous carrying amount of the PPE) × 25% (proportion of the PPE that relates to the right of use it retains).
+b.recognises a gain of CU600,000 at the date of the transaction, which is the gain that relates to the rights transferred to Buyer-lessor. This gain is calculated as CU800,000 (total gain on sale of the PPE (CU1,800,000 – CU1,000,000)) × 75% (proportion of the PPE that relates to rights transferred to Buyer-lessor).
+Applying paragraph 100(a), the right-of-use asset would not be measured at zero at the date of the transaction because zero would not reflect the proportion of the previous carrying amount of the PPE (CU1,000,000) that relates to the right of use retained by Seller-lessee.
+At the date of the transaction, Seller-lessee accounts for the transaction as follows:
+Dr. Cash CU1,800,000
+Dr. Right-of-use asset CU250,000
+Cr. PPE CU1,000,000
+Cr. Liability CU450,000
+Cr. Gain on rights transferred CU600,000
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to determine, at the date of the transaction, the accounting for the sale and leaseback transaction described in the request. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="49337" doc_uid="ifrs16" paragraph="101" score="0.0000">
+If the fair value of the consideration for the sale of an asset does not equal the fair value of the asset, or if the payments for the lease are not at market rates, an entity shall make the following adjustments to measure the sale proceeds at fair value:
+(a)any below-market terms shall be accounted for as a prepayment of lease payments ; and
+(b)any above-market terms shall be accounted for as additional financing provided by the buyer- lessor to the seller- lessee.
+</chunk>
+
+<chunk id="49338" doc_uid="ifrs16" paragraph="102" score="0.0000">
+The entity shall measure any potential adjustment required by paragraph 101 on the basis of the more readily determinable of:
+(a)the difference between the fair value of the consideration for the sale and the fair value of the asset; and
+(b)the difference between the present value of the contractual payments for the lease and the present value of payments for the lease at market rates.
+</chunk>
+
+<chunk id="49339" doc_uid="ifrs16" paragraph="102A" score="0.0000">
+After the commencement date, the seller-lessee shall apply paragraphs 29⁠–⁠35 to the right-of-use asset arising from the leaseback and paragraphs 36⁠–⁠46 to the lease liability arising from the leaseback. In applying paragraphs 36⁠–⁠46, the seller-lessee shall determine ‘lease payments’ or ‘revised lease payments’ in a way that the seller-lessee would not recognise any amount of the gain or loss that relates to the right of use retained by the seller-lessee. Applying the requirements in this paragraph does not prevent the seller-lessee from recognising in profit or loss any gain or loss relating to the partial or full termination of a lease as required by paragraph 46(a).
+</chunk>
+
+<chunk id="49347" doc_uid="ifrs16" paragraph="B3" score="0.0000">
+Except as specified in paragraph B7, this Standard permits a lessee to apply paragraph 6 to account for leases for which the underlying asset is of low value. A lessee shall assess the value of an underlying asset based on the value of the asset when it is new, regardless of the age of the asset being leased.
+</chunk>
+
+<chunk id="49348" doc_uid="ifrs16" paragraph="B4" score="0.0000">
+The assessment of whether an underlying asset is of low value is performed on an absolute basis. Leases of low-value assets qualify for the accounting treatment in paragraph 6 regardless of whether those leases are material to the lessee. The assessment is not affected by the size, nature or circumstances of the lessee. Accordingly, different lessees are expected to reach the same conclusions about whether a particular underlying asset is of low value.
+</chunk>
+
+<chunk id="49349" doc_uid="ifrs16" paragraph="B5" score="0.0000">
+An underlying asset can be of low value only if:
+(a)the lessee can benefit from use of the underlying asset on its own or together with other resources that are readily available to the lessee; and
+(b)the underlying asset is not highly dependent on, or highly interrelated with, other assets.
+</chunk>
+
+<chunk id="49350" doc_uid="ifrs16" paragraph="B6" score="0.0000">
+A lease of an underlying asset does not qualify as a lease of a low-value asset if the nature of the asset is such that, when new, the asset is typically not of low value. For example, leases of cars would not qualify as leases of low-value assets because a new car would typically not be of low value.
+</chunk>
+
+<chunk id="49351" doc_uid="ifrs16" paragraph="B7" score="0.0000">
+If a lessee subleases an asset, or expects to sublease an asset, the head lease does not qualify as a lease of a low-value asset.
+</chunk>
+
+<chunk id="49352" doc_uid="ifrs16" paragraph="B8" score="0.0000">
+Examples of low-value underlying assets can include tablet and personal computers, small items of office furniture and telephones.
+</chunk>
+
+<chunk id="49358" doc_uid="ifrs16" paragraph="B14" score="0.0000">
+Even if an asset is specified, a customer does not have the right to use an identified asset if the supplier has the substantive right to substitute the asset throughout the period of use. A supplier’s right to substitute an asset is substantive only if both of the following conditions exist:
+(a)the supplier has the practical ability to substitute alternative assets throughout the period of use (for example, the customer cannot prevent the supplier from substituting the asset and alternative assets are readily available to the supplier or could be sourced by the supplier within a reasonable period of time); and
+(b)the supplier would benefit economically from the exercise of its right to substitute the asset (ie the economic benefits associated with substituting the asset are expected to exceed the costs associated with substituting the asset).
+</chunk>
+
+<chunk id="49359" doc_uid="ifrs16" paragraph="B15" score="0.0000">
+If the supplier has a right or an obligation to substitute the asset only on or after either a particular date or the occurrence of a specified event, the supplier’s substitution right is not substantive because the supplier does not have the practical ability to substitute alternative assets throughout the period of use.
+</chunk>
+
+<chunk id="49360" doc_uid="ifrs16" paragraph="B16" score="0.0000">
+An entity’s evaluation of whether a supplier’s substitution right is substantive is based on facts and circumstances at inception of the contract and shall exclude consideration of future events that, at inception of the contract, are not considered likely to occur. Examples of future events that, at inception of the contract, would not be considered likely to occur and, thus, should be excluded from the evaluation include:
+(a)an agreement by a future customer to pay an above market rate for use of the asset;
+(b)the introduction of new technology that is not substantially developed at inception of the contract;
+(c)a substantial difference between the customer’s use of the asset, or the performance of the asset, and the use or performance considered likely at inception of the contract; and
+(d)a substantial difference between the market price of the asset during the period of use, and the market price considered likely at inception of the contract.
+</chunk>
+
+<chunk id="49361" doc_uid="ifrs16" paragraph="B17" score="0.0000">
+If the asset is located at the customer’s premises or elsewhere, the costs associated with substitution are generally higher than when located at the supplier’s premises and, therefore, are more likely to exceed the benefits associated with substituting the asset.
+</chunk>
+
+<chunk id="49362" doc_uid="ifrs16" paragraph="B18" score="0.0000">
+The supplier’s right or obligation to substitute the asset for repairs and maintenance, if the asset is not operating properly or if a technical upgrade becomes available does not preclude the customer from having the right to use an identified asset.
+</chunk>
+
+<chunk id="49363" doc_uid="ifrs16" paragraph="B19" score="0.0000">
+If the customer cannot readily determine whether the supplier has a substantive substitution right, the customer shall presume that any substitution right is not substantive. E5
+</chunk>
+
+<chunk id="49364" doc_uid="ifrs16" paragraph="E5" score="0.6071">
+[IFRIC® Update, March 2023, Agenda Decision, ‘ IFRS 16 Leases —Definition of a Lease—Substitution Rights’ +
+The Committee received a request about how to assess whether a contract contains a lease. The request asked about:
+a.the level at which to evaluate whether a contract contains a lease—by considering each asset separately or all assets together—when the contract is for the use of more than one similar asset; and
+b.how to assess whether a contract contains a lease applying IFRS 16 when the supplier has particular substitution rights—ie the supplier:
+i.has the practical ability to substitute alternative assets throughout the period of use; but
+ii.would not benefit economically from the exercise of its right to substitute the asset throughout the period of use.
+The definition of a lease
+Paragraph 9 of IFRS 16 states that ‘a contract is, or contains, a lease if the contract conveys the right to control the use of an identified asset for a period of time in exchange for consideration’. Applying paragraph B9 of IFRS 16, for a contract to meet the definition of a lease the customer must have both:
+a.the right to obtain substantially all the economic benefits from use of the identified asset throughout the period of use; and
+b.the right to direct the use of the identified asset throughout the period of use.
+The period of use is ‘the total period of time that an asset is used to fulfil a contract with a customer (including any non-consecutive periods of time)’ (Appendix A to IFRS 16).
+Paragraph B12 of IFRS 16 states that ‘an entity shall assess whether a contract contains a lease for each potential separate lease component’ and directs an entity to paragraph B32 of IFRS 16 for application guidance on separate lease components. Paragraph B32 specifies that the right to use an underlying asset is a separate lease component if both:
+a.the lessee can benefit from use of the underlying asset either on its own or together with other resources that are readily available to the lessee; and
+b.the underlying asset is neither highly dependent on, nor highly interrelated with, the other underlying assets in the contract.
+Identified asset
+The first requirement for a contract to meet the definition of a lease is that a customer controls the use of an identified asset. Paragraphs B13⁠–⁠B20 of IFRS 16 provide application guidance on an identified asset.
+Paragraph B13 states that ‘an asset is typically identified by being explicitly specified in a contract. However, an asset can also be identified by being implicitly specified at the time that the asset is made available for use by the customer’.
+But ‘even if an asset is specified, a customer does not have the right to use an identified asset if the supplier has the substantive right to substitute the asset throughout the period of use’ (paragraph B14). In that case, the supplier—rather than the customer—controls the use of the asset. Consequently, there is no identified asset; the contract does not contain a lease.
+For a substitution right to be substantive, paragraph B14 states that both of the following conditions must exist:
+a.the supplier has the practical ability to substitute alternative assets throughout the period of use (for example, the customer cannot prevent the supplier from substituting the asset and alternative assets are readily available to the supplier or could be sourced by the supplier within a reasonable period of time); and
+b.the supplier would benefit economically from the exercise of its right to substitute the asset (ie the economic benefits associated with substituting the asset are expected to exceed the costs associated with substituting the asset).
+Paragraph B16 states that ‘an entity’s evaluation of whether a supplier’s substitution right is substantive […]shall exclude consideration of future events that, at inception of the contract, are not considered likely to occur’.
+Paragraphs B15⁠–⁠B18 specify requirements that mean, in each of the following situations, a supplier’s substitution right is not substantive (or the customer is not precluded from having the right to use an identified asset):
+a.the supplier has a right or an obligation to substitute the asset only on or after either a particular date or the occurrence of a specified event;
+b.the supplier would benefit economically from the exercise of its right only on the occurrence of a future event that, at inception of the contract, is not considered likely to occur; or
+c.the supplier has a right or an obligation to substitute the asset only for repairs and maintenance, if the asset is not operating properly or if a technical upgrade becomes available.
+Paragraph B17 notes that the costs of substitution are more likely to exceed the associated benefits when the asset is located at the customer’s premises or elsewhere.
+Paragraphs BC112⁠–⁠BC115 of the Basis for Conclusions on IFRS 16 explain the IASB’s rationale in developing the requirements on substitution rights. Paragraph BC113 states that ‘the IASB’s intention in including [these requirements]is to differentiate between:
+a.substitution rights that result in there being no identified asset because the supplier, rather than the customer, controls the use of an asset; and
+b.substitution rights that do not change the substance or character of the contract because it is not likely, or practically or economically feasible, for the supplier to exercise those rights’.
+Paragraph BC113 goes on to explain that, at the time of developing IFRS 16, the IASB was of the view ‘that, in many cases, it will be clear that the supplier would not benefit from the exercise of a substitution right because of the costs associated with substituting an asset’.
+Paragraph B19 requires the customer to presume that a supplier’s substitution right is not substantive if the customer cannot readily determine whether the supplier has a substantive substitution right. Paragraph BC115 notes:
+a.the requirement in paragraph B19 responds to stakeholders concerns that ‘in some cases it would be difficult, if not impossible, for a customer to determine whether a supplier’s substitution right is substantive’.
+b.‘if substitution rights are substantive, then the IASB thinks that this would be relatively clear from the facts and circumstances’.
+Consequently, the Committee observed that the requirements in paragraphs B13⁠–⁠B19 set a high hurdle for a customer to conclude that there is no identified asset when an asset is explicitly or implicitly specified.
+The Committee also observed that determining whether a supplier’s right to substitute an asset is substantive throughout the period of use, as required by paragraph B14, requires judgement. Paragraph B14(a) specifies that a supplier has the practical ability to substitute alternative assets throughout the period of use even if the supplier does not already have alternative assets but could source those assets within a reasonable period of time. This illustrates that the term ‘throughout the period of use’ does not mean at all times within that period.
+Applying the requirements in IFRS 16 to the fact pattern described in the request
+In the fact pattern described in the request:
+a.a customer enters into a 10-year contract with a supplier for the use of 100 similar new assets—batteries used in electric buses. The customer uses each battery together with other resources readily available to it (each battery is used in a bus that the customer owns or leases from a party unrelated to the supplier).
+b.it is assumed that the supplier has the practical ability to substitute alternative assets throughout the contract term such that the condition in paragraph B14(a) exists.
+c.if a battery were to be substituted, the supplier would be required to compensate the customer for any revenue lost or costs incurred while the substitution takes place. Whether substitution is economically beneficial for the supplier at a point in time depends on both the amount of compensation payable to the customer and the condition of the battery.
+d.at inception of the contract, it is expected that the supplier would not benefit economically from substituting a battery that has been used for less than three years but could benefit economically from substituting a battery that has been used for three years or more.
+The level at which to evaluate whether a contract contains a lease
+In the fact pattern described in the request:
+a.the customer is able to benefit from use of each asset (a battery) together with other resources (a bus) available to it; and
+b.each battery is neither highly dependent on, nor highly interrelated with, the other batteries in the contract.
+Therefore, the Committee concluded that, in the fact pattern described in the request, applying paragraph B12, the customer assesses whether the contract contains a lease—including evaluating whether the supplier’s substitution right is substantive—for each potential separate lease component, ie for each battery.
+Identified asset
+In the fact pattern described in the request, each battery is specified. Even if not explicitly specified in the contract, a battery would be implicitly specified at the time it is made available for the customer’s use. Therefore, the Committee observed that, unless the supplier has the substantive right to substitute the battery throughout the period of use, each battery is an identified asset.
+In the fact pattern described in the request, the condition in paragraph B14(a)—the supplier has the practical ability to substitute alternative assets throughout the period of use—is assumed to exist. The Committee observed, however, that because the supplier is not expected to benefit economically from exercising its right to substitute a battery for at least the first three years of the contract, the condition in paragraph B14(b) does not exist throughout the period of use. Therefore, the supplier does not have the substantive right to substitute a battery throughout the period of use. While determining whether a supplier’s substitution right is substantive throughout the period of use can require judgement, the Committee observed that the facts and circumstances in this fact pattern are such that it is clear that the supplier’s right is not substantive throughout that period.
+The Committee’s conclusion
+The Committee concluded that, in the fact pattern described in the request, each battery is an identified asset. To assess whether the contract contains a lease, the customer would then apply the requirements in paragraphs B21⁠–⁠B30 of IFRS 16 to assess whether, throughout the period of use, it has the right to obtain substantially all the economic benefits from use, and direct the use, of each battery. If the customer concludes that the contract contains a lease, it would apply the requirements in paragraphs 18⁠–⁠21 of IFRS 16 to determine the lease term.
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to evaluate the level at which to assess whether the contract contains a lease and whether there is an identified asset in the fact pattern described in the request. Consequently, the Committee decided not to add a standard-setting project to the work plan.]
+</chunk>
+
+<chunk id="49365" doc_uid="ifrs16" paragraph="B20" score="0.0000">
+A capacity portion of an asset is an identified asset if it is physically distinct (for example, a floor of a building). E6 A capacity or other portion of an asset that is not physically distinct (for example, a capacity portion of a fibre optic cable) is not an identified asset, unless it represents substantially all of the capacity of the asset and thereby provides the customer with the right to obtain substantially all of the economic benefits from use of the asset.
+</chunk>
+
+<chunk id="49366" doc_uid="ifrs16" paragraph="E6" score="0.5965">
+[IFRIC® Update, June 2019, Agenda Decision, ‘ IFRS 16 Leases —Subsurface Rights’ +
+The Committee received a request about a particular contract for subsurface rights. In the contract described in the request, a pipeline operator (customer) obtains the right to place an oil pipeline in underground space for 20 years in exchange for consideration. The contract specifies the exact location and dimensions (path, width and depth) of the underground space within which the pipeline will be placed. The landowner retains the right to use the surface of the land above the pipeline, but it has no right to access or otherwise change the use of the specified underground space throughout the 20-year period of use. The customer has the right to perform inspection, repairs and maintenance work (including replacing damaged sections of the pipeline when necessary).
+The request asked whether IFRS 16, IAS 38 Intangible Assets or another IFRS Standard applies in accounting for the contract.
+Which IFRS Standard does an entity consider first?
+Paragraph 3 of IFRS 16 requires an entity to apply IFRS 16 to all leases, with limited exceptions. Paragraph 9 of IFRS 16 states: ‘At inception of a contract, an entity shall assess whether the contract is, or contains, a lease’.
+The Committee observed that, in the contract described in the request, none of the exceptions in paragraphs 3 and 4 of IFRS 16 apply—in particular, the Committee noted that the underground space is tangible. Accordingly, if the contract contains a lease, IFRS 16 applies to that lease. If the contract does not contain a lease, the entity would then consider which other IFRS Standard applies.
+The Committee therefore concluded that the entity first considers whether the contract contains a lease as defined in IFRS 16.
+The definition of a lease
+Paragraph 9 of IFRS 16 states that ‘a contract is, or contains, a lease if the contract conveys the right to control the use of an identified asset for a period of time in exchange for consideration’. Applying paragraph B9 of IFRS 16, to meet the definition of a lease the customer must have both:
+a.the right to obtain substantially all the economic benefits from use of an identified asset throughout the period of use; and
+b.the right to direct the use of the identified asset throughout the period of use.
+Identified asset
+Paragraphs B13⁠–⁠B20 of IFRS 16 provide application guidance on an identified asset. Paragraph B20 states that a ‘capacity portion of an asset is an identified asset if it is physically distinct’. But ‘a customer does not have the right to use an identified asset if the supplier has the substantive right to substitute the asset throughout the period of use’ (paragraph B14).
+The Committee observed that, in the contract described in the request, the specified underground space is physically distinct from the remainder of the land. The contract’s specifications include the path, width and depth of the pipeline, thereby defining a physically distinct underground space. The space being underground does not in itself affect whether it is an identified asset—the specified underground space is physically distinct in the same way that a specified area of space on the land’s surface would be physically distinct.
+The landowner does not have the right to substitute the underground space throughout the period of use. Consequently, the Committee concluded that the specified underground space is an identified asset as described in paragraphs B13⁠–⁠B20.
+Right to obtain substantially all the economic benefits from use
+Paragraphs B21⁠–⁠B23 of IFRS 16 provide application guidance on the right to obtain substantially all the economic benefits from use of an identified asset throughout the period of use. Paragraph B21 specifies that a customer can have that right, for example, by having exclusive use of the identified asset throughout the period of use.
+The Committee observed that, in the contract described in the request, the customer has the right to obtain substantially all the economic benefits from use of the specified underground space throughout the 20-year period of use. The customer has exclusive use of the specified underground space throughout that period of use.
+Right to direct the use
+Paragraphs B24-B30 of IFRS 16 provide application guidance on the right to direct the use of an identified asset throughout the period of use. Paragraph B24 specifies that a customer has that right if either:
+a.the customer has the right to direct how and for what purpose the asset is used throughout the period of use; or
+b.the relevant decisions about how and for what purpose the asset is used are predetermined and (i) the customer has the right to operate the asset throughout the period of use, without the supplier having the right to change those operating instructions; or (ii) the customer designed the asset in a way that predetermines how and for what purpose the asset will be used throughout the period of use.
+The Committee observed that, in the contract described in the request, the customer has the right to direct the use of the specified underground space throughout the 20-year period of use because the conditions in paragraph B24(b)(i) exist. How and for what purpose the specified underground space will be used (ie to locate the pipeline with specified dimensions through which oil will be transported) is predetermined in the contract. The customer has the right to operate the specified underground space by having the right to perform inspection, repairs and maintenance work. The customer makes all the decisions about the use of the specified underground space that can be made during the 20-year period of use.
+Consequently, the Committee concluded that the contract described in the request contains a lease as defined in IFRS 16. The customer would therefore apply IFRS 16 in accounting for that lease.
+The Committee concluded that the principles and requirements in IFRS Standards provide an adequate basis for an entity to determine its accounting for the contract described in the request. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="49383" doc_uid="ifrs16" paragraph="B34" score="0.0000">
+In determining the lease term and assessing the length of the non-cancellable period of a lease, an entity shall apply the definition of a contract and determine the period for which the contract is enforceable. A lease is no longer enforceable when the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty. E10
+</chunk>
+
+<chunk id="49384" doc_uid="ifrs16" paragraph="E10" score="0.6352">
+[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ +
+The Committee received a request about cancellable or renewable leases.
+The cancellable lease described in the request is one that does not specify a particular contractual term but continues indefinitely until either party to the contract gives notice to terminate. The contract includes a notice period of, for example, less than 12 months and the contract does not oblige either party to make a payment on termination. The renewable lease described in the request is one that specifies an initial period, and renews indefinitely at the end of the initial period unless terminated by either of the parties to the contract.
+The request asked two questions:
+(a)how to determine the lease term of a cancellable lease or a renewable lease. Specifically, the request asked whether, when applying paragraph B34 of IFRS 16 and assessing ‘no more than an insignificant penalty’, an entity considers the broader economics of the contract, and not only contractual termination payments. Such considerations might include, for example, the cost of abandoning or dismantling leasehold improvements.
+(b)whether the useful life of any related non-removable leasehold improvements is limited to the lease term determined applying IFRS 16. Non-removable leasehold improvements are, for example, fixtures and fittings acquired by the lessee and constructed on the underlying asset that is the subject of the cancellable or renewable lease. The lessee will use and benefit from the leasehold improvements only for as long as it uses the underlying asset.
+Lease term
+Paragraph 18 of IFRS 16 requires an entity to determine the lease term as the non-cancellable period of a lease, together with both (a) periods covered by an option to extend the lease if the lessee is reasonably certain to exercise that option; and (b) periods covered by an option to terminate the lease if the lessee is reasonably certain not to exercise that option.
+In determining the lease term and assessing the length of the non-cancellable period of a lease, paragraph B34 of IFRS 16 requires an entity to determine the period for which the contract is enforceable. Paragraph B34 specifies that ‘a lease is no longer enforceable when the lessee and the lessor each has the right to terminate the lease without permission from the other party with no more than an insignificant penalty’.
+Paragraph BC156 sets out the Board’s view that ‘the lease term should reflect an entity’s reasonable expectation of the period during which the underlying asset will be used because that approach provides the most useful information’.
+The Committee observed that, in applying paragraph B34 and determining the enforceable period of the lease described in the request, an entity considers:
+(a)the broader economics of the contract, and not only contractual termination payments. For example, if either party has an economic incentive not to terminate the lease such that it would incur a penalty on termination that is more than insignificant, the contract is enforceable beyond the date on which the contract can be terminated; and
+(b)whether each of the parties has the right to terminate the lease without permission from the other party with no more than an insignificant penalty. Applying paragraph B34, a lease is no longer enforceable only when both parties have such a right. Consequently, if only one party has the right to terminate the lease without permission from the other party with no more than an insignificant penalty, the contract is enforceable beyond the date on which the contract can be terminated by that party.
+If an entity concludes that the contract is enforceable beyond the notice period of a cancellable lease (or the initial period of a renewable lease), it then applies paragraphs 19 and B37⁠–⁠B40 of IFRS 16 to assess whether the lessee is reasonably certain not to exercise the option to terminate the lease.
+…
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to determine the lease term of cancellable and renewable leases. The Committee also concluded that the principles and requirements in IAS 16 and IFRS 16 provide an adequate basis for an entity to determine the useful life of any non-removable leasehold improvements relating to such a lease. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="49385" doc_uid="ifrs16" paragraph="B35" score="0.0000">
+If only a lessee has the right to terminate a lease, that right is considered to be an option to terminate the lease available to the lessee that an entity considers when determining the lease term. If only a lessor has the right to terminate a lease, the non-cancellable period of the lease includes the period covered by the option to terminate the lease.
+</chunk>
+
+<chunk id="49386" doc_uid="ifrs16" paragraph="B36" score="0.0000">
+The lease term begins at the commencement date and includes any rent-free periods provided to the lessee by the lessor.
+</chunk>
+
+<chunk id="49387" doc_uid="ifrs16" paragraph="B37" score="0.0000">
+At the commencement date, an entity assesses whether the lessee is reasonably certain to exercise an option to extend the lease or to purchase the underlying asset, or not to exercise an option to terminate the lease. The entity considers all relevant facts and circumstances that create an economic incentive for the lessee to exercise, or not to exercise, the option, including any expected changes in facts and circumstances from the commencement date until the exercise date of the option. Examples of factors to consider include, but are not limited to:
+(a)contractual terms and conditions for the optional periods compared with market rates, such as:
+(i)the amount of payments for the lease in any optional period;
+(ii)the amount of any variable payments for the lease or other contingent payments, such as payments resulting from termination penalties and residual value guarantees ; and
+(iii)the terms and conditions of any options that are exercisable after initial optional periods (for example, a purchase option that is exercisable at the end of an extension period at a rate that is currently below market rates).
+(b)significant leasehold improvements undertaken (or expected to be undertaken) over the term of the contract that are expected to have significant economic benefit for the lessee when the option to extend or terminate the lease, or to purchase the underlying asset, becomes exercisable; E11
+(c)costs relating to the termination of the lease, such as negotiation costs, relocation costs, costs of identifying another underlying asset suitable for the lessee’s needs, costs of integrating a new asset into the lessee’s operations, or termination penalties and similar costs, including costs associated with returning the underlying asset in a contractually specified condition or to a contractually specified location;
+(d)the importance of that underlying asset to the lessee’s operations, considering, for example, whether the underlying asset is a specialised asset, the location of the underlying asset and the availability of suitable alternatives; and
+(e)conditionality associated with exercising the option (ie when the option can be exercised only if one or more conditions are met), and the likelihood that those conditions will exist.
+</chunk>
+
+<chunk id="49388" doc_uid="ifrs16" paragraph="E11" score="0.6288">
+[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ +
+The Committee received a request about cancellable or renewable leases.
+The cancellable lease described in the request is one that does not specify a particular contractual term but continues indefinitely until either party to the contract gives notice to terminate. The contract includes a notice period of, for example, less than 12 months and the contract does not oblige either party to make a payment on termination. The renewable lease described in the request is one that specifies an initial period, and renews indefinitely at the end of the initial period unless terminated by either of the parties to the contract.
+The request asked two questions:
+(a)how to determine the lease term of a cancellable lease or a renewable lease. Specifically, the request asked whether, when applying paragraph B34 of IFRS 16 and assessing ‘no more than an insignificant penalty’, an entity considers the broader economics of the contract, and not only contractual termination payments. Such considerations might include, for example, the cost of abandoning or dismantling leasehold improvements.
+(b)whether the useful life of any related non-removable leasehold improvements is limited to the lease term determined applying IFRS 16. Non-removable leasehold improvements are, for example, fixtures and fittings acquired by the lessee and constructed on the underlying asset that is the subject of the cancellable or renewable lease. The lessee will use and benefit from the leasehold improvements only for as long as it uses the underlying asset.
+...
+Interaction between lease term and useful life
+In assessing whether a lessee is reasonably certain to extend (or not to terminate) a lease, paragraph B37 of IFRS 16 requires an entity to consider all relevant facts and circumstances that create an economic incentive for the lessee. This includes significant leasehold improvements undertaken (or expected to be undertaken) over the term of the contract that are expected to have significant economic benefit for the lessee when an option to extend or terminate the lease becomes exercisable (paragraph B37(b)).
+In addition, as noted above an entity considers the broader economics of the contract when determining the enforceable period of the lease described in the request. This includes, for example, the costs of abandoning or dismantling non-removable leasehold improvements. If an entity expects to use non-removable leasehold improvements beyond the date on which the contract can be terminated, the existence of those leasehold improvements indicates that the entity might incur a more than insignificant penalty if it terminates the lease. Consequently, applying paragraph B34 of IFRS 16, an entity considers whether the contract is enforceable for at least the period of expected utility of the leasehold improvements.
+In assessing whether a lessee is reasonably certain to extend (or not to terminate) a lease, paragraph B37 of IFRS 16 requires an entity to consider all relevant facts and circumstances that create an economic incentive for the lessee. This includes significant leasehold improvements undertaken (or expected to be undertaken) over the term of the contract that are expected to have significant economic benefit for the lessee when an option to extend or terminate the lease becomes exercisable (paragraph B37(b)).
+In addition, as noted above an entity considers the broader economics of the contract when determining the enforceable period of the lease described in the request. This includes, for example, the costs of abandoning or dismantling non-removable leasehold improvements. If an entity expects to use non-removable leasehold improvements beyond the date on which the contract can be terminated, the existence of those leasehold improvements indicates that the entity might incur a more than insignificant penalty if it terminates the lease. Consequently, applying paragraph B34 of IFRS 16, an entity considers whether the contract is enforceable for at least the period of expected utility of the leasehold improvements.
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to determine the lease term of cancellable and renewable leases. The Committee also concluded that the principles and requirements in IAS 16 and IFRS 16 provide an adequate basis for an entity to determine the useful life of any non-removable leasehold improvements relating to such a lease. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="49389" doc_uid="ifrs16" paragraph="B38" score="0.5798">
+An option to extend or terminate a lease may be combined with one or more other contractual features (for example, a residual value guarantee) such that the lessee guarantees the lessor a minimum or fixed cash return that is substantially the same regardless of whether the option is exercised. In such cases, and notwithstanding the guidance on in-substance fixed payments in paragraph B42, an entity shall assume that the lessee is reasonably certain to exercise the option to extend the lease, or not to exercise the option to terminate the lease.
+</chunk>
+
+<chunk id="49390" doc_uid="ifrs16" paragraph="B39" score="0.5747">
+The shorter the non-cancellable period of a lease, the more likely a lessee is to exercise an option to extend the lease or not to exercise an option to terminate the lease. This is because the costs associated with obtaining a replacement asset are likely to be proportionately higher the shorter the non-cancellable period.
+</chunk>
+
+<chunk id="49391" doc_uid="ifrs16" paragraph="B40" score="0.0000">
+A lessee’s past practice regarding the period over which it has typically used particular types of assets (whether leased or owned), and its economic reasons for doing so, may provide information that is helpful in assessing whether the lessee is reasonably certain to exercise, or not to exercise, an option. For example, if a lessee has typically used particular types of assets for a particular period of time or if the lessee has a practice of frequently exercising options on leases of particular types of underlying assets, the lessee shall consider the economic reasons for that past practice in assessing whether it is reasonably certain to exercise an option on leases of those assets.
+</chunk>
+
+<chunk id="49392" doc_uid="ifrs16" paragraph="B41" score="0.0000">
+Paragraph 20 specifies that, after the commencement date, a lessee reassesses the lease term upon the occurrence of a significant event or a significant change in circumstances that is within the control of the lessee and affects whether the lessee is reasonably certain to exercise an option not previously included in its determination of the lease term, or not to exercise an option previously included in its determination of the lease term. Examples of significant events or changes in circumstances include:
+(a)significant leasehold improvements not anticipated at the commencement date that are expected to have significant economic benefit for the lessee when the option to extend or terminate the lease, or to purchase the underlying asset, becomes exercisable;
+(b)a significant modification to, or customisation of, the underlying asset that was not anticipated at the commencement date;
+(c)the inception of a sublease of the underlying asset for a period beyond the end of the previously determined lease term; and
+(d)a business decision of the lessee that is directly relevant to exercising, or not exercising, an option (for example, a decision to extend the lease of a complementary asset, to dispose of an alternative asset or to dispose of a business unit within which the right-of-use asset is employed).
+</chunk>
+
+<chunk id="49393" doc_uid="ifrs16" paragraph="B42" score="0.0000">
+Lease payments include any in-substance fixed lease payments. In-substance fixed lease payments are payments that may, in form, contain variability but that, in substance, are unavoidable. In-substance fixed lease payments exist, for example, if:
+(a)payments are structured as variable lease payments, but there is no genuine variability in those payments. Those payments contain variable clauses that do not have real economic substance. Examples of those types of payments include:
+(i)payments that must be made only if an asset is proven to be capable of operating during the lease, or only if an event occurs that has no genuine possibility of not occurring; or
+(ii)payments that are initially structured as variable lease payments linked to the use of the underlying asset but for which the variability will be resolved at some point after the commencement date so that the payments become fixed for the remainder of the lease term. Those payments become in-substance fixed payments when the variability is resolved.
+(b)there is more than one set of payments that a lessee could make, but only one of those sets of payments is realistic. In this case, an entity shall consider the realistic set of payments to be lease payments.
+(c)there is more than one realistic set of payments that a lessee could make, but it must make at least one of those sets of payments. In this case, an entity shall consider the set of payments that aggregates to the lowest amount (on a discounted basis) to be lease payments.
+</chunk>
+</Document>
+
+<Document name="ias37" document_type="IAS-S" document_kind="standard">
+<chunk id="60136" doc_uid="ias37" paragraph="1" score="0.0000">
+This Standard shall be applied by all entities in accounting for provisions, contingent liabilities and contingent assets, except:
+(a)those resulting from executory contracts, except where the contract is onerous; and
+(b)[deleted]
+(c)those covered by another Standard.
+</chunk>
+
+<chunk id="60137" doc_uid="ias37" paragraph="2" score="0.0000">
+This Standard does not apply to financial instruments (including guarantees) that are within the scope of IFRS 9 Financial Instruments. E1
+</chunk>
+
+<chunk id="60138" doc_uid="ias37" paragraph="E1" score="0.0000">
+[IFRIC® Update, May 2008, Agenda Decision, ‘IAS 37 Provisions, Contingent Liabilities and Contingent Assets —Deposits on returnable containers’ +
+The IFRIC was asked to provide guidance on the accounting for the obligation to refund deposits on returnable containers. In some industries, entities that distribute their products in returnable containers collect a deposit for each container delivered and have an obligation to refund this deposit when containers are returned by the customer. The issue was whether the obligation should be accounted for in accordance with IAS 39 Financial Instruments: Recognition and Measurement.
+The IFRIC noted that paragraph 11 of IAS 32 Financial Instruments: Presentation defines a financial instrument as ‘any contract that gives rise to a financial asset of one entity and a financial liability or equity instrument of another entity.’ Following delivery of the containers to its customers, the seller has an obligation only to refund the deposit for any returned containers.
+In circumstances in which the containers are derecognised as part of the sale transaction, the obligation is an exchange of cash (the deposit) for the containers (non‑financial assets). Whether that exchange transaction occurs is at the option of the customer. Because the transaction involves the exchange of a non‑financial item, it does not meet the definition of a financial instrument in accordance with IAS 32.
+In contrast, when the containers are not derecognised as part of the sale transaction, the customer’s only asset is its right to the refund. In such circumstances, the obligation meets the definition of a financial instrument in accordance with IAS 32 and is therefore within the scope of IAS 39. In particular, paragraph 49 of IAS 39 states that ‘the fair value of a financial liability with a demand feature (eg a demand deposit) is not less than the amount payable on demand, discounted from the first date that the amount could be required to be paid.’
+The IFRIC concluded that divergence in this area was unlikely to be significant and therefore decided not to add this issue to its agenda.]
+</chunk>
+
+<chunk id="60139" doc_uid="ias37" paragraph="3" score="0.0000">
+Executory contracts are contracts under which neither party has performed any of its obligations or both parties have partially performed their obligations to an equal extent. This Standard does not apply to executory contracts unless they are onerous.
+</chunk>
+
+<chunk id="60140" doc_uid="ias37" paragraph="5" score="0.6296">
+When another Standard deals with a specific type of provision, contingent liability or contingent asset, an entity applies that Standard instead of this Standard. E2 For example, some types of provisions are addressed in Standards on:
+(a)[deleted]
+(b)income taxes (see IAS 12 Income Taxes); E3
+(c)leases (see IFRS 16 Leases). However, this Standard applies to any lease that becomes onerous before the commencement date of the lease as defined in IFRS 16. This Standard also applies to short-term leases and leases for which the underlying asset is of low value accounted for in accordance with paragraph 6 of IFRS 16 and that have become onerous;
+(d)employee benefits (see IAS 19 Employee Benefits);
+(e)insurance contracts and other contracts within the scope of IFRS 17 Insurance Contracts ;
+(f)contingent consideration of an acquirer in a business combination (see IFRS 3 Business Combinations); and
+(g)revenue from contracts with customers (see IFRS 15 Revenue from Contracts with Customers). However, as IFRS 15 contains no specific requirements to address contracts with customers that are, or have become, onerous, this Standard applies to such cases.
+</chunk>
+
+<chunk id="60141" doc_uid="ias37" paragraph="E2" score="0.0000">
+[IFRIC® Update, March 2025, Agenda Decision, ‘Guarantees Issued on Obligations of Other Entities’ +
+The Committee received a request about how an entity accounts for guarantees that it issues.
+...
+Which IFRS Accounting Standards apply to issued guarantees?
+...
+Other requirements in IFRS Accounting Standards that might apply
+If an entity concludes that a guarantee it issues is neither a financial guarantee contract nor an insurance contract, the entity considers other requirements in IFRS Accounting Standards to determine how to account for the guarantee. These requirements include:
+...
+c.IAS 37—this Standard is applicable only if the guarantee gives rise to a provision, contingent liability or contingent asset that is not within the scope of other IFRS Accounting Standards (see paragraph 5 of IAS 37).
+...
+[The full text of the agenda decision is reproduced after the definition of a financial guarantee contract in Appendix A to IFRS 9.]]
+</chunk>
+
+<chunk id="60142" doc_uid="ias37" paragraph="E3" score="0.0000">
+[IFRIC® Update, September 2017, Agenda Decision, ‘IAS 12 Income Taxes — Interest and penalties related to income taxes ’ +
+IFRS Standards do not specifically address the accounting for interest and penalties related to income taxes (interest and penalties). In the light of the feedback received on the draft IFRIC Interpretation Uncertainty over Income Tax Treatments, the Committee considered whether to add a project on interest and penalties to its standard-setting agenda.
+On the basis of its analysis, the Committee concluded that a project on interest and penalties would not result in an improvement in financial reporting that would be sufficient to outweigh the costs. Consequently, the Committee decided not to add a project on interest and penalties to its standard-setting agenda.
+Nonetheless, the Committee observed that entities do not have an accounting policy choice between applying IAS 12 and applying IAS 37 Provisions, Contingent Liabilities and Contingent Assets to interest and penalties. Instead, if an entity considers a particular amount payable or receivable for interest and penalties to be an income tax, then the entity applies IAS 12 to that amount. If an entity does not apply IAS 12 to a particular amount payable or receivable for interest and penalties, it applies IAS 37 to that amount. An entity discloses its judgement in this respect applying paragraph 122 of IAS 1 Presentation of Financial Statements [now paragraph 27G of IAS 8 Basis of Preparation of Financial Statements]if it is part of the entity’s judgements that had the most significant effect on the amounts recognised in the financial statements.
+Paragraph 79 of IAS 12 requires an entity to disclose the major components of tax expense (income); for each class of provision, paragraphs 84⁠–⁠85 of IAS 37 require a reconciliation of the carrying amount at the beginning and end of the reporting period as well as other information. Accordingly, regardless of whether an entity applies IAS 12 or IAS 37 when accounting for interest and penalties, the entity discloses information about those interest and penalties if it is material.
+The Committee also observed it had previously published agenda decisions discussing the scope of IAS 12 in March 2006 and May 2009.]
+</chunk>
+
+<chunk id="60143" doc_uid="ias37" paragraph="7" score="0.0000">
+This Standard defines provisions as liabilities of uncertain timing or amount. In some countries the term ‘provision’ is also used in the context of items such as depreciation, impairment of assets and doubtful debts: these are adjustments to the carrying amounts of assets and are not addressed in this Standard.
+</chunk>
+
+<chunk id="60144" doc_uid="ias37" paragraph="8" score="0.0000">
+Other Standards specify whether expenditures are treated as assets or as expenses. These issues are not addressed in this Standard. Accordingly, this Standard neither prohibits nor requires capitalisation of the costs recognised when a provision is made.
+</chunk>
+
+<chunk id="60145" doc_uid="ias37" paragraph="9" score="0.0000">
+This Standard applies to provisions for restructurings (including discontinued operations). When a restructuring meets the definition of a discontinued operation, additional disclosures may be required by IFRS 5 Non‑current Assets Held for Sale and Discontinued Operations.
+</chunk>
+</Document>
+
+<Document name="ias16" document_type="IAS-S" document_kind="standard">
+<chunk id="52526" doc_uid="ias16" paragraph="16" score="0.0000">
+The cost of an item of property, plant and equipment comprises:
+(a)its purchase price, including import duties and non‑refundable purchase taxes, after deducting trade discounts and rebates. E2
+(b)any costs directly attributable to bringing the asset to the location and condition necessary for it to be capable of operating in the manner intended by management.
+(c)the initial estimate of the costs of dismantling and removing the item and restoring the site on which it is located, the obligation for which an entity incurs either when the item is acquired or as a consequence of having used the item during a particular period for purposes other than to produce inventories during that period.
+</chunk>
+
+<chunk id="52527" doc_uid="ias16" paragraph="E2" score="0.5341">
+[IFRIC® Update, March 2016, Agenda Decision, ‘ IAS 16 Property, Plant and Equipment and IAS 38 Intangible Assets —Variable payments for asset purchases’ +
+The Interpretations Committee received a request to address the accounting for variable payments to be made for the purchase of an item of property, plant and equipment or an intangible asset that is not part of a business combination.
+The Interpretations Committee observed significant diversity in practice in accounting for these variable payments. It discussed the accounting, both at the date of purchasing the asset and thereafter, for variable payments that depend on the purchaser’s future activity as well as those that do not depend on such future activity.
+The Interpretations Committee was unable to reach a consensus on whether an entity (the purchaser) recognises a liability at the date of purchasing the asset for variable payments that depend on its future activity or, instead, recognises such a liability only when the related activity occurs. The Interpretations Committee was also unable to reach a consensus on how the purchaser measures a liability for such variable payments.
+In deliberating the accounting for variable payments that depend on the purchaser’s future activity, the Interpretations Committee considered the proposed definition of a liability in the May 2015 Exposure Draft The Conceptual Framework for Financial Reporting as well as the deliberations of the Board on its project on leases. The Interpretations Committee observed that, during the Board’s deliberations on its project on leases, the Board did not conclude on whether variable payments linked to future performance or use of the underlying asset meet the definition of a liability at commencement of a lease or, instead, meet that definition only at the time that the related performance or use occurs.
+In addition, the Interpretations Committee noted that there are questions about the accounting for variable payments subsequent to the purchase of the asset. Accordingly, the Interpretations Committee concluded that the Board should address the accounting for variable payments comprehensively.
+The Interpretations Committee determined that this issue is too broad for it to address within the confines of existing IFRS Standards. Consequently, the Interpretations Committee decided not to add this issue to its agenda.]
+</chunk>
+
+<chunk id="52528" doc_uid="ias16" paragraph="17" score="0.0000">
+Examples of directly attributable costs are:
+(a)costs of employee benefits (as defined in IAS 19 Employee Benefits) arising directly from the construction or acquisition of the item of property, plant and equipment ;
+(b)costs of site preparation;
+(c)initial delivery and handling costs;
+(d)installation and assembly costs;
+(e)costs of testing whether the asset is functioning properly (ie assessing whether the technical and physical performance of the asset is such that it is capable of being used in the production or supply of goods or services, for rental to others, or for administrative purposes); and
+(f)professional fees.
+</chunk>
+
+<chunk id="52529" doc_uid="ias16" paragraph="18" score="0.0000">
+An entity applies IAS 2 Inventories to the costs of obligations for dismantling, removing and restoring the site on which an item is located that are incurred during a particular period as a consequence of having used the item to produce inventories during that period. The obligations for costs accounted for in accordance with IAS 2 or IAS 16 are recognised and measured in accordance with IAS 37 Provisions, Contingent Liabilities and Contingent Assets.
+</chunk>
+
+<chunk id="52530" doc_uid="ias16" paragraph="19" score="0.0000">
+Examples of costs that are not costs of an item of property, plant and equipment are:
+(a)costs of opening a new facility;
+(b)costs of introducing a new product or service (including costs of advertising and promotional activities);
+(c)costs of conducting business in a new location or with a new class of customer (including costs of staff training); and
+(d)administration and other general overhead costs.
+</chunk>
+
+<chunk id="52531" doc_uid="ias16" paragraph="20" score="0.0000">
+Recognition of costs in the carrying amount of an item of property, plant and equipment ceases when the item is in the location and condition necessary for it to be capable of operating in the manner intended by management. Therefore, costs incurred in using or redeploying an item are not included in the carrying amount of that item. For example, the following costs are not included in the carrying amount of an item of property, plant and equipment:
+(a)costs incurred while an item capable of operating in the manner intended by management has yet to be brought into use or is operated at less than full capacity;
+(b)initial operating losses, such as those incurred while demand for the item’s output builds up; and
+(c)costs of relocating or reorganising part or all of an entity’s operations.
+</chunk>
+
+<chunk id="52532" doc_uid="ias16" paragraph="20A" score="0.0000">
+Items may be produced while bringing an item of property, plant and equipment to the location and condition necessary for it to be capable of operating in the manner intended by management (such as samples produced when testing whether the asset is functioning properly). An entity recognises the proceeds from selling any such items, and the cost of those items, in profit or loss in accordance with applicable Standards. The entity measures the cost of those items applying the measurement requirements of IAS 2.
+</chunk>
+
+<chunk id="52533" doc_uid="ias16" paragraph="21" score="0.0000">
+Some operations occur in connection with the construction or development of an item of property, plant and equipment, but are not necessary to bring the item to the location and condition necessary for it to be capable of operating in the manner intended by management. These incidental operations may occur before or during the construction or development activities. For example, income may be earned through using a building site as a car park until construction starts. Because incidental operations are not necessary to bring an item to the location and condition necessary for it to be capable of operating in the manner intended by management, the income and related expenses of incidental operations are recognised in profit or loss and included in their respective classifications of income and expense.
+</chunk>
+
+<chunk id="52534" doc_uid="ias16" paragraph="22" score="0.0000">
+The cost of a self‑constructed asset is determined using the same principles as for an acquired asset. If an entity makes similar assets for sale in the normal course of business, the cost of the asset is usually the same as the cost of constructing an asset for sale (see IAS 2). Therefore, any internal profits are eliminated in arriving at such costs. Similarly, the cost of abnormal amounts of wasted material, labour, or other resources incurred in self‑constructing an asset is not included in the cost of the asset. IAS 23 Borrowing Costs establishes criteria for the recognition of interest as a component of the carrying amount of a self‑constructed item of property, plant and equipment.
+</chunk>
+
+<chunk id="52535" doc_uid="ias16" paragraph="22A" score="0.0000">
+Bearer plants are accounted for in the same way as self-constructed items of property, plant and equipment before they are in the location and condition necessary to be capable of operating in the manner intended by management. Consequently, references to ‘construction’ in this Standard should be read as covering activities that are necessary to cultivate the bearer plants before they are in the location and condition necessary to be capable of operating in the manner intended by management.
+</chunk>
+
+<chunk id="52541" doc_uid="ias16" paragraph="29" score="0.0000">
+An entity shall choose either the cost model in paragraph 30 or the revaluation model in paragraph 31 as its accounting policy and shall apply that policy to an entire class of property, plant and equipment.
+</chunk>
+
+<chunk id="52542" doc_uid="ias16" paragraph="29A" score="0.5306">
+Some entities operate, either internally or externally, an investment fund that provides investors with benefits determined by units in the fund. Similarly, some entities issue groups of insurance contracts with direct participation features and hold the underlying items. Some such funds or underlying items include owner-occupied property. The entity applies IAS 16 to owner-occupied properties that are included in such a fund or are underlying items. Despite paragraph 29, the entity may elect to measure such properties using the fair value model in accordance with IAS 40. For the purposes of this election, insurance contracts include investment contracts with discretionary participation features. (See IFRS 17 Insurance Contracts for terms used in this paragraph that are defined in that Standard).
+</chunk>
+
+<chunk id="52543" doc_uid="ias16" paragraph="29B" score="0.0000">
+An entity shall treat owner-occupied property measured using the investment property fair value model applying paragraph 29A as a separate class of property, plant and equipment.
+</chunk>
+
+<chunk id="52544" doc_uid="ias16" paragraph="30" score="0.0000">
+After recognition as an asset, an item of property, plant and equipment shall be carried at its cost less any accumulated depreciation and any accumulated impairment losses.
+</chunk>
+
+<chunk id="52545" doc_uid="ias16" paragraph="31" score="0.0000">
+After recognition as an asset, an item of property, plant and equipment whose fair value can be measured reliably shall be carried at a revalued amount, being its fair value at the date of the revaluation less any subsequent accumulated depreciation and subsequent accumulated impairment losses. Revaluations shall be made with sufficient regularity to ensure that the carrying amount does not differ materially from that which would be determined using fair value at the end of the reporting period.
+</chunk>
+
+<chunk id="52546" doc_uid="ias16" paragraph="34" score="0.0000">
+The frequency of revaluations depends upon the changes in fair values of the items of property, plant and equipment being revalued. When the fair value of a revalued asset differs materially from its carrying amount, a further revaluation is required. Some items of property, plant and equipment experience significant and volatile changes in fair value, thus necessitating annual revaluation. Such frequent revaluations are unnecessary for items of property, plant and equipment with only insignificant changes in fair value. Instead, it may be necessary to revalue the item only every three or five years.
+</chunk>
+
+<chunk id="52547" doc_uid="ias16" paragraph="35" score="0.0000">
+When an item of property, plant and equipment is revalued, the carrying amount of that asset is adjusted to the revalued amount. At the date of the revaluation, the asset is treated in one of the following ways:
+(a)the gross carrying amount is adjusted in a manner that is consistent with the revaluation of the carrying amount of the asset. For example, the gross carrying amount may be restated by reference to observable market data or it may be restated proportionately to the change in the carrying amount. The accumulated depreciation at the date of the revaluation is adjusted to equal the difference between the gross carrying amount and the carrying amount of the asset after taking into account accumulated impairment losses; or
+(b)the accumulated depreciation is eliminated against the gross carrying amount of the asset.
+The amount of the adjustment of accumulated depreciation forms part of the increase or decrease in carrying amount that is accounted for in accordance with paragraphs 39 and 40.
+</chunk>
+
+<chunk id="52548" doc_uid="ias16" paragraph="36" score="0.0000">
+If an item of property, plant and equipment is revalued, the entire class of property, plant and equipment to which that asset belongs shall be revalued.
+</chunk>
+
+<chunk id="52549" doc_uid="ias16" paragraph="37" score="0.0000">
+A class of property, plant and equipment is a grouping of assets of a similar nature and use in an entity’s operations. The following are examples of separate classes:
+(a)land;
+(b)land and buildings;
+(c)machinery;
+(d)ships;
+(e)aircraft;
+(f)motor vehicles;
+(g)furniture and fixtures;
+(h)office equipment; and
+(i)bearer plants.
+</chunk>
+
+<chunk id="52550" doc_uid="ias16" paragraph="38" score="0.0000">
+The items within a class of property, plant and equipment are revalued simultaneously to avoid selective revaluation of assets and the reporting of amounts in the financial statements that are a mixture of costs and values as at different dates. However, a class of assets may be revalued on a rolling basis provided revaluation of the class of assets is completed within a short period and provided the revaluations are kept up to date.
+</chunk>
+
+<chunk id="52551" doc_uid="ias16" paragraph="39" score="0.0000">
+If an asset’s carrying amount is increased as a result of a revaluation, the increase shall be recognised in other comprehensive income and accumulated in equity under the heading of revaluation surplus. However, the increase shall be recognised in profit or loss to the extent that it reverses a revaluation decrease of the same asset previously recognised in profit or loss.
+</chunk>
+
+<chunk id="52552" doc_uid="ias16" paragraph="40" score="0.0000">
+If an asset’s carrying amount is decreased as a result of a revaluation, the decrease shall be recognised in profit or loss. However, the decrease shall be recognised in other comprehensive income to the extent of any credit balance existing in the revaluation surplus in respect of that asset. The decrease recognised in other comprehensive income reduces the amount accumulated in equity under the heading of revaluation surplus.
+</chunk>
+
+<chunk id="52553" doc_uid="ias16" paragraph="41" score="0.0000">
+The revaluation surplus included in equity in respect of an item of property, plant and equipment may be transferred directly to retained earnings when the asset is derecognised. This may involve transferring the whole of the surplus when the asset is retired or disposed of. However, some of the surplus may be transferred as the asset is used by an entity. In such a case, the amount of the surplus transferred would be the difference between depreciation based on the revalued carrying amount of the asset and depreciation based on the asset’s original cost. Transfers from revaluation surplus to retained earnings are not made through profit or loss.
+</chunk>
+
+<chunk id="52554" doc_uid="ias16" paragraph="42" score="0.0000">
+The effects of taxes on income, if any, resulting from the revaluation of property, plant and equipment are recognised and disclosed in accordance with IAS 12 Income Taxes.
+</chunk>
+
+<chunk id="52555" doc_uid="ias16" paragraph="43" score="0.0000">
+Each part of an item of property, plant and equipment with a cost that is significant in relation to the total cost of the item shall be depreciated separately.
+</chunk>
+
+<chunk id="52556" doc_uid="ias16" paragraph="44" score="0.0000">
+An entity allocates the amount initially recognised in respect of an item of property, plant and equipment to its significant parts and depreciates separately each such part. For example, it may be appropriate to depreciate separately the airframe and engines of an aircraft. Similarly, if an entity acquires property, plant and equipment subject to an operating lease in which it is the lessor, it may be appropriate to depreciate separately amounts reflected in the cost of that item that are attributable to favourable or unfavourable lease terms relative to market terms.
+</chunk>
+
+<chunk id="52557" doc_uid="ias16" paragraph="45" score="0.0000">
+A significant part of an item of property, plant and equipment may have a useful life and a depreciation method that are the same as the useful life and the depreciation method of another significant part of that same item. Such parts may be grouped in determining the depreciation charge.
+</chunk>
+
+<chunk id="52558" doc_uid="ias16" paragraph="46" score="0.0000">
+To the extent that an entity depreciates separately some parts of an item of property, plant and equipment, it also depreciates separately the remainder of the item. The remainder consists of the parts of the item that are individually not significant. If an entity has varying expectations for these parts, approximation techniques may be necessary to depreciate the remainder in a manner that faithfully represents the consumption pattern and/or useful life of its parts.
+</chunk>
+
+<chunk id="52559" doc_uid="ias16" paragraph="47" score="0.0000">
+An entity may choose to depreciate separately the parts of an item that do not have a cost that is significant in relation to the total cost of the item.
+</chunk>
+
+<chunk id="52560" doc_uid="ias16" paragraph="48" score="0.0000">
+The depreciation charge for each period shall be recognised in profit or loss unless it is included in the carrying amount of another asset.
+</chunk>
+
+<chunk id="52561" doc_uid="ias16" paragraph="49" score="0.0000">
+The depreciation charge for a period is usually recognised in profit or loss. However, sometimes, the future economic benefits embodied in an asset are absorbed in producing other assets. In this case, the depreciation charge constitutes part of the cost of the other asset and is included in its carrying amount. For example, the depreciation of manufacturing plant and equipment is included in the costs of conversion of inventories (see IAS 2). Similarly, depreciation of property, plant and equipment used for development activities may be included in the cost of an intangible asset recognised in accordance with IAS 38 Intangible Assets.
+</chunk>
+
+<chunk id="52562" doc_uid="ias16" paragraph="50" score="0.0000">
+The depreciable amount of an asset shall be allocated on a systematic basis over its useful life.
+</chunk>
+
+<chunk id="52563" doc_uid="ias16" paragraph="51" score="0.0000">
+The residual value and the useful life of an asset shall be reviewed at least at each financial year‑end and, if expectations differ from previous estimates, the change(s) shall be accounted for as a change in an accounting estimate in accordance with IAS 8 Basis of Preparation of Financial Statements.
+</chunk>
+
+<chunk id="52564" doc_uid="ias16" paragraph="52" score="0.0000">
+Depreciation is recognised even if the fair value of the asset exceeds its carrying amount, as long as the asset’s residual value does not exceed its carrying amount. Repair and maintenance of an asset do not negate the need to depreciate it.
+</chunk>
+
+<chunk id="52565" doc_uid="ias16" paragraph="53" score="0.0000">
+The depreciable amount of an asset is determined after deducting its residual value. In practice, the residual value of an asset is often insignificant and therefore immaterial in the calculation of the depreciable amount.
+</chunk>
+
+<chunk id="52566" doc_uid="ias16" paragraph="54" score="0.0000">
+The residual value of an asset may increase to an amount equal to or greater than the asset’s carrying amount. If it does, the asset’s depreciation charge is zero unless and until its residual value subsequently decreases to an amount below the asset’s carrying amount.
+</chunk>
+
+<chunk id="52567" doc_uid="ias16" paragraph="55" score="0.0000">
+Depreciation of an asset begins when it is available for use, ie when it is in the location and condition necessary for it to be capable of operating in the manner intended by management. Depreciation of an asset ceases at the earlier of the date that the asset is classified as held for sale (or included in a disposal group that is classified as held for sale) in accordance with IFRS 5 and the date that the asset is derecognised. Therefore, depreciation does not cease when the asset becomes idle or is retired from active use unless the asset is fully depreciated. However, under usage methods of depreciation the depreciation charge can be zero while there is no production.
+</chunk>
+
+<chunk id="52568" doc_uid="ias16" paragraph="56" score="0.0000">
+The future economic benefits embodied in an asset are consumed by an entity principally through its use. However, other factors, such as technical or commercial obsolescence and wear and tear while an asset remains idle, often result in the diminution of the economic benefits that might have been obtained from the asset. Consequently, all the following factors are considered in determining the useful life of an asset:
+(a)expected usage of the asset. Usage is assessed by reference to the asset’s expected capacity or physical output.
+(b)expected physical wear and tear, which depends on operational factors such as the number of shifts for which the asset is to be used and the repair and maintenance programme, and the care and maintenance of the asset while idle.
+(c)technical or commercial obsolescence arising from changes or improvements in production, or from a change in the market demand for the product or service output of the asset. Expected future reductions in the selling price of an item that was produced using an asset could indicate the expectation of technical or commercial obsolescence of the asset, which, in turn, might reflect a reduction of the future economic benefits embodied in the asset.
+(d)legal or similar limits on the use of the asset, such as the expiry dates of related leases. E3
+</chunk>
+
+<chunk id="52569" doc_uid="ias16" paragraph="E3" score="0.6271">
+[IFRIC® Update, November 2019, Agenda Decision, ‘ IFRS 16 Leases and IAS 16 Property, Plant and Equipment —Lease Term and Useful Life of Leasehold Improvements’ +
+The Committee received a request about cancellable or renewable leases.
+The cancellable lease described in the request is one that does not specify a particular contractual term but continues indefinitely until either party to the contract gives notice to terminate. The contract includes a notice period of, for example, less than 12 months and the contract does not oblige either party to make a payment on termination. The renewable lease described in the request is one that specifies an initial period, and renews indefinitely at the end of the initial period unless terminated by either of the parties to the contract.
+The request asked two questions:
+(a)how to determine the lease term of a cancellable lease or a renewable lease. Specifically, the request asked whether, when applying paragraph B34 of IFRS 16 and assessing ‘no more than an insignificant penalty’, an entity considers the broader economics of the contract, and not only contractual termination payments. Such considerations might include, for example, the cost of abandoning or dismantling leasehold improvements.
+(b)whether the useful life of any related non-removable leasehold improvements is limited to the lease term determined applying IFRS 16. Non-removable leasehold improvements are, for example, fixtures and fittings acquired by the lessee and constructed on the underlying asset that is the subject of the cancellable or renewable lease. The lessee will use and benefit from the leasehold improvements only for as long as it uses the underlying asset.
+...
+Useful life of non-removable leasehold improvements
+Paragraph 50 of IAS 16 requires an item of property, plant and equipment (asset) to be depreciated over its useful life.
+IAS 16 defines the useful life of an asset as (emphasis added) ‘the period over which an asset is expected to be available for use by an entity; or the number of production or similar units expected to be obtained from the asset by an entity’.
+Paragraphs 56 and 57 of IAS 16 provide further requirements on the useful life of an asset. In particular, paragraph 56(d) specifies that in determining the useful life of an asset, an entity considers any ‘legal or similar limits on the use of the asset, such as the expiry dates of related leases’. Paragraph 57 specifies that the useful life of an asset ‘is defined in terms of the asset’s expected utility to the entity’, and ‘may be shorter than its economic life’.
+An entity applies paragraphs 56⁠–⁠57 of IAS 16 in determining the useful life of non-removable leasehold improvements. If the lease term of the related lease is shorter than the economic life of those leasehold improvements, the entity considers whether it expects to use the leasehold improvements beyond that lease term. If the entity does not expect to use the leasehold improvements beyond the lease term of the related lease then, applying paragraph 57 of IAS 16, it concludes that the useful life of the non-removable leasehold improvements is the same as the lease term. The Committee observed that, applying paragraphs 56⁠–⁠57 of IAS 16, an entity might often reach this conclusion for leasehold improvements that the entity will use and benefit from only for as long as it uses the underlying asset in the lease.
+...
+The Committee concluded that the principles and requirements in IFRS 16 provide an adequate basis for an entity to determine the lease term of cancellable and renewable leases. The Committee also concluded that the principles and requirements in IAS 16 and IFRS 16 provide an adequate basis for an entity to determine the useful life of any non-removable leasehold improvements relating to such a lease. Consequently, the Committee decided not to add the matter to its standard-setting agenda.]
+</chunk>
+
+<chunk id="52570" doc_uid="ias16" paragraph="57" score="0.0000">
+The useful life of an asset is defined in terms of the asset’s expected utility to the entity. The asset management policy of the entity may involve the disposal of assets after a specified time or after consumption of a specified proportion of the future economic benefits embodied in the asset. Therefore, the useful life of an asset may be shorter than its economic life. The estimation of the useful life of the asset is a matter of judgement based on the experience of the entity with similar assets.
+</chunk>
+
+<chunk id="52571" doc_uid="ias16" paragraph="58" score="0.0000">
+Land and buildings are separable assets and are accounted for separately, even when they are acquired together. With some exceptions, such as quarries and sites used for landfill, land has an unlimited useful life and therefore is not depreciated. Buildings have a limited useful life and therefore are depreciable assets. An increase in the value of the land on which a building stands does not affect the determination of the depreciable amount of the building.
+</chunk>
+
+<chunk id="52572" doc_uid="ias16" paragraph="59" score="0.0000">
+If the cost of land includes the costs of site dismantlement, removal and restoration, that portion of the land asset is depreciated over the period of benefits obtained by incurring those costs. In some cases, the land itself may have a limited useful life, in which case it is depreciated in a manner that reflects the benefits to be derived from it.
+</chunk>
+
+<chunk id="52573" doc_uid="ias16" paragraph="E4" score="0.0000">
+[IFRIC® Update, November 2004, Agenda Decision, ‘ IAS 16 Property, Plant and Equipment and IAS 17 Leases : Depreciation of assets leased under operating leases’ +
+The Agenda Committee considered whether interest methods of depreciation were permissible under IFRSs. Use of such methods would permit an entity to depreciate an asset that is not a receivable in much the same way as if it were a receivable, with the result that the depreciated amount of the asset reflects the present value of future net cash flow expected from it. The Committee recommended that this topic should not be added to the IFRIC’s agenda.
+The IFRIC noted that, while deliberating certain issues related to service concessions, it had considered whether it would be appropriate to use an interest method of depreciation. In that discussion, it concluded that using an interest method of depreciation was not appropriate. The IFRIC concluded that there was nothing unique about assets leased under operating leases in service concessions that would cause it to reach a different conclusion about the use of interest methods of depreciation. It noted that the Basis for Conclusions in the future Interpretations on service concessions would include a discussion of its conclusions on interest methods of depreciation. [Now see IFRIC 12 paragraphs BC64 and BC65]]
+</chunk>
+
+<chunk id="52574" doc_uid="ias16" paragraph="60" score="0.0000">
+The depreciation method used shall reflect the pattern in which the asset’s future economic benefits are expected to be consumed by the entity.
+</chunk>
+
+<chunk id="52575" doc_uid="ias16" paragraph="61" score="0.0000">
+The depreciation method applied to an asset shall be reviewed at least at each financial year‑end and, if there has been a significant change in the expected pattern of consumption of the future economic benefits embodied in the asset, the method shall be changed to reflect the changed pattern. Such a change shall be accounted for as a change in an accounting estimate in accordance with IAS 8.
+</chunk>
+
+<chunk id="52576" doc_uid="ias16" paragraph="62" score="0.0000">
+A variety of depreciation methods can be used to allocate the depreciable amount of an asset on a systematic basis over its useful life. These methods include the straight‑line method, the diminishing balance method and the units of production method. Straight‑line depreciation results in a constant charge over the useful life if the asset’s residual value does not change. The diminishing balance method results in a decreasing charge over the useful life. The units of production method results in a charge based on the expected use or output. The entity selects the method that most closely reflects the expected pattern of consumption of the future economic benefits embodied in the asset. That method is applied consistently from period to period unless there is a change in the expected pattern of consumption of those future economic benefits.
+</chunk>
+
+<chunk id="52577" doc_uid="ias16" paragraph="62A" score="0.0000">
+A depreciation method that is based on revenue that is generated by an activity that includes the use of an asset is not appropriate. The revenue generated by an activity that includes the use of an asset generally reflects factors other than the consumption of the economic benefits of the asset. For example, revenue is affected by other inputs and processes, selling activities and changes in sales volumes and prices. The price component of revenue may be affected by inflation, which has no bearing upon the way in which an asset is consumed.
+</chunk>
+
+<chunk id="52578" doc_uid="ias16" paragraph="63" score="0.0000">
+To determine whether an item of property, plant and equipment is impaired, an entity applies IAS 36 Impairment of Assets. That Standard explains how an entity reviews the carrying amount of its assets, how it determines the recoverable amount of an asset, and when it recognises, or reverses the recognition of, an impairment loss.
+</chunk>
+
+<chunk id="52579" doc_uid="ias16" paragraph="65" score="0.0000">
+Compensation from third parties for items of property, plant and equipment that were impaired, lost or given up shall be included in profit or loss when the compensation becomes receivable.
+</chunk>
+
+<chunk id="52580" doc_uid="ias16" paragraph="66" score="0.0000">
+Impairments or losses of items of property, plant and equipment, related claims for or payments of compensation from third parties and any subsequent purchase or construction of replacement assets are separate economic events and are accounted for separately as follows:
+(a)impairments of items of property, plant and equipment are recognised in accordance with IAS 36 ;
+(b)derecognition of items of property, plant and equipment retired or disposed of is determined in accordance with this Standard;
+(c)compensation from third parties for items of property, plant and equipment that were impaired, lost or given up is included in determining profit or loss when it becomes receivable; and
+(d)the cost of items of property, plant and equipment restored, purchased or constructed as replacements is determined in accordance with this Standard.
+</chunk>
+</Document>
+</context>
+
+<question>
+Un contrat de location sans option d’achat, conclu pour une durée d’un an ou moins mais renouvelable tacitement ou à durée indéterminée, peut-il entrer dans l’exemption IFRS 16 applicable aux contrats de courte durée ?
+</question>
+
+<instructions>
+Use only the information in this message's context and the question.
+Do not do any web searches.
+Answer in English.
+
+Your task is NOT to write the final answer.
+
+Your task is to:
+
+1. Identify the primary accounting issue raised by the question.
+
+2. Classify the provided context into:
+   - primary authority: directly governs that accounting issue
+   - supporting authority: constrains, modifies, clarifies, illustrates, or provides a distinct alternative model relevant to that issue but only if it is not itself an overlapping superseded governing standard
+   - peripheral authority: topically related but not relevant for identifying peer approaches within that issue
+
+3. Using only primary and supporting authority, identify the relevant top-level accounting treatment families.
+
+4. Map those treatment families to peer top-level accounting approaches.
+
+Core boundary of this step:
+- This step is for approach identification only.
+- This step is NOT for deciding which approach is most likely to apply.
+- This step is NOT for narrowing the set of approaches based on the specific facts beyond what is necessary to identify the accounting issue and the relevant peer models.
+- If multiple peer top-level approaches are grounded in the identified accounting issue, include them even if one appears more likely to apply later.
+
+Authority competition resolution (must occur BEFORE any classification):
+- Resolve to a single governing lineage and discard the other documents when two or more governing documents address the same accounting issue, model, scope decision, recognition basis, measurement basis, or eligibility question, even if one is legacy guidance and even if the wording is consistent.
+- Apply this precedence rule strictly: IFRS supersedes IAS, and IFRIC supersedes SIC.
+- Any lower-precedence overlapping governing document is discarded.
+
+Effects of discarding:
+- Discarded documents are removed from the candidate set prior to classification.
+- Discarded documents are ineligible for all authority classifications (primary, supporting, peripheral).
+- Discarded documents must not appear in authority_classification, treatment_families, approaches, or anywhere else in the output.
+
+Reporting requirement:
+- Every document listed in discarded_due_to_overlap must not appear anywhere else in the JSON.
+- In authority_resolution.selection_reason, explicitly describe the precedence rule you applied.
+
+Authority hierarchy — use document_kind of each Document block to guide classification:
+- Treat 'standard' documents as candidates for governing authority or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+- Use 'interpretation' as supporting authority only or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+- Use 'implementation_guidance', 'illustrative_examples', and 'basis_for_conclusions' as supporting or peripheral authority, or do not include them in authority_classification if they do not contribute to identifying peer approaches.
+
+Approach-identification rules:
+- Output only approaches that are peers at the same level of abstraction.
+- Output top-level IFRS accounting models, accounting treatments, recognition bases, measurement bases, or presentation bases when those are the relevant peer approaches for the issue.
+- When IFRS defines multiple named accounting models within the identified issue, those named models must be used as the peer top-level approaches. Do not replace recognized IFRS model names with a broader descriptive category.
+- When a candidate label names only the consequence, outcome, timing, or result of another more specific named accounting model, prefer the more specific named accounting model and do not emit the outcome-only label as a separate approach.
+- When the governing authority supports multiple distinct accounting models, the output should typically contain more than two approaches.
+- Do not output pathway-specific, stage-specific, scoped, exposure-specific, document-specific, or mechanics-specific formulations as final approaches unless IFRS treats them as distinct top-level accounting models.
+- Do not output:
+  - stage-specific instances of a broader treatment
+  - fallback or absence of treatment or absence of approach
+  - binary or eligibility-based labels (e.g., 'hedge', 'no hedge', 'qualifies', 'does not qualify')
+  - negative conclusions
+  - conditions, tests, eligibility criteria, or implementation mechanics
+  - preliminary applicability judgments
+  - labels that merely restate the fact pattern
+
+Overlay / exception / pricing-rule exclusion rule:
+- Do not output as a separate peer top-level approach a rule that only constrains, times, prices, caps, allocates, or otherwise modifies recognition or measurement within an already identified accounting model.
+- Do not output as a peer approach a special rule for variable consideration, royalties, allocation, constraint, sequencing, exception handling, or other overlay mechanics unless the question's primary accounting issue is itself about that distinct rule.
+- If a rule applies only after one of the peer top-level approaches has already been selected, treat it as an overlay, modifier, or later-step consideration, not as a separate peer approach.
+- A rule may be relevant supporting authority without being a peer approach.
+- Include such overlays or exceptions only if they constitute a genuinely distinct IFRS accounting model, recognition basis, measurement basis, or presentation basis within the identified issue.
+
+Issue-boundary and subordinate-path rule:
+- Define peer approaches by reference to the primary accounting issue raised by the question, not by every downstream branch that could arise if an initial condition fails.
+- Do not emit as a peer top-level approach a subordinate path that becomes relevant only if the analysed item is first found to fall outside the more specific issue-specific models.
+- If the governing authority first provides issue-specific named models and only then redirects unresolved cases to a broader general framework, treat that broader framework as supporting authority or a caveat unless the question itself is explicitly about that broader framework.
+- A non-distinct, combined, residual, or catch-all branch is not a separate peer approach unless the question's primary issue is specifically about that branch.
+
+Qualifier rule:
+- If one candidate differs from another only because it adds a timing, scope, reporting-level, instrument-type, exposure-type, or fact-pattern qualifier, prefer the broader top-level accounting approach unless the qualifier changes the accounting model itself.
+- Preserve qualifying details for later applicability analysis, not as separate peer approaches, unless IFRS treats them as distinct top-level approaches.
+- If the qualifier identifies a distinct IFRS recognition basis, measurement basis, presentation basis, or named accounting model, retain it as a separate peer approach.
+- If a candidate differs only because it adds an overlay, exception, pricing rule, variable-consideration rule, or other secondary mechanic within the same model, do not retain it as a separate peer approach.
+
+Anti-collapse rule:
+- Do NOT eliminate a peer top-level accounting approach merely because the facts in the question make another approach seem more directly applicable.
+- Do NOT reduce the output to a single approach unless the primary and supporting authority reasonably support only one peer top-level approach within the accounting issue.
+- Fact-pattern details should help identify the accounting issue and relevant treatment families, but should usually be preserved for later applicability assessment rather than used here to exclude peer approaches.
+
+Authority-use rule:
+- Use primary authority first to determine the core issue and the candidate treatment families.
+- Use supporting authority only to confirm, constrain, distinguish, or add a genuinely distinct peer model.
+- Do NOT derive final approaches from peripheral authority.
+- Do NOT let a larger volume of peripheral context outweigh a smaller amount of directly governing authority.
+
+Final-label mapping rule:
+- The final emitted approaches must be the peer top-level accounting approaches, not the intermediate treatment families.
+- If a treatment family maps to a recognized IFRS accounting model or treatment, prefer that recognized model or treatment name as the final label.
+- Prefer standard IFRS terminology over descriptive paraphrases when a recognized name exists.
+- Do NOT emit labels that merely restate the identified exposure, item, stage, qualifier, procedural path, or recognition outcome when those map to a broader recognized accounting approach.
+- If multiple standard-looking labels refer to the same peer top-level approach, choose one canonical final label and collapse the others as synonyms rather than emitting multiple approaches.
+- Do NOT emit as final approaches labels for overlays, modifiers, constraints, royalty rules, variable-consideration rules, pricing rules, allocation rules, or other secondary mechanics unless they are themselves the distinct primary accounting issue.
+- Do NOT emit as final approaches labels that name only the timing or result of recognition when the governing authority provides a more specific named model that determines that timing or result.
+
+Canonical naming and synonym-collapsing rule:
+- If two or more candidate labels refer to the same peer top-level accounting approach, emit only one final approach using the most canonical recognized IFRS name.
+- Prefer the label that best matches the wording used in the governing authority when that wording identifies a recognized accounting model, treatment, recognition basis, measurement basis, or presentation basis.
+- Collapse synonymous, abbreviated, expanded, or paraphrased labels into a single normalized_label when they refer to the same peer top-level approach.
+- Do not emit separate approaches merely because one label is:
+  - an abbreviation of another
+  - an expanded form of another
+  - a wording variant such as “through profit or loss” vs “profit or loss” vs "pnl"
+  - a British vs American spelling variant
+  - a reordered phrasing with the same accounting meaning
+  - an outcome-only reformulation of a more specific named model
+- When choosing among synonymous labels, prefer:
+  1. the most standard IFRS wording, if clearly identifiable from the governing authority
+  2. otherwise, the fullest explicit label that preserves the accounting meaning
+  3. otherwise, the least paraphrastic wording
+- Do not emit separate approaches merely because one label is singular and the other is plural when the accounting meaning is unchanged.
+- Do not emit separate approaches merely because one label adds or omits a generic accounting head noun such as measurement, recognition, presentation, classification, assessment, accounting when the accounting model identity is unchanged.
+- If two candidate labels differ only because one includes such a generic head noun and the other does not, collapse them to a single canonical label.
+
+Canonical label construction rule:
+- For each final peer top-level accounting approach, construct the label using a fully expanded canonical form rather than an abbreviation, acronym, shorthand, or compressed variant.
+- Prefer a label that preserves the full accounting meaning in plain IFRS terminology.
+- Do not shorten or compress the label if doing so removes words that distinguish the accounting treatment, recognition basis, measurement basis, or presentation basis.
+- Do not use acronyms or initialisms as the final label unless the acronym is itself the primary recognized IFRS name of the approach.
+- If both an abbreviated and a fully expanded form refer to the same peer top-level approach, choose the fully expanded form as the final label.
+- Keep the word order stable and close to the governing authority when that wording expresses the accounting model clearly.
+- Remove source-specific determiners, possessives, or drafting artifacts that do not change the model identity.
+- Prefer a stable bare model name over a longer source-specific formulation when both refer to the same accounting model.
+- Prefer singular generic nouns over plural nouns in the final label when the accounting model applies to an item considered generically.
+- Use plural nouns in the final label only if the governing authority defines a distinct accounting model that depends on plurality or aggregation.
+- Do not add a generic accounting head noun such as measurement, recognition, presentation, classification, assessment, or accounting unless it is necessary to distinguish the recognized accounting model from another peer approach.
+- Prefer the shortest stable noun phrase that uniquely identifies the accounting model.
+- If both a bare attribute/object label and a label containing an added generic accounting head noun refer to the same model, prefer the bare label unless the governing authority clearly treats the head-noun form as the recognized model name.
+- Use a stable left-to-right noun phrase structure for final labels.
+- Prefer labels built as:
+  - core accounting concept first
+  - then connecting words if needed
+  - then the object or item
+- Do not reorder the same words into alternative noun phrases when the accounting meaning is unchanged.
+- If two candidate labels contain the same accounting concept words but differ only by word order, choose one canonical ordering and collapse the others as synonyms.
+- Prefer labels that begin with the core accounting concept rather than the object when both forms refer to the same model.
+
+Canonical singular-form rule:
+- When a candidate label appears in both singular and plural forms but refers to the same peer top-level accounting approach, choose the singular form and collapse the plural form as a synonym.
+- Prefer labels that name the accounting model for a single generic item, object, or unit of analysis rather than a class expressed in the plural.
+- Do not emit separate approaches merely because one label is singular and the other is plural.
+- Preserve plural wording only if plurality changes the accounting model itself.
+
+Canonical scope-trimming rule:
+- If two candidate labels refer to the same peer top-level accounting approach and one is only a longer fully qualified version of the other, emit only one final approach.
+- Prefer the shortest label that still uniquely preserves the recognized accounting model.
+- Do not retain extra trailing words that merely restate the built-in object, scope, or context of the model when those words do not distinguish it from another peer approach.
+- In particular, when a longer label differs only by adding phrases such as the related asset, instrument, operation, entity, or context already inherent in the recognized model, collapse to the shorter canonical model name.
+- Do not emit separate approaches merely because one label is a fully qualified source phrase and the other is its stable canonical short form.
+- Treat a generic accounting head noun inserted into an otherwise unchanged label as scope-neutral wording, not as a basis for a separate approach.
+- Collapse labels that differ only by the presence or absence of such a generic head noun.
+
+Needs-clarification rule:
+If the context is not sufficient to identify the peer top-level accounting approaches with reasonable confidence, return:
+{
+  "status": "needs_clarification",
+  "questions": ["..."]
+}
+- do NOT include approaches
+
+If answerable, return:
+{
+  "status": "pass",
+  ...
+}
+
+For each approach, output:
+- id
+- label
+- normalized_label
+- rationale_for_inclusion
+
+Normalization rules:
+- normalized_label must be in snake_case
+- normalized_label must be 2–8 words
+- The label and normalized_label must refer to the final peer top-level accounting approach, not to an intermediate treatment family.
+- Prefer concise but fully expanded canonical labels when available.
+- Do not use acronyms, abbreviations, initialisms, or compressed shorthand in the final label unless they are themselves the primary recognized IFRS name.
+- Prefer labels that are explicit enough to remain stable across wording variants and across runs.
+- Avoid negative wording.
+- Avoid fact-pattern-specific qualifiers unless required because they change the top-level model.
+- Avoid determiners, possessives, and source-specific wording that do not change the accounting model identity.
+- normalized_label must be derived from the chosen final canonical label, not from an alternative synonym that was collapsed.
+- Build normalized_label directly from the final label by:
+  - lowercasing
+  - replacing spaces and hyphens with underscores
+  - removing punctuation
+  - preserving the same meaning and word order
+- Do not create normalized_label from a shorthand, acronym, or alternative synonym that was not chosen as the final label.
+- Use one normalized_label per peer top-level approach.
+- Do not emit multiple normalized_label values for the same accounting approach.
+- Prefer singular generic wording in both label and normalized_label unless plurality is necessary to preserve a distinct accounting meaning.
+- Prefer normalized_label values built from the shortest canonical final label that still preserves the accounting model uniquely.
+- Do not include trailing scope-restating words in normalized_label when removing them does not change the accounting model identity.
+- Prefer normalized_label values derived from the shortest canonical label that uniquely preserves the accounting model.
+- Do not include generic accounting head nouns in normalized_label when removing them does not change the accounting model identity.
+- Preserve the word order of the chosen canonical label exactly when building normalized_label.
+- Prefer normalized_label values that begin with the core accounting concept rather than the object when both forms express the same model.
+
+Output rules:
+- return valid JSON only
+- no markdown
+- no prose before or after JSON
+</instructions>
+
+<output_schema>
+{
+  "status": "pass",
+  "primary_accounting_issue": "short description in French of the core IFRS issue raised by the question",
+  "authority_resolution": {
+    "candidate_governing_documents": ["doc_uid"],
+    "selected_primary_document": "your choice",
+    "selection_reason": "1 sentence explain how you came to decide which to choose",
+    "discarded_due_to_overlap": ["doc_uid"],
+    "residual_uncertainty": "Your estimate of the uncertainty on the choice of the selected primary document and 1 sentence why"
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority directly governs the issue"
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority constrains, clarifies, or provides a distinct alternative model"
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "document identifier found in doc_uid",
+        "references": ["paragraph attribute"],
+        "reason": "1 short sentence explaining why this authority is not relevant for identifying peer approaches"
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "short English description of the intermediate treatment family",
+      "authority_basis": [
+        {
+          "document": "document identifier found in doc_uid",
+          "references": ["paragraph attribute"]
+        }
+      ],
+      "mapped_approaches": ["snake_case_label"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "short English label",
+      "normalized_label": "snake_case_label",
+      "rationale_for_inclusion": "1 short sentence"
+    }
+  ]
+}
+</output_schema>

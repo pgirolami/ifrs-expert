@@ -1,0 +1,146 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer, au regard d’IFRS 10, si un investisseur détient le pouvoir sur une entité émettrice dans l’analyse du contrôle.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs10", "ias28", "ifrs3"],
+    "selected_primary_document": "ifrs10",
+    "selection_reason": "I applied the strict precedence rule by selecting IFRS 10 because it directly governs the assessment of control and power over an investee, while IAS 28 addresses significant influence rather than control and IFRS 3 refers back to IFRS 10 for the meaning of control.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the question is expressly about whether an investor has power over an entity, and IFRS 10 is the standard that directly defines and explains power and control."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["5", "6", "7", "8", "10", "11", "12", "13", "14", "B2", "B3", "B5", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B28", "B34", "B35", "B36", "B37", "B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50", "B51", "B52", "B53", "B54", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B73", "B74", "B75", "B76", "B77", "B78", "B79", "B80", "B81", "B82", "B84"],
+        "reason": "These paragraphs directly govern how to determine whether an investor has power over an investee."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs3",
+        "references": ["7", "43", "44", "B13", "E7"],
+        "reason": "These paragraphs confirm that control, and therefore power, can arise through contract alone and that IFRS 10 supplies the governing meaning of control."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias28",
+        "references": ["5", "6", "7", "8", "9", "16", "18", "19", "22", "32"],
+        "reason": "IAS 28 addresses significant influence and the equity method, which are topically related but not relevant to identifying peer approaches for determining power under IFRS 10."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Power obtained through voting rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["11", "B34", "B35", "B36", "B37", "B38", "B41", "B42", "B43", "B44", "B45", "B46"]
+        }
+      ],
+      "mapped_approaches": [
+        "majority_voting_rights",
+        "de_facto_power_through_voting_rights"
+      ]
+    },
+    {
+      "family": "Power obtained through contractual or other decision-making rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["10", "11", "13", "B14", "B15", "B17", "B18", "B19", "B20", "B21", "B51", "B52", "B53"]
+        },
+        {
+          "document": "ifrs3",
+          "references": ["43", "44", "E7"]
+        }
+      ],
+      "mapped_approaches": [
+        "contractual_decision_making_rights",
+        "power_through_relevant_activities_upon_contingent_events"
+      ]
+    },
+    {
+      "family": "Power obtained through substantive potential rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B15", "B22", "B23", "B24", "B47", "B48", "B49", "B50"]
+        }
+      ],
+      "mapped_approaches": [
+        "substantive_potential_voting_rights"
+      ]
+    },
+    {
+      "family": "Power assessed through delegated decision-making arrangements",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["17", "18", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B68", "B69", "B70", "B71", "B72"]
+        }
+      ],
+      "mapped_approaches": [
+        "principal_decision_maker"
+      ]
+    },
+    {
+      "family": "Power assessed over a ring-fenced portion of an investee",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["B76", "B77", "B78", "B79"]
+        }
+      ],
+      "mapped_approaches": [
+        "control_of_a_deemed_separate_entity"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Majority voting rights",
+      "normalized_label": "majority_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 identifies majority voting rights as a direct route to power when the relevant activities are directed by voting and the rights are substantive."
+    },
+    {
+      "id": "approach_2",
+      "label": "De facto power through voting rights",
+      "normalized_label": "de_facto_power_through_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 permits power with less than a majority of voting rights when the investor has the practical ability to direct the relevant activities unilaterally."
+    },
+    {
+      "id": "approach_3",
+      "label": "Contractual decision-making rights",
+      "normalized_label": "contractual_decision_making_rights",
+      "rationale_for_inclusion": "IFRS 10 states that power can arise from contractual or other rights, including when voting rights are not the dominant factor."
+    },
+    {
+      "id": "approach_4",
+      "label": "Substantive potential voting rights",
+      "normalized_label": "substantive_potential_voting_rights",
+      "rationale_for_inclusion": "IFRS 10 requires currently substantive options, convertibles, or similar rights to be considered because they can give the current ability to direct relevant activities."
+    },
+    {
+      "id": "approach_5",
+      "label": "Principal decision maker",
+      "normalized_label": "principal_decision_maker",
+      "rationale_for_inclusion": "IFRS 10 treats a decision maker with delegated authority as holding power only if it acts as a principal rather than as an agent."
+    },
+    {
+      "id": "approach_6",
+      "label": "Power through relevant activities upon contingent events",
+      "normalized_label": "power_through_relevant_activities_upon_contingent_events",
+      "rationale_for_inclusion": "IFRS 10 recognizes that for some investees the relevant activities arise only upon specified events, and the party able to direct those activities may have power even before the event occurs."
+    },
+    {
+      "id": "approach_7",
+      "label": "Control of a deemed separate entity",
+      "normalized_label": "control_of_a_deemed_separate_entity",
+      "rationale_for_inclusion": "IFRS 10 requires a separate power assessment when a ring-fenced portion of an investee is treated as a deemed separate entity."
+    }
+  ]
+}

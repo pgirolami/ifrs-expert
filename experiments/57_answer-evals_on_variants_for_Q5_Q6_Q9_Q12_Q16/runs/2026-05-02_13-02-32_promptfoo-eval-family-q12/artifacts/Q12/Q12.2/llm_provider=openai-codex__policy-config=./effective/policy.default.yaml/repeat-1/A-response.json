@@ -1,0 +1,82 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination de l’éligibilité d’un contrat de location à l’exemption IFRS 16 pour les contrats courts lorsque la période initiale est inférieure ou égale à douze mois mais que le contrat comporte une tacite reconduction ou une durée indéterminée, ce qui soulève la détermination de la lease term et de la période exécutoire.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs16"],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I selected IFRS 16 because it is the only governing IFRS standard in the context that directly addresses lessee recognition, the short-term lease exemption, and the determination of lease term and enforceable period; under the precedence rule, no overlapping IAS or other lower-precedence governing document competes with it here.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is squarely about lessee lease accounting and the short-term lease exemption, which are directly governed by IFRS 16."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": ["5", "6", "7", "18", "19", "20", "21", "22", "B34", "B35", "B37", "B39", "E10"],
+        "reason": "These paragraphs directly govern whether a lessee may elect the short-term lease exemption and how lease term and enforceability are determined for cancellable, renewable, tacitly renewing, or indefinite leases."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs3",
+        "references": ["28A", "28B"],
+        "reason": "These paragraphs address leases acquired in a business combination and do not help identify peer approaches for a lessee's short-term lease exemption assessment."
+      },
+      {
+        "document": "ias12",
+        "references": ["22A", "98L"],
+        "reason": "These paragraphs address deferred tax consequences of leases rather than the lease accounting models relevant to the exemption question."
+      },
+      {
+        "document": "ias38",
+        "references": ["10", "68"],
+        "reason": "These paragraphs concern intangible assets and goodwill, not lessee lease recognition or short-term lease accounting."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Lessee accounting using the short-term lease exemption",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["5", "6", "7"]
+        },
+        {
+          "document": "ifrs16",
+          "references": ["18", "19", "20", "21", "B34", "B35", "B37", "B39", "E10"]
+        }
+      ],
+      "mapped_approaches": ["short_term_lease_exemption"]
+    },
+    {
+      "family": "General lessee recognition model for leases outside the short-term exemption",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": ["22"]
+        },
+        {
+          "document": "ifrs16",
+          "references": ["18", "19", "20", "21", "B34", "B35", "B37", "B39", "E10"]
+        }
+      ],
+      "mapped_approaches": ["right_of_use_model"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct lessee accounting model allowing non-recognition of a right-of-use asset and lease liability for leases that qualify as short-term leases."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right-of-use model",
+      "normalized_label": "right_of_use_model",
+      "rationale_for_inclusion": "IFRS 16 provides the general lessee accounting model requiring recognition of a right-of-use asset and lease liability when the short-term lease exemption is not applied."
+    }
+  ]
+}

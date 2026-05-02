@@ -1,0 +1,155 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination de l’éligibilité d’un bail à l’exemption des contrats de courte durée au regard de la notion de lease term et de période exécutoire sous IFRS 16",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs16",
+      "ias16"
+    ],
+    "selected_primary_document": "ifrs16",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS where documents address the same lease eligibility and term determination issue; IFRS 16 directly governs short-term lease qualification and lease term, while IAS 16 does not govern that eligibility question.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — IFRS 16 directly addresses short-term leases, lease term and enforceability, which are the core issues raised by the question."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs16",
+        "references": [
+          "5",
+          "6",
+          "7",
+          "8",
+          "B34",
+          "B35",
+          "B36",
+          "B37",
+          "B38",
+          "B39",
+          "B40"
+        ],
+        "reason": "These paragraphs directly govern the short-term lease election and how lease term and enforceability are determined."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs16",
+        "references": [
+          "E10",
+          "E11"
+        ],
+        "reason": "These agenda decisions clarify how automatic continuation, termination rights and broader economic penalties affect the enforceable period and lease term."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias16",
+        "references": [
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59",
+          "E3"
+        ],
+        "reason": "These paragraphs relate to depreciation and useful life of property, plant and equipment, not to short-term lease qualification under IFRS 16."
+      },
+      {
+        "document": "ifrs16",
+        "references": [
+          "3",
+          "4",
+          "100",
+          "101",
+          "102",
+          "102A",
+          "B14",
+          "B15",
+          "B16",
+          "B17",
+          "B18",
+          "B19",
+          "B20",
+          "B24",
+          "B25",
+          "B26",
+          "B27",
+          "B28",
+          "B29",
+          "B30",
+          "B31",
+          "B41",
+          "B42",
+          "E3",
+          "E5",
+          "E6",
+          "E8",
+          "E9"
+        ],
+        "reason": "These paragraphs address other IFRS 16 topics such as scope exceptions, identified assets, lease definition, sale and leaseback, and payment mechanics, which are not needed to identify the peer approaches for this issue."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Application of the short-term lease exemption based on the determined lease term",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": [
+            "5",
+            "6",
+            "7",
+            "8",
+            "B34",
+            "B35",
+            "B36",
+            "B37",
+            "B38",
+            "B39",
+            "B40",
+            "E10",
+            "E11"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "short_term_lease_exemption"
+      ]
+    },
+    {
+      "family": "Application of the general lessee lease accounting model when the short-term lease exemption is not applied",
+      "authority_basis": [
+        {
+          "document": "ifrs16",
+          "references": [
+            "5",
+            "6"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "right_of_use_asset_and_lease_liability"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Short-term lease exemption",
+      "normalized_label": "short_term_lease_exemption",
+      "rationale_for_inclusion": "IFRS 16 provides a distinct election for short-term leases, making it a peer top-level lessee accounting treatment for this issue."
+    },
+    {
+      "id": "approach_2",
+      "label": "Right-of-use asset and lease liability",
+      "normalized_label": "right_of_use_asset_and_lease_liability",
+      "rationale_for_inclusion": "IFRS 16 paragraph 6 distinguishes the short-term lease exemption from the general recognition model in paragraphs 22–49, so this is the alternative top-level treatment family."
+    }
+  ]
+}

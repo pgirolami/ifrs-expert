@@ -1,0 +1,123 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Détermination des éléments permettant d’établir le pouvoir d’un investisseur sur une entité au sens d’IFRS 10, c’est-à-dire l’existence de droits actuels et substantifs donnant la capacité actuelle de diriger les activités pertinentes.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs10", "ifrs12", "ias28", "ias24"],
+    "selected_primary_document": "ifrs10",
+    "selection_reason": "I selected IFRS 10 because, applying the strict precedence rule, it is the IFRS standard that directly governs the control assessment and specifically defines power over an investee, while the other documents address disclosures, significant influence, or related parties rather than the governing control model.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question is explicitly about power under IFRS 10 and IFRS 10 directly contains the governing definition, criteria, and application guidance."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["6", "7", "10", "11", "12", "13", "14", "B2", "B3", "B5", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20", "B21", "B22", "B23", "B24", "B25", "B26", "B27", "B28", "B34", "B35", "B36", "B38", "B39", "B40", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50", "B51", "B52", "B53", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67", "B73", "B74", "B75"],
+        "reason": "These paragraphs directly govern how to identify power, including relevant activities, rights, substantiveness, protective rights, voting rights, contractual rights, delegated decision-making, and relationships with other parties."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs10",
+        "references": ["8", "E3", "E4", "E2", "B80", "B81", "B82", "B84", "B85"],
+        "reason": "These paragraphs and agenda decisions clarify reassessment, protective rights, contract-alone combinations, and how changes in facts and circumstances affect the power analysis."
+      },
+      {
+        "document": "ifrs12",
+        "references": ["7", "8", "9"],
+        "reason": "These disclosure requirements confirm the key judgement areas in determining control, including majority and minority voting cases and principal-versus-agent conclusions."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias28",
+        "references": ["5", "6", "7", "8", "9", "16"],
+        "reason": "IAS 28 addresses significant influence and equity method accounting, which is a distinct model from control and does not govern the IFRS 10 power assessment."
+      },
+      {
+        "document": "ias24",
+        "references": ["2", "3", "4"],
+        "reason": "IAS 24 concerns related party identification and disclosure rather than determining power under IFRS 10."
+      },
+      {
+        "document": "ifrs12",
+        "references": ["10", "12", "13", "19", "24", "29"],
+        "reason": "These paragraphs relate to disclosures after a control or non-control conclusion and do not identify peer approaches for establishing power."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Power obtained through substantive voting rights or similar rights",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["11", "B14", "B15", "B34", "B35", "B36", "B38", "B41", "B42", "B43", "B44", "B45", "B46", "B47", "B48", "B49", "B50"]
+        }
+      ],
+      "mapped_approaches": ["voting_rights_power", "potential_voting_rights_power"]
+    },
+    {
+      "family": "Power obtained through contractual or other decision-making rights over relevant activities",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["10", "11", "13", "B8", "B15", "B17", "B40", "B51", "B52", "B53"]
+        }
+      ],
+      "mapped_approaches": ["contractual_decision_making_power"]
+    },
+    {
+      "family": "Power evidenced by practical ability to direct relevant activities unilaterally",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["12", "B18", "B19", "B20", "B21", "B41", "B42", "B45"]
+        }
+      ],
+      "mapped_approaches": ["de_facto_power"]
+    },
+    {
+      "family": "Power held through delegated decision-making rights when the decision maker is a principal",
+      "authority_basis": [
+        {
+          "document": "ifrs10",
+          "references": ["17", "18", "B58", "B59", "B60", "B61", "B62", "B63", "B64", "B65", "B66", "B67"]
+        }
+      ],
+      "mapped_approaches": ["principal_decision_maker_power"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Voting rights power",
+      "normalized_label": "voting_rights_power",
+      "rationale_for_inclusion": "IFRS 10 identifies substantive voting or similar rights as a primary basis for having the current ability to direct relevant activities."
+    },
+    {
+      "id": "approach_2",
+      "label": "Potential voting rights power",
+      "normalized_label": "potential_voting_rights_power",
+      "rationale_for_inclusion": "IFRS 10 treats substantive potential voting rights as capable, alone or with other rights, of giving current power over relevant activities."
+    },
+    {
+      "id": "approach_3",
+      "label": "Contractual decision-making power",
+      "normalized_label": "contractual_decision_making_power",
+      "rationale_for_inclusion": "IFRS 10 contemplates power arising from contractual arrangements or other rights when voting rights are not the dominant factor."
+    },
+    {
+      "id": "approach_4",
+      "label": "De facto power",
+      "normalized_label": "de_facto_power",
+      "rationale_for_inclusion": "IFRS 10 allows power to be established through evidence of the practical ability to direct relevant activities unilaterally even when formal rights analysis is not conclusive on its own."
+    },
+    {
+      "id": "approach_5",
+      "label": "Principal decision-maker power",
+      "normalized_label": "principal_decision_maker_power",
+      "rationale_for_inclusion": "IFRS 10 requires a decision maker with delegated rights to assess whether it acts as a principal, in which case those decision-making rights can constitute power."
+    }
+  ]
+}

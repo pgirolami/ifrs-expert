@@ -1,0 +1,396 @@
+You are an IFRS expert producing a structured decision artifact.
+
+<context>
+<Document name="ifrs13" document_type="IFRS-S" document_kind="standard">
+<chunk id="48260" doc_uid="ifrs13" paragraph="2" score="0.6837">
+Fair value is a market‑based measurement, not an entity‑specific measurement. For some assets and liabilities, observable market transactions or market information might be available. For other assets and liabilities, observable market transactions and market information might not be available. However, the objective of a fair value measurement in both cases is the same—to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions (ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability).
+</chunk>
+
+<chunk id="48261" doc_uid="ifrs13" paragraph="3" score="0.0000">
+When a price for an identical asset or liability is not observable, an entity measures fair value using another valuation technique that maximises the use of relevant observable inputs and minimises the use of unobservable inputs. Because fair value is a market‑based measurement, it is measured using the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk. As a result, an entity’s intention to hold an asset or to settle or otherwise fulfil a liability is not relevant when measuring fair value.
+</chunk>
+
+<chunk id="48267" doc_uid="ifrs13" paragraph="9" score="0.0000">
+This IFRS defines fair value as the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction between market participants at the measurement date.
+</chunk>
+
+<chunk id="48273" doc_uid="ifrs13" paragraph="15" score="0.6797">
+A fair value measurement assumes that the asset or liability is exchanged in an orderly transaction between market participants to sell the asset or transfer the liability at the measurement date under current market conditions.
+</chunk>
+
+<chunk id="48280" doc_uid="ifrs13" paragraph="22" score="0.0000">
+An entity shall measure the fair value of an asset or a liability using the assumptions that market participants would use when pricing the asset or liability, assuming that market participants act in their economic best interest.
+</chunk>
+
+<chunk id="48282" doc_uid="ifrs13" paragraph="24" score="0.0000">
+Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) regardless of whether that price is directly observable or estimated using another valuation technique.
+</chunk>
+
+<chunk id="48294" doc_uid="ifrs13" paragraph="36" score="0.0000">
+In all cases, an entity shall maximise the use of relevant observable inputs and minimise the use of unobservable inputs to meet the objective of a fair value measurement, which is to estimate the price at which an orderly transaction to transfer the liability or equity instrument would take place between market participants at the measurement date under current market conditions.
+</chunk>
+
+<chunk id="48300" doc_uid="ifrs13" paragraph="42" score="0.0000">
+The fair value of a liability reflects the effect of non‑performance risk. Non‑performance risk includes, but may not be limited to, an entity’s own credit risk (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability.
+</chunk>
+
+<chunk id="48301" doc_uid="ifrs13" paragraph="43" score="0.7304">
+When measuring the fair value of a liability, an entity shall take into account the effect of its credit risk (credit standing) and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:
+(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).
+(b)the terms of credit enhancements related to the liability, if any.
+</chunk>
+
+<chunk id="48302" doc_uid="ifrs13" paragraph="44" score="0.6856">
+The fair value of a liability reflects the effect of non‑performance risk on the basis of its unit of account. The issuer of a liability issued with an inseparable third‑party credit enhancement that is accounted for separately from the liability shall not include the effect of the credit enhancement (eg a third‑party guarantee of debt) in the fair value measurement of the liability. If the credit enhancement is accounted for separately from the liability, the issuer would take into account its own credit standing and not that of the third party guarantor when measuring the fair value of the liability.
+</chunk>
+
+<chunk id="48315" doc_uid="ifrs13" paragraph="56" score="0.6979">
+When using the exception in paragraph 48 to measure the fair value of a group of financial assets and financial liabilities entered into with a particular counterparty, the entity shall include the effect of the entity’s net exposure to the credit risk of that counterparty or the counterparty’s net exposure to the credit risk of the entity in the fair value measurement when market participants would take into account any existing arrangements that mitigate credit risk exposure in the event of default (eg a master netting agreement with the counterparty or an agreement that requires the exchange of collateral on the basis of each party’s net exposure to the credit risk of the other party). The fair value measurement shall reflect market participants’ expectations about the likelihood that such an arrangement would be legally enforceable in the event of default.
+</chunk>
+
+<chunk id="48320" doc_uid="ifrs13" paragraph="61" score="0.0000">
+An entity shall use valuation techniques that are appropriate in the circumstances and for which sufficient data are available to measure fair value, maximising the use of relevant observable inputs and minimising the use of unobservable inputs.
+</chunk>
+
+<chunk id="48321" doc_uid="ifrs13" paragraph="62" score="0.0000">
+The objective of using a valuation technique is to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions. Three widely used valuation techniques are the market approach, the cost approach and the income approach. The main aspects of those approaches are summarised in paragraphs B5⁠–⁠B11. An entity shall use valuation techniques consistent with one or more of those approaches to measure fair value.
+</chunk>
+
+<chunk id="48326" doc_uid="ifrs13" paragraph="67" score="0.0000">
+Valuation techniques used to measure fair value shall maximise the use of relevant observable inputs and minimise the use of unobservable inputs.
+</chunk>
+
+<chunk id="48347" doc_uid="ifrs13" paragraph="87" score="0.0000">
+Unobservable inputs shall be used to measure fair value to the extent that relevant observable inputs are not available, thereby allowing for situations in which there is little, if any, market activity for the asset or liability at the measurement date. However, the fair value measurement objective remains the same, ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability. Therefore, unobservable inputs shall reflect the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk.
+</chunk>
+
+<chunk id="48348" doc_uid="ifrs13" paragraph="88" score="0.0000">
+Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one when pricing the asset or liability. For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47).
+</chunk>
+
+<chunk id="48349" doc_uid="ifrs13" paragraph="89" score="0.0000">
+An entity shall develop unobservable inputs using the best information available in the circumstances, which might include the entity’s own data. In developing unobservable inputs, an entity may begin with its own data, but it shall adjust those data if reasonably available information indicates that other market participants would use different data or there is something particular to the entity that is not available to other market participants (eg an entity‑specific synergy). An entity need not undertake exhaustive efforts to obtain information about market participant assumptions. However, an entity shall take into account all information about market participant assumptions that is reasonably available. Unobservable inputs developed in the manner described above are considered market participant assumptions and meet the objective of a fair value measurement.
+</chunk>
+
+<chunk id="48361" doc_uid="ifrs13" paragraph="B2" score="0.6912">
+The objective of a fair value measurement is to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions. A fair value measurement requires an entity to determine all the following:
+(a)the particular asset or liability that is the subject of the measurement (consistently with its unit of account).
+(b)for a non‑financial asset, the valuation premise that is appropriate for the measurement (consistently with its highest and best use).
+(c)the principal (or most advantageous) market for the asset or liability.
+(d)the valuation technique(s) appropriate for the measurement, considering the availability of data with which to develop inputs that represent the assumptions that market participants would use when pricing the asset or liability and the level of the fair value hierarchy within which the inputs are categorised.
+</chunk>
+
+<chunk id="48374" doc_uid="ifrs13" paragraph="B15" score="0.6699">
+A fair value measurement using present value techniques is made under conditions of uncertainty because the cash flows used are estimates rather than known amounts. In many cases both the amount and timing of the cash flows are uncertain. Even contractually fixed amounts, such as the payments on a loan, are uncertain if there is risk of default.
+</chunk>
+
+<chunk id="48375" doc_uid="ifrs13" paragraph="B16" score="0.0000">
+Market participants generally seek compensation (ie a risk premium) for bearing the uncertainty inherent in the cash flows of an asset or a liability. A fair value measurement should include a risk premium reflecting the amount that market participants would demand as compensation for the uncertainty inherent in the cash flows. Otherwise, the measurement would not faithfully represent fair value. In some cases determining the appropriate risk premium might be difficult. However, the degree of difficulty alone is not a sufficient reason to exclude a risk premium.
+</chunk>
+
+<chunk id="48390" doc_uid="ifrs13" paragraph="B31" score="0.0000">
+When using a present value technique to measure the fair value of a liability that is not held by another party as an asset (eg a decommissioning liability), an entity shall, among other things, estimate the future cash outflows that market participants would expect to incur in fulfilling the obligation. Those future cash outflows shall include market participants’ expectations about the costs of fulfilling the obligation and the compensation that a market participant would require for taking on the obligation. Such compensation includes the return that a market participant would require for the following:
+(a)undertaking the activity (ie the value of fulfilling the obligation; eg by using resources that could be used for other activities); and
+(b)assuming the risk associated with the obligation (ie a risk premium that reflects the risk that the actual cash outflows might differ from the expected cash outflows; see paragraph B33).
+</chunk>
+
+<chunk id="48392" doc_uid="ifrs13" paragraph="B33" score="0.0000">
+An entity can include a risk premium in the fair value measurement of a liability or an entity’s own equity instrument that is not held by another party as an asset in one of the following ways:
+(a)by adjusting the cash flows (ie as an increase in the amount of cash outflows); or
+(b)by adjusting the rate used to discount the future cash flows to their present values (ie as a reduction in the discount rate).
+An entity shall ensure that it does not double‑count or omit adjustments for risk. For example, if the estimated cash flows are increased to take into account the compensation for assuming the risk associated with the obligation, the discount rate should not be adjusted to reflect that risk.
+</chunk>
+</Document>
+</context>
+
+<question>
+Pour mesurer la juste valeur, faut-il ajuster l’évaluation afin de tenir compte de la possibilité que la contrepartie ne remplisse pas ses obligations ?
+</question>
+
+<identified_approaches>
+{
+  "status": "pass",
+  "primary_accounting_issue": "La prise en compte du risque de non-exécution dans la mesure de la juste valeur, notamment le risque de crédit de la contrepartie pour un actif et le risque de non-performance propre pour un passif.",
+  "authority_resolution": {
+    "candidate_governing_documents": [
+      "ifrs13"
+    ],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule by selecting the single IFRS standard that directly governs fair value measurement and related risk assumptions; no other provided document directly governs this same measurement issue at an overlapping level.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty because the question is explicitly about fair value measurement and IFRS 13 is the dedicated governing standard for that topic."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": [
+          "2",
+          "3",
+          "9",
+          "15",
+          "22",
+          "24",
+          "36",
+          "42",
+          "43",
+          "44",
+          "56",
+          "61",
+          "62",
+          "67",
+          "87",
+          "88",
+          "89",
+          "B2",
+          "B15",
+          "B16",
+          "B31",
+          "B33"
+        ],
+        "reason": "These paragraphs directly govern whether and how fair value reflects market-participant assumptions about credit risk and non-performance risk."
+      }
+    ],
+    "supporting_authority": [],
+    "peripheral_authority": [
+      {
+        "document": "ifrs2",
+        "references": [
+          "10",
+          "11",
+          "16",
+          "17",
+          "30",
+          "33"
+        ],
+        "reason": "This document addresses share-based payment measurement, not the general fair value non-performance-risk issue raised here."
+      },
+      {
+        "document": "ias36",
+        "references": [
+          "18",
+          "20",
+          "30",
+          "53A",
+          "55",
+          "56"
+        ],
+        "reason": "This document addresses recoverable amount and value in use, which is related to valuation but not to identifying peer fair value approaches for counterparty non-performance risk."
+      },
+      {
+        "document": "ias8",
+        "references": [
+          "31A",
+          "31I",
+          "32",
+          "34A"
+        ],
+        "reason": "This document addresses estimation uncertainty and accounting estimates generally, not the governing fair value treatment itself."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset incorporating market-participant assumptions about counterparty credit and other risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": [
+            "2",
+            "3",
+            "22",
+            "24",
+            "61",
+            "62",
+            "67",
+            "87",
+            "88",
+            "89",
+            "B15",
+            "B16"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_of_an_asset"
+      ]
+    },
+    {
+      "family": "Fair value of a liability or own equity instrument incorporating non-performance risk including own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": [
+            "34",
+            "36",
+            "40",
+            "42",
+            "43",
+            "44",
+            "56",
+            "B31",
+            "B33"
+          ]
+        }
+      ],
+      "mapped_approaches": [
+        "fair_value_of_a_liability"
+      ]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value of an asset",
+      "normalized_label": "fair_value_of_an_asset",
+      "rationale_for_inclusion": "IFRS 13 requires fair value to reflect market-participant assumptions about risk, which can include the counterparty's likelihood of non-performance when pricing an asset."
+    },
+    {
+      "id": "approach_2",
+      "label": "Fair value of a liability",
+      "normalized_label": "fair_value_of_a_liability",
+      "rationale_for_inclusion": "IFRS 13 explicitly requires the fair value of a liability to reflect non-performance risk, including the issuer's own credit risk."
+    }
+  ]
+}
+</identified_approaches>
+
+<instructions>
+Use only the information in this message's context, the question, and the identified approaches.
+Do not do any web searches.
+Answer in French.
+
+Your task is to produce a structured JSON artifact describing the final answer.
+
+Input guardrail:
+- First inspect <identified_approaches> before doing any accounting analysis
+- If <identified_approaches>.status is "needs_clarification", you must NOT assess applicability, must NOT generate a final accounting answer, and must return only:
+{
+  "status": "needs_clarification",
+  "questions_fr": ["..."]
+}
+- Translate the clarification questions into French faithfully
+- In that case, do NOT generate assumptions, recommendation, approaches, or references
+- Only continue with the rest of these instructions if <identified_approaches>.status is "pass"
+
+Assumptions:
+- The question may be answered only if <identified_approaches>.status is "pass"
+- Do NOT ask new clarifying questions when <identified_approaches>.status is "pass"
+- Do NOT refuse to answer when <identified_approaches>.status is "pass"
+
+Approach constraints:
+- Use exactly the approaches provided in <identified_approaches>
+- Do not introduce any new approach
+- Do not omit any identified approach
+- Do not merge or split approaches
+- Preserve the order of approaches
+- Keep the scope of each approach unchanged
+- Each approach represents a distinct accounting treatment already surfaced upstream
+
+Do NOT introduce:
+- sub-approaches
+- variants
+- components
+- intermediate reasoning steps
+- new candidate treatments
+- new normalized labels
+- fallback outcomes such as "absence of designation", "no accounting treatment" as separate approaches
+
+Composition rule:
+- Distinguish carefully between:
+  - a baseline accounting treatment
+  - an optional overlay or designation
+  - an exception-driven treatment
+  - a true alternative treatment
+- Do NOT present a baseline treatment and the absence of an optional overlay as two separate approaches unless both are explicitly present in <identified_approaches>
+- If the context presents a general rule and an exception that can coexist, explain how they relate rather than treating them as competing peer approaches
+
+Critical reasoning rule about timing, scope, and reporting context:
+- timing, scope, reporting level, instrument type, and other fact-pattern distinctions may be essential to the analysis
+- use those distinctions to determine:
+  - whether an identified approach applies
+  - under what conditions it applies
+  - and how the identified approaches relate to one another
+- do NOT turn those distinctions into new peer approaches
+- only treat such a distinction as a separate approach if it is already present in <identified_approaches>
+
+Critical rule on applicability:
+- Applicability MUST be assessed with respect to:
+  - the specific facts described in the question
+  - the stated assumptions
+  - the reporting context implied by the question
+- Do NOT assess applicability in general IFRS terms
+- Always answer: "Does this treatment apply in THIS situation?"
+- A treatment may be applicable, not applicable, or applicable only under conditions
+- Assess each provided approach independently before forming the recommendation
+
+Reasoning rules:
+- Base reasoning strictly on the provided context and the identified approaches
+- Use assumptions explicitly when needed
+- Treat documents as independent sources before synthesizing
+- Reflect relationships between:
+  - general rule
+  - exception
+  - alternative treatments
+  - baseline treatment and optional overlay
+- Use IFRS excerpts only when they clarify reasoning
+- Do not replace reasoning with quotes
+- Each reasoning must explicitly explain why the treatment applies or does not apply in this specific case
+- If an approach is not applicable, explain the decisive fact-pattern-specific reason
+- If an approach is applicable only under conditions, state the limiting condition clearly and narrowly
+- timing, scope, reporting level, and similar distinctions should appear in reasoning_fr and conditions_fr when they matter, not as invented approach labels
+
+Recommendation rule:
+- The recommendation must be consistent with the approach-by-approach applicability analysis
+- Base the recommendation on the specific situation, not on abstract IFRS possibilities
+- If one approach is clearly applicable and the others are not, it must drive the recommendation
+- If multiple approaches are applicable, reflect that
+- If none are applicable, answer "non"
+- Do not force "oui_sous_conditions" unless the condition is genuinely necessary to resolve the specific case
+
+Output rules:
+- Return valid JSON only
+- No markdown
+- No prose before or after JSON
+- Use concise, stable wording
+
+Field rules:
+- recommendation.answer must be one of: "oui", "non", "oui_sous_conditions"
+- applicability must use the same enum
+- All text fields must be in French
+- reasoning_fr must be 2–4 lines and explicitly tied to the situation. The text must reference document paragraphs with their name and paragraph number explicitely to ground the answer. Ex: "(IFRS 9 6.3.1)"
+- references.excerpt must contain the whole paragraph, bold the relevant parts of the citation
+- every reference found in reasoning_fr must be in references.excerpt
+- conditions_fr must contain only real limiting conditions, not restatements of the general IFRS test
+</instructions>
+
+<output_schema>
+{
+  "assumptions_fr": [
+    "string"
+  ],
+  "recommendation": {
+    "answer": "oui | non | oui_sous_conditions",
+    "justification": "2-3 lines max"
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "snake_case_label",
+      "label_fr": "short French label",
+      "applicability": "oui | non | oui_sous_conditions",
+      "reasoning_fr": "rationale explicitly tied to the situation",
+      "conditions_fr": [
+        "short condition"
+      ],
+      "practical_implication_fr": "1 line",
+      "references": [
+        {
+          "document": "document name",
+          "section": "paragraph attribute",
+          "excerpt": "short verbatim excerpt"
+        }
+      ]
+    }
+  ]
+}

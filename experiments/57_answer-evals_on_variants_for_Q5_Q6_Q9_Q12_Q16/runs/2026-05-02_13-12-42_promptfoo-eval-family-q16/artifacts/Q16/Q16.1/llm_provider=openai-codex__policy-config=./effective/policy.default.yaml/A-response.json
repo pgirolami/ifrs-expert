@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone crée une obligation actuelle donnant lieu à une provision au titre d’IAS 37, notamment pour les crédits carbone destinés à compenser des émissions excédentaires.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias37"],
+    "selected_primary_document": "ias37",
+    "selection_reason": "IAS 37 is the single governing lineage because the question is about whether a voluntary climate-related commitment gives rise to a provision, and no higher-precedence IFRS Standard in the provided context supersedes IAS 37 on this recognition issue; accordingly I applied the rule that IFRS would supersede IAS only if an overlapping IFRS governed the same issue, which is not the case here.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the provided context includes a directly on-point IAS 37 agenda decision on climate-related commitments and no competing governing standard on provision recognition for this fact pattern."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": ["10", "14", "17", "18", "19", "20", "E6"],
+        "reason": "These paragraphs directly govern whether a voluntary climate commitment creates a present obligation and when a provision is recognised."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias37",
+        "references": ["23", "25", "36", "37", "48", "49"],
+        "reason": "These paragraphs constrain the probability, reliability and measurement framework once a provision model is in play."
+      },
+      {
+        "document": "ias37",
+        "references": ["E5"],
+        "reason": "This agenda decision clarifies how an emissions-related obligation can arise from past events and supports distinguishing obligation-creating events from future operating costs."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs7",
+        "references": ["20C", "20D", "39"],
+        "reason": "These disclosures relate to financial instruments and liquidity risk, not to recognising a provision for a voluntary carbon-neutrality commitment."
+      },
+      {
+        "document": "ias19",
+        "references": ["19", "21", "46", "103"],
+        "reason": "These provisions concern employee benefits and only illustrate constructive obligations in a different accounting topic."
+      },
+      {
+        "document": "ifrs19",
+        "references": ["257", "258", "259", "260"],
+        "reason": "These are reduced-disclosure requirements and do not govern whether a provision exists."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Provision recognition for a present obligation arising from a past event",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "14", "17", "18", "19", "20", "E6"]
+        }
+      ],
+      "mapped_approaches": ["provision"]
+    },
+    {
+      "family": "Contingent liability model for an obligation that is possible or not recognisable",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "16", "23", "27", "28"]
+        }
+      ],
+      "mapped_approaches": ["contingent_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 identifies provision recognition as the top-level model when a present legal or constructive obligation from a past event exists and the recognition criteria are met."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 identifies contingent liability as the peer model when the obligation is only possible or a present obligation fails the recognition criteria."
+    }
+  ]
+}

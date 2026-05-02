@@ -1,0 +1,119 @@
+# Analyse d'une question comptable
+
+**Date**: 2026-05-02
+
+## Question
+
+**Utilisateur**:
+>Pour mesurer la juste valeur, faut-il ajuster l’évaluation afin de tenir compte de la possibilité que la contrepartie ne remplisse pas ses obligations ?
+
+**Reformulation**:
+>Déterminer si, dans une mesure de juste valeur, il faut intégrer le risque de non-exécution des obligations par la contrepartie, y compris le risque de crédit, et selon quel type d’ajustement de valorisation.
+
+## Documentation
+**Consultée**
+   - IAS-S (standard) (`ias36`, `ias8`)
+   - IFRS-S (standard) (`ifrs13`, `ifrs2`)
+
+**Retenue pour l'analyse**
+   - IFRS-S (standard) (`ifrs13`)
+
+## Hypothèses
+   - La question porte sur une mesure de juste valeur au sens général d’IFRS 13, sans précision sur un actif ou un passif particulier.
+   - On suppose qu’aucun prix observable pour un élément identique n’élimine la nécessité d’utiliser une technique d’évaluation incorporant des hypothèses de risque de marché.
+   - On suppose que le risque visé est le risque de non-exécution pertinent pour la juste valeur, y compris le risque de crédit lorsque celui-ci influence le prix qu’utiliseraient des participants de marché.
+
+## Recommandation
+
+**OUI**
+
+Oui. IFRS 13 exige que la juste valeur reflète les hypothèses de risque que retiendraient des participants de marché, y compris le risque de non-exécution et le risque de crédit lorsqu’ils influencent le prix (IFRS 13 22, 42, 43, 88). Cet ajustement peut être intégré soit dans les flux de trésorerie, soit dans le taux d’actualisation, sans double comptage (IFRS 13 B33).
+
+
+## Approches évaluées
+
+| Approche | Applicabilité | Conditions |
+| --- | --- | --- |
+| 1. Flux de trésorerie ajustés du risque | OUI | - (non spécifiées) |
+| 2. Taux d’actualisation ajusté du risque | OUI | - Ne pas ajuster simultanément les flux et le taux pour le même risque de non-exécution. |
+
+### 1. Flux de trésorerie ajustés du risque
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - (conditions non spécifiées)
+
+**Raisonnement**:
+Dans cette situation, IFRS 13 impose une juste valeur fondée sur les hypothèses de participants de marché et intégrant les risques pertinents, y compris le risque de non-exécution et l’incertitude de flux (IFRS 13 22, 42, 43, 87, 88). Si la possibilité que la contrepartie n’exécute pas ses obligations affecte les flux attendus, l’ajustement des flux est une méthode permise pour refléter ce risque dans la juste valeur (IFRS 13 B16, B33).
+
+**Implications pratiques**: Ajuster les flux attendus pour refléter le risque de défaut ou de non-exécution que des participants de marché prendraient en compte.
+
+**Référence**:
+ - ifrs13 22
+
+    >An entity shall measure the fair value of an asset or a liability using the assumptions that market participants would use when pricing the asset or liability, assuming that market participants act in their economic best interest.
+ - ifrs13 42
+
+    >The fair value of a liability reflects the effect of non‑performance risk. Non‑performance risk includes, but may not be limited to, an entity’s own credit risk (as defined in IFRS 7 Financial Instruments: Disclosures). Non‑performance risk is assumed to be the same before and after the transfer of the liability.
+ - ifrs13 43
+
+    >When measuring the fair value of a liability, an entity shall take into account the effect of its credit risk (credit standing) and any other factors that might influence the likelihood that the obligation will or will not be fulfilled. That effect may differ depending on the liability, for example:
+(a)whether the liability is an obligation to deliver cash (a financial liability) or an obligation to deliver goods or services (a non‑financial liability).
+(b)the terms of credit enhancements related to the liability, if any.
+ - ifrs13 87
+
+    >Unobservable inputs shall be used to measure fair value to the extent that relevant observable inputs are not available, thereby allowing for situations in which there is little, if any, market activity for the asset or liability at the measurement date. However, the fair value measurement objective remains the same, ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability. Therefore, unobservable inputs shall reflect the assumptions that market participants would use when pricing the asset or liability, including assumptions about risk.
+ - ifrs13 88
+
+    >Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one when pricing the asset or liability. For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47).
+ - ifrs13 B16
+
+    >Market participants generally seek compensation (ie a risk premium) for bearing the uncertainty inherent in the cash flows of an asset or a liability. A fair value measurement should include a risk premium reflecting the amount that market participants would demand as compensation for the uncertainty inherent in the cash flows. Otherwise, the measurement would not faithfully represent fair value. In some cases determining the appropriate risk premium might be difficult. However, the degree of difficulty alone is not a sufficient reason to exclude a risk premium.
+ - ifrs13 B33
+
+    >An entity can include a risk premium in the fair value measurement of a liability or an entity’s own equity instrument that is not held by another party as an asset in one of the following ways:
+(a)by adjusting the cash flows (ie as an increase in the amount of cash outflows); or
+(b)by adjusting the rate used to discount the future cash flows to their present values (ie as a reduction in the discount rate).
+An entity shall ensure that it does not double‑count or omit adjustments for risk. For example, if the estimated cash flows are increased to take into account the compensation for assuming the risk associated with the obligation, the discount rate should not be adjusted to reflect that risk.
+
+### 2. Taux d’actualisation ajusté du risque
+
+**Applicabilité**: OUI
+
+**Conditions**:
+   - Ne pas ajuster simultanément les flux et le taux pour le même risque de non-exécution.
+
+**Raisonnement**:
+Dans cette situation, le même principe IFRS 13 conduit à incorporer le risque de non-exécution dans la valorisation si des participants de marché l’intègrent dans le prix (IFRS 13 2, 24, 61, 62, 88). IFRS 13 admet explicitement qu’un tel risque soit reflété par un ajustement du taux d’actualisation, à condition de ne pas compter deux fois le même risque si les flux sont déjà ajustés (IFRS 13 B17, B33).
+
+**Implications pratiques**: Incorporer une prime de risque ou un ajustement de crédit dans le taux d’actualisation lorsque c’est ainsi que des participants de marché fixeraient le prix.
+
+**Référence**:
+ - ifrs13 2
+
+    >Fair value is a market‑based measurement, not an entity‑specific measurement. For some assets and liabilities, observable market transactions or market information might be available. For other assets and liabilities, observable market transactions and market information might not be available. However, the objective of a fair value measurement in both cases is the same—to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions (ie an exit price at the measurement date from the perspective of a market participant that holds the asset or owes the liability).
+ - ifrs13 24
+
+    >Fair value is the price that would be received to sell an asset or paid to transfer a liability in an orderly transaction in the principal (or most advantageous) market at the measurement date under current market conditions (ie an exit price) regardless of whether that price is directly observable or estimated using another valuation technique.
+ - ifrs13 61
+
+    >An entity shall use valuation techniques that are appropriate in the circumstances and for which sufficient data are available to measure fair value, maximising the use of relevant observable inputs and minimising the use of unobservable inputs.
+ - ifrs13 62
+
+    >The objective of using a valuation technique is to estimate the price at which an orderly transaction to sell the asset or to transfer the liability would take place between market participants at the measurement date under current market conditions. Three widely used valuation techniques are the market approach, the cost approach and the income approach. The main aspects of those approaches are summarised in paragraphs B5⁠–⁠B11. An entity shall use valuation techniques consistent with one or more of those approaches to measure fair value.
+ - ifrs13 88
+
+    >Assumptions about risk include the risk inherent in a particular valuation technique used to measure fair value (such as a pricing model) and the risk inherent in the inputs to the valuation technique. A measurement that does not include an adjustment for risk would not represent a fair value measurement if market participants would include one when pricing the asset or liability. For example, it might be necessary to include a risk adjustment when there is significant measurement uncertainty (eg when there has been a significant decrease in the volume or level of activity when compared with normal market activity for the asset or liability, or similar assets or liabilities, and the entity has determined that the transaction price or quoted price does not represent fair value, as described in paragraphs B37⁠–⁠B47).
+ - ifrs13 B17
+
+    >Present value techniques differ in how they adjust for risk and in the type of cash flows they use. For example:
+(a)The discount rate adjustment technique (see paragraphs B18⁠–⁠B22) uses a risk‑adjusted discount rate and contractual, promised or most likely cash flows.
+(b)Method 1 of the expected present value technique (see paragraph B25) uses risk‑adjusted expected cash flows and a risk‑free rate.
+(c)Method 2 of the expected present value technique (see paragraph B26) uses expected cash flows that are not risk‑adjusted and a discount rate adjusted to include the risk premium that market participants require. That rate is different from the rate used in the discount rate adjustment technique.
+ - ifrs13 B33
+
+    >An entity can include a risk premium in the fair value measurement of a liability or an entity’s own equity instrument that is not held by another party as an asset in one of the following ways:
+(a)by adjusting the cash flows (ie as an increase in the amount of cash outflows); or
+(b)by adjusting the rate used to discount the future cash flows to their present values (ie as a reduction in the discount rate).
+An entity shall ensure that it does not double‑count or omit adjustments for risk. For example, if the estimated cash flows are increased to take into account the compensation for assuming the risk associated with the obligation, the discount rate should not be adjusted to reflect that risk.

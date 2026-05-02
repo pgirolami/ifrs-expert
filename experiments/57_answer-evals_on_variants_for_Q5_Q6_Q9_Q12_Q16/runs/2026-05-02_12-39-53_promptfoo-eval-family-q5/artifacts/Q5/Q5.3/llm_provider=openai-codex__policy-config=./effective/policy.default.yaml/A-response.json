@@ -1,0 +1,95 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Prise en compte du risque de crédit de la contrepartie dans la mesure de la juste valeur d’un actif, d’un passif ou d’un portefeuille selon IFRS 13",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ifrs13", "ifrs9"],
+    "selected_primary_document": "ifrs13",
+    "selection_reason": "I applied the strict precedence rule that IFRS supersedes IAS and selected IFRS 13 because it is the single IFRS that directly defines fair value and governs how credit risk enters fair value measurement, whereas IFRS 9 only contains narrower presentation and classification consequences for certain financial liabilities.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "low — the question is directly about fair value measurement mechanics, which are expressly governed by IFRS 13."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ifrs13",
+        "references": ["2", "3", "9", "15", "22", "24", "37", "38", "39", "42", "43", "44", "48", "49", "53", "54", "55", "56", "61", "62", "87", "88", "89", "B13", "B14", "B16", "B31", "B33"],
+        "reason": "These paragraphs directly govern fair value measurement and specify how credit risk and non-performance risk are reflected for assets, liabilities and qualifying net exposure portfolios."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ifrs9",
+        "references": ["5.7.7", "5.7.8", "B5.7.5", "B5.7.6", "B5.7.13", "B5.7.14", "B5.7.16", "B5.7.18", "B5.7.19", "B5.7.20"],
+        "reason": "These paragraphs clarify the distinction between credit risk and other risks and illustrate measurement of the credit-risk component for financial liabilities designated at fair value through profit or loss."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ias39",
+        "references": ["81", "88", "89", "95", "AG102", "AG108", "AG112", "AG114", "AG121", "AG124", "AG126"],
+        "reason": "These hedge accounting requirements are topically related to fair value changes but do not identify peer approaches for how counterparty credit risk enters fair value measurement itself."
+      },
+      {
+        "document": "ias36",
+        "references": ["18", "20", "30", "53A", "55", "56"],
+        "reason": "These paragraphs address impairment and value in use rather than the fair value measurement models relevant to the question."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Fair value of an asset measured on a stand-alone basis using market participant assumptions that reflect counterparty credit risk when relevant",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["2", "3", "9", "22", "24", "61", "62", "87", "88", "89", "B13", "B14", "B16"]
+        }
+      ],
+      "mapped_approaches": ["stand_alone_asset_fair_value"]
+    },
+    {
+      "family": "Fair value of a liability or own equity instrument measured on a stand-alone basis including non-performance risk and the entity's own credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["37", "38", "39", "42", "43", "44", "B13", "B31", "B33"]
+        },
+        {
+          "document": "ifrs9",
+          "references": ["B5.7.13", "B5.7.14", "B5.7.16", "B5.7.18", "B5.7.19", "B5.7.20"]
+        }
+      ],
+      "mapped_approaches": ["stand_alone_liability_fair_value"]
+    },
+    {
+      "family": "Fair value of a qualifying group of financial assets and financial liabilities managed on a net exposure basis including net counterparty credit risk",
+      "authority_basis": [
+        {
+          "document": "ifrs13",
+          "references": ["48", "49", "53", "54", "55", "56"]
+        }
+      ],
+      "mapped_approaches": ["net_exposure_portfolio_fair_value"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Stand-alone asset fair value",
+      "normalized_label": "stand_alone_asset_fair_value",
+      "rationale_for_inclusion": "IFRS 13 measures an asset at an exit price using market participant assumptions, so counterparty credit risk is incorporated through the pricing inputs and risk adjustments that market participants would use."
+    },
+    {
+      "id": "approach_2",
+      "label": "Stand-alone liability fair value",
+      "normalized_label": "stand_alone_liability_fair_value",
+      "rationale_for_inclusion": "IFRS 13 requires the fair value of a liability to reflect non-performance risk, including the issuer's own credit risk, which is the liability-side credit-risk model distinct from the asset model."
+    },
+    {
+      "id": "approach_3",
+      "label": "Net exposure portfolio fair value",
+      "normalized_label": "net_exposure_portfolio_fair_value",
+      "rationale_for_inclusion": "IFRS 13 permits a distinct portfolio exception for qualifying groups managed on a net risk basis, under which fair value includes net exposure to a counterparty's credit risk and the entity's own credit risk, considering enforceable netting or collateral arrangements."
+    }
+  ]
+}
