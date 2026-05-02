@@ -11,9 +11,9 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
-from src.models.answer_command_result import AnswerCommandResult
-
 import pytest
+
+from src.models.answer_command_result import AnswerCommandResult
 
 
 def _repo_root() -> Path:
@@ -69,7 +69,15 @@ def test_run_answer_script_logs_policy_load_failures(tmp_path: Path) -> None:
     policy_path = tmp_path / "policy.invalid.yaml"
     policy_path.write_text(invalid_policy_text, encoding="utf-8")
 
-    provider_options = json.dumps({"config": {"policy-config": str(policy_path)}}, ensure_ascii=False)
+    provider_options = json.dumps(
+        {
+            "config": {
+                "policy-config": str(policy_path),
+                "retrieval-policy": "standards_only_through_chunks__enriched",
+            }
+        },
+        ensure_ascii=False,
+    )
 
     result = subprocess.run(
         [sys.executable, str(_script_path()), "Question de test", provider_options, "{}"],
@@ -94,18 +102,23 @@ def test_extract_mode_defaults_to_live_when_missing() -> None:
     assert run_answer._extract_mode({}) == "live"
 
 
-def test_extract_retrieval_mode_accepts_documents2() -> None:
-    """Wrapper should accept documents2 as a retrieval mode."""
-    run_answer = _load_run_answer_module()
-    assert run_answer._extract_retrieval_mode_from_mapping({"retrieval-mode": "documents2"}, "documents2") == "documents2"
-
-
 def test_extract_options_requires_policy_config() -> None:
     """Wrapper should fail fast when policy-config missing."""
     run_answer = _load_run_answer_module()
 
     with pytest.raises(ValueError, match="policy-config"):
         run_answer._extract_options(provider_options={}, context={})
+
+
+def test_extract_options_requires_retrieval_policy() -> None:
+    """Wrapper should fail fast when retrieval-policy missing."""
+    run_answer = _load_run_answer_module()
+
+    with pytest.raises(ValueError, match="retrieval-policy"):
+        run_answer._extract_options(
+            provider_options={"config": {"policy-config": "../../../../config/policy.default.yaml"}},
+            context={},
+        )
 
 
 def test_extract_options_reads_policy_config_and_artifact_flags() -> None:
@@ -117,6 +130,7 @@ def test_extract_options_reads_policy_config_and_artifact_flags() -> None:
         provider_options={
             "config": {
                 "policy-config": "../../../../config/policy.default.yaml",
+                "retrieval-policy": "standards_only_through_chunks__enriched",
                 "output-dir": "artifacts/promptfoo",
                 "basePath": str(base_path),
                 "save-all": True,
@@ -126,9 +140,11 @@ def test_extract_options_reads_policy_config_and_artifact_flags() -> None:
     )
 
     assert options.policy_config == "../../../../config/policy.default.yaml"
+    assert options.retrieval_policy == "standards_only_through_chunks__enriched"
     assert options.output_dir == "artifacts/promptfoo"
     assert options.base_path == base_path
     assert options.config_kv["policy-config"] == "../../../../config/policy.default.yaml"
+    assert options.config_kv["retrieval-policy"] == "standards_only_through_chunks__enriched"
 
 
 def test_apply_llm_provider_override_updates_environment(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -157,11 +173,12 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
 
     loaded_retrieval_policy = object()
 
-    class _FakePolicyConfig:
-        retrieval = loaded_retrieval_policy
+    class _FakePolicyCatalog:
+        pass
 
     monkeypatch.setattr(run_answer, "create_answer_command", _fake_create_answer_command)
-    monkeypatch.setattr(run_answer, "load_policy_config", lambda _path: _FakePolicyConfig())
+    monkeypatch.setattr(run_answer, "load_policy_catalog", lambda _path: _FakePolicyCatalog())
+    monkeypatch.setattr(run_answer, "resolve_retrieval_policy", lambda _catalog, _policy_name: loaded_retrieval_policy)
     monkeypatch.setattr(run_answer, "setup_logging", lambda: None)
     monkeypatch.setattr(run_answer, "load_dotenv", lambda: None)
 
@@ -171,6 +188,7 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
         context={},
         options=run_answer.ExtractionOptions(
             policy_config="../../../../config/policy.default.yaml",
+            retrieval_policy="standards_only_through_chunks__enriched",
             output_dir="tmp/promptfoo",
         ),
     )
@@ -200,15 +218,21 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
 
     loaded_retrieval_policy = object()
 
-    class _FakePolicyConfig:
-        retrieval = loaded_retrieval_policy
+    class _FakePolicyCatalog:
+        pass
 
-    def _fake_load_policy_config(path: Path) -> _FakePolicyConfig:
+    def _fake_load_policy_catalog(path: Path) -> _FakePolicyCatalog:
         captured["policy_path"] = path
-        return _FakePolicyConfig()
+        return _FakePolicyCatalog()
+
+    def _fake_resolve_retrieval_policy(catalog: object, policy_name: str) -> object:
+        captured["policy_catalog"] = catalog
+        captured["policy_name"] = policy_name
+        return loaded_retrieval_policy
 
     monkeypatch.setattr(run_answer, "create_answer_command", _fake_create_answer_command)
-    monkeypatch.setattr(run_answer, "load_policy_config", _fake_load_policy_config)
+    monkeypatch.setattr(run_answer, "load_policy_catalog", _fake_load_policy_catalog)
+    monkeypatch.setattr(run_answer, "resolve_retrieval_policy", _fake_resolve_retrieval_policy)
     monkeypatch.setattr(run_answer, "setup_logging", lambda: None)
     monkeypatch.setattr(run_answer, "load_dotenv", lambda: None)
 
@@ -218,6 +242,7 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
         context={},
         options=run_answer.ExtractionOptions(
             policy_config="./effective/policy.default.yaml",
+            retrieval_policy="standards_only_through_chunks__enriched",
             output_dir="artifacts/promptfoo",
             base_path=tmp_path,
         ),
@@ -226,6 +251,7 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
     assert exit_code == 0
     assert payload == '{"ok": true}'
     assert captured["policy_path"] == tmp_path / "effective" / "policy.default.yaml"
+    assert captured["policy_name"] == "standards_only_through_chunks__enriched"
     answer_options = captured["options"]
     assert isinstance(answer_options, run_answer.AnswerOptions)
     assert answer_options.output_dir == tmp_path / "artifacts" / "promptfoo"

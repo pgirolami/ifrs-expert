@@ -322,9 +322,6 @@ class PolicyConfig:
 RetrievalPolicy = ResolvedRetrievalPolicy
 
 
-DEFAULT_POLICY_NAME = "documents2_through_chunks__enriched"
-
-
 def load_policy_catalog(path: Path) -> PolicyCatalog:
     """Load and validate a retrieval policy catalog from YAML."""
     if not path.exists():
@@ -357,10 +354,10 @@ def load_policy_catalog(path: Path) -> PolicyCatalog:
     )
 
 
-def load_policy_config(path: Path) -> PolicyConfig:
-    """Compatibility wrapper that resolves the default assembled policy."""
+def load_policy_config(path: Path, policy_name: str) -> PolicyConfig:
+    """Load a policy catalog and resolve the explicitly named retrieval policy."""
     catalog = load_policy_catalog(path)
-    retrieval = resolve_retrieval_policy(catalog, _select_default_policy_name(catalog))
+    retrieval = resolve_retrieval_policy(catalog, policy_name)
     return PolicyConfig(retrieval=retrieval, prompts=catalog.prompts, output=catalog.output, catalog=catalog)
 
 
@@ -383,14 +380,6 @@ def resolve_retrieval_policy(catalog: PolicyCatalog, policy_name: str) -> Resolv
     )
     logger.info(f"Resolved retrieval policy: {policy_name} -> source={resolved.document_routing.source}, chunk_mode={resolved.chunk_retrieval.mode}")
     return resolved
-
-
-def _select_default_policy_name(catalog: PolicyCatalog) -> str:
-    if DEFAULT_POLICY_NAME in catalog.retrieval_policies:
-        return DEFAULT_POLICY_NAME
-    if not catalog.retrieval_policies:
-        _raise_value_error("Policy catalog has no retrieval_policies entries")
-    return sorted(catalog.retrieval_policies)[0]
 
 
 def _resolve_querying(catalog: PolicyCatalog, querying_name: str) -> ResolvedQueryingPolicy:

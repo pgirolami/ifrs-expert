@@ -1,0 +1,39 @@
+# Proposed glossary delta for experiment 57 target-chunk recall.
+# This file is intentionally inactive. It records terms that improved the local
+# missing-chunk diagnostic without changing config/en-fr-glossary.yaml.
+
+question_glossary:
+  - fr: "non-exécution"
+    en:
+      - "non-performance"
+  - fr: "risque de non-exécution"
+    en:
+      - "non-performance risk"
+  - fr: "défaut de la contrepartie"
+    en:
+      - "counterparty default"
+  - fr: "durée indéterminée"
+    en:
+      - "lease term"
+      - "non-cancellable period"
+  - fr: "durée initiale"
+    en:
+      - "lease term"
+  - fr: "renouvelable tacitement"
+    en:
+      - "renewal option"
+      - "lease term"
+  - fr: "se poursuivre automatiquement"
+    en:
+      - "renewal option"
+      - "lease term"
+  - fr: "poursuivre automatiquement"
+    en:
+      - "renewal option"
+      - "lease term"
+  - fr: "obligation actuelle"
+    en:
+      - "present obligation"
+  - fr: "comptabilisation d’une provision"
+    en:
+      - "recognise a provision"

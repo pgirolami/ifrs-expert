@@ -7,6 +7,7 @@ evaluateOptions:
 
 answer_command_defaults: &answer_command_defaults
   policy-config: './effective/policy.default.yaml'
+  retrieval-policy: 'standards_only_through_chunks__enriched'
 
 prompts:
   - '{{question}}'
@@ -38,8 +39,9 @@ readme: |
   4. Presence of references and operational points
   5. High-level reasoning quality via one model-graded rubric
 
-  Promptfoo providers now pass one policy-config path. Retrieval tuning lives
-  in YAML policy files, not inline Promptfoo provider knobs.
+  Promptfoo providers now pass one policy-config path and one explicit
+  retrieval-policy name. Retrieval tuning lives in YAML policy files, not
+  inline Promptfoo provider knobs.
   Artifact/output handling is controlled separately by scripts/run_promptfoo_eval.py.
 
   Run Q1: make eval-answer EXPERIMENT_DIR=promptfoo_q1_current_defaults FAMILY=Q1

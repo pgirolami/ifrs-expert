@@ -32,7 +32,7 @@ from src.answer_artifacts import save_answer_command_result  # noqa: E402
 from src.commands import AnswerOptions  # noqa: E402
 from src.commands.answer import create_answer_command  # noqa: E402
 from src.logging_config import setup_logging  # noqa: E402
-from src.policy import load_policy_config  # noqa: E402
+from src.policy import load_policy_catalog, resolve_retrieval_policy  # noqa: E402
 
 if TYPE_CHECKING:
     from src.models.answer_command_result import AnswerCommandResult
@@ -188,6 +188,7 @@ class ExtractionOptions:
     """Options extracted from Promptfoo provider options or context mappings."""
 
     policy_config: str
+    retrieval_policy: str
     output_dir: str | None = None
     base_path: Path | None = None
     config_kv: dict[str, str] = dataclass_field(default_factory=dict)
@@ -277,18 +278,6 @@ def _extract_optional_string_from_mapping(
     return stripped_value
 
 
-def _extract_retrieval_mode_from_mapping(mapping: dict[str, object], fallback: str) -> str:
-    """Extract a retrieval mode override from one mapping."""
-    value, found = _extract_raw_value_from_mapping(mapping, ("retrieval-mode", "retrieval_mode"))
-    if not found:
-        return fallback
-    if not isinstance(value, str):
-        raise ValueError(f"Expected str for retrieval-mode, got {type(value).__name__}")
-    if value not in {"text", "titles", "documents", "documents2"}:
-        raise ValueError(f"Invalid retrieval-mode '{value}', expected one of: text, titles, documents, documents2")
-    return value
-
-
 def _build_config_kv(mapping: dict[str, object]) -> dict[str, str]:
     """Build a dict of string key-value pairs from a mapping, excluding nested dicts, id and basePath."""
     result: dict[str, str] = {}
@@ -315,7 +304,10 @@ def _build_effective_config_kv(
     llm_provider: str | None,
 ) -> dict[str, str]:
     """Build concise artifact config metadata from effective options."""
-    result: dict[str, str] = {"policy-config": options.policy_config}
+    result: dict[str, str] = {
+        "policy-config": options.policy_config,
+        "retrieval-policy": options.retrieval_policy,
+    }
     if llm_provider is not None:
         result["llm_provider"] = llm_provider
     return result
@@ -334,6 +326,19 @@ def _extract_required_policy_config(mapping: dict[str, object]) -> str | None:
     return policy_config
 
 
+def _extract_required_retrieval_policy(mapping: dict[str, object]) -> str | None:
+    """Extract retrieval-policy value from one mapping when present."""
+    raw_value, found = _extract_raw_value_from_mapping(mapping, ("retrieval-policy", "retrieval_policy"))
+    if not found:
+        return None
+    if not isinstance(raw_value, str):
+        raise ValueError(f"Expected str for retrieval-policy, got {type(raw_value).__name__}")
+    retrieval_policy = raw_value.strip()
+    if not retrieval_policy:
+        raise ValueError("Expected non-empty string for retrieval-policy")
+    return retrieval_policy
+
+
 def _extract_options(
     provider_options: dict[str, object],
     context: dict[str, object],
@@ -341,11 +346,14 @@ def _extract_options(
     """Extract mandatory policy-config and runtime options."""
     output_dir: str | None = None
     policy_config: str | None = None
+    retrieval_policy: str | None = None
     base_path: Path | None = None
 
     for mapping in _candidate_llm_provider_mappings(provider_options, context):
         if policy_config is None:
             policy_config = _extract_required_policy_config(mapping)
+        if retrieval_policy is None:
+            retrieval_policy = _extract_required_retrieval_policy(mapping)
         output_dir = _extract_optional_string_from_mapping(mapping, ("output-dir", "output_dir"), output_dir)
         if base_path is None:
             base_path_value = _extract_optional_string_from_mapping(mapping, ("basePath", "base_path"), None)
@@ -355,9 +363,13 @@ def _extract_options(
     if policy_config is None:
         message = "Missing required provider option: policy-config"
         raise ValueError(message)
+    if retrieval_policy is None:
+        message = "Missing required provider option: retrieval-policy"
+        raise ValueError(message)
 
     options = ExtractionOptions(
         policy_config=policy_config,
+        retrieval_policy=retrieval_policy,
         output_dir=output_dir,
         base_path=base_path,
     )
@@ -532,11 +544,12 @@ def _run_live(
     policy_config_path = _resolve_path_relative_to_base_path(options.policy_config, options.base_path)
     output_dir = _resolve_path_relative_to_base_path(options.output_dir, options.base_path) if options.output_dir is not None else None
     logger.debug(f"Resolved Promptfoo answer paths: policy_config_path={policy_config_path}, output_dir={output_dir}, base_path={options.base_path}")
-    policy_config = load_policy_config(policy_config_path)
+    policy_catalog = load_policy_catalog(policy_config_path)
+    retrieval_policy = resolve_retrieval_policy(policy_catalog, options.retrieval_policy)
     command = create_answer_command(
         query=question,
         options=AnswerOptions(
-            policy=policy_config.retrieval,
+            policy=retrieval_policy,
             output_dir=output_dir,
         ),
     )

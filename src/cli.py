@@ -24,7 +24,7 @@ from src.commands.store import STORE_SCOPES, StoreCommandOptions, create_store_c
 from src.llm.client import get_client
 from src.logging_config import setup_logging
 from src.models.document import DOCUMENT_TYPES
-from src.policy import RetrievalPolicy, load_policy_catalog, load_policy_config, resolve_retrieval_policy
+from src.policy import RetrievalPolicy, load_policy_catalog, resolve_retrieval_policy
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -291,10 +291,9 @@ def _execute_text_command(
 def _load_policy(args: argparse.Namespace) -> RetrievalPolicy:
     """Load and resolve the selected retrieval policy from CLI args."""
     policy_path = Path(args.policy_config)
-    if hasattr(args, "retrieval_policy") and args.retrieval_policy:
-        catalog = load_policy_catalog(policy_path)
-        return resolve_retrieval_policy(catalog, str(args.retrieval_policy))
-    return load_policy_config(policy_path).retrieval
+    retrieval_policy = str(args.retrieval_policy)
+    catalog = load_policy_catalog(policy_path)
+    return resolve_retrieval_policy(catalog, retrieval_policy)
 
 
 def _build_query_options(args: argparse.Namespace, policy: RetrievalPolicy) -> QueryOptions:

@@ -6,7 +6,6 @@ from pathlib import Path
 
 from src.models.answer_command_result import AnswerCommandResult
 from src.policy import RetrievalPolicy
-from tests.policy import make_retrieval_policy
 from src.ui.chat_service import (
     ChatService,
     _build_grounded_context,
@@ -14,6 +13,7 @@ from src.ui.chat_service import (
     create_chat_service,
 )
 from src.ui.chat_state import FollowUpTurn
+from tests.policy import make_retrieval_policy
 
 
 def test_answer_first_turn_uses_answer_command_result() -> None:
@@ -129,10 +129,11 @@ def test_create_chat_service_loads_default_policy_when_missing_options(monkeypat
 
     fake_retrieval_policy = make_retrieval_policy()
 
-    class _FakePolicyConfig:
-        retrieval = fake_retrieval_policy
+    class _FakePolicyCatalog:
+        pass
 
-    monkeypatch.setattr("src.ui.chat_service.load_policy_config", lambda path: _FakePolicyConfig())
+    monkeypatch.setattr("src.ui.chat_service.load_policy_catalog", lambda path: _FakePolicyCatalog())
+    monkeypatch.setattr("src.ui.chat_service.resolve_retrieval_policy", lambda catalog, policy_name: fake_retrieval_policy)
 
     def _fake_create_answer_command(query: str, options: object) -> _FakeAnswerCommand:
         captured["query"] = query

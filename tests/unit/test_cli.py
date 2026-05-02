@@ -100,6 +100,7 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
     args = argparse.Namespace(
         command="answer",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         k=5,
         d=25,
         min_score=None,
@@ -144,6 +145,7 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
     args = argparse.Namespace(
         command="answer",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         k=5,
         d=25,
         min_score=None,
@@ -192,6 +194,7 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
     args = argparse.Namespace(
         command="answer",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         json=False,
         output_dir=None,
     )
@@ -296,6 +299,7 @@ def test_execute_command_dispatches_query_titles(monkeypatch: pytest.MonkeyPatch
     args = argparse.Namespace(
         command="query-titles",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         k=5,
         min_score=None,
         json=True,
@@ -321,6 +325,7 @@ def test_execute_command_dispatches_retrieve(monkeypatch: pytest.MonkeyPatch) ->
     args = argparse.Namespace(
         command="retrieve",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         json=True,
     )
 
@@ -346,6 +351,7 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
     args = argparse.Namespace(
         command="query-documents",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         document_type="IFRIC",
         d=3,
         min_score=None,
@@ -411,6 +417,7 @@ def test_execute_answer_command_returns_policy_load_error(monkeypatch: pytest.Mo
     args = argparse.Namespace(
         command="answer",
         policy_config=Path("config/policy.default.yaml"),
+        retrieval_policy="standards_only_through_chunks__enriched",
         output_dir=None,
     )
 

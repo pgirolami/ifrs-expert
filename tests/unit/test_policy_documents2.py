@@ -4,16 +4,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from tests.policy import make_retrieval_policy
 from src.policy import load_policy_config
+from tests.policy import make_retrieval_policy
 
 
-def test_load_policy_config_accepts_documents2_through_chunks_mode() -> None:
-    """Policy config should load the default documents2-through-chunks policy."""
+def test_load_policy_config_accepts_explicit_documents2_through_chunks_mode() -> None:
+    """Policy config should load an explicit documents2-through-chunks policy."""
     project_root = Path(__file__).resolve().parents[2]
     policy_path = project_root / "config" / "policy.default.yaml"
 
-    config = load_policy_config(policy_path)
+    config = load_policy_config(policy_path, "documents2_through_chunks__enriched")
 
     if config.retrieval.policy_name != "documents2_through_chunks__enriched":
         message = f"Expected documents2_through_chunks__enriched policy, got {config.retrieval.policy_name}"

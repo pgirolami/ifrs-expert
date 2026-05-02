@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 from src.commands.answer import AnswerOptions, create_answer_command
 from src.llm import get_client
-from src.policy import load_policy_config
+from src.policy import load_policy_catalog, resolve_retrieval_policy
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -19,6 +19,8 @@ if TYPE_CHECKING:
     from src.ui.chat_state import FollowUpTurn
 
 logger = logging.getLogger(__name__)
+
+CHAT_RETRIEVAL_POLICY = "standards_only_through_chunks__enriched"
 
 FOLLOW_UP_PROMPT_HEADER = (
     "You are continuing an IFRS accounting discussion. Use the grounded first answer as the base context. If the follow-up goes beyond that context, answer cautiously and state the limitation explicitly. Format the answer in Markdown."
@@ -91,8 +93,9 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
     if effective_options is None:
         logger.info("ChatService: no options provided, loading default policy")
         policy_path = Path(__file__).resolve().parents[2] / "config" / "policy.default.yaml"
-        policy = load_policy_config(policy_path)
-        effective_options = AnswerOptions(policy=policy.retrieval)
+        policy_catalog = load_policy_catalog(policy_path)
+        retrieval_policy = resolve_retrieval_policy(policy_catalog, CHAT_RETRIEVAL_POLICY)
+        effective_options = AnswerOptions(policy=retrieval_policy)
 
     def run_first_turn(question: str) -> AnswerCommandResult:
         logger.info(f"ChatService: creating AnswerCommand for question='{question[:80]}'")
