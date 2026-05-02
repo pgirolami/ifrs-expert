@@ -1,0 +1,2535 @@
+{
+  "experiment_name": "56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3",
+  "provider_name": "OpenAI GPT 5.4 through Codex current answer defaults",
+  "run_id": "2026-05-02_12-10-17_promptfoo-eval-family-q12",
+  "generated_at": "2026-05-02T12:11:51.569208+00:00",
+  "question_families": [
+    "Q12¤"
+  ],
+  "question_sources": [
+    {
+      "family_id": "Q12¤",
+      "question_path": "experiments/00_QUESTIONS/Q12/Q12.0.txt",
+      "description": "Q12.0 - Something",
+      "question_id": "Q12.0"
+    }
+  ],
+  "question_ids": [
+    "Q12.0"
+  ],
+  "expected_labels": [
+    "provision",
+    "contingent_liability"
+  ],
+  "expected_section_ranges": [
+    {
+      "document": "ifrs16",
+      "start": "5",
+      "end": "8"
+    },
+    {
+      "document": "ifrs16",
+      "start": "21",
+      "end": "21"
+    },
+    {
+      "document": "ifrs16",
+      "start": "B34",
+      "end": "B34"
+    }
+  ],
+  "rows": [
+    {
+      "question_id": "Q12.0",
+      "question_text": "Un contrat (sans option d'achat) d'une durée inférieure ou égale à un an renouvelable par tacite reconduction ou à durée indéterminée peut-il être qualifié de contrat de courte durée pour lequel le preneur peut bénéficier de l'exemption optionnelle de reconnaissance du droit d'utilisation et de la dette de loyers ?",
+      "embedded_question_text": "Un contrat (sans option d'achat) d'une durée inférieure ou égale à un an renouvelable par tacite reconduction ou à durée indéterminée peut-il être qualifié de contrat de courte durée pour lequel le preneur peut bénéficier de l'exemption optionnelle de reconnaissance du droit d'utilisation et de la dette de loyers ?",
+      "family_id": "Q12¤",
+      "run_label": "base",
+      "artifact_dir": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3/runs/2026-05-02_12-10-17_promptfoo-eval-family-q12/artifacts/Q12/Q12.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml",
+      "recommendation": "oui_sous_conditions",
+      "approaches": [
+        {
+          "normalized_label": "short_term_lease_exemption",
+          "label": "Exemption optionnelle pour contrat de courte durée",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 6
+        },
+        {
+          "normalized_label": "right_of_use_model",
+          "label": "Modèle général avec droit d’utilisation et dette locative",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 3
+        }
+      ],
+      "labels": [
+        "short_term_lease_exemption",
+        "right_of_use_model"
+      ],
+      "missing_expected_labels": [
+        "contingent_liability",
+        "provision"
+      ],
+      "spurious_labels": [
+        "right_of_use_model",
+        "short_term_lease_exemption"
+      ],
+      "prompt_chunks": [
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "5",
+          "score": 0.6079,
+          "chunk_id": "49235",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "6",
+          "score": 0.0,
+          "chunk_id": "49236",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "7",
+          "score": 0.6063,
+          "chunk_id": "49237",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "8",
+          "score": 0.0,
+          "chunk_id": "49238",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "18",
+          "score": 0.6071,
+          "chunk_id": "49248",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "19",
+          "score": 0.0,
+          "chunk_id": "49249",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "20",
+          "score": 0.0,
+          "chunk_id": "49250",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "21",
+          "score": 0.6056,
+          "chunk_id": "49251",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "22",
+          "score": 0.0,
+          "chunk_id": "49252",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "23",
+          "score": 0.0,
+          "chunk_id": "49253",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "24",
+          "score": 0.0,
+          "chunk_id": "49254",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "25",
+          "score": 0.0,
+          "chunk_id": "49255",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "26",
+          "score": 0.0,
+          "chunk_id": "49256",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "27",
+          "score": 0.0,
+          "chunk_id": "49257",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E1",
+          "score": 0.0,
+          "chunk_id": "49258",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "28",
+          "score": 0.0,
+          "chunk_id": "49259",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "29",
+          "score": 0.0,
+          "chunk_id": "49260",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "30",
+          "score": 0.0,
+          "chunk_id": "49261",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "31",
+          "score": 0.0,
+          "chunk_id": "49262",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "32",
+          "score": 0.0,
+          "chunk_id": "49263",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "33",
+          "score": 0.0,
+          "chunk_id": "49264",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "34",
+          "score": 0.0,
+          "chunk_id": "49265",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "49266",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "49267",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "49268",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "38",
+          "score": 0.0,
+          "chunk_id": "49269",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "39",
+          "score": 0.0,
+          "chunk_id": "49270",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "40",
+          "score": 0.0,
+          "chunk_id": "49271",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "41",
+          "score": 0.0,
+          "chunk_id": "49272",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "42",
+          "score": 0.0,
+          "chunk_id": "49273",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "43",
+          "score": 0.0,
+          "chunk_id": "49274",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "49275",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "45",
+          "score": 0.0,
+          "chunk_id": "49276",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46",
+          "score": 0.0,
+          "chunk_id": "49277",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46A",
+          "score": 0.0,
+          "chunk_id": "49278",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46B",
+          "score": 0.0,
+          "chunk_id": "49279",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "47",
+          "score": 0.0,
+          "chunk_id": "49280",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "48",
+          "score": 0.0,
+          "chunk_id": "49281",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "49",
+          "score": 0.0,
+          "chunk_id": "49282",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "50",
+          "score": 0.0,
+          "chunk_id": "49283",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B3",
+          "score": 0.0,
+          "chunk_id": "49347",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B4",
+          "score": 0.0,
+          "chunk_id": "49348",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B5",
+          "score": 0.0,
+          "chunk_id": "49349",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B6",
+          "score": 0.0,
+          "chunk_id": "49350",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B7",
+          "score": 0.0,
+          "chunk_id": "49351",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B8",
+          "score": 0.0,
+          "chunk_id": "49352",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B34",
+          "score": 0.5973,
+          "chunk_id": "49383",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E10",
+          "score": 0.589,
+          "chunk_id": "49384",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B35",
+          "score": 0.6017,
+          "chunk_id": "49385",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B36",
+          "score": 0.0,
+          "chunk_id": "49386",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B37",
+          "score": 0.0,
+          "chunk_id": "49387",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E11",
+          "score": 0.5874,
+          "chunk_id": "49388",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B38",
+          "score": 0.6252,
+          "chunk_id": "49389",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B39",
+          "score": 0.6264,
+          "chunk_id": "49390",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B40",
+          "score": 0.0,
+          "chunk_id": "49391",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B41",
+          "score": 0.0,
+          "chunk_id": "49392",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B42",
+          "score": 0.0,
+          "chunk_id": "49393",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "17",
+          "score": 0.0,
+          "chunk_id": "54728",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "54753",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "74",
+          "score": 0.0,
+          "chunk_id": "54786",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "75",
+          "score": 0.0,
+          "chunk_id": "54787",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "76",
+          "score": 0.0,
+          "chunk_id": "54788",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "77",
+          "score": 0.0,
+          "chunk_id": "54789",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "78",
+          "score": 0.0,
+          "chunk_id": "54790",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "79",
+          "score": 0.0,
+          "chunk_id": "54791",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "80",
+          "score": 0.0,
+          "chunk_id": "54792",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "81",
+          "score": 0.0,
+          "chunk_id": "54793",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "82",
+          "score": 0.0,
+          "chunk_id": "54794",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "83",
+          "score": 0.0,
+          "chunk_id": "54795",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "84",
+          "score": 0.0,
+          "chunk_id": "54796",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "85",
+          "score": 0.0,
+          "chunk_id": "54797",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "86",
+          "score": 0.0,
+          "chunk_id": "54798",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "87",
+          "score": 0.0,
+          "chunk_id": "54799",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "88",
+          "score": 0.0,
+          "chunk_id": "54800",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "89",
+          "score": 0.0,
+          "chunk_id": "54801",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "90",
+          "score": 0.0,
+          "chunk_id": "54802",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "91",
+          "score": 0.0,
+          "chunk_id": "54803",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "92",
+          "score": 0.0,
+          "chunk_id": "54804",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "93",
+          "score": 0.5331,
+          "chunk_id": "54805",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "94",
+          "score": 0.6242,
+          "chunk_id": "54806",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "95",
+          "score": 0.0,
+          "chunk_id": "54807",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "96",
+          "score": 0.5346,
+          "chunk_id": "54808",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "100",
+          "score": 0.5347,
+          "chunk_id": "54816",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "101",
+          "score": 0.0,
+          "chunk_id": "54817",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "102",
+          "score": 0.0,
+          "chunk_id": "54818",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "103",
+          "score": 0.0,
+          "chunk_id": "54819",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "118",
+          "score": 0.0,
+          "chunk_id": "54836",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "119",
+          "score": 0.0,
+          "chunk_id": "54837",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "120",
+          "score": 0.0,
+          "chunk_id": "54838",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "121",
+          "score": 0.0,
+          "chunk_id": "54839",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "122",
+          "score": 0.5349,
+          "chunk_id": "54840",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "123",
+          "score": 0.0,
+          "chunk_id": "54841",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "9",
+          "score": 0.0,
+          "chunk_id": "48637",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "10",
+          "score": 0.0,
+          "chunk_id": "48638",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "11",
+          "score": 0.6018,
+          "chunk_id": "48639",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "12",
+          "score": 0.0,
+          "chunk_id": "48640",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "13",
+          "score": 0.5491,
+          "chunk_id": "48641",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "14",
+          "score": 0.0,
+          "chunk_id": "48642",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "15",
+          "score": 0.5498,
+          "chunk_id": "48643",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "16",
+          "score": 0.0,
+          "chunk_id": "48644",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "22",
+          "score": 0.0,
+          "chunk_id": "48650",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "23",
+          "score": 0.0,
+          "chunk_id": "48651",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "24",
+          "score": 0.0,
+          "chunk_id": "48652",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "25",
+          "score": 0.0,
+          "chunk_id": "48653",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E2",
+          "score": 0.0,
+          "chunk_id": "48654",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "26",
+          "score": 0.0,
+          "chunk_id": "48655",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "27",
+          "score": 0.0,
+          "chunk_id": "48656",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E3",
+          "score": 0.0,
+          "chunk_id": "48657",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "28",
+          "score": 0.0,
+          "chunk_id": "48658",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "29",
+          "score": 0.0,
+          "chunk_id": "48659",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "30",
+          "score": 0.0,
+          "chunk_id": "48660",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "48665",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E4",
+          "score": 0.0,
+          "chunk_id": "48666",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E5",
+          "score": 0.0,
+          "chunk_id": "48667",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E6",
+          "score": 0.0,
+          "chunk_id": "48668",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "48669",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "48670",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "84",
+          "score": 0.5663,
+          "chunk_id": "48719",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "85",
+          "score": 0.0,
+          "chunk_id": "48720",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "86",
+          "score": 0.0,
+          "chunk_id": "48721",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "91",
+          "score": 0.0,
+          "chunk_id": "48726",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "92",
+          "score": 0.0,
+          "chunk_id": "48727",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "93",
+          "score": 0.0,
+          "chunk_id": "48728",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "94",
+          "score": 0.5556,
+          "chunk_id": "48729",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B9",
+          "score": 0.0,
+          "chunk_id": "48775",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B10",
+          "score": 0.0,
+          "chunk_id": "48776",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B11",
+          "score": 0.5633,
+          "chunk_id": "48777",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B12",
+          "score": 0.0,
+          "chunk_id": "48778",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B13",
+          "score": 0.0,
+          "chunk_id": "48779",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B39",
+          "score": 0.0,
+          "chunk_id": "48810",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B40",
+          "score": 0.5478,
+          "chunk_id": "48811",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B41",
+          "score": 0.0,
+          "chunk_id": "48812",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B42",
+          "score": 0.0,
+          "chunk_id": "48813",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B43",
+          "score": 0.5847,
+          "chunk_id": "48814",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B66",
+          "score": 0.5674,
+          "chunk_id": "48839",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B67",
+          "score": 0.0,
+          "chunk_id": "48840",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B68",
+          "score": 0.0,
+          "chunk_id": "48841",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B69",
+          "score": 0.0,
+          "chunk_id": "48842",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B70",
+          "score": 0.5534,
+          "chunk_id": "48843",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B71",
+          "score": 0.0,
+          "chunk_id": "48844",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B72",
+          "score": 0.0,
+          "chunk_id": "48845",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B73",
+          "score": 0.0,
+          "chunk_id": "48846",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B74",
+          "score": 0.0,
+          "chunk_id": "48847",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B75",
+          "score": 0.0,
+          "chunk_id": "48848",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B76",
+          "score": 0.0,
+          "chunk_id": "48849",
+          "expected": false
+        }
+      ],
+      "authoritative_references": [
+        [
+          "ifrs16",
+          "5"
+        ],
+        [
+          "ifrs16",
+          "6"
+        ],
+        [
+          "ifrs16",
+          "7"
+        ],
+        [
+          "ifrs16",
+          "18"
+        ],
+        [
+          "ifrs16",
+          "19"
+        ],
+        [
+          "ifrs16",
+          "20"
+        ],
+        [
+          "ifrs16",
+          "21"
+        ],
+        [
+          "ifrs16",
+          "B34"
+        ],
+        [
+          "ifrs16",
+          "B35"
+        ],
+        [
+          "ifrs16",
+          "B36"
+        ],
+        [
+          "ifrs16",
+          "B37"
+        ],
+        [
+          "ifrs16",
+          "B38"
+        ],
+        [
+          "ifrs16",
+          "B39"
+        ],
+        [
+          "ifrs16",
+          "B40"
+        ],
+        [
+          "ifrs16",
+          "B41"
+        ]
+      ],
+      "secondary_references": [
+        [
+          "ifrs16",
+          "22"
+        ],
+        [
+          "ifrs16",
+          "23"
+        ],
+        [
+          "ifrs16",
+          "24"
+        ],
+        [
+          "ifrs16",
+          "26"
+        ],
+        [
+          "ifrs16",
+          "29"
+        ],
+        [
+          "ifrs16",
+          "30"
+        ],
+        [
+          "ifrs16",
+          "36"
+        ],
+        [
+          "ifrs16",
+          "37"
+        ],
+        [
+          "ifrs16",
+          "38"
+        ],
+        [
+          "ifrs16",
+          "39"
+        ],
+        [
+          "ifrs16",
+          "40"
+        ],
+        [
+          "ifrs16",
+          "41"
+        ],
+        [
+          "ifrs16",
+          "45"
+        ],
+        [
+          "ifrs16",
+          "46"
+        ]
+      ],
+      "peripheral_references": [
+        [
+          "ifrs15",
+          "9"
+        ],
+        [
+          "ifrs15",
+          "10"
+        ],
+        [
+          "ifrs15",
+          "11"
+        ],
+        [
+          "ifrs15",
+          "12"
+        ],
+        [
+          "ifrs15",
+          "13"
+        ],
+        [
+          "ifrs15",
+          "15"
+        ],
+        [
+          "ifrs15",
+          "16"
+        ],
+        [
+          "ifrs15",
+          "35"
+        ],
+        [
+          "ifrs15",
+          "37"
+        ],
+        [
+          "ifrs15",
+          "B11"
+        ],
+        [
+          "ias38",
+          "88"
+        ],
+        [
+          "ias38",
+          "90"
+        ],
+        [
+          "ias38",
+          "93"
+        ],
+        [
+          "ias38",
+          "94"
+        ],
+        [
+          "ias38",
+          "96"
+        ],
+        [
+          "ias38",
+          "118"
+        ],
+        [
+          "ias38",
+          "122"
+        ]
+      ],
+      "dropped_documents": []
+    },
+    {
+      "question_id": "Q12.0",
+      "question_text": "Un contrat (sans option d'achat) d'une durée inférieure ou égale à un an renouvelable par tacite reconduction ou à durée indéterminée peut-il être qualifié de contrat de courte durée pour lequel le preneur peut bénéficier de l'exemption optionnelle de reconnaissance du droit d'utilisation et de la dette de loyers ?",
+      "embedded_question_text": "Un contrat (sans option d'achat) d'une durée inférieure ou égale à un an renouvelable par tacite reconduction ou à durée indéterminée peut-il être qualifié de contrat de courte durée pour lequel le preneur peut bénéficier de l'exemption optionnelle de reconnaissance du droit d'utilisation et de la dette de loyers ?",
+      "family_id": "Q12¤",
+      "run_label": "repeat-1",
+      "artifact_dir": "/Users/philippe/Documents/workspace/ifrs-expert/experiments/56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3/runs/2026-05-02_12-10-17_promptfoo-eval-family-q12/artifacts/Q12/Q12.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml/repeat-1",
+      "recommendation": "oui_sous_conditions",
+      "approaches": [
+        {
+          "normalized_label": "short_term_lease_exemption",
+          "label": "Exemption optionnelle pour les contrats de courte durée",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 13
+        },
+        {
+          "normalized_label": "right_of_use_model",
+          "label": "Modèle général du droit d’utilisation",
+          "applicability": "oui_sous_conditions",
+          "reference_count": 4
+        }
+      ],
+      "labels": [
+        "short_term_lease_exemption",
+        "right_of_use_model"
+      ],
+      "missing_expected_labels": [
+        "contingent_liability",
+        "provision"
+      ],
+      "spurious_labels": [
+        "right_of_use_model",
+        "short_term_lease_exemption"
+      ],
+      "prompt_chunks": [
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "5",
+          "score": 0.6079,
+          "chunk_id": "49235",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "6",
+          "score": 0.0,
+          "chunk_id": "49236",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "7",
+          "score": 0.6063,
+          "chunk_id": "49237",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "8",
+          "score": 0.0,
+          "chunk_id": "49238",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "18",
+          "score": 0.6071,
+          "chunk_id": "49248",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "19",
+          "score": 0.0,
+          "chunk_id": "49249",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "20",
+          "score": 0.0,
+          "chunk_id": "49250",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "21",
+          "score": 0.6056,
+          "chunk_id": "49251",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "22",
+          "score": 0.0,
+          "chunk_id": "49252",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "23",
+          "score": 0.0,
+          "chunk_id": "49253",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "24",
+          "score": 0.0,
+          "chunk_id": "49254",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "25",
+          "score": 0.0,
+          "chunk_id": "49255",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "26",
+          "score": 0.0,
+          "chunk_id": "49256",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "27",
+          "score": 0.0,
+          "chunk_id": "49257",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E1",
+          "score": 0.0,
+          "chunk_id": "49258",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "28",
+          "score": 0.0,
+          "chunk_id": "49259",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "29",
+          "score": 0.0,
+          "chunk_id": "49260",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "30",
+          "score": 0.0,
+          "chunk_id": "49261",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "31",
+          "score": 0.0,
+          "chunk_id": "49262",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "32",
+          "score": 0.0,
+          "chunk_id": "49263",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "33",
+          "score": 0.0,
+          "chunk_id": "49264",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "34",
+          "score": 0.0,
+          "chunk_id": "49265",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "49266",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "49267",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "49268",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "38",
+          "score": 0.0,
+          "chunk_id": "49269",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "39",
+          "score": 0.0,
+          "chunk_id": "49270",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "40",
+          "score": 0.0,
+          "chunk_id": "49271",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "41",
+          "score": 0.0,
+          "chunk_id": "49272",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "42",
+          "score": 0.0,
+          "chunk_id": "49273",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "43",
+          "score": 0.0,
+          "chunk_id": "49274",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "49275",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "45",
+          "score": 0.0,
+          "chunk_id": "49276",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46",
+          "score": 0.0,
+          "chunk_id": "49277",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46A",
+          "score": 0.0,
+          "chunk_id": "49278",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "46B",
+          "score": 0.0,
+          "chunk_id": "49279",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "47",
+          "score": 0.0,
+          "chunk_id": "49280",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "48",
+          "score": 0.0,
+          "chunk_id": "49281",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "49",
+          "score": 0.0,
+          "chunk_id": "49282",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "50",
+          "score": 0.0,
+          "chunk_id": "49283",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B3",
+          "score": 0.0,
+          "chunk_id": "49347",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B4",
+          "score": 0.0,
+          "chunk_id": "49348",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B5",
+          "score": 0.0,
+          "chunk_id": "49349",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B6",
+          "score": 0.0,
+          "chunk_id": "49350",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B7",
+          "score": 0.0,
+          "chunk_id": "49351",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B8",
+          "score": 0.0,
+          "chunk_id": "49352",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B34",
+          "score": 0.5973,
+          "chunk_id": "49383",
+          "expected": true
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E10",
+          "score": 0.589,
+          "chunk_id": "49384",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B35",
+          "score": 0.6017,
+          "chunk_id": "49385",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B36",
+          "score": 0.0,
+          "chunk_id": "49386",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B37",
+          "score": 0.0,
+          "chunk_id": "49387",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "E11",
+          "score": 0.5874,
+          "chunk_id": "49388",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B38",
+          "score": 0.6252,
+          "chunk_id": "49389",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B39",
+          "score": 0.6264,
+          "chunk_id": "49390",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B40",
+          "score": 0.0,
+          "chunk_id": "49391",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B41",
+          "score": 0.0,
+          "chunk_id": "49392",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs16",
+          "chunk_number": "B42",
+          "score": 0.0,
+          "chunk_id": "49393",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "17",
+          "score": 0.0,
+          "chunk_id": "54728",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "44",
+          "score": 0.0,
+          "chunk_id": "54753",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "74",
+          "score": 0.0,
+          "chunk_id": "54786",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "75",
+          "score": 0.0,
+          "chunk_id": "54787",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "76",
+          "score": 0.0,
+          "chunk_id": "54788",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "77",
+          "score": 0.0,
+          "chunk_id": "54789",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "78",
+          "score": 0.0,
+          "chunk_id": "54790",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "79",
+          "score": 0.0,
+          "chunk_id": "54791",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "80",
+          "score": 0.0,
+          "chunk_id": "54792",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "81",
+          "score": 0.0,
+          "chunk_id": "54793",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "82",
+          "score": 0.0,
+          "chunk_id": "54794",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "83",
+          "score": 0.0,
+          "chunk_id": "54795",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "84",
+          "score": 0.0,
+          "chunk_id": "54796",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "85",
+          "score": 0.0,
+          "chunk_id": "54797",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "86",
+          "score": 0.0,
+          "chunk_id": "54798",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "87",
+          "score": 0.0,
+          "chunk_id": "54799",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "88",
+          "score": 0.0,
+          "chunk_id": "54800",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "89",
+          "score": 0.0,
+          "chunk_id": "54801",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "90",
+          "score": 0.0,
+          "chunk_id": "54802",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "91",
+          "score": 0.0,
+          "chunk_id": "54803",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "92",
+          "score": 0.0,
+          "chunk_id": "54804",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "93",
+          "score": 0.5331,
+          "chunk_id": "54805",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "94",
+          "score": 0.6242,
+          "chunk_id": "54806",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "95",
+          "score": 0.0,
+          "chunk_id": "54807",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "96",
+          "score": 0.5346,
+          "chunk_id": "54808",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "100",
+          "score": 0.5347,
+          "chunk_id": "54816",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "101",
+          "score": 0.0,
+          "chunk_id": "54817",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "102",
+          "score": 0.0,
+          "chunk_id": "54818",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "103",
+          "score": 0.0,
+          "chunk_id": "54819",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "118",
+          "score": 0.0,
+          "chunk_id": "54836",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "119",
+          "score": 0.0,
+          "chunk_id": "54837",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "120",
+          "score": 0.0,
+          "chunk_id": "54838",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "121",
+          "score": 0.0,
+          "chunk_id": "54839",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "122",
+          "score": 0.5349,
+          "chunk_id": "54840",
+          "expected": false
+        },
+        {
+          "doc_uid": "ias38",
+          "chunk_number": "123",
+          "score": 0.0,
+          "chunk_id": "54841",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "9",
+          "score": 0.0,
+          "chunk_id": "48637",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "10",
+          "score": 0.0,
+          "chunk_id": "48638",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "11",
+          "score": 0.6018,
+          "chunk_id": "48639",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "12",
+          "score": 0.0,
+          "chunk_id": "48640",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "13",
+          "score": 0.5491,
+          "chunk_id": "48641",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "14",
+          "score": 0.0,
+          "chunk_id": "48642",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "15",
+          "score": 0.5498,
+          "chunk_id": "48643",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "16",
+          "score": 0.0,
+          "chunk_id": "48644",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "22",
+          "score": 0.0,
+          "chunk_id": "48650",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "23",
+          "score": 0.0,
+          "chunk_id": "48651",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "24",
+          "score": 0.0,
+          "chunk_id": "48652",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "25",
+          "score": 0.0,
+          "chunk_id": "48653",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E2",
+          "score": 0.0,
+          "chunk_id": "48654",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "26",
+          "score": 0.0,
+          "chunk_id": "48655",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "27",
+          "score": 0.0,
+          "chunk_id": "48656",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E3",
+          "score": 0.0,
+          "chunk_id": "48657",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "28",
+          "score": 0.0,
+          "chunk_id": "48658",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "29",
+          "score": 0.0,
+          "chunk_id": "48659",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "30",
+          "score": 0.0,
+          "chunk_id": "48660",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "35",
+          "score": 0.0,
+          "chunk_id": "48665",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E4",
+          "score": 0.0,
+          "chunk_id": "48666",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E5",
+          "score": 0.0,
+          "chunk_id": "48667",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "E6",
+          "score": 0.0,
+          "chunk_id": "48668",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "36",
+          "score": 0.0,
+          "chunk_id": "48669",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "37",
+          "score": 0.0,
+          "chunk_id": "48670",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "84",
+          "score": 0.5663,
+          "chunk_id": "48719",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "85",
+          "score": 0.0,
+          "chunk_id": "48720",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "86",
+          "score": 0.0,
+          "chunk_id": "48721",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "91",
+          "score": 0.0,
+          "chunk_id": "48726",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "92",
+          "score": 0.0,
+          "chunk_id": "48727",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "93",
+          "score": 0.0,
+          "chunk_id": "48728",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "94",
+          "score": 0.5556,
+          "chunk_id": "48729",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B9",
+          "score": 0.0,
+          "chunk_id": "48775",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B10",
+          "score": 0.0,
+          "chunk_id": "48776",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B11",
+          "score": 0.5633,
+          "chunk_id": "48777",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B12",
+          "score": 0.0,
+          "chunk_id": "48778",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B13",
+          "score": 0.0,
+          "chunk_id": "48779",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B39",
+          "score": 0.0,
+          "chunk_id": "48810",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B40",
+          "score": 0.5478,
+          "chunk_id": "48811",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B41",
+          "score": 0.0,
+          "chunk_id": "48812",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B42",
+          "score": 0.0,
+          "chunk_id": "48813",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B43",
+          "score": 0.5847,
+          "chunk_id": "48814",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B66",
+          "score": 0.5674,
+          "chunk_id": "48839",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B67",
+          "score": 0.0,
+          "chunk_id": "48840",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B68",
+          "score": 0.0,
+          "chunk_id": "48841",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B69",
+          "score": 0.0,
+          "chunk_id": "48842",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B70",
+          "score": 0.5534,
+          "chunk_id": "48843",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B71",
+          "score": 0.0,
+          "chunk_id": "48844",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B72",
+          "score": 0.0,
+          "chunk_id": "48845",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B73",
+          "score": 0.0,
+          "chunk_id": "48846",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B74",
+          "score": 0.0,
+          "chunk_id": "48847",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B75",
+          "score": 0.0,
+          "chunk_id": "48848",
+          "expected": false
+        },
+        {
+          "doc_uid": "ifrs15",
+          "chunk_number": "B76",
+          "score": 0.0,
+          "chunk_id": "48849",
+          "expected": false
+        }
+      ],
+      "authoritative_references": [
+        [
+          "ifrs16",
+          "5"
+        ],
+        [
+          "ifrs16",
+          "6"
+        ],
+        [
+          "ifrs16",
+          "7"
+        ],
+        [
+          "ifrs16",
+          "8"
+        ],
+        [
+          "ifrs16",
+          "18"
+        ],
+        [
+          "ifrs16",
+          "19"
+        ],
+        [
+          "ifrs16",
+          "20"
+        ],
+        [
+          "ifrs16",
+          "21"
+        ],
+        [
+          "ifrs16",
+          "22"
+        ],
+        [
+          "ifrs16",
+          "26"
+        ],
+        [
+          "ifrs16",
+          "B34"
+        ],
+        [
+          "ifrs16",
+          "B35"
+        ],
+        [
+          "ifrs16",
+          "B36"
+        ],
+        [
+          "ifrs16",
+          "B37"
+        ],
+        [
+          "ifrs16",
+          "B38"
+        ],
+        [
+          "ifrs16",
+          "B39"
+        ],
+        [
+          "ifrs16",
+          "B40"
+        ],
+        [
+          "ifrs16",
+          "B41"
+        ]
+      ],
+      "secondary_references": [],
+      "peripheral_references": [
+        [
+          "ias38",
+          "88"
+        ],
+        [
+          "ias38",
+          "90"
+        ],
+        [
+          "ias38",
+          "94"
+        ],
+        [
+          "ias38",
+          "95"
+        ],
+        [
+          "ias38",
+          "96"
+        ],
+        [
+          "ifrs15",
+          "9"
+        ],
+        [
+          "ifrs15",
+          "10"
+        ],
+        [
+          "ifrs15",
+          "11"
+        ],
+        [
+          "ifrs15",
+          "12"
+        ],
+        [
+          "ifrs15",
+          "13"
+        ],
+        [
+          "ifrs15",
+          "15"
+        ],
+        [
+          "ifrs15",
+          "16"
+        ],
+        [
+          "ifrs15",
+          "35"
+        ],
+        [
+          "ifrs15",
+          "37"
+        ],
+        [
+          "ifrs15",
+          "B9"
+        ],
+        [
+          "ifrs15",
+          "B10"
+        ],
+        [
+          "ifrs15",
+          "B11"
+        ],
+        [
+          "ifrs15",
+          "B12"
+        ],
+        [
+          "ifrs15",
+          "B13"
+        ]
+      ],
+      "dropped_documents": []
+    }
+  ],
+  "label_summaries": [
+    {
+      "label": "contingent_liability",
+      "expected": true,
+      "present_count": 0,
+      "run_count": 2,
+      "question_count": 0
+    },
+    {
+      "label": "provision",
+      "expected": true,
+      "present_count": 0,
+      "run_count": 2,
+      "question_count": 0
+    },
+    {
+      "label": "right_of_use_model",
+      "expected": false,
+      "present_count": 2,
+      "run_count": 2,
+      "question_count": 1
+    },
+    {
+      "label": "short_term_lease_exemption",
+      "expected": false,
+      "present_count": 2,
+      "run_count": 2,
+      "question_count": 1
+    }
+  ],
+  "question_stability": [
+    {
+      "question_id": "Q12.0",
+      "run_count": 2,
+      "stability_score": 100.0,
+      "stability_score_loose": 100.0,
+      "approach_set_stability": 1.0,
+      "applicability_stability": 1.0,
+      "recommendation_stability": 1.0,
+      "missing_expected_count": 4,
+      "spurious_count": 4
+    }
+  ]
+}

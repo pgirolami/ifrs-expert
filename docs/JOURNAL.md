@@ -51,10 +51,10 @@ It documents how the system evolved from a single prompt to a structured, evalua
     - Prompt B determines applicability to the context
 - Refine prompts through many experiments while developping quantitative analysis
     - [Experiment 04](../experiments/04_2_stage_processing/EXPERIMENTS.md) computes 3 runs of the 2-stage pipeline on the 22 questions, first attempt at quantitative analysis
-    - [Experiment 05](../experiments/05_tighter_2_stage_processing_json_only/EXPERIMENTS.md)
-    - Weed out non-approaches
-        - [Experiment 06](../experiments/06_better_2_stage_processing_json_output/EXPERIMENTS.md)
-        - [Experiment 07](../experiments/07_betterbetter_2_stage_processing_json_output/EXPERIMENTS)
+        - [Experiment 05](../experiments/05_tighter_2_stage_processing_json_only/EXPERIMENTS.md)
+        - Weed out non-approaches
+            - [Experiment 06](../experiments/06_better_2_stage_processing_json_output/EXPERIMENTS.md)
+            - [Experiment 07](../experiments/07_betterbetter_2_stage_processing_json_output/EXPERIMENTS.md)
     - Improving "net investment hedge" recall
         - [Experiment 08](../experiments/08_treatment_only_approaches/EXPERIMENTS.md)
         - [Experiment 09](../experiments/09_candidate_approaches_vs_applicability/EXPERIMENTS.md) 
@@ -62,7 +62,7 @@ It documents how the system evolved from a single prompt to a structured, evalua
         - [Experiment 11](../experiments/11_remove_extraneous_approaches_while_reserving_nih/EXPERIMENTS.md)
 
 - Preparation for Delivery phase
-    - Draft proper [README](README.md) and [METHODOLOGY](METHODOLOGY.md)
+    - Draft proper [README](../README.md) and [METHODOLOGY](METHODOLOGY.md)
     - Fix all linting errors, failing test, formatting errors
     - Overhaul mocking strategy that was too brittle
     - Investigate unstructured.io and langchain
@@ -182,7 +182,6 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - Prepared some alternative outputs styles to be more FAQ-like, to be discussed with SME
 
 ### 2026-04-14
-- Review meeting with SME ([Notes](./sme-reviews/20260414-SME-REVIEW.md))
 - Increased Corpus to all of IFRS & Lefebvre
     - Extended extraction through Chrome extension to all of IFRS documents behind paywall (Annotation chunks, Implementation Guidelines, Illustrative Examples, Basis for Conclusion) [(plan)](../plans/2026-04-14--ifrs-multi-document-types-and-annotations-plan.md)
         - To implement later: Supporting Materials, Refs annotation
@@ -224,16 +223,16 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - Not all "Dissenting opinions" were being removed
         - Filter out "Table of Concordance"
         - others...
-    - [Verification table](../experiments/39_exhaustive_ifrs_ingestion_verification/EXPERIMENTS.md)
+    - [Verification table](../experiments/39_more_retrieval_investigations/ingestion_review.md)
 - Evaluated new mechanism for retrieval `documents2`: query each document-type but map each variant back to the standard. The idea is to narrow the corpus of standards to look at by considering that if supporting material matches the semantics of the query then it's likely the standard is relevant. Widening to supporting documents might be done later if we see the quality of the answer is not up to par.
     - [Experiment 39](../experiments/39_more_retrieval_investigations/EXPERIMENTS.md) showed that retrieval of Q1en (translations of Q1) is nearly perfect, with IFRIC 16, IAS 39 and IFRS 9 in the top spots for almost all variants while the French is still problematic: IFRS 9 is seldom retrieved
-- Tackling the lack of IFRS 9 retrieval : evaluated enriching the query with english translations of French IFRS accounting terms using a [glossary](../config/en-fr-glossary_all.yaml) we expect could be created with an LLM using the IFRS document "Definitions" sections
+- Tackling the lack of IFRS 9 retrieval : evaluated enriching the query with english translations of French IFRS accounting terms using a [glossary](../config/en-fr-glossary.yaml) we expect could be created with an LLM using the IFRS document "Definitions" sections
     - [Experiment 40](../experiments/40_compare_q1_retrieval_modes/EXPERIMENTS.md) 
         - Created new analysis documents
             - Question / Document analysis matrices:
-                -   [French raw](../experiments/40_compare_q1_retrieval_modes/generated_fr_raw_target_matrix)
+                -   [French raw](../experiments/40_compare_q1_retrieval_modes/generated_fr_raw_target_matrix.md)
                 -   [French enriched](../experiments/40_compare_q1_retrieval_modes/generated_fr_enriched_target_matrix.md)
-                -   [English raw](../experiments/40_compare_q1_retrieval_modes/generated_en_control_target_matrix)
+                -   [English raw](../experiments/40_compare_q1_retrieval_modes/generated_en_control_target_matrix.md)
             - [Variant similarity matrix](../experiments/40_compare_q1_retrieval_modes/variant_similarity_table.md) : a big update to an artefact used in a previous experiment that helps see how the scores changed on a sample of questions
         - Results are good on IFRIC 16 & IAS 39: they shoot to the top of retrieval. But IFRS 9 is often pushed down !
 - Continued tackling the lack of IFRS 9 retrieval : built a new document routing method based on the best chunk match in a document + collapsing documents to their standard + glossary
@@ -299,12 +298,12 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 - Ran answer eval on Q2 & Q3 and solved minor issues
     - [Experiment 50](../experiments/50_answer-evals_Q2/EXPERIMENTS.md)
-        - the first run [approach identification diagnostics](experiments/50_answer-evals_Q2/runs/2026-05-01_10-39-08_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) showed many different approach labels that overlapped. For example : `fair_value_profit`, `fair_value_profit_loss`, `fair_value_through_profit_or_loss` and `fvtpl`.
+        - the first run [approach identification diagnostics](../experiments/50_answer-evals_Q2/runs/2026-05-01_10-39-08_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) showed many different approach labels that overlapped. For example : `fair_value_profit`, `fair_value_profit_loss`, `fair_value_through_profit_or_loss` and `fvtpl`.
             - To make run results easier to evaluate, the A prompt was updated to normalize labels
         - the second run returned only the [3 expected approaches](../experiments/50_answer-evals_Q2/runs/2026-05-01_13-20-27_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) across all runs and questions
         - 🎉 Recall was 100% on target documents and chunks and the evals all passed 
     - [Experiment 51](../experiments/51_answer-evals_Q3/EXPERIMENTS.md)
-        - the first run [approach identification diagnostics](experiments/51_answer-evals_Q3/runs/2026-05-01_13-49-24_promptfoo-eval-family-q3/diagnostics/approach_detection/approach_detection_diagnostics.html) failed because of a bug in the eval
+        - the first run [approach identification diagnostics](../experiments/51_answer-evals_Q3/runs/2026-05-01_13-49-24_promptfoo-eval-family-q3/diagnostics/approach_detection/approach_detection_diagnostics.html) failed because of a bug in the eval
             - also changed the eval to allow `oui` in addition to `oui_sous_conditions`
         - 🎉 Recall was 100% on target documents and chunks
             - the evals were not run again because all failures were due to the `oui` recommendation which was acceptable
@@ -314,3 +313,6 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
     - [Experiment 52](../experiments/52_initial_eval-retrieve_for_Q6.0/EXPERIMENTS.md) evaluated retrieval on Q6.0 : 100% recall
     - [Experiment 53](../experiments/53_get_answer-eval_to_work_for_Q9.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q9.0. Also checked non-regression on one question in Q1, Q2 and Q3
     - [Experiment 54](../experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q5.0. Also checked non-regression on one question in Q1, Q2 and Q3, this required quite a few runs
+    - [Experiment 55](../experiments/55_get_answer-eval_to_work_for_Q16.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains only an answer eval because it passed on the first try.
+    - [Experiment 56](../experiments/56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains a successful retrieval eval followed by an answer eval that provides the right answer
+    - Review of the answers with the SME

@@ -1,4 +1,4 @@
-family_id: Q5
+family_id: Q16
 assert:
   - type: is-json
     value: file://./prompts/answer_prompt_B.json
@@ -23,8 +23,8 @@ assert:
     value: |
       const data = JSON.parse(output);
       const labels = data.approaches.map(a => a.normalized_label);
-      return labels.includes('fair_value_of_a_liability') &&
-             labels.includes('fair_value_of_an_asset');
+      return labels.includes('provision') &&
+             labels.includes('contingent_liability');
     description: All expected approaches are identified
 
   - type: javascript
@@ -33,8 +33,8 @@ assert:
       const byLabel = Object.fromEntries(
         data.approaches.map(a => [a.normalized_label, a.applicability])
       );
-      return ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_of_a_liability) &&
-             ['oui', 'oui_sous_conditions'].includes(byLabel.fair_value_of_an_asset);
+      return ['non'].includes(byLabel.provision) &&
+             ['oui_sous_conditions'].includes(byLabel.contingent_liability);
     description: Expected applicability is assigned to each approach
 
 
@@ -57,13 +57,19 @@ assert:
 
 assert_retrieve:
   required_documents:
-    - ifrs13
+    - ias37
   required_section_ranges:
-    - document: ifrs13
-      start: "42"
-      end: "42"
+    - document: ias37
+      start: "10"
+      end: "10"
+    - document: ias37
+      start: "14"
+      end: "14"
+    - document: ias37
+      start: "17"
+      end: "20"
 
 variants:
-  - id: Q5.0
-    file: Q5.0.txt
-    description: Profit participating loan liability
+  - id: Q16.0
+    file: Q16.0.txt
+    description: Something

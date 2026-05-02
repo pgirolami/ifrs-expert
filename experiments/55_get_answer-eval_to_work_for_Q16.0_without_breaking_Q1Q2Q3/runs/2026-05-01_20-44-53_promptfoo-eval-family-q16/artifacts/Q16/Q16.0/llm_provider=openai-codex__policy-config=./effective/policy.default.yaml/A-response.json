@@ -1,0 +1,85 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone et l’utilisation future de crédits carbone pour compenser des émissions donnent lieu, au regard d’IAS 37, à une obligation actuelle entraînant la comptabilisation d’une provision, ou seulement à un passif éventuel.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias37", "ifrs19", "ifrs7"],
+    "selected_primary_document": "ias37",
+    "selection_reason": "I applied the strict precedence rule and found no higher-precedence IFRS standard that directly governs the recognition of provisions for voluntary climate commitments; IFRS 19 and IFRS 7 in the provided context address disclosures rather than the core recognition issue, so IAS 37 is the governing lineage.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low — the question is fundamentally about provision recognition and present obligations, which is directly governed by IAS 37, while the other documents provided are disclosure-focused or only indirectly related."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": ["1", "10", "14", "17", "18", "19", "20", "23"],
+        "reason": "These paragraphs directly govern whether a present legal or constructive obligation exists and whether a provision is recognised."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias37",
+        "references": ["13", "15", "16"],
+        "reason": "These paragraphs clarify the boundary between a recognised provision and a contingent liability when the existence of a present obligation is uncertain."
+      },
+      {
+        "document": "ias37",
+        "references": ["E6"],
+        "reason": "This agenda decision specifically clarifies how IAS 37 applies to climate-related commitments and to offsets using carbon credits."
+      },
+      {
+        "document": "ias37",
+        "references": ["48", "49"],
+        "reason": "These paragraphs support how future events may affect measurement once a provision model has been selected."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs19",
+        "references": ["257", "258", "259", "260", "261", "262"],
+        "reason": "These paragraphs replicate disclosure requirements and do not help identify the peer recognition approaches for this issue."
+      },
+      {
+        "document": "ifrs7",
+        "references": ["20C", "20D", "39", "E1"],
+        "reason": "These paragraphs concern financial instrument disclosures and liquidity risk, not the recognition of IAS 37 provisions for voluntary carbon-neutrality commitments."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognised present-obligation model under IAS 37",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "14", "17", "18", "19", "23", "E6"]
+        }
+      ],
+      "mapped_approaches": ["provision"]
+    },
+    {
+      "family": "Unrecognised obligation model under IAS 37 when recognition criteria are not met",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "15", "16", "23", "E6"]
+        }
+      ],
+      "mapped_approaches": ["contingent_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 identifies provision as the recognised model when a present legal or constructive obligation from a past event exists, an outflow is probable, and the amount can be estimated reliably."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 identifies contingent liability as the alternative model when there is only a possible obligation or a present obligation that does not meet the recognition criteria."
+    }
+  ]
+}

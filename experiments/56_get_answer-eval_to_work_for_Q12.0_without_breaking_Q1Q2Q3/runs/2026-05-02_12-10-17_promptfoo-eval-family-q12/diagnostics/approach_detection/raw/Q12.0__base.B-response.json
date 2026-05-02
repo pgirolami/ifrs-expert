@@ -1,0 +1,86 @@
+{
+  "assumptions_fr": [
+    "Le contrat ne comporte pas d’option d’achat.",
+    "La question est analysée du point de vue du preneur à la date de commencement du contrat.",
+    "La qualification en contrat de courte durée dépend de la durée de location au sens d’IFRS 16, c’est-à-dire de la période exécutoire et des options de prolongation ou de résiliation raisonnablement certaines."
+  ],
+  "recommendation": {
+    "answer": "oui_sous_conditions",
+    "justification": "Oui, mais seulement si la durée de location déterminée selon IFRS 16 n’excède pas 12 mois. Pour un contrat renouvelable tacitement ou à durée indéterminée, il faut d’abord apprécier la période exécutoire et les droits de résiliation; si cette analyse conduit à une durée de location supérieure à 12 mois, l’exemption courte durée n’est pas disponible."
+  },
+  "approaches": [
+    {
+      "id": "approach_1",
+      "normalized_label": "short_term_lease_exemption",
+      "label_fr": "Exemption optionnelle pour contrat de courte durée",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "L’exemption n’est possible que pour un contrat de courte durée, ce qui suppose une durée de location n’excédant pas 12 mois et l’absence d’option d’achat (IFRS 16 5). Or, pour un contrat renouvelable tacitement ou à durée indéterminée, la durée ne se lit pas seulement sur la durée initiale: elle dépend de la période non résiliable, des options raisonnablement certaines et surtout de la période exécutoire du contrat (IFRS 16 18, IFRS 16 B34, IFRS 16 B35). Dans cette situation, l’exemption est donc admise seulement si l’analyse de ces éléments aboutit bien à une durée de location de 12 mois ou moins.",
+      "conditions_fr": [
+        "La durée de location déterminée selon IFRS 16 est de 12 mois ou moins à la date de commencement.",
+        "Le contrat ne contient pas d’option d’achat.",
+        "La période exécutoire n’excède pas 12 mois, c’est-à-dire que chaque partie peut mettre fin au contrat sans l’accord de l’autre avec au plus une pénalité insignifiante, ou qu’aucune prolongation au-delà de 12 mois n’est raisonnablement certaine."
+      ],
+      "practical_implication_fr": "Si ces conditions sont remplies et si le preneur élit l’exemption, les loyers sont comptabilisés en charge, sans droit d’utilisation ni dette locative.",
+      "references": [
+        {
+          "document": "ifrs16",
+          "section": "5",
+          "excerpt": "A lessee may elect not to apply the requirements in paragraphs 22⁠–⁠49 to: (a)**short-term leases** ; and (b)leases for which the underlying asset is of low value (as described in paragraphs B3⁠–⁠B8)."
+        },
+        {
+          "document": "ifrs16",
+          "section": "6",
+          "excerpt": "If a lessee elects not to apply the requirements in paragraphs 22⁠–⁠49 to either short-term leases or leases for which the underlying asset is of low value, the lessee shall **recognise the lease payments associated with those leases as an expense** on either a straight-line basis over the lease term or another systematic basis. The lessee shall apply another systematic basis if that basis is more representative of the pattern of the lessee’s benefit."
+        },
+        {
+          "document": "ifrs16",
+          "section": "18",
+          "excerpt": "An entity shall determine the **lease term** as the **non-cancellable period of a lease**, together with both: (a)periods covered by an option to extend the lease if the lessee is reasonably certain to exercise that option; and (b)periods covered by an option to terminate the lease if the lessee is reasonably certain not to exercise that option."
+        },
+        {
+          "document": "ifrs16",
+          "section": "19",
+          "excerpt": "In assessing whether a lessee is reasonably certain to exercise an option to extend a lease, or not to exercise an option to terminate a lease, an entity shall consider **all relevant facts and circumstances that create an economic incentive** for the lessee to exercise the option to extend the lease, or not to exercise the option to terminate the lease, as described in paragraphs B37⁠–⁠B40."
+        },
+        {
+          "document": "ifrs16",
+          "section": "B34",
+          "excerpt": "In determining the lease term and assessing the length of the non-cancellable period of a lease, an entity shall apply the definition of a contract and determine the period for which the contract is **enforceable**. A lease is no longer enforceable when the lessee and the lessor each has the right to terminate the lease without permission from the other party with **no more than an insignificant penalty**. E10"
+        },
+        {
+          "document": "ifrs16",
+          "section": "B35",
+          "excerpt": "If only a lessee has the right to terminate a lease, that right is considered to be an option to terminate the lease available to the lessee that an entity considers when determining the lease term. **If only a lessor has the right to terminate a lease, the non-cancellable period of the lease includes the period covered by the option to terminate the lease.**"
+        }
+      ]
+    },
+    {
+      "id": "approach_2",
+      "normalized_label": "right_of_use_model",
+      "label_fr": "Modèle général avec droit d’utilisation et dette locative",
+      "applicability": "oui_sous_conditions",
+      "reasoning_fr": "Ce modèle s’applique dès lors que l’exemption courte durée n’est pas disponible ou n’est pas élue. Ainsi, si le contrat renouvelable tacitement ou à durée indéterminée a, après analyse de la période exécutoire et des options, une durée de location supérieure à 12 mois, le preneur doit comptabiliser un droit d’utilisation et une dette locative à la date de commencement (IFRS 16 22, IFRS 16 26).",
+      "conditions_fr": [
+        "La durée de location déterminée selon IFRS 16 excède 12 mois, ou l’exemption de courte durée n’est pas élue par le preneur."
+      ],
+      "practical_implication_fr": "Le preneur comptabilise un droit d’utilisation et une dette locative, puis applique les règles de mesure ultérieure d’IFRS 16.",
+      "references": [
+        {
+          "document": "ifrs16",
+          "section": "22",
+          "excerpt": "At the commencement date, a lessee shall **recognise a right-of-use asset and a lease liability**."
+        },
+        {
+          "document": "ifrs16",
+          "section": "26",
+          "excerpt": "At the commencement date, a lessee shall **measure the lease liability at the present value of the lease payments** that are not paid at that date. The lease payments shall be discounted using the interest rate implicit in the lease, if that rate can be readily determined. If that rate cannot be readily determined, the lessee shall use the lessee’s incremental borrowing rate."
+        },
+        {
+          "document": "ifrs16",
+          "section": "36",
+          "excerpt": "After the commencement date, a lessee shall measure the lease liability by: (a)increasing the carrying amount to reflect interest on the lease liability; (b)reducing the carrying amount to reflect the lease payments made; and (c)**remeasuring the carrying amount to reflect any reassessment or lease modifications** specified in paragraphs 39⁠–⁠46, or to reflect revised in-substance fixed lease payments (see paragraph B42)."
+        }
+      ]
+    }
+  ]
+}

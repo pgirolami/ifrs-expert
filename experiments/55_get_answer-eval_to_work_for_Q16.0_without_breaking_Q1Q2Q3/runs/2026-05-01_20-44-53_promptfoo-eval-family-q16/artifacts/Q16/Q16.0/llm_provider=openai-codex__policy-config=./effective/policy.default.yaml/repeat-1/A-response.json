@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "primary_accounting_issue": "Déterminer si un engagement volontaire de neutralité carbone et l’utilisation future de crédits carbone pour compenser des émissions donnent lieu, selon IAS 37, à une provision reconnue ou seulement à un passif éventuel.",
+  "authority_resolution": {
+    "candidate_governing_documents": ["ias37", "ifrs19", "ifrs7"],
+    "selected_primary_document": "ias37",
+    "selection_reason": "I applied the strict precedence rule by first testing for overlapping governing standards and found no competing IFRS standard governing recognition of provisions for voluntary climate commitments; IAS 37 is therefore the single governing lineage because it directly addresses provisions, contingent liabilities and constructive obligations.",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low—IAS 37 directly governs recognition of provisions and its climate-related agenda decision specifically addresses voluntary emissions-reduction and offset commitments."
+  },
+  "authority_classification": {
+    "primary_authority": [
+      {
+        "document": "ias37",
+        "references": ["10", "14", "18", "19", "20", "E6"],
+        "reason": "These paragraphs directly govern whether a voluntary climate commitment creates a present obligation and whether that obligation is recognised as a provision."
+      }
+    ],
+    "supporting_authority": [
+      {
+        "document": "ias37",
+        "references": ["15", "16", "17", "21", "23", "25"],
+        "reason": "These paragraphs clarify how to assess existence of a present obligation, probability of outflow and reliability of measurement under IAS 37."
+      }
+    ],
+    "peripheral_authority": [
+      {
+        "document": "ifrs7",
+        "references": ["20C", "20D", "39", "E1"],
+        "reason": "These disclosures concern financial liabilities and liquidity risk and do not identify peer recognition approaches for voluntary carbon-neutrality provisions."
+      },
+      {
+        "document": "ifrs19",
+        "references": ["67", "257", "258", "259", "260"],
+        "reason": "These are disclosure requirements or IFRS 9-related provision disclosures and do not govern recognition of a provision for voluntary carbon commitments."
+      }
+    ]
+  },
+  "treatment_families": [
+    {
+      "family": "Recognised present-obligation model under IAS 37",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "14", "17", "18", "19", "E6"]
+        }
+      ],
+      "mapped_approaches": ["provision"]
+    },
+    {
+      "family": "Unrecognised obligation model under IAS 37",
+      "authority_basis": [
+        {
+          "document": "ias37",
+          "references": ["10", "13", "16", "23", "26", "86", "E6"]
+        }
+      ],
+      "mapped_approaches": ["contingent_liability"]
+    }
+  ],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Provision",
+      "normalized_label": "provision",
+      "rationale_for_inclusion": "IAS 37 recognises a provision when there is a present legal or constructive obligation from a past event, a probable outflow and a reliable estimate."
+    },
+    {
+      "id": "approach_2",
+      "label": "Contingent liability",
+      "normalized_label": "contingent_liability",
+      "rationale_for_inclusion": "IAS 37 treats a possible obligation, or a present obligation failing recognition criteria, as a contingent liability rather than a recognised provision."
+    }
+  ]
+}
