@@ -4,6 +4,8 @@ This journal captures the actual development process of the IFRS Expert assistan
 
 It documents how the system evolved from a single prompt to a structured, evaluated pipeline, including key failures, experiments, and design decisions.
 
+ The first serious version ([2026-05-02](#2026-05-01---2026-05-02)) was built in ~170 hours / ~1 focused month. AI tooling accelerated implementation substantially
+ 
 ---
 
 ## Discovery
@@ -285,20 +287,20 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 
 ### 2026-04-30
 - Cross-reference expansion implementation continued
-    - Section references now retrieve only top-k chunks in section rather than all chunks in section, to decrease size of prompts
-    - Ingest non-annotations cross-reference in IFRS: they are materialized by links
+    - Section references now retrieve only top-k chunks in section rather than all chunks in section. Because the top-k chunks later get expanded to their enclosing section, this decreases the size of prompts and decreases the amount of noise in the context when the section is very long
+    - Ingest inlined cross-reference in IFRS: they are materialized by links and their anchor text is "paragraph " or "section " or the standard number
 - Added clearer provenance of chunks to help diagnose why chunks are included in the context
-- Update pre-commit hook to run retrieval evals on one question in each of Q1, Q2 and Q3. This will make it easier to spot retrieval regressions
+- Update pre-commit hook to run retrieval evals on the worst performing question in each of Q1, Q2 and Q3. This will make it easier to spot retrieval regressions
 
-### 2026-05-01
-- Re-ingest the IFRS corpus so the database contains all cross-references
-    - Check this ingestion didn't produce a regression on Q1, Q2 & Q3 retrieval evals
+### 2026-05-01 - 2026-05-02
+- Re-ingested the IFRS corpus so the database contains all cross-references
+    - Checked this ingestion didn't produce a regression on Q1, Q2 & Q3 retrieval evals
         - [Experiment 49](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/EXPERIMENTS.md)
-- Update the target chunks diagnostics to clean up the table headers that could be misleading ([example](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html))
+- Updated the target chunks diagnostics to clean up the table headers that could be misleading ([example](../experiments/49_Q1Q2Q3_family_retrieval_baseline-Q1-glossary-with-reference-expansion__ON-FULL-CORPUS-WITH-REFERENCES/runs/2026-05-01_08-45-39_promptfoo-eval-family-q3/diagnostics/target_chunk_retrieval/target_chunk_retrieval_diagnostics.html))
 
 - Ran answer eval on Q2 & Q3 and solved minor issues
     - [Experiment 50](../experiments/50_answer-evals_Q2/EXPERIMENTS.md)
-        - the first run [approach identification diagnostics](../experiments/50_answer-evals_Q2/runs/2026-05-01_10-39-08_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) showed many different approach labels that overlapped. For example : `fair_value_profit`, `fair_value_profit_loss`, `fair_value_through_profit_or_loss` and `fvtpl`.
+        - the first run's [approach identification diagnostics](../experiments/50_answer-evals_Q2/runs/2026-05-01_10-39-08_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) showed many different approach labels that overlapped. For example : `fair_value_profit`, `fair_value_profit_loss`, `fair_value_through_profit_or_loss` and `fvtpl`.
             - To make run results easier to evaluate, the A prompt was updated to normalize labels
         - the second run returned only the [3 expected approaches](../experiments/50_answer-evals_Q2/runs/2026-05-01_13-20-27_promptfoo-eval-family-q2/diagnostics/approach_detection/approach_detection_diagnostics.html) across all runs and questions
         - 🎉 Recall was 100% on target documents and chunks and the evals all passed 
@@ -308,11 +310,17 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         - 🎉 Recall was 100% on target documents and chunks
             - the evals were not run again because all failures were due to the `oui` recommendation which was acceptable
 
-- Evaluate generalization beyond IFRS 9
+- Evaluated generalization beyond IFRS 9
     - [SME meeting](./sme-reviews/20260501-SME-REVIEW.md) to choose 5 questions to build answers for with the goal of building trust in the system
     - [Experiment 52](../experiments/52_initial_eval-retrieve_for_Q6.0/EXPERIMENTS.md) evaluated retrieval on Q6.0 : 100% recall
-    - [Experiment 53](../experiments/53_get_answer-eval_to_work_for_Q9.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q9.0. Also checked non-regression on one question in Q1, Q2 and Q3
-    - [Experiment 54](../experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get the correct recall, approach labels & result for Q5.0. Also checked non-regression on one question in Q1, Q2 and Q3, this required quite a few runs
-    - [Experiment 55](../experiments/55_get_answer-eval_to_work_for_Q16.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains only an answer eval because it passed on the first try.
-    - [Experiment 56](../experiments/56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains a successful retrieval eval followed by an answer eval that provides the right answer
-    - Review of the answers with the SME
+    - [Experiment 53](../experiments/53_get_answer-eval_to_work_for_Q9.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get 100% recall on target documents and target chunks, and the correct approach labels & answer for Q9.0. Also checked non-regression on one question in Q1, Q2 and Q3
+    - [Experiment 54](../experiments/54_get_answer-eval_to_work_for_Q5.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains many runs until we were able to get 100% recall on target documents and target chunks, and the correct approach labels & answer for Q5.0. Also checked non-regression on one question in Q1, Q2 and Q3, this required quite a few runs
+    - [Experiment 55](../experiments/55_get_answer-eval_to_work_for_Q16.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains only an answer eval because it achieved 100% recall on target documents and target chunks on the first try for Q16.0.
+    - [Experiment 56](../experiments/56_get_answer-eval_to_work_for_Q12.0_without_breaking_Q1Q2Q3/EXPERIMENTS.md) contains a successful retrieval eval followed by an answer eval that provides 100% recall on target documents and target chunks, and the correct approach labels for Q12.0.
+    - [Experiment 57](../experiments/57_answer-evals_on_variants_for_Q5_Q6_Q9_Q12_Q16/EXPERIMENTS.md) evaluateed Q5, Q6, Q9 and Q12 across 5 variants of each question on 2 runs each. The EXPERIMENTS.md file contains a wealth of analysis that identifies why some questions were mostly successful while others were mostly not.
+
+
+### 2026-05-03
+- Review of progress with the SME ([notes](./sme-reviews/20260503-SME-REVIEW.md)
+
+- Updated markdown documentation across the project

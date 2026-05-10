@@ -1,362 +1,320 @@
-# IFRS Expert
+<p align="center">
+  <img src="docs/images/ifrs-expert-header.png" alt="IFRS Expert UI" width="650">
+</p>
 
-IFRS Expert is a local AI assistant designed to answer real IFRS accounting questions with **grounded, structured, and reproducible reasoning**.
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-blue">
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-document_store-blue">
+  <img alt="FAISS" src="https://img.shields.io/badge/FAISS-vector_search-blue">
+  <img alt="BAAI/bge-m3" src="https://img.shields.io/badge/Embeddings-BAAI%2Fbge--m3-blue">
+</p>
 
-This project explores a practical question:
+<p align="center">
+  <img alt="Promptfoo" src="https://img.shields.io/badge/Evals-Promptfoo-purple">
+  <img alt="Streamlit" src="https://img.shields.io/badge/UI-Streamlit-red">
+  <img alt="Chrome Extension" src="https://img.shields.io/badge/Acquisition-Chrome_extension-green">
+  <img alt="Local first" src="https://img.shields.io/badge/Design-local--first-lightgrey">
+</p>
+<p align="center">
+  <strong>A local AI foundation for IFRS case analysis: private corpus ingestion, authority-aware retrieval, cross-language cited reasoning, and systematic evals.</strong>
+</p>
 
-> How do you make LLM-based systems reliable in a constrained expert domain?
+<p align="center"><b>
+  <a href="#walkthrough">Walkthrough</a> ·
+  <a href="#technical-overview">Technical Overview</a> ·
+  <a href="#evaluation-and-diagnostics">Evaluation and diagnostics</a> ·
+  <a href="#run-it-yourself">Run It Yourself</a> ·
+  <a href="#checkpoint">Checkpoint</a>
+  </b>
+</p>
 
-It was **developed in collaboration with an IFRS subject-matter expert**, starting from real questions encountered in practice.
+IFRS Expert is a local RAG system for IFRS accounting analysis. It focuses on grounded answers: acquiring the relevant corpus, retrieving the governing authority, separating primary material from background material, reasoning against the facts, and citing the sources used.
 
-The goal was not just to retrieve relevant standards, but to produce answers that match how experts reason: identifying possible accounting approaches, evaluating their applicability, and providing structured, auditable outputs.
+“Local” refers to corpus storage, ingestion, retrieval, and evaluation artifacts. The LLM backend is configurable and can use hosted providers or local Ollama models.
 
----
+The project was built with an IFRS subject-matter expert (SME), starting from a real question encountered in practice. It handles a mixed French/English corpus, accepts questions in French and English, retrieves across languages, and produces cited answers in French.
 
-## What this project demonstrates
+Discussions with the SME during progress reviews surfaced that the expert workflow is often less about finding the right paragraph in a standard and more about collecting, reading, and reconciling company-specific evidence with authoritative guidance.
 
-Building LLM systems in practice quickly surfaces non-obvious challenges:
+That makes the long-term target a case-analysis workflow: accounting sources plus the evidence package the expert builds for a case-specific judgment. The current project is therefore best understood as the evidence and reasoning foundation for that larger workflow.
 
-- **Retrieval completeness directly impacts reasoning correctness**  
-  Missing sections caused the system to miss an accounting approach entirely (*net investment hedge*).
 
-- **Corpus realism creates authority overlap and routing problems**  
-  As the corpus expanded from a small clean subset to a much more realistic IFRS + supporting-materials corpus, overlapping authorities became a first-class systems problem (`IFRS 9` vs `IAS 39`, standards vs basis/implementation material, standards vs FAQ-style secondary sources).
+## Why not just prompt a frontier model?
 
-- **Multilingual retrieval is not a solved checkbox**  
-  A major recent result was that English retrieval on the Q1 family was nearly perfect while French retrieval was not. That isolated the problem much more clearly: the downstream reasoning stack was not the only issue; French retrieval itself was underperforming.
+Frontier models with public search are already useful. The gap here is evidence access and auditability: expert accounting answers often depend on paywalled, private, or company-specific material such as supporting IFRS documentation, IFRS annotations and firms' interpretations.
 
-- **Query normalization helps, but is not enough on its own**  
-  Adding a bilingual French→English IFRS glossary improved retrieval of some governing documents, but glossary enrichment alone did not solve the full routing problem and could even push `IFRS 9` down while improving `IFRIC 16` and `IAS 39`.
+This project builds the layer needed to reason over those sources.
 
-- **Whole-document similarity is weaker than routing from strong local evidence**  
-  A key breakthrough was moving from routing based mainly on broad document representations to routing based on the best chunk match inside a document, then collapsing back to the governing standard.
+## Current scope
 
-- **Answers are unstable across question phrasing**  
-  The same question expressed differently led to different accounting approaches being identified.
+The current architecture works best when the question depends on choosing between peer accounting models, treatments, recognition bases, measurement categories, or exemptions. Examples include:
 
-- **Single-pass prompting is unreliable**  
-  Asking the model to both identify and evaluate accounting approaches in one step produced inconsistent results.
+- IFRS 9 hedge-accounting questions;
+- IFRS 15 licence revenue timing;
+- IFRS 16 short-term lease exemptions;
+- IAS 37 provision / contingent-liability threshold questions where the standard exposes stable answer categories.
 
-- **Correctness is not enough**  
-  Expert users require answers to cite and justify their reasoning from source material.
+It is not a fully general IFRS reasoning architecture. The latest wording-variant stress test found a clear boundary: the current schema works best when the answer can be framed as selecting or comparing accounting treatments.
 
-This project addresses these issues through:
-- automated corpus acquisition and ingestion
-- a shared retrieval pipeline with multiple routing modes and experiment-specific policy files
-- bilingual query normalization used as a retrieval aid
-- a two-stage reasoning pipeline with explicit intermediate artifacts
-- structured JSON outputs
-- a systematic Promptfoo-based evaluation loop, plus retrieval-specific analysis artifacts, to detect regressions and isolate failure modes
+Some questions need a different structure. IFRS 10 control questions are better handled as a control-assessment framework with criteria and indicators. IFRS 13 default-risk questions are better handled as fair-value measurement assessments, not as lists of peer approaches.
 
----
+Supporting those cleanly would require classifying the question type first, then using an intermediate schema tailored to that type of analysis.
 
-## Example
+## Walkthrough
+### Corpus preparation (once)
+The corpus is acquired once via a Chrome browser plugin
+<p align="center">
+  <a href="docs/images/IFRS-ingestion.png" target="blank">
+    <img src="docs/images/IFRS-ingestion.png" alt="IFRS corpus extraction" width="450">
+  </a>
+</p>
 
-**Example question**
+Then it is loaded into the system's knowledge base (via a CLI, for now). The knowledge base supports French and English.
+<p align="center">
+  <a href="docs/images/Ingest-Screenshot.png" target="blank">
+    <img src="docs/images/Ingest-Screenshot.png" alt="IFRS corpus ingestions" width="900">
+  </a>
+</p>
+From there, the corpus becomes available for reasoning. 
+
+### Reasoning over the corpus
+
+The user asks a question, in French or English.
 
 > Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
 
-**Example output**
+The retrieval pipeline searches across the French/English corpus and returns relevant chunks from the most relevant documents, regardless of the language of the question or source.
 
-These three views show the same answer artifact at different levels of structure: machine-readable JSON, a memo-style rendering, and a shorter FAQ-style rendering:
-- Structured response ([JSON](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.json)), not visible to user
-- Memo-style response ([markdown](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.md))
-- FAQ-style response ([markdown](./experiments/33_authority_competition_on_full_corpus/runs/2026-04-16_22-20-04_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml/B-response_faq.md))
+>- IFRS 9 hedge-accounting paragraphs
+>- IFRIC 16 net-investment hedge guidance
+>- IAS 39 hedge-accounting paragraphs
 
----
+The first LLM call classifies the retrieved material and determines which documents are governing authority.
 
-## System overview
+>- IAS 39 is excluded because IFRS 9 supersedes it
 
-The system has 2 simple pipelines:
+Then it identifies the top-level approaches supported by the remaining authority and records the relevant citations.
+
+>- cash flow hedge
+>- fair value hedge
+>- hedge of a net investment
+
+Finally, the second LLM call reasons over each approach using the facts provided in the question to determine applicability.
+
+>- cash flow hedge: not applicable
+>- fair value hedge: applicable
+>- hedge of a net investment: not applicable
+
+The output is a structured response containing the reasoning over each approach: conditions, applicability, reasoning, practical implications and citations. It is used for evaluation, diagnostics, and downstream rendering.
+
+>- Structured response ([JSON](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.json))
+
+The markdown views are for users.
+
+<div align="center">
+  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <div align="center">
+      <a href="./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/B-response.md" target="blank">
+        <img src="docs/images/answer-memo-style.png" alt="Memo-style IFRS answer with citations" width="500"><br/>
+        <b>Memo-style IFRS answer with citations</b>
+      </a>
+    </div>
+    <div align="center">
+      <a href="./experiments/33_authority_competition_on_full_corpus/runs/2026-04-16_22-20-04_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/llm_provider=openai-codex__policy-config=./effective/policy.default.yaml/B-response_faq.md" target="blank">
+        <img src="docs/images/answer-faq-style.png" alt="FAQ-style IFRS answer with citations" width="500"><br/>
+        <b>FAQ-style IFRS answer with citations</b>
+      </a>
+    </div>
+  </div>
+</div>
+
+### Client-facing UI
+
+The UI shows the user-facing answer, while the pipeline also saves structured JSON, prompt inputs, retrieved context, and evaluation artifacts for inspection.
+
+<p align="center">
+  <a href="docs/images/IFRS-demo.mp4" target="blank">
+    <img src="docs/images/IFRS-demo.gif" alt="IFRS Expert answering a French IFRS question with cited IFRS references">
+  </a>
+</p>
+
+## Performance snapshot
+
+| Question Family | Topic | Retrieval | Answer result | SME evaluation | Notes |
+|---|---|:---:|:---:|:---:|:---:|
+| Q1 | Hedge accounting | 100% docs/chunks | Pass | Pass | Original SME question family |
+| Q2 | IFRS 9 SPPI / classification | 100% docs/chunks | Pass | Pass | Approach labels stabilized |
+| Q3 | SPPI definition | 100% docs/chunks | Pass | Pass | Cross-reference expansion helped |
+| Q5 | Fair value risk | 5⁄5 docs, 4⁄5 variants with all chunks | Boundary identified | Pass | Measurement question, not approach selection |
+| Q6 | Control assessment | 100% docs/chunks | Boundary identified | Pass | Criteria-based control assessment |
+| Q9 | IP licence revenue timing | 100% docs/chunks | Pass | Pass | Clean approach-selection case; label drift remains |
+| Q12 | Short-term lease exemption | 5⁄5 docs, 3⁄5 variants with all chunks | Works with caveats | Pass | Approach labels and question polarity need eval refinement |
+| Q16 | Carbon neutrality provision | 4⁄4 docs, 3⁄4 variants with all chunks | Pass | Pass | Stable labels, correct answer referencing IFRIC Decision |
+
+“SME evaluation” reflects review of the generated answer direction and usefulness, not a full production acceptance test.
+
+<details>
+<summary><b>More details on the latest checkpoint</b></summary>
+
+The latest generalization work stress-tested wording variants for Q5, Q6, Q9, Q12, and Q16. Q9 is the cleanest success for the current architecture. Q12 is a qualified success that exposed label and polarity-evaluation issues. Q16 is promising but needs SME review on the expected applicability contract.
+
+Q5 and Q6 exposed the main architecture boundary: they are better understood as measurement / criteria-based assessment questions than as peer approach-selection questions.
+
+> The current system generalizes best to IFRS questions that require selecting or comparing accounting treatments. It is not yet designed as a fully general IFRS reasoning architecture for single-framework assessment questions.
+</details>
+<br>
+
+## Technical Overview
+### Architecture
+
+The core engineering question is 
+>How do you make an LLM-based system reliable in a constrained expert domain with overlapping authorities, multilingual questions, private source material, and evidence-sensitive reasoning?
+
+The answer is an evidence-first RAG architecture: structured corpus acquisition, authority-aware retrieval, reference expansion, a two-stage LLM pipeline, and structured outputs that can be evaluated.
 
 ```mermaid
-flowchart LR
-    subgraph STACK[ ]
-        direction TB
+flowchart TD
+    A[<b>Chrome extension -</b> IFRS + Lefebvre capture] --> B[<b>Ingestion -</b> HTML to structured chunks]
+    B --> C[(<b>SQLite -</b> chunks, sections, references)]
+    B --> D[(<b>FAISS -</b> embeddings)]
 
-        subgraph P1[Pipeline 1: corpus preparation]
-            direction LR
-            A[Acquire] --> B[Ingest]
-        end
+    Q[French IFRS question] --> E[<b>Query enrichment -</b>FR to EN accounting terms]
+    E --> F[<b>Document routing -</b>authority-aware selection]
+    C --> F
+    D --> F
 
-        subgraph P2[Pipeline 2: grounded answer generation]
-            direction LR
-            C[Retrieve] --> D[Structure] --> E[Reason] --> F[Evaluate]
-        end
-    end
+    F --> G[Seed chunk retrieval]
+    G --> H[<b>Same-family -</b>reference expansion]
+    H --> I[Section expansion]
+    I --> J[<b>Prompt A -</b>structure issue + approaches]
+    J --> K[<b>Prompt B -</b>applicability + answer]
 
-    style STACK fill:none,stroke:none
+    K --> L[JSON artifact]
+    K --> M[Memo / FAQ markdown]
+    K --> N[Streamlit answer]
+
+    L --> O[<b>Promptfoo evals -</b>answer + retrieval]
+    F --> O
+    G --> O
 ```
 
-### Key components
+### Technical challenges
 
-- **Acquisition**
-  - A Chrome extension downloads all or some documents from the IFRS and Lefebvre Navis websites
-    - For Lefebvre Navis, it maps chapters to documents
+The failures were not just bad answers. They happened at different layers of the system, and the fix was not always “better prompting.” It required:
+- authority-aware routing,
+- chunk-first document selection,
+- bilingual query enrichment,
+- same-family reference expansion,
+- retrieval-only regression tests.
 
-- **Ingestion**
-  - The downloaded documents are ingested:
-    - parsed into paragraph-aligned chunks (not arbitrary text windows)
-    - embedded and stored in FAISS
-  - The document structure (sections, hierarchy) is preserved with stable synthetic section ids and reused at retrieval time
-  - In addition to chunk embeddings, ingestion builds document-level representations (`scope`, `objective`, `issue`, `background`, `TOC`, `full`) used by document-routing experiments and the `query-documents` diagnostics workflow
+Some examples:
+| Failure                                   | Root cause                      | Fix                                   |
+| ----------------------------------------- | ------------------------------- | ------------------------------------- |
+| Missing net investment hedge              | Target paragraphs not retrieved | chunk + section expansion             |
+| IAS 39 selected over IFRS 9               | authority overlap               | authority resolution + better routing |
+| French query missed IFRS 9                | multilingual mismatch           | glossary enrichment                   |
+| B4.1 guidance retrieved but not 4.1 rules | internal references ignored     | same-family reference expansion       |
 
-- **Retrieval**
-  - Semantic retrieval is implemented by cosine similarity over normalized embeddings (`BAAI/bge-m3`) using FAISS
-  - `bge-m3` was chosen because:
-    1. it is multilingual (IFRS is primarily in English while Navis questions are in French, the SMEs questions will mainly be in French)
-    2. it supports long inputs (8192 tokens) so whole paragraphs and document representations can be embedded
-    3. it performed well in initial tests, separating nonsensical queries from actual accounting questions
-  - Retrieval is now decomposed into four layers: **Querying**, **Document routing**, **Chunk retrieval**, and **Policy composition**. Each layer has multiple implementations that were added over time for experiments, and the config keeps those options side by side.
+### Key engineering lessons
 
-    - **Querying**
-      - We have raw queries and enriched queries
-      - Enriched queries add English IFRS terms when the input is in French
-      - The glossary is used only to help retrieval
+> The main lesson: in expert-domain RAG, the hard part is not only getting the LLM to reason. It is making sure the right authority reaches the model in the first place.
 
-    - **Document routing**
-      - Routing decides which documents are kept after chunk search
-      - We have several routing strategies from the experiment history, including return-all, routing through document representations, and routing through chunks
-      - The current Q1 setup uses `standards_only_through_chunks__enriched`, which routes from the strongest chunk-level evidence in each document bundle and then keeps the governing standard.
+- evidence completeness determines reasoning correctness
+- authority routing matters in realistic corpora
+- multilingual retrieval needed explicit handling
+- structured evals made failures diagnosable
 
-    - **Chunk retrieval**
-      - Chunk search is tuned separately from document routing
-      - We have dense chunk search and title search, each with its own limits and score thresholds
-      - The runtime stage order is seed chunk retrieval, same-family reference expansion, then section expansion before prompting
-      - Same-family reference expansion uses stored `Refer:` annotations to recover governing paragraphs from explanatory or application guidance without reparsing the source HTML
+### More details
+For more details, see [ARCHITECTURE.md](./docs/ARCHITECTURE.md) and [ENGINEERING_NOTES.md](./docs/ENGINEERING_NOTES.md)
 
-    - **Policy composition**
-      - A retrieval policy is built from smaller reusable parts
-      - This keeps the config easier to read and compare across experiments
-      - The default config is a catalog of assembled policies, not one large hard-coded block
+## Evaluation and diagnostics
 
-      ```yaml
-      querying:
-        enriched:
-          embedding_mode: enriched
+### Quality gating with PromptFoo
+Promptfoo is the main regression harness for the Prompt A -> Prompt B answer pipeline. The harness checks not only whether the answer looks right, but whether the expected documents and paragraphs were present before the LLM reasoned.
 
-      document_routing_strategies:
-        through_chunks:
-          source: top_chunk_results
-          profiles:
-            q1_authority_family:
-              global_d: 5
-
-      chunk_retrieval_strategies:
-        dense_chunks:
-          mode: chunk_similarity
-          profiles:
-            default:
-              filter:
-                min_score: 0.53
-                per_document_k: 5
-
-      retrieval_policies:
-        standards_only_through_chunks__enriched:
-          querying: enriched
-          document_routing:
-            strategy: through_chunks
-            profile: q1_authority_family
-            post_processing: main_variant_only
-          chunk_retrieval:
-            strategy: dense_chunks
-            profile: default
-      ```
+<p align="center">
+  <a href="docs/images/PromptFoo-run.png" target="blank">
+    <img src="docs/images/PromptFoo-run.png" alt="Example PromptFoo run with a failure" width="750">
+  <br/><b>Example failed run from early experiments</b>
+  </a>
+</p>
 
 
-- **Structuring**
-  - In the first stage of the LLM pipeline, Prompt A performs a structured analysis of the retrieved context and identifies candidate accounting approaches. It returns a JSON ([example](./experiments/31_new_A_with_less_context_in_B/runs/2026-04-10_17-44-35_promptfoo-eval-family-q1/artifacts/Q1/Q1.0/content-min-score=0.53__expand=0__expand-to-section=true__llm_provider=openai-codex__retrieval-mode=documents/A-response.json)) with:
-      - primary accounting issue
-      - authority classification (primary / supporting / peripheral)
-      - authority competition handling (for example, preferring current governing standards over older or secondary authorities)
-      - candidate approaches
-      - or, a clarification payload (`status = needs_clarification`, `questions_fr`)
+### Layer-specific diagnostics
 
-- **Reasoning**
-  - In the second stage, Prompt B evaluates applicability based on the pruned context and approaches, then returns the final answer artifact with assumptions, recommendation, approach-by-approach applicability, and verbatim references
-      - Prompt B only receives **primary and supporting authority**, reducing noise and contradictions
-  - The same Prompt B JSON is then rendered into two markdown views:
-     - a memo-style answer (`B-response.md`)
-     - a FAQ-style answer (`B-response_faq.md`)
+Diagnostics scripts live under `experiments/analysis/` and include document routing, target chunk retrieval and approach detection.
 
-- **CLI**
-  - The main workflows are available through a [CLI](./src/cli.py)
-  - This includes ingestion, retrieval inspection, document-routing diagnostics, and the two-stage `answer` flow
+Each layer follows the same pattern:
 
-- **Web UI**
-  - A simple demonstration chat UI is available
-  - Supports follow-up questions
+- generate run-level JSON / Markdown / HTML artifacts;
+- compare saved runs;
+- append reproducible summaries to experiment write-ups.
 
-- **Diagnostics scripts**
-  - Layer-specific diagnostics now live under `experiments/analysis/`
-  - Each layer follows the same pattern:
-    - `generate_*_diagnostics.py` writes run-level artifacts into `<experiment>/runs/<run>/diagnostics/<layer>/`
-    - `compare_*_diagnostics.py` compares saved run artifacts across experiments
-    - `analyze_*_diagnostics.py` appends a reproducible summary into `<experiment>/EXPERIMENTS.md`
-  - Current layers include document routing, chunk retrieval, and approach identification
+<div align="center">
+  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <div align="center">
+      <a href="docs/images/retrieval-debugging-documents.png" target="blank">
+        <img src="docs/images/retrieval-debugging-documents.png" alt="Document retrieval analysis" width="400"><br/>
+        <b>Document retrieval analysis</b>
+      </a>
+    </div>
+    <div align="center">
+      <a href="docs/images/retrieval-debugging-chunks.png" target="blank">
+        <img src="docs/images/retrieval-debugging-chunks.png" alt="Chunk retrieval analysis" width="300"><br/>
+        <b>Chunk retrieval analysis</b>
+      </a>
+    </div>
+    <div align="center">
+      <a href="docs/images/retrieval-debugging-approaches.png" target="blank">
+        <img src="docs/images/retrieval-debugging-approaches.png" alt="Approach detection analysis" width="265"><br/>
+        <b>Approach detection analysis</b>
+      </a>
+    </div>
+  </div>
+</div>
 
+### More details
 
-- **Evaluation loop**
-  - Promptfoo-based regression tests for structured-answer quality
-  - schema validation
-  - approach coverage checks
-  - recommendation consistency checks
-  - retrieval-specific experiment artifacts such as target matrices, merged delta reports, similarity tables, and the layer-specific diagnostics outputs used to isolate failure modes before changing prompts
+More Promptfoo details are documented in [`docs/PROMPTFOO.md`](./docs/PROMPTFOO.md).
 
----
+## Repository map
 
-## Key design decisions
+- `src/` — CLI, ingestion, retrieval, and answer pipeline
+- `chrome_extension/` — corpus acquisition extension
+- `experiments/` — question families, runs, diagnostics, and experiment write-ups
+- `docs/` — methodology, journal, engineering notes, Promptfoo documentation
+- `config/` — retrieval policy and glossary configuration
 
-### Two-stage reasoning with explicit intermediate artifact
+## Run it yourself
 
-Separating:
-1. *What are the possible approaches?*
-2. *Which one applies here?*
+This demo uses four documents: `IFRS 9`, `IFRIC 16` and two Lefebvre Navis captures.
 
-→ significantly improved stability across question variants
-- stabilizes approach identification
-- makes reasoning auditable
-- enables context filtering for Prompt B
+### Setup
 
----
+The assistant supports several LLM providers: `openai`, `openai-codex`, `anthropic`, `mistral`, `minimax` and `ollama` for local LLMs.
 
-### Retrieval strategy is a first-class problem
+Configure the provider in your environment or in `.env` (see `.env.example`).
 
-Retrieval evolved from simple chunk search to a **multi-stage, document-aware pipeline**, and then further to chunk-first routing back to governing standards.
-
-Key lessons from the recent experiments:
-
-- **Corpus realism introduces authority competition**  
-  Early prototypes looked better partly because the corpus was artificially clean. As more IFRS variants and secondary materials were ingested, routing the right governing authority became much harder.
-
-- **The English control isolated the French problem**  
-  On the Q1 family, `documents2` retrieval was nearly perfect in English (`Q1en`) while remaining materially weaker in French. That strongly suggested the system had a retrieval-time multilingual matching problem, not just a prompt problem.
-
-- **Glossary enrichment was helpful but insufficient**  
-  The bilingual glossary materially improved retrieval for `IFRIC 16` and `IAS 39`, but it did not reliably solve `IFRS 9`. In some cases it made the ranking trade-off worse by shifting score mass toward the other two authorities.
-
-- **Routing from best local evidence was the breakthrough**  
-  The shift to `standards_only_through_chunks__enriched` made routing depend on the best chunk-level match inside a document bundle, then keep the governing standard. On the Q1 family, this was the first approach that consistently surfaced `IFRS 9`, `IAS 39`, and `IFRIC 16` together near the top.
-
-→ retrieval quality directly determines which accounting reasoning paths are even available to the model
-
----
-
-### Authority classification and competition handling improves reasoning quality
-
-Explicitly separating:
-- primary authority (governing)
-- supporting authority (clarifying / alternative models)
-- peripheral authority (ignored for approach identification)
-
-→ prevents irrelevant context from influencing the set of candidate approaches  
-→ enables Prompt B to operate on a much cleaner context
-
-Handling overlapping documents correctly
-→ ensures the right standard is used to produce the answer (for example `IFRS 9` rather than `IAS 39`)
-→ reduces noise by narrowing the context
-
----
-
-### Structured outputs enable evaluation
-
-Outputting JSON makes it possible to:
-- validate outputs programmatically
-- assert presence of key approaches
-- detect regressions across experiments
-- compare runs systematically
-- keep richer analysis artifacts such as retrieval target matrices, variant-similarity tables, and the layer-specific diagnostics scripts
-
-Those artifacts were especially useful in recent work to isolate distinct failure modes:
-- ingestion defects
-- French vs English retrieval gap
-- terminology mismatch
-- routing from broad document representations vs routing from strong local evidence
-
----
-
-## Evaluation with Promptfoo
-
-Promptfoo is the ongoing regression harness for structured-answer quality.
-
-Typical usage:
-
-```bash
-make eval-answer EXPERIMENT_DIR=promptfoo_regression
-make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval
-```
-
-Promptfoo now passes a single `policy-config` path into the answer runner; retrieval tuning lives in `config/policy.default.yaml` (copied into each run's `effective/` directory) rather than being spread across inline provider knobs. Archived runs preserve Prompt A/B inputs plus JSON, memo-style markdown, and FAQ-style markdown outputs.
-
-Retrieval and diagnostics work continue to live in experiment directories as first-class artifacts. Recent experiments also generate richer analysis outputs such as:
-- target matrices
-- merged delta reports
-- similarity tables
-- document-routing diagnostics
-- chunk-retrieval diagnostics
-- approach-identification diagnostics
-
-This has made it easier to tell apart:
-- a bad ingestion artifact
-- a French/English semantic mismatch
-- a terminology normalization issue
-- a routing problem caused by relying on whole-document representations rather than strong chunk-level evidence
-
-All artifacts are preserved and the Promptfoo UI can be launched to view the results of any evaluation.
-
-Promptfoo details, commands, storage layout, and archive conventions are documented in:
-- [`docs/PROMPTFOO.md`](./docs/PROMPTFOO.md)
-
----
-
-## Demo
-
-This section sets up a quick demo with only four documents: `IFRS 9`, `IFRIC 16`, and 2 Lefebvre Navis captures.
-
-### Set up
-
-The assistant supports `openai`, `openai-codex`, `anthropic`, `mistral`, `minimax`, and `ollama` as LLM providers. Configure the provider in your environment or in the `.env` file (see `.env.example`).
-
-Example using Mistral:
-
-```bash
-export LLM_PROVIDER=mistral
-export MISTRAL_API_KEY=xxx
-```
-
-Example using OpenAI Codex OAuth:
+Example using OpenAI Codex :
 
 ```bash
 codex login
 export LLM_PROVIDER=openai-codex
 export OPENAI_CODEX_MODEL=gpt-5.4
-# optional override if you do not use ~/.codex/auth.json
-# export CODEX_AUTH_FILE=/path/to/auth.json
 ```
 
-Example using local Ollama via its OpenAI-compatible API:
+### Run the demo
 
-```bash
-export LLM_PROVIDER=ollama
-export OLLAMA_MODEL=llama3.2
-# optional overrides
-# export OLLAMA_BASE_URL=http://localhost:11434/v1
-# export OLLAMA_API_KEY=ollama
-```
-
-Run the full demo flow end-to-end with the following:
+The simplest way to run the demo is to:
 
 ```bash
 make demo
 ```
 
-or go through it line by line by following the instructions.
+<details>
+<summary>If you want to run it manually and test the Chrome extension</summary>
 
-### Ingest documents
-
-#### Storing the 4 provided documents
-
-This is enough for the demo.
+#### Store the demo documents
 
 ```bash
 uv sync --all-groups
@@ -368,116 +326,117 @@ uv run python -m src.cli store examples/Lefebvre-Navis/20260412T190013Z--documen
 uv run python -m src.cli store examples/Lefebvre-Navis/20260412T190029Z--document.html
 ```
 
-#### Ingesting more documents
+#### Ingest more IFRS documents
 
-If you want to ingest the wider IFRS corpus through the Chrome extension:
-- create an account on https://ifrs.org and sign in through Chrome
-- install the [chrome extension](./chrome_extension/ifrs-expert-import/) through developer mode
-- either:
-  - open the [list of standards](https://www.ifrs.org/issued-standards/list-of-standards/) to batch-capture all selectable variants of all available standards,
-  - or a standard's page to capture all selectable variants for that standard
-- click on the extension's icon; this opens a side panel with live progress and saves one HTML + JSON pair per captured variant (Standard, Basis for Conclusions, Implementation Guidance, Illustrative Examples, when available)
+To ingest the wider IFRS corpus:
 
-   ![Ingestion commandline progress](./docs/images/IFRS-ingestion.png)
+1. create an account on `https://ifrs.org` and sign in through Chrome;
+2. install the [Chrome extension](./chrome_extension/ifrs-expert-import/) in developer mode;
+3. open either the IFRS list of standards page or an individual standard page;
+4. click the extension icon to capture the available variants;
+5. run:
 
-- run the ingestion command `uv run python -m src.cli ingest --scope all`
+```bash
+uv run python -m src.cli ingest --scope all
+```
 
-  `ingest` scans `~/Downloads/ifrs-expert/`, imports every complete HTML + JSON capture pair it finds, and archives each pair to `processed/`, `skipped/`, or `failed/`.
+The ingestion command scans `~/Downloads/ifrs-expert/`, imports complete HTML + JSON capture pairs, and archives each pair to `processed/`, `skipped`, or `failed`.
 
-   ![Ingestion commandline progress](./docs/images/Ingest-Screenshot.png)
+#### Ingest Lefebvre Navis
 
-#### Ingesting the Lefebvre Navis files
+Lefebvre Navis content is behind a paywall and is not distributed in this repository.
 
-These files are behind a paywall, so they cannot be distributed as part of the repo. The intended workflow is:
+Workflow:
 
-1. log in to Lefebvre on `https://abonnes.efl.fr`
-2. install the [chrome extension](./chrome_extension/ifrs-expert-import/) in developer mode
-3. open the Navis / Mémento IFRS content page
-4. choose one of the two capture modes in the left TOC:
-   - **chapter mode**: select a `CHAPITRE` node, then click the extension to capture only that chapter
-   - **full corpus mode**: select the corpus root node, then click the extension to crawl the whole corpus; this does **not** create one giant file, it emits **one HTML + JSON pair per chapter**
-5. click on the extension's icon; this opens a side panel with live progress and saves one HTML + JSON pair per chapter
-6. run the ingestion command: `uv run python -m src.cli ingest --scope all`
+1. log in to `https://abonnes.efl.fr`;
+2. install the [Chrome extension](./chrome_extension/ifrs-expert-import/) in developer mode;
+3. open the Navis / Mémento IFRS content page;
+4. choose chapter mode or full corpus mode;
+5. click the extension icon to capture one HTML + JSON pair per chapter;
+6. run:
 
-   `ingest` scans `~/Downloads/ifrs-expert/`, imports every complete HTML + JSON capture pair it finds, and archives each pair to `processed/`, `skipped/`, or `failed/`.
+```bash
+uv run python -m src.cli ingest --scope all
+```
 
-The extractor derives a `navis-...` document UID from the sidecar metadata and preserves the captured chapter/section hierarchy.
+The extractor derives a `navis-...` document UID from sidecar metadata and preserves the captured chapter / section hierarchy.
 
-### Quick start using the UI
+#### Quick start using the UI
 
 ```bash
 uv run streamlit run streamlit_app.py
 ```
 
-Then copy-paste the following and hit enter:
+Then paste:
 
 ```text
 Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?
 ```
 
-### Ask a question via the CLI
+#### Ask a question via the CLI
 
 ```bash
 echo "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?" \
   | uv run python -m src.cli answer
 ```
 
----
+</details>
 
 ## Development process
 
-This project was developed through an iterative, experiment-driven approach with a subject-matter expert.
+This project was developed through iterative experiments with a subject-matter expert.
 
-- See [`docs/METHODOLOGY.md`](./docs/METHODOLOGY.md) for the approach used to go from a single question to a prototype assistant
-- See [`docs/JOURNAL.md`](./docs/JOURNAL.md) for a chronological record of experiments, failures, and improvements
+Related docs:
 
-The journal is especially useful for understanding how the retrieval work evolved over time:
-- first from chunk retrieval to document routing
-- then to more realistic full-corpus authority competition
-- then to isolating the French vs English retrieval gap
-- then to testing glossary enrichment
-- and finally to routing through strong local chunk evidence inside documents
+- [`docs/METHODOLOGY.md`](./docs/METHODOLOGY.md) describes the planned methodology ;
+- [`docs/JOURNAL.md`](./docs/JOURNAL.md) records the chronological development process;
+- [`docs/ENGINEERING_NOTES.md`](./docs/ENGINEERING_NOTES.md) extracts the reusable lessons;
 
-These documents reflect how the system evolved in response to real-world constraints and feedback rather than from a single predetermined design.
+The journal preserves the actual sequence of experiments, failures, bug fixes, and design changes. The engineering notes are the shorter synthesis.
 
----
+## Checkpoint
 
-## Limitations
+### What the current project demonstrates
 
-- the strongest current evidence is still on the **Q1 family**; the latest retrieval gains should be read as demonstrated there first, not as a blanket claim of general IFRS coverage
-- the bilingual glossary is currently **hand-authored** and used only for retrieval embeddings; it is not yet a general terminology layer for answer generation
-- corpus realism still creates hard authority-overlap problems between governing standards, superseded standards, supporting materials, and practitioner commentary
-- ingestion quality still matters a lot; several recent retrieval improvements came from finding and fixing ingestion defects rather than from changing prompts
-- evaluation coverage is still limited compared with a full benchmark suite; this is a disciplined regression harness, not yet a comprehensive product evaluation framework
+- realistic corpus acquisition;
+- structured ingestion;
+- document-aware retrieval;
+- multilingual query enrichment;
+- cross-reference expansion;
+- two-stage LLM reasoning;
+- authority classification;
+- Promptfoo regression testing;
+- layer-specific diagnostics;
+- a clear empirical boundary for the architecture.
 
----
+
+### Limitations
+
+- The system is not a general IFRS oracle.
+- It works best for questions that can be framed as approach / treatment selection. It is weaker on single-framework assessment questions unless the standard exposes stable answer categories.
+- Some approach labels still need code-side canonicalization for evaluation stability.
+- Some target paragraphs are bridge paragraphs that can be missed even when the governing document is retrieved.
+- The bilingual glossary is still partly hand-tuned and used only for retrieval, it was not expanded beyond the needs of the Q1 family so it may not be needed in most cases. 
+- The evaluation harness is a regression system, not a comprehensive IFRS benchmark.
 
 ## Future work
 
-- broaden evaluation beyond the Q1 family and beyond approach-centric hedge-accounting questions
-- continue improving French retrieval and routing across more IFRS topics and more varied phrasings
-- formalize retrieval metrics further alongside answer metrics
-- decide when supporting materials should be re-expanded after standard selection to improve answer quality without reintroducing too much noise
-- test whether glossary generation can be automated from IFRS definition/terminology sections with an LLM in a way that is robust enough to be worth keeping; for now this remains a plausible retrieval aid, not a core productized path
-- refine uncertainty handling in outputs
+1. Expanding the kinds of questions that are supported by classifying the question type before choosing the intermediate reasoning schema, so approach-selection, measurement, recognition-threshold, eligibility, and control-assessment questions can use different structures.
 
----
+2. Expand scope to user's wider workflow by reasoning on the entire case file.
+    - company-evidence ingestion: process contracts, internal memos, org charts, policies, and other documents collected during an accounting analysis;
+    - mixed evidence reasoning: reason jointly over company-specific facts, standards, and interpretative guidance while keeping their roles separate;
+    - fact extraction and evidence requests: identify missing facts needed for an accounting conclusion and generate targeted questions for stakeholders;
+    - case-file workflow: support iterative collection of documents, notes, assumptions, and conclusions for a specific accounting issue.
 
-## Summary
-
-This project is an exploration of how to build **reliable LLM systems** by:
-- grounding *reasoning* in explicit sources
-- structuring intermediate and final outputs
-- separating retrieval, approach identification, and applicability
-- iterating with real users
-- making behavior testable
-- and treating retrieval as an engineering problem in its own right
-
-The core insight remains:
-
-> LLM performance is not just a prompting problem —  
-> it is a **system design problem**.
-
-The latest retrieval work sharpened that conclusion:
-
-> In a realistic expert corpus, a large part of the problem is routing the right authority from overlapping evidence, across languages, before the model reasons at all.
+3. Productization work, including:
+    - observability and retrieval provenance across the full pipeline;
+    - model/version regression tests across archived question families;
+    - evaluation dataset governance, including versioned expected outputs, SME approvals, and known caveats;
+    - corpus versioning and freshness checks, so answers can be tied back to a specific source snapshot;
+    - citation-support checks, not only citation presence checks;
+    - cost and latency measurement by pipeline stage;
+    - stronger context pruning, caching, and prompt-size control;
+    - SME feedback capture that turns reviewed answers into a golden dataset;
+    - evaluate whether a specialized orchestration framework would simplify the implementation and improve observability
+    - follow-up handling that decides whether to reuse prior context, retrieve additional evidence, or treat the message as a new accounting issue;

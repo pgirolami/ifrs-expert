@@ -14,6 +14,41 @@ not call any LLM. It runs `scripts/run_retrieve.py`, checks that the right
 documents and sections are retrieved, and saves the exact text used for the
 similarity search as a debug artifact for each question.
 
+
+Typical commands:
+
+```bash
+make eval-retrieve EXPERIMENT_DIR=promptfoo_retrieval
+make eval-answer EXPERIMENT_DIR=promptfoo_regression
+```
+
+The project uses two complementary eval modes.
+
+## Types of evals
+### Retrieval-only evals
+
+Retrieval evals do not call an LLM.
+
+They check:
+
+- required governing documents;
+- required paragraph / section ranges;
+- exact embedded query text saved as a debug artifact.
+
+These evals catch retrieval regressions cheaply and deterministically.
+
+### Answer evals
+
+Answer evals check:
+
+- schema validity;
+- expected approach coverage;
+- recommendation consistency;
+- applicability values;
+- presence of references;
+- stability across variants and repeated runs.
+
+
 ## Quick start
 
 Run and inspect an experiment history with:
