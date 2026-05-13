@@ -10,9 +10,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
+from src.case_analysis.models import ValidationFailure
+from src.case_analysis.stages import RetrieveSourceMaterialStage, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
-from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
@@ -218,6 +219,8 @@ def _build_retrieved_chunk_hits(
         for chunk in doc_chunks.get(doc_uid, []):
             if chunk.id != chunk_db_id:
                 continue
+            provenance_value = result.get("provenance")
+            provenance = Provenance(provenance_value) if provenance_value is not None else None
             chunk_hits.append(
                 RetrievedChunkHit(
                     doc_uid=doc_uid,
@@ -231,7 +234,7 @@ def _build_retrieved_chunk_hits(
                     page_start=chunk.page_start,
                     page_end=chunk.page_end,
                     text=chunk.text,
-                    provenance=Provenance(result["provenance"]),
+                    provenance=provenance,
                 )
             )
             break
@@ -263,9 +266,10 @@ class AnswerCommand:
         policy = self._options.policy
         logger.info(f"AnswerCommand(query='{self.query[:50]}', k={policy.k}, expand={policy.expand}, f={policy.full_doc_threshold}, min-score={policy.text.min_score})")
 
-        validation_error = self._get_validation_error()
-        if validation_error:
-            return AnswerCommandResult.failure(query=self.query, error=validation_error, error_stage="validation")
+        validation_result = ValidateQuestionStage().execute(query=self.query, policy=policy)
+        if isinstance(validation_result, ValidationFailure):
+            return AnswerCommandResult.failure(query=self.query, error=validation_result.message, error_stage=validation_result.error_stage)
+        self.query = validation_result.question
 
         prerequisite_error = self._get_prerequisite_error()
         if prerequisite_error:
@@ -374,40 +378,36 @@ class AnswerCommand:
             return "Error: No document index found. Please run 'store' command first."
         return None
 
+    def _build_retrieval_pipeline_config(self) -> RetrievalPipelineConfig:
+        """Build the retrieval pipeline dependency bundle for source retrieval."""
+        return RetrievalPipelineConfig(
+            vector_store=self._config.vector_store,
+            chunk_store=self._config.chunk_store,
+            init_db_fn=self._config.init_db_fn,
+            index_path_fn=self._config.index_path_fn,
+            section_store=self._config.section_store,
+            reference_store=self._config.reference_store,
+            title_vector_store=self._config.title_vector_store,
+            title_index_path_fn=self._config.title_index_path_fn,
+            document_vector_store=self._config.document_vector_store,
+            document_vector_store_factory=self._config.document_vector_store_factory,
+            document_index_path_fn=self._config.document_index_path_fn,
+        )
+
     def _execute_workflow(self) -> AnswerCommandResult:
         """Execute the main workflow."""
         policy = self._options.policy
-        error, retrieval_result = execute_retrieval(
-            request=build_retrieval_request(
-                query=self.query,
-                policy=policy,
-                chunk_min_score=policy.titles.min_score if policy.chunk_retrieval.mode == "title_similarity" else policy.text.min_score,
-                expand_to_section=policy.expand_to_section if policy.document_routing.source == "all_documents" else True,
-            ),
-            config=RetrievalPipelineConfig(
-                vector_store=self._config.vector_store,
-                chunk_store=self._config.chunk_store,
-                init_db_fn=self._config.init_db_fn,
-                index_path_fn=self._config.index_path_fn,
-                section_store=self._config.section_store,
-                reference_store=self._config.reference_store,
-                title_vector_store=self._config.title_vector_store,
-                title_index_path_fn=self._config.title_index_path_fn,
-                document_vector_store=self._config.document_vector_store,
-                document_vector_store_factory=self._config.document_vector_store_factory,
-                document_index_path_fn=self._config.document_index_path_fn,
-            ),
+        source_package_result = RetrieveSourceMaterialStage(pipeline_config=self._build_retrieval_pipeline_config(), execute_retrieval_fn=execute_retrieval).execute(
+            question=self.query,
+            policy=policy,
         )
-        if error is not None:
-            return AnswerCommandResult.failure(query=self.query, error=error, error_stage="retrieval")
-        if retrieval_result is None:
-            return AnswerCommandResult.failure(
-                query=self.query,
-                error="Error: Retrieval did not return a result",
-                error_stage="retrieval",
-            )
+        if isinstance(source_package_result, ValidationFailure):
+            return AnswerCommandResult.failure(query=self.query, error=source_package_result.message, error_stage=source_package_result.error_stage)
 
-        self._retrieved_doc_uids = retrieval_result.retrieved_doc_uids
+        source_package = source_package_result
+        self._retrieved_doc_uids = source_package.retrieved_doc_uids
+        search_results = source_package.to_search_results()
+        doc_chunks = source_package.to_doc_chunks()
         result = AnswerCommandResult(
             query=self.query,
             retrieved_doc_uids=list(self._retrieved_doc_uids),
@@ -418,11 +418,11 @@ class AnswerCommand:
                     document_type=hit.document_type,
                     document_kind=infer_document_kind(hit.doc_uid),
                 )
-                for hit in retrieval_result.document_hits
+                for hit in source_package.document_hits
             ],
-            chunk_hits=_build_retrieved_chunk_hits(retrieval_result.chunk_results, retrieval_result.doc_chunks),
+            chunk_hits=_build_retrieved_chunk_hits(search_results, doc_chunks),
         )
-        return self._process_prompts(result, retrieval_result.chunk_results, retrieval_result.doc_chunks)
+        return self._process_prompts(result, search_results, doc_chunks)
 
     def _process_prompts(
         self,
