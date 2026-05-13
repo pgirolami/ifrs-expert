@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from langgraph.graph import END, START, StateGraph
@@ -40,11 +40,15 @@ class CaseAnalysisGraphRunner:
     execute_retrieval_fn: ExecuteRetrievalFn
     build_answer_result_fn: Callable[[RetrievedSourcePackage], AnswerCommandResult]
     process_prompts_fn: Callable[[AnswerCommandResult, RetrievedSourcePackage], AnswerCommandResult]
+    _graph: CompiledStateGraph = field(init=False, repr=False, compare=False)
+
+    def __post_init__(self) -> None:
+        """Compile the workflow graph once for this runner instance."""
+        object.__setattr__(self, "_graph", self._build_graph())
 
     def run(self, question: str) -> AnswerCommandResult:
         """Run the graph and return an answer command result."""
-        graph = self._build_graph()
-        final_state = graph.invoke({"question": question})
+        final_state = self._graph.invoke({"question": question})
         answer_result = final_state.get("answer_result")
         if answer_result is not None:
             return answer_result
@@ -70,12 +74,12 @@ class CaseAnalysisGraphRunner:
         builder.add_edge(START, "validate_question")
         builder.add_conditional_edges(
             "validate_question",
-            self._route_after_validation,
+            self._route_after_failure_capable_node,
             {"continue": "retrieve_source_material", "fail": "build_failure"},
         )
         builder.add_conditional_edges(
             "retrieve_source_material",
-            self._route_after_retrieval,
+            self._route_after_failure_capable_node,
             {"continue": "process_prompts", "fail": "build_failure"},
         )
         builder.add_edge("process_prompts", END)
@@ -89,8 +93,8 @@ class CaseAnalysisGraphRunner:
             return {"failure": validation_result}
         return {"validated_question": validation_result}
 
-    def _route_after_validation(self, state: CaseAnalysisState) -> str:
-        """Choose whether to continue after validation."""
+    def _route_after_failure_capable_node(self, state: CaseAnalysisState) -> str:
+        """Continue unless the previous node recorded a failure."""
         if state.failure is not None:
             return "fail"
         return "continue"
@@ -106,12 +110,6 @@ class CaseAnalysisGraphRunner:
         if isinstance(retrieval_result, ValidationFailure):
             return {"failure": retrieval_result}
         return {"retrieved_source_package": retrieval_result}
-
-    def _route_after_retrieval(self, state: CaseAnalysisState) -> str:
-        """Choose whether to continue after retrieval."""
-        if state.failure is not None:
-            return "fail"
-        return "continue"
 
     def _process_prompts_node(self, state: CaseAnalysisState) -> dict[str, AnswerCommandResult]:
         """Build the initial answer result and run prompt processing."""
