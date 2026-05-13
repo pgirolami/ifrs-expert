@@ -52,9 +52,11 @@ class AnswerCommandResult:
     prompt_a_text: str | None = None
     prompt_a_raw_response: str | None = None
     prompt_a_json: JSONValue | None = None
+    authority_sufficiency_json: JSONValue | None = None
     prompt_b_text: str | None = None
     prompt_b_raw_response: str | None = None
     prompt_b_json: JSONValue | None = None
+    citation_verification_json: JSONValue | None = None
     prompt_b_memo_markdown: str | None = None
     prompt_b_faq_markdown: str | None = None
     error: str | None = None

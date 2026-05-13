@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
-from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage, ValidateQuestionStage
+from src.case_analysis.stages import AuthoritySufficiencyStage, ClassifyAuthorityStage, EvaluateApplicabilityStage, ValidateQuestionStage, VerifyCitationsStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
@@ -456,6 +456,13 @@ class AnswerCommand:
         result.prompt_a_raw_response = authority_classification_result.raw_response
         result.prompt_a_json = authority_classification_result.payload
 
+        authority_sufficiency_result = AuthoritySufficiencyStage().execute(authority_classification_result.payload)
+        result.authority_sufficiency_json = authority_sufficiency_result.model_dump(mode="json")
+        if not authority_sufficiency_result.should_continue:
+            result.error = f"Error: Authority classification requires controlled stop: {authority_sufficiency_result.reason}"
+            result.error_stage = "authority_sufficiency"
+            return result
+
         # Build Prompt B context: use only chunks from primary and supporting authority
         prompt_b_context = self._build_prompt_b_context(formatted_chunks, result.prompt_a_json)
         result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
@@ -471,6 +478,8 @@ class AnswerCommand:
         logger.info("Step 2 complete: Received final answer from LLM")
 
         chunk_data = self._build_chunk_data_for_markdown(prompt_b_context)
+        citation_verification_result = VerifyCitationsStage().execute(applicability_analysis_result.payload, chunk_data)
+        result.citation_verification_json = citation_verification_result.model_dump(mode="json")
 
         prompt_b_doc_uids = self._extract_doc_uids_from_context(prompt_b_context)
 

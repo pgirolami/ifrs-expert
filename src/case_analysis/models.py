@@ -125,5 +125,23 @@ class ApplicabilityAnalysisResult(BaseModel):
     payload: dict[str, object]
 
 
+class AuthoritySufficiencyResult(BaseModel):
+    """Decision from the authority sufficiency gate after Prompt A."""
+
+    status: str
+    should_continue: bool
+    reason: str | None = None
+    details: dict[str, object] | None = None
+
+
+class CitationVerificationResult(BaseModel):
+    """Deterministic citation verification result for the final analysis."""
+
+    status: Literal["pass", "warn", "fail"]
+    checked_reference_count: int
+    missing_references: list[str]
+    unsupported_references: list[str]
+
+
 StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
 RouteDecision = Literal["continue", "fail"]

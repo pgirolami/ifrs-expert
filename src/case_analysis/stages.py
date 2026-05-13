@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol, cast
 
-from src.case_analysis.models import ApplicabilityAnalysisResult, AuthorityClassificationResult, RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
+from src.case_analysis.models import ApplicabilityAnalysisResult, AuthorityClassificationResult, AuthoritySufficiencyResult, CitationVerificationResult, RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
 from src.retrieval.pipeline import execute_retrieval
 from src.retrieval.request_builder import build_retrieval_request
 
@@ -164,3 +164,76 @@ class EvaluateApplicabilityStage(JsonPromptStage):
     def __init__(self, send_to_llm_fn: Callable[[str], str]) -> None:
         """Initialize the Prompt B stage with an LLM sender."""
         super().__init__(send_to_llm_fn=send_to_llm_fn, error_stage="prompt_b", result_name="Prompt B")
+
+
+class AuthoritySufficiencyStage:
+    """Apply deterministic routing checks to the Prompt A authority result."""
+
+    def execute(self, authority_payload: dict[str, object]) -> AuthoritySufficiencyResult:
+        """Return whether the workflow should continue after Prompt A."""
+        status_value = authority_payload.get("status")
+        status = status_value if isinstance(status_value, str) else "pass"
+        if status in {"needs_clarification", "insufficient_context", "insufficient_authority"}:
+            return AuthoritySufficiencyResult(
+                status=status,
+                should_continue=False,
+                reason=status,
+                details=authority_payload,
+            )
+        clarification_required = authority_payload.get("clarification_required")
+        if clarification_required is True:
+            return AuthoritySufficiencyResult(
+                status="needs_clarification",
+                should_continue=False,
+                reason="needs_clarification",
+                details=authority_payload,
+            )
+        return AuthoritySufficiencyResult(status=status, should_continue=True)
+
+
+class VerifyCitationsStage:
+    """Verify that final-answer citations point to retrieved source text."""
+
+    def execute(self, analysis_payload: dict[str, object], chunk_data: dict[str, str]) -> CitationVerificationResult:
+        """Check cited sections and excerpts against retrieved chunk text."""
+        references = self._collect_references(analysis_payload)
+        if not references:
+            return CitationVerificationResult(
+                status="warn",
+                checked_reference_count=0,
+                missing_references=["No references found in applicability analysis."],
+                unsupported_references=[],
+            )
+
+        unsupported_references: list[str] = []
+        for reference in references:
+            section = reference.get("section")
+            excerpt = reference.get("excerpt")
+            if not isinstance(section, str) or not isinstance(excerpt, str) or not excerpt.strip():
+                unsupported_references.append(str(reference))
+                continue
+            candidate_texts = [text for key, text in chunk_data.items() if key.endswith(f"/{section}")]
+            if not any(excerpt in text for text in candidate_texts):
+                unsupported_references.append(f"{section}: {excerpt}")
+
+        status = "fail" if unsupported_references else "pass"
+        return CitationVerificationResult(
+            status=status,
+            checked_reference_count=len(references),
+            missing_references=[],
+            unsupported_references=unsupported_references,
+        )
+
+    def _collect_references(self, value: object) -> list[dict[str, object]]:
+        """Collect reference dictionaries recursively from a JSON-like payload."""
+        references: list[dict[str, object]] = []
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if key == "references" and isinstance(item, list):
+                    references.extend(cast("dict[str, object]", reference) for reference in item if isinstance(reference, dict))
+                else:
+                    references.extend(self._collect_references(item))
+        elif isinstance(value, list):
+            for item in value:
+                references.extend(self._collect_references(item))
+        return references
