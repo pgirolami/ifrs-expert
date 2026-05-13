@@ -111,5 +111,19 @@ class RetrievedSourcePackage(BaseModel):
         return cast("dict[str, list[Chunk]]", self.doc_chunks)
 
 
-StageOutcome = ValidatedQuestion | RetrievedSourcePackage | ValidationFailure
+class AuthorityClassificationResult(BaseModel):
+    """Typed Prompt A result after JSON/object contract validation."""
+
+    raw_response: str
+    payload: dict[str, object]
+
+
+class ApplicabilityAnalysisResult(BaseModel):
+    """Typed Prompt B result after JSON/object contract validation."""
+
+    raw_response: str
+    payload: dict[str, object]
+
+
+StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
 RouteDecision = Literal["continue", "fail"]

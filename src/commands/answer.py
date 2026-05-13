@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.case_analysis.models import ValidationFailure
-from src.case_analysis.stages import RetrieveSourceMaterialStage, ValidateQuestionStage
+from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage, RetrieveSourceMaterialStage, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
@@ -437,66 +437,48 @@ class AnswerCommand:
         prompt_a_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
         result.prompt_a_text = _extract_prompt_content(prompt_a_full)
 
-        try:
-            result.prompt_a_raw_response = self._config.send_to_llm_fn(result.prompt_a_text)
-        except RuntimeError as e:
-            logger.exception("Prompt A LLM call failed")
-            result.error = f"Error: LLM call failed: {e}"
-            result.error_stage = "prompt_a"
+        authority_classification_result = ClassifyAuthorityStage(send_to_llm_fn=self._config.send_to_llm_fn).execute(result.prompt_a_text)
+        if isinstance(authority_classification_result, ValidationFailure):
+            result.error = authority_classification_result.message
+            result.error_stage = authority_classification_result.error_stage
             return result
 
-        try:
-            result.prompt_a_json = _parse_json_value(result.prompt_a_raw_response)
-        except (json.JSONDecodeError, TypeError) as e:
-            logger.exception("Could not parse JSON response from Prompt A")
-            result.error = f"Error: LLM returned invalid JSON: {e}\n\nResponse was:\n{result.prompt_a_raw_response}"
-            result.error_stage = "prompt_a_parse"
-            return result
+        result.prompt_a_raw_response = authority_classification_result.raw_response
+        result.prompt_a_json = authority_classification_result.payload
 
         # Build Prompt B context: use only chunks from primary and supporting authority
         prompt_b_context = self._build_prompt_b_context(formatted_chunks, result.prompt_a_json)
         result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
-        try:
-            result.prompt_b_raw_response = self._config.send_to_llm_fn(result.prompt_b_text)
-        except RuntimeError as e:
-            logger.exception("Prompt B LLM call failed")
-            result.error = f"Error: LLM call failed: {e}"
-            result.error_stage = "prompt_b"
+        applicability_analysis_result = EvaluateApplicabilityStage(send_to_llm_fn=self._config.send_to_llm_fn).execute(result.prompt_b_text)
+        if isinstance(applicability_analysis_result, ValidationFailure):
+            result.error = applicability_analysis_result.message
+            result.error_stage = applicability_analysis_result.error_stage
             return result
 
+        result.prompt_b_raw_response = applicability_analysis_result.raw_response
+        result.prompt_b_json = applicability_analysis_result.payload
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        if result.prompt_b_raw_response is not None:
-            try:
-                result.prompt_b_json = _parse_json_value(result.prompt_b_raw_response)
-            except (json.JSONDecodeError, TypeError) as e:
-                logger.warning(f"Prompt B response could not be parsed as JSON: {e}")
-            else:
-                if isinstance(result.prompt_b_json, dict):
-                    # Build chunk_data for citation formatting
-                    chunk_data = self._build_chunk_data_for_markdown(prompt_b_context)
+        chunk_data = self._build_chunk_data_for_markdown(prompt_b_context)
 
-                    # Extract Prompt B context doc_uids from the filtered context
-                    prompt_b_doc_uids = self._extract_doc_uids_from_context(prompt_b_context)
+        prompt_b_doc_uids = self._extract_doc_uids_from_context(prompt_b_context)
 
-                    # Create options and generate markdown
-                    options = MarkdownOptions(
-                        question=self.query,
-                        doc_uids=self._retrieved_doc_uids,
-                        authority_doc_uids=prompt_b_doc_uids,
-                        primary_accounting_issue=result.prompt_a_json.get("primary_accounting_issue") if isinstance(result.prompt_a_json, dict) else None,
-                        chunk_data=chunk_data,
-                    )
-                    result.prompt_b_memo_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
+        primary_accounting_issue = result.prompt_a_json.get("primary_accounting_issue") if isinstance(result.prompt_a_json, dict) else None
+        primary_accounting_issue_text = primary_accounting_issue if isinstance(primary_accounting_issue, str) else None
+        options = MarkdownOptions(
+            question=self.query,
+            doc_uids=self._retrieved_doc_uids,
+            authority_doc_uids=prompt_b_doc_uids,
+            primary_accounting_issue=primary_accounting_issue_text,
+            chunk_data=chunk_data,
+        )
+        result.prompt_b_memo_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
 
-                    # Generate FAQ-style markdown from the same JSON
-                    result.prompt_b_faq_markdown = convert_json_to_faq_markdown(
-                        result.prompt_b_json,
-                        primary_accounting_issue=options.primary_accounting_issue,
-                    )
-                else:
-                    logger.warning("Prompt B response parsed as JSON but is not an object; markdown conversion skipped")
+        result.prompt_b_faq_markdown = convert_json_to_faq_markdown(
+            result.prompt_b_json,
+            primary_accounting_issue=options.primary_accounting_issue,
+        )
 
         result.mark_success()
         return result

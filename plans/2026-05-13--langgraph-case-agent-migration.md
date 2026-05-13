@@ -734,6 +734,10 @@ Update docs as each step lands:
 
 # Suggested milestone breakdown
 
+IMPORTANT RULES: 
+- In all cases where you need to run an answer eval, only run it on Q1.0.txt
+- You can call as many retrieval evals as necessary
+
 ## Milestone A — Stage extraction
 
 - New stage classes/services.
