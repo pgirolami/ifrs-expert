@@ -1,0 +1,14 @@
+{
+  "experiment_name": "58_langgraph_case_workflow_validation",
+  "generated_at": "2026-05-13T15:30:09.870052+00:00",
+  "runs": [
+    {
+      "run_id": "2026-05-13_15-29-17_langgraph-case-workflow-q1-retrieval-diagnostics",
+      "provider_name": "Q1 retrieval non-regression gate",
+      "policy_name": "standards_only_through_chunks__enriched",
+      "output_dir": "experiments/58_langgraph_case_workflow_validation/runs/2026-05-13_15-29-17_langgraph-case-workflow-q1-retrieval-diagnostics/diagnostics/document_routing",
+      "markdown_path": "experiments/58_langgraph_case_workflow_validation/runs/2026-05-13_15-29-17_langgraph-case-workflow-q1-retrieval-diagnostics/diagnostics/document_routing/document_routing_diagnostics.md",
+      "json_path": "experiments/58_langgraph_case_workflow_validation/runs/2026-05-13_15-29-17_langgraph-case-workflow-q1-retrieval-diagnostics/diagnostics/document_routing/document_routing_diagnostics.json"
+    }
+  ]
+}
