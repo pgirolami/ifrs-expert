@@ -10,8 +10,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
-from src.case_analysis.models import ValidationFailure
-from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage, RetrieveSourceMaterialStage, ValidateQuestionStage
+from src.case_analysis.graph import CaseAnalysisGraphRunner
+from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
+from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.commands.document_output import build_output_document_sections
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
@@ -395,20 +396,22 @@ class AnswerCommand:
         )
 
     def _execute_workflow(self) -> AnswerCommandResult:
-        """Execute the main workflow."""
-        policy = self._options.policy
-        source_package_result = RetrieveSourceMaterialStage(pipeline_config=self._build_retrieval_pipeline_config(), execute_retrieval_fn=execute_retrieval).execute(
-            question=self.query,
-            policy=policy,
+        """Execute the main workflow through the deterministic case-analysis graph."""
+        runner = CaseAnalysisGraphRunner(
+            policy=self._options.policy,
+            pipeline_config=self._build_retrieval_pipeline_config(),
+            execute_retrieval_fn=execute_retrieval,
+            build_answer_result_fn=self._build_answer_result_from_source_package,
+            process_prompts_fn=self._process_source_package_prompts,
         )
-        if isinstance(source_package_result, ValidationFailure):
-            return AnswerCommandResult.failure(query=self.query, error=source_package_result.message, error_stage=source_package_result.error_stage)
+        return runner.run(self.query)
 
-        source_package = source_package_result
+    def _build_answer_result_from_source_package(self, source_package: RetrievedSourcePackage) -> AnswerCommandResult:
+        """Build the public answer result artifacts from retrieved source material."""
         self._retrieved_doc_uids = source_package.retrieved_doc_uids
         search_results = source_package.to_search_results()
         doc_chunks = source_package.to_doc_chunks()
-        result = AnswerCommandResult(
+        return AnswerCommandResult(
             query=self.query,
             retrieved_doc_uids=list(self._retrieved_doc_uids),
             document_hits=[
@@ -422,7 +425,14 @@ class AnswerCommand:
             ],
             chunk_hits=_build_retrieved_chunk_hits(search_results, doc_chunks),
         )
-        return self._process_prompts(result, search_results, doc_chunks)
+
+    def _process_source_package_prompts(
+        self,
+        result: AnswerCommandResult,
+        source_package: RetrievedSourcePackage,
+    ) -> AnswerCommandResult:
+        """Run prompt processing for a retrieved source package."""
+        return self._process_prompts(result, source_package.to_search_results(), source_package.to_doc_chunks())
 
     def _process_prompts(
         self,
