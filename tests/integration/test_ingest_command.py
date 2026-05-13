@@ -133,10 +133,12 @@ def _store_factory(
     _stores.setdefault("chunk_store", InMemoryChunkStore())
     _stores.setdefault("document_store", InMemoryDocumentStore())
     _stores.setdefault("section_store", InMemorySectionStore())
+    _stores.setdefault("vector_store", RecordingVectorStore())
+    _stores.setdefault("title_vector_store", RecordingTitleVectorStore())
     chunk_store = _stores["chunk_store"]
     document_store = _stores["document_store"]
-    vector_store = RecordingVectorStore()
-    title_vector_store = RecordingTitleVectorStore()
+    vector_store = _stores["vector_store"]
+    title_vector_store = _stores["title_vector_store"]
     dependencies = StoreDependencies(
         chunk_store=_stores["chunk_store"],
         document_store=_stores["document_store"],
@@ -154,7 +156,7 @@ def _store_factory(
 
 
 # Module-level mutable container for in-memory stores set by _store_factory
-_stores: dict[str, InMemoryChunkStore | InMemoryDocumentStore | InMemorySectionStore] = {}
+_stores: dict[str, object] = {}
 chunk_store: InMemoryChunkStore | None = None
 document_store: InMemoryDocumentStore | None = None
 

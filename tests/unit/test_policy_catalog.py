@@ -33,7 +33,7 @@ def test_resolve_retrieval_policy_resolves_strategy_scoped_profiles() -> None:
     assert policy.document_routing.profile_config.by_document_type["IFRS-S"].similarity_representation == "full"
     assert policy.chunk_retrieval.mode == "chunk_similarity"
     assert policy.chunk_retrieval.profile == "default"
-    assert policy.chunk_retrieval.profile_config.filter.per_document_k == 5
+    assert policy.chunk_retrieval.profile_config.filter.per_document_k == 10
 
 
 def test_resolve_retrieval_policy_rejects_unknown_querying_reference(tmp_path: Path) -> None:
