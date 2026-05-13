@@ -143,5 +143,30 @@ class CitationVerificationResult(BaseModel):
     unsupported_references: list[str]
 
 
+class CaseEvidenceAgentInput(BaseModel):
+    """Input state for bounded case-evidence gathering."""
+
+    case_id: str
+    issue_type: str
+    known_facts: list[str]
+    required_criteria: list[str]
+
+
+class ToolCallRecord(BaseModel):
+    """Audit record for one bounded-agent tool call."""
+
+    tool_name: str
+    arguments: dict[str, object]
+    output: dict[str, object] | None = None
+    error: str | None = None
+
+
+class CaseEvidenceAgentResult(BaseModel):
+    """Output from the bounded case-evidence gathering agent."""
+
+    status: Literal["disabled", "complete"]
+    tool_calls: list[ToolCallRecord]
+
+
 StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
 RouteDecision = Literal["continue", "fail"]
