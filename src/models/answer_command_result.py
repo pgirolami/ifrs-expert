@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, TypeAlias, TypeVar, cast
 
 if TYPE_CHECKING:
+    from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
     from src.models.provenance import Provenance
 
 JSONScalar: TypeAlias = str | int | float | bool | None
@@ -58,10 +59,12 @@ class AnswerCommandResult:
     approach_identification_text: str | None = None
     approach_identification_raw_response: str | None = None
     approach_identification_json: JSONValue | None = None
+    approach_identification_output: ApproachIdentificationOutput | None = None
     authority_sufficiency_json: JSONValue | None = None
     applicability_analysis_text: str | None = None
     applicability_analysis_raw_response: str | None = None
     applicability_analysis_json: JSONValue | None = None
+    applicability_analysis_output: ApplicabilityAnalysisOutput | None = None
     citation_verification_json: JSONValue | None = None
     applicability_analysis_memo_markdown: str | None = None
     applicability_analysis_faq_markdown: str | None = None
@@ -83,10 +86,12 @@ class AnswerCommandResult:
         self.approach_identification_text = cast("str | None", kwargs.pop("approach_identification_text", None))
         self.approach_identification_raw_response = cast("str | None", kwargs.pop("approach_identification_raw_response", None))
         self.approach_identification_json = cast("JSONValue | None", kwargs.pop("approach_identification_json", None))
+        self.approach_identification_output = cast("ApproachIdentificationOutput | None", kwargs.pop("approach_identification_output", None))
         self.authority_sufficiency_json = cast("JSONValue | None", kwargs.pop("authority_sufficiency_json", None))
         self.applicability_analysis_text = cast("str | None", kwargs.pop("applicability_analysis_text", None))
         self.applicability_analysis_raw_response = cast("str | None", kwargs.pop("applicability_analysis_raw_response", None))
         self.applicability_analysis_json = cast("JSONValue | None", kwargs.pop("applicability_analysis_json", None))
+        self.applicability_analysis_output = cast("ApplicabilityAnalysisOutput | None", kwargs.pop("applicability_analysis_output", None))
         self.citation_verification_json = cast("JSONValue | None", kwargs.pop("citation_verification_json", None))
         self.applicability_analysis_memo_markdown = cast("str | None", kwargs.pop("applicability_analysis_memo_markdown", None))
         self.applicability_analysis_faq_markdown = cast("str | None", kwargs.pop("applicability_analysis_faq_markdown", None))

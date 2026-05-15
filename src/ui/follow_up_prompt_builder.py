@@ -67,6 +67,9 @@ class GroundedFollowUpPromptBuilder:
         if result.applicability_analysis_memo_markdown:
             logger.info("ChatService: using grounded markdown context for follow-up prompt")
             return result.applicability_analysis_memo_markdown, "markdown"
+        if result.applicability_analysis_output is not None:
+            logger.info("ChatService: using grounded typed applicability output for follow-up prompt")
+            return result.applicability_analysis_output.model_dump_json(indent=2), "typed_output"
         if result.applicability_analysis_json is not None:
             logger.info("ChatService: using grounded JSON context for follow-up prompt")
             return _serialize_json_value(result.applicability_analysis_json), "json"

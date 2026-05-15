@@ -1,22 +1,27 @@
-"""Tests for the typed grounded follow-up agent."""
+"""Tests for grounded follow-up generation wiring."""
 
 from __future__ import annotations
+
+from dataclasses import dataclass
 
 from src.ui.follow_up_agent import GroundedFollowUpOutput, GroundedFollowUpTextGenerator
 
 
-class _FakeGenerator:
+@dataclass(frozen=True)
+class _FakeFollowUpGenerator:
+    output: GroundedFollowUpOutput
+
     def generate_follow_up(self, prompt: str) -> GroundedFollowUpOutput:
-        return GroundedFollowUpOutput(markdown=f"# {prompt}", limitations=["scope"], out_of_scope=False)
+        del prompt
+        return self.output
 
 
-class TestGroundedFollowUpTextGenerator:
-    """Behavior tests for the text adapter over structured follow-up output."""
+def test_grounded_follow_up_text_generator_returns_markdown() -> None:
+    """Text adapter should expose markdown from structured follow-up output."""
+    generator = GroundedFollowUpTextGenerator(
+        generator=_FakeFollowUpGenerator(
+            output=GroundedFollowUpOutput(markdown="hello", limitations=["limit"], out_of_scope=False),
+        ),
+    )
 
-    def test_generate_text_returns_markdown(self) -> None:
-        generator = GroundedFollowUpTextGenerator(generator=_FakeGenerator())
-
-        markdown = generator.generate_text("Follow up")
-
-        if markdown != "# Follow up":
-            raise AssertionError("Expected markdown returned from structured follow-up output")
+    assert generator.generate_text("prompt") == "hello"

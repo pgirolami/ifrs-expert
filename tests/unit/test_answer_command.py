@@ -199,9 +199,11 @@ class TestAnswerCommand:
         assert result.error is None
         assert result.approach_identification_text is not None
         assert json.loads(result.approach_identification_raw_response) == json.loads(VALID_APPROACH_IDENTIFICATION_RESPONSE)
+        assert result.approach_identification_output == VALID_APPROACH_IDENTIFICATION_OUTPUT
         assert result.approach_identification_json is not None
         assert result.applicability_analysis_text is not None
         assert json.loads(result.applicability_analysis_raw_response) == json.loads(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
+        assert result.applicability_analysis_output == VALID_APPLICABILITY_ANALYSIS_OUTPUT
         assert result.applicability_analysis_json is not None
         assert result.applicability_analysis_memo_markdown is not None
         assert result.retrieved_doc_uids == ["doc1"]

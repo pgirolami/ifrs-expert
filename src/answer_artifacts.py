@@ -48,6 +48,10 @@ def _write_b_response_json(path: Path, result: AnswerCommandResult) -> None:
         path.write_text(json.dumps(result.applicability_analysis_json, indent=2, ensure_ascii=False), encoding="utf-8")
         return
 
+    if result.applicability_analysis_output is not None:
+        path.write_text(result.applicability_analysis_output.model_dump_json(indent=2), encoding="utf-8")
+        return
+
     if result.applicability_analysis_raw_response is not None:
         path.write_text(result.applicability_analysis_raw_response, encoding="utf-8")
 

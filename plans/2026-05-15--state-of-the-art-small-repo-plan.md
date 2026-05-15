@@ -162,6 +162,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the primary LLM flow keeps typed objects as the canonical internal contract instead of repeatedly round-tripping through JSON for convenience.
 - Done when the main app path can validate output shape as part of the contract rather than as an after-the-fact compatibility step.
 - Done when the code no longer needs obvious transitional parsing bridges in the core path just to keep stages talking to each other.
+- Status: done.
 
 #### Milestone 1.3 — Make follow-up generation a first-class app component
 - Problem: follow-up generation exists, but it still behaves like an auxiliary adapter rather than part of the same app design.
@@ -169,6 +170,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when grounded follow-up generation has a stable, explicit home in the app structure and is no longer just an auxiliary helper.
 - Done when its inputs, outputs, and responsibility are clear from the module boundary itself.
 - Done when follow-up behavior can be reasoned about as part of the same application model as the main answer flow.
+- Status: done.
 
 #### Milestone 1.4 — Remove transitional LLM glue from the core path
 - Problem: the core answer path still contains migration-era seams that make the framework usage look improvised.
@@ -176,6 +178,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the main answer path no longer depends on migration-era compatibility seams to explain how prompts, outputs, and rendering connect.
 - Done when orchestration, parsing, and compatibility logic are no longer visibly mixed in the core LLM flow.
 - Done when the Pydantic AI layer feels intentional rather than bolted onto an older pipeline.
+- Status: done.
 
 #### Milestone 2.1 — Separate orchestration from domain logic
 - Problem: the answer path still mixes workflow control, prompt construction, retrieval shaping, validation, and rendering too closely.

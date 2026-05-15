@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from src.case_analysis.context_builder import ContextBuilder
+from src.case_analysis.models import ApproachIdentificationPassOutput
 
 
 class TestContextBuilder:
@@ -53,3 +54,38 @@ class TestContextBuilder:
         context = builder.build_applicability_analysis_context(formatted_chunks, approach_identification_json)
 
         assert context == formatted_chunks[0]
+
+    def test_filters_applicability_context_from_typed_output(self) -> None:
+        """Typed approach outputs should drive authority filtering directly."""
+        builder = ContextBuilder()
+        formatted_chunks = [
+            '<Document name="ifrs15" document_type="ifrs" document_kind="standard">\n<chunk id="1" doc_uid="ifrs15" paragraph="5.1" score="0.9000">\nprimary\n</chunk>\n</Document>',
+            '<Document name="ias21" document_type="ias" document_kind="standard">\n<chunk id="3" doc_uid="ias21" paragraph="8.2" score="0.8100">\nsupporting\n</chunk>\n</Document>',
+        ]
+        typed_output = ApproachIdentificationPassOutput.model_validate(
+            {
+                "status": "pass",
+                "primary_accounting_issue": "Issue",
+                "authority_resolution": {
+                    "candidate_governing_documents": ["ifrs15"],
+                    "selected_primary_document": "ifrs15",
+                    "selection_reason": "reason",
+                    "discarded_due_to_overlap": [],
+                    "residual_uncertainty": "low",
+                },
+                "authority_classification": {
+                    "primary_authority": [{"document": "ifrs15", "references": ["5.1"]}],
+                    "supporting_authority": [{"document": "ias21", "references": ["8.2"]}],
+                    "peripheral_authority": [],
+                },
+                "treatment_families": [],
+                "approaches": [],
+            }
+        )
+
+        context = builder.build_applicability_analysis_context(formatted_chunks, typed_output)
+
+        assert "primary" in context
+        assert "supporting" in context
+        assert "excluded" not in context
+

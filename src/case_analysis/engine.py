@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
+from pydantic import BaseModel
+
 from src.case_analysis.citation_validation import CitationValidationService
 from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
@@ -85,6 +87,8 @@ def _coerce_json_value(value: object) -> JSONValue:
     """Coerce a Python value into the JSONValue type."""
     if value is None or isinstance(value, str | int | float | bool):
         return value
+    if isinstance(value, BaseModel):
+        return _coerce_json_value(value.model_dump(mode="json"))
     if isinstance(value, list):
         return [_coerce_json_value(item) for item in value]
     if isinstance(value, dict):
@@ -314,6 +318,7 @@ class AnswerEngine:
             return result
 
         result.approach_identification_raw_response = approach_identification_result.raw_response
+        result.approach_identification_output = approach_identification_result.output
         result.approach_identification_json = approach_identification_result.payload
 
         authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.payload)
@@ -323,21 +328,22 @@ class AnswerEngine:
             result.error_stage = "authority_sufficiency"
             return result
 
-        approach_identification_json = result.approach_identification_json
-        if approach_identification_json is None:
+        approach_identification_value: JSONValue | BaseModel | None = result.approach_identification_output or result.approach_identification_json
+        if approach_identification_value is None:
             result.error = "Error: Missing approach identification analysis payload"
             result.error_stage = "approach_identification"
             return result
 
-        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_json)
+        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_value)
 
     def _run_applicability_analysis_stage(
         self,
         result: AnswerCommandResult,
         formatted_chunks: list[str],
-        approach_identification_json: JSONValue,
+        approach_identification_value: JSONValue | BaseModel,
     ) -> AnswerCommandResult:
-        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_json)
+        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_value)
+        approach_identification_json = _coerce_json_value(approach_identification_value)
         applicability_analysis_prompt = self._build_applicability_analysis(
             applicability_analysis_context,
             json.dumps(approach_identification_json, indent=2, ensure_ascii=False),
@@ -356,6 +362,7 @@ class AnswerEngine:
             return result
 
         result.applicability_analysis_raw_response = applicability_analysis_result.raw_response
+        result.applicability_analysis_output = applicability_analysis_result.output
         result.applicability_analysis_json = applicability_analysis_result.payload
         logger.info("Step 2 complete: Received final answer from LLM")
 
@@ -365,8 +372,8 @@ class AnswerEngine:
         rendered_artifacts = self._rendering_adapter.render_applicability_analysis(
             query=self.query,
             retrieved_doc_uids=self._retrieved_doc_uids,
-            approach_identification_json=result.approach_identification_json,
-            applicability_analysis_json=result.applicability_analysis_json,
+            approach_identification_json=result.approach_identification_output or result.approach_identification_json,
+            applicability_analysis_json=result.applicability_analysis_output or result.applicability_analysis_json,
             applicability_analysis_context=applicability_analysis_context,
         )
         result.applicability_analysis_memo_markdown = rendered_artifacts.memo_markdown
@@ -419,11 +426,11 @@ class AnswerEngine:
         return formatted_documents
 
 
-def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
+def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_json: JSONValue | BaseModel) -> str:
     return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_json)
 
 
-def _extract_authority_references(approach_identification_json: JSONValue) -> set[tuple[str, str]] | None:
+def _extract_authority_references(approach_identification_json: JSONValue | BaseModel) -> set[tuple[str, str]] | None:
     return ContextBuilder().extract_authority_references(approach_identification_json)
 
 

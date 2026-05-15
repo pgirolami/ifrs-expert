@@ -59,14 +59,6 @@ class PydanticAIAnswerGenerator:
         )
         return cast("ApplicabilityAnalysisOutput", output)
 
-    def generate_output_json(self, prompt: str) -> str:
-        """Generate a structured answer-stage output and return JSON text."""
-        prompt_kind = infer_answer_prompt_kind(prompt)
-        output = self.generate_approach_identification(prompt) if prompt_kind == "approach_identification" else self.generate_applicability_analysis(prompt)
-        output_json = output.model_dump_json()
-        logger.info(f"Serialized Pydantic AI structured completion prompt_kind={prompt_kind} output_chars={len(output_json)}")
-        return output_json
-
     def _run_structured_agent(
         self,
         prompt: str,
