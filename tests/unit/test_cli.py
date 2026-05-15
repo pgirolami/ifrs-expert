@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-import src.cli as cli
+from src import cli
 from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
 from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.provenance import Provenance
@@ -342,7 +342,7 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
 
     def _create_query_documents_command(query: str, options: object) -> FakeTextCommand:
         del query
-        captured_document_types.append(getattr(options, "document_type"))
+        captured_document_types.append(options.document_type)
         return FakeTextCommand("document output")
 
     monkeypatch.setattr("src.cli.create_query_documents_command", _create_query_documents_command)
@@ -367,11 +367,11 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
 def test_execute_command_dispatches_llm(monkeypatch: pytest.MonkeyPatch) -> None:
     """CLI should dispatch the llm subcommand and pass raw stdin prompt."""
 
-    class _FakeClient:
+    class _FakeTextGenerator:
         def generate_text(self, prompt: str) -> str:
             return f"reply:{prompt}"
 
-    monkeypatch.setattr("src.cli.get_client", lambda: _FakeClient())
+    monkeypatch.setattr("src.cli.create_default_text_generator", lambda: _FakeTextGenerator())
     monkeypatch.setattr("sys.stdin", io.StringIO("Raw prompt"))
 
     output = _execute_command(argparse.Namespace(command="llm"))

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from src.models.answer_command_result import AnswerCommandResult
 from src.policy import RetrievalPolicy
 from src.ui.chat_service import (
@@ -98,7 +96,7 @@ def test_create_chat_service_uses_provided_options(monkeypatch) -> None:
         def execute(self) -> AnswerCommandResult:
             return AnswerCommandResult(query="Q", success=True)
 
-    class _FakeClient:
+    class _FakeTextGenerator:
         def generate_text(self, prompt: str) -> str:
             captured["prompt"] = prompt
             return "follow-up"
@@ -108,7 +106,7 @@ def test_create_chat_service_uses_provided_options(monkeypatch) -> None:
 
     options = _Options()
     monkeypatch.setattr("src.ui.chat_service.create_answer_command", lambda query, options: _FakeAnswerCommand())
-    monkeypatch.setattr("src.ui.chat_service.get_client", lambda: _FakeClient())
+    monkeypatch.setattr("src.ui.chat_service.create_default_text_generator", lambda: _FakeTextGenerator())
 
     service = create_chat_service(answer_options=options)  # type: ignore[arg-type]
     first = service.answer_first_turn("Q")
@@ -149,6 +147,6 @@ def test_create_chat_service_loads_default_policy_when_missing_options(monkeypat
     assert captured["query"] == "Question?"
     options = captured["options"]
     assert hasattr(options, "policy")
-    policy_value = getattr(options, "policy")
+    policy_value = options.policy
     assert isinstance(policy_value, RetrievalPolicy)
     assert policy_value.k == fake_retrieval_policy.k

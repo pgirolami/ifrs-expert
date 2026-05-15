@@ -7,10 +7,7 @@ dependencies = [
     "pymupdf>=1.27.2",
     "faiss-cpu>=1.7.4",
     "sentence-transformers>=2.2.0",
-    # LLM clients
-    "openai>=1.0.0",
-    "anthropic>=0.25.0",
-    "mistralai>=1.0.0",
+    # LLM integration
     # Environment variable loading
     "python-dotenv>=1.0.0",
     # UI

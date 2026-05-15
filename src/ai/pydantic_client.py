@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from pydantic_ai import Agent
 
-from src.llm.base import MISSING_MODEL_MESSAGE
+MISSING_MODEL_MESSAGE = "Model environment variable is required for this provider. Set it in your environment or .env file."
 
 logger = logging.getLogger(__name__)
 

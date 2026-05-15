@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Protocol, TypeVar
 
 from dotenv import load_dotenv
 
+from src.ai.pydantic_client import create_default_text_generator
 from src.answer_artifacts import save_answer_command_result
 from src.commands.answer import AnswerOptions, create_answer_command
 from src.commands.chunk import ChunkCommand
@@ -21,7 +22,6 @@ from src.commands.query_documents import QueryDocumentsOptions, create_query_doc
 from src.commands.query_titles import QueryTitlesOptions, create_query_titles_command
 from src.commands.retrieve import RetrieveOptions, create_retrieve_command
 from src.commands.store import STORE_SCOPES, StoreCommandOptions, create_store_command
-from src.llm.client import get_client
 from src.logging_config import setup_logging
 from src.models.document import DOCUMENT_TYPES
 from src.policy import RetrievalPolicy, load_policy_catalog, resolve_retrieval_policy
@@ -410,8 +410,7 @@ def _execute_llm_command(args: argparse.Namespace) -> str:
     """Execute the raw LLM command."""
     del args
     prompt = _read_stdin_text(strip=False)
-    client = get_client()
-    return client.generate_text(prompt=prompt)
+    return create_default_text_generator().generate_text(prompt)
 
 
 def _execute_answer_command(args: argparse.Namespace) -> str:

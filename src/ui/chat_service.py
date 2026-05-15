@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from src.ai.pydantic_client import create_default_text_generator
 from src.commands.answer import AnswerOptions, create_answer_command
-from src.llm import get_client
 from src.policy import load_policy_catalog, resolve_retrieval_policy
 
 if TYPE_CHECKING:
@@ -103,10 +103,8 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
         return command.execute()
 
     def generate_follow_up(prompt: str) -> str:
-        logger.info(f"ChatService: requesting follow-up completion chars={len(prompt)}")
-        client = get_client()
-        logger.info(f"ChatService: using follow-up provider={type(client).__name__}")
-        return client.generate_text(prompt)
+        logger.info(f"ChatService: requesting Pydantic AI follow-up completion chars={len(prompt)}")
+        return create_default_text_generator().generate_text(prompt)
 
     return ChatService(run_first_turn_fn=run_first_turn, generate_follow_up_fn=generate_follow_up)
 
