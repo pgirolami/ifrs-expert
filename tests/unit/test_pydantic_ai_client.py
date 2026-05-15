@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.ai.pydantic_client import resolve_pydantic_ai_model_name
+from src.ai.pydantic_client import infer_answer_prompt_kind, resolve_pydantic_ai_model_name
 
 
 def test_resolve_pydantic_ai_model_name_openai(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -47,3 +47,13 @@ def test_resolve_pydantic_ai_model_name_requires_model(monkeypatch: pytest.Monke
 
     with pytest.raises(ValueError, match="OLLAMA_MODEL"):
         resolve_pydantic_ai_model_name()
+
+
+def test_infer_answer_prompt_kind_detects_prompt_b_marker() -> None:
+    """Prompt B contains the identified approaches marker."""
+    assert infer_answer_prompt_kind("<identified_approaches>{}</identified_approaches>") == "prompt_b"
+
+
+def test_infer_answer_prompt_kind_defaults_to_prompt_a() -> None:
+    """Prompt A has no identified approaches marker."""
+    assert infer_answer_prompt_kind("You are an IFRS expert") == "prompt_a"

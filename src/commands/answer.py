@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.ai.pydantic_client import create_default_text_generator
+from src.ai.pydantic_client import create_default_answer_generator
 from src.case_analysis.engine import (
     AnswerEngine,
     AnswerEngineHooks,
@@ -121,7 +121,7 @@ class AnswerCommand:
 def _default_send_to_llm(prompt: str) -> str:
     """Send prompt to the configured Pydantic AI model and return the response."""
     try:
-        return create_default_text_generator().generate_text(prompt)
+        return create_default_answer_generator().generate_output_json(prompt)
     except ValueError as e:
         error_msg = f"Pydantic AI LLM not configured: {e}"
         raise RuntimeError(error_msg) from e
