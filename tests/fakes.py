@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Self
 
+from src.case_analysis.models import PromptAOutput, PromptBOutput
 from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ReferenceStoreProtocol, SearchResult, VectorStoreProtocol
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord, resolve_document_kind, resolve_document_type
@@ -261,7 +262,7 @@ class RecordingVectorStore(VectorStoreProtocol):
     def __init__(self, existing_doc_uids: set[str] | None = None) -> None:
         self.deleted_doc_uids: list[str] = []
         self.added_embeddings: list[tuple[str, list[int], list[str]]] = []
-        self._embedding_counts: dict[str, int] = {doc_uid: 1 for doc_uid in (existing_doc_uids or set())}
+        self._embedding_counts: dict[str, int] = dict.fromkeys(existing_doc_uids or set(), 1)
 
     def __enter__(self) -> Self:
         return self
@@ -341,3 +342,24 @@ class RecordingDocumentVectorStore:
     def add_embeddings(self, doc_uids: list[str], texts: list[str]) -> None:
         self.added_embeddings.append((doc_uids, texts))
         self._existing_doc_uids.update(doc_uids)
+
+class FakeAnswerGenerator:
+    """Fake typed answer generator for Prompt A and Prompt B."""
+
+    def __init__(self, prompt_a_output: PromptAOutput | RuntimeError, prompt_b_output: PromptBOutput | RuntimeError) -> None:
+        self.prompt_a_output = prompt_a_output
+        self.prompt_b_output = prompt_b_output
+        self.prompt_a_prompts: list[str] = []
+        self.prompt_b_prompts: list[str] = []
+
+    def generate_prompt_a(self, prompt_text: str) -> PromptAOutput:
+        self.prompt_a_prompts.append(prompt_text)
+        if isinstance(self.prompt_a_output, RuntimeError):
+            raise self.prompt_a_output
+        return self.prompt_a_output
+
+    def generate_prompt_b(self, prompt_text: str) -> PromptBOutput:
+        self.prompt_b_prompts.append(prompt_text)
+        if isinstance(self.prompt_b_output, RuntimeError):
+            raise self.prompt_b_output
+        return self.prompt_b_output

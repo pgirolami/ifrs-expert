@@ -1,6 +1,10 @@
+import pytest
+
+
 """Rendering and authority-filtering tests for answer command."""
 
 from tests.unit.test_answer_command import *  # noqa: F403
+
 
 class TestBuildPromptBContext:
     """Tests for the _build_prompt_b_context method that filters Prompt B context by authority."""
@@ -12,7 +16,7 @@ class TestBuildPromptBContext:
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
-            send_to_llm_fn=lambda prompt: "result",
+            answer_generator=make_answer_generator(),
         )
         return AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text")))
 
@@ -285,7 +289,7 @@ class TestAnswerCommandAuthorityFiltering:
                 chunk_store=chunk_store,
                 init_db_fn=lambda: None,
                 index_path_fn=lambda: MockIndexPath(exists=True),
-                send_to_llm_fn=lambda _prompt: "result",
+                answer_generator=make_answer_generator(),
             ),
             options=AnswerOptions(policy=make_retrieval_policy(mode="text")),
         )
@@ -333,27 +337,42 @@ class TestAnswerCommandAuthorityFiltering:
         with chunk_store as store:
             store.insert_chunks(mock_chunks)
 
-        captured_prompts: list[str] = []
-
-        def mock_send_to_llm(prompt: str) -> str:
-            captured_prompts.append(prompt)
-            if len(captured_prompts) == 1:
-                # Prompt A response: ifrs15 5.1 is primary, ias21 8.2 is supporting
-                prompt_a_payload = json.loads(VALID_PROMPT_A_RESPONSE)
-                prompt_a_payload["authority_classification"] = {
-                    "primary_authority": [{"document": "ifrs15", "references": ["5.1"], "reason": "Governs the issue"}],
-                    "supporting_authority": [{"document": "ias21", "references": ["8.2"], "reason": "Clarifies the treatment"}],
-                    "peripheral_authority": [{"document": "ifrs15", "references": ["5.2"], "reason": "Not directly relevant"}],
+        answer_generator = FakeAnswerGenerator(
+            prompt_a_output=PromptAPassOutput.model_validate(
+                {
+                    "status": "pass",
+                    "primary_accounting_issue": "Authority filter test",
+                    "authority_resolution": {
+                        "candidate_governing_documents": ["ifrs15", "ias21"],
+                        "selected_primary_document": "ifrs15",
+                        "selection_reason": "IFRS 15 is primary for this test.",
+                        "discarded_due_to_overlap": [],
+                        "residual_uncertainty": "Low",
+                    },
+                    "authority_classification": {
+                        "primary_authority": [
+                            {"document": "ifrs15", "references": ["5.1"], "reason": "Primary"}
+                        ],
+                        "supporting_authority": [
+                            {"document": "ias21", "references": ["8.2"], "reason": "Supporting"}
+                        ],
+                        "peripheral_authority": [
+                            {"document": "ifrs15", "references": ["5.2"], "reason": "Peripheral"}
+                        ],
+                    },
+                    "treatment_families": [],
+                    "approaches": [],
                 }
-                return json.dumps(prompt_a_payload)
-            return VALID_PROMPT_B_RESPONSE
+            ),
+            prompt_b_output=VALID_PROMPT_B_OUTPUT,
+        )
 
         config = AnswerConfig(
             vector_store=MockVectorStore(search_results),
             chunk_store=chunk_store,
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
-            send_to_llm_fn=mock_send_to_llm,
+            answer_generator=answer_generator,
         )
         command = AnswerCommand(query="test", config=config, options=AnswerOptions(policy=make_retrieval_policy(mode="text", expand=1)))
 
@@ -361,8 +380,8 @@ class TestAnswerCommandAuthorityFiltering:
             result = command.execute()
 
         assert result.success is True
-        assert len(captured_prompts) == 2
-        prompt_b = captured_prompts[1]
+        assert answer_generator.prompt_b_prompts
+        prompt_b = answer_generator.prompt_b_prompts[0]
 
         # Prompt B should contain primary and supporting authority chunks
         assert "PRIMARY_CONTENT_IFRS15" in prompt_b

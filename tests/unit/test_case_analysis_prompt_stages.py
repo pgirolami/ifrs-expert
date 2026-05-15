@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
-import json
-
-from src.case_analysis.models import ApplicabilityAnalysisResult, AuthorityClassificationResult, PromptAPassOutput, PromptBPassOutput, ValidationFailure
+from src.case_analysis.models import (
+    ApplicabilityAnalysisResult,
+    AuthorityClassificationResult,
+    PromptAPassOutput,
+    PromptBPassOutput,
+    ValidationFailure,
+)
 from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage
+from tests.fakes import FakeAnswerGenerator
 
-
-def _prompt_a_payload() -> dict[str, object]:
-    return {
+PROMPT_A_OUTPUT = PromptAPassOutput.model_validate(
+    {
         "status": "pass",
         "primary_accounting_issue": "Whether the fact pattern is in scope of IFRS 15.",
         "authority_resolution": {
@@ -40,10 +44,10 @@ def _prompt_a_payload() -> dict[str, object]:
             }
         ],
     }
+)
 
-
-def _prompt_b_payload() -> dict[str, object]:
-    return {
+PROMPT_B_OUTPUT = PromptBPassOutput.model_validate(
+    {
         "assumptions_fr": ["Le contrat relève d'IFRS 15."],
         "recommendation": {"answer": "oui", "justification": "Le modèle IFRS 15 s'applique aux faits décrits."},
         "approaches": [
@@ -59,112 +63,58 @@ def _prompt_b_payload() -> dict[str, object]:
             }
         ],
     }
+)
 
 
-def test_classify_authority_stage_returns_typed_result() -> None:
-    """Prompt A stage should parse and validate the Pydantic authority result."""
-    raw_response = json.dumps(_prompt_a_payload())
-    stage = ClassifyAuthorityStage(send_to_llm_fn=lambda prompt: raw_response)
+class TestCaseAnalysisPromptStages:
+    """Tests for typed Prompt A and Prompt B stages."""
 
-    result = stage.execute(prompt_text="Prompt A text")
+    def test_classify_authority_stage_returns_typed_result(self) -> None:
+        """Prompt A stage should package the typed authority result without JSON parsing."""
+        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=PROMPT_B_OUTPUT)
+        stage = ClassifyAuthorityStage(answer_generator=generator)
 
-    assert isinstance(result, AuthorityClassificationResult)
-    assert isinstance(result.output, PromptAPassOutput)
-    assert result.raw_response == raw_response
-    assert result.payload["status"] == "pass"
-    assert result.payload["approaches"] == [
-        {
-            "id": "approach_1",
-            "label": "Revenue recognition",
-            "normalized_label": "revenue_recognition",
-            "rationale_for_inclusion": "The standard provides the governing model.",
-        }
-    ]
+        result = stage.execute(prompt_text="Prompt A text")
 
+        assert isinstance(result, AuthorityClassificationResult)
+        assert result.output == PROMPT_A_OUTPUT
+        assert result.raw_response == PROMPT_A_OUTPUT.model_dump_json()
+        assert result.payload == PROMPT_A_OUTPUT.model_dump(mode="json")
+        assert generator.prompt_a_prompts == ["Prompt A text"]
 
-def test_classify_authority_stage_rejects_invalid_json() -> None:
-    """Prompt A stage should return a structured failure for invalid JSON."""
-    stage = ClassifyAuthorityStage(send_to_llm_fn=lambda prompt: "not json")
+    def test_classify_authority_stage_returns_call_failure(self) -> None:
+        """Prompt A stage should turn generator runtime errors into structured failures."""
+        generator = FakeAnswerGenerator(prompt_a_output=RuntimeError("provider down"), prompt_b_output=PROMPT_B_OUTPUT)
+        stage = ClassifyAuthorityStage(answer_generator=generator)
 
-    result = stage.execute(prompt_text="Prompt A text")
+        result = stage.execute(prompt_text="Prompt A text")
 
-    assert isinstance(result, ValidationFailure)
-    assert result.error_stage == "prompt_a_parse"
-    assert result.reason == "invalid_json"
-    assert "LLM returned invalid JSON" in result.message
+        assert isinstance(result, ValidationFailure)
+        assert result.error_stage == "prompt_a"
+        assert result.reason == "llm_call_failed"
+        assert "provider down" in result.message
 
+    def test_evaluate_applicability_stage_returns_typed_result(self) -> None:
+        """Prompt B stage should package the typed applicability result without JSON parsing."""
+        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=PROMPT_B_OUTPUT)
+        stage = EvaluateApplicabilityStage(answer_generator=generator)
 
-def test_classify_authority_stage_rejects_non_object_json() -> None:
-    """Prompt A stage should reject JSON arrays because the contract is an object."""
-    stage = ClassifyAuthorityStage(send_to_llm_fn=lambda prompt: "[]")
+        result = stage.execute(prompt_text="Prompt B text")
 
-    result = stage.execute(prompt_text="Prompt A text")
+        assert isinstance(result, ApplicabilityAnalysisResult)
+        assert result.output == PROMPT_B_OUTPUT
+        assert result.raw_response == PROMPT_B_OUTPUT.model_dump_json()
+        assert result.payload == PROMPT_B_OUTPUT.model_dump(mode="json")
+        assert generator.prompt_b_prompts == ["Prompt B text"]
 
-    assert isinstance(result, ValidationFailure)
-    assert result.error_stage == "prompt_a_parse"
-    assert result.reason == "invalid_contract"
+    def test_evaluate_applicability_stage_returns_call_failure(self) -> None:
+        """Prompt B stage should turn generator runtime errors into structured failures."""
+        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=RuntimeError("provider down"))
+        stage = EvaluateApplicabilityStage(answer_generator=generator)
 
+        result = stage.execute(prompt_text="Prompt B text")
 
-def test_classify_authority_stage_rejects_missing_required_prompt_a_fields() -> None:
-    """Prompt A stage should reject pass responses that omit required contract fields."""
-    stage = ClassifyAuthorityStage(send_to_llm_fn=lambda prompt: '{"status": "pass", "approaches": []}')
-
-    result = stage.execute(prompt_text="Prompt A text")
-
-    assert isinstance(result, ValidationFailure)
-    assert result.error_stage == "prompt_a_parse"
-    assert result.reason == "invalid_contract"
-    assert "primary_accounting_issue" in result.message
-
-
-def test_classify_authority_stage_accepts_clarification_contract() -> None:
-    """Prompt A stage should accept the compact clarification output contract."""
-    raw_response = '{"status": "needs_clarification", "questions": ["Which contract terms apply?"]}'
-    stage = ClassifyAuthorityStage(send_to_llm_fn=lambda prompt: raw_response)
-
-    result = stage.execute(prompt_text="Prompt A text")
-
-    assert isinstance(result, AuthorityClassificationResult)
-    assert result.payload == {"status": "needs_clarification", "questions": ["Which contract terms apply?"]}
-
-
-def test_evaluate_applicability_stage_returns_typed_result() -> None:
-    """Prompt B stage should parse and validate the Pydantic applicability result."""
-    raw_response = json.dumps(_prompt_b_payload())
-    stage = EvaluateApplicabilityStage(send_to_llm_fn=lambda prompt: raw_response)
-
-    result = stage.execute(prompt_text="Prompt B text")
-
-    assert isinstance(result, ApplicabilityAnalysisResult)
-    assert isinstance(result.output, PromptBPassOutput)
-    assert result.raw_response == raw_response
-    assert result.payload["recommendation"] == {"answer": "oui", "justification": "Le modèle IFRS 15 s'applique aux faits décrits."}
-
-
-def test_evaluate_applicability_stage_rejects_missing_required_prompt_b_fields() -> None:
-    """Prompt B stage should reject recommendation-only JSON without approach analysis."""
-    stage = EvaluateApplicabilityStage(send_to_llm_fn=lambda prompt: '{"recommendation": {"answer": "oui"}}')
-
-    result = stage.execute(prompt_text="Prompt B text")
-
-    assert isinstance(result, ValidationFailure)
-    assert result.error_stage == "prompt_b_parse"
-    assert result.reason == "invalid_contract"
-    assert "approaches" in result.message
-
-
-def test_evaluate_applicability_stage_returns_call_failure() -> None:
-    """Prompt B stage should turn LLM runtime errors into structured failures."""
-
-    def failing_send_to_llm(prompt: str) -> str:
-        del prompt
-        raise RuntimeError("provider down")
-
-    stage = EvaluateApplicabilityStage(send_to_llm_fn=failing_send_to_llm)
-
-    result = stage.execute(prompt_text="Prompt B text")
-
-    assert isinstance(result, ValidationFailure)
-    assert result.error_stage == "prompt_b"
-    assert result.reason == "llm_call_failed"
-    assert "provider down" in result.message
+        assert isinstance(result, ValidationFailure)
+        assert result.error_stage == "prompt_b"
+        assert result.reason == "llm_call_failed"
+        assert "provider down" in result.message

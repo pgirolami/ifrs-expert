@@ -16,7 +16,7 @@ from src.case_analysis.engine import (
     _read_prompt_template,
 )
 from src.case_analysis.models import ValidationFailure
-from src.case_analysis.stages import ValidateQuestionStage
+from src.case_analysis.stages import AnswerGeneratorProtocol, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
@@ -52,7 +52,7 @@ class AnswerConfig:
     chunk_store: ReadChunkStoreProtocol
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
-    send_to_llm_fn: Callable[[str], str]
+    answer_generator: AnswerGeneratorProtocol
     section_store: ReadSectionStoreProtocol | None = None
     reference_store: ReferenceStoreProtocol | None = None
     title_vector_store: SearchTitleVectorStoreProtocol | None = None
@@ -118,10 +118,10 @@ class AnswerCommand:
         return _build_chunk_summary(results, doc_chunks)
 
 
-def _default_send_to_llm(prompt: str) -> str:
-    """Send prompt to the configured Pydantic AI model and return the response."""
+def _default_answer_generator() -> AnswerGeneratorProtocol:
+    """Create the configured Pydantic AI answer generator."""
     try:
-        return create_default_answer_generator().generate_output_json(prompt)
+        return create_default_answer_generator()
     except ValueError as e:
         error_msg = f"Pydantic AI LLM not configured: {e}"
         raise RuntimeError(error_msg) from e
@@ -137,7 +137,7 @@ def create_answer_command(
         chunk_store=ChunkStore(),
         init_db_fn=init_db,
         index_path_fn=get_index_path,
-        send_to_llm_fn=_default_send_to_llm,
+        answer_generator=_default_answer_generator(),
         reference_store=ContentReferenceStore(),
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),

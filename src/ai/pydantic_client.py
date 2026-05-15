@@ -14,6 +14,8 @@ from src.case_analysis.models import PromptAOutput, PromptBOutput
 if TYPE_CHECKING:
     from pydantic import BaseModel
 
+    from src.case_analysis.stages import AnswerGeneratorProtocol
+
 MISSING_MODEL_MESSAGE = "Model environment variable is required for this provider. Set it in your environment or .env file."
 
 logger = logging.getLogger(__name__)
@@ -80,11 +82,11 @@ def create_default_text_generator() -> PydanticAITextGenerator:
     return PydanticAITextGenerator(model=model)
 
 
-def create_default_answer_generator() -> PydanticAIAnswerGenerator:
+def create_default_answer_generator() -> AnswerGeneratorProtocol:
     """Create a structured Pydantic AI answer generator from environment variables."""
     model = resolve_pydantic_ai_model_name()
     logger.info(f"Using Pydantic AI structured answer model: {model}")
-    return PydanticAIAnswerGenerator(model=model)
+    return cast("AnswerGeneratorProtocol", PydanticAIAnswerGenerator(model=model))
 
 
 def resolve_pydantic_ai_model_name() -> str:

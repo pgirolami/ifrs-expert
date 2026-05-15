@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Protocol
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
-from src.case_analysis.stages import AuthoritySufficiencyStage, ClassifyAuthorityStage, EvaluateApplicabilityStage, ExecuteRetrievalFn, VerifyCitationsStage
+from src.case_analysis.stages import AnswerGeneratorProtocol, AuthoritySufficiencyStage, ClassifyAuthorityStage, EvaluateApplicabilityStage, ExecuteRetrievalFn, VerifyCitationsStage
 from src.commands.document_output import build_output_document_sections
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
@@ -48,7 +48,7 @@ class AnswerEngineConfigProtocol(Protocol):
     chunk_store: ReadChunkStoreProtocol
     init_db_fn: Callable[[], None]
     index_path_fn: Callable[[], Path]
-    send_to_llm_fn: Callable[[str], str]
+    answer_generator: AnswerGeneratorProtocol
     section_store: ReadSectionStoreProtocol | None
     reference_store: ReferenceStoreProtocol | None
     title_vector_store: SearchTitleVectorStoreProtocol | None
@@ -288,7 +288,7 @@ class AnswerEngine:
         prompt_a_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
         result.prompt_a_text = _extract_prompt_content(prompt_a_full)
 
-        authority_classification_result = ClassifyAuthorityStage(send_to_llm_fn=self._config.send_to_llm_fn).execute(result.prompt_a_text)
+        authority_classification_result = ClassifyAuthorityStage(answer_generator=self._config.answer_generator).execute(result.prompt_a_text)
         if isinstance(authority_classification_result, ValidationFailure):
             result.error = authority_classification_result.message
             result.error_stage = authority_classification_result.error_stage
@@ -307,7 +307,7 @@ class AnswerEngine:
         prompt_b_context = _build_prompt_b_context(formatted_chunks, result.prompt_a_json)
         result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
-        applicability_analysis_result = EvaluateApplicabilityStage(send_to_llm_fn=self._config.send_to_llm_fn).execute(result.prompt_b_text)
+        applicability_analysis_result = EvaluateApplicabilityStage(answer_generator=self._config.answer_generator).execute(result.prompt_b_text)
         if isinstance(applicability_analysis_result, ValidationFailure):
             result.error = applicability_analysis_result.message
             result.error_stage = applicability_analysis_result.error_stage

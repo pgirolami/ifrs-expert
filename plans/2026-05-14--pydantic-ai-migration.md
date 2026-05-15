@@ -137,6 +137,8 @@ Replace direct `send_to_llm_fn(prompt) -> str` calls with typed Pydantic AI agen
 ## Implementation status
 
 > Updated 2026-05-15: legacy `src/llm/*` clients have been removed. CLI, answer command, and Streamlit follow-up generation now route through Pydantic AI adapters. `PydanticAIAnswerGenerator` exposes typed Prompt A and Prompt B methods (`generate_prompt_a`, `generate_prompt_b`) and a JSON serialization bridge for the remaining engine boundary.
+
+> Updated 2026-05-15: Prompt A and Prompt B stages now invoke typed answer-generator methods directly, and `AnswerCommand`/`AnswerEngine` accept an `answer_generator` dependency instead of raw `send_to_llm_fn` callables.
 ---
 
 # Phase 3 — Extract LLM orchestration out of `AnswerCommand`
