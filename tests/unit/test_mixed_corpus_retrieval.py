@@ -4,7 +4,7 @@ These tests validate:
 1. Stored rows have both document_type and document_kind (or derive it correctly).
 2. Document-stage retrieval applies exact-type limits across a mixed corpus.
 3. Exact-type expand_to_section policy is honored in mixed corpus.
-4. Prompt A context contains document_type and document_kind metadata.
+4. Approach identification context contains document_type and document_kind metadata.
 5. Legacy documents without explicit extractor metadata get a kind via fallback derivation.
 """
 

@@ -49,11 +49,11 @@ def test_resolve_pydantic_ai_model_name_requires_model(monkeypatch: pytest.Monke
         resolve_pydantic_ai_model_name()
 
 
-def test_infer_answer_prompt_kind_detects_prompt_b_marker() -> None:
-    """Prompt B contains the identified approaches marker."""
-    assert infer_answer_prompt_kind("<identified_approaches>{}</identified_approaches>") == "prompt_b"
+def test_infer_answer_prompt_kind_detects_applicability_analysis_marker() -> None:
+    """Applicability analysis contains the identified approaches marker."""
+    assert infer_answer_prompt_kind("<identified_approaches>{}</identified_approaches>") == "applicability_analysis"
 
 
-def test_infer_answer_prompt_kind_defaults_to_prompt_a() -> None:
-    """Prompt A has no identified approaches marker."""
-    assert infer_answer_prompt_kind("You are an IFRS expert") == "prompt_a"
+def test_infer_answer_prompt_kind_defaults_to_approach_identification() -> None:
+    """Approach identification has no identified approaches marker."""
+    assert infer_answer_prompt_kind("You are an IFRS expert") == "approach_identification"

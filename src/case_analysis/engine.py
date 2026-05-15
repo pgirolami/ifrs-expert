@@ -40,8 +40,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-PROMPT_A_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
-PROMPT_B_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
+APPROACH_IDENTIFICATION_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
+APPLICABILITY_ANALYSIS_PATH = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 
 
 class AnswerEngineConfigProtocol(Protocol):
@@ -210,11 +210,11 @@ class AnswerEngine:
         return None
 
     def _get_prompt_template_error(self) -> str | None:
-        if not self._hooks.prompt_file_exists_fn(PROMPT_A_PATH):
-            logger.error(f"Missing approach identification template at {PROMPT_A_PATH}")
+        if not self._hooks.prompt_file_exists_fn(APPROACH_IDENTIFICATION_PATH):
+            logger.error(f"Missing approach identification template at {APPROACH_IDENTIFICATION_PATH}")
             return "Error: approach identification template not found."
-        if not self._hooks.prompt_file_exists_fn(PROMPT_B_PATH):
-            logger.error(f"Missing applicability analysis template at {PROMPT_B_PATH}")
+        if not self._hooks.prompt_file_exists_fn(APPLICABILITY_ANALYSIS_PATH):
+            logger.error(f"Missing applicability analysis template at {APPLICABILITY_ANALYSIS_PATH}")
             return "Error: applicability analysis template not found."
         return None
 
@@ -291,11 +291,23 @@ class AnswerEngine:
     ) -> AnswerCommandResult:
         chunk_summary = _build_chunk_summary(results, doc_chunks)
         formatted_chunks = self._format_chunks(results, doc_chunks)
+        return self._run_approach_identification_stage(result, formatted_chunks, chunk_summary)
 
-        approach_identification_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
+    def _run_approach_identification_stage(
+        self,
+        result: AnswerCommandResult,
+        formatted_chunks: list[str],
+        chunk_summary: str,
+    ) -> AnswerCommandResult:
+        approach_identification_full = self._build_prompt_from_template(APPROACH_IDENTIFICATION_PATH, formatted_chunks, chunk_summary)
         result.approach_identification_text = _extract_prompt_content(approach_identification_full)
+        approach_identification_text = result.approach_identification_text
+        if approach_identification_text is None:
+            result.error = "Error: Missing approach identification prompt content"
+            result.error_stage = "approach_identification"
+            return result
 
-        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(result.approach_identification_text)
+        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(approach_identification_text)
         if isinstance(approach_identification_result, ValidationFailure):
             result.error = approach_identification_result.message
             result.error_stage = approach_identification_result.error_stage
@@ -311,10 +323,33 @@ class AnswerEngine:
             result.error_stage = "authority_sufficiency"
             return result
 
-        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, result.approach_identification_json)
-        result.applicability_analysis_text = self._build_prompt_b(applicability_analysis_context, json.dumps(result.approach_identification_json, indent=2, ensure_ascii=False))
+        approach_identification_json = result.approach_identification_json
+        if approach_identification_json is None:
+            result.error = "Error: Missing approach identification analysis payload"
+            result.error_stage = "approach_identification"
+            return result
 
-        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(result.applicability_analysis_text)
+        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_json)
+
+    def _run_applicability_analysis_stage(
+        self,
+        result: AnswerCommandResult,
+        formatted_chunks: list[str],
+        approach_identification_json: JSONValue,
+    ) -> AnswerCommandResult:
+        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_json)
+        applicability_analysis_prompt = self._build_applicability_analysis(
+            applicability_analysis_context,
+            json.dumps(approach_identification_json, indent=2, ensure_ascii=False),
+        )
+        result.applicability_analysis_text = _extract_prompt_content(applicability_analysis_prompt)
+        applicability_analysis_text = result.applicability_analysis_text
+        if applicability_analysis_text is None:
+            result.error = "Error: Missing applicability analysis prompt content"
+            result.error_stage = "applicability_analysis"
+            return result
+
+        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(applicability_analysis_text)
         if isinstance(applicability_analysis_result, ValidationFailure):
             result.error = applicability_analysis_result.message
             result.error_stage = applicability_analysis_result.error_stage
@@ -341,11 +376,11 @@ class AnswerEngine:
 
     def _build_prompt_from_template(self, template_path: Path, chunks: list[str], chunk_summary: str) -> str:
         template = self._hooks.read_prompt_template_fn(template_path)
-        return self._prompt_builder.build_prompt_a(template, self.query, chunks, chunk_summary)
+        return self._prompt_builder.build_approach_identification(template, self.query, chunks, chunk_summary)
 
-    def _build_prompt_b(self, context: str, approaches_json: str) -> str:
-        template = self._hooks.read_prompt_template_fn(PROMPT_B_PATH)
-        return self._prompt_builder.build_prompt_b(template, self.query, context, approaches_json)
+    def _build_applicability_analysis(self, context: str, approaches_json: str) -> str:
+        template = self._hooks.read_prompt_template_fn(APPLICABILITY_ANALYSIS_PATH)
+        return self._prompt_builder.build_applicability_analysis(template, self.query, context, approaches_json)
 
     def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         doc_order: list[str] = []

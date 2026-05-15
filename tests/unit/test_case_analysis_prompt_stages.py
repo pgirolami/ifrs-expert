@@ -12,7 +12,7 @@ from src.case_analysis.models import (
 from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage
 from tests.fakes import FakeAnswerGenerator
 
-PROMPT_A_OUTPUT = ApproachIdentificationPassOutput.model_validate(
+APPROACH_IDENTIFICATION_OUTPUT = ApproachIdentificationPassOutput.model_validate(
     {
         "status": "pass",
         "primary_accounting_issue": "Whether the fact pattern is in scope of IFRS 15.",
@@ -46,7 +46,7 @@ PROMPT_A_OUTPUT = ApproachIdentificationPassOutput.model_validate(
     }
 )
 
-PROMPT_B_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate(
+APPLICABILITY_ANALYSIS_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate(
     {
         "assumptions_fr": ["Le contrat relève d'IFRS 15."],
         "recommendation": {"answer": "oui", "justification": "Le modèle IFRS 15 s'applique aux faits décrits."},
@@ -67,27 +67,27 @@ PROMPT_B_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate(
 
 
 class TestCaseAnalysisPromptStages:
-    """Tests for typed Prompt A and Prompt B stages."""
+    """Tests for typed Approach identification and Applicability analysis stages."""
 
     def test_classify_authority_stage_returns_typed_result(self) -> None:
-        """Prompt A stage should package the typed authority result without JSON parsing."""
-        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=PROMPT_B_OUTPUT)
+        """Approach identification stage should package the typed authority result without JSON parsing."""
+        generator = FakeAnswerGenerator(approach_identification_output=APPROACH_IDENTIFICATION_OUTPUT, applicability_analysis_output=APPLICABILITY_ANALYSIS_OUTPUT)
         stage = ClassifyAuthorityStage(answer_generator=generator)
 
-        result = stage.execute(prompt_text="Prompt A text")
+        result = stage.execute(prompt_text="Approach identification text")
 
         assert isinstance(result, ApproachIdentificationResult)
-        assert result.output == PROMPT_A_OUTPUT
-        assert result.raw_response == PROMPT_A_OUTPUT.model_dump_json()
-        assert result.payload == PROMPT_A_OUTPUT.model_dump(mode="json")
-        assert generator.prompt_a_prompts == ["Prompt A text"]
+        assert result.output == APPROACH_IDENTIFICATION_OUTPUT
+        assert result.raw_response == APPROACH_IDENTIFICATION_OUTPUT.model_dump_json()
+        assert result.payload == APPROACH_IDENTIFICATION_OUTPUT.model_dump(mode="json")
+        assert generator.approach_identification_prompts == ["Approach identification text"]
 
     def test_classify_authority_stage_returns_call_failure(self) -> None:
-        """Prompt A stage should turn generator runtime errors into structured failures."""
-        generator = FakeAnswerGenerator(prompt_a_output=RuntimeError("provider down"), prompt_b_output=PROMPT_B_OUTPUT)
+        """Approach identification stage should turn generator runtime errors into structured failures."""
+        generator = FakeAnswerGenerator(approach_identification_output=RuntimeError("provider down"), applicability_analysis_output=APPLICABILITY_ANALYSIS_OUTPUT)
         stage = ClassifyAuthorityStage(answer_generator=generator)
 
-        result = stage.execute(prompt_text="Prompt A text")
+        result = stage.execute(prompt_text="Approach identification text")
 
         assert isinstance(result, ValidationFailure)
         assert result.error_stage == "approach_identification"
@@ -95,24 +95,24 @@ class TestCaseAnalysisPromptStages:
         assert "provider down" in result.message
 
     def test_evaluate_applicability_stage_returns_typed_result(self) -> None:
-        """Prompt B stage should package the typed applicability result without JSON parsing."""
-        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=PROMPT_B_OUTPUT)
+        """Applicability analysis stage should package the typed applicability result without JSON parsing."""
+        generator = FakeAnswerGenerator(approach_identification_output=APPROACH_IDENTIFICATION_OUTPUT, applicability_analysis_output=APPLICABILITY_ANALYSIS_OUTPUT)
         stage = EvaluateApplicabilityStage(answer_generator=generator)
 
-        result = stage.execute(prompt_text="Prompt B text")
+        result = stage.execute(prompt_text="Applicability analysis text")
 
         assert isinstance(result, ApplicabilityAnalysisResult)
-        assert result.output == PROMPT_B_OUTPUT
-        assert result.raw_response == PROMPT_B_OUTPUT.model_dump_json()
-        assert result.payload == PROMPT_B_OUTPUT.model_dump(mode="json")
-        assert generator.prompt_b_prompts == ["Prompt B text"]
+        assert result.output == APPLICABILITY_ANALYSIS_OUTPUT
+        assert result.raw_response == APPLICABILITY_ANALYSIS_OUTPUT.model_dump_json()
+        assert result.payload == APPLICABILITY_ANALYSIS_OUTPUT.model_dump(mode="json")
+        assert generator.applicability_analysis_prompts == ["Applicability analysis text"]
 
     def test_evaluate_applicability_stage_returns_call_failure(self) -> None:
-        """Prompt B stage should turn generator runtime errors into structured failures."""
-        generator = FakeAnswerGenerator(prompt_a_output=PROMPT_A_OUTPUT, prompt_b_output=RuntimeError("provider down"))
+        """Applicability analysis stage should turn generator runtime errors into structured failures."""
+        generator = FakeAnswerGenerator(approach_identification_output=APPROACH_IDENTIFICATION_OUTPUT, applicability_analysis_output=RuntimeError("provider down"))
         stage = EvaluateApplicabilityStage(answer_generator=generator)
 
-        result = stage.execute(prompt_text="Prompt B text")
+        result = stage.execute(prompt_text="Applicability analysis text")
 
         assert isinstance(result, ValidationFailure)
         assert result.error_stage == "applicability_analysis"

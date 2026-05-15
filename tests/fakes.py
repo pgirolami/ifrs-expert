@@ -349,26 +349,20 @@ class RecordingDocumentVectorStore:
 class FakeAnswerGenerator:
     """Fake typed answer generator for approach identification and applicability analysis."""
 
-    def __init__(self, prompt_a_output: ApproachIdentificationOutput | RuntimeError, prompt_b_output: ApplicabilityAnalysisOutput | RuntimeError) -> None:
-        self.prompt_a_output = prompt_a_output
-        self.prompt_b_output = prompt_b_output
-        self.prompt_a_prompts: list[str] = []
-        self.prompt_b_prompts: list[str] = []
+    def __init__(self, approach_identification_output: ApproachIdentificationOutput | RuntimeError, applicability_analysis_output: ApplicabilityAnalysisOutput | RuntimeError) -> None:
+        self.approach_identification_output = approach_identification_output
+        self.applicability_analysis_output = applicability_analysis_output
+        self.approach_identification_prompts: list[str] = []
+        self.applicability_analysis_prompts: list[str] = []
 
     def generate_approach_identification(self, prompt_text: str) -> ApproachIdentificationOutput:
-        self.prompt_a_prompts.append(prompt_text)
-        if isinstance(self.prompt_a_output, RuntimeError):
-            raise self.prompt_a_output
-        return self.prompt_a_output
+        self.approach_identification_prompts.append(prompt_text)
+        if isinstance(self.approach_identification_output, RuntimeError):
+            raise self.approach_identification_output
+        return self.approach_identification_output
 
     def generate_applicability_analysis(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
-        self.prompt_b_prompts.append(prompt_text)
-        if isinstance(self.prompt_b_output, RuntimeError):
-            raise self.prompt_b_output
-        return self.prompt_b_output
-
-    def generate_prompt_a(self, prompt_text: str) -> ApproachIdentificationOutput:
-        return self.generate_approach_identification(prompt_text)
-
-    def generate_prompt_b(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
-        return self.generate_applicability_analysis(prompt_text)
+        self.applicability_analysis_prompts.append(prompt_text)
+        if isinstance(self.applicability_analysis_output, RuntimeError):
+            raise self.applicability_analysis_output
+        return self.applicability_analysis_output

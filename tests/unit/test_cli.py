@@ -13,7 +13,7 @@ from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command,
 from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.provenance import Provenance
 
-VALID_PROMPT_B_RESPONSE = """{
+VALID_APPLICABILITY_ANALYSIS_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
   "recommendation": {
     "answer": "oui",
@@ -50,23 +50,23 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
                 provenance=Provenance.EXPAND_TO_REFERENCED_CHUNK,
             )
         ],
-        prompt_a_text="Prompt A content",
-        prompt_a_raw_response='{"status": "pass", "approaches": []}',
-        prompt_b_text="Prompt B content",
-        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
-        prompt_b_json={
+        approach_identification_text="Approach identification content",
+        approach_identification_raw_response='{"status": "pass", "approaches": []}',
+        applicability_analysis_text="Applicability analysis content",
+        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_json={
             "assumptions_fr": ["Hypothèse de test"],
             "recommendation": {"answer": "oui", "justification": "Justification de test"},
             "approaches": [],
         },
-        prompt_b_memo_markdown="# Markdown answer",
+        applicability_analysis_memo_markdown="# Markdown answer",
     )
 
     _save_answer_command_result(result, tmp_path)
 
-    assert (tmp_path / "A-prompt.txt").read_text(encoding="utf-8") == "Prompt A content"
+    assert (tmp_path / "A-prompt.txt").read_text(encoding="utf-8") == "Approach identification content"
     assert (tmp_path / "A-response.json").read_text(encoding="utf-8") == '{"status": "pass", "approaches": []}'
-    assert (tmp_path / "B-prompt.txt").read_text(encoding="utf-8") == "Prompt B content"
+    assert (tmp_path / "B-prompt.txt").read_text(encoding="utf-8") == "Applicability analysis content"
     assert '"answer": "oui"' in (tmp_path / "B-response.json").read_text(encoding="utf-8")
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
     assert '"document_hits"' in (tmp_path / "document_routing.json").read_text(encoding="utf-8")
@@ -90,8 +90,8 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
-        prompt_b_memo_markdown="# Markdown answer",
+        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_memo_markdown="# Markdown answer",
     )
 
     monkeypatch.setattr("src.cli.create_answer_command", lambda query, options: FakeAnswerCommand(result))
@@ -125,7 +125,7 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_PROMPT_B_RESPONSE
+    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
@@ -134,8 +134,8 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
-        prompt_b_memo_markdown="# Markdown answer",
+        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_memo_markdown="# Markdown answer",
     )
     output_dir = tmp_path / "new-output-dir"
 
@@ -170,7 +170,7 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_PROMPT_B_RESPONSE
+    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
     assert (output_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
@@ -179,7 +179,7 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        prompt_b_raw_response=VALID_PROMPT_B_RESPONSE,
+        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
     )
     captured_options: list[object] = []
 
@@ -201,7 +201,7 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_PROMPT_B_RESPONSE
+    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
     assert len(captured_options) == 1
     options = captured_options[0]
     assert hasattr(options, "policy")
@@ -384,8 +384,8 @@ def test_answer_stdout_text_prefers_raw_response() -> None:
     result = AnswerCommandResult(
         query="test",
         success=True,
-        prompt_b_raw_response="raw response",
-        prompt_b_memo_markdown="markdown response",
+        applicability_analysis_raw_response="raw response",
+        applicability_analysis_memo_markdown="markdown response",
     )
 
     assert _answer_stdout_text(result) == "raw response"
@@ -393,7 +393,7 @@ def test_answer_stdout_text_prefers_raw_response() -> None:
 
 def test_answer_stdout_text_uses_markdown_when_raw_missing() -> None:
     """CLI stdout should fall back to markdown when raw response is absent."""
-    result = AnswerCommandResult(query="test", success=True, prompt_b_memo_markdown="markdown response")
+    result = AnswerCommandResult(query="test", success=True, applicability_analysis_memo_markdown="markdown response")
     assert _answer_stdout_text(result) == "markdown response"
 
 

@@ -115,8 +115,8 @@ def test_runner_sets_env_and_writes_metadata(tmp_path: Path) -> None:
     # Patch module-level paths for isolated temp project.
     module.DEFAULT_POLICY_PATH = tmp_path / "config" / "policy.default.yaml"
     module.DEFAULT_GLOSSARY_PATH = tmp_path / "config" / "en-fr-glossary.yaml"
-    module.DEFAULT_PROMPT_A_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
-    module.DEFAULT_PROMPT_B_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
+    module.DEFAULT_APPROACH_IDENTIFICATION_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
+    module.DEFAULT_APPLICABILITY_ANALYSIS_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
 
     exit_code = runner.run(promptfoo_args=["--filter-metadata", "family=Q1"], description="Q1 live")
 
@@ -173,8 +173,8 @@ def test_runner_passes_retrieve_suite_to_builder(tmp_path: Path) -> None:
     (tmp_path / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
     module.DEFAULT_POLICY_PATH = tmp_path / "config" / "policy.default.yaml"
     module.DEFAULT_GLOSSARY_PATH = tmp_path / "config" / "en-fr-glossary.yaml"
-    module.DEFAULT_PROMPT_A_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
-    module.DEFAULT_PROMPT_B_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
+    module.DEFAULT_APPROACH_IDENTIFICATION_PATH = tmp_path / "prompts" / "answer_prompt_A.txt"
+    module.DEFAULT_APPLICABILITY_ANALYSIS_PATH = tmp_path / "prompts" / "answer_prompt_B.txt"
 
     exit_code = runner.run(promptfoo_args=[], description="retrieve suite")
 
@@ -229,8 +229,8 @@ def test_runner_supports_experiment_dirs_outside_project_root(tmp_path: Path) ->
     (project_root / "prompts" / "answer_prompt_B.txt").write_text("B", encoding="utf-8")
     module.DEFAULT_POLICY_PATH = project_root / "config" / "policy.default.yaml"
     module.DEFAULT_GLOSSARY_PATH = project_root / "config" / "en-fr-glossary.yaml"
-    module.DEFAULT_PROMPT_A_PATH = project_root / "prompts" / "answer_prompt_A.txt"
-    module.DEFAULT_PROMPT_B_PATH = project_root / "prompts" / "answer_prompt_B.txt"
+    module.DEFAULT_APPROACH_IDENTIFICATION_PATH = project_root / "prompts" / "answer_prompt_A.txt"
+    module.DEFAULT_APPLICABILITY_ANALYSIS_PATH = project_root / "prompts" / "answer_prompt_B.txt"
 
     runner = module.PromptfooEvalRunner(
         project_root=project_root,

@@ -7,14 +7,14 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class PromptBuilder:
-    """Assemble Prompt A and Prompt B text from templates and context."""
+    """Assemble Approach identification and Applicability analysis text from templates and context."""
 
-    def build_prompt_a(self, template: str, question: str, chunks: list[str], chunk_summary: str) -> str:
-        """Build the Prompt A text with the retrieved chunk summary prepended."""
+    def build_approach_identification(self, template: str, question: str, chunks: list[str], chunk_summary: str) -> str:
+        """Build the Approach identification text with the retrieved chunk summary prepended."""
         chunks_text = "\n\n".join(chunks)
         prompt = template.replace("{{CHUNKS}}", chunks_text).replace("{{QUERY}}", question)
         return f"{chunk_summary}\n\n{prompt}"
 
-    def build_prompt_b(self, template: str, question: str, context: str, approaches_json: str) -> str:
-        """Build the Prompt B text with the filtered applicability context."""
+    def build_applicability_analysis(self, template: str, question: str, context: str, approaches_json: str) -> str:
+        """Build the Applicability analysis text with the filtered applicability context."""
         return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", question).replace("{{APPROACHES_JSON}}", approaches_json)

@@ -126,12 +126,6 @@ class AnswerGeneratorProtocol(Protocol):
     def generate_applicability_analysis(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
         """Generate typed applicability analysis output."""
 
-    def generate_prompt_a(self, prompt_text: str) -> ApproachIdentificationOutput:
-        """Backward-compatible alias for approach identification."""
-
-    def generate_prompt_b(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
-        """Backward-compatible alias for applicability analysis."""
-
 
 @dataclass(frozen=True)
 class ApproachIdentificationStage:

@@ -8,7 +8,7 @@ import unittest.mock
 from pathlib import Path
 from typing import cast
 
-from src.case_analysis.models import PromptAPassOutput, PromptBPassOutput
+from src.case_analysis.models import ApproachIdentificationPassOutput, ApplicabilityAnalysisPassOutput
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
@@ -16,7 +16,7 @@ from src.models.section import SectionRecord
 from tests.fakes import FakeAnswerGenerator, InMemoryChunkStore, InMemorySectionStore
 from tests.policy import make_retrieval_policy
 
-VALID_PROMPT_A_RESPONSE = """{
+VALID_APPROACH_IDENTIFICATION_RESPONSE = """{
   "status": "pass",
   "primary_accounting_issue": "Test accounting issue",
   "authority_resolution": {
@@ -42,7 +42,7 @@ VALID_PROMPT_A_RESPONSE = """{
   ]
 }"""
 
-VALID_PROMPT_B_RESPONSE = """{
+VALID_APPLICABILITY_ANALYSIS_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
   "recommendation": {
     "answer": "oui",
@@ -70,12 +70,12 @@ VALID_PROMPT_B_RESPONSE = """{
 
 
 
-VALID_PROMPT_A_OUTPUT = PromptAPassOutput.model_validate_json(VALID_PROMPT_A_RESPONSE)
-VALID_PROMPT_B_OUTPUT = PromptBPassOutput.model_validate_json(VALID_PROMPT_B_RESPONSE)
+VALID_APPROACH_IDENTIFICATION_OUTPUT = ApproachIdentificationPassOutput.model_validate_json(VALID_APPROACH_IDENTIFICATION_RESPONSE)
+VALID_APPLICABILITY_ANALYSIS_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate_json(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
 
 
 def make_answer_generator() -> FakeAnswerGenerator:
-    return FakeAnswerGenerator(prompt_a_output=VALID_PROMPT_A_OUTPUT, prompt_b_output=VALID_PROMPT_B_OUTPUT)
+    return FakeAnswerGenerator(approach_identification_output=VALID_APPROACH_IDENTIFICATION_OUTPUT, applicability_analysis_output=VALID_APPLICABILITY_ANALYSIS_OUTPUT)
 
 class MockVectorStore(SearchVectorStoreProtocol):
     """Minimal mock for VectorStore context manager."""
@@ -197,13 +197,13 @@ class TestAnswerCommand:
 
         assert result.success is True
         assert result.error is None
-        assert result.prompt_a_text is not None
-        assert json.loads(result.prompt_a_raw_response) == json.loads(VALID_PROMPT_A_RESPONSE)
-        assert result.prompt_a_json is not None
-        assert result.prompt_b_text is not None
-        assert json.loads(result.prompt_b_raw_response) == json.loads(VALID_PROMPT_B_RESPONSE)
-        assert result.prompt_b_json is not None
-        assert result.prompt_b_memo_markdown is not None
+        assert result.approach_identification_text is not None
+        assert json.loads(result.approach_identification_raw_response) == json.loads(VALID_APPROACH_IDENTIFICATION_RESPONSE)
+        assert result.approach_identification_json is not None
+        assert result.applicability_analysis_text is not None
+        assert json.loads(result.applicability_analysis_raw_response) == json.loads(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
+        assert result.applicability_analysis_json is not None
+        assert result.applicability_analysis_memo_markdown is not None
         assert result.retrieved_doc_uids == ["doc1"]
 
     def test_answer_no_results(self) -> None:
@@ -265,12 +265,12 @@ class TestAnswerCommand:
             result = command.execute()
 
         assert result.success is True
-        assert answer_generator.prompt_a_prompts
-        prompt_a = answer_generator.prompt_a_prompts[0]
-        assert "high relevance content" in prompt_a
-        assert "low relevance content" not in prompt_a
+        assert answer_generator.approach_identification_prompts
+        approach_identification = answer_generator.approach_identification_prompts[0]
+        assert "high relevance content" in approach_identification
+        assert "low relevance content" not in approach_identification
 
 
 # =============================================================================
-# Tests for Prompt B authority-based context filtering
+# Tests for Applicability analysis authority-based context filtering
 # =============================================================================

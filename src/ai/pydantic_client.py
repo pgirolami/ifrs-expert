@@ -61,18 +61,10 @@ class PydanticAIAnswerGenerator:
         )
         return cast("ApplicabilityAnalysisOutput", output)
 
-    def generate_prompt_a(self, prompt: str) -> ApproachIdentificationOutput:
-        """Backward-compatible alias for approach identification."""
-        return self.generate_approach_identification(prompt)
-
-    def generate_prompt_b(self, prompt: str) -> ApplicabilityAnalysisOutput:
-        """Backward-compatible alias for applicability analysis."""
-        return self.generate_applicability_analysis(prompt)
-
     def generate_output_json(self, prompt: str) -> str:
         """Generate a structured answer-stage output and return JSON text."""
         prompt_kind = infer_answer_prompt_kind(prompt)
-        output = self.generate_approach_identification(prompt) if prompt_kind == "prompt_a" else self.generate_applicability_analysis(prompt)
+        output = self.generate_approach_identification(prompt) if prompt_kind == "approach_identification" else self.generate_applicability_analysis(prompt)
         output_json = output.model_dump_json()
         logger.info(f"Serialized Pydantic AI structured completion prompt_kind={prompt_kind} output_chars={len(output_json)}")
         return output_json
@@ -138,8 +130,8 @@ def _provider_model_name(provider: str, model_env_var: str) -> str:
 def infer_answer_prompt_kind(prompt: str) -> str:
     """Infer whether a prompt is approach identification or applicability analysis from stable markers."""
     if "<identified_approaches>" in prompt:
-        return "prompt_b"
-    return "prompt_a"
+        return "applicability_analysis"
+    return "approach_identification"
 
 
 __all__ = [

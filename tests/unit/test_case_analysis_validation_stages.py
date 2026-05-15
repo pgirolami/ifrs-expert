@@ -7,7 +7,7 @@ from src.case_analysis.stages import AuthoritySufficiencyStage, VerifyCitationsS
 
 
 def test_authority_sufficiency_stage_continues_for_pass_payload() -> None:
-    """A normal Prompt A pass payload should continue to applicability analysis."""
+    """A normal Approach identification pass payload should continue to applicability analysis."""
     stage = AuthoritySufficiencyStage()
 
     result = stage.execute({"status": "pass", "approaches": []})

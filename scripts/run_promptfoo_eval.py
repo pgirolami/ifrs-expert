@@ -30,8 +30,8 @@ DEFAULT_DESCRIPTION: Final[str] = "promptfoo eval"
 DEFAULT_SUITE: Final[str] = "answer"
 DEFAULT_POLICY_PATH: Final[Path] = PROJECT_ROOT / "config" / "policy.default.yaml"
 DEFAULT_GLOSSARY_PATH: Final[Path] = PROJECT_ROOT / "config" / "en-fr-glossary.yaml"
-DEFAULT_PROMPT_A_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
-DEFAULT_PROMPT_B_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
+DEFAULT_APPROACH_IDENTIFICATION_PROMPT_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_A.txt"
+DEFAULT_APPLICABILITY_ANALYSIS_PROMPT_PATH: Final[Path] = PROJECT_ROOT / "prompts" / "answer_prompt_B.txt"
 
 
 @dataclass(frozen=True)
@@ -175,8 +175,8 @@ class PromptfooEvalRunner:
         effective_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(DEFAULT_POLICY_PATH, effective_dir / DEFAULT_POLICY_PATH.name)
         shutil.copy2(DEFAULT_GLOSSARY_PATH, effective_dir / DEFAULT_GLOSSARY_PATH.name)
-        shutil.copy2(DEFAULT_PROMPT_A_PATH, effective_dir / DEFAULT_PROMPT_A_PATH.name)
-        shutil.copy2(DEFAULT_PROMPT_B_PATH, effective_dir / DEFAULT_PROMPT_B_PATH.name)
+        shutil.copy2(DEFAULT_APPROACH_IDENTIFICATION_PROMPT_PATH, effective_dir / DEFAULT_APPROACH_IDENTIFICATION_PROMPT_PATH.name)
+        shutil.copy2(DEFAULT_APPLICABILITY_ANALYSIS_PROMPT_PATH, effective_dir / DEFAULT_APPLICABILITY_ANALYSIS_PROMPT_PATH.name)
 
     def _archive_effective_artifacts(
         self,
@@ -199,13 +199,13 @@ class PromptfooEvalRunner:
             source_path=archived_dir / DEFAULT_GLOSSARY_PATH.name,
             destination_path=archived_dir / DEFAULT_GLOSSARY_PATH.name,
         )
-        artifacts["prompt_a"] = self._copy_with_hash(
-            source_path=archived_dir / DEFAULT_PROMPT_A_PATH.name,
-            destination_path=archived_dir / DEFAULT_PROMPT_A_PATH.name,
+        artifacts["approach_identification_prompt"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_APPROACH_IDENTIFICATION_PROMPT_PATH.name,
+            destination_path=archived_dir / DEFAULT_APPROACH_IDENTIFICATION_PROMPT_PATH.name,
         )
-        artifacts["prompt_b"] = self._copy_with_hash(
-            source_path=archived_dir / DEFAULT_PROMPT_B_PATH.name,
-            destination_path=archived_dir / DEFAULT_PROMPT_B_PATH.name,
+        artifacts["applicability_analysis_prompt"] = self._copy_with_hash(
+            source_path=archived_dir / DEFAULT_APPLICABILITY_ANALYSIS_PROMPT_PATH.name,
+            destination_path=archived_dir / DEFAULT_APPLICABILITY_ANALYSIS_PROMPT_PATH.name,
         )
         return artifacts
 

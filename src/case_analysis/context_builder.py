@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class ContextBuilder:
-    """Build filtered prompt context from typed Prompt A output."""
+    """Build filtered prompt context from typed Approach identification output."""
 
     def build_applicability_analysis_context(
         self,

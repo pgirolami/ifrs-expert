@@ -560,11 +560,11 @@ def _run_live(
         logger.error(f"Answer pipeline failed during Promptfoo live run: {result.error}")
         return 1, _error_payload(result.error)
 
-    if result.prompt_b_raw_response is not None:
-        return 0, result.prompt_b_raw_response
+    if result.applicability_analysis_raw_response is not None:
+        return 0, result.applicability_analysis_raw_response
 
-    if result.prompt_b_memo_markdown is not None:
-        return 0, result.prompt_b_memo_markdown
+    if result.applicability_analysis_memo_markdown is not None:
+        return 0, result.applicability_analysis_memo_markdown
 
     return 1, _error_payload("Error: Empty response from CLI")
 

@@ -20,14 +20,14 @@ def test_answer_first_turn_uses_answer_command_result() -> None:
 
     def run_first_turn(question: str) -> AnswerCommandResult:
         calls.append(question)
-        return AnswerCommandResult(query=question, success=True, prompt_b_memo_markdown="# Grounded answer")
+        return AnswerCommandResult(query=question, success=True, applicability_analysis_memo_markdown="# Grounded answer")
 
     service = ChatService(run_first_turn_fn=run_first_turn, generate_follow_up_fn=lambda prompt: "unused")
 
     result = service.answer_first_turn("What is IFRS 9?")
 
     assert calls == ["What is IFRS 9?"]
-    assert result.prompt_b_memo_markdown == "# Grounded answer"
+    assert result.applicability_analysis_memo_markdown == "# Grounded answer"
 
 
 def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
@@ -45,7 +45,7 @@ def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
     first_turn_result = AnswerCommandResult(
         query="Can we apply hedge accounting?",
         success=True,
-        prompt_b_memo_markdown="# Grounded first answer",
+        applicability_analysis_memo_markdown="# Grounded first answer",
     )
     follow_up_turns = [FollowUpTurn(user_question="Under which conditions?", assistant_answer="Conditions answer")]
 
@@ -61,15 +61,15 @@ def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
 
 def test_build_grounded_context_prefers_markdown_then_json_then_raw() -> None:
     """Grounded context should follow markdown > json > raw fallback order."""
-    markdown_context, markdown_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, prompt_b_memo_markdown="# memo"))
+    markdown_context, markdown_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_memo_markdown="# memo"))
     assert markdown_context == "# memo"
     assert markdown_source == "markdown"
 
-    json_context, json_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, prompt_b_json={"x": 1}))
+    json_context, json_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_json={"x": 1}))
     assert '"x": 1' in json_context
     assert json_source == "json"
 
-    raw_context, raw_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, prompt_b_raw_response="raw"))
+    raw_context, raw_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_raw_response="raw"))
     assert raw_context == "raw"
     assert raw_source == "raw_response"
 

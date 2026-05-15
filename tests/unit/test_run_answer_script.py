@@ -164,7 +164,7 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
 
     class _FakeCommand:
         def execute(self) -> AnswerCommandResult:
-            return AnswerCommandResult(query="Question?", success=True, prompt_b_raw_response='{"ok": true}')
+            return AnswerCommandResult(query="Question?", success=True, applicability_analysis_raw_response='{"ok": true}')
 
     def _fake_create_answer_command(query: str, options: object) -> _FakeCommand:
         captured["query"] = query
@@ -209,7 +209,7 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
 
     class _FakeCommand:
         def execute(self) -> AnswerCommandResult:
-            return AnswerCommandResult(query="Question?", success=True, prompt_b_raw_response='{"ok": true}')
+            return AnswerCommandResult(query="Question?", success=True, applicability_analysis_raw_response='{"ok": true}')
 
     def _fake_create_answer_command(query: str, options: object) -> _FakeCommand:
         captured["query"] = query

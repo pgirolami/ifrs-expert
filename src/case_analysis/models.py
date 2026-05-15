@@ -173,7 +173,7 @@ class IdentifiedApproach(BaseModel):
     rationale_for_inclusion: str | None = None
 
 
-class PromptAClarificationOutput(BaseModel):
+class ApproachIdentificationClarificationOutput(BaseModel):
     """approach identification output when retrieved context is insufficient."""
 
     model_config = ConfigDict(extra="allow")
@@ -182,7 +182,7 @@ class PromptAClarificationOutput(BaseModel):
     questions: list[str]
 
 
-class PromptAPassOutput(BaseModel):
+class ApproachIdentificationPassOutput(BaseModel):
     """approach identification output when authority and peer approaches are identified."""
 
     model_config = ConfigDict(extra="allow")
@@ -195,7 +195,7 @@ class PromptAPassOutput(BaseModel):
     approaches: list[IdentifiedApproach]
 
 
-PromptAOutput = PromptAPassOutput | PromptAClarificationOutput
+ApproachIdentificationOutput = ApproachIdentificationPassOutput | ApproachIdentificationClarificationOutput
 
 
 class Recommendation(BaseModel):
@@ -232,7 +232,7 @@ class ApproachApplicability(BaseModel):
     references: list[ApplicabilityReference] = Field(default_factory=list)
 
 
-class PromptBClarificationOutput(BaseModel):
+class ApplicabilityAnalysisClarificationOutput(BaseModel):
     """applicability analysis output when approach identification requires clarification."""
 
     model_config = ConfigDict(extra="allow")
@@ -241,7 +241,7 @@ class PromptBClarificationOutput(BaseModel):
     questions_fr: list[str]
 
 
-class PromptBPassOutput(BaseModel):
+class ApplicabilityAnalysisPassOutput(BaseModel):
     """applicability analysis output when applicability can be assessed."""
 
     model_config = ConfigDict(extra="allow")
@@ -251,14 +251,14 @@ class PromptBPassOutput(BaseModel):
     approaches: list[ApproachApplicability]
 
 
-PromptBOutput = PromptBPassOutput | PromptBClarificationOutput
+ApplicabilityAnalysisOutput = ApplicabilityAnalysisPassOutput | ApplicabilityAnalysisClarificationOutput
 
 
 class AuthorityClassificationResult(BaseModel):
     """Typed approach identification result after Pydantic output contract validation."""
 
     raw_response: str
-    output: PromptAOutput
+    output: ApproachIdentificationOutput
     payload: dict[str, object]
 
 
@@ -266,7 +266,7 @@ class ApplicabilityAnalysisResult(BaseModel):
     """Typed applicability analysis result after Pydantic output contract validation."""
 
     raw_response: str
-    output: PromptBOutput
+    output: ApplicabilityAnalysisOutput
     payload: dict[str, object]
 
 
@@ -322,14 +322,8 @@ ApproachIdentificationClassification = AuthorityClassification
 ApproachIdentificationTreatmentBasis = TreatmentAuthorityBasis
 ApproachIdentificationTreatmentFamily = TreatmentFamily
 ApproachIdentification = IdentifiedApproach
-ApproachIdentificationClarificationOutput = PromptAClarificationOutput
-ApproachIdentificationPassOutput = PromptAPassOutput
-ApproachIdentificationOutput = PromptAOutput
 ApplicabilityAnalysisReference = ApplicabilityReference
 ApplicabilityAnalysisFinding = ApproachApplicability
-ApplicabilityAnalysisClarificationOutput = PromptBClarificationOutput
-ApplicabilityAnalysisPassOutput = PromptBPassOutput
-ApplicabilityAnalysisOutput = PromptBOutput
 ApproachIdentificationResult = AuthorityClassificationResult
 ApplicabilityAnalysisResultAlias = ApplicabilityAnalysisResult
 ApproachSufficiencyResult = AuthoritySufficiencyResult
