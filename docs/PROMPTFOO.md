@@ -1,6 +1,6 @@
 # Promptfoo Evaluation
 
-This project uses Promptfoo as the main regression harness for the current Prompt A → Prompt B answer pipeline.
+This project uses Promptfoo as the main regression harness for the current approach identification → applicability analysis answer pipeline.
 
 It helps detect regressions across:
 - question phrasing variants within a family
@@ -135,7 +135,7 @@ settings.
 
 Each archived run contains:
 - `run.json` — run metadata and forwarded Promptfoo arguments
-- `artifacts/` — per-test Prompt A/B inputs plus structured JSON, memo markdown, and FAQ markdown written by `scripts/run_answer.py`
+- `artifacts/` — per-test approach identification/applicability analysis inputs plus structured JSON, memo markdown, and FAQ markdown written by `scripts/run_answer.py`
 
 ## Config generation
 

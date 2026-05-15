@@ -49,8 +49,8 @@ It documents how the system evolved from a single prompt to a structured, evalua
 - [Experiment 03](../experiments/03_proper_context_hierarchical_retrieval/EXPERIMENTS.md) : fix (k=5, e=5, min-score=0.5, f= 0) and evaluate stability of answers to each question variant qualitatively
 
 - Address answer variance by introducing **2-stage pipeline**: 
-    - Prompt A identifies legitimate accounting approaches
-    - Prompt B determines applicability to the context
+    - approach identification identifies legitimate accounting approaches
+    - applicability analysis determines applicability to the context
 - Refine prompts through many experiments while developping quantitative analysis
     - [Experiment 04](../experiments/04_2_stage_processing/EXPERIMENTS.md) computes 3 runs of the 2-stage pipeline on the 22 questions, first attempt at quantitative analysis
         - [Experiment 05](../experiments/05_tighter_2_stage_processing_json_only/EXPERIMENTS.md)
@@ -134,7 +134,7 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
 - Rework the prompt so multiple documents are used together rather than against each other before trying to narrow further the documents retrieved because retrieving IAS 21 makes perfect sense but not a "general accounting" approache
     - [Experiment 25](../experiments/25_new_prompt_same_as_24/EXPERIMENTS.md)
     - [Experiment 26](../experiments/26_new_prompt_same_as_25/EXPERIMENTS.md)
-- New preliminary step in Prompt A to force the LLM to perform its analysis by identifying the accounting issue, which documents were authoritative or not, and only then identify the approaches (from the primary or supporting authorities)
+- New preliminary step in approach identification to force the LLM to perform its analysis by identifying the accounting issue, which documents were authoritative or not, and only then identify the approaches (from the primary or supporting authorities)
     - [Experiment 27](../experiments/27_new_prompt_same_as_26/EXPERIMENTS.md)
     - [Experiment 28](../experiments/28_more_questions_same_as_27/EXPERIMENTS.md) : same as experiment 27 but on 8 questions instead of 2
 
@@ -160,14 +160,14 @@ Continued work to identify correct approaches on the full free IFRS corpus, usin
         
         The answer was correct and contained additional unsollicited JSON fields that mapped to the thinking we were asking of it: `primary_accounting_issue`, `authority_classification`, `treatment_families` and finally `approaches`.
         
-        This sounded like a good idea so we incorporated the idea in a new Prompt A and considered giving Prompt B a context limited to the authoritative and supporting documents
+        This sounded like a good idea so we incorporated the idea in a new approach identification and considered giving applicability analysis a context limited to the authoritative and supporting documents
 
     - Manual test with an extended JSON output for the new prompt on question 1.5 (the 2nd worst) identifies all 3 approaches.
 
-    - Used new prompt instructions & limited context for Prompt B to authoritative & supporting documents.
+    - Used new prompt instructions & limited context for applicability analysis to authoritative & supporting documents.
         - [Experiment 31](../experiments/31_new_A_with_less_context_in_B/EXPERIMENTS.md) ran only on the first 8 question and perfectly identifies the approaches. There is one case where the recommendation is "No" which will need to be investigated
             
-            The key improvement came from forcing the model to first identify the accounting issue, then classify authority, then identify treatment families, then map to peer top-level approaches. Preventing Prompt A from doing applicability reasoning was critical. A richer structured JSON artifact improved stability and created a natural way to filter context for Prompt B.
+            The key improvement came from forcing the model to first identify the accounting issue, then classify authority, then identify treatment families, then map to peer top-level approaches. Preventing approach identification from doing applicability reasoning was critical. A richer structured JSON artifact improved stability and created a natural way to filter context for applicability analysis.
 
             **At this stage, we have a working pipeline on the Q1 family of question, running on a full IFRS free-corpus. 🎉**
 

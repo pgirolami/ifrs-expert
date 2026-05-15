@@ -127,9 +127,9 @@ The answers became more stable after separating:
 1. approach identification;
 2. applicability reasoning.
 
-Prompt A identifies the accounting issue, authority types, candidate treatment families, and peer accounting approaches. Prompt B uses that structured output, plus pruned primary and supporting authority, to decide what applies and write the answer.
+approach identification identifies the accounting issue, authority types, candidate treatment families, and peer accounting approaches. applicability analysis uses that structured output, plus pruned primary and supporting authority, to decide what applies and write the answer.
 
-This helped because Prompt A could be told not to decide applicability too early. It also made the intermediate reasoning visible. JSON was not just an output format; it became the debugging and evaluation surface.
+This helped because approach identification could be told not to decide applicability too early. It also made the intermediate reasoning visible. JSON was not just an output format; it became the debugging and evaluation surface.
 
 ---
 
@@ -143,7 +143,7 @@ The current pipeline classifies context as:
 - supporting authority;
 - peripheral authority.
 
-Prompt B then receives a smaller context focused on primary and supporting material.
+applicability analysis then receives a smaller context focused on primary and supporting material.
 
 That matters because a paragraph can be topically relevant and still be the wrong authority. Expert-domain RAG needs authority modelling, not only relevance ranking.
 
@@ -153,7 +153,7 @@ That matters because a paragraph can be topically relevant and still be the wron
 
 This was the most important boundary found near the end of the project.
 
-The current Prompt A schema assumes the main task is to identify peer accounting approaches. That works when the standard provides a small set of comparable treatments or models.
+The current approach identification schema assumes the main task is to identify peer accounting approaches. That works when the standard provides a small set of comparable treatments or models.
 
 Good fits include:
 

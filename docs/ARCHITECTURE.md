@@ -55,7 +55,7 @@ This layer matters because several retrieval failures were caused by ingestion d
 flowchart
       subgraph P2[Grounded answer generation]
       direction LR
-       Q[Query Enrichment] --> DR[Document Routing] --> SCR[Seed chunk retrieval] --> RE[Expand to references] --> SE[Expand to section] --> PA[Prompt A] --> PB[Prompt B] --> MDA[Markdown answer]
+       Q[Query Enrichment] --> DR[Document Routing] --> SCR[Seed chunk retrieval] --> RE[Expand to references] --> SE[Expand to section] --> PA[approach identification] --> PB[applicability analysis] --> MDA[Markdown answer]
       end
 ```
 
@@ -150,9 +150,9 @@ retrieval_policies:
 
 The LLM pipeline has two stages.
 
-## Prompt A: structure the accounting problem
+## approach identification: structure the accounting problem
 
-Prompt A does not write the final answer.
+approach identification does not write the final answer.
 
 It returns structured JSON containing:
 
@@ -168,12 +168,12 @@ It returns structured JSON containing:
 
 Its job is to stabilize the set of accounting approaches before applicability is considered.
 
-## Prompt B: evaluate applicability and answer
+## applicability analysis: evaluate applicability and answer
 
-Prompt B receives:
+applicability analysis receives:
 
 - the user question;
-- Prompt A's structured output;
+- approach identification's structured output;
 - a pruned context containing primary and supporting authority.
 
 It returns a final structured answer with:
