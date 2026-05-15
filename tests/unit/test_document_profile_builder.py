@@ -413,32 +413,7 @@ def test_document_profile_builder_extracts_plural_issues_and_excludes_it_from_to
     assert "Foreign currency exposures" not in built_profile.document.toc_text
 
 
-def test_document_profile_builder_uses_pdf_fallback_intro() -> None:
-    """PDF documents should fall back to leading chunk text when headings are unavailable."""
-    document = DocumentRecord(
-        doc_uid="ifrs9-pdf",
-        source_type="pdf",
-        source_title="IFRS 9",
-        source_url=None,
-        canonical_url=None,
-        captured_at=None,
-    )
-    chunks = [
-        Chunk(doc_uid="ifrs9-pdf", chunk_number="1", page_start="1", page_end="1", text="First paragraph."),
-        Chunk(doc_uid="ifrs9-pdf", chunk_number="2", page_start="1", page_end="1", text="Second paragraph."),
-    ]
 
-    built_profile = DocumentProfileBuilder().build(
-        document=document,
-        chunks=chunks,
-        sections=[],
-        section_closure_rows=[],
-    )
-
-    assert built_profile.document.intro_text == "First paragraph.\nSecond paragraph."
-    assert built_profile.document.background_text is None
-    assert built_profile.document.issue_text is None
-    assert "Introduction: First paragraph.\nSecond paragraph." in built_profile.embedding_text
 
 
 def test_document_profile_builder_extracts_navis_intro_from_essentiel_generalites_section() -> None:

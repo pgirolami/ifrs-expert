@@ -102,23 +102,23 @@ def _build_parser() -> argparse.ArgumentParser:
 def _add_chunk_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     chunk_parser = subparsers.add_parser(
         "chunk",
-        help="Parse a PDF file into chunks and output as JSON",
+        help="Parse an HTML capture into chunks and output as JSON",
         allow_abbrev=False,
     )
-    chunk_parser.add_argument("pdf", help="Path to the PDF file to chunk")
+    chunk_parser.add_argument("html", help="Path to the HTML file to chunk")
 
 
 def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     store_parser = subparsers.add_parser(
         "store",
-        help="Extract chunks from a PDF or HTML capture and store them in the database",
+        help="Extract chunks from an HTML capture and store them in the database",
         parents=[_build_scope_parent_parser()],
         allow_abbrev=False,
     )
-    store_parser.add_argument("source", help="Path to the source file to store (.pdf or .html)")
+    store_parser.add_argument("source", help="Path to the HTML source file to store")
     store_parser.add_argument(
         "--doc-uid",
-        help="Document UID to use for PDF ingestion (default: filename stem)",
+        help="Document UID to use for HTML ingestion (default: filename stem)",
     )
     store_parser.add_argument(
         "--force",
@@ -130,7 +130,7 @@ def _add_store_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPa
 def _add_ingest_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     ingest_parser = subparsers.add_parser(
         "ingest",
-        help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs plus PDFs",
+        help="Scan ~/Downloads/ifrs-expert/ and ingest HTML capture pairs",
         parents=[_build_scope_parent_parser()],
         allow_abbrev=False,
     )
@@ -340,7 +340,7 @@ def _build_answer_options(args: argparse.Namespace, policy: RetrievalPolicy) -> 
 
 def _execute_chunk_command(args: argparse.Namespace) -> str:
     """Execute the chunk command."""
-    return ChunkCommand(pdf_path=Path(args.pdf)).execute()
+    return ChunkCommand(html_path=Path(args.html)).execute()
 
 
 def _execute_store_command(args: argparse.Namespace) -> str:

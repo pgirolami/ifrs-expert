@@ -101,11 +101,6 @@ class DocumentProfileBuilder:
             if navis_intro_text is not None:
                 field_values["intro_text"] = navis_intro_text
 
-        if field_values.get("intro_text") is None:
-            intro_text = _build_intro_fallback(doc_uid=document.doc_uid, source_type=document.source_type, chunks=chunks)
-            if intro_text is not None:
-                field_values["intro_text"] = intro_text
-
         toc_text = _build_toc_text(
             doc_uid=document.doc_uid,
             sections=toc_sections or sections,
@@ -435,24 +430,6 @@ def _normalize_navis_section_match_text(title: str) -> str:
     normalized_title = NAVIS_LEADING_MARKER_PATTERN.sub("", normalized_title)
     decomposed_title = unicodedata.normalize("NFKD", normalized_title)
     return "".join(character for character in decomposed_title if not unicodedata.combining(character))
-
-
-def _build_intro_fallback(doc_uid: str, source_type: str, chunks: list[Chunk]) -> str | None:
-    if source_type != "pdf":
-        logger.info(f"Skipping introduction fallback for doc_uid={doc_uid} because source_type={source_type} is not pdf")
-        return None
-
-    if not chunks:
-        logger.warning(f"Cannot build intro fallback for doc_uid={doc_uid} because there are no chunks")
-        return None
-
-    intro_text = "\n".join(chunk.text for chunk in chunks if chunk.text)
-    if not intro_text:
-        logger.warning(f"Cannot build intro fallback for doc_uid={doc_uid} because all candidate chunks are empty")
-        return None
-
-    logger.info(f"Built PDF introduction fallback for doc_uid={doc_uid} with raw_chars={len(intro_text)}")
-    return intro_text
 
 
 def build_full_document_similarity_text(document: DocumentRecord, max_embedding_chars: int = MAX_EMBEDDING_TEXT_CHARS) -> str:

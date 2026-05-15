@@ -58,14 +58,14 @@ class TestStoreCommand:
 
     def test_store_command_success(self, tmp_path: Path) -> None:
         """Store command should persist document metadata, chunks, and embeddings."""
-        source_path = tmp_path / "test.pdf"
+        source_path = tmp_path / "test.html"
         source_path.write_text("dummy", encoding="utf-8")
 
         extractor = FakeExtractor(
             extracted_document=ExtractedDocument(
                 document=DocumentRecord(
                     doc_uid="ifrs9",
-                    source_type="pdf",
+                    source_type="html",
                     source_title="IFRS 9",
                     source_url=None,
                     canonical_url=None,
@@ -107,12 +107,12 @@ class TestStoreCommand:
         assert result.chunk_count == 1
         stored_document = document_store.get_document("ifrs9")
         assert stored_document is not None, "Expected document metadata to be stored"
-        assert stored_document.source_type == "pdf"
+        assert stored_document.source_type == "html"
         assert stored_document.document_type == "IFRS-S"
-        assert stored_document.intro_text == "test content"
+        assert stored_document.intro_text is None
         assert chunk_store.get_chunks_by_doc("ifrs9")[0].text == "test content"
         assert vector_store.added_embeddings == [("ifrs9", [1], ["test content"])]
-        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9\nIntroduction: test content"])]
+        assert document_vector_store.added_embeddings == [(["ifrs9"], ["Title: IFRS 9"])]
         assert command.execute().startswith("Stored 1 chunks")
 
     def test_store_command_persists_references(self, tmp_path: Path) -> None:
@@ -664,7 +664,7 @@ class TestStoreCommand:
 
     def test_store_command_truncates_oversized_chunks(self, tmp_path: Path) -> None:
         """Oversized chunks should be truncated before persistence."""
-        source_path = tmp_path / "test.pdf"
+        source_path = tmp_path / "test.html"
         source_path.write_text("dummy", encoding="utf-8")
         chunk_store = InMemoryChunkStore()
         document_store = InMemoryDocumentStore()
@@ -674,7 +674,7 @@ class TestStoreCommand:
             extracted_document=ExtractedDocument(
                 document=DocumentRecord(
                     doc_uid="ifrs16",
-                    source_type="pdf",
+                    source_type="html",
                     source_title="IFRS 16",
                     source_url=None,
                     canonical_url=None,
@@ -726,12 +726,12 @@ class TestStoreCommand:
             init_db_fn=lambda: None,
         )
         command = StoreCommand(
-            source_path=Path("/nonexistent/file.pdf"),
+            source_path=Path("/nonexistent/file.html"),
             extractor=FakeExtractor(
                 extracted_document=ExtractedDocument(
                     document=DocumentRecord(
                         doc_uid="missing",
-                        source_type="pdf",
+                        source_type="html",
                         source_title="Missing",
                         source_url=None,
                         canonical_url=None,

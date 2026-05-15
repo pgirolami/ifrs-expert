@@ -377,7 +377,7 @@ Est-ce que je peux appliquer une documentation de couverture dans les comptes co
 
 ```bash
 echo "Est-ce que je peux appliquer une documentation de couverture dans les comptes consolidés sur la partie change relative aux dividendes intragroupe pour lesquels une créance à recevoir a été comptabilisée ?" \
-  | uv run python -m src.cli answer
+  | uv run python -m src.cli answer --policy-config config/policy.default.yaml --retrieval-policy standards_only_through_chunks__enriched
 ```
 
 </details>

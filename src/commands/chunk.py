@@ -1,39 +1,44 @@
-"""Chunk command - extract chunks from a PDF file."""
+"""Chunk command - extract chunks from an HTML capture file."""
+
+from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from src.pdf import extract_chunks
+if TYPE_CHECKING:
+    from pathlib import Path
+
+from src.extraction import HtmlExtractor
 
 
 class ChunkCommand:
-    """Extract chunks from a PDF file."""
+    """Extract chunks from an HTML capture file."""
 
-    def __init__(self, pdf_path: Path) -> None:
+    def __init__(self, html_path: Path) -> None:
         """Initialize the chunk command."""
-        self.pdf_path = pdf_path
+        self.html_path = html_path
 
     def execute(self) -> str:
-        """Extract and return chunks from a PDF as JSON."""
-        if not self.pdf_path.exists():
-            return f"Error: PDF file not found: {self.pdf_path}"
+        """Extract and return chunks from an HTML source as JSON."""
+        if not self.html_path.exists():
+            return f"Error: HTML file not found: {self.html_path}"
 
         try:
-            chunks = extract_chunks(self.pdf_path)
-
+            extractor = HtmlExtractor(sidecar_path=self.html_path.with_suffix(".json"))
+            extracted_document = extractor.extract(self.html_path, None)
             return json.dumps(
                 [
                     {
-                        "chunk_number": c.chunk_number,
-                        "chunk_id": c.chunk_id,
-                        "page_start": c.page_start,
-                        "page_end": c.page_end,
-                        "text": c.text,
+                        "chunk_number": chunk.chunk_number,
+                        "chunk_id": chunk.chunk_id,
+                        "page_start": chunk.page_start,
+                        "page_end": chunk.page_end,
+                        "text": chunk.text,
                     }
-                    for c in chunks
+                    for chunk in extracted_document.chunks
                 ],
                 indent=2,
                 ensure_ascii=False,
             )
-        except (OSError, ValueError) as e:
-            return f"Error: {e}"
+        except (OSError, ValueError) as error:
+            return f"Error: {error}"

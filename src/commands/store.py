@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.db import ChunkStore, ContentReferenceStore, DocumentStore, SectionStore, init_db
-from src.extraction import HtmlExtractor, PdfExtractor
+from src.extraction import HtmlExtractor
 from src.ingestion import models as ingestion_models
 from src.ingestion.models import StoreCommandOptions, StoreCommandResult, StoreDependencies
 from src.ingestion.pipeline import IngestionPipeline
@@ -36,8 +36,9 @@ class StoreCommand:
             unexpected_keys = ", ".join(sorted(legacy_kwargs))
             message = f"Unexpected keyword arguments: {unexpected_keys}"
             raise TypeError(message)
+        normalized_source_path = Path(source_path)
         self._pipeline = IngestionPipeline(
-            source_path=source_path,
+            source_path=normalized_source_path,
             extractor=extractor,
             dependencies=dependencies,
             options=resolved_options,
@@ -142,8 +143,6 @@ def _pop_legacy_bool(
 def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
     """Select the default extractor for a source path based on its file suffix."""
     suffix = source_path.suffix.lower()
-    if suffix == ".pdf":
-        return PdfExtractor()
     if suffix == ".html":
         return HtmlExtractor(sidecar_path=source_path.with_suffix(".json"))
 
@@ -158,29 +157,20 @@ def create_store_command(
     options: StoreCommandOptions | None = None,
     **legacy_kwargs: object,
 ) -> StoreCommand:
-    """Create StoreCommand with real dependencies by default.
-
-    The pdf_path keyword parameter is preserved for backward compatibility.
-    """
+    """Create StoreCommand with real dependencies by default."""
     resolved_options = _resolve_store_command_options(options=options, legacy_kwargs=legacy_kwargs)
-    pdf_path = legacy_kwargs.pop("pdf_path", None)
     if legacy_kwargs:
         unexpected_keys = ", ".join(sorted(legacy_kwargs))
         message = f"Unexpected keyword arguments: {unexpected_keys}"
         raise TypeError(message)
-    if pdf_path is not None and not isinstance(pdf_path, Path):
-        message = f"pdf_path must be a Path, got {type(pdf_path).__name__}"
-        raise TypeError(message)
-
-    resolved_source_path = source_path or pdf_path
-    if resolved_source_path is None:
-        message = "create_store_command() requires source_path or pdf_path"
+    if source_path is None:
+        message = "create_store_command() requires source_path"
         raise TypeError(message)
 
     resolved_dependencies = dependencies or build_store_dependencies()
-    resolved_extractor = extractor or _default_extractor_for_source(resolved_source_path)
+    resolved_extractor = extractor or _default_extractor_for_source(source_path)
     return StoreCommand(
-        source_path=resolved_source_path,
+        source_path=source_path,
         extractor=resolved_extractor,
         dependencies=resolved_dependencies,
         options=resolved_options,

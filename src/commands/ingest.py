@@ -1,4 +1,4 @@
-"""Ingest command - scan the capture root and route HTML/PDF sources through StoreCommand."""
+"""Ingest command - scan the capture root and route HTML sources through StoreCommand."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from src.commands.store import (
     build_store_dependencies,
     create_store_command,
 )
-from src.extraction import HtmlExtractor, PdfExtractor
+from src.extraction import HtmlExtractor
 from src.extraction.html import HtmlSidecar, HtmlValidationError
 
 if TYPE_CHECKING:
@@ -189,9 +189,8 @@ class IngestCommand:
     def _discover_items(self) -> tuple[list[IngestItem], list[_DiscoveryFailure]]:
         html_paths = sorted(self._directories.root.glob("*.html"))
         json_paths = sorted(self._directories.root.glob("*.json"))
-        pdf_paths = sorted(self._directories.root.glob("*.pdf"))
 
-        logger.info(f"Found {len(html_paths)} HTML file(s), {len(json_paths)} sidecar file(s), and {len(pdf_paths)} PDF file(s)")
+        logger.info(f"Found {len(html_paths)} HTML file(s) and {len(json_paths)} sidecar file(s)")
 
         items: list[IngestItem] = []
         failures: list[_DiscoveryFailure] = []
@@ -243,38 +242,6 @@ class IngestCommand:
                     related_paths=(html_path, json_path),
                     reference=sidecar.canonical_url,
                     extractor=HtmlExtractor(sidecar_path=json_path),
-                )
-            )
-
-        for pdf_path in pdf_paths:
-            if not pdf_path.is_file():
-                failures.append(
-                    _DiscoveryFailure(
-                        related_paths=(pdf_path,),
-                        reference=str(pdf_path),
-                        reason="PDF file is not readable",
-                    )
-                )
-                continue
-            try:
-                pdf_path.open("rb").close()
-            except OSError:
-                failures.append(
-                    _DiscoveryFailure(
-                        related_paths=(pdf_path,),
-                        reference=str(pdf_path),
-                        reason="PDF file is not readable",
-                    )
-                )
-                continue
-
-            items.append(
-                IngestItem(
-                    kind="pdf",
-                    source_path=pdf_path,
-                    related_paths=(pdf_path,),
-                    reference=str(pdf_path),
-                    extractor=PdfExtractor(),
                 )
             )
 

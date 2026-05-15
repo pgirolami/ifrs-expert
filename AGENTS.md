@@ -564,7 +564,7 @@ src/
 ├── cli.py                 # Entry point - parses args and dispatches to commands
 └── commands/
     ├── __init__.py        # Exports all commands
-    ├── store.py           # StoreCommand - ingest PDF and store chunks
+    ├── store.py           # StoreCommand - ingest captures and store chunks
     ├── chunk.py           # ChunkCommand - manage chunks
     ├── query.py           # QueryCommand - run retrieval queries
     ├── list.py            # ListCommand - list documents/chunks
@@ -579,16 +579,16 @@ Each command is a class with:
 
 ```python
 class StoreCommand:
-    """Extract chunks from a PDF and store in the database and vector index."""
+    """Extract chunks from an HTML capture and store them in the database and vector index."""
 
-    def __init__(self, pdf_path: Path, doc_uid: str | None = None):
-        self.pdf_path = pdf_path
-        self.doc_uid = doc_uid or pdf_path.stem
+    def __init__(self, html_path: Path, doc_uid: str | None = None):
+        self.html_path = html_path
+        self.doc_uid = doc_uid or html_path.stem
 
     def execute(self) -> str:
         """Execute the command and return a result message."""
-        if not self.pdf_path.exists():
-            return f"Error: PDF file not found: {self.pdf_path}"
+        if not self.html_path.exists():
+            return f"Error: HTML file not found: {self.html_path}"
 
         try:
             # ... implementation ...
@@ -608,8 +608,8 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # Store subcommand
-    store_parser = subparsers.add_parser("store", help="Store PDF chunks")
-    store_parser.add_argument("pdf_path", type=Path, help="Path to PDF file")
+    store_parser = subparsers.add_parser("store", help="Store HTML capture chunks")
+    store_parser.add_argument("html_path", type=Path, help="Path to HTML capture file")
     store_parser.add_argument("--doc-uid", type=str, help="Document UID")
     store_parser.set_defaults(func=_run_store)
 
@@ -624,7 +624,7 @@ def main() -> None:
 
 
 def _run_store(args: argparse.Namespace) -> None:
-    cmd = StoreCommand(pdf_path=args.pdf_path, doc_uid=args.doc_uid)
+    cmd = StoreCommand(html_path=args.html_path, doc_uid=args.doc_uid)
     print(cmd.execute())
 
 
@@ -634,10 +634,16 @@ def _run_answer(args: argparse.Namespace) -> None:
 ```
 
 **Running via uv:**
+
 ```bash
 # Run CLI commands directly with Python module
-uv run python -m src.cli store ./doc.pdf
+uv run python -m src.cli store ./capture.html
 uv run python -m src.cli answer "What is revenue recognition?"
+uv run python -m src.cli list --doc-uid ifrs15
+
+# Or read query from stdin
+echo "What is revenue recognition?" | uv run python -m src.cli answer -k 5
+```
 uv run python -m src.cli list --doc-uid ifrs15
 
 # Or read query from stdin

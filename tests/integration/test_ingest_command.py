@@ -161,25 +161,7 @@ chunk_store: InMemoryChunkStore | None = None
 document_store: InMemoryDocumentStore | None = None
 
 
-def test_ingest_command_imports_pdf_from_capture_root(temp_db_path: Path, capture_root: Path) -> None:
-    """PDF files in the capture root should be imported and archived to processed/."""
-    del temp_db_path
-    inbox_pdf = capture_root / "ifrs-16-leases_38-39.pdf"
-    shutil.copy(_example_file("ifrs-16-leases_38-39.pdf"), inbox_pdf)
 
-    command = IngestCommand(capture_root=capture_root, store_command_factory=_store_factory)
-
-    output = command.execute()
-
-    assert "1 imported" in output
-    assert (capture_root / "processed" / inbox_pdf.name).exists()
-    with document_store as ds:
-        document = ds.get_document("ifrs-16-leases_38-39")
-    assert document is not None, "Expected PDF ingestion to upsert a document record"
-    assert document.source_type == "pdf"
-    with chunk_store as cs:
-        chunks = cs.get_chunks_by_doc("ifrs-16-leases_38-39")
-    assert chunks, "Expected stored PDF chunks after ingestion"
 
 
 def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:

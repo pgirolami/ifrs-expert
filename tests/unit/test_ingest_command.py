@@ -61,10 +61,10 @@ class TestIngestCommand:
 
     def test_shared_dependencies_factory_reuses_one_dependency_bundle(self, tmp_path: Path) -> None:
         """The default ingest factory should reuse the same store dependencies across files."""
-        source_one = tmp_path / "first.pdf"
-        source_two = tmp_path / "second.pdf"
-        source_one.write_text("pdf", encoding="utf-8")
-        source_two.write_text("pdf", encoding="utf-8")
+        source_one = tmp_path / "first.html"
+        source_two = tmp_path / "second.html"
+        source_one.write_text("<html></html>", encoding="utf-8")
+        source_two.write_text("<html></html>", encoding="utf-8")
 
         dependencies = StoreDependencies(
             chunk_store=object(),
@@ -91,22 +91,23 @@ class TestIngestCommand:
             "documents",
         ]
 
-    def test_ingest_discovers_html_pairs_and_pdfs_while_ignoring_part_files(self, tmp_path: Path) -> None:
-        """Only complete final files should be ingested."""
+    def test_ingest_discovers_html_pairs_and_ignores_part_files(self, tmp_path: Path) -> None:
+        """Only complete final HTML capture files should be ingested."""
         capture_root = tmp_path / "ifrs-expert"
         capture_root.mkdir(parents=True)
         (capture_root / "processed").mkdir()
         (capture_root / "failed").mkdir()
         (capture_root / "skipped").mkdir()
 
-        html_path = capture_root / "20260404T142310Z--ifrs-9.html"
-        json_path = capture_root / "20260404T142310Z--ifrs-9.json"
-        pdf_path = capture_root / "ifrs-16.pdf"
-        html_path.write_text(
+        html_one = capture_root / "20260404T142310Z--ifrs-9.html"
+        json_one = capture_root / "20260404T142310Z--ifrs-9.json"
+        html_two = capture_root / "20260404T142311Z--ifric-16.html"
+        json_two = capture_root / "20260404T142311Z--ifric-16.json"
+        html_one.write_text(
             '<html><head><link rel="canonical" href="https://www.ifrs.org/ifrs9.html"><meta name="DC.Identifier" content="ifrs9"></head><body><section class="ifrs-cmp-htmlviewer__section"></section></body></html>',
             encoding="utf-8",
         )
-        json_path.write_text(
+        json_one.write_text(
             json.dumps(
                 {
                     "url": "https://www.ifrs.org/ifrs9.html",
@@ -118,15 +119,29 @@ class TestIngestCommand:
             ),
             encoding="utf-8",
         )
-        pdf_path.write_text("pdf", encoding="utf-8")
+        html_two.write_text(
+            '<html><head><link rel="canonical" href="https://www.ifrs.org/ifric16.html"><meta name="DC.Identifier" content="ifric16"></head><body><section class="ifrs-cmp-htmlviewer__section"></section></body></html>',
+            encoding="utf-8",
+        )
+        json_two.write_text(
+            json.dumps(
+                {
+                    "url": "https://www.ifrs.org/ifric16.html",
+                    "title": "IFRIC 16",
+                    "captured_at": "2026-04-04T14:23:11Z",
+                    "source_domain": "www.ifrs.org",
+                    "canonical_url": "https://www.ifrs.org/ifric16.html",
+                }
+            ),
+            encoding="utf-8",
+        )
         (capture_root / "ignore-me.html.part").write_text("partial", encoding="utf-8")
         (capture_root / "ignore-me.json.part").write_text("partial", encoding="utf-8")
-        (capture_root / "ignore-me.pdf.part").write_text("partial", encoding="utf-8")
 
         store_factory = RecordingStoreFactory(
             results_by_name={
-                html_path.name: StoreCommandResult(status="stored", doc_uid="ifrs9", chunk_count=2, embedding_count=2),
-                pdf_path.name: StoreCommandResult(status="stored", doc_uid="ifrs-16", chunk_count=3, embedding_count=3),
+                html_one.name: StoreCommandResult(status="stored", doc_uid="ifrs9", chunk_count=2, embedding_count=2),
+                html_two.name: StoreCommandResult(status="stored", doc_uid="ifric16", chunk_count=3, embedding_count=3),
             }
         )
         command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory)
@@ -135,16 +150,16 @@ class TestIngestCommand:
 
         assert "Processed 2 item(s): 2 imported, 0 skipped, 0 failed" in output
         assert store_factory.calls == [
-            (html_path.name, "HtmlExtractor", "all", False),
-            (pdf_path.name, "PdfExtractor", "all", False),
+            (html_one.name, "HtmlExtractor", "all", False),
+            (html_two.name, "HtmlExtractor", "all", False),
         ]
         assert (capture_root / "ignore-me.html.part").exists(), "The command must not move .part files"
-        assert (capture_root / "processed" / html_path.name).exists()
-        assert (capture_root / "processed" / json_path.name).exists()
-        assert (capture_root / "processed" / pdf_path.name).exists()
+        assert (capture_root / "processed" / html_one.name).exists()
+        assert (capture_root / "processed" / json_one.name).exists()
+        assert (capture_root / "processed" / html_two.name).exists()
+        assert (capture_root / "processed" / json_two.name).exists()
         assert (capture_root / "ignore-me.html.part").exists()
         assert (capture_root / "ignore-me.json.part").exists()
-        assert (capture_root / "ignore-me.pdf.part").exists()
 
     def test_ingest_moves_invalid_html_capture_to_failed(self, tmp_path: Path) -> None:
         """HTML captures with invalid sidecars should fail before StoreCommand runs."""

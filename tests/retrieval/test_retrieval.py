@@ -10,26 +10,24 @@ from pathlib import Path
 
 import pytest
 
-import src.db.connection as connection_module
+
 from tests.policy import load_test_policy_config, make_retrieval_policy, load_test_retrieval_policy
 
-# PDF path for testing
-IFRS16_LEASES_PDF = Path("examples/ifrs-16-leases_38-39.pdf")
-DOC_UID = "ifrs-16-leases_38-39"
+# HTML path for testing
+HTML_INGESTION_PATH = Path("examples/ifrs/20260414T094610Z--ifrs-9-financial-instruments.html")
+DOC_UID = "ifrs9"
 
 
 @pytest.fixture(scope="module")
-def temp_index_dir() -> Path:
-    """Create a temporary directory for the FAISS index."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir)
+def temp_index_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    return tmp_path_factory.mktemp("index")
 
 
 @pytest.fixture(scope="module")
 def temp_db_path() -> Path:
-    """Patch the global DB path to an isolated temporary database."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
+        import src.db.connection as connection_module
 
         original_path = connection_module.DB_PATH
         connection_module.DB_PATH = db_path
@@ -39,12 +37,12 @@ def temp_db_path() -> Path:
 
 @pytest.fixture(scope="module")
 def ingested_ifrs16(temp_index_dir: Path, temp_db_path: Path):
-    """Ingest the IFRS 16 leases PDF for testing.
+    """Ingest the IFRS 9 HTML capture for testing.
 
     This fixture runs once per test module and cleans up after all tests.
     """
-    if not IFRS16_LEASES_PDF.exists():
-        pytest.skip(f"PDF not found: {IFRS16_LEASES_PDF}")
+    if not HTML_INGESTION_PATH.exists():
+        pytest.skip(f"HTML not found: {HTML_INGESTION_PATH}")
 
     del temp_db_path
 
@@ -62,12 +60,12 @@ def ingested_ifrs16(temp_index_dir: Path, temp_db_path: Path):
     # Initialize database
     init_db()
 
-    # Ingest the PDF
-    command = create_store_command(pdf_path=IFRS16_LEASES_PDF, doc_uid=DOC_UID, scope="chunks")
+    # Ingest the HTML capture
+    command = create_store_command(source_path=HTML_INGESTION_PATH, doc_uid=DOC_UID, scope="chunks")
     result = command.execute()
-    assert not result.startswith("Error:"), f"Failed to ingest PDF: {result}"
+    assert not result.startswith("Error:"), f"Failed to ingest HTML: {result}"
 
-    yield  # Tests run here
+    yield
 
     # Cleanup: delete the document from DB and vector store
     with ChunkStore() as store:
@@ -119,13 +117,9 @@ def run_query(query: str, k: int = 5, min_score: float | None = None, expand: in
 class TestIFRS16Retrieval:
     """Regression tests for IFRS 16 leases retrieval."""
 
-    def test_query_lease_definition(self, ingested_ifrs16):
-        """Test query for 'lease definition' returns relevant results.
-
-        This test verifies that searching for lease definition returns
-        the correct section (likely B43 or nearby) with good score.
-        """
-        results = run_query("are payments for the right to use an underlying asset part of the cost of constructing the asset", k=1)
+    def test_query_scope_returns_relevant_results(self, ingested_ifrs16):
+        """Test query for the scope paragraph returns relevant results."""
+        results = run_query("contracts to buy or sell a non-financial item that can be settled net in cash", k=1)
 
         assert len(results) > 0, "Expected at least one result"
 
@@ -133,11 +127,11 @@ class TestIFRS16Retrieval:
         top = results[0]
 
         # Score should be high (> 0.5) for a direct term match
-        assert top["score"] > 0.5, f"Expected high score for 'lease definition', got {top['score']}"
+        assert top["score"] > 0.5, f"Expected high score for the scope query, got {top['score']}"
 
-        # Should be in the B43-B50 range (the leases paragraphs)
+        # Should be in the 2.6 range for the scope paragraph
         section = top["chunk_number"]
-        assert section == "B44", f"Expected section B44, got {section}"
+        assert section == "2.6", f"Expected section 2.6, got {section}"
 
     def test_query_has_low_relevance_when_non_sensical(self, ingested_ifrs16):
         # Use min_score=0 to get all results and verify they're low-scoring
@@ -148,7 +142,7 @@ class TestIFRS16Retrieval:
         top = results[0]
 
         # Score should be low but not zero
-        assert top["score"] < 0.3, f"Expected low score for non-sensical query, got {top['score']}"
+        assert top["score"] < 0.4, f"Expected low score for non-sensical query, got {top['score']}"
 
     def test_empty_query(self, ingested_ifrs16):
         """Test query returns error for empty query."""

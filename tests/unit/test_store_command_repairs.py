@@ -190,7 +190,7 @@ class TestStoreCommandRepairs:
 
     def test_store_command_requires_dependencies(self, tmp_path: Path) -> None:
         """The constructor should keep dependency injection explicit."""
-        source_path = tmp_path / "test.pdf"
+        source_path = tmp_path / "test.html"
         source_path.write_text("dummy", encoding="utf-8")
 
         with pytest.raises(TypeError):

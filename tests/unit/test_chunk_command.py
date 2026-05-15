@@ -1,37 +1,52 @@
 """Tests for chunk command."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from src.commands.chunk import ChunkCommand
 from src.models.chunk import Chunk
+from src.models.document import DocumentRecord
+from src.models.extraction import ExtractedDocument
 
 
 class TestChunkCommand:
     """Tests for chunk command."""
 
-    def test_chunk_command_success(self, tmp_path):
-        """Test chunk command extracts and outputs chunks."""
-        # Create a mock PDF path
-        pdf_path = tmp_path / "test.pdf"
-        pdf_path.touch()  # Create the file
+    def test_chunk_command_success(self, tmp_path: Path) -> None:
+        """Test chunk command extracts and outputs chunks from HTML."""
+        html_path = tmp_path / "test.html"
+        html_path.touch()
 
-        # Mock the extract_chunks function
-        with patch("src.commands.chunk.extract_chunks") as mock_extract:
-            mock_extract.return_value = [Chunk(chunk_number="1.1", page_start="A1", page_end="A1", text="test content")]
+        extracted_document = ExtractedDocument(
+            document=DocumentRecord(
+                doc_uid="ifrs9",
+                source_type="html",
+                source_title="IFRS 9",
+                source_url="https://www.ifrs.org/ifrs9.html",
+                canonical_url="https://www.ifrs.org/ifrs9.html",
+                captured_at="2026-04-04T14:23:10Z",
+            ),
+            chunks=[Chunk(chunk_number="2.4", page_start="", page_end="", text="test content")],
+        )
 
-            command = ChunkCommand(pdf_path=pdf_path)
+        with patch("src.commands.chunk.HtmlExtractor") as mock_extractor_cls:
+            mock_extractor = mock_extractor_cls.return_value
+            mock_extractor.extract.return_value = extracted_document
+
+            command = ChunkCommand(html_path=html_path)
             result = command.execute()
 
             assert not result.startswith("Error:"), f"Expected success, got error: {result}"
             data = json.loads(result)
             assert len(data) == 1
-            mock_extract.assert_called_once_with(pdf_path)
+            mock_extractor.extract.assert_called_once_with(html_path, None)
 
-    def test_chunk_command_file_not_found(self):
+    def test_chunk_command_file_not_found(self) -> None:
         """Test chunk command with non-existent file."""
-        command = ChunkCommand(pdf_path=Path("/nonexistent/file.pdf"))
+        command = ChunkCommand(html_path=Path("/nonexistent/file.html"))
         result = command.execute()
 
         assert result.startswith("Error:")
