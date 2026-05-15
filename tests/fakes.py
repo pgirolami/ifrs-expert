@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
-from src.case_analysis.models import PromptAOutput, PromptBOutput
 from src.interfaces import ChunkStoreProtocol, DocumentStoreProtocol, ReferenceStoreProtocol, SearchResult, VectorStoreProtocol
-from src.models.chunk import Chunk
-from src.models.document import DocumentRecord, resolve_document_kind, resolve_document_type
-from src.models.reference import ContentReference
-from src.models.section import SectionClosureRow, SectionRecord
+from src.models.document import resolve_document_kind, resolve_document_type
+
+if TYPE_CHECKING:
+    from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
+    from src.models.chunk import Chunk
+    from src.models.document import DocumentRecord
+    from src.models.reference import ContentReference
+    from src.models.section import SectionClosureRow, SectionRecord
 
 
 class InMemoryChunkStore(ChunkStoreProtocol):
@@ -344,22 +347,28 @@ class RecordingDocumentVectorStore:
         self._existing_doc_uids.update(doc_uids)
 
 class FakeAnswerGenerator:
-    """Fake typed answer generator for Prompt A and Prompt B."""
+    """Fake typed answer generator for approach identification and applicability analysis."""
 
-    def __init__(self, prompt_a_output: PromptAOutput | RuntimeError, prompt_b_output: PromptBOutput | RuntimeError) -> None:
+    def __init__(self, prompt_a_output: ApproachIdentificationOutput | RuntimeError, prompt_b_output: ApplicabilityAnalysisOutput | RuntimeError) -> None:
         self.prompt_a_output = prompt_a_output
         self.prompt_b_output = prompt_b_output
         self.prompt_a_prompts: list[str] = []
         self.prompt_b_prompts: list[str] = []
 
-    def generate_prompt_a(self, prompt_text: str) -> PromptAOutput:
+    def generate_approach_identification(self, prompt_text: str) -> ApproachIdentificationOutput:
         self.prompt_a_prompts.append(prompt_text)
         if isinstance(self.prompt_a_output, RuntimeError):
             raise self.prompt_a_output
         return self.prompt_a_output
 
-    def generate_prompt_b(self, prompt_text: str) -> PromptBOutput:
+    def generate_applicability_analysis(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
         self.prompt_b_prompts.append(prompt_text)
         if isinstance(self.prompt_b_output, RuntimeError):
             raise self.prompt_b_output
         return self.prompt_b_output
+
+    def generate_prompt_a(self, prompt_text: str) -> ApproachIdentificationOutput:
+        return self.generate_approach_identification(prompt_text)
+
+    def generate_prompt_b(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
+        return self.generate_applicability_analysis(prompt_text)

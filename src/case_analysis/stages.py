@@ -7,12 +7,12 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol, cast
 
 from src.case_analysis.models import (
+    ApplicabilityAnalysisOutput,
     ApplicabilityAnalysisResult,
-    AuthorityClassificationResult,
+    ApproachIdentificationOutput,
+    ApproachIdentificationResult,
     AuthoritySufficiencyResult,
     CitationVerificationResult,
-    PromptAOutput,
-    PromptBOutput,
     RetrievedSourcePackage,
     ValidatedQuestion,
     ValidationFailure,
@@ -118,47 +118,53 @@ class RetrieveSourceMaterialStage:
 
 
 class AnswerGeneratorProtocol(Protocol):
-    """Typed answer generator used by the Prompt A and Prompt B stages."""
+    """Typed answer generator used by the approach identification and applicability analysis stages."""
 
-    def generate_prompt_a(self, prompt_text: str) -> PromptAOutput:
-        """Generate typed Prompt A output."""
+    def generate_approach_identification(self, prompt_text: str) -> ApproachIdentificationOutput:
+        """Generate typed approach identification output."""
 
-    def generate_prompt_b(self, prompt_text: str) -> PromptBOutput:
-        """Generate typed Prompt B output."""
+    def generate_applicability_analysis(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
+        """Generate typed applicability analysis output."""
+
+    def generate_prompt_a(self, prompt_text: str) -> ApproachIdentificationOutput:
+        """Backward-compatible alias for approach identification."""
+
+    def generate_prompt_b(self, prompt_text: str) -> ApplicabilityAnalysisOutput:
+        """Backward-compatible alias for applicability analysis."""
 
 
 @dataclass(frozen=True)
-class ClassifyAuthorityStage:
-    """Run Prompt A and validate its typed authority-classification contract."""
+class ApproachIdentificationStage:
+    """Run approach identification and validate its typed contract."""
 
     answer_generator: AnswerGeneratorProtocol
 
-    def execute(self, prompt_text: str) -> AuthorityClassificationResult | ValidationFailure:
-        """Call the typed Prompt A generator and package the result."""
+    def execute(self, prompt_text: str) -> ApproachIdentificationResult | ValidationFailure:
+        """Call the typed approach identification generator and package the result."""
         try:
-            output = self.answer_generator.generate_prompt_a(prompt_text)
+            output = self.answer_generator.generate_approach_identification(prompt_text)
         except RuntimeError as e:
-            logger.exception("Prompt A LLM call failed")
-            return ValidationFailure(error_stage="prompt_a", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
+            logger.exception("Approach identification LLM call failed")
+            return ValidationFailure(error_stage="approach_identification", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
 
         raw_response = output.model_dump_json()
         payload = cast("dict[str, object]", output.model_dump(mode="json"))
-        return AuthorityClassificationResult(raw_response=raw_response, output=output, payload=payload)
+        return ApproachIdentificationResult(raw_response=raw_response, output=output, payload=payload)
 
 
 @dataclass(frozen=True)
-class EvaluateApplicabilityStage:
-    """Run Prompt B and validate its typed applicability-analysis contract."""
+class ApplicabilityAnalysisStage:
+    """Run applicability analysis and validate its typed contract."""
 
     answer_generator: AnswerGeneratorProtocol
 
     def execute(self, prompt_text: str) -> ApplicabilityAnalysisResult | ValidationFailure:
-        """Call the typed Prompt B generator and package the result."""
+        """Call the typed applicability analysis generator and package the result."""
         try:
-            output = self.answer_generator.generate_prompt_b(prompt_text)
+            output = self.answer_generator.generate_applicability_analysis(prompt_text)
         except RuntimeError as e:
-            logger.exception("Prompt B LLM call failed")
-            return ValidationFailure(error_stage="prompt_b", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
+            logger.exception("Applicability analysis LLM call failed")
+            return ValidationFailure(error_stage="applicability_analysis", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
 
         raw_response = output.model_dump_json()
         payload = cast("dict[str, object]", output.model_dump(mode="json"))
@@ -236,3 +242,7 @@ class VerifyCitationsStage:
             for item in value:
                 references.extend(self._collect_references(item))
         return references
+
+
+ClassifyAuthorityStage = ApproachIdentificationStage
+EvaluateApplicabilityStage = ApplicabilityAnalysisStage

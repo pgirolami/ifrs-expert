@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, cast
 
 from pydantic_ai import Agent
 
-from src.case_analysis.models import PromptAOutput, PromptBOutput
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
@@ -38,25 +38,41 @@ class PydanticAITextGenerator:
 
 @dataclass(frozen=True)
 class PydanticAIAnswerGenerator:
-    """Structured Pydantic AI generator for Prompt A and Prompt B outputs."""
+    """Structured Pydantic AI generator for approach identification and applicability analysis outputs."""
 
     model: str
     output_retries: int = 2
 
-    def generate_prompt_a(self, prompt: str) -> PromptAOutput:
-        """Generate Prompt A through a typed Pydantic AI contract."""
-        output = self._run_structured_agent(prompt=prompt, output_type=PromptAOutput, prompt_kind="prompt_a")
-        return cast("PromptAOutput", output)
+    def generate_approach_identification(self, prompt: str) -> ApproachIdentificationOutput:
+        """Generate approach identification through a typed Pydantic AI contract."""
+        output = self._run_structured_agent(
+            prompt=prompt,
+            output_type=ApproachIdentificationOutput,
+            prompt_kind="approach_identification",
+        )
+        return cast("ApproachIdentificationOutput", output)
 
-    def generate_prompt_b(self, prompt: str) -> PromptBOutput:
-        """Generate Prompt B through a typed Pydantic AI contract."""
-        output = self._run_structured_agent(prompt=prompt, output_type=PromptBOutput, prompt_kind="prompt_b")
-        return cast("PromptBOutput", output)
+    def generate_applicability_analysis(self, prompt: str) -> ApplicabilityAnalysisOutput:
+        """Generate applicability analysis through a typed Pydantic AI contract."""
+        output = self._run_structured_agent(
+            prompt=prompt,
+            output_type=ApplicabilityAnalysisOutput,
+            prompt_kind="applicability_analysis",
+        )
+        return cast("ApplicabilityAnalysisOutput", output)
+
+    def generate_prompt_a(self, prompt: str) -> ApproachIdentificationOutput:
+        """Backward-compatible alias for approach identification."""
+        return self.generate_approach_identification(prompt)
+
+    def generate_prompt_b(self, prompt: str) -> ApplicabilityAnalysisOutput:
+        """Backward-compatible alias for applicability analysis."""
+        return self.generate_applicability_analysis(prompt)
 
     def generate_output_json(self, prompt: str) -> str:
         """Generate a structured answer-stage output and return JSON text."""
         prompt_kind = infer_answer_prompt_kind(prompt)
-        output = self.generate_prompt_a(prompt) if prompt_kind == "prompt_a" else self.generate_prompt_b(prompt)
+        output = self.generate_approach_identification(prompt) if prompt_kind == "prompt_a" else self.generate_applicability_analysis(prompt)
         output_json = output.model_dump_json()
         logger.info(f"Serialized Pydantic AI structured completion prompt_kind={prompt_kind} output_chars={len(output_json)}")
         return output_json
@@ -120,7 +136,7 @@ def _provider_model_name(provider: str, model_env_var: str) -> str:
 
 
 def infer_answer_prompt_kind(prompt: str) -> str:
-    """Infer whether a prompt is Prompt A or Prompt B from stable prompt markers."""
+    """Infer whether a prompt is approach identification or applicability analysis from stable markers."""
     if "<identified_approaches>" in prompt:
         return "prompt_b"
     return "prompt_a"

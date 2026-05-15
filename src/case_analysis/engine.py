@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Protocol
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
-from src.case_analysis.stages import AnswerGeneratorProtocol, AuthoritySufficiencyStage, ClassifyAuthorityStage, EvaluateApplicabilityStage, ExecuteRetrievalFn, VerifyCitationsStage
+from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn, VerifyCitationsStage
 from src.commands.document_output import build_output_document_sections
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
@@ -288,16 +288,16 @@ class AnswerEngine:
         prompt_a_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
         result.prompt_a_text = _extract_prompt_content(prompt_a_full)
 
-        authority_classification_result = ClassifyAuthorityStage(answer_generator=self._config.answer_generator).execute(result.prompt_a_text)
-        if isinstance(authority_classification_result, ValidationFailure):
-            result.error = authority_classification_result.message
-            result.error_stage = authority_classification_result.error_stage
+        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(result.prompt_a_text)
+        if isinstance(approach_identification_result, ValidationFailure):
+            result.error = approach_identification_result.message
+            result.error_stage = approach_identification_result.error_stage
             return result
 
-        result.prompt_a_raw_response = authority_classification_result.raw_response
-        result.prompt_a_json = authority_classification_result.payload
+        result.prompt_a_raw_response = approach_identification_result.raw_response
+        result.prompt_a_json = approach_identification_result.payload
 
-        authority_sufficiency_result = AuthoritySufficiencyStage().execute(authority_classification_result.payload)
+        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.payload)
         result.authority_sufficiency_json = authority_sufficiency_result.model_dump(mode="json")
         if not authority_sufficiency_result.should_continue:
             result.error = f"Error: Authority classification requires controlled stop: {authority_sufficiency_result.reason}"
@@ -307,7 +307,7 @@ class AnswerEngine:
         prompt_b_context = _build_prompt_b_context(formatted_chunks, result.prompt_a_json)
         result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
 
-        applicability_analysis_result = EvaluateApplicabilityStage(answer_generator=self._config.answer_generator).execute(result.prompt_b_text)
+        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(result.prompt_b_text)
         if isinstance(applicability_analysis_result, ValidationFailure):
             result.error = applicability_analysis_result.message
             result.error_stage = applicability_analysis_result.error_stage

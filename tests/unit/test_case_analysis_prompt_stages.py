@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 from src.case_analysis.models import (
+    ApplicabilityAnalysisPassOutput,
     ApplicabilityAnalysisResult,
-    AuthorityClassificationResult,
-    PromptAPassOutput,
-    PromptBPassOutput,
+    ApproachIdentificationPassOutput,
+    ApproachIdentificationResult,
     ValidationFailure,
 )
 from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage
 from tests.fakes import FakeAnswerGenerator
 
-PROMPT_A_OUTPUT = PromptAPassOutput.model_validate(
+PROMPT_A_OUTPUT = ApproachIdentificationPassOutput.model_validate(
     {
         "status": "pass",
         "primary_accounting_issue": "Whether the fact pattern is in scope of IFRS 15.",
@@ -46,7 +46,7 @@ PROMPT_A_OUTPUT = PromptAPassOutput.model_validate(
     }
 )
 
-PROMPT_B_OUTPUT = PromptBPassOutput.model_validate(
+PROMPT_B_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate(
     {
         "assumptions_fr": ["Le contrat relève d'IFRS 15."],
         "recommendation": {"answer": "oui", "justification": "Le modèle IFRS 15 s'applique aux faits décrits."},
@@ -76,7 +76,7 @@ class TestCaseAnalysisPromptStages:
 
         result = stage.execute(prompt_text="Prompt A text")
 
-        assert isinstance(result, AuthorityClassificationResult)
+        assert isinstance(result, ApproachIdentificationResult)
         assert result.output == PROMPT_A_OUTPUT
         assert result.raw_response == PROMPT_A_OUTPUT.model_dump_json()
         assert result.payload == PROMPT_A_OUTPUT.model_dump(mode="json")
@@ -90,7 +90,7 @@ class TestCaseAnalysisPromptStages:
         result = stage.execute(prompt_text="Prompt A text")
 
         assert isinstance(result, ValidationFailure)
-        assert result.error_stage == "prompt_a"
+        assert result.error_stage == "approach_identification"
         assert result.reason == "llm_call_failed"
         assert "provider down" in result.message
 
@@ -115,6 +115,6 @@ class TestCaseAnalysisPromptStages:
         result = stage.execute(prompt_text="Prompt B text")
 
         assert isinstance(result, ValidationFailure)
-        assert result.error_stage == "prompt_b"
+        assert result.error_stage == "applicability_analysis"
         assert result.reason == "llm_call_failed"
         assert "provider down" in result.message

@@ -315,3 +315,22 @@ class CaseEvidenceAgentResult(BaseModel):
 
 StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
 RouteDecision = Literal["continue", "fail"]
+
+ApproachIdentificationReference = AuthorityReference
+ApproachIdentificationResolution = AuthorityResolution
+ApproachIdentificationClassification = AuthorityClassification
+ApproachIdentificationTreatmentBasis = TreatmentAuthorityBasis
+ApproachIdentificationTreatmentFamily = TreatmentFamily
+ApproachIdentification = IdentifiedApproach
+ApproachIdentificationClarificationOutput = PromptAClarificationOutput
+ApproachIdentificationPassOutput = PromptAPassOutput
+ApproachIdentificationOutput = PromptAOutput
+ApplicabilityAnalysisReference = ApplicabilityReference
+ApplicabilityAnalysisFinding = ApproachApplicability
+ApplicabilityAnalysisClarificationOutput = PromptBClarificationOutput
+ApplicabilityAnalysisPassOutput = PromptBPassOutput
+ApplicabilityAnalysisOutput = PromptBOutput
+ApproachIdentificationResult = AuthorityClassificationResult
+ApplicabilityAnalysisResultAlias = ApplicabilityAnalysisResult
+ApproachSufficiencyResult = AuthoritySufficiencyResult
+CitationValidationResult = CitationVerificationResult
