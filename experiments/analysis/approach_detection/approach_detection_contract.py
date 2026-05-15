@@ -64,7 +64,7 @@ class ExpectedSectionRange:
 
 @dataclass(frozen=True)
 class PromptChunk:
-    """One chunk shown to Prompt B."""
+    """One chunk shown to applicability analysis."""
 
     doc_uid: str
     chunk_number: str
@@ -155,7 +155,7 @@ class ApproachRecord:
 
 @dataclass(frozen=True)
 class QuestionRunDiagnostics:
-    """One Prompt B answer attempt for a question."""
+    """One applicability analysis answer attempt for a question."""
 
     question_id: str
     question_text: str
@@ -489,7 +489,7 @@ class ApproachDetectionDiagnosticsGenerator:
         lines = [
             "# approach_detection_diagnostics",
             "",
-            "This report summarizes Prompt B approach labels, missing expected approaches, spurious approaches, repeated-output stability, and authority categorization of visible prompt chunks.",
+            "This report summarizes applicability analysis approach labels, missing expected approaches, spurious approaches, repeated-output stability, and authority categorization of visible prompt chunks.",
             "",
             f"- Experiment: `{diagnostics.experiment_name}`",
             f"- Run: `{diagnostics.run_id}`",

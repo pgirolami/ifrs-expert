@@ -116,15 +116,11 @@ class AnswerCommand:
         return service.engine_factory(service.query, service.policy, service.config, service.hooks)
 
     def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
-        """Compatibility wrapper for authority-context tests."""
+        """Build applicability analysis context for tests and the rendering path."""
         return _build_applicability_analysis_context(formatted_chunks, approach_identification_json)
 
-    def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
-        """Backward-compatible wrapper for legacy Applicability analysis tests."""
-        return self._build_applicability_analysis_context(formatted_chunks, approach_identification_json)
-
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
-        """Compatibility wrapper for chunk-summary tests."""
+        """Build chunk summary for tests and internal rendering."""
         return _build_chunk_summary(results, doc_chunks)
 
 

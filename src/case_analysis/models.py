@@ -49,7 +49,7 @@ class SourceChunkResult(BaseModel):
         )
 
     def to_search_result(self) -> SearchResult:
-        """Convert back to the current SearchResult shape used by legacy helpers."""
+        """Convert back to the current SearchResult shape used by retrieval helpers."""
         result: dict[str, str | int | float | Provenance] = {
             "doc_uid": self.doc_uid,
             "chunk_id": self.chunk_id,
@@ -315,16 +315,3 @@ class CaseEvidenceAgentResult(BaseModel):
 
 StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
 RouteDecision = Literal["continue", "fail"]
-
-ApproachIdentificationReference = AuthorityReference
-ApproachIdentificationResolution = AuthorityResolution
-ApproachIdentificationClassification = AuthorityClassification
-ApproachIdentificationTreatmentBasis = TreatmentAuthorityBasis
-ApproachIdentificationTreatmentFamily = TreatmentFamily
-ApproachIdentification = IdentifiedApproach
-ApplicabilityAnalysisReference = ApplicabilityReference
-ApplicabilityAnalysisFinding = ApproachApplicability
-ApproachIdentificationResult = AuthorityClassificationResult
-ApplicabilityAnalysisResultAlias = ApplicabilityAnalysisResult
-ApproachSufficiencyResult = AuthoritySufficiencyResult
-CitationValidationResult = CitationVerificationResult

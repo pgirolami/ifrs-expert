@@ -10,7 +10,7 @@ from src.case_analysis.models import (
     ApplicabilityAnalysisOutput,
     ApplicabilityAnalysisResult,
     ApproachIdentificationOutput,
-    ApproachIdentificationResult,
+    AuthorityClassificationResult,
     AuthoritySufficiencyResult,
     CitationVerificationResult,
     RetrievedSourcePackage,
@@ -133,7 +133,7 @@ class ApproachIdentificationStage:
 
     answer_generator: AnswerGeneratorProtocol
 
-    def execute(self, prompt_text: str) -> ApproachIdentificationResult | ValidationFailure:
+    def execute(self, prompt_text: str) -> AuthorityClassificationResult | ValidationFailure:
         """Call the typed approach identification generator and package the result."""
         try:
             output = self.answer_generator.generate_approach_identification(prompt_text)
@@ -143,7 +143,7 @@ class ApproachIdentificationStage:
 
         raw_response = output.model_dump_json()
         payload = cast("dict[str, object]", output.model_dump(mode="json"))
-        return ApproachIdentificationResult(raw_response=raw_response, output=output, payload=payload)
+        return AuthorityClassificationResult(raw_response=raw_response, output=output, payload=payload)
 
 
 @dataclass(frozen=True)

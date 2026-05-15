@@ -6,7 +6,7 @@ from src.case_analysis.models import (
     ApplicabilityAnalysisPassOutput,
     ApplicabilityAnalysisResult,
     ApproachIdentificationPassOutput,
-    ApproachIdentificationResult,
+    AuthorityClassificationResult,
     ValidationFailure,
 )
 from src.case_analysis.stages import ClassifyAuthorityStage, EvaluateApplicabilityStage
@@ -76,7 +76,7 @@ class TestCaseAnalysisPromptStages:
 
         result = stage.execute(prompt_text="Approach identification text")
 
-        assert isinstance(result, ApproachIdentificationResult)
+        assert isinstance(result, AuthorityClassificationResult)
         assert result.output == APPROACH_IDENTIFICATION_OUTPUT
         assert result.raw_response == APPROACH_IDENTIFICATION_OUTPUT.model_dump_json()
         assert result.payload == APPROACH_IDENTIFICATION_OUTPUT.model_dump(mode="json")

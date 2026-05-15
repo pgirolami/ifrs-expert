@@ -1,4 +1,4 @@
-"""Stability scoring module for repeated Prompt B outputs."""
+"""Stability scoring module for repeated applicability analysis outputs."""
 
 from dataclasses import dataclass, field
 from itertools import combinations
@@ -271,7 +271,7 @@ def compute_stability_score(
     runs: list[dict],
     expected_normalized_labels: set[str] | None = None,
 ) -> StabilityResult:
-    """Compute stability score for a set of repeated Prompt B runs."""
+    """Compute stability score for a set of repeated applicability analysis runs."""
     run_count = len(runs)
 
     # Single run edge case
@@ -445,7 +445,7 @@ def compute_stability_score(
 
 
 if __name__ == "__main__":
-    # Example with 3 fake Prompt B runs
+    # Example with 3 fake applicability analysis runs
     fake_runs = [
         {
             "assumptions_fr": ["Assumption 1"],
