@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
+from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
 from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn, VerifyCitationsStage
@@ -166,6 +167,7 @@ class AnswerEngine:
         self._policy = policy
         self._config = config
         self._hooks = hooks or AnswerEngineHooks()
+        self._context_builder = ContextBuilder()
         self._retrieved_doc_uids: list[str] = []
 
     def run(self) -> AnswerCommandResult:
@@ -304,7 +306,7 @@ class AnswerEngine:
             result.error_stage = "authority_sufficiency"
             return result
 
-        applicability_analysis_context = _build_applicability_analysis_context(formatted_chunks, result.approach_identification_json)
+        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, result.approach_identification_json)
         result.applicability_analysis_text = self._build_prompt_b(applicability_analysis_context, json.dumps(result.approach_identification_json, indent=2, ensure_ascii=False))
 
         applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(result.applicability_analysis_text)
@@ -387,74 +389,15 @@ class AnswerEngine:
 
 
 def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
-    authority_refs = _extract_authority_references(approach_identification_json)
-    if authority_refs is None:
-        return "\n\n".join(formatted_chunks)
-    return _filter_chunks_by_authority(formatted_chunks, authority_refs)
+    return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_json)
 
 
 def _extract_authority_references(approach_identification_json: JSONValue) -> set[tuple[str, str]] | None:
-    if not isinstance(approach_identification_json, dict):
-        logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
-        return None
-
-    authority_classification = approach_identification_json.get("authority_classification")
-    if not isinstance(authority_classification, dict):
-        logger.error("No authority_classification in approach identification response; using all chunks for applicability analysis (authority filtering skipped)")
-        return None
-
-    primary_authority = authority_classification.get("primary_authority", [])
-    supporting_authority = authority_classification.get("supporting_authority", [])
-    if not primary_authority and not supporting_authority:
-        logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
-        return None
-
-    allowed_chunks: set[tuple[str, str]] = set()
-    for authority_item in (*primary_authority, *supporting_authority):
-        if not isinstance(authority_item, dict):
-            continue
-        document = authority_item.get("document")
-        references = authority_item.get("references", [])
-        if not isinstance(document, str) or not isinstance(references, list):
-            continue
-        for ref in references:
-            if isinstance(ref, str):
-                allowed_chunks.add((document, ref))
-
-    if not allowed_chunks:
-        logger.error("Could not extract authority references; using all chunks for applicability analysis (authority filtering skipped)")
-        return None
-
-    logger.info(f"Filtering applicability analysis context to {len(allowed_chunks)} authority references")
-    return allowed_chunks
+    return ContextBuilder().extract_authority_references(approach_identification_json)
 
 
 def _filter_chunks_by_authority(formatted_chunks: list[str], authority_refs: set[tuple[str, str]]) -> str:
-    chunk_pattern = re.compile(
-        r'<chunk id="(\d+)" doc_uid="[^"]*" paragraph="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
-        re.DOTALL,
-    )
-
-    filtered_documents: list[str] = []
-    for doc_xml in formatted_chunks:
-        doc_match = re.search(r'<Document\s+[^>]*name="([^"]+)"[^>]*>', doc_xml)
-        if not doc_match:
-            continue
-        doc_uid = doc_match.group(1)
-        document_type_match = re.search(r'document_type="([^"]*)"', doc_xml)
-        document_kind_match = re.search(r'document_kind="([^"]*)"', doc_xml)
-        document_type = document_type_match.group(1) if document_type_match else ""
-        document_kind = document_kind_match.group(1) if document_kind_match else ""
-        filtered_chunk_xmls = [match.group(0) for match in chunk_pattern.finditer(doc_xml) if (doc_uid, match.group(2)) in authority_refs]
-        if filtered_chunk_xmls:
-            joined_chunks = "\n\n".join(filtered_chunk_xmls)
-            document_xml = f'<Document name="{_escape_xml(doc_uid)}" document_type="{_escape_xml(document_type)}" document_kind="{_escape_xml(document_kind)}">\n{joined_chunks}\n</Document>'
-            filtered_documents.append(document_xml)
-
-    if not filtered_documents:
-        logger.error("No chunks matched authority references; falling back to all chunks (authority filtering failed)")
-        return "\n\n".join(formatted_chunks)
-    return "\n\n".join(filtered_documents)
+    return ContextBuilder().filter_chunks_by_authority(formatted_chunks, authority_refs)
 
 
 def _escape_xml(text: str) -> str:
