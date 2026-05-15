@@ -9,10 +9,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
+from src.case_analysis.rendering import AnswerRenderingAdapter
 from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn, VerifyCitationsStage
 from src.commands.document_output import build_output_document_sections
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
@@ -168,6 +168,7 @@ class AnswerEngine:
         self._config = config
         self._hooks = hooks or AnswerEngineHooks()
         self._context_builder = ContextBuilder()
+        self._rendering_adapter = AnswerRenderingAdapter()
         self._retrieved_doc_uids: list[str] = []
 
     def run(self) -> AnswerCommandResult:
@@ -323,21 +324,15 @@ class AnswerEngine:
         citation_verification_result = VerifyCitationsStage().execute(applicability_analysis_result.payload, chunk_data)
         result.citation_verification_json = citation_verification_result.model_dump(mode="json")
 
-        applicability_analysis_doc_uids = _extract_doc_uids_from_context(applicability_analysis_context)
-        primary_accounting_issue = result.approach_identification_json.get("primary_accounting_issue") if isinstance(result.approach_identification_json, dict) else None
-        primary_accounting_issue_text = primary_accounting_issue if isinstance(primary_accounting_issue, str) else None
-        options = MarkdownOptions(
-            question=self.query,
-            doc_uids=self._retrieved_doc_uids,
-            authority_doc_uids=applicability_analysis_doc_uids,
-            primary_accounting_issue=primary_accounting_issue_text,
-            chunk_data=chunk_data,
+        rendered_artifacts = self._rendering_adapter.render_applicability_analysis(
+            query=self.query,
+            retrieved_doc_uids=self._retrieved_doc_uids,
+            approach_identification_json=result.approach_identification_json,
+            applicability_analysis_json=result.applicability_analysis_json,
+            applicability_analysis_context=applicability_analysis_context,
         )
-        result.applicability_analysis_memo_markdown = convert_json_to_markdown_full(result.applicability_analysis_json, options)
-        result.applicability_analysis_faq_markdown = convert_json_to_faq_markdown(
-            result.applicability_analysis_json,
-            primary_accounting_issue=options.primary_accounting_issue,
-        )
+        result.applicability_analysis_memo_markdown = rendered_artifacts.memo_markdown
+        result.applicability_analysis_faq_markdown = rendered_artifacts.faq_markdown
         result.mark_success()
         return result
 
