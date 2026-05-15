@@ -41,17 +41,36 @@ class PydanticAIAnswerGenerator:
     model: str
     output_retries: int = 2
 
+    def generate_prompt_a(self, prompt: str) -> PromptAOutput:
+        """Generate Prompt A through a typed Pydantic AI contract."""
+        output = self._run_structured_agent(prompt=prompt, output_type=PromptAOutput, prompt_kind="prompt_a")
+        return cast("PromptAOutput", output)
+
+    def generate_prompt_b(self, prompt: str) -> PromptBOutput:
+        """Generate Prompt B through a typed Pydantic AI contract."""
+        output = self._run_structured_agent(prompt=prompt, output_type=PromptBOutput, prompt_kind="prompt_b")
+        return cast("PromptBOutput", output)
+
     def generate_output_json(self, prompt: str) -> str:
         """Generate a structured answer-stage output and return JSON text."""
         prompt_kind = infer_answer_prompt_kind(prompt)
-        output_type = PromptAOutput if prompt_kind == "prompt_a" else PromptBOutput
+        output = self.generate_prompt_a(prompt) if prompt_kind == "prompt_a" else self.generate_prompt_b(prompt)
+        output_json = output.model_dump_json()
+        logger.info(f"Serialized Pydantic AI structured completion prompt_kind={prompt_kind} output_chars={len(output_json)}")
+        return output_json
 
+    def _run_structured_agent(
+        self,
+        prompt: str,
+        output_type: object,
+        prompt_kind: str,
+    ) -> BaseModel:
+        """Run one typed Pydantic AI agent and return its model output."""
         agent = Agent(self.model, output_type=output_type, output_retries=self.output_retries)
         result = agent.run_sync(prompt)
         output = cast("BaseModel", result.output)
-        output_json = output.model_dump_json()
-        logger.info(f"Pydantic AI structured completion received model={self.model} prompt_kind={prompt_kind} output_chars={len(output_json)}")
-        return output_json
+        logger.info(f"Pydantic AI structured completion received model={self.model} prompt_kind={prompt_kind}")
+        return output
 
 
 def create_default_text_generator() -> PydanticAITextGenerator:
