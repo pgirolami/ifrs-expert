@@ -4,27 +4,24 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.ai.pydantic_client import create_default_text_generator
 from src.commands.answer import AnswerOptions, create_answer_command
 from src.policy import load_policy_catalog, resolve_retrieval_policy
+from src.ui.follow_up_prompt_builder import GroundedFollowUpPromptBuilder
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from src.models.answer_command_result import AnswerCommandResult, JSONValue
+    from src.models.answer_command_result import AnswerCommandResult
     from src.ui.chat_state import FollowUpTurn
 
 logger = logging.getLogger(__name__)
 
 CHAT_RETRIEVAL_POLICY = "standards_only_through_chunks__enriched"
-
-FOLLOW_UP_PROMPT_HEADER = (
-    "You are continuing an IFRS accounting discussion. Use the grounded first answer as the base context. If the follow-up goes beyond that context, answer cautiously and state the limitation explicitly. Format the answer in Markdown."
-)
 
 
 @dataclass
@@ -33,6 +30,7 @@ class ChatService:
 
     run_first_turn_fn: Callable[[str], AnswerCommandResult]
     generate_follow_up_fn: Callable[[str], str]
+    follow_up_prompt_builder: GroundedFollowUpPromptBuilder = field(default_factory=GroundedFollowUpPromptBuilder)
 
     def answer_first_turn(self, question: str) -> AnswerCommandResult:
         """Answer the first grounded question."""
@@ -49,26 +47,15 @@ class ChatService:
         current_question: str,
     ) -> str:
         """Build the prompt for a later conversational turn."""
-        grounded_context, grounded_context_source = _build_grounded_context(first_turn_result)
-        transcript_lines: list[str] = []
-        prior_user_chars = 0
-        prior_assistant_chars = 0
-        for turn in follow_up_turns:
-            transcript_lines.append(f"User: {turn.user_question}")
-            transcript_lines.append(f"Assistant: {turn.assistant_answer}")
-            prior_user_chars += len(turn.user_question)
-            prior_assistant_chars += len(turn.assistant_answer)
-
-        transcript_text = "\n".join(transcript_lines) if transcript_lines else "(none)"
+        context, prompt = self.follow_up_prompt_builder.build(first_turn_result, follow_up_turns, current_question)
         logger.info(
             f"ChatService: follow-up context includes sources="
-            f"original_first_question,grounded_{grounded_context_source},prior_follow_up_pairs,current_question "
-            f"prior_pairs={len(follow_up_turns)} prior_user_chars={prior_user_chars} "
-            f"prior_assistant_chars={prior_assistant_chars} grounded_context_chars={len(grounded_context)} "
-            f"transcript_chars={len(transcript_text)} current_question_chars={len(current_question)}"
+            f"original_first_question,grounded_{context.grounded_context_source},prior_follow_up_pairs,current_question "
+            f"prior_pairs={context.prior_turn_count} prior_user_chars={context.prior_user_chars} "
+            f"prior_assistant_chars={context.prior_assistant_chars} grounded_context_chars={len(context.grounded_context)} "
+            f"transcript_chars={len(context.transcript_text)} current_question_chars={len(context.current_question)}"
         )
-
-        return f"{FOLLOW_UP_PROMPT_HEADER}\n\nOriginal grounded question:\n{first_turn_result.query}\n\nGrounded first-turn answer:\n{grounded_context}\n\nConversation so far:\n{transcript_text}\n\nCurrent question:\n{current_question}"
+        return prompt
 
     def answer_follow_up(
         self,
@@ -111,19 +98,10 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
 
 def _build_grounded_context(result: AnswerCommandResult) -> tuple[str, str]:
     """Build later-turn context from the grounded first answer."""
-    if result.applicability_analysis_memo_markdown:
-        logger.info("ChatService: using grounded markdown context for follow-up prompt")
-        return result.applicability_analysis_memo_markdown, "markdown"
-    if result.applicability_analysis_json is not None:
-        logger.info("ChatService: using grounded JSON context for follow-up prompt")
-        return _serialize_json_value(result.applicability_analysis_json), "json"
-    if result.applicability_analysis_raw_response:
-        logger.info("ChatService: using grounded raw response context for follow-up prompt")
-        return result.applicability_analysis_raw_response, "raw_response"
-    logger.warning("ChatService: grounded context missing, using fallback placeholder")
-    return "No grounded answer is available.", "fallback"
+    builder = GroundedFollowUpPromptBuilder()
+    return builder.build_grounded_context(result)
 
 
-def _serialize_json_value(value: JSONValue) -> str:
-    """Serialize a JSON value for prompt use."""
+def _serialize_json_value(value: object) -> str:
+    """Serialize a JSON-like value for prompt use."""
     return json.dumps(value, indent=2, ensure_ascii=False)
