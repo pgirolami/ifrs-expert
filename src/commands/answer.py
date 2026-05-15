@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 from src.ai.pydantic_client import create_default_answer_generator
 from src.case_analysis.answer_generation_service import AnswerGenerationService
 from src.case_analysis.engine import (
-    AnswerEngine,
     AnswerEngineHooks,
     _build_applicability_analysis_context,
     _build_chunk_summary,
@@ -109,11 +108,6 @@ class AnswerCommand:
             read_prompt_template_fn=_read_prompt_template,
         )
         return AnswerGenerationService(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
-
-    def _build_engine(self) -> AnswerEngine:
-        """Build the deeper workflow engine with patchable command-level dependencies."""
-        service = self._build_service()
-        return service.engine_factory(service.query, service.policy, service.config, service.hooks)
 
     def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
         """Build applicability analysis context for tests and the rendering path."""
