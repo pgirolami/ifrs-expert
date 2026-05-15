@@ -9,12 +9,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
+from src.case_analysis.citation_validation import CitationValidationService
 from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
 from src.case_analysis.prompt_builder import PromptBuilder
 from src.case_analysis.rendering import AnswerRenderingAdapter
-from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn, VerifyCitationsStage
+from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn
 from src.commands.document_output import build_output_document_sections
 from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
@@ -171,6 +172,7 @@ class AnswerEngine:
         self._context_builder = ContextBuilder()
         self._rendering_adapter = AnswerRenderingAdapter()
         self._prompt_builder = PromptBuilder()
+        self._citation_validation_service = CitationValidationService()
         self._retrieved_doc_uids: list[str] = []
 
     def run(self) -> AnswerCommandResult:
@@ -322,8 +324,7 @@ class AnswerEngine:
         result.applicability_analysis_json = applicability_analysis_result.payload
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        chunk_data = _build_chunk_data_for_markdown(applicability_analysis_context)
-        citation_verification_result = VerifyCitationsStage().execute(applicability_analysis_result.payload, chunk_data)
+        citation_verification_result = self._citation_validation_service.validate_applicability_analysis(applicability_analysis_result.payload, applicability_analysis_context)
         result.citation_verification_json = citation_verification_result.model_dump(mode="json")
 
         rendered_artifacts = self._rendering_adapter.render_applicability_analysis(
@@ -406,18 +407,6 @@ def _extract_doc_uids_from_context(context: str) -> list[str]:
         if doc_uid not in doc_uids:
             doc_uids.append(doc_uid)
     return doc_uids
-
-
-def _build_chunk_data_for_markdown(context: str) -> dict[str, str]:
-    chunk_data: dict[str, str] = {}
-    chunk_pattern = re.compile(
-        r'<chunk id="\d+" doc_uid="([^"]*)" paragraph="([^"]*)"[^>]*>\n(.*?)\n</chunk>',
-        re.DOTALL,
-    )
-    for match in chunk_pattern.finditer(context):
-        key = f"{match.group(1)}/{match.group(2)}"
-        chunk_data[key] = match.group(3)
-    return chunk_data
 
 
 def _build_chunk_summary(results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
