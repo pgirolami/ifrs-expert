@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Protocol
 from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
 from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
+from src.case_analysis.prompt_builder import PromptBuilder
 from src.case_analysis.rendering import AnswerRenderingAdapter
 from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn, VerifyCitationsStage
 from src.commands.document_output import build_output_document_sections
@@ -169,6 +170,7 @@ class AnswerEngine:
         self._hooks = hooks or AnswerEngineHooks()
         self._context_builder = ContextBuilder()
         self._rendering_adapter = AnswerRenderingAdapter()
+        self._prompt_builder = PromptBuilder()
         self._retrieved_doc_uids: list[str] = []
 
     def run(self) -> AnswerCommandResult:
@@ -338,13 +340,11 @@ class AnswerEngine:
 
     def _build_prompt_from_template(self, template_path: Path, chunks: list[str], chunk_summary: str) -> str:
         template = self._hooks.read_prompt_template_fn(template_path)
-        chunks_text = "\n\n".join(chunks)
-        prompt = template.replace("{{CHUNKS}}", chunks_text).replace("{{QUERY}}", self.query)
-        return f"{chunk_summary}\n\n{prompt}"
+        return self._prompt_builder.build_prompt_a(template, self.query, chunks, chunk_summary)
 
     def _build_prompt_b(self, context: str, approaches_json: str) -> str:
         template = self._hooks.read_prompt_template_fn(PROMPT_B_PATH)
-        return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", self.query).replace("{{APPROACHES_JSON}}", approaches_json)
+        return self._prompt_builder.build_prompt_b(template, self.query, context, approaches_json)
 
     def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         doc_order: list[str] = []
