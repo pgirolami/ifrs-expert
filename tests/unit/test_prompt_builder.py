@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from src.case_analysis.models import ApproachIdentificationPassOutput
 from src.case_analysis.prompt_builder import PromptBuilder
 
 
@@ -29,7 +30,8 @@ class TestPromptBuilder:
         builder = PromptBuilder()
         template = "Header\n{{CHUNKS}}\nQuestion: {{QUERY}}\n{{APPROACHES_JSON}}"
 
-        prompt = builder.build_applicability_analysis(template, "Why?", "context text", '{"approaches": []}')
+        approach_identification = ApproachIdentificationPassOutput.model_validate({"status": "pass", "primary_accounting_issue": "Issue", "authority_resolution": {"candidate_governing_documents": [], "selected_primary_document": None, "selection_reason": None, "discarded_due_to_overlap": [], "residual_uncertainty": None}, "authority_classification": {"primary_authority": [], "supporting_authority": [], "peripheral_authority": []}, "treatment_families": [], "approaches": []})
+        prompt = builder.build_applicability_analysis(template, "Why?", "context text", approach_identification)
 
         if "context text" not in prompt:
             pytest.fail("Expected context in applicability analysis prompt")

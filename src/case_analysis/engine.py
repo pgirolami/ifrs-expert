@@ -2,24 +2,21 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from pydantic import BaseModel
-
 from src.case_analysis.citation_validation import CitationValidationService
 from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
-from src.case_analysis.models import RetrievedSourcePackage, ValidationFailure
+from src.case_analysis.models import ApproachIdentificationOutput, RetrievedSourcePackage, ValidationFailure
 from src.case_analysis.prompt_builder import PromptBuilder
 from src.case_analysis.rendering import AnswerRenderingAdapter
 from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage, ExecuteRetrievalFn
 from src.commands.document_output import build_output_document_sections
-from src.models.answer_command_result import AnswerCommandResult, JSONValue, RetrievedChunkHit, RetrievedDocumentHit
+from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.models.provenance import Provenance
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
@@ -81,33 +78,6 @@ class AnswerEngineHooks:
     execute_retrieval_fn: ExecuteRetrievalFn = execute_retrieval
     prompt_file_exists_fn: Callable[[Path], bool] = _prompt_file_exists
     read_prompt_template_fn: Callable[[Path], str] = _read_prompt_template
-
-
-def _coerce_json_value(value: object) -> JSONValue:
-    """Coerce a Python value into the JSONValue type."""
-    if value is None or isinstance(value, str | int | float | bool):
-        return value
-    if isinstance(value, BaseModel):
-        return _coerce_json_value(value.model_dump(mode="json"))
-    if isinstance(value, list):
-        return [_coerce_json_value(item) for item in value]
-    if isinstance(value, dict):
-        coerced: dict[str, JSONValue] = {}
-        for key, item in value.items():
-            if not isinstance(key, str):
-                msg = f"JSON object keys must be strings, got {type(key).__name__}"
-                raise TypeError(msg)
-            coerced[key] = _coerce_json_value(item)
-        return coerced
-
-    msg = f"Unsupported JSON value type: {type(value).__name__}"
-    raise TypeError(msg)
-
-
-def _parse_json_value(raw_text: str) -> JSONValue:
-    """Parse raw JSON text into a typed JSON value."""
-    parsed: object = json.loads(raw_text)
-    return _coerce_json_value(parsed)
 
 
 def _build_retrieved_chunk_hits(
@@ -319,35 +289,31 @@ class AnswerEngine:
 
         result.approach_identification_raw_response = approach_identification_result.raw_response
         result.approach_identification_output = approach_identification_result.output
-        result.approach_identification_json = approach_identification_result.payload
+        result.approach_identification_json = approach_identification_result.output.model_dump(mode="json")
 
-        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.payload)
+        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.output.model_dump(mode="json"))
         result.authority_sufficiency_json = authority_sufficiency_result.model_dump(mode="json")
         if not authority_sufficiency_result.should_continue:
             result.error = f"Error: Authority classification requires controlled stop: {authority_sufficiency_result.reason}"
             result.error_stage = "authority_sufficiency"
             return result
 
-        approach_identification_value: JSONValue | BaseModel | None = result.approach_identification_output or result.approach_identification_json
-        if approach_identification_value is None:
+        approach_identification_output = result.approach_identification_output
+        if approach_identification_output is None:
             result.error = "Error: Missing approach identification analysis payload"
             result.error_stage = "approach_identification"
             return result
 
-        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_value)
+        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_output)
 
     def _run_applicability_analysis_stage(
         self,
         result: AnswerCommandResult,
         formatted_chunks: list[str],
-        approach_identification_value: JSONValue | BaseModel,
+        approach_identification_output: ApproachIdentificationOutput,
     ) -> AnswerCommandResult:
-        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_value)
-        approach_identification_json = _coerce_json_value(approach_identification_value)
-        applicability_analysis_prompt = self._build_applicability_analysis(
-            applicability_analysis_context,
-            json.dumps(approach_identification_json, indent=2, ensure_ascii=False),
-        )
+        applicability_analysis_context = self._context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_output)
+        applicability_analysis_prompt = self._build_applicability_analysis(applicability_analysis_context, approach_identification_output)
         result.applicability_analysis_text = _extract_prompt_content(applicability_analysis_prompt)
         applicability_analysis_text = result.applicability_analysis_text
         if applicability_analysis_text is None:
@@ -363,17 +329,24 @@ class AnswerEngine:
 
         result.applicability_analysis_raw_response = applicability_analysis_result.raw_response
         result.applicability_analysis_output = applicability_analysis_result.output
-        result.applicability_analysis_json = applicability_analysis_result.payload
+        result.applicability_analysis_json = applicability_analysis_result.output.model_dump(mode="json")
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        citation_verification_result = self._citation_validation_service.validate_applicability_analysis(applicability_analysis_result.payload, applicability_analysis_context)
+        citation_verification_result = self._citation_validation_service.validate_applicability_analysis(applicability_analysis_result.output, applicability_analysis_context)
         result.citation_verification_json = citation_verification_result.model_dump(mode="json")
+
+        if result.approach_identification_output is None or result.applicability_analysis_output is None:
+            result.error = "Error: Missing typed analysis output"
+            result.error_stage = "workflow"
+            return result
+        approach_identification_output = result.approach_identification_output
+        applicability_analysis_output = result.applicability_analysis_output
 
         rendered_artifacts = self._rendering_adapter.render_applicability_analysis(
             query=self.query,
             retrieved_doc_uids=self._retrieved_doc_uids,
-            approach_identification_json=result.approach_identification_output or result.approach_identification_json,
-            applicability_analysis_json=result.applicability_analysis_output or result.applicability_analysis_json,
+            approach_identification=approach_identification_output,
+            applicability_analysis=applicability_analysis_output,
             applicability_analysis_context=applicability_analysis_context,
         )
         result.applicability_analysis_memo_markdown = rendered_artifacts.memo_markdown
@@ -385,9 +358,9 @@ class AnswerEngine:
         template = self._hooks.read_prompt_template_fn(template_path)
         return self._prompt_builder.build_approach_identification(template, self.query, chunks, chunk_summary)
 
-    def _build_applicability_analysis(self, context: str, approaches_json: str) -> str:
+    def _build_applicability_analysis(self, context: str, approach_identification: ApproachIdentificationOutput) -> str:
         template = self._hooks.read_prompt_template_fn(APPLICABILITY_ANALYSIS_PATH)
-        return self._prompt_builder.build_applicability_analysis(template, self.query, context, approaches_json)
+        return self._prompt_builder.build_applicability_analysis(template, self.query, context, approach_identification)
 
     def _format_chunks(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> list[str]:
         doc_order: list[str] = []
@@ -426,12 +399,12 @@ class AnswerEngine:
         return formatted_documents
 
 
-def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_json: JSONValue | BaseModel) -> str:
-    return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_json)
+def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> str:
+    return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_output)
 
 
-def _extract_authority_references(approach_identification_json: JSONValue | BaseModel) -> set[tuple[str, str]] | None:
-    return ContextBuilder().extract_authority_references(approach_identification_json)
+def _extract_authority_references(approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> set[tuple[str, str]] | None:
+    return ContextBuilder().extract_authority_references(approach_identification_output)
 
 
 def _filter_chunks_by_authority(formatted_chunks: list[str], authority_refs: set[tuple[str, str]]) -> str:

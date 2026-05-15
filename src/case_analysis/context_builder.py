@@ -5,12 +5,10 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, cast
 
 from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from src.models.answer_command_result import JSONValue
+from src.case_analysis.models import ApproachIdentificationClarificationOutput, ApproachIdentificationOutput, ApproachIdentificationPassOutput
 
 logger = logging.getLogger(__name__)
 
@@ -19,49 +17,79 @@ logger = logging.getLogger(__name__)
 class ContextBuilder:
     """Build filtered prompt context from typed Approach identification output."""
 
-    def build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification: JSONValue | BaseModel) -> str:
+    def build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object]) -> str:
         """Prune chunks to the authority references selected during approach identification."""
         authority_refs = self.extract_authority_references(approach_identification)
         if authority_refs is None:
             return "\n\n".join(formatted_chunks)
         return self.filter_chunks_by_authority(formatted_chunks, authority_refs)
 
-    def extract_authority_references(self, approach_identification: JSONValue | BaseModel) -> set[tuple[str, str]] | None:
+    def extract_authority_references(self, approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object]) -> set[tuple[str, str]] | None:
         """Return the document/reference pairs that applicability analysis may use."""
-        approach_identification_json = self._coerce_json_dict(approach_identification)
-        if approach_identification_json is None:
+        if isinstance(approach_identification, ApproachIdentificationClarificationOutput):
+            logger.warning("Approach identification requested clarification; using all chunks for applicability analysis")
+            return None
+        if isinstance(approach_identification, ApproachIdentificationPassOutput):
+            return self._extract_authority_references_from_pass_output(approach_identification)
+        if isinstance(approach_identification, BaseModel):
+            dumped = approach_identification.model_dump(mode="json")
+            if isinstance(dumped, dict):
+                return self.extract_authority_references(dumped)
             logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
             return None
+        if not isinstance(approach_identification, dict):
+            logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
+            return None
+        return self._extract_authority_references_from_dict(approach_identification)
 
-        authority_classification = approach_identification_json.get("authority_classification")
-        if not isinstance(authority_classification, dict):
+    def _extract_authority_references_from_dict(self, approach_identification: dict[str, object]) -> set[tuple[str, str]] | None:
+        authority_classification_value = approach_identification.get("authority_classification")
+        if not isinstance(authority_classification_value, dict):
             logger.error("No authority_classification in approach identification response; using all chunks for applicability analysis (authority filtering skipped)")
             return None
+        return self._extract_authority_references_from_authority_classification(authority_classification_value)  # ty: ignore[invalid-argument-type]
 
-        authority_classification_dict = cast("dict[str, object]", authority_classification)
-        primary_authority_value = authority_classification_dict.get("primary_authority")
-        supporting_authority_value = authority_classification_dict.get("supporting_authority")
-        primary_authority = cast("list[dict[str, object]]", primary_authority_value or [])
-        supporting_authority = cast("list[dict[str, object]]", supporting_authority_value or [])
+    def _extract_authority_references_from_authority_classification(self, authority_classification_value: dict[str, object]) -> set[tuple[str, str]] | None:
+        primary_authority_value = authority_classification_value.get("primary_authority")
+        supporting_authority_value = authority_classification_value.get("supporting_authority")
+        if not isinstance(primary_authority_value, list):
+            primary_authority_value = []
+        if not isinstance(supporting_authority_value, list):
+            supporting_authority_value = []
+        if not primary_authority_value and not supporting_authority_value:
+            logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
+            return None
+
+        allowed_chunks: set[tuple[str, str]] = set()
+        for authority_item in (*primary_authority_value, *supporting_authority_value):
+            if not isinstance(authority_item, dict):
+                continue
+            document_value = authority_item.get("document")  # ty: ignore[invalid-argument-type]
+            references_value = authority_item.get("references")  # ty: ignore[invalid-argument-type]
+            if not isinstance(document_value, str) or not isinstance(references_value, list):
+                continue
+            for ref in references_value:
+                if isinstance(ref, str):
+                    allowed_chunks.add((document_value, ref))
+
+        if not allowed_chunks:
+            logger.error("Could not extract authority references; using all chunks for applicability analysis (authority filtering skipped)")
+            return None
+
+        logger.info(f"Filtering applicability analysis context to {len(allowed_chunks)} authority references")
+        return allowed_chunks
+
+    def _extract_authority_references_from_pass_output(self, approach_identification: ApproachIdentificationPassOutput) -> set[tuple[str, str]] | None:
+        primary_authority = approach_identification.authority_classification.primary_authority
+        supporting_authority = approach_identification.authority_classification.supporting_authority
         if not primary_authority and not supporting_authority:
             logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
             return None
 
         allowed_chunks: set[tuple[str, str]] = set()
         for authority_item in (*primary_authority, *supporting_authority):
-            if not isinstance(authority_item, dict):
-                continue
-            document = authority_item.get("document")
-            references = authority_item.get("references", [])
-            if not isinstance(document, str) or not isinstance(references, list):
-                continue
-            for ref in references:
-                if isinstance(ref, str):
-                    allowed_chunks.add((document, ref))
-
-        if not allowed_chunks:
-            logger.error("Could not extract authority references; using all chunks for applicability analysis (authority filtering skipped)")
-            return None
+            for reference in authority_item.references:
+                allowed_chunks.add((authority_item.document, reference))
 
         logger.info(f"Filtering applicability analysis context to {len(allowed_chunks)} authority references")
         return allowed_chunks
@@ -93,17 +121,6 @@ class ContextBuilder:
             logger.error("No chunks matched authority references; falling back to all chunks (authority filtering failed)")
             return "\n\n".join(formatted_chunks)
         return "\n\n".join(filtered_documents)
-
-    def _coerce_json_dict(self, value: JSONValue | BaseModel) -> dict[str, object] | None:
-        """Convert typed output to a JSON-like dict when possible."""
-        if isinstance(value, BaseModel):
-            dumped = value.model_dump(mode="json")
-            if isinstance(dumped, dict):
-                return cast("dict[str, object]", dumped)
-            return None
-        if not isinstance(value, dict):
-            return None
-        return cast("dict[str, object]", value)
 
 
 def _escape_xml(text: str) -> str:

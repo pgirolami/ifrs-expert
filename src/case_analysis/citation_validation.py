@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from src.case_analysis.stages import VerifyCitationsStage
 
 if TYPE_CHECKING:
-    from src.case_analysis.models import CitationVerificationResult
+    from src.case_analysis.models import ApplicabilityAnalysisOutput, CitationVerificationResult
 
 
 @dataclass(frozen=True)
@@ -18,12 +18,12 @@ class CitationValidationService:
 
     def validate_applicability_analysis(
         self,
-        analysis_payload: dict[str, object],
+        analysis: ApplicabilityAnalysisOutput,
         applicability_analysis_context: str,
     ) -> CitationVerificationResult:
-        """Validate the final analysis payload against the allowed chunk text."""
+        """Validate the final analysis output against the allowed chunk text."""
         chunk_data = self.build_chunk_data_for_markdown(applicability_analysis_context)
-        return VerifyCitationsStage().execute(analysis_payload, chunk_data)
+        return VerifyCitationsStage().execute(analysis, chunk_data)
 
     def build_chunk_data_for_markdown(self, context: str) -> dict[str, str]:
         """Index chunk text by document UID and chunk number for citation checks."""

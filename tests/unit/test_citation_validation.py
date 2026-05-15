@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from src.case_analysis.citation_validation import CitationValidationService
+from src.case_analysis.models import ApplicabilityAnalysisPassOutput
 
 
 class TestCitationValidationService:
@@ -37,10 +38,14 @@ class TestCitationValidationService:
             "</Document>"
         )
 
-        result = service.validate_applicability_analysis(
-            {"approaches": [{"references": [{"section": "5.1", "excerpt": "Revenue is recognised"}]}]},
-            context,
+        analysis_output = ApplicabilityAnalysisPassOutput.model_validate(
+            {
+                "assumptions_fr": [],
+                "recommendation": {"answer": "oui", "justification": ""},
+                "approaches": [{"id": "a", "normalized_label": "a", "label_fr": "A", "applicability": "oui", "reasoning_fr": "", "conditions_fr": [], "practical_implication_fr": "", "references": [{"document": "ifrs15", "section": "5.1", "excerpt": "Revenue is recognised"}]}],
+            }
         )
+        result = service.validate_applicability_analysis(analysis_output, context)
 
         if result.status != "pass":
             pytest.fail("Expected citation validation to pass")

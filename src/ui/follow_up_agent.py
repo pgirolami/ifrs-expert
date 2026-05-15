@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Protocol, cast
+from typing import Protocol
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_ai import Agent
@@ -43,7 +43,7 @@ class PydanticAIGroundedFollowUpGenerator:
         """Generate a grounded follow-up completion as structured output."""
         agent = Agent(self.model, output_type=GroundedFollowUpOutput, output_retries=self.output_retries)
         result = agent.run_sync(prompt)
-        output = cast("GroundedFollowUpOutput", result.output)
+        output: GroundedFollowUpOutput = result.output  # ty: ignore[invalid-assignment]
         logger.info(f"Pydantic AI grounded follow-up received model={self.model} markdown_chars={len(output.markdown)} limitations={len(output.limitations)} out_of_scope={output.out_of_scope}")
         return output
 
@@ -60,7 +60,7 @@ class GroundedFollowUpTextGenerator:
         return output.markdown
 
 
-def create_default_follow_up_generator() -> GroundedFollowUpGeneratorProtocol:
+def create_default_follow_up_generator() -> PydanticAIGroundedFollowUpGenerator:
     """Create the configured Pydantic AI grounded follow-up generator."""
     runtime = resolve_pydantic_ai_runtime()
     logger.info(f"Using Pydantic AI grounded follow-up model: {runtime.model_name}")

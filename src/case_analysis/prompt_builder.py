@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.case_analysis.models import ApproachIdentificationOutput
 
 
 @dataclass(frozen=True)
@@ -15,6 +19,7 @@ class PromptBuilder:
         prompt = template.replace("{{CHUNKS}}", chunks_text).replace("{{QUERY}}", question)
         return f"{chunk_summary}\n\n{prompt}"
 
-    def build_applicability_analysis(self, template: str, question: str, context: str, approaches_json: str) -> str:
+    def build_applicability_analysis(self, template: str, question: str, context: str, approach_identification: ApproachIdentificationOutput) -> str:
         """Build the Applicability analysis text with the filtered applicability context."""
+        approaches_json = approach_identification.model_dump_json(indent=2)
         return template.replace("{{CHUNKS}}", context).replace("{{QUERY}}", question).replace("{{APPROACHES_JSON}}", approaches_json)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.case_analysis.models import AuthoritySufficiencyResult, CitationVerificationResult
+from src.case_analysis.models import ApplicabilityAnalysisPassOutput, AuthoritySufficiencyResult, CitationVerificationResult
 from src.case_analysis.stages import AuthoritySufficiencyStage, VerifyCitationsStage
 
 
@@ -33,8 +33,15 @@ def test_verify_citations_stage_passes_when_excerpt_matches_context() -> None:
     """Citation verifier should pass when each cited excerpt is in retrieved source text."""
     stage = VerifyCitationsStage()
 
+    analysis_output = ApplicabilityAnalysisPassOutput.model_validate(
+        {
+            "assumptions_fr": [],
+            "recommendation": {"answer": "oui", "justification": ""},
+            "approaches": [{"id": "a", "normalized_label": "a", "label_fr": "A", "applicability": "oui", "reasoning_fr": "", "conditions_fr": [], "practical_implication_fr": "", "references": [{"document": "ifrs", "section": "1.1", "excerpt": "matching words"}]}],
+        }
+    )
     result = stage.execute(
-        analysis_payload={"approaches": [{"references": [{"section": "1.1", "excerpt": "matching words"}]}]},
+        analysis_output=analysis_output,
         chunk_data={"ifrs/doc/1.1": "This chunk contains matching words for the test."},
     )
 
@@ -47,8 +54,15 @@ def test_verify_citations_stage_fails_when_excerpt_is_not_in_context() -> None:
     """Citation verifier should flag cited text that is absent from retrieved source text."""
     stage = VerifyCitationsStage()
 
+    analysis_output = ApplicabilityAnalysisPassOutput.model_validate(
+        {
+            "assumptions_fr": [],
+            "recommendation": {"answer": "oui", "justification": ""},
+            "approaches": [{"id": "a", "normalized_label": "a", "label_fr": "A", "applicability": "oui", "reasoning_fr": "", "conditions_fr": [], "practical_implication_fr": "", "references": [{"document": "ifrs", "section": "1.1", "excerpt": "missing words"}]}],
+        }
+    )
     result = stage.execute(
-        analysis_payload={"approaches": [{"references": [{"section": "1.1", "excerpt": "missing words"}]}]},
+        analysis_output=analysis_output,
         chunk_data={"ifrs/doc/1.1": "This chunk contains different text."},
     )
 
@@ -61,7 +75,8 @@ def test_verify_citations_stage_warns_when_no_references_are_present() -> None:
     """Citation verifier should warn, not fail, when no references are present."""
     stage = VerifyCitationsStage()
 
-    result = stage.execute(analysis_payload={"recommendation": {"answer": "oui"}}, chunk_data={})
+    analysis_output = ApplicabilityAnalysisPassOutput.model_validate({"assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []})
+    result = stage.execute(analysis_output=analysis_output, chunk_data={})
 
     assert isinstance(result, CitationVerificationResult)
     assert result.status == "warn"

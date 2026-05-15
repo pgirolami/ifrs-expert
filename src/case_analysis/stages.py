@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Protocol, cast
+from typing import TYPE_CHECKING, Protocol
 
 from src.case_analysis.models import (
+    ApplicabilityAnalysisClarificationOutput,
     ApplicabilityAnalysisOutput,
+    ApplicabilityAnalysisPassOutput,
     ApplicabilityAnalysisResult,
     ApproachIdentificationOutput,
     AuthorityClassificationResult,
@@ -142,7 +144,7 @@ class ApproachIdentificationStage:
             return ValidationFailure(error_stage="approach_identification", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
 
         raw_response = output.model_dump_json()
-        payload = cast("dict[str, object]", output.model_dump(mode="json"))
+        payload = output.model_dump(mode="json")
         return AuthorityClassificationResult(raw_response=raw_response, output=output, payload=payload)
 
 
@@ -161,7 +163,7 @@ class ApplicabilityAnalysisStage:
             return ValidationFailure(error_stage="applicability_analysis", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
 
         raw_response = output.model_dump_json()
-        payload = cast("dict[str, object]", output.model_dump(mode="json"))
+        payload = output.model_dump(mode="json")
         return ApplicabilityAnalysisResult(raw_response=raw_response, output=output, payload=payload)
 
 
@@ -193,9 +195,9 @@ class AuthoritySufficiencyStage:
 class VerifyCitationsStage:
     """Verify that final-answer citations point to retrieved source text."""
 
-    def execute(self, analysis_payload: dict[str, object], chunk_data: dict[str, str]) -> CitationVerificationResult:
+    def execute(self, analysis_output: ApplicabilityAnalysisOutput, chunk_data: dict[str, str]) -> CitationVerificationResult:
         """Check cited sections and excerpts against retrieved chunk text."""
-        references = self._collect_references(analysis_payload)
+        references = self._collect_references(analysis_output)
         if not references:
             return CitationVerificationResult(
                 status="warn",
@@ -223,18 +225,14 @@ class VerifyCitationsStage:
             unsupported_references=unsupported_references,
         )
 
-    def _collect_references(self, value: object) -> list[dict[str, object]]:
-        """Collect reference dictionaries recursively from a JSON-like payload."""
+    def _collect_references(self, analysis_output: ApplicabilityAnalysisOutput) -> list[dict[str, object]]:
+        """Collect citation dictionaries from typed applicability output."""
         references: list[dict[str, object]] = []
-        if isinstance(value, dict):
-            for key, item in value.items():
-                if key == "references" and isinstance(item, list):
-                    references.extend(cast("dict[str, object]", reference) for reference in item if isinstance(reference, dict))
-                else:
-                    references.extend(self._collect_references(item))
-        elif isinstance(value, list):
-            for item in value:
-                references.extend(self._collect_references(item))
+        if isinstance(analysis_output, ApplicabilityAnalysisPassOutput):
+            references.extend(reference.model_dump(mode="json") for approach in analysis_output.approaches for reference in approach.references)
+            return references
+        if isinstance(analysis_output, ApplicabilityAnalysisClarificationOutput):
+            return references
         return references
 
 

@@ -40,8 +40,8 @@ class TestAnswerRenderingAdapter:
         result = adapter.render_applicability_analysis(
             query="How should revenue be recognised?",
             retrieved_doc_uids=["ifrs15"],
-            approach_identification_json=approach_identification_output,
-            applicability_analysis_json=applicability_analysis_output,
+            approach_identification=approach_identification_output,
+            applicability_analysis=applicability_analysis_output,
             applicability_analysis_context=(
                 '<Document name="ifrs15" document_type="ifrs" document_kind="standard">\n'
                 '<chunk id="1" doc_uid="ifrs15" paragraph="5.1" score="0.9000">\n'

@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from src.ai.pydantic_client import create_default_answer_generator
+from src.ai.pydantic_client import PydanticAIAnswerGenerator, create_default_answer_generator
 from src.case_analysis.answer_generation_service import AnswerGenerationService
 from src.case_analysis.engine import (
     AnswerEngineHooks,
@@ -15,11 +15,11 @@ from src.case_analysis.engine import (
     _prompt_file_exists,
     _read_prompt_template,
 )
-from src.case_analysis.models import ValidationFailure
+from src.case_analysis.models import ApproachIdentificationOutput, ValidationFailure
 from src.case_analysis.stages import AnswerGeneratorProtocol, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
-from src.models.answer_command_result import AnswerCommandResult, JSONValue
+from src.models.answer_command_result import AnswerCommandResult
 from src.retrieval.pipeline import execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
@@ -109,16 +109,16 @@ class AnswerCommand:
         )
         return AnswerGenerationService(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
 
-    def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
+    def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> str:
         """Build applicability analysis context for tests and the rendering path."""
-        return _build_applicability_analysis_context(formatted_chunks, approach_identification_json)
+        return _build_applicability_analysis_context(formatted_chunks, approach_identification_output)
 
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Build chunk summary for tests and internal rendering."""
         return _build_chunk_summary(results, doc_chunks)
 
 
-def _default_answer_generator() -> AnswerGeneratorProtocol:
+def _default_answer_generator() -> PydanticAIAnswerGenerator:
     """Create the configured Pydantic AI answer generator."""
     try:
         return create_default_answer_generator()
@@ -137,7 +137,7 @@ def create_answer_command(
         chunk_store=ChunkStore(),
         init_db_fn=init_db,
         index_path_fn=get_index_path,
-        answer_generator=_default_answer_generator(),
+        answer_generator=_default_answer_generator(),  # ty: ignore[invalid-argument-type]
         reference_store=ContentReferenceStore(),
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
