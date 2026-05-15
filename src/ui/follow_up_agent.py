@@ -9,7 +9,7 @@ from typing import Protocol, cast
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_ai import Agent
 
-from src.ai.pydantic_client import resolve_pydantic_ai_model_name
+from src.ai.runtime import resolve_pydantic_ai_runtime
 
 logger = logging.getLogger(__name__)
 
@@ -62,9 +62,9 @@ class GroundedFollowUpTextGenerator:
 
 def create_default_follow_up_generator() -> GroundedFollowUpGeneratorProtocol:
     """Create the configured Pydantic AI grounded follow-up generator."""
-    model = resolve_pydantic_ai_model_name()
-    logger.info(f"Using Pydantic AI grounded follow-up model: {model}")
-    return PydanticAIGroundedFollowUpGenerator(model=model)
+    runtime = resolve_pydantic_ai_runtime()
+    logger.info(f"Using Pydantic AI grounded follow-up model: {runtime.model_name}")
+    return PydanticAIGroundedFollowUpGenerator(model=runtime.model_name)
 
 
 __all__ = [

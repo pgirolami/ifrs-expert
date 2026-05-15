@@ -153,6 +153,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the repo has one clearly named place where Pydantic AI app ownership lives, instead of scattered agent construction across wrappers and call sites.
 - Done when provider/model resolution is described as part of the app contract, not just as environment-variable parsing.
 - Done when the boundary is documented well enough that a new contributor can tell where Pydantic AI begins and ends without reading multiple unrelated files.
+- Status: done.
 
 #### Milestone 1.2 — Make dependencies and outputs canonical
 - Problem: some flows still serialize typed output back into JSON before the next stage consumes it.

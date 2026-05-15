@@ -3,20 +3,18 @@
 from __future__ import annotations
 
 import logging
-import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 
 from pydantic_ai import Agent
 
+from src.ai.runtime import resolve_pydantic_ai_runtime
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
 
     from src.case_analysis.stages import AnswerGeneratorProtocol
-
-MISSING_MODEL_MESSAGE = "Model environment variable is required for this provider. Set it in your environment or .env file."
 
 logger = logging.getLogger(__name__)
 
@@ -84,47 +82,22 @@ class PydanticAIAnswerGenerator:
 
 
 def create_default_text_generator() -> PydanticAITextGenerator:
-    """Create a Pydantic AI text generator from the existing environment variables."""
-    model = resolve_pydantic_ai_model_name()
-    logger.info(f"Using Pydantic AI model: {model}")
-    return PydanticAITextGenerator(model=model)
+    """Create a Pydantic AI text generator from the app runtime configuration."""
+    runtime = resolve_pydantic_ai_runtime()
+    logger.info(f"Using Pydantic AI model: {runtime.model_name}")
+    return PydanticAITextGenerator(model=runtime.model_name)
 
 
 def create_default_answer_generator() -> AnswerGeneratorProtocol:
-    """Create a structured Pydantic AI answer generator from environment variables."""
-    model = resolve_pydantic_ai_model_name()
-    logger.info(f"Using Pydantic AI structured answer model: {model}")
-    return cast("AnswerGeneratorProtocol", PydanticAIAnswerGenerator(model=model))
+    """Create a structured Pydantic AI answer generator from the app runtime configuration."""
+    runtime = resolve_pydantic_ai_runtime()
+    logger.info(f"Using Pydantic AI structured answer model: {runtime.model_name}")
+    return cast("AnswerGeneratorProtocol", PydanticAIAnswerGenerator(model=runtime.model_name))
 
 
 def resolve_pydantic_ai_model_name() -> str:
     """Resolve the configured provider/model into a Pydantic AI model name."""
-    provider = os.getenv("LLM_PROVIDER")
-    if not provider:
-        msg = "LLM_PROVIDER environment variable is required. Set it to a Pydantic AI supported provider such as openai, anthropic, mistral, or ollama"
-        raise ValueError(msg)
-
-    normalized_provider = provider.lower()
-    if normalized_provider == "openai":
-        return _provider_model_name(provider="openai", model_env_var="OPENAI_MODEL")
-    if normalized_provider == "anthropic":
-        return _provider_model_name(provider="anthropic", model_env_var="ANTHROPIC_MODEL")
-    if normalized_provider == "mistral":
-        return _provider_model_name(provider="mistral", model_env_var="MISTRAL_MODEL")
-    if normalized_provider == "ollama":
-        return _provider_model_name(provider="ollama", model_env_var="OLLAMA_MODEL")
-
-    msg = f"Unknown Pydantic AI provider: {provider}. Supported providers: openai, anthropic, mistral, ollama"
-    raise ValueError(msg)
-
-
-def _provider_model_name(provider: str, model_env_var: str) -> str:
-    """Build a Pydantic AI model name from one required model env var."""
-    model = os.getenv(model_env_var)
-    if not model:
-        msg = f"{model_env_var} {MISSING_MODEL_MESSAGE}"
-        raise ValueError(msg)
-    return f"{provider}:{model}"
+    return resolve_pydantic_ai_runtime().model_name
 
 
 def infer_answer_prompt_kind(prompt: str) -> str:
@@ -141,4 +114,5 @@ __all__ = [
     "create_default_text_generator",
     "infer_answer_prompt_kind",
     "resolve_pydantic_ai_model_name",
+    "resolve_pydantic_ai_runtime",
 ]
