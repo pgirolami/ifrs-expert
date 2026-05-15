@@ -96,17 +96,17 @@ def test_create_chat_service_uses_provided_options(monkeypatch) -> None:
         def execute(self) -> AnswerCommandResult:
             return AnswerCommandResult(query="Q", success=True)
 
-    class _FakeTextGenerator:
-        def generate_text(self, prompt: str) -> str:
+    class _FakeFollowUpGenerator:
+        def generate_follow_up(self, prompt: str) -> object:
             captured["prompt"] = prompt
-            return "follow-up"
+            return type("_FollowUpOutput", (), {"markdown": "follow-up", "limitations": [], "out_of_scope": False})()
 
     class _Options:
         pass
 
     options = _Options()
     monkeypatch.setattr("src.ui.chat_service.create_answer_command", lambda query, options: _FakeAnswerCommand())
-    monkeypatch.setattr("src.ui.chat_service.create_default_text_generator", lambda: _FakeTextGenerator())
+    monkeypatch.setattr("src.ui.chat_service.create_default_follow_up_generator", lambda: _FakeFollowUpGenerator())
 
     service = create_chat_service(answer_options=options)  # type: ignore[arg-type]
     first = service.answer_first_turn("Q")
@@ -125,6 +125,11 @@ def test_create_chat_service_loads_default_policy_when_missing_options(monkeypat
         def execute(self) -> AnswerCommandResult:
             return AnswerCommandResult(query="Q", success=True)
 
+    class _FakeFollowUpGenerator:
+        def generate_follow_up(self, prompt: str) -> object:
+            captured["prompt"] = prompt
+            return type("_FollowUpOutput", (), {"markdown": "follow-up", "limitations": [], "out_of_scope": False})()
+
     fake_retrieval_policy = make_retrieval_policy()
 
     class _FakePolicyCatalog:
@@ -139,6 +144,7 @@ def test_create_chat_service_loads_default_policy_when_missing_options(monkeypat
         return _FakeAnswerCommand()
 
     monkeypatch.setattr("src.ui.chat_service.create_answer_command", _fake_create_answer_command)
+    monkeypatch.setattr("src.ui.chat_service.create_default_follow_up_generator", lambda: _FakeFollowUpGenerator())
 
     service = create_chat_service(answer_options=None)
     result = service.answer_first_turn("Question?")
