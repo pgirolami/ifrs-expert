@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.ai.pydantic_client import create_default_answer_generator
+from src.case_analysis.answer_generation_service import AnswerGenerationService
 from src.case_analysis.engine import (
     AnswerEngine,
     AnswerEngineHooks,
@@ -98,16 +99,21 @@ class AnswerCommand:
         if isinstance(validation_result, ValidationFailure):
             return AnswerCommandResult.failure(query=self.query, error=validation_result.message, error_stage=validation_result.error_stage)
         self.query = validation_result.question
-        return self._build_engine().run()
+        return self._build_service().run()
 
-    def _build_engine(self) -> AnswerEngine:
-        """Build the deeper workflow engine with patchable command-level dependencies."""
+    def _build_service(self) -> AnswerGenerationService:
+        """Build the answer generation service wrapper."""
         hooks = AnswerEngineHooks(
             execute_retrieval_fn=execute_retrieval,
             prompt_file_exists_fn=_prompt_file_exists,
             read_prompt_template_fn=_read_prompt_template,
         )
-        return AnswerEngine(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
+        return AnswerGenerationService(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
+
+    def _build_engine(self) -> AnswerEngine:
+        """Build the deeper workflow engine with patchable command-level dependencies."""
+        service = self._build_service()
+        return service.engine_factory(service.query, service.policy, service.config, service.hooks)
 
     def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
         """Compatibility wrapper for authority-context tests."""
