@@ -10,8 +10,8 @@ from src.ai.pydantic_client import create_default_answer_generator
 from src.case_analysis.engine import (
     AnswerEngine,
     AnswerEngineHooks,
+    _build_applicability_analysis_context,
     _build_chunk_summary,
-    _build_prompt_b_context,
     _prompt_file_exists,
     _read_prompt_template,
 )
@@ -109,9 +109,13 @@ class AnswerCommand:
         )
         return AnswerEngine(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
 
-    def _build_prompt_b_context(self, formatted_chunks: list[str], prompt_a_json: JSONValue) -> str:
+    def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
         """Compatibility wrapper for authority-context tests."""
-        return _build_prompt_b_context(formatted_chunks, prompt_a_json)
+        return _build_applicability_analysis_context(formatted_chunks, approach_identification_json)
+
+    def _build_prompt_b_context(self, formatted_chunks: list[str], prompt_a_json: JSONValue) -> str:
+        """Backward-compatible wrapper for legacy Prompt B tests."""
+        return self._build_applicability_analysis_context(formatted_chunks, prompt_a_json)
 
     def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
         """Compatibility wrapper for chunk-summary tests."""

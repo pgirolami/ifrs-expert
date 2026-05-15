@@ -172,10 +172,10 @@ class ApplicabilityAnalysisStage:
 
 
 class AuthoritySufficiencyStage:
-    """Apply deterministic routing checks to the Prompt A authority result."""
+    """Apply deterministic routing checks to the approach identification authority result."""
 
     def execute(self, authority_payload: dict[str, object]) -> AuthoritySufficiencyResult:
-        """Return whether the workflow should continue after Prompt A."""
+        """Return whether the workflow should continue after approach identification."""
         status_value = authority_payload.get("status")
         status = status_value if isinstance(status_value, str) else "pass"
         if status in {"needs_clarification", "insufficient_context", "insufficient_authority"}:

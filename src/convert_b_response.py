@@ -71,9 +71,9 @@ def convert_file(input_path: Path, output_dir: Path | None = None) -> None:
     run_dir = input_path.parent
 
     # Try to extract question and doc UIDs from A-prompt.txt in the same directory
-    prompt_a_path = run_dir / "A-prompt.txt"
-    question = extract_question_from_prompt(prompt_a_path)
-    doc_uids = extract_doc_uids_from_prompt(prompt_a_path)
+    approach_identification_path = run_dir / "A-prompt.txt"
+    question = extract_question_from_prompt(approach_identification_path)
+    doc_uids = extract_doc_uids_from_prompt(approach_identification_path)
 
     if question:
         logger.info(f"Extracted question from A-prompt.txt: {question[:50]}...")

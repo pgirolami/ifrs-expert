@@ -325,8 +325,8 @@ def convert_json_to_markdown(
         b_json: Parsed JSON response
         question: The original question (optional)
         doc_uids: List of document UIDs consulted (optional)
-        authority_doc_uids: List of document UIDs used in Prompt B after authority filtering (optional)
-        primary_accounting_issue: The reformulated primary accounting issue from Prompt A (optional)
+        authority_doc_uids: List of document UIDs used in applicability analysis after authority filtering (optional)
+        primary_accounting_issue: The reformulated primary accounting issue from approach identification (optional)
 
     Returns:
         Markdown formatted string in French

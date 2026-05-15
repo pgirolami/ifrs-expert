@@ -112,7 +112,7 @@ class RetrievedSourcePackage(BaseModel):
 
 
 class AuthorityReference(BaseModel):
-    """One document reference used in Prompt A authority output."""
+    """One document reference used in approach identification authority output."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -122,7 +122,7 @@ class AuthorityReference(BaseModel):
 
 
 class AuthorityResolution(BaseModel):
-    """Prompt A authority competition and selected-governing-document result."""
+    """approach identification authority competition and selected-governing-document result."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -134,7 +134,7 @@ class AuthorityResolution(BaseModel):
 
 
 class AuthorityClassification(BaseModel):
-    """Prompt A classification of retrieved documents by authority role."""
+    """approach identification classification of retrieved documents by authority role."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -144,7 +144,7 @@ class AuthorityClassification(BaseModel):
 
 
 class TreatmentAuthorityBasis(BaseModel):
-    """Authority basis for a Prompt A treatment family."""
+    """Authority basis for a approach identification treatment family."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -153,7 +153,7 @@ class TreatmentAuthorityBasis(BaseModel):
 
 
 class TreatmentFamily(BaseModel):
-    """Intermediate Prompt A treatment family."""
+    """Intermediate approach identification treatment family."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -163,7 +163,7 @@ class TreatmentFamily(BaseModel):
 
 
 class IdentifiedApproach(BaseModel):
-    """Final peer top-level accounting approach identified by Prompt A."""
+    """Final peer top-level accounting approach identified by approach identification."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -174,7 +174,7 @@ class IdentifiedApproach(BaseModel):
 
 
 class PromptAClarificationOutput(BaseModel):
-    """Prompt A output when retrieved context is insufficient."""
+    """approach identification output when retrieved context is insufficient."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -183,7 +183,7 @@ class PromptAClarificationOutput(BaseModel):
 
 
 class PromptAPassOutput(BaseModel):
-    """Prompt A output when authority and peer approaches are identified."""
+    """approach identification output when authority and peer approaches are identified."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -199,7 +199,7 @@ PromptAOutput = PromptAPassOutput | PromptAClarificationOutput
 
 
 class Recommendation(BaseModel):
-    """Prompt B final recommendation."""
+    """applicability analysis final recommendation."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -208,7 +208,7 @@ class Recommendation(BaseModel):
 
 
 class ApplicabilityReference(BaseModel):
-    """One citation in Prompt B output."""
+    """One citation in applicability analysis output."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -218,7 +218,7 @@ class ApplicabilityReference(BaseModel):
 
 
 class ApproachApplicability(BaseModel):
-    """Prompt B applicability finding for one identified approach."""
+    """applicability analysis applicability finding for one identified approach."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -233,7 +233,7 @@ class ApproachApplicability(BaseModel):
 
 
 class PromptBClarificationOutput(BaseModel):
-    """Prompt B output when Prompt A requires clarification."""
+    """applicability analysis output when approach identification requires clarification."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -242,7 +242,7 @@ class PromptBClarificationOutput(BaseModel):
 
 
 class PromptBPassOutput(BaseModel):
-    """Prompt B output when applicability can be assessed."""
+    """applicability analysis output when applicability can be assessed."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -255,7 +255,7 @@ PromptBOutput = PromptBPassOutput | PromptBClarificationOutput
 
 
 class AuthorityClassificationResult(BaseModel):
-    """Typed Prompt A result after Pydantic output contract validation."""
+    """Typed approach identification result after Pydantic output contract validation."""
 
     raw_response: str
     output: PromptAOutput
@@ -263,7 +263,7 @@ class AuthorityClassificationResult(BaseModel):
 
 
 class ApplicabilityAnalysisResult(BaseModel):
-    """Typed Prompt B result after Pydantic output contract validation."""
+    """Typed applicability analysis result after Pydantic output contract validation."""
 
     raw_response: str
     output: PromptBOutput
@@ -271,7 +271,7 @@ class ApplicabilityAnalysisResult(BaseModel):
 
 
 class AuthoritySufficiencyResult(BaseModel):
-    """Decision from the authority sufficiency gate after Prompt A."""
+    """Decision from the authority sufficiency gate after approach identification."""
 
     status: str
     should_continue: bool

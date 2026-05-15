@@ -204,11 +204,11 @@ class AnswerEngine:
 
     def _get_prompt_template_error(self) -> str | None:
         if not self._hooks.prompt_file_exists_fn(PROMPT_A_PATH):
-            logger.error(f"Missing Prompt A template at {PROMPT_A_PATH}")
-            return "Error: Prompt A template not found."
+            logger.error(f"Missing approach identification template at {PROMPT_A_PATH}")
+            return "Error: approach identification template not found."
         if not self._hooks.prompt_file_exists_fn(PROMPT_B_PATH):
-            logger.error(f"Missing Prompt B template at {PROMPT_B_PATH}")
-            return "Error: Prompt B template not found."
+            logger.error(f"Missing applicability analysis template at {PROMPT_B_PATH}")
+            return "Error: applicability analysis template not found."
         return None
 
     def _get_title_prerequisite_error(self) -> str | None:
@@ -285,17 +285,17 @@ class AnswerEngine:
         chunk_summary = _build_chunk_summary(results, doc_chunks)
         formatted_chunks = self._format_chunks(results, doc_chunks)
 
-        prompt_a_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
-        result.prompt_a_text = _extract_prompt_content(prompt_a_full)
+        approach_identification_full = self._build_prompt_from_template(PROMPT_A_PATH, formatted_chunks, chunk_summary)
+        result.approach_identification_text = _extract_prompt_content(approach_identification_full)
 
-        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(result.prompt_a_text)
+        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(result.approach_identification_text)
         if isinstance(approach_identification_result, ValidationFailure):
             result.error = approach_identification_result.message
             result.error_stage = approach_identification_result.error_stage
             return result
 
-        result.prompt_a_raw_response = approach_identification_result.raw_response
-        result.prompt_a_json = approach_identification_result.payload
+        result.approach_identification_raw_response = approach_identification_result.raw_response
+        result.approach_identification_json = approach_identification_result.payload
 
         authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.payload)
         result.authority_sufficiency_json = authority_sufficiency_result.model_dump(mode="json")
@@ -304,36 +304,36 @@ class AnswerEngine:
             result.error_stage = "authority_sufficiency"
             return result
 
-        prompt_b_context = _build_prompt_b_context(formatted_chunks, result.prompt_a_json)
-        result.prompt_b_text = self._build_prompt_b(prompt_b_context, json.dumps(result.prompt_a_json, indent=2, ensure_ascii=False))
+        applicability_analysis_context = _build_applicability_analysis_context(formatted_chunks, result.approach_identification_json)
+        result.applicability_analysis_text = self._build_prompt_b(applicability_analysis_context, json.dumps(result.approach_identification_json, indent=2, ensure_ascii=False))
 
-        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(result.prompt_b_text)
+        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(result.applicability_analysis_text)
         if isinstance(applicability_analysis_result, ValidationFailure):
             result.error = applicability_analysis_result.message
             result.error_stage = applicability_analysis_result.error_stage
             return result
 
-        result.prompt_b_raw_response = applicability_analysis_result.raw_response
-        result.prompt_b_json = applicability_analysis_result.payload
+        result.applicability_analysis_raw_response = applicability_analysis_result.raw_response
+        result.applicability_analysis_json = applicability_analysis_result.payload
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        chunk_data = _build_chunk_data_for_markdown(prompt_b_context)
+        chunk_data = _build_chunk_data_for_markdown(applicability_analysis_context)
         citation_verification_result = VerifyCitationsStage().execute(applicability_analysis_result.payload, chunk_data)
         result.citation_verification_json = citation_verification_result.model_dump(mode="json")
 
-        prompt_b_doc_uids = _extract_doc_uids_from_context(prompt_b_context)
-        primary_accounting_issue = result.prompt_a_json.get("primary_accounting_issue") if isinstance(result.prompt_a_json, dict) else None
+        applicability_analysis_doc_uids = _extract_doc_uids_from_context(applicability_analysis_context)
+        primary_accounting_issue = result.approach_identification_json.get("primary_accounting_issue") if isinstance(result.approach_identification_json, dict) else None
         primary_accounting_issue_text = primary_accounting_issue if isinstance(primary_accounting_issue, str) else None
         options = MarkdownOptions(
             question=self.query,
             doc_uids=self._retrieved_doc_uids,
-            authority_doc_uids=prompt_b_doc_uids,
+            authority_doc_uids=applicability_analysis_doc_uids,
             primary_accounting_issue=primary_accounting_issue_text,
             chunk_data=chunk_data,
         )
-        result.prompt_b_memo_markdown = convert_json_to_markdown_full(result.prompt_b_json, options)
-        result.prompt_b_faq_markdown = convert_json_to_faq_markdown(
-            result.prompt_b_json,
+        result.applicability_analysis_memo_markdown = convert_json_to_markdown_full(result.applicability_analysis_json, options)
+        result.applicability_analysis_faq_markdown = convert_json_to_faq_markdown(
+            result.applicability_analysis_json,
             primary_accounting_issue=options.primary_accounting_issue,
         )
         result.mark_success()
@@ -386,27 +386,27 @@ class AnswerEngine:
         return formatted_documents
 
 
-def _build_prompt_b_context(formatted_chunks: list[str], prompt_a_json: JSONValue) -> str:
-    authority_refs = _extract_authority_references(prompt_a_json)
+def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_json: JSONValue) -> str:
+    authority_refs = _extract_authority_references(approach_identification_json)
     if authority_refs is None:
         return "\n\n".join(formatted_chunks)
     return _filter_chunks_by_authority(formatted_chunks, authority_refs)
 
 
-def _extract_authority_references(prompt_a_json: JSONValue) -> set[tuple[str, str]] | None:
-    if not isinstance(prompt_a_json, dict):
-        logger.error("Prompt A JSON is not a dict; using all chunks for Prompt B (authority filtering skipped)")
+def _extract_authority_references(approach_identification_json: JSONValue) -> set[tuple[str, str]] | None:
+    if not isinstance(approach_identification_json, dict):
+        logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
         return None
 
-    authority_classification = prompt_a_json.get("authority_classification")
+    authority_classification = approach_identification_json.get("authority_classification")
     if not isinstance(authority_classification, dict):
-        logger.error("No authority_classification in Prompt A response; using all chunks for Prompt B (authority filtering skipped)")
+        logger.error("No authority_classification in approach identification response; using all chunks for applicability analysis (authority filtering skipped)")
         return None
 
     primary_authority = authority_classification.get("primary_authority", [])
     supporting_authority = authority_classification.get("supporting_authority", [])
     if not primary_authority and not supporting_authority:
-        logger.warning("No primary or supporting authority identified; using all chunks for Prompt B (authority filtering skipped)")
+        logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
         return None
 
     allowed_chunks: set[tuple[str, str]] = set()
@@ -422,10 +422,10 @@ def _extract_authority_references(prompt_a_json: JSONValue) -> set[tuple[str, st
                 allowed_chunks.add((document, ref))
 
     if not allowed_chunks:
-        logger.error("Could not extract authority references; using all chunks for Prompt B (authority filtering skipped)")
+        logger.error("Could not extract authority references; using all chunks for applicability analysis (authority filtering skipped)")
         return None
 
-    logger.info(f"Filtering Prompt B context to {len(allowed_chunks)} authority references")
+    logger.info(f"Filtering applicability analysis context to {len(allowed_chunks)} authority references")
     return allowed_chunks
 
 

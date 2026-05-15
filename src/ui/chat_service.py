@@ -111,15 +111,15 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
 
 def _build_grounded_context(result: AnswerCommandResult) -> tuple[str, str]:
     """Build later-turn context from the grounded first answer."""
-    if result.prompt_b_memo_markdown:
+    if result.applicability_analysis_memo_markdown:
         logger.info("ChatService: using grounded markdown context for follow-up prompt")
-        return result.prompt_b_memo_markdown, "markdown"
-    if result.prompt_b_json is not None:
+        return result.applicability_analysis_memo_markdown, "markdown"
+    if result.applicability_analysis_json is not None:
         logger.info("ChatService: using grounded JSON context for follow-up prompt")
-        return _serialize_json_value(result.prompt_b_json), "json"
-    if result.prompt_b_raw_response:
+        return _serialize_json_value(result.applicability_analysis_json), "json"
+    if result.applicability_analysis_raw_response:
         logger.info("ChatService: using grounded raw response context for follow-up prompt")
-        return result.prompt_b_raw_response, "raw_response"
+        return result.applicability_analysis_raw_response, "raw_response"
     logger.warning("ChatService: grounded context missing, using fallback placeholder")
     return "No grounded answer is available.", "fallback"
 

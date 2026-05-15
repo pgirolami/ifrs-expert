@@ -109,11 +109,17 @@ def _handle_first_turn(service: ChatService, session_state: SessionStateProtocol
         return
 
     assistant_content = _get_assistant_display_text(result)
-    assistant_format = "markdown" if result.prompt_b_memo_markdown else "text"
-    prompt_a_chars = len(result.prompt_a_text) if result.prompt_a_text else 0
-    prompt_b_chars = len(result.prompt_b_text) if result.prompt_b_text else 0
+    assistant_format = "markdown" if result.applicability_analysis_memo_markdown else "text"
+    approach_identification_chars = len(result.approach_identification_text) if result.approach_identification_text else 0
+    applicability_analysis_chars = len(result.applicability_analysis_text) if result.applicability_analysis_text else 0
     assistant_chars = len(assistant_content)
-    logger.info(f"Streamlit UI: first turn succeeded docs={len(result.retrieved_doc_uids)} prompt_a_chars={prompt_a_chars} prompt_b_chars={prompt_b_chars} assistant_chars={assistant_chars} format={assistant_format}")
+    logger_message = (
+        f"Streamlit UI: first turn succeeded docs={len(result.retrieved_doc_uids)} "
+        f"approach_identification_chars={approach_identification_chars} "
+        f"applicability_analysis_chars={applicability_analysis_chars} "
+        f"assistant_chars={assistant_chars} format={assistant_format}"
+    )
+    logger.info(logger_message)
 
     session_state[FIRST_TURN_RESULT_KEY] = result
     session_state[LAST_ERROR_KEY] = None
@@ -158,11 +164,11 @@ def _handle_follow_up_turn(
 
 def _get_assistant_display_text(result: AnswerCommandResult) -> str:
     """Return the text displayed for the grounded first-turn answer."""
-    if result.prompt_b_memo_markdown:
+    if result.applicability_analysis_memo_markdown:
         logger.info("Streamlit UI: displaying grounded markdown answer")
-        return result.prompt_b_memo_markdown
-    if result.prompt_b_raw_response:
+        return result.applicability_analysis_memo_markdown
+    if result.applicability_analysis_raw_response:
         logger.info("Streamlit UI: displaying grounded raw response")
-        return result.prompt_b_raw_response
+        return result.applicability_analysis_raw_response
     logger.warning("Streamlit UI: grounded result had no displayable answer content")
     return "No answer returned."

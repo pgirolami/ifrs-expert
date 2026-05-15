@@ -147,8 +147,8 @@ class RetrievalPolicyReferenceConfig:
 class PromptsPolicy:
     """Reserved prompt policy section for future expansion."""
 
-    answer_prompt_a_path: str | None = None
-    answer_prompt_b_path: str | None = None
+    answer_approach_identification_path: str | None = None
+    answer_applicability_analysis_path: str | None = None
 
 
 @dataclass(frozen=True)
@@ -803,9 +803,9 @@ def _parse_prompts_policy(raw_prompts_policy: object) -> PromptsPolicy | None:
     if raw_prompts_policy is None:
         return None
     prompts_mapping = _require_mapping(raw_prompts_policy, context="prompts")
-    answer_prompt_a_path = _require_optional_string(prompts_mapping.get("answer_prompt_a_path"), context="prompts.answer_prompt_a_path")
-    answer_prompt_b_path = _require_optional_string(prompts_mapping.get("answer_prompt_b_path"), context="prompts.answer_prompt_b_path")
-    return PromptsPolicy(answer_prompt_a_path=answer_prompt_a_path, answer_prompt_b_path=answer_prompt_b_path)
+    answer_approach_identification_path = _require_optional_string(prompts_mapping.get("answer_approach_identification_path"), context="prompts.answer_approach_identification_path")
+    answer_applicability_analysis_path = _require_optional_string(prompts_mapping.get("answer_applicability_analysis_path"), context="prompts.answer_applicability_analysis_path")
+    return PromptsPolicy(answer_approach_identification_path=answer_approach_identification_path, answer_applicability_analysis_path=answer_applicability_analysis_path)
 
 
 def _parse_output_policy(raw_output_policy: object) -> OutputPolicy | None:
