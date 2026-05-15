@@ -124,7 +124,7 @@ Replace direct `send_to_llm_fn(prompt) -> str` calls with typed Pydantic AI agen
    - instructions: current `prompts/answer_prompt_B.txt` content adapted with explicit schema expectations.
 4. Configure output retries for schema failures.
 5. Preserve raw run messages/artifacts where useful for debugging.
-6. Keep a fallback compatibility path to the old LLM clients during initial rollout.
+6. Do not preserve the removed legacy `src/llm/*` clients or add a permanent runtime mode flag.
 
 ## Acceptance criteria
 
@@ -133,6 +133,10 @@ Replace direct `send_to_llm_fn(prompt) -> str` calls with typed Pydantic AI agen
 - LLM provider selection still supports the currently used providers where practical.
 - Tests use fake Pydantic AI agent runners rather than real providers.
 
+
+## Implementation status
+
+> Updated 2026-05-15: legacy `src/llm/*` clients have been removed. CLI, answer command, and Streamlit follow-up generation now route through Pydantic AI adapters. `PydanticAIAnswerGenerator` exposes typed Prompt A and Prompt B methods (`generate_prompt_a`, `generate_prompt_b`) and a JSON serialization bridge for the remaining engine boundary.
 ---
 
 # Phase 3 — Extract LLM orchestration out of `AnswerCommand`
