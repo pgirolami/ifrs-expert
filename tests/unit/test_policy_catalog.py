@@ -66,3 +66,4 @@ def test_resolve_retrieval_policy_rejects_strategy_profile_mismatch(tmp_path: Pa
 
     with pytest.raises(ValueError, match="Unknown chunk retrieval profile: default for strategy title_chunks"):
         resolve_retrieval_policy(catalog, "titles__enriched")
+

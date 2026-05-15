@@ -7,7 +7,19 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol, cast
 
-from src.case_analysis.models import ApplicabilityAnalysisResult, AuthorityClassificationResult, AuthoritySufficiencyResult, CitationVerificationResult, RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
+from pydantic import TypeAdapter, ValidationError
+
+from src.case_analysis.models import (
+    ApplicabilityAnalysisResult,
+    AuthorityClassificationResult,
+    AuthoritySufficiencyResult,
+    CitationVerificationResult,
+    PromptAOutput,
+    PromptBOutput,
+    RetrievedSourcePackage,
+    ValidatedQuestion,
+    ValidationFailure,
+)
 from src.retrieval.pipeline import execute_retrieval
 from src.retrieval.request_builder import build_retrieval_request
 
@@ -138,16 +150,26 @@ class JsonPromptStage:
 
         if not isinstance(parsed, dict):
             logger.warning(f"{self.result_name} response parsed as JSON but was not an object")
-            return ValidationFailure(
-                error_stage=f"{self.error_stage}_parse",
-                reason="invalid_contract",
-                message=f"Error: LLM returned JSON that does not match the {self.result_name} object contract.",
-            )
+            return self._invalid_contract_failure(raw_response=raw_response, detail="response was not a JSON object")
 
         payload = cast("dict[str, object]", parsed)
-        if self.error_stage == "prompt_a":
-            return AuthorityClassificationResult(raw_response=raw_response, payload=payload)
-        return ApplicabilityAnalysisResult(raw_response=raw_response, payload=payload)
+        try:
+            if self.error_stage == "prompt_a":
+                output = TypeAdapter(PromptAOutput).validate_python(payload)
+                return AuthorityClassificationResult(raw_response=raw_response, output=output, payload=cast("dict[str, object]", output.model_dump(mode="json")))
+            output = TypeAdapter(PromptBOutput).validate_python(payload)
+            return ApplicabilityAnalysisResult(raw_response=raw_response, output=output, payload=cast("dict[str, object]", output.model_dump(mode="json")))
+        except ValidationError as e:
+            logger.exception(f"{self.result_name} JSON failed Pydantic contract validation")
+            return self._invalid_contract_failure(raw_response=raw_response, detail=str(e))
+
+    def _invalid_contract_failure(self, raw_response: str, detail: str) -> ValidationFailure:
+        """Build a structured failure for JSON that does not match the prompt contract."""
+        return ValidationFailure(
+            error_stage=f"{self.error_stage}_parse",
+            reason="invalid_contract",
+            message=f"Error: LLM returned JSON that does not match the {self.result_name} object contract: {detail}\n\nResponse was:\n{raw_response}",
+        )
 
 
 class ClassifyAuthorityStage(JsonPromptStage):

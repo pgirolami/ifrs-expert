@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, cast
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.models.provenance import Provenance
 
@@ -111,17 +111,162 @@ class RetrievedSourcePackage(BaseModel):
         return cast("dict[str, list[Chunk]]", self.doc_chunks)
 
 
+class AuthorityReference(BaseModel):
+    """One document reference used in Prompt A authority output."""
+
+    model_config = ConfigDict(extra="allow")
+
+    document: str
+    references: list[str] = Field(default_factory=list)
+    reason: str | None = None
+
+
+class AuthorityResolution(BaseModel):
+    """Prompt A authority competition and selected-governing-document result."""
+
+    model_config = ConfigDict(extra="allow")
+
+    candidate_governing_documents: list[str] = Field(default_factory=list)
+    selected_primary_document: str | None = None
+    selection_reason: str | None = None
+    discarded_due_to_overlap: list[str] = Field(default_factory=list)
+    residual_uncertainty: str | None = None
+
+
+class AuthorityClassification(BaseModel):
+    """Prompt A classification of retrieved documents by authority role."""
+
+    model_config = ConfigDict(extra="allow")
+
+    primary_authority: list[AuthorityReference] = Field(default_factory=list)
+    supporting_authority: list[AuthorityReference] = Field(default_factory=list)
+    peripheral_authority: list[AuthorityReference] = Field(default_factory=list)
+
+
+class TreatmentAuthorityBasis(BaseModel):
+    """Authority basis for a Prompt A treatment family."""
+
+    model_config = ConfigDict(extra="allow")
+
+    document: str
+    references: list[str] = Field(default_factory=list)
+
+
+class TreatmentFamily(BaseModel):
+    """Intermediate Prompt A treatment family."""
+
+    model_config = ConfigDict(extra="allow")
+
+    family: str
+    authority_basis: list[TreatmentAuthorityBasis] = Field(default_factory=list)
+    mapped_approaches: list[str] = Field(default_factory=list)
+
+
+class IdentifiedApproach(BaseModel):
+    """Final peer top-level accounting approach identified by Prompt A."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: str
+    label: str
+    normalized_label: str
+    rationale_for_inclusion: str | None = None
+
+
+class PromptAClarificationOutput(BaseModel):
+    """Prompt A output when retrieved context is insufficient."""
+
+    model_config = ConfigDict(extra="allow")
+
+    status: Literal["needs_clarification"]
+    questions: list[str]
+
+
+class PromptAPassOutput(BaseModel):
+    """Prompt A output when authority and peer approaches are identified."""
+
+    model_config = ConfigDict(extra="allow")
+
+    status: Literal["pass"]
+    primary_accounting_issue: str
+    authority_resolution: AuthorityResolution
+    authority_classification: AuthorityClassification
+    treatment_families: list[TreatmentFamily] = Field(default_factory=list)
+    approaches: list[IdentifiedApproach]
+
+
+PromptAOutput = PromptAPassOutput | PromptAClarificationOutput
+
+
+class Recommendation(BaseModel):
+    """Prompt B final recommendation."""
+
+    model_config = ConfigDict(extra="allow")
+
+    answer: Literal["oui", "non", "oui_sous_conditions"]
+    justification: str
+
+
+class ApplicabilityReference(BaseModel):
+    """One citation in Prompt B output."""
+
+    model_config = ConfigDict(extra="allow")
+
+    document: str
+    section: str
+    excerpt: str
+
+
+class ApproachApplicability(BaseModel):
+    """Prompt B applicability finding for one identified approach."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: str
+    normalized_label: str
+    label_fr: str
+    applicability: Literal["oui", "non", "oui_sous_conditions"]
+    reasoning_fr: str
+    conditions_fr: list[str] = Field(default_factory=list)
+    practical_implication_fr: str
+    references: list[ApplicabilityReference] = Field(default_factory=list)
+
+
+class PromptBClarificationOutput(BaseModel):
+    """Prompt B output when Prompt A requires clarification."""
+
+    model_config = ConfigDict(extra="allow")
+
+    status: Literal["needs_clarification"]
+    questions_fr: list[str]
+
+
+class PromptBPassOutput(BaseModel):
+    """Prompt B output when applicability can be assessed."""
+
+    model_config = ConfigDict(extra="allow")
+
+    assumptions_fr: list[str] = Field(default_factory=list)
+    recommendation: Recommendation
+    approaches: list[ApproachApplicability]
+
+
+PromptBOutput = PromptBPassOutput | PromptBClarificationOutput
+
+
 class AuthorityClassificationResult(BaseModel):
-    """Typed Prompt A result after JSON/object contract validation."""
+    """Typed Prompt A result after Pydantic output contract validation."""
 
     raw_response: str
+    output: PromptAOutput
     payload: dict[str, object]
 
 
 class ApplicabilityAnalysisResult(BaseModel):
-    """Typed Prompt B result after JSON/object contract validation."""
+    """Typed Prompt B result after Pydantic output contract validation."""
 
     raw_response: str
+    output: PromptBOutput
     payload: dict[str, object]
 
 

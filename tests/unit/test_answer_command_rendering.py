@@ -339,16 +339,13 @@ class TestAnswerCommandAuthorityFiltering:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
                 # Prompt A response: ifrs15 5.1 is primary, ias21 8.2 is supporting
-                return json.dumps(
-                    {
-                        "status": "pass",
-                        "authority_classification": {
-                            "primary_authority": [{"document": "ifrs15", "references": ["5.1"], "reason": "Governs the issue"}],
-                            "supporting_authority": [{"document": "ias21", "references": ["8.2"], "reason": "Clarifies the treatment"}],
-                            "peripheral_authority": [{"document": "ifrs15", "references": ["5.2"], "reason": "Not directly relevant"}],
-                        },
-                    }
-                )
+                prompt_a_payload = json.loads(VALID_PROMPT_A_RESPONSE)
+                prompt_a_payload["authority_classification"] = {
+                    "primary_authority": [{"document": "ifrs15", "references": ["5.1"], "reason": "Governs the issue"}],
+                    "supporting_authority": [{"document": "ias21", "references": ["8.2"], "reason": "Clarifies the treatment"}],
+                    "peripheral_authority": [{"document": "ifrs15", "references": ["5.2"], "reason": "Not directly relevant"}],
+                }
+                return json.dumps(prompt_a_payload)
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(

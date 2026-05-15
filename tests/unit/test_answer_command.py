@@ -18,6 +18,32 @@ from src.retrieval.models import RetrievalResult
 from tests.fakes import InMemoryChunkStore, InMemorySectionStore
 from tests.policy import load_test_policy_config, load_test_retrieval_policy, make_retrieval_policy
 
+VALID_PROMPT_A_RESPONSE = """{
+  "status": "pass",
+  "primary_accounting_issue": "Test accounting issue",
+  "authority_resolution": {
+    "candidate_governing_documents": ["doc1"],
+    "selected_primary_document": "doc1",
+    "selection_reason": "Test selection reason",
+    "discarded_due_to_overlap": [],
+    "residual_uncertainty": "Low uncertainty for test"
+  },
+  "authority_classification": {
+    "primary_authority": [],
+    "supporting_authority": [],
+    "peripheral_authority": []
+  },
+  "treatment_families": [],
+  "approaches": [
+    {
+      "id": "approach_1",
+      "label": "Fair value hedge",
+      "normalized_label": "fair_value_hedge",
+      "rationale_for_inclusion": "Test rationale"
+    }
+  ]
+}"""
+
 VALID_PROMPT_B_RESPONSE = """{
   "assumptions_fr": ["Hypothèse de test"],
   "recommendation": {
@@ -35,6 +61,7 @@ VALID_PROMPT_B_RESPONSE = """{
       "practical_implication_fr": "Implication de test",
       "references": [
         {
+          "document": "doc1",
           "section": "6.3.1",
           "excerpt": "A hedged item can be a recognised asset or liability"
         }
@@ -148,7 +175,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             call_count[0] += 1
             if call_count[0] == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -173,7 +200,7 @@ class TestAnswerCommand:
         assert result.success is True
         assert result.error is None
         assert result.prompt_a_text is not None
-        assert result.prompt_a_raw_response == '{"status": "pass", "approaches": []}'
+        assert result.prompt_a_raw_response == VALID_PROMPT_A_RESPONSE
         assert result.prompt_a_json is not None
         assert result.prompt_b_text is not None
         assert result.prompt_b_raw_response == VALID_PROMPT_B_RESPONSE
@@ -219,7 +246,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -258,7 +285,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -301,7 +328,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -349,7 +376,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -413,7 +440,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -463,7 +490,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -506,7 +533,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
@@ -620,10 +647,13 @@ class TestAnswerCommand:
             )
 
         captured_requests: list[object] = []
+        captured_prompts: list[str] = []
 
         def mock_send_to_llm(prompt: str) -> str:
-            del prompt
-            return '{"status": "pass", "approaches": []}'
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return VALID_PROMPT_A_RESPONSE
+            return VALID_PROMPT_B_RESPONSE
 
         def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
             del config
@@ -692,10 +722,13 @@ class TestAnswerCommand:
             )
 
         captured_requests: list[object] = []
+        captured_prompts: list[str] = []
 
         def mock_send_to_llm(prompt: str) -> str:
-            del prompt
-            return '{"status": "pass", "approaches": []}'
+            captured_prompts.append(prompt)
+            if len(captured_prompts) == 1:
+                return VALID_PROMPT_A_RESPONSE
+            return VALID_PROMPT_B_RESPONSE
 
         def mock_execute_retrieval(*, request: object, config: object) -> tuple[None, RetrievalResult]:
             del config
@@ -770,7 +803,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
@@ -834,7 +867,7 @@ class TestAnswerCommand:
         def mock_send_to_llm(prompt: str) -> str:
             captured_prompts.append(prompt)
             if len(captured_prompts) == 1:
-                return '{"status": "pass", "approaches": []}'
+                return VALID_PROMPT_A_RESPONSE
             return VALID_PROMPT_B_RESPONSE
 
         config = AnswerConfig(
