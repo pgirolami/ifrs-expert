@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from src.ai.pydantic_client import create_default_text_generator
 from src.case_analysis.engine import (
     AnswerEngine,
     AnswerEngineHooks,
@@ -18,7 +19,6 @@ from src.case_analysis.models import ValidationFailure
 from src.case_analysis.stages import ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
-from src.llm import get_client
 from src.models.answer_command_result import AnswerCommandResult, JSONValue
 from src.retrieval.pipeline import execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
@@ -119,13 +119,11 @@ class AnswerCommand:
 
 
 def _default_send_to_llm(prompt: str) -> str:
-    """Send prompt to LLM and return the response."""
+    """Send prompt to the configured Pydantic AI model and return the response."""
     try:
-        client = get_client()
-        logger.info(f"Using LLM provider: {type(client).__name__}")
-        return client.generate_text(prompt)
+        return create_default_text_generator().generate_text(prompt)
     except ValueError as e:
-        error_msg = f"LLM not configured: {e}"
+        error_msg = f"Pydantic AI LLM not configured: {e}"
         raise RuntimeError(error_msg) from e
 
 
