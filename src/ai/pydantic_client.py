@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from typing import TypeVar
 
 from pydantic import BaseModel
-from pydantic_ai import Agent
 
+from src.ai.agent_factory import GenerationDeps, build_structured_agent, build_text_agent
 from src.ai.runtime import resolve_pydantic_ai_runtime
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
@@ -24,8 +24,11 @@ class PydanticAITextGenerator:
 
     def generate_text(self, prompt: str) -> str:
         """Generate text through Pydantic AI and return the final output."""
-        agent: Agent[None, str] = Agent(self.model, output_type=str)
-        result = agent.run_sync(prompt)
+        agent = build_text_agent(self.model)
+        result = agent.run_sync(
+            prompt,
+            deps=GenerationDeps(task_name="free-form IFRS completion", prompt_kind="free_form_completion"),
+        )
         output = result.output
         logger.info(f"Pydantic AI completion received model={self.model} output_chars={len(output)}")
         return output
@@ -54,9 +57,12 @@ class PydanticAIAnswerGenerator:
         prompt_kind: str,
     ) -> TOutput:
         """Run one typed Pydantic AI agent and return its model output."""
-        agent = Agent(self.model, output_type=output_type, output_retries=self.output_retries)
-        result = agent.run_sync(prompt)
-        output: TOutput = result.output  # ty: ignore[invalid-assignment]
+        agent = build_structured_agent(self.model, output_type=output_type, output_retries=self.output_retries)
+        result = agent.run_sync(
+            prompt,
+            deps=GenerationDeps(task_name=f"structured {prompt_kind}", prompt_kind=prompt_kind),
+        )
+        output: TOutput = result.output
         logger.info(f"Pydantic AI structured completion received model={self.model} prompt_kind={prompt_kind}")
         return output
 
