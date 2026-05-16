@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, Protocol, TypeVar
 
 from dotenv import load_dotenv
 
-from src.ai.pydantic_client import create_default_text_generator
 from src.answer_artifacts import save_answer_command_result
 from src.commands.answer import AnswerOptions, create_answer_command
 from src.commands.chunk import ChunkCommand
@@ -95,7 +94,6 @@ def _build_parser() -> argparse.ArgumentParser:
     _add_retrieve_parser(subparsers)
     _add_query_titles_parser(subparsers)
     _add_answer_parser(subparsers)
-    _add_llm_parser(subparsers)
     return parser
 
 
@@ -210,10 +208,6 @@ def _add_answer_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentP
         ],
         allow_abbrev=False,
     )
-
-
-def _add_llm_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    subparsers.add_parser("llm", help="Send a raw prompt directly to the LLM (reads prompt from stdin)", allow_abbrev=False)
 
 
 def main() -> int:
@@ -406,13 +400,6 @@ def _execute_query_titles_command(args: argparse.Namespace) -> str:
     )
 
 
-def _execute_llm_command(args: argparse.Namespace) -> str:
-    """Execute the raw LLM command."""
-    del args
-    prompt = _read_stdin_text(strip=False)
-    return create_default_text_generator().generate_text(prompt)
-
-
 def _execute_answer_command(args: argparse.Namespace) -> str:
     """Execute the answer command while keeping CLI behavior unchanged."""
     query = _read_stdin_text()
@@ -461,22 +448,11 @@ def _execute_command(args: argparse.Namespace) -> str:
         "query-titles": _execute_query_titles_command,
         "retrieve": _execute_retrieve_command,
         "answer": _execute_answer_command,
-        "llm": _execute_llm_command,
     }
     handler = handlers.get(args.command)
     if handler is None:
         return f"Error: Unknown command: {args.command}"
     return handler(args)
-
-
-def query_command(args: argparse.Namespace) -> int:
-    """Backward compatibility wrapper for tests."""
-    result = _execute_command(args)
-    if result.startswith("Error:"):
-        logger.error(result)
-        return 1
-    sys.stdout.buffer.write(result.encode("utf-8") + b"\n")
-    return 0
 
 
 if __name__ == "__main__":

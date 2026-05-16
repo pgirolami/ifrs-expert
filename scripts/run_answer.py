@@ -28,7 +28,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from dotenv import load_dotenv  # noqa: E402
 
 from src.answer_artifacts import save_answer_command_result  # noqa: E402
-from src.commands import AnswerOptions  # noqa: E402
+from src.commands.answer import AnswerOptions  # noqa: E402
 from src.commands.answer import create_answer_command  # noqa: E402
 from src.logging_config import setup_logging  # noqa: E402
 from src.policy import load_policy_catalog, resolve_retrieval_policy  # noqa: E402
@@ -44,6 +44,7 @@ CONTEXT_ARG_INDEX: Final[int] = 3
 MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS: Final[int] = 3
 MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
+
 
 def _write_stdout(payload: str) -> None:
     """Write one UTF-8 payload line to stdout."""

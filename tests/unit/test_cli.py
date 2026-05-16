@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from src import cli
-from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
+from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.provenance import Provenance
@@ -360,21 +360,6 @@ def test_execute_command_dispatches_query_documents(monkeypatch: pytest.MonkeyPa
     assert captured_document_types == ["IFRIC"]
 
 
-def test_execute_command_dispatches_llm(monkeypatch: pytest.MonkeyPatch) -> None:
-    """CLI should dispatch the llm subcommand and pass raw stdin prompt."""
-
-    class _FakeTextGenerator:
-        def generate_text(self, prompt: str) -> str:
-            return f"reply:{prompt}"
-
-    monkeypatch.setattr("src.cli.create_default_text_generator", lambda: _FakeTextGenerator())
-    monkeypatch.setattr("sys.stdin", io.StringIO("Raw prompt"))
-
-    output = _execute_command(argparse.Namespace(command="llm"))
-
-    assert output == "reply:Raw prompt"
-
-
 def test_answer_stdout_text_prefers_typed_output() -> None:
     """CLI stdout should use the typed output when available."""
     result = AnswerCommandResult(
@@ -470,17 +455,29 @@ def test_ingest_parser_accepts_force_flag() -> None:
     assert args.scope == "all"
 
 
-def test_query_command_returns_error_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:
-    """query_command should return non-zero when command output is an error."""
+def test_main_returns_error_exit_code_for_failed_command(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    """CLI main should return non-zero when command output is an error."""
+    monkeypatch.setattr("src.cli.load_dotenv", lambda: None)
+    monkeypatch.setattr("src.cli.setup_logging", lambda: None)
     monkeypatch.setattr("src.cli._execute_command", lambda args: "Error: failed")
-    exit_code = query_command(argparse.Namespace(command="query"))
-    assert exit_code == 1
+    monkeypatch.setattr("sys.argv", ["prog", "query", "--policy-config", "config/policy.default.yaml", "--retrieval-policy", "standards_only_through_chunks__enriched"])
 
-
-def test_query_command_writes_utf8_output(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
-    """query_command should write UTF-8 output when execution succeeds."""
-    monkeypatch.setattr("src.cli._execute_command", lambda args: "succès")
-    exit_code = query_command(argparse.Namespace(command="query"))
+    exit_code = cli.main()
     captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "Error: failed" in captured.err
+
+
+def test_main_writes_utf8_output_for_successful_command(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    """CLI main should write UTF-8 output when execution succeeds."""
+    monkeypatch.setattr("src.cli.load_dotenv", lambda: None)
+    monkeypatch.setattr("src.cli.setup_logging", lambda: None)
+    monkeypatch.setattr("src.cli._execute_command", lambda args: "succès")
+    monkeypatch.setattr("sys.argv", ["prog", "query", "--policy-config", "config/policy.default.yaml", "--retrieval-policy", "standards_only_through_chunks__enriched"])
+
+    exit_code = cli.main()
+    captured = capsys.readouterr()
+
     assert exit_code == 0
     assert "succès" in captured.out
