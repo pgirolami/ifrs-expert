@@ -186,6 +186,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when workflow control, prompt construction, retrieval shaping, validation, and rendering are no longer tightly interleaved in the same path.
 - Done when each major module has one obvious architectural responsibility.
 - Done when reading the answer path no longer requires mentally untangling mixed concerns.
+- Status: done.
 
 #### Milestone 2.2 — Remove large mixed-responsibility modules
 - Problem: several high-traffic files are still too large to be comfortably readable in one sitting.
