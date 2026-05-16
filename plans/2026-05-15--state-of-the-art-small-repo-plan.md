@@ -226,6 +226,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the graph has explicit control points for alternate paths such as clarification, continuation, or loop-back behavior.
 - Done when the workflow can express graph-native state transitions instead of only pass/fail routing.
 - Done when the graph is obviously the right abstraction for the workflow, not just one possible implementation.
+- Status: done.
 
 #### Milestone 3.3 — Bounded tool use inside graph stages
 - Problem: tool-calling is not yet an explicit graph-bounded capability.

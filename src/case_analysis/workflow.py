@@ -4,16 +4,15 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.case_analysis.citation_validation import CitationValidationService
 from src.case_analysis.context_builder import ContextBuilder
-from src.case_analysis.models import ApproachIdentificationOutput, RetrievedSourcePackage, ValidationFailure
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, RetrievedSourcePackage, ValidationFailure
 from src.case_analysis.output_formatting import build_chunk_summary, build_retrieved_chunk_hits, escape_xml, extract_prompt_content
 from src.case_analysis.prompt_builder import PromptBuilder
 from src.case_analysis.rendering import AnswerRenderingAdapter
-from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage, AuthoritySufficiencyStage
+from src.case_analysis.stages import AnswerGeneratorProtocol, ApplicabilityAnalysisStage, ApproachIdentificationStage
 from src.models.answer_command_result import AnswerCommandResult, RetrievedDocumentHit
 from src.models.document import infer_document_kind, infer_exact_document_type
 
@@ -26,7 +25,6 @@ if TYPE_CHECKING:
     from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
-TOP_CHUNK_PREVIEW_CHARS = 30
 
 
 @dataclass
@@ -65,26 +63,19 @@ class AnswerWorkflowProcessor:
             chunk_hits=build_retrieved_chunk_hits(search_results, doc_chunks),
         )
 
-    def process_source_package_prompts(self, result: AnswerCommandResult, source_package: RetrievedSourcePackage) -> AnswerCommandResult:
-        """Run prompt processing for one retrieved source package."""
-        return self._process_prompts(result, source_package.to_search_results(), source_package.to_doc_chunks())
-
-    def _process_prompts(
-        self,
-        result: AnswerCommandResult,
-        results: list[SearchResult],
-        doc_chunks: dict[str, list[Chunk]],
-    ) -> AnswerCommandResult:
+    def prepare_prompt_materials(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> tuple[tuple[str, ...], str]:
+        """Build reusable prompt formatting artifacts for the graph."""
         chunk_summary = build_chunk_summary(results, doc_chunks, logger)
-        formatted_chunks = self._format_chunks(results, doc_chunks)
-        return self._run_approach_identification_stage(result, formatted_chunks, chunk_summary)
+        formatted_chunks = tuple(self._format_chunks(results, doc_chunks))
+        return formatted_chunks, chunk_summary
 
-    def _run_approach_identification_stage(
+    def run_approach_identification(
         self,
         result: AnswerCommandResult,
         formatted_chunks: list[str],
         chunk_summary: str,
-    ) -> AnswerCommandResult:
+    ) -> tuple[AnswerCommandResult, ApproachIdentificationOutput | ValidationFailure]:
+        """Run approach identification and keep the typed result on success."""
         approach_identification_full = self._build_prompt_from_template(self.approach_identification_path, formatted_chunks, chunk_summary)
         result.approach_identification_text = extract_prompt_content(approach_identification_full)
         approach_identification_text = result.approach_identification_text
@@ -93,25 +84,27 @@ class AnswerWorkflowProcessor:
         if isinstance(approach_identification_output, ValidationFailure):
             result.error = approach_identification_output.message
             result.error_stage = approach_identification_output.error_stage
-            return result
+            return result, approach_identification_output
 
         result.approach_identification_output = approach_identification_output
+        return result, approach_identification_output
 
-        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_output)
-        if isinstance(authority_sufficiency_result, ValidationFailure):
-            result.error = authority_sufficiency_result.message
-            result.error_stage = authority_sufficiency_result.error_stage
-            return result
+    def prepare_applicability_analysis_context(
+        self,
+        formatted_chunks: list[str],
+        approach_identification_output: ApproachIdentificationOutput,
+    ) -> str:
+        """Build the context used by applicability analysis."""
+        return self.context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_output)
 
-        return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_output)
-
-    def _run_applicability_analysis_stage(
+    def run_applicability_analysis(
         self,
         result: AnswerCommandResult,
         formatted_chunks: list[str],
         approach_identification_output: ApproachIdentificationOutput,
-    ) -> AnswerCommandResult:
-        applicability_analysis_context = self.context_builder.build_applicability_analysis_context(formatted_chunks, approach_identification_output)
+    ) -> tuple[AnswerCommandResult, ApplicabilityAnalysisOutput | ValidationFailure, str]:
+        """Run applicability analysis and keep the typed result on success."""
+        applicability_analysis_context = self.prepare_applicability_analysis_context(formatted_chunks, approach_identification_output)
         applicability_analysis_prompt = self._build_applicability_analysis(applicability_analysis_context, approach_identification_output)
         result.applicability_analysis_text = extract_prompt_content(applicability_analysis_prompt)
         applicability_analysis_text = result.applicability_analysis_text
@@ -120,9 +113,19 @@ class AnswerWorkflowProcessor:
         if isinstance(applicability_analysis_output, ValidationFailure):
             result.error = applicability_analysis_output.message
             result.error_stage = applicability_analysis_output.error_stage
-            return result
+            return result, applicability_analysis_output, applicability_analysis_context
 
         result.applicability_analysis_output = applicability_analysis_output
+        return result, applicability_analysis_output, applicability_analysis_context
+
+    def finalize_answer(
+        self,
+        result: AnswerCommandResult,
+        approach_identification_output: ApproachIdentificationOutput,
+        applicability_analysis_output: ApplicabilityAnalysisOutput,
+        applicability_analysis_context: str,
+    ) -> AnswerCommandResult:
+        """Validate citations, render memo artifacts, and mark success."""
         logger.info("Step 2 complete: Received final answer from LLM")
 
         citation_verification_result = self.citation_validation_service.validate_applicability_analysis(applicability_analysis_output, applicability_analysis_context)
@@ -139,6 +142,43 @@ class AnswerWorkflowProcessor:
         result.applicability_analysis_faq_markdown = rendered_artifacts.faq_markdown
         result.mark_success()
         return result
+
+    def build_clarification_failure(self, query: str, stage: str, questions: list[str]) -> AnswerCommandResult:
+        """Build a failure result for a clarification control point."""
+        question_text = "; ".join(questions) if questions else "Clarification required"
+        return AnswerCommandResult.failure(
+            query=query,
+            error=f"Error: Clarification required at {stage}: {question_text}",
+            error_stage="clarification",
+        )
+
+    def process_source_package_prompts(self, result: AnswerCommandResult, source_package: RetrievedSourcePackage) -> AnswerCommandResult:
+        """Run prompt processing for one retrieved source package."""
+        results = source_package.to_search_results()
+        doc_chunks = source_package.to_doc_chunks()
+        formatted_chunks, chunk_summary = self.prepare_prompt_materials(results, doc_chunks)
+        processed_result, approach_identification_output = self.run_approach_identification(result, list(formatted_chunks), chunk_summary)
+        if isinstance(approach_identification_output, ValidationFailure):
+            return processed_result
+        if approach_identification_output.status == "needs_clarification":
+            return self.build_clarification_failure(self.query, "approach_identification", approach_identification_output.questions)
+
+        processed_result, applicability_analysis_output, applicability_analysis_context = self.run_applicability_analysis(
+            processed_result,
+            list(formatted_chunks),
+            approach_identification_output,
+        )
+        if isinstance(applicability_analysis_output, ValidationFailure):
+            return processed_result
+        if applicability_analysis_output.status == "needs_clarification":
+            return self.build_clarification_failure(self.query, "applicability_analysis", applicability_analysis_output.questions_fr)
+
+        return self.finalize_answer(
+            processed_result,
+            approach_identification_output,
+            applicability_analysis_output,
+            applicability_analysis_context,
+        )
 
     def _build_prompt_from_template(self, template_path: Path, chunks: list[str], chunk_summary: str) -> str:
         template = self.read_prompt_template_fn(template_path)

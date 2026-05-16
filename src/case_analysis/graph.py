@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, cast
 
 from langgraph.graph import END, START, StateGraph
 
-from src.case_analysis.models import RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
 from src.case_analysis.stages import ExecuteRetrievalFn, ValidateQuestionStage
 from src.models.answer_command_result import AnswerCommandResult
 from src.retrieval.request_builder import build_retrieval_request
@@ -16,10 +16,9 @@ from src.retrieval.request_builder import build_retrieval_request
 retrieval_models = importlib.import_module("src.retrieval.models")
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from langgraph.graph.state import CompiledStateGraph
 
+    from src.case_analysis.workflow import AnswerWorkflowProcessor
     from src.policy import RetrievalPolicy
     from src.retrieval.pipeline import RetrievalPipelineConfig
 
@@ -36,6 +35,13 @@ class CaseAnalysisState:
     retrieval_result: retrieval_models.RetrievalResult | None = None
     retrieved_source_package: RetrievedSourcePackage | None = None
     answer_result: AnswerCommandResult | None = None
+    formatted_chunks: tuple[str, ...] = ()
+    chunk_summary: str = ""
+    approach_identification_output: ApproachIdentificationOutput | None = None
+    applicability_analysis_context: str = ""
+    applicability_analysis_output: ApplicabilityAnalysisOutput | None = None
+    clarification_stage: str | None = None
+    clarification_questions: tuple[str, ...] = ()
     failure: ValidationFailure | None = None
 
 
@@ -46,8 +52,7 @@ class CaseAnalysisGraphRunner:
     policy: RetrievalPolicy
     pipeline_config: RetrievalPipelineConfig
     execute_retrieval_fn: ExecuteRetrievalFn
-    build_answer_result_fn: Callable[[RetrievedSourcePackage], AnswerCommandResult]
-    process_prompts_fn: Callable[[AnswerCommandResult, RetrievedSourcePackage], AnswerCommandResult]
+    workflow_processor: AnswerWorkflowProcessor
     _graph: CompiledStateGraph = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
@@ -81,6 +86,13 @@ class CaseAnalysisGraphRunner:
             retrieval_result=cast("retrieval_models.RetrievalResult | None", final_state.get("retrieval_result")),
             retrieved_source_package=cast("RetrievedSourcePackage | None", final_state.get("retrieved_source_package")),
             answer_result=cast("AnswerCommandResult | None", final_state.get("answer_result")),
+            formatted_chunks=cast("tuple[str, ...]", final_state.get("formatted_chunks", ())),
+            chunk_summary=cast("str", final_state.get("chunk_summary", "")),
+            approach_identification_output=cast("ApproachIdentificationOutput | None", final_state.get("approach_identification_output")),
+            applicability_analysis_context=cast("str", final_state.get("applicability_analysis_context", "")),
+            applicability_analysis_output=cast("ApplicabilityAnalysisOutput | None", final_state.get("applicability_analysis_output")),
+            clarification_stage=cast("str | None", final_state.get("clarification_stage")),
+            clarification_questions=cast("tuple[str, ...]", final_state.get("clarification_questions", ())),
             failure=cast("ValidationFailure | None", final_state.get("failure")),
         )
 
@@ -97,8 +109,13 @@ class CaseAnalysisGraphRunner:
         builder.add_node("validate_question", self._validate_question_node)
         builder.add_node("prepare_retrieval_request", self._prepare_retrieval_request_node)
         builder.add_node("retrieve_source_material", self._retrieve_source_material_node)
-        builder.add_node("process_prompts", self._process_prompts_node)
+        builder.add_node("prepare_prompt_materials", self._prepare_prompt_materials_node)
+        builder.add_node("run_approach_identification", self._run_approach_identification_node)
+        builder.add_node("prepare_applicability_context", self._prepare_applicability_context_node)
+        builder.add_node("run_applicability_analysis", self._run_applicability_analysis_node)
+        builder.add_node("build_clarification_failure", self._build_clarification_failure_node)
         builder.add_node("build_failure", self._build_failure_node)
+        builder.add_node("finalize_answer", self._finalize_answer_node)
 
         builder.add_edge(START, "validate_question")
         builder.add_conditional_edges(
@@ -114,10 +131,31 @@ class CaseAnalysisGraphRunner:
         builder.add_conditional_edges(
             "retrieve_source_material",
             self._route_after_failure_capable_node,
-            {"continue": "process_prompts", "fail": "build_failure"},
+            {"continue": "prepare_prompt_materials", "fail": "build_failure"},
         )
-        builder.add_edge("process_prompts", END)
+        builder.add_conditional_edges(
+            "prepare_prompt_materials",
+            self._route_after_failure_capable_node,
+            {"continue": "run_approach_identification", "fail": "build_failure"},
+        )
+        builder.add_conditional_edges(
+            "run_approach_identification",
+            self._route_after_approach_identification_node,
+            {"continue": "prepare_applicability_context", "clarify": "build_clarification_failure", "fail": "build_failure"},
+        )
+        builder.add_conditional_edges(
+            "prepare_applicability_context",
+            self._route_after_failure_capable_node,
+            {"continue": "run_applicability_analysis", "fail": "build_failure"},
+        )
+        builder.add_conditional_edges(
+            "run_applicability_analysis",
+            self._route_after_applicability_analysis_node,
+            {"continue": "finalize_answer", "clarify": "build_clarification_failure", "fail": "build_failure"},
+        )
+        builder.add_edge("build_clarification_failure", END)
         builder.add_edge("build_failure", END)
+        builder.add_edge("finalize_answer", END)
         return builder.compile()
 
     def _validate_question_node(self, state: CaseAnalysisState) -> dict[str, object]:
@@ -138,6 +176,42 @@ class CaseAnalysisGraphRunner:
         if state.failure is not None:
             return "fail"
         return "continue"
+
+    def _route_after_approach_identification_node(self, state: CaseAnalysisState) -> str:
+        """Route toward clarification when approach identification asks for it."""
+        if state.failure is not None:
+            return "fail"
+        approach_identification_output = state.approach_identification_output
+        if approach_identification_output is not None and approach_identification_output.status == "needs_clarification":
+            return "clarify"
+        return "continue"
+
+    def _route_after_applicability_analysis_node(self, state: CaseAnalysisState) -> str:
+        """Route toward clarification when applicability analysis asks for it."""
+        if state.failure is not None:
+            return "fail"
+        applicability_analysis_output = state.applicability_analysis_output
+        if applicability_analysis_output is not None and applicability_analysis_output.status == "needs_clarification":
+            return "clarify"
+        return "continue"
+
+    def _prepare_retrieval_request_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Prepare the retrieval request as an explicit graph checkpoint."""
+        if state.validated_question is None:
+            return {
+                **self._advance_stage(state, "prepare_retrieval_request"),
+                "failure": ValidationFailure(error_stage="validation", reason="missing_validated_question", message="Error: Missing validated question"),
+            }
+        retrieval_request = build_retrieval_request(
+            query=state.validated_question.question,
+            policy=self.policy,
+            chunk_min_score=self.policy.titles.min_score if self.policy.chunk_retrieval.mode == "title_similarity" else self.policy.text.min_score,
+            expand_to_section=self.policy.expand_to_section if self.policy.document_routing.source == "all_documents" else True,
+        )
+        return {
+            **self._advance_stage(state, "prepare_retrieval_request"),
+            "retrieval_request": retrieval_request,
+        }
 
     def _retrieve_source_material_node(self, state: CaseAnalysisState) -> dict[str, object]:
         """Retrieve source material through the existing retrieval pipeline."""
@@ -168,37 +242,97 @@ class CaseAnalysisGraphRunner:
             "retrieved_source_package": source_package,
         }
 
-    def _prepare_retrieval_request_node(self, state: CaseAnalysisState) -> dict[str, object]:
-        """Prepare the retrieval request as an explicit graph checkpoint."""
-        if state.validated_question is None:
-            return {
-                **self._advance_stage(state, "prepare_retrieval_request"),
-                "failure": ValidationFailure(error_stage="validation", reason="missing_validated_question", message="Error: Missing validated question"),
-            }
-        retrieval_request = build_retrieval_request(
-            query=state.validated_question.question,
-            policy=self.policy,
-            chunk_min_score=self.policy.titles.min_score if self.policy.chunk_retrieval.mode == "title_similarity" else self.policy.text.min_score,
-            expand_to_section=self.policy.expand_to_section if self.policy.document_routing.source == "all_documents" else True,
-        )
-        return {
-            **self._advance_stage(state, "prepare_retrieval_request"),
-            "retrieval_request": retrieval_request,
-        }
-
-    def _process_prompts_node(self, state: CaseAnalysisState) -> dict[str, object]:
-        """Build the initial answer result and run prompt processing."""
+    def _prepare_prompt_materials_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Prepare reusable prompt artifacts for the graph."""
         source_package = state.retrieved_source_package
         if source_package is None:
             return {
-                **self._advance_stage(state, "process_prompts"),
+                **self._advance_stage(state, "prepare_prompt_materials"),
                 "failure": ValidationFailure(error_stage="workflow", reason="missing_retrieved_source_package", message="Error: Missing retrieved source package"),
             }
-        answer_result = self.build_answer_result_fn(source_package)
-        processed_result = self.process_prompts_fn(answer_result, source_package)
+        formatted_chunks, chunk_summary = self.workflow_processor.prepare_prompt_materials(source_package.to_search_results(), source_package.to_doc_chunks())
         return {
-            **self._advance_stage(state, "process_prompts"),
+            **self._advance_stage(state, "prepare_prompt_materials"),
+            "answer_result": self.workflow_processor.build_answer_result_from_source_package(source_package),
+            "formatted_chunks": formatted_chunks,
+            "chunk_summary": chunk_summary,
+        }
+
+    def _run_approach_identification_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Run approach identification as a graph step."""
+        answer_result = state.answer_result
+        if answer_result is None:
+            return {
+                **self._advance_stage(state, "run_approach_identification"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_answer_result", message="Error: Missing answer result"),
+            }
+        formatted_chunks = list(state.formatted_chunks)
+        processed_result, approach_identification_output = self.workflow_processor.run_approach_identification(answer_result, formatted_chunks, state.chunk_summary)
+        node_result: dict[str, object] = {
+            **self._advance_stage(state, "run_approach_identification"),
             "answer_result": processed_result,
+        }
+        if isinstance(approach_identification_output, ValidationFailure):
+            node_result["failure"] = approach_identification_output
+            return node_result
+        node_result["approach_identification_output"] = approach_identification_output
+        if approach_identification_output.status == "needs_clarification":
+            node_result["clarification_stage"] = "approach_identification"
+            node_result["clarification_questions"] = tuple(approach_identification_output.questions)
+        return node_result
+
+    def _prepare_applicability_context_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Build the applicability-analysis context as a graph checkpoint."""
+        answer_result = state.answer_result
+        approach_identification_output = state.approach_identification_output
+        if answer_result is None or approach_identification_output is None:
+            return {
+                **self._advance_stage(state, "prepare_applicability_context"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_approach_identification_output", message="Error: Missing approach identification output"),
+            }
+        applicability_analysis_context = self.workflow_processor.prepare_applicability_analysis_context(list(state.formatted_chunks), approach_identification_output)
+        return {
+            **self._advance_stage(state, "prepare_applicability_context"),
+            "answer_result": answer_result,
+            "applicability_analysis_context": applicability_analysis_context,
+        }
+
+    def _run_applicability_analysis_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Run applicability analysis as a graph step."""
+        answer_result = state.answer_result
+        approach_identification_output = state.approach_identification_output
+        if answer_result is None or approach_identification_output is None:
+            return {
+                **self._advance_stage(state, "run_applicability_analysis"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_approach_identification_output", message="Error: Missing approach identification output"),
+            }
+        processed_result, applicability_analysis_output, applicability_analysis_context = self.workflow_processor.run_applicability_analysis(
+            answer_result,
+            list(state.formatted_chunks),
+            approach_identification_output,
+        )
+        node_result: dict[str, object] = {
+            **self._advance_stage(state, "run_applicability_analysis"),
+            "answer_result": processed_result,
+            "applicability_analysis_context": applicability_analysis_context,
+        }
+        if isinstance(applicability_analysis_output, ValidationFailure):
+            node_result["failure"] = applicability_analysis_output
+            return node_result
+        node_result["applicability_analysis_output"] = applicability_analysis_output
+        if applicability_analysis_output.status == "needs_clarification":
+            node_result["clarification_stage"] = "applicability_analysis"
+            node_result["clarification_questions"] = tuple(applicability_analysis_output.questions_fr)
+        return node_result
+
+    def _build_clarification_failure_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Convert a clarification branch into a public failure result."""
+        clarification_stage = state.clarification_stage or "workflow"
+        clarification_questions = list(state.clarification_questions)
+        answer_result = self.workflow_processor.build_clarification_failure(state.question, clarification_stage, clarification_questions)
+        return {
+            **self._advance_stage(state, "build_clarification_failure"),
+            "answer_result": answer_result,
         }
 
     def _build_failure_node(self, state: CaseAnalysisState) -> dict[str, object]:
@@ -212,4 +346,26 @@ class CaseAnalysisGraphRunner:
         return {
             **self._advance_stage(state, "build_failure"),
             "answer_result": AnswerCommandResult.failure(query=state.question, error=failure.message, error_stage=failure.error_stage),
+        }
+
+    def _finalize_answer_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Finalize the answer after all deterministic checks pass."""
+        answer_result = state.answer_result
+        approach_identification_output = state.approach_identification_output
+        applicability_analysis_output = state.applicability_analysis_output
+        applicability_analysis_context = state.applicability_analysis_context
+        if answer_result is None or approach_identification_output is None or applicability_analysis_output is None:
+            return {
+                **self._advance_stage(state, "finalize_answer"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_final_outputs", message="Error: Missing final workflow outputs"),
+            }
+        finalized_result = self.workflow_processor.finalize_answer(
+            answer_result,
+            approach_identification_output,
+            applicability_analysis_output,
+            applicability_analysis_context,
+        )
+        return {
+            **self._advance_stage(state, "finalize_answer"),
+            "answer_result": finalized_result,
         }

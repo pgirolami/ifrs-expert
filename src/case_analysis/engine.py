@@ -7,7 +7,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
+from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
+from src.case_analysis.output_formatting import build_chunk_summary
 from src.case_analysis.workflow import AnswerWorkflowProcessor
 from src.models.answer_command_result import AnswerCommandResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
@@ -15,15 +17,18 @@ from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from src.case_analysis.models import ApproachIdentificationOutput
     from src.case_analysis.stages import AnswerGeneratorProtocol, ExecuteRetrievalFn
     from src.interfaces import (
         ReadChunkStoreProtocol,
         ReadSectionStoreProtocol,
         ReferenceStoreProtocol,
         SearchDocumentVectorStoreProtocol,
+        SearchResult,
         SearchTitleVectorStoreProtocol,
         SearchVectorStoreProtocol,
     )
+    from src.models.chunk import Chunk
     from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
@@ -104,8 +109,7 @@ class AnswerEngine:
             policy=self.policy,
             pipeline_config=self._build_retrieval_pipeline_config(),
             execute_retrieval_fn=self._hooks.execute_retrieval_fn,
-            build_answer_result_fn=self._workflow_processor.build_answer_result_from_source_package,
-            process_prompts_fn=self._workflow_processor.process_source_package_prompts,
+            workflow_processor=self._workflow_processor,
         )
         return runner.run(self.query)
 
@@ -175,3 +179,11 @@ class AnswerEngine:
             document_vector_store_factory=self.config.document_vector_store_factory,
             document_index_path_fn=self.config.document_index_path_fn,
         )
+
+
+def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput) -> str:
+    return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_output)
+
+
+def _build_chunk_summary(results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
+    return build_chunk_summary(results, doc_chunks, logger)
