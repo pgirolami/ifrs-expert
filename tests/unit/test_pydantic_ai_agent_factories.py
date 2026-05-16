@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from src.ai.agent_factory import GenerationDeps
+from src.ai.agent_factory import GenerationDeps, build_generation_instruction
 from src.ai.pydantic_client import PydanticAIAnswerGenerator, PydanticAITextGenerator
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, Recommendation
 from src.ui.follow_up_agent import GroundedFollowUpOutput, PydanticAIGroundedFollowUpGenerator
@@ -28,6 +28,16 @@ class _FakeAgent(Generic[TOutput]):
         self.captured_prompt = prompt
         self.captured_deps = deps
         return _FakeRunResult(output=self.output)
+
+
+def test_build_generation_instruction_uses_prompt_kind() -> None:
+    """Instruction text should vary by prompt kind."""
+    deps = GenerationDeps(task_name="structured approach_identification", prompt_kind="approach_identification")
+
+    instruction = build_generation_instruction(deps)
+
+    assert "structured approach_identification" in instruction
+    assert "governing approach" in instruction
 
 
 def test_text_generator_passes_generation_deps(monkeypatch) -> None:

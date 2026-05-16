@@ -37,6 +37,7 @@ Make the Pydantic AI usage in this repo idiomatic, not just functional.
 - runtime-dependent prompt shaping moves into decorated instruction functions
 - prompt assembly helpers are reduced to true formatting concerns
 - redundant prompt glue is removed
+- Status: done.
 
 ### Milestone 3 — Introduce real tools and capabilities
 **Problem:** the project has model calls, but not enough explicit agent tools/capabilities.
