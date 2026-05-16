@@ -8,7 +8,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from src.ai.agent_factory import GenerationDeps, build_structured_agent, build_text_agent
+from src.ai.agent_factory import GenerationDeps, build_generation_run_controls, build_structured_agent, build_text_agent
 from src.ai.runtime import resolve_pydantic_ai_runtime
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
@@ -25,9 +25,14 @@ class PydanticAITextGenerator:
     def generate_text(self, prompt: str) -> str:
         """Generate text through Pydantic AI and return the final output."""
         agent = build_text_agent(self.model)
+        generation_deps = GenerationDeps(task_name="free-form IFRS completion", prompt_kind="free_form_completion")
+        run_controls = build_generation_run_controls(generation_deps)
         result = agent.run_sync(
             prompt,
-            deps=GenerationDeps(task_name="free-form IFRS completion", prompt_kind="free_form_completion"),
+            deps=generation_deps,
+            model_settings=run_controls.model_settings,
+            metadata=run_controls.metadata,
+            usage_limits=run_controls.usage_limits,
         )
         output = result.output
         logger.info(f"Pydantic AI completion received model={self.model} output_chars={len(output)}")
@@ -58,9 +63,14 @@ class PydanticAIAnswerGenerator:
     ) -> TOutput:
         """Run one typed Pydantic AI agent and return its model output."""
         agent = build_structured_agent(self.model, output_type=output_type, output_retries=self.output_retries)
+        generation_deps = GenerationDeps(task_name=f"structured {prompt_kind}", prompt_kind=prompt_kind)
+        run_controls = build_generation_run_controls(generation_deps)
         result = agent.run_sync(
             prompt,
-            deps=GenerationDeps(task_name=f"structured {prompt_kind}", prompt_kind=prompt_kind),
+            deps=generation_deps,
+            model_settings=run_controls.model_settings,
+            metadata=run_controls.metadata,
+            usage_limits=run_controls.usage_limits,
         )
         output: TOutput = result.output
         logger.info(f"Pydantic AI structured completion received model={self.model} prompt_kind={prompt_kind}")

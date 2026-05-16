@@ -6,8 +6,9 @@ from dataclasses import dataclass
 from typing import TypeVar, cast
 
 from pydantic import BaseModel
-from pydantic_ai import Agent, RunContext, Tool
+from pydantic_ai import Agent, RunContext, Tool, UsageLimits
 from pydantic_ai.capabilities import Toolset
+from pydantic_ai.settings import ModelSettings
 from pydantic_ai.toolsets import FunctionToolset
 
 TOutput = TypeVar("TOutput", bound=BaseModel)
@@ -33,6 +34,24 @@ def build_generation_instruction(deps: GenerationDeps) -> str:
     """Build the runtime instruction text for one agent run."""
     guidance = _PROMPT_KIND_GUIDANCE.get(deps.prompt_kind, "Follow the task instructions carefully.")
     return f"Task: {deps.task_name}. {guidance}"
+
+
+@dataclass(frozen=True)
+class GenerationRunControls:
+    """Run-level controls for generation-style Pydantic AI calls."""
+
+    model_settings: ModelSettings
+    metadata: dict[str, str]
+    usage_limits: UsageLimits
+
+
+def build_generation_run_controls(deps: GenerationDeps) -> GenerationRunControls:
+    """Build run-level controls for one agent invocation."""
+    return GenerationRunControls(
+        model_settings=ModelSettings(temperature=0.0, max_tokens=1024, parallel_tool_calls=False),
+        metadata={"task_name": deps.task_name, "prompt_kind": deps.prompt_kind},
+        usage_limits=UsageLimits(request_limit=6, tool_calls_limit=4),
+    )
 
 
 def _explain_generation_contract(ctx: RunContext[GenerationDeps]) -> str:
@@ -97,7 +116,9 @@ def build_structured_agent(model: str, output_type: type[TOutput], output_retrie
 
 __all__ = [
     "GenerationDeps",
+    "GenerationRunControls",
     "build_generation_instruction",
+    "build_generation_run_controls",
     "build_structured_agent",
     "build_text_agent",
 ]

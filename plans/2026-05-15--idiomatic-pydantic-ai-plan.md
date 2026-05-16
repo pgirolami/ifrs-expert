@@ -57,6 +57,7 @@ Make the Pydantic AI usage in this repo idiomatic, not just functional.
 - `metadata` is passed through for observability / tracing
 - `usage_limits` are applied where needed
 - concurrency or retry controls are set intentionally, not by default
+- Status: done.
 
 ### Milestone 5 — Consider agent specs for stable configuration
 **Problem:** some agent config may belong in code, some in spec.
