@@ -1,4 +1,4 @@
-"""Pydantic AI model resolution and generation adapters."""
+"""Pydantic AI generation adapters and runtime resolution."""
 
 from __future__ import annotations
 
@@ -91,11 +91,6 @@ def create_default_answer_generator() -> PydanticAIAnswerGenerator:
     return PydanticAIAnswerGenerator(model=runtime.model_name)
 
 
-def resolve_pydantic_ai_model_name() -> str:
-    """Resolve the configured provider/model into a Pydantic AI model name."""
-    return resolve_pydantic_ai_runtime().model_name
-
-
 def infer_answer_prompt_kind(prompt: str) -> str:
     """Infer whether a prompt is approach identification or applicability analysis from stable markers."""
     if "<identified_approaches>" in prompt:
@@ -109,6 +104,5 @@ __all__ = [
     "create_default_answer_generator",
     "create_default_text_generator",
     "infer_answer_prompt_kind",
-    "resolve_pydantic_ai_model_name",
     "resolve_pydantic_ai_runtime",
 ]

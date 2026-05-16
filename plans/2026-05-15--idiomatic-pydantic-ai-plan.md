@@ -76,6 +76,7 @@ Make the Pydantic AI usage in this repo idiomatic, not just functional.
 - duplicated agent construction disappears
 - docs and tests match the final agent style
 - the remaining Pydantic AI code reads like a native usage example
+- Status: done.
 
 ## Suggested implementation order
 1. core agent factory + deps model
