@@ -7,14 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.ai.pydantic_client import PydanticAIAnswerGenerator, create_default_answer_generator
-from src.case_analysis.answer_generation_service import AnswerGenerationService
-from src.case_analysis.engine import (
-    AnswerEngineHooks,
-    _build_applicability_analysis_context,
-    _build_chunk_summary,
-    _prompt_file_exists,
-    _read_prompt_template,
-)
+from src.case_analysis.engine import AnswerEngine, AnswerEngineHooks, _build_applicability_analysis_context, _build_chunk_summary, _prompt_file_exists, _read_prompt_template
 from src.case_analysis.models import ApproachIdentificationOutput, ValidationFailure
 from src.case_analysis.stages import AnswerGeneratorProtocol, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
@@ -98,16 +91,16 @@ class AnswerCommand:
         if isinstance(validation_result, ValidationFailure):
             return AnswerCommandResult.failure(query=self.query, error=validation_result.message, error_stage=validation_result.error_stage)
         self.query = validation_result.question
-        return self._build_service().run()
+        return self._build_engine().run()
 
-    def _build_service(self) -> AnswerGenerationService:
-        """Build the answer generation service wrapper."""
+    def _build_engine(self) -> AnswerEngine:
+        """Build the case-analysis engine directly."""
         hooks = AnswerEngineHooks(
             execute_retrieval_fn=execute_retrieval,
             prompt_file_exists_fn=_prompt_file_exists,
             read_prompt_template_fn=_read_prompt_template,
         )
-        return AnswerGenerationService(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
+        return AnswerEngine(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
 
     def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> str:
         """Build applicability analysis context for tests and the rendering path."""

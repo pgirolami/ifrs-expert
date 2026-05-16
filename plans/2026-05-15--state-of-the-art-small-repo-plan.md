@@ -200,6 +200,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when modules and classes that only forward data without hiding complexity are removed, merged, or clearly justified.
 - Done when the module tree is easier to navigate because each layer earns its existence.
 - Done when the repo has fewer transitional wrappers that exist mainly because of historical refactors.
+- Status: done.
 
 #### Milestone 2.4 — Make tests track behavior instead of plumbing
 - Problem: some tests are coupled to implementation details and internal sequencing.
