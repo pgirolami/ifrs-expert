@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from src.interfaces import DocumentSearchResult, DocumentStoreProtocol, SearchDocumentVectorStoreProtocol
     from src.models.document import DocumentRecord
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class QueryDocumentsConfig:
 class QueryDocumentsOptions:
     """Options for the query-documents command."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     document_type: str
     verbose: bool = DEFAULT_VERBOSE
 
@@ -77,7 +77,10 @@ class QueryDocumentsCommand:
         if prerequisite_error is not None:
             return prerequisite_error
 
-        document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
+        document_profile = self._options.policy.document_routing.profile_config
+        if document_profile is None:
+            return "Error: query-documents requires a document-routing profile"
+        document_policy = document_profile.by_document_type[self._options.document_type]
         similarity_representation = document_policy.similarity_representation or "full"
         vector_store = self._get_document_vector_store(similarity_representation)
         with vector_store as document_vector_store:
@@ -101,10 +104,13 @@ class QueryDocumentsCommand:
     def _get_validation_error(self) -> str | None:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
+        document_profile = self._options.policy.document_routing.profile_config
+        if document_profile is None:
+            return "Error: query-documents requires a document-routing profile"
         if self._options.document_type not in DOCUMENT_TYPES:
             supported_document_types = ", ".join(DOCUMENT_TYPES)
             return f"Error: document_type must be one of {supported_document_types}"
-        document_policy = self._options.policy.documents.by_document_type.get(self._options.document_type)
+        document_policy = document_profile.by_document_type.get(self._options.document_type)
         if document_policy is None:
             return f"Error: Missing policy entry for document_type={self._options.document_type}"
         if document_policy.d <= 0:
@@ -112,7 +118,10 @@ class QueryDocumentsCommand:
         return None
 
     def _get_prerequisite_error(self) -> str | None:
-        document_policy = self._options.policy.documents.by_document_type[self._options.document_type]
+        document_profile = self._options.policy.document_routing.profile_config
+        if document_profile is None:
+            return "Error: query-documents requires a document-routing profile"
+        document_policy = document_profile.by_document_type[self._options.document_type]
         try:
             index_path = self._config.index_path_fn(document_policy.similarity_representation or "full")
         except TypeError:

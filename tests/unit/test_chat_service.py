@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from src.case_analysis.models import ApplicabilityAnalysisOutput
 from src.models.answer_command_result import AnswerCommandResult
-from src.policy import RetrievalPolicy
+from src.policy import ResolvedRetrievalPolicy
 from src.ui.chat_service import (
     ChatService,
     _build_grounded_context,
@@ -153,5 +153,5 @@ def test_create_chat_service_loads_default_policy_when_missing_options(monkeypat
     options = captured["options"]
     assert hasattr(options, "policy")
     policy_value = options.policy
-    assert isinstance(policy_value, RetrievalPolicy)
-    assert policy_value.k == fake_retrieval_policy.k
+    assert isinstance(policy_value, ResolvedRetrievalPolicy)
+    assert policy_value.chunk_retrieval.profile_config.filter.per_document_k == fake_retrieval_policy.chunk_retrieval.profile_config.filter.per_document_k

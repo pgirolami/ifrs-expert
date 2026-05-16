@@ -15,7 +15,7 @@ def test_load_policy_config_reads_default_query_embedding_mode() -> None:
     policy_catalog = load_policy_catalog(project_root / "config" / "policy.default.yaml")
     policy = resolve_retrieval_policy(policy_catalog, "standards_only_through_chunks__enriched")
 
-    assert policy.query_embedding_mode == "enriched"
+    assert policy.querying.embedding_mode == "enriched"
 
 
 def test_load_policy_config_rejects_unknown_query_embedding_mode(tmp_path: Path) -> None:

@@ -54,4 +54,4 @@ def test_answer_options_builder_loads_policy_and_passthrough_values() -> None:
 
     assert isinstance(options, AnswerOptions)
     assert options.output_dir == Path("tmp/out")
-    assert options.policy.k > 0
+    assert options.policy.chunk_retrieval.profile_config.filter.per_document_k > 0

@@ -13,7 +13,7 @@ from src.commands.retrieval_request_builder import build_retrieval_request
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
 from src.models.document import infer_document_kind, infer_exact_document_type, resolve_document_kind_from_document_type
 from src.models.provenance import Provenance
-from src.policy import RetrievalPolicy
+from src.policy import ResolvedRetrievalPolicy
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.document_store import DocumentVectorStore, get_document_id_map_path, get_document_index_path
 from src.vector.store import VectorStore, get_index_path
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
     from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, ReferenceStoreProtocol, SearchDocumentVectorStoreProtocol, SearchResult, SearchTitleVectorStoreProtocol, SearchVectorStoreProtocol
     from src.models.chunk import Chunk
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
     from src.retrieval.models import RetrievalRequest, RetrievalResult
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ class RetrieveConfig:
 class RetrieveOptions:
     """Options for the retrieve command."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
 
 
@@ -109,8 +109,10 @@ class RetrieveCommand:
 
     def _build_retrieval_request(self) -> RetrievalRequest:
         policy = self._options.policy
-        chunk_min_score = policy.titles.min_score if policy.chunk_retrieval.mode == "title_similarity" else policy.text.min_score
-        expand_to_section = policy.expand_to_section if policy.document_routing.source == "all_documents" else True
+        chunk_profile = policy.chunk_retrieval.profile_config
+        expansion = chunk_profile.expansion
+        chunk_min_score = chunk_profile.filter.min_score
+        expand_to_section = (expansion.expand_to_section if expansion is not None else False) if policy.document_routing.source == "all_documents" else True
         return build_retrieval_request(
             query=self.query,
             policy=policy,
@@ -137,9 +139,10 @@ class RetrieveCommand:
 
     def _get_numeric_validation_error(self) -> str | None:
         policy = self._options.policy
+        expansion = policy.chunk_retrieval.profile_config.expansion
         checks: tuple[tuple[str, int, int], ...] = (
-            ("expand", policy.expand, 0),
-            ("full_doc_threshold", policy.full_doc_threshold, 0),
+            ("expand", expansion.expand if expansion is not None else 0, 0),
+            ("full_doc_threshold", expansion.full_doc_threshold if expansion is not None else 0, 0),
         )
         for name, value, minimum in checks:
             if value >= minimum:

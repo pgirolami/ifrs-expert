@@ -19,7 +19,7 @@ from src.retrieval.pipeline import execute_retrieval
 from src.retrieval.request_builder import build_retrieval_request
 
 if TYPE_CHECKING:
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
     from src.retrieval.models import RetrievalRequest, RetrievalResult
     from src.retrieval.pipeline import RetrievalPipelineConfig
 
@@ -36,7 +36,7 @@ class ExecuteRetrievalFn(Protocol):
 class ValidateQuestionStage:
     """Validate the question and retrieval policy before workflow execution."""
 
-    def execute(self, query: str, policy: RetrievalPolicy) -> ValidatedQuestion | ValidationFailure:
+    def execute(self, query: str, policy: ResolvedRetrievalPolicy) -> ValidatedQuestion | ValidationFailure:
         """Return trimmed question text or a structured validation failure."""
         stripped_query = query.strip()
         if not stripped_query:
@@ -48,13 +48,14 @@ class ValidateQuestionStage:
 
         return ValidatedQuestion(question=stripped_query)
 
-    def _validate_policy(self, policy: RetrievalPolicy) -> ValidationFailure | None:
+    def _validate_policy(self, policy: ResolvedRetrievalPolicy) -> ValidationFailure | None:
         """Validate policy values used by the answer workflow."""
+        expansion = policy.chunk_retrieval.profile_config.expansion
         policy_checks = (
-            (policy.expand < 0, "negative_expand", "Error: expand must be >= 0"),
-            (policy.full_doc_threshold < 0, "negative_full_doc_threshold", "Error: full_doc_threshold must be >= 0"),
-            (policy.k <= 0, "non_positive_k", "Error: retrieval.k in policy must be > 0"),
-            (policy.documents.global_d <= 0, "non_positive_global_d", "Error: retrieval.documents.global_d in policy must be > 0"),
+            (expansion is not None and expansion.expand < 0, "negative_expand", "Error: expand must be >= 0"),
+            (expansion is not None and expansion.full_doc_threshold < 0, "negative_full_doc_threshold", "Error: full_doc_threshold must be >= 0"),
+            (policy.chunk_retrieval.profile_config.filter.per_document_k <= 0, "non_positive_k", "Error: retrieval.k in policy must be > 0"),
+            (policy.document_routing.profile_config is not None and policy.document_routing.profile_config.global_d <= 0, "non_positive_global_d", "Error: retrieval.documents.global_d in policy must be > 0"),
             (
                 policy.document_routing.source not in {"all_documents", "top_chunk_results", "document_representation"},
                 "unsupported_document_routing_source",
@@ -70,9 +71,10 @@ class ValidateQuestionStage:
             if failed:
                 return self._policy_failure(reason=reason, message=message)
 
-        for document_type, cap in policy.documents.by_document_type.items():
-            if cap.d <= 0:
-                return self._policy_failure(reason="non_positive_document_cap", message=f"Error: per-type document cap for {document_type} must be > 0")
+        if policy.document_routing.profile_config is not None:
+            for document_type, cap in policy.document_routing.profile_config.by_document_type.items():
+                if cap.d <= 0:
+                    return self._policy_failure(reason="non_positive_document_cap", message=f"Error: per-type document cap for {document_type} must be > 0")
 
         return None
 
@@ -88,14 +90,16 @@ class RetrieveSourceMaterialStage:
     pipeline_config: RetrievalPipelineConfig
     execute_retrieval_fn: ExecuteRetrievalFn = execute_retrieval
 
-    def execute(self, question: str, policy: RetrievalPolicy) -> RetrievedSourcePackage | ValidationFailure:
+    def execute(self, question: str, policy: ResolvedRetrievalPolicy) -> RetrievedSourcePackage | ValidationFailure:
         """Return retrieved source material or a structured retrieval failure."""
         logger.info(f"Retrieving source material for question='{question[:80]}' policy={policy.policy_name}")
+        expansion = policy.chunk_retrieval.profile_config.expansion
+        expand_to_section = (expansion.expand_to_section if expansion is not None else False) if policy.document_routing.source == "all_documents" else True
         request = build_retrieval_request(
             query=question,
             policy=policy,
-            chunk_min_score=policy.titles.min_score if policy.chunk_retrieval.mode == "title_similarity" else policy.text.min_score,
-            expand_to_section=policy.expand_to_section if policy.document_routing.source == "all_documents" else True,
+            chunk_min_score=policy.chunk_retrieval.profile_config.filter.min_score,
+            expand_to_section=expand_to_section,
         )
         error, retrieval_result = self.execute_retrieval_fn(request=request, config=self.pipeline_config)
         if error is not None:

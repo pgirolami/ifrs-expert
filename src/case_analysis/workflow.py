@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     from src.interfaces import SearchResult
     from src.models.chunk import Chunk
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class AnswerWorkflowProcessor:
     """Own prompt execution, validation, and artifact rendering for one answer run."""
 
     query: str
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     read_prompt_template_fn: Callable[[Path], str]
     approach_identification_path: Path
     applicability_analysis_path: Path

@@ -11,15 +11,12 @@ from src.policy import (
     DocumentRoutingPostProcessingConfig,
     DocumentRoutingProfileConfig,
     DocumentRoutingTypeConfig,
-    DocumentStageRetrievalPolicy,
-    DocumentTypeRetrievalPolicy,
     QueryEmbeddingMode,
     ReferenceExpansionConfig,
     ResolvedChunkRetrievalPolicy,
     ResolvedDocumentRoutingPolicy,
     ResolvedQueryingPolicy,
     ResolvedRetrievalPolicy,
-    RetrievalPolicy,
     load_policy_catalog,
     resolve_retrieval_policy,
 )
@@ -27,14 +24,14 @@ from src.policy import (
 TEST_RETRIEVAL_POLICY_NAME = "standards_only_through_chunks__enriched"
 
 
-def load_test_policy_config() -> RetrievalPolicy:
-    """Load the repository default policy config for tests."""
+def load_test_policy_config() -> ResolvedRetrievalPolicy:
+    """Load the repository default retrieval policy for tests."""
     project_root = Path(__file__).resolve().parents[1]
     catalog = load_policy_catalog(project_root / "config" / "policy.default.yaml")
     return resolve_retrieval_policy(catalog, TEST_RETRIEVAL_POLICY_NAME)
 
 
-def load_test_retrieval_policy() -> RetrievalPolicy:
+def load_test_retrieval_policy() -> ResolvedRetrievalPolicy:
     """Load the retrieval portion of the default policy for command-options tests."""
     return load_test_policy_config()
 
@@ -53,8 +50,8 @@ def make_retrieval_policy(
     per_type_d: dict[str, int] | None = None,
     per_type_min_score: dict[str, float] | None = None,
     query_embedding_mode: QueryEmbeddingMode = "raw",
-) -> RetrievalPolicy:
-    """Build a resolved retrieval policy with compatibility accessors for targeted tests."""
+) -> ResolvedRetrievalPolicy:
+    """Build a resolved retrieval policy for targeted tests."""
     if per_type_d is None:
         per_type_d = {"IFRS-S": 4, "IAS-S": 10, "IAS-BCIASC": 1, "IAS-SM": 1, "IFRIC": 6, "SIC": 6, "PS": 1, "NAVIS": 2}
     if per_type_min_score is None:
@@ -91,8 +88,9 @@ def make_retrieval_policy(
         "PS-BC": "full",
         "NAVIS": "full",
     }
-    legacy_by_document_type = {
-        document_type: DocumentTypeRetrievalPolicy(
+
+    by_document_type = {
+        document_type: DocumentRoutingTypeConfig(
             d=d_val,
             min_score=ms_val,
             expand_to_section=expand_to_section_val,
@@ -122,9 +120,9 @@ def make_retrieval_policy(
         ]
     }
 
-    legacy_document_stage = DocumentStageRetrievalPolicy(global_d=d, by_document_type=legacy_by_document_type)
+    querying = ResolvedQueryingPolicy(embedding_mode=query_embedding_mode)
+
     if mode == "titles":
-        querying = ResolvedQueryingPolicy(embedding_mode=query_embedding_mode)
         chunk_profile = ChunkRetrievalProfileConfig(
             filter=ChunkRetrievalFilterConfig(min_score=chunk_min_score, per_document_k=k),
             expansion=None,
@@ -138,15 +136,8 @@ def make_retrieval_policy(
             post_processing="none",
             post_processing_config=DocumentRoutingPostProcessingConfig(),
         )
-        return ResolvedRetrievalPolicy(
-            policy_name=mode,
-            querying=querying,
-            document_routing=document_routing,
-            chunk_retrieval=chunk_retrieval,
-            legacy_document_stage=legacy_document_stage,
-        )
+        return ResolvedRetrievalPolicy(policy_name=mode, querying=querying, document_routing=document_routing, chunk_retrieval=chunk_retrieval)
 
-    querying = ResolvedQueryingPolicy(embedding_mode=query_embedding_mode)
     chunk_profile = ChunkRetrievalProfileConfig(
         filter=ChunkRetrievalFilterConfig(min_score=chunk_min_score, per_document_k=k),
         expansion=ChunkRetrievalExpansionConfig(
@@ -169,7 +160,7 @@ def make_retrieval_policy(
             strategy="through_chunks",
             source="top_chunk_results",
             profile="q1_authority_family",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
             post_processing="aggregate_to_main_variant",
             post_processing_config=DocumentRoutingPostProcessingConfig(document_post_processing="aggregate_to_main_variant"),
         )
@@ -178,7 +169,7 @@ def make_retrieval_policy(
             strategy="through_document_representation",
             source="document_representation",
             profile="q1_authority_family_full_repr",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
             post_processing="none",
             post_processing_config=DocumentRoutingPostProcessingConfig(),
         )
@@ -187,7 +178,7 @@ def make_retrieval_policy(
             strategy="through_document_representation",
             source="document_representation",
             profile="q1_authority_family_full_repr",
-            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=legacy_by_document_type),
+            profile_config=DocumentRoutingProfileConfig(global_d=d, by_document_type=by_document_type),
             post_processing="aggregate_to_main_variant",
             post_processing_config=DocumentRoutingPostProcessingConfig(document_post_processing="aggregate_to_main_variant"),
         )
@@ -206,5 +197,4 @@ def make_retrieval_policy(
         querying=querying,
         document_routing=document_routing,
         chunk_retrieval=chunk_retrieval,
-        legacy_document_stage=legacy_document_stage,
     )

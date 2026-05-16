@@ -13,7 +13,7 @@ from src.interfaces import ReadChunkStoreProtocol, ReferenceStoreProtocol, Searc
 from src.models.chunk import Chunk
 from src.models.document import infer_document_kind, infer_exact_document_type
 from src.models.provenance import Provenance
-from src.policy import RetrievalPolicy
+from src.policy import ResolvedRetrievalPolicy
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 from src.vector.store import VectorStore, get_index_path
 
@@ -37,7 +37,7 @@ class QueryConfig:
 class QueryOptions:
     """Options for query command."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
 
 
@@ -154,7 +154,8 @@ class QueryCommand:
     def execute(self) -> str:
         """Execute the query command and return search results."""
         policy = self._options.policy
-        logger.info(f"QueryCommand(query='{self.query[:50]}', k={policy.k})")
+        chunk_profile = policy.chunk_retrieval.profile_config
+        logger.info(f"QueryCommand(query='{self.query[:50]}', k={chunk_profile.filter.per_document_k})")
 
         # Validate inputs - collect errors first
         validation_error = self._get_validation_error()
@@ -177,11 +178,13 @@ class QueryCommand:
         if not self.query or not self.query.strip():
             return "Error: Query cannot be empty"
         policy = self._options.policy
+        chunk_profile = policy.chunk_retrieval.profile_config
+        expansion = chunk_profile.expansion
         if policy.chunk_retrieval.mode != "chunk_similarity":
             return "Error: query command requires chunk_similarity retrieval policy"
-        if policy.expand < 0:
+        if expansion is not None and expansion.expand < 0:
             return "Error: expand must be >= 0"
-        if policy.full_doc_threshold < 0:
+        if expansion is not None and expansion.full_doc_threshold < 0:
             return "Error: full_doc_threshold must be >= 0"
         return None
 
@@ -196,12 +199,14 @@ class QueryCommand:
     def _execute_search(self) -> str:
         """Execute the search workflow."""
         policy = self._options.policy
+        chunk_profile = policy.chunk_retrieval.profile_config
+        expansion = chunk_profile.expansion
         error, retrieval_result = execute_retrieval(
             request=build_retrieval_request(
                 query=self.query,
                 policy=policy,
-                chunk_min_score=policy.text.min_score,
-                expand_to_section=policy.expand_to_section,
+                chunk_min_score=chunk_profile.filter.min_score,
+                expand_to_section=expansion.expand_to_section if expansion is not None else False,
                 overrides=RetrievalRequestOverrides(
                     policy_name=policy.policy_name,
                     document_routing_source="all_documents",
@@ -263,17 +268,19 @@ class QueryCommand:
         result_score_by_chunk, doc_order, selected_ids_by_doc = _init_expansion_data(results)
 
         policy = self._options.policy
-        full_doc_docs = _include_full_document(doc_chunks, selected_ids_by_doc, policy.full_doc_threshold)
+        chunk_profile = policy.chunk_retrieval.profile_config
+        expansion = chunk_profile.expansion
+        full_doc_docs = _include_full_document(doc_chunks, selected_ids_by_doc, expansion.full_doc_threshold if expansion is not None else 0)
 
-        if policy.expand > 0:
-            _expand_with_neighbour_chunks(results, doc_chunks, selected_ids_by_doc, policy.expand)
+        if expansion is not None and expansion.expand > 0:
+            _expand_with_neighbour_chunks(results, doc_chunks, selected_ids_by_doc, expansion.expand)
 
         expanded_results = _build_expanded_results(doc_order, doc_chunks, selected_ids_by_doc, result_score_by_chunk)
 
-        if policy.full_doc_threshold > 0:
+        if expansion is not None and expansion.full_doc_threshold > 0:
             for doc_uid in full_doc_docs:
                 doc_size = sum(len(c.text) for c in doc_chunks.get(doc_uid, []))
-                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={policy.full_doc_threshold})")
+                logger.info(f"Full doc inclusion: {doc_uid} (size={doc_size} < threshold={expansion.full_doc_threshold})")
 
         return expanded_results
 

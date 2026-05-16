@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from langgraph.graph.state import CompiledStateGraph
 
     from src.case_analysis.workflow import AnswerWorkflowProcessor
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
     from src.retrieval.pipeline import RetrievalPipelineConfig
 
 
@@ -53,7 +53,7 @@ class CaseAnalysisState:
 class CaseAnalysisGraphRunner:
     """Run the deterministic answer workflow through LangGraph."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     pipeline_config: RetrievalPipelineConfig
     execute_retrieval_fn: ExecuteRetrievalFn
     workflow_processor: AnswerWorkflowProcessor
@@ -216,12 +216,15 @@ class CaseAnalysisGraphRunner:
                 **self._advance_stage(state, "prepare_retrieval_request"),
                 "failure": ValidationFailure(error_stage="validation", reason="missing_validated_question", message="Error: Missing validated question"),
             }
+        expansion = self.policy.chunk_retrieval.profile_config.expansion
+        expand_to_section = (expansion.expand_to_section if expansion is not None else False) if self.policy.document_routing.source == "all_documents" else True
         retrieval_request = build_retrieval_request(
             query=state.validated_question.question,
             policy=self.policy,
-            chunk_min_score=self.policy.titles.min_score if self.policy.chunk_retrieval.mode == "title_similarity" else self.policy.text.min_score,
-            expand_to_section=self.policy.expand_to_section if self.policy.document_routing.source == "all_documents" else True,
+            chunk_min_score=self.policy.chunk_retrieval.profile_config.filter.min_score,
+            expand_to_section=expand_to_section,
         )
+
         return {
             **self._advance_stage(state, "prepare_retrieval_request"),
             "retrieval_request": retrieval_request,

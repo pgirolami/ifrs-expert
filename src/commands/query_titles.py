@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from src.interfaces import ReadChunkStoreProtocol, ReadSectionStoreProtocol, SearchTitleVectorStoreProtocol
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class QueryTitlesConfig:
 class QueryTitlesOptions:
     """Options for the query-titles command."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
 
 
@@ -65,7 +65,7 @@ class QueryTitlesCommand:
                 init_db_fn=self._config.init_db_fn,
                 index_path_fn=self._config.index_path_fn,
             ),
-            options=TitleRetrievalOptions(k=retrieval_policy.k, min_score=retrieval_policy.titles.min_score),
+            options=TitleRetrievalOptions(k=retrieval_policy.chunk_retrieval.profile_config.filter.per_document_k, min_score=retrieval_policy.chunk_retrieval.profile_config.filter.min_score),
         )
         if error is not None:
             return error

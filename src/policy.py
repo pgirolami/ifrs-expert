@@ -208,108 +208,6 @@ class ResolvedRetrievalPolicy:
     querying: ResolvedQueryingPolicy
     document_routing: ResolvedDocumentRoutingPolicy
     chunk_retrieval: ResolvedChunkRetrievalPolicy
-    legacy_document_stage: DocumentStageRetrievalPolicy | None = None
-
-    @property
-    def query_embedding_mode(self) -> QueryEmbeddingMode:
-        """Compatibility accessor for the legacy flat policy shape."""
-        return self.querying.embedding_mode
-
-    @property
-    def k(self) -> int:
-        """Compatibility accessor for the chunk per-document top-k."""
-        return self.chunk_retrieval.profile_config.filter.per_document_k
-
-    @property
-    def expand(self) -> int:
-        """Compatibility accessor for chunk expansion depth."""
-        expansion = self.chunk_retrieval.profile_config.expansion
-        if expansion is None:
-            return 0
-        return expansion.expand
-
-    @property
-    def full_doc_threshold(self) -> int:
-        """Compatibility accessor for chunk full-document threshold."""
-        expansion = self.chunk_retrieval.profile_config.expansion
-        if expansion is None:
-            return 0
-        return expansion.full_doc_threshold
-
-    @property
-    def reference_expansion(self) -> ReferenceExpansionConfig | None:
-        """Compatibility accessor for chunk reference expansion settings."""
-        expansion = self.chunk_retrieval.profile_config.expansion
-        if expansion is None:
-            return None
-        return expansion.reference_expansion
-
-    @property
-    def expand_to_section(self) -> bool:
-        """Compatibility accessor for chunk expansion to section subtree."""
-        expansion = self.chunk_retrieval.profile_config.expansion
-        if expansion is None:
-            return False
-        return expansion.expand_to_section
-
-    @property
-    def text(self) -> TextStageRetrievalPolicy:
-        """Compatibility view of chunk retrieval thresholds."""
-        return TextStageRetrievalPolicy(min_score=self.chunk_retrieval.profile_config.filter.min_score)
-
-    @property
-    def titles(self) -> TitleStageRetrievalPolicy:
-        """Compatibility view of title retrieval thresholds."""
-        return TitleStageRetrievalPolicy(min_score=self.chunk_retrieval.profile_config.filter.min_score)
-
-    @property
-    def documents(self) -> DocumentStageRetrievalPolicy:
-        """Compatibility view of document-routing thresholds."""
-        if self.legacy_document_stage is not None:
-            return self.legacy_document_stage
-        if self.document_routing.profile_config is None:
-            message = "Document-stage compatibility data is not available for this policy"
-            _raise_value_error(message)
-        return DocumentStageRetrievalPolicy(
-            global_d=self.document_routing.profile_config.global_d,
-            by_document_type=_convert_document_routing_profile_by_document_type(self.document_routing.profile_config.by_document_type),
-        )
-
-
-@dataclass(frozen=True)
-class TextStageRetrievalPolicy:
-    """Compatibility view for chunk retrieval score thresholds."""
-
-    min_score: float
-
-
-@dataclass(frozen=True)
-class TitleStageRetrievalPolicy:
-    """Compatibility view for title retrieval score thresholds."""
-
-    min_score: float
-
-
-@dataclass(frozen=True)
-class DocumentTypeRetrievalPolicy:
-    """Compatibility view for one exact document type in the legacy flat shape."""
-
-    d: int
-    min_score: float
-    expand_to_section: bool
-    similarity_representation: str
-
-
-@dataclass(frozen=True)
-class DocumentStageRetrievalPolicy:
-    """Compatibility view for document-stage retrieval settings."""
-
-    global_d: int
-    by_document_type: dict[str, DocumentTypeRetrievalPolicy]
-
-
-# Compatibility alias for callers that still import the legacy flat retrieval policy name.
-RetrievalPolicy = ResolvedRetrievalPolicy
 
 
 def load_policy_catalog(path: Path) -> PolicyCatalog:
@@ -353,13 +251,11 @@ def resolve_retrieval_policy(catalog: PolicyCatalog, policy_name: str) -> Resolv
     querying = _resolve_querying(catalog=catalog, querying_name=reference.querying)
     document_routing = _resolve_document_routing(catalog=catalog, reference=reference.document_routing)
     chunk_retrieval = _resolve_chunk_retrieval(catalog=catalog, reference=reference.chunk_retrieval)
-    legacy_document_stage = _build_legacy_document_stage(catalog=catalog, document_routing=document_routing, chunk_retrieval=chunk_retrieval)
     resolved = ResolvedRetrievalPolicy(
         policy_name=policy_name,
         querying=querying,
         document_routing=document_routing,
         chunk_retrieval=chunk_retrieval,
-        legacy_document_stage=legacy_document_stage,
     )
     logger.info(f"Resolved retrieval policy: {policy_name} -> source={resolved.document_routing.source}, chunk_mode={resolved.chunk_retrieval.mode}")
     return resolved
@@ -424,57 +320,6 @@ def _resolve_chunk_retrieval(catalog: PolicyCatalog, reference: ChunkRetrievalRe
         _raise_value_error(f"Unknown chunk retrieval profile: {reference.profile} for strategy {reference.strategy}")
     _validate_chunk_retrieval_profile(strategy_name=reference.strategy, mode=strategy.mode, profile_name=reference.profile, profile_config=profile_config)
     return ResolvedChunkRetrievalPolicy(strategy=reference.strategy, mode=strategy.mode, profile=reference.profile, profile_config=profile_config)
-
-
-def _build_legacy_document_stage(
-    catalog: PolicyCatalog,
-    document_routing: ResolvedDocumentRoutingPolicy,
-    chunk_retrieval: ResolvedChunkRetrievalPolicy,
-) -> DocumentStageRetrievalPolicy | None:
-    del chunk_retrieval
-    if document_routing.profile_config is not None:
-        return DocumentStageRetrievalPolicy(
-            global_d=document_routing.profile_config.global_d,
-            by_document_type=_convert_document_routing_profile_by_document_type(document_routing.profile_config.by_document_type),
-        )
-
-    fallback_profile = _first_document_routing_profile(catalog)
-    if fallback_profile is None:
-        return None
-    return DocumentStageRetrievalPolicy(
-        global_d=fallback_profile.global_d,
-        by_document_type=_convert_document_routing_profile_by_document_type(fallback_profile.by_document_type),
-    )
-
-
-def _convert_document_routing_profile_by_document_type(
-    by_document_type: dict[str, DocumentRoutingTypeConfig],
-) -> dict[str, DocumentTypeRetrievalPolicy]:
-    converted: dict[str, DocumentTypeRetrievalPolicy] = {}
-    for document_type, document_type_config in by_document_type.items():
-        similarity_representation = document_type_config.similarity_representation or "full"
-        converted[document_type] = DocumentTypeRetrievalPolicy(
-            d=document_type_config.d,
-            min_score=document_type_config.min_score,
-            expand_to_section=document_type_config.expand_to_section,
-            similarity_representation=similarity_representation,
-        )
-    return converted
-
-
-def _first_document_routing_profile(catalog: PolicyCatalog) -> DocumentRoutingProfileConfig | None:
-    for strategy_name in ("through_chunks", "through_document_representation"):
-        strategy = catalog.document_routing_strategies.get(strategy_name)
-        if strategy is None or strategy.profiles is None:
-            continue
-        for profile in strategy.profiles.values():
-            return profile
-    for strategy in catalog.document_routing_strategies.values():
-        if strategy.profiles is None:
-            continue
-        for profile in strategy.profiles.values():
-            return profile
-    return None
 
 
 def _validate_document_routing_profile(
@@ -912,12 +757,6 @@ def _require_optional_post_processing(
     supported = ", ".join(DOCUMENT_ROUTING_POST_PROCESSING_VALUES)
     _raise_value_error(f"{context} must be one of: {supported}")
     return None
-
-
-# Backwards-compatible helpers for the small amount of legacy code that still expects
-# the original flat policy shape.
-def _build_legacy_retrieval_policy(policy: ResolvedRetrievalPolicy) -> ResolvedRetrievalPolicy:
-    return policy
 
 
 def _raise_value_error(message: str) -> NoReturn:

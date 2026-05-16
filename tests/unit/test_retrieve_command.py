@@ -10,7 +10,7 @@ from src.models.chunk import Chunk
 from src.models.reference import ContentReference
 from src.models.provenance import Provenance
 from src.models.section import SectionRecord
-from src.policy import RetrievalPolicy
+from src.policy import ResolvedRetrievalPolicy
 from tests.fakes import InMemoryChunkStore, InMemoryReferenceStore, InMemorySectionStore
 from tests.policy import make_retrieval_policy
 
@@ -1011,14 +1011,17 @@ def test_retrieve_logs_highest_scoring_chunk_for_each_output_document(caplog) ->
     assert "section_number=6.3.1" not in caplog.text or "score=0.0000" not in caplog.text
 
 
-def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]) -> RetrievalPolicy:
-    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, ResolvedRetrievalPolicy
+def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]) -> ResolvedRetrievalPolicy:
+    from src.policy import DocumentRoutingProfileConfig, DocumentRoutingTypeConfig, ResolvedDocumentRoutingPolicy, ResolvedRetrievalPolicy
 
     base_policy = make_retrieval_policy(mode="documents")
-    by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)
+    base_document_routing = base_policy.document_routing
+    assert base_document_routing.profile_config is not None, "Expected document routing profile config"
+
+    by_document_type = dict(base_document_routing.profile_config.by_document_type)
     for document_type, representation in overrides.items():
         existing_policy = by_document_type[document_type]
-        by_document_type[document_type] = DocumentTypeRetrievalPolicy(
+        by_document_type[document_type] = DocumentRoutingTypeConfig(
             d=existing_policy.d,
             min_score=existing_policy.min_score,
             expand_to_section=existing_policy.expand_to_section,
@@ -1027,12 +1030,15 @@ def _build_policy_with_similarity_representation_overrides(overrides: dict[str, 
     return ResolvedRetrievalPolicy(
         policy_name=base_policy.policy_name,
         querying=base_policy.querying,
-        document_routing=base_policy.document_routing,
-        chunk_retrieval=base_policy.chunk_retrieval,
-        legacy_document_stage=DocumentStageRetrievalPolicy(
-            global_d=base_policy.documents.global_d,
-            by_document_type=by_document_type,
+        document_routing=ResolvedDocumentRoutingPolicy(
+            strategy=base_document_routing.strategy,
+            source=base_document_routing.source,
+            profile=base_document_routing.profile,
+            profile_config=DocumentRoutingProfileConfig(global_d=base_document_routing.profile_config.global_d, by_document_type=by_document_type),
+            post_processing=base_document_routing.post_processing,
+            post_processing_config=base_document_routing.post_processing_config,
         ),
+        chunk_retrieval=base_policy.chunk_retrieval,
     )
 
 

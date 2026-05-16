@@ -23,7 +23,7 @@ from src.commands.retrieve import RetrieveOptions, create_retrieve_command
 from src.commands.store import STORE_SCOPES, StoreCommandOptions, create_store_command
 from src.logging_config import setup_logging
 from src.models.document import DOCUMENT_TYPES
-from src.policy import RetrievalPolicy, load_policy_catalog, resolve_retrieval_policy
+from src.policy import ResolvedRetrievalPolicy, load_policy_catalog, resolve_retrieval_policy
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -269,7 +269,7 @@ def _execute_text_command(
     args: argparse.Namespace,
     *,
     command_factory: Callable[[str, OptionsT], TextCommandT],
-    options_factory: Callable[[argparse.Namespace, RetrievalPolicy], OptionsT],
+    options_factory: Callable[[argparse.Namespace, ResolvedRetrievalPolicy], OptionsT],
 ) -> str:
     """Execute a stdin-driven command that returns text."""
     input_text = _read_stdin_text()
@@ -282,7 +282,7 @@ def _execute_text_command(
     return command.execute()
 
 
-def _load_policy(args: argparse.Namespace) -> RetrievalPolicy:
+def _load_policy(args: argparse.Namespace) -> ResolvedRetrievalPolicy:
     """Load and resolve the selected retrieval policy from CLI args."""
     policy_path = Path(args.policy_config)
     retrieval_policy = str(args.retrieval_policy)
@@ -290,7 +290,7 @@ def _load_policy(args: argparse.Namespace) -> RetrievalPolicy:
     return resolve_retrieval_policy(catalog, retrieval_policy)
 
 
-def _build_query_options(args: argparse.Namespace, policy: RetrievalPolicy) -> QueryOptions:
+def _build_query_options(args: argparse.Namespace, policy: ResolvedRetrievalPolicy) -> QueryOptions:
     """Build QueryOptions from CLI args."""
     return QueryOptions(
         policy=policy,
@@ -298,7 +298,7 @@ def _build_query_options(args: argparse.Namespace, policy: RetrievalPolicy) -> Q
     )
 
 
-def _build_query_documents_options(args: argparse.Namespace, policy: RetrievalPolicy) -> QueryDocumentsOptions:
+def _build_query_documents_options(args: argparse.Namespace, policy: ResolvedRetrievalPolicy) -> QueryDocumentsOptions:
     """Build QueryDocumentsOptions from CLI args."""
     return QueryDocumentsOptions(
         policy=policy,
@@ -307,7 +307,7 @@ def _build_query_documents_options(args: argparse.Namespace, policy: RetrievalPo
     )
 
 
-def _build_query_titles_options(args: argparse.Namespace, policy: RetrievalPolicy) -> QueryTitlesOptions:
+def _build_query_titles_options(args: argparse.Namespace, policy: ResolvedRetrievalPolicy) -> QueryTitlesOptions:
     """Build QueryTitlesOptions from CLI args."""
     return QueryTitlesOptions(
         policy=policy,
@@ -315,7 +315,7 @@ def _build_query_titles_options(args: argparse.Namespace, policy: RetrievalPolic
     )
 
 
-def _build_retrieve_options(args: argparse.Namespace, policy: RetrievalPolicy) -> RetrieveOptions:
+def _build_retrieve_options(args: argparse.Namespace, policy: ResolvedRetrievalPolicy) -> RetrieveOptions:
     """Build RetrieveOptions from CLI args."""
     return RetrieveOptions(
         policy=policy,
@@ -323,7 +323,7 @@ def _build_retrieve_options(args: argparse.Namespace, policy: RetrievalPolicy) -
     )
 
 
-def _build_answer_options(args: argparse.Namespace, policy: RetrievalPolicy) -> AnswerOptions:
+def _build_answer_options(args: argparse.Namespace, policy: ResolvedRetrievalPolicy) -> AnswerOptions:
     """Build AnswerOptions from CLI args."""
     return AnswerOptions(
         policy=policy,

@@ -12,7 +12,7 @@ from src.case_analysis.workflow import AnswerWorkflowProcessor
 from src.interfaces import SearchResult
 from src.models.answer_command_result import AnswerCommandResult
 from src.models.chunk import Chunk
-from src.policy import RetrievalPolicy
+from src.policy import ResolvedRetrievalPolicy
 from src.retrieval.models import RetrievalRequest, RetrievalResult
 from src.retrieval.pipeline import RetrievalPipelineConfig
 from tests.fakes import InMemoryChunkStore
@@ -53,7 +53,7 @@ def _make_pipeline_config(chunk_store: InMemoryChunkStore) -> RetrievalPipelineC
 
 
 def _make_workflow_processor(
-    policy: RetrievalPolicy,
+    policy: ResolvedRetrievalPolicy,
     approach_output: ApproachIdentificationOutput | ValidationFailure,
     applicability_output: ApplicabilityAnalysisOutput | ValidationFailure,
 ) -> tuple[AnswerWorkflowProcessor, FakeAnswerGenerator]:

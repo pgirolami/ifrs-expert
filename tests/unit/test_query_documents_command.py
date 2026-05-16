@@ -139,7 +139,7 @@ def test_query_documents_returns_top_d_documents_for_selected_type_as_json() -> 
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
         options=QueryDocumentsOptions(
-            policy=make_retrieval_policy(per_type_d={"IFRIC": 2}),
+            policy=make_retrieval_policy(mode="documents", per_type_d={"IFRIC": 2}),
             document_type="IFRIC",
             verbose=False,
         ),
@@ -246,7 +246,7 @@ def test_query_documents_returns_ifrs_variant_documents() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(policy=make_retrieval_policy(per_type_d={"IFRS-BC": 2}), document_type="IFRS-BC", verbose=False),
+        options=QueryDocumentsOptions(policy=make_retrieval_policy(mode="documents", per_type_d={"IFRS-BC": 2}), document_type="IFRS-BC", verbose=False),
     )
 
     result = command.execute()
@@ -288,7 +288,7 @@ def test_query_documents_returns_navis_documents() -> None:
             init_db_fn=lambda: None,
             index_path_fn=lambda: MockIndexPath(exists=True),
         ),
-        options=QueryDocumentsOptions(policy=make_retrieval_policy(per_type_d={"NAVIS": 2}), document_type="NAVIS", verbose=False),
+        options=QueryDocumentsOptions(policy=make_retrieval_policy(mode="documents", per_type_d={"NAVIS": 2}), document_type="NAVIS", verbose=False),
     )
 
     result = command.execute()
@@ -402,16 +402,17 @@ def test_query_documents_uses_policy_similarity_representation_for_index_and_sto
     assert captured_representations == ["index:scope", "store:scope"]
 
 
-def _build_policy_with_similarity_representation_overrides(
-    overrides: dict[str, str],
-):
-    from src.policy import DocumentStageRetrievalPolicy, DocumentTypeRetrievalPolicy, ResolvedRetrievalPolicy
+def _build_policy_with_similarity_representation_overrides(overrides: dict[str, str]) -> ResolvedRetrievalPolicy:
+    from src.policy import DocumentRoutingProfileConfig, DocumentRoutingTypeConfig, ResolvedDocumentRoutingPolicy, ResolvedRetrievalPolicy
 
-    base_policy = make_retrieval_policy()
-    by_document_type: dict[str, DocumentTypeRetrievalPolicy] = dict(base_policy.documents.by_document_type)
+    base_policy = make_retrieval_policy(mode="documents")
+    base_document_routing = base_policy.document_routing
+    assert base_document_routing.profile_config is not None, "Expected document routing profile config"
+
+    by_document_type = dict(base_document_routing.profile_config.by_document_type)
     for document_type, representation in overrides.items():
         existing_policy = by_document_type[document_type]
-        by_document_type[document_type] = DocumentTypeRetrievalPolicy(
+        by_document_type[document_type] = DocumentRoutingTypeConfig(
             d=existing_policy.d,
             min_score=existing_policy.min_score,
             expand_to_section=existing_policy.expand_to_section,
@@ -420,11 +421,14 @@ def _build_policy_with_similarity_representation_overrides(
     return ResolvedRetrievalPolicy(
         policy_name=base_policy.policy_name,
         querying=base_policy.querying,
-        document_routing=base_policy.document_routing,
-        chunk_retrieval=base_policy.chunk_retrieval,
-        legacy_document_stage=DocumentStageRetrievalPolicy(
-            global_d=base_policy.documents.global_d,
-            by_document_type=by_document_type,
+        document_routing=ResolvedDocumentRoutingPolicy(
+            strategy=base_document_routing.strategy,
+            source=base_document_routing.source,
+            profile=base_document_routing.profile,
+            profile_config=DocumentRoutingProfileConfig(global_d=base_document_routing.profile_config.global_d, by_document_type=by_document_type),
+            post_processing=base_document_routing.post_processing,
+            post_processing_config=base_document_routing.post_processing_config,
         ),
+        chunk_retrieval=base_policy.chunk_retrieval,
     )
 

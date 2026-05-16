@@ -30,7 +30,7 @@ if TYPE_CHECKING:
         SearchTitleVectorStoreProtocol,
         SearchVectorStoreProtocol,
     )
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class AnswerConfig:
 class AnswerOptions:
     """Options for answer command."""
 
-    policy: RetrievalPolicy
+    policy: ResolvedRetrievalPolicy
     verbose: bool = DEFAULT_VERBOSE
     output_dir: Path | None = None
 
@@ -84,7 +84,11 @@ class AnswerCommand:
     def execute(self) -> AnswerCommandResult:
         """Execute the answer workflow and return public artifacts."""
         policy = self._options.policy
-        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={policy.k}, expand={policy.expand}, f={policy.full_doc_threshold}, min-score={policy.text.min_score})")
+        chunk_profile = policy.chunk_retrieval.profile_config
+        expansion = chunk_profile.expansion
+        expand = expansion.expand if expansion is not None else 0
+        full_doc_threshold = expansion.full_doc_threshold if expansion is not None else 0
+        logger.info(f"AnswerCommand(query='{self.query[:50]}', k={chunk_profile.filter.per_document_k}, expand={expand}, f={full_doc_threshold}, min-score={chunk_profile.filter.min_score})")
         validation_result = ValidateQuestionStage().execute(query=self.query, policy=policy)
         if isinstance(validation_result, ValidationFailure):
             return AnswerCommandResult.failure(query=self.query, error=validation_result.message, error_stage=validation_result.error_stage)

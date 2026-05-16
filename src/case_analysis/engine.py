@@ -29,7 +29,7 @@ if TYPE_CHECKING:
         SearchVectorStoreProtocol,
     )
     from src.models.chunk import Chunk
-    from src.policy import RetrievalPolicy
+    from src.policy import ResolvedRetrievalPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ class AnswerEngine:
     def __init__(
         self,
         query: str,
-        policy: RetrievalPolicy,
+        policy: ResolvedRetrievalPolicy,
         config: AnswerEngineConfigProtocol,
         hooks: AnswerEngineHooks | None = None,
     ) -> None:
@@ -153,7 +153,8 @@ class AnswerEngine:
     def _get_document_prerequisite_error(self) -> str | None:
         if self.config.document_index_path_fn is None:
             return "Error: Document retrieval is not configured."
-        required_representations = sorted({document_policy.similarity_representation for document_policy in self.policy.documents.by_document_type.values()})
+        profile_config = self.policy.document_routing.profile_config
+        required_representations = sorted({document_policy.similarity_representation for document_policy in profile_config.by_document_type.values()}) if profile_config is not None else []
         for representation in required_representations:
             try:
                 document_index_path = self.config.document_index_path_fn(representation)
