@@ -167,8 +167,8 @@ def _get_assistant_display_text(result: AnswerCommandResult) -> str:
     if result.applicability_analysis_memo_markdown:
         logger.info("Streamlit UI: displaying grounded markdown answer")
         return result.applicability_analysis_memo_markdown
-    if result.applicability_analysis_raw_response:
-        logger.info("Streamlit UI: displaying grounded raw response")
-        return result.applicability_analysis_raw_response
+    if result.applicability_analysis_output is not None:
+        logger.info("Streamlit UI: displaying grounded typed answer")
+        return result.applicability_analysis_output.model_dump_json(indent=2)
     logger.warning("Streamlit UI: grounded result had no displayable answer content")
     return "No answer returned."

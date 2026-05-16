@@ -8,7 +8,7 @@ import unittest.mock
 from pathlib import Path
 from typing import cast
 
-from src.case_analysis.models import ApproachIdentificationPassOutput, ApplicabilityAnalysisPassOutput
+from src.case_analysis.models import ApproachIdentificationOutput, ApplicabilityAnalysisOutput
 from src.commands.answer import AnswerCommand, AnswerConfig, AnswerOptions
 from src.interfaces import DocumentSearchResult, SearchDocumentVectorStoreProtocol, SearchResult, SearchVectorStoreProtocol
 from src.models.chunk import Chunk
@@ -18,6 +18,7 @@ from tests.policy import make_retrieval_policy
 
 VALID_APPROACH_IDENTIFICATION_RESPONSE = """{
   "status": "pass",
+  "questions": [],
   "primary_accounting_issue": "Test accounting issue",
   "authority_resolution": {
     "candidate_governing_documents": ["doc1"],
@@ -43,6 +44,8 @@ VALID_APPROACH_IDENTIFICATION_RESPONSE = """{
 }"""
 
 VALID_APPLICABILITY_ANALYSIS_RESPONSE = """{
+  "status": "pass",
+  "questions_fr": [],
   "assumptions_fr": ["Hypothèse de test"],
   "recommendation": {
     "answer": "oui",
@@ -70,8 +73,8 @@ VALID_APPLICABILITY_ANALYSIS_RESPONSE = """{
 
 
 
-VALID_APPROACH_IDENTIFICATION_OUTPUT = ApproachIdentificationPassOutput.model_validate_json(VALID_APPROACH_IDENTIFICATION_RESPONSE)
-VALID_APPLICABILITY_ANALYSIS_OUTPUT = ApplicabilityAnalysisPassOutput.model_validate_json(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
+VALID_APPROACH_IDENTIFICATION_OUTPUT = ApproachIdentificationOutput.model_validate_json(VALID_APPROACH_IDENTIFICATION_RESPONSE)
+VALID_APPLICABILITY_ANALYSIS_OUTPUT = ApplicabilityAnalysisOutput.model_validate_json(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
 
 
 def make_answer_generator() -> FakeAnswerGenerator:
@@ -198,13 +201,13 @@ class TestAnswerCommand:
         assert result.success is True
         assert result.error is None
         assert result.approach_identification_text is not None
-        assert json.loads(result.approach_identification_raw_response) == json.loads(VALID_APPROACH_IDENTIFICATION_RESPONSE)
         assert result.approach_identification_output == VALID_APPROACH_IDENTIFICATION_OUTPUT
-        assert result.approach_identification_json is not None
+        assert result.approach_identification_output.model_dump_json() == VALID_APPROACH_IDENTIFICATION_OUTPUT.model_dump_json()
+        assert result.error is None or result.error_stage is None
         assert result.applicability_analysis_text is not None
-        assert json.loads(result.applicability_analysis_raw_response) == json.loads(VALID_APPLICABILITY_ANALYSIS_RESPONSE)
         assert result.applicability_analysis_output == VALID_APPLICABILITY_ANALYSIS_OUTPUT
-        assert result.applicability_analysis_json is not None
+        assert result.applicability_analysis_output.model_dump_json() == VALID_APPLICABILITY_ANALYSIS_OUTPUT.model_dump_json()
+        assert result.citation_verification_result is not None
         assert result.applicability_analysis_memo_markdown is not None
         assert result.retrieved_doc_uids == ["doc1"]
 

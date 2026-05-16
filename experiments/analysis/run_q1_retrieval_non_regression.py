@@ -295,11 +295,12 @@ def _run_question(
     authorities: tuple[AuthoritySpec, ...],
     output_dir: Path,
 ) -> QuestionResult:
-    """Run retrieve for one question/arm pair and record the raw JSON."""
+    """Run retrieve for one question/arm pair."""
     returncode, stdout_text = _run_retrieve(question, arm)
     del returncode
 
     output_dir.mkdir(parents=True, exist_ok=True)
+
     raw_path = output_dir / f"{question.question_id}.retrieve.json"
     raw_path.write_text(stdout_text, encoding="utf-8")
 

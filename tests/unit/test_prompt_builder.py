@@ -1,41 +1,47 @@
-"""Tests for prompt template assembly."""
+"""Tests for prompt construction."""
 
 from __future__ import annotations
 
-import pytest
-
-from src.case_analysis.models import ApproachIdentificationPassOutput
+from src.case_analysis.models import ApproachIdentificationOutput
 from src.case_analysis.prompt_builder import PromptBuilder
 
 
 class TestPromptBuilder:
-    """Behavior tests for PromptBuilder."""
+    """Behavior tests for prompt builder."""
 
-    def test_build_approach_identification_includes_chunk_summary_query_and_chunks(self) -> None:
-        """Approach identification should splice chunks and question into the template."""
+    def test_builds_approach_identification_prompt(self) -> None:
         builder = PromptBuilder()
-        template = "Header\n{{CHUNKS}}\nQuestion: {{QUERY}}"
+        template = "Question: {{QUERY}}\n\nChunks:\n{{CHUNKS}}"
 
-        prompt = builder.build_approach_identification(template, "What happened?", ["chunk-one", "chunk-two"], "Summary")
+        prompt = builder.build_approach_identification(template, "Q", ["chunk-1", "chunk-2"], "summary")
 
-        if "Summary" not in prompt:
-            pytest.fail("Expected chunk summary in approach identification prompt")
-        if "chunk-one" not in prompt or "chunk-two" not in prompt:
-            pytest.fail("Expected chunks in approach identification prompt")
-        if "What happened?" not in prompt:
-            pytest.fail("Expected query in approach identification prompt")
+        assert "summary" in prompt
+        assert "Question: Q" in prompt
+        assert "chunk-1" in prompt
+        assert "chunk-2" in prompt
 
-    def test_build_applicability_analysis_includes_context_query_and_approaches(self) -> None:
-        """Applicability analysis should splice filtered context, question, and approaches JSON."""
+    def test_builds_applicability_analysis_prompt(self) -> None:
         builder = PromptBuilder()
-        template = "Header\n{{CHUNKS}}\nQuestion: {{QUERY}}\n{{APPROACHES_JSON}}"
+        template = "Question: {{QUERY}}\n\nChunks:\n{{CHUNKS}}\n\nApproaches:\n{{APPROACHES_JSON}}"
+        approach_identification = ApproachIdentificationOutput.model_validate(
+            {
+                "status": "pass",
+                "primary_accounting_issue": "Issue",
+                "authority_resolution": {
+                    "candidate_governing_documents": [],
+                    "selected_primary_document": None,
+                    "selection_reason": None,
+                    "discarded_due_to_overlap": [],
+                    "residual_uncertainty": None,
+                },
+                "authority_classification": {"primary_authority": [], "supporting_authority": [], "peripheral_authority": []},
+                "treatment_families": [],
+                "approaches": [],
+            }
+        )
 
-        approach_identification = ApproachIdentificationPassOutput.model_validate({"status": "pass", "primary_accounting_issue": "Issue", "authority_resolution": {"candidate_governing_documents": [], "selected_primary_document": None, "selection_reason": None, "discarded_due_to_overlap": [], "residual_uncertainty": None}, "authority_classification": {"primary_authority": [], "supporting_authority": [], "peripheral_authority": []}, "treatment_families": [], "approaches": []})
-        prompt = builder.build_applicability_analysis(template, "Why?", "context text", approach_identification)
+        prompt = builder.build_applicability_analysis(template, "Q", "context", approach_identification)
 
-        if "context text" not in prompt:
-            pytest.fail("Expected context in applicability analysis prompt")
-        if "Why?" not in prompt:
-            pytest.fail("Expected query in applicability analysis prompt")
-        if '"approaches": []' not in prompt:
-            pytest.fail("Expected approaches JSON in applicability analysis prompt")
+        assert "Question: Q" in prompt
+        assert "context" in prompt
+        assert '"status": "pass"' in prompt

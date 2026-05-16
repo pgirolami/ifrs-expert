@@ -10,6 +10,7 @@ import pytest
 
 from src import cli
 from src.cli import _answer_stdout_text, _build_parser, _execute_answer_command, _execute_command, _save_answer_command_result, query_command
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 from src.models.answer_command_result import AnswerCommandResult, RetrievedChunkHit, RetrievedDocumentHit
 from src.models.provenance import Provenance
 
@@ -51,21 +52,16 @@ def test_save_answer_command_result_writes_expected_files(tmp_path: Path) -> Non
             )
         ],
         approach_identification_text="Approach identification content",
-        approach_identification_raw_response='{"status": "pass", "approaches": []}',
+        approach_identification_output=ApproachIdentificationOutput.model_validate({"status": "pass", "questions": [], "approaches": []}),
         applicability_analysis_text="Applicability analysis content",
-        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
-        applicability_analysis_json={
-            "assumptions_fr": ["Hypothèse de test"],
-            "recommendation": {"answer": "oui", "justification": "Justification de test"},
-            "approaches": [],
-        },
+        applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": ["Hypothèse de test"], "recommendation": {"answer": "oui", "justification": "Justification de test"}, "approaches": []}),
         applicability_analysis_memo_markdown="# Markdown answer",
     )
 
     _save_answer_command_result(result, tmp_path)
 
     assert (tmp_path / "A-prompt.txt").read_text(encoding="utf-8") == "Approach identification content"
-    assert (tmp_path / "A-response.json").read_text(encoding="utf-8") == '{"status": "pass", "approaches": []}'
+    assert (tmp_path / "A-response.json").read_text(encoding="utf-8") == result.approach_identification_output.model_dump_json(indent=2)
     assert (tmp_path / "B-prompt.txt").read_text(encoding="utf-8") == "Applicability analysis content"
     assert '"answer": "oui"' in (tmp_path / "B-response.json").read_text(encoding="utf-8")
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
@@ -90,7 +86,7 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": ["Hypothèse de test"], "recommendation": {"answer": "oui", "justification": "Justification de test"}, "approaches": []}),
         applicability_analysis_memo_markdown="# Markdown answer",
     )
 
@@ -125,7 +121,7 @@ def test_execute_answer_command_saves_artifacts_when_output_dir_is_provided(monk
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
+    assert output == result.applicability_analysis_output.model_dump_json(indent=2)
     assert (tmp_path / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
@@ -134,7 +130,7 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": ["Hypothèse de test"], "recommendation": {"answer": "oui", "justification": "Justification de test"}, "approaches": []}),
         applicability_analysis_memo_markdown="# Markdown answer",
     )
     output_dir = tmp_path / "new-output-dir"
@@ -170,7 +166,7 @@ def test_execute_answer_command_creates_missing_output_dir(monkeypatch: pytest.M
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
+    assert output == result.applicability_analysis_output.model_dump_json(indent=2)
     assert (output_dir / "B-response.md").read_text(encoding="utf-8") == "# Markdown answer"
 
 
@@ -179,7 +175,7 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
     result = AnswerCommandResult(
         query="What is IFRS?",
         success=True,
-        applicability_analysis_raw_response=VALID_APPLICABILITY_ANALYSIS_RESPONSE,
+        applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": ["Hypothèse de test"], "recommendation": {"answer": "oui", "justification": "Justification de test"}, "approaches": []}),
     )
     captured_options: list[object] = []
 
@@ -201,7 +197,7 @@ def test_execute_answer_command_passes_policy_and_output_options(monkeypatch: py
 
     output = _execute_answer_command(args)
 
-    assert output == VALID_APPLICABILITY_ANALYSIS_RESPONSE
+    assert output == result.applicability_analysis_output.model_dump_json(indent=2)
     assert len(captured_options) == 1
     options = captured_options[0]
     assert hasattr(options, "policy")
@@ -379,20 +375,20 @@ def test_execute_command_dispatches_llm(monkeypatch: pytest.MonkeyPatch) -> None
     assert output == "reply:Raw prompt"
 
 
-def test_answer_stdout_text_prefers_raw_response() -> None:
-    """CLI stdout should use the raw response when available."""
+def test_answer_stdout_text_prefers_typed_output() -> None:
+    """CLI stdout should use the typed output when available."""
     result = AnswerCommandResult(
         query="test",
         success=True,
-        applicability_analysis_raw_response="raw response",
+        applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}),
         applicability_analysis_memo_markdown="markdown response",
     )
 
-    assert _answer_stdout_text(result) == "raw response"
+    assert '"status": "pass"' in _answer_stdout_text(result)
 
 
-def test_answer_stdout_text_uses_markdown_when_raw_missing() -> None:
-    """CLI stdout should fall back to markdown when raw response is absent."""
+def test_answer_stdout_text_uses_markdown_when_typed_output_missing() -> None:
+    """CLI stdout should fall back to markdown when typed output is absent."""
     result = AnswerCommandResult(query="test", success=True, applicability_analysis_memo_markdown="markdown response")
     assert _answer_stdout_text(result) == "markdown response"
 

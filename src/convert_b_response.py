@@ -1,4 +1,4 @@
-"""B-response converter - convert B-response.md (JSON) to formatted French markdown."""
+"""Applicability-analysis converter - convert B-response.md (JSON) to formatted French markdown."""
 
 import argparse
 import json
@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from src.b_response_utils import convert_json_to_markdown
+from src.applicability_markdown_utils import convert_json_to_markdown
 from src.logging_config import setup_logging
 
 setup_logging()
@@ -159,10 +159,12 @@ def main() -> int:
             convert_directory(args.input)
         else:
             convert_file(args.input, args.output_dir)
-    except (FileNotFoundError, ValueError, json.JSONDecodeError):
+    except (FileNotFoundError, ValueError) as e:
         logger.exception("Error")
+        sys.stderr.write(f"Error: {e}\n")
         return 1
-    return 0
+    else:
+        return 0
 
 
 if __name__ == "__main__":

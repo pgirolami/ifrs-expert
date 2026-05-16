@@ -17,7 +17,7 @@ providers:
     label: 'OpenAI GPT 5.4 through Codex current answer defaults'
     config:
       <<: *answer_command_defaults
-      llm_provider: 'openai-codex'
+      llm_provider: 'openai'
   # - id: 'exec:uv run python ../../../../scripts/run_answer.py'
   #   label: 'MiniMax 2.7 High current answer defaults'
   #   config:

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -102,8 +101,3 @@ def _build_grounded_context(result: AnswerCommandResult) -> tuple[str, str]:
     """Build later-turn context from the grounded first answer."""
     builder = GroundedFollowUpPromptBuilder()
     return builder.build_grounded_context(result)
-
-
-def _serialize_json_value(value: object) -> str:
-    """Serialize a JSON-like value for prompt use."""
-    return json.dumps(value, indent=2, ensure_ascii=False)

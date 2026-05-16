@@ -6,6 +6,7 @@ import importlib.util
 import json
 import sys
 from pathlib import Path
+from typing import cast
 from types import ModuleType
 from types import SimpleNamespace
 
@@ -60,9 +61,11 @@ def test_run_retrieve_script_forwards_retrieval_options(monkeypatch) -> None:
     exit_code = module.main()
 
     assert exit_code == 0
-    assert captured["command"][:4] == [sys.executable, "-m", "src.cli", "retrieve"]
-    assert captured["command"][-1] == "--json"
-    assert captured["kwargs"]["input"] == "Question de test"
+    command = cast(list[str], captured["command"])
+    kwargs = cast(dict[str, object], captured["kwargs"])
+    assert command[:4] == [sys.executable, "-m", "src.cli", "retrieve"]
+    assert command[-1] == "--json"
+    assert kwargs["input"] == "Question de test"
 
 
 def test_extract_options_reads_context_fallback() -> None:
@@ -117,7 +120,8 @@ def test_run_retrieve_script_resolves_policy_relative_to_base_path(monkeypatch, 
     exit_code = module.main()
 
     assert exit_code == 0
-    assert str(tmp_path / "effective" / "policy.default.yaml") in captured["command"]
+    command = cast(list[str], captured["command"])
+    assert str(tmp_path / "effective" / "policy.default.yaml") in command
 
 
 def test_run_retrieve_script_writes_embedding_artifact(monkeypatch, tmp_path: Path) -> None:

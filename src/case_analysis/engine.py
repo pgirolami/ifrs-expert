@@ -276,32 +276,19 @@ class AnswerEngine:
         approach_identification_full = self._build_prompt_from_template(APPROACH_IDENTIFICATION_PATH, formatted_chunks, chunk_summary)
         result.approach_identification_text = _extract_prompt_content(approach_identification_full)
         approach_identification_text = result.approach_identification_text
-        if approach_identification_text is None:
-            result.error = "Error: Missing approach identification prompt content"
-            result.error_stage = "approach_identification"
+
+        approach_identification_output = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(approach_identification_text)
+        if isinstance(approach_identification_output, ValidationFailure):
+            result.error = approach_identification_output.message
+            result.error_stage = approach_identification_output.error_stage
             return result
 
-        approach_identification_result = ApproachIdentificationStage(answer_generator=self._config.answer_generator).execute(approach_identification_text)
-        if isinstance(approach_identification_result, ValidationFailure):
-            result.error = approach_identification_result.message
-            result.error_stage = approach_identification_result.error_stage
-            return result
+        result.approach_identification_output = approach_identification_output
 
-        result.approach_identification_raw_response = approach_identification_result.raw_response
-        result.approach_identification_output = approach_identification_result.output
-        result.approach_identification_json = approach_identification_result.output.model_dump(mode="json")
-
-        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_result.output.model_dump(mode="json"))
-        result.authority_sufficiency_json = authority_sufficiency_result.model_dump(mode="json")
-        if not authority_sufficiency_result.should_continue:
-            result.error = f"Error: Authority classification requires controlled stop: {authority_sufficiency_result.reason}"
-            result.error_stage = "authority_sufficiency"
-            return result
-
-        approach_identification_output = result.approach_identification_output
-        if approach_identification_output is None:
-            result.error = "Error: Missing approach identification analysis payload"
-            result.error_stage = "approach_identification"
+        authority_sufficiency_result = AuthoritySufficiencyStage().execute(approach_identification_output)
+        if isinstance(authority_sufficiency_result, ValidationFailure):
+            result.error = authority_sufficiency_result.message
+            result.error_stage = authority_sufficiency_result.error_stage
             return result
 
         return self._run_applicability_analysis_stage(result, formatted_chunks, approach_identification_output)
@@ -316,31 +303,18 @@ class AnswerEngine:
         applicability_analysis_prompt = self._build_applicability_analysis(applicability_analysis_context, approach_identification_output)
         result.applicability_analysis_text = _extract_prompt_content(applicability_analysis_prompt)
         applicability_analysis_text = result.applicability_analysis_text
-        if applicability_analysis_text is None:
-            result.error = "Error: Missing applicability analysis prompt content"
-            result.error_stage = "applicability_analysis"
+
+        applicability_analysis_output = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(applicability_analysis_text)
+        if isinstance(applicability_analysis_output, ValidationFailure):
+            result.error = applicability_analysis_output.message
+            result.error_stage = applicability_analysis_output.error_stage
             return result
 
-        applicability_analysis_result = ApplicabilityAnalysisStage(answer_generator=self._config.answer_generator).execute(applicability_analysis_text)
-        if isinstance(applicability_analysis_result, ValidationFailure):
-            result.error = applicability_analysis_result.message
-            result.error_stage = applicability_analysis_result.error_stage
-            return result
-
-        result.applicability_analysis_raw_response = applicability_analysis_result.raw_response
-        result.applicability_analysis_output = applicability_analysis_result.output
-        result.applicability_analysis_json = applicability_analysis_result.output.model_dump(mode="json")
+        result.applicability_analysis_output = applicability_analysis_output
         logger.info("Step 2 complete: Received final answer from LLM")
 
-        citation_verification_result = self._citation_validation_service.validate_applicability_analysis(applicability_analysis_result.output, applicability_analysis_context)
-        result.citation_verification_json = citation_verification_result.model_dump(mode="json")
-
-        if result.approach_identification_output is None or result.applicability_analysis_output is None:
-            result.error = "Error: Missing typed analysis output"
-            result.error_stage = "workflow"
-            return result
-        approach_identification_output = result.approach_identification_output
-        applicability_analysis_output = result.applicability_analysis_output
+        citation_verification_result = self._citation_validation_service.validate_applicability_analysis(applicability_analysis_output, applicability_analysis_context)
+        result.citation_verification_result = citation_verification_result
 
         rendered_artifacts = self._rendering_adapter.render_applicability_analysis(
             query=self.query,
@@ -399,11 +373,11 @@ class AnswerEngine:
         return formatted_documents
 
 
-def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> str:
+def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput) -> str:
     return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_output)
 
 
-def _extract_authority_references(approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> set[tuple[str, str]] | None:
+def _extract_authority_references(approach_identification_output: ApproachIdentificationOutput) -> set[tuple[str, str]] | None:
     return ContextBuilder().extract_authority_references(approach_identification_output)
 
 

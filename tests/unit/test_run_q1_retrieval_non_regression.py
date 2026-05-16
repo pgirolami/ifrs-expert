@@ -28,7 +28,7 @@ def _load_module() -> ModuleType:
 
 
 def test_non_regression_summary_writes_artifacts_and_passes(tmp_path: Path, monkeypatch) -> None:
-    """The summary script should compute metrics and write debug artifacts."""
+    """The summary script should compute metrics and write summaries."""
     module = _load_module()
     question_dir = tmp_path / "questions"
     question_dir.mkdir()

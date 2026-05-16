@@ -173,29 +173,18 @@ class IdentifiedApproach(BaseModel):
     rationale_for_inclusion: str | None = None
 
 
-class ApproachIdentificationClarificationOutput(BaseModel):
-    """approach identification output when retrieved context is insufficient."""
+class ApproachIdentificationOutput(BaseModel):
+    """approach identification output with status-driven optional fields."""
 
     model_config = ConfigDict(extra="allow")
 
-    status: Literal["needs_clarification"]
-    questions: list[str]
-
-
-class ApproachIdentificationPassOutput(BaseModel):
-    """approach identification output when authority and peer approaches are identified."""
-
-    model_config = ConfigDict(extra="allow")
-
-    status: Literal["pass"]
-    primary_accounting_issue: str
-    authority_resolution: AuthorityResolution
-    authority_classification: AuthorityClassification
+    status: Literal["needs_clarification", "pass"]
+    questions: list[str] = Field(default_factory=list)
+    primary_accounting_issue: str | None = None
+    authority_resolution: AuthorityResolution | None = None
+    authority_classification: AuthorityClassification | None = None
     treatment_families: list[TreatmentFamily] = Field(default_factory=list)
-    approaches: list[IdentifiedApproach]
-
-
-ApproachIdentificationOutput = ApproachIdentificationPassOutput | ApproachIdentificationClarificationOutput
+    approaches: list[IdentifiedApproach] = Field(default_factory=list)
 
 
 class Recommendation(BaseModel):
@@ -232,51 +221,16 @@ class ApproachApplicability(BaseModel):
     references: list[ApplicabilityReference] = Field(default_factory=list)
 
 
-class ApplicabilityAnalysisClarificationOutput(BaseModel):
-    """applicability analysis output when approach identification requires clarification."""
+class ApplicabilityAnalysisOutput(BaseModel):
+    """applicability analysis output with status-driven optional fields."""
 
     model_config = ConfigDict(extra="allow")
 
-    status: Literal["needs_clarification"]
-    questions_fr: list[str]
-
-
-class ApplicabilityAnalysisPassOutput(BaseModel):
-    """applicability analysis output when applicability can be assessed."""
-
-    model_config = ConfigDict(extra="allow")
-
+    status: Literal["needs_clarification", "pass"]
+    questions_fr: list[str] = Field(default_factory=list)
     assumptions_fr: list[str] = Field(default_factory=list)
-    recommendation: Recommendation
-    approaches: list[ApproachApplicability]
-
-
-ApplicabilityAnalysisOutput = ApplicabilityAnalysisPassOutput | ApplicabilityAnalysisClarificationOutput
-
-
-class AuthorityClassificationResult(BaseModel):
-    """Typed approach identification result after Pydantic output contract validation."""
-
-    raw_response: str
-    output: ApproachIdentificationOutput
-    payload: dict[str, object]
-
-
-class ApplicabilityAnalysisResult(BaseModel):
-    """Typed applicability analysis result after Pydantic output contract validation."""
-
-    raw_response: str
-    output: ApplicabilityAnalysisOutput
-    payload: dict[str, object]
-
-
-class AuthoritySufficiencyResult(BaseModel):
-    """Decision from the authority sufficiency gate after approach identification."""
-
-    status: str
-    should_continue: bool
-    reason: str | None = None
-    details: dict[str, object] | None = None
+    recommendation: Recommendation | None = None
+    approaches: list[ApproachApplicability] = Field(default_factory=list)
 
 
 class CitationVerificationResult(BaseModel):
@@ -313,5 +267,5 @@ class CaseEvidenceAgentResult(BaseModel):
     tool_calls: list[ToolCallRecord]
 
 
-StageOutcome = ValidatedQuestion | RetrievedSourcePackage | AuthorityClassificationResult | ApplicabilityAnalysisResult | ValidationFailure
+StageOutcome = ValidatedQuestion | RetrievedSourcePackage | ApproachIdentificationOutput | ApplicabilityAnalysisOutput | ValidationFailure
 RouteDecision = Literal["continue", "fail"]

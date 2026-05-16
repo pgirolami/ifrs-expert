@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.case_analysis.models import ApplicabilityAnalysisPassOutput, ApproachIdentificationPassOutput
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 from src.case_analysis.rendering import AnswerRenderingAdapter
 
 
@@ -14,7 +14,7 @@ class TestAnswerRenderingAdapter:
     def test_renders_markdown_artifacts_from_typed_outputs(self) -> None:
         """The adapter should produce memo and FAQ markdown from typed JSON inputs."""
         adapter = AnswerRenderingAdapter()
-        approach_identification_output = ApproachIdentificationPassOutput.model_validate(
+        approach_identification_output = ApproachIdentificationOutput.model_validate(
             {
                 "status": "pass",
                 "primary_accounting_issue": "Revenue recognition under IFRS 15",
@@ -30,8 +30,9 @@ class TestAnswerRenderingAdapter:
                 "approaches": [],
             }
         )
-        applicability_analysis_output = ApplicabilityAnalysisPassOutput.model_validate(
+        applicability_analysis_output = ApplicabilityAnalysisOutput.model_validate(
             {
+                "status": "pass",
                 "assumptions_fr": ["Hypothèse de test"],
                 "recommendation": {"answer": "oui", "justification": "Justification de test"},
                 "approaches": [],

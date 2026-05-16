@@ -18,7 +18,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 PROMPT_ARG_INDEX: Final[int] = 1
@@ -81,7 +81,7 @@ def _as_object_mapping(value: object) -> dict[str, object]:
     for key in value:
         if not isinstance(key, str):
             raise ValueError(f"Expected string keys, got {type(key).__name__}")
-    return value
+    return cast("dict[str, object]", value)
 
 
 def _iter_candidate_mappings(provider_options: dict[str, object], context: dict[str, object]) -> list[dict[str, object]]:
@@ -90,25 +90,16 @@ def _iter_candidate_mappings(provider_options: dict[str, object], context: dict[
 
     for candidate in (provider_options.get("config"), provider_options.get("env")):
         if isinstance(candidate, dict):
-            mappings.append(candidate)
+            mappings.append(cast("dict[str, object]", candidate))
 
     try:
         test_data = _as_object_mapping(context.get("test"))
     except ValueError:
-        test_data = None
-    if test_data is not None:
-        options = test_data.get("options")
-        if isinstance(options, dict):
-            mappings.append(options)
+        return mappings
 
-    try:
-        prompt_data = _as_object_mapping(context.get("prompt"))
-    except ValueError:
-        prompt_data = None
-    if prompt_data is not None:
-        prompt_config = prompt_data.get("config")
-        if isinstance(prompt_config, dict):
-            mappings.append(prompt_config)
+    options = test_data.get("options")
+    if isinstance(options, dict):
+        mappings.append(cast("dict[str, object]", options))
 
     return mappings
 
@@ -188,12 +179,14 @@ def _safe_path_segment(value: str, fallback: str) -> str:
 
 def _extract_test_metadata(context: dict[str, object]) -> dict[str, str]:
     """Extract Promptfoo test metadata for artifact naming."""
-    test_data = context.get("test")
-    if not isinstance(test_data, dict):
+    try:
+        test_data = _as_object_mapping(context.get("test"))
+    except ValueError:
         return {}
 
-    metadata = test_data.get("metadata")
-    if not isinstance(metadata, dict):
+    try:
+        metadata = _as_object_mapping(test_data.get("metadata"))
+    except ValueError:
         return {}
 
     return {

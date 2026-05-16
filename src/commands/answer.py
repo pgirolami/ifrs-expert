@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from src.ai.pydantic_client import PydanticAIAnswerGenerator, create_default_answer_generator
-from src.case_analysis.engine import AnswerEngine, AnswerEngineHooks, _build_applicability_analysis_context, _build_chunk_summary, _prompt_file_exists, _read_prompt_template
-from src.case_analysis.models import ApproachIdentificationOutput, ValidationFailure
+from src.case_analysis.engine import AnswerEngine, AnswerEngineHooks, _prompt_file_exists, _read_prompt_template
+from src.case_analysis.models import ValidationFailure
 from src.case_analysis.stages import AnswerGeneratorProtocol, ValidateQuestionStage
 from src.commands.constants import DEFAULT_VERBOSE
 from src.db import ChunkStore, ContentReferenceStore, SectionStore, init_db
@@ -27,11 +27,9 @@ if TYPE_CHECKING:
         ReadSectionStoreProtocol,
         ReferenceStoreProtocol,
         SearchDocumentVectorStoreProtocol,
-        SearchResult,
         SearchTitleVectorStoreProtocol,
         SearchVectorStoreProtocol,
     )
-    from src.models.chunk import Chunk
     from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
@@ -101,14 +99,6 @@ class AnswerCommand:
             read_prompt_template_fn=_read_prompt_template,
         )
         return AnswerEngine(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
-
-    def _build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput | dict[str, object]) -> str:
-        """Build applicability analysis context for tests and the rendering path."""
-        return _build_applicability_analysis_context(formatted_chunks, approach_identification_output)
-
-    def _build_chunk_summary(self, results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
-        """Build chunk summary for tests and internal rendering."""
-        return _build_chunk_summary(results, doc_chunks)
 
 
 def _default_answer_generator() -> PydanticAIAnswerGenerator:

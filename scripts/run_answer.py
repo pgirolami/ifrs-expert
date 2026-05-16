@@ -5,9 +5,8 @@ Canonical Promptfoo `exec:` contract:
   argv[2] = provider options JSON
   argv[3] = context JSON
 
-This wrapper reads the question from argv[1], can read provider-level options
-from argv[2], and reads per-test mode from argv[3].test.options.mode when
-available. When Promptfoo does not pass a mode, the wrapper defaults to live.
+This wrapper reads the question from argv[1], provider options from argv[2],
+and context JSON from argv[3].
 """
 
 from __future__ import annotations
@@ -45,45 +44,6 @@ CONTEXT_ARG_INDEX: Final[int] = 3
 MIN_ARG_COUNT_FOR_PROVIDER_OPTIONS: Final[int] = 3
 MIN_ARG_COUNT_FOR_CONTEXT: Final[int] = 4
 PROMPTFOO_ARTIFACTS_DIR_ENV: Final[str] = "PROMPTFOO_ARTIFACTS_DIR"
-
-CANNED_JUSTIFICATION: Final[str] = (
-    "Une documentation de couverture peut être envisagée sous IFRS 9 si l'analyse "
-    "pertinente est celle d'un élément monétaire intragroupe reconnu créant une "
-    "exposition de change résiduelle au niveau consolidé et si les exigences de "
-    "documentation, de désignation et d'efficacité sont respectées."
-)
-
-CANNED_RESPONSE: Final[str] = json.dumps(
-    {
-        "assumptions_fr": [
-            "La question porte sur des comptes consolidés IFRS.",
-            "Le dividende intragroupe a été comptabilisé en créance.",
-        ],
-        "recommendation": {
-            "answer": "oui_sous_conditions",
-            "justification": CANNED_JUSTIFICATION,
-        },
-        "approaches": [
-            {
-                "normalized_label": "cash_flow_hedge",
-                "applicability": "non",
-                "references": ["IFRS 9.6.3.6"],
-            },
-            {
-                "normalized_label": "fair_value_hedge",
-                "applicability": "oui_sous_conditions",
-                "references": ["IFRS 9.6.3.6", "IFRS 9.6.4.1"],
-            },
-            {
-                "normalized_label": "net_investment_hedge",
-                "applicability": "non",
-                "references": ["IFRIC 16.8", "IFRIC 16.11"],
-            },
-        ],
-    },
-    ensure_ascii=False,
-)
-
 
 def _write_stdout(payload: str) -> None:
     """Write one UTF-8 payload line to stdout."""
@@ -139,48 +99,9 @@ def _as_object_mapping(value: object) -> dict[str, object]:
     return cast("dict[str, object]", value)
 
 
-def _extract_mode(context: dict[str, object]) -> str:
-    """Extract the eval mode from Promptfoo context, defaulting to live."""
-    try:
-        test_data = _as_object_mapping(context.get("test"))
-    except ValueError:
-        test_data = None
-
-    if test_data is not None:
-        try:
-            options = _as_object_mapping(test_data.get("options"))
-        except ValueError:
-            options = None
-        if options is not None:
-            mode = options.get("mode")
-            if isinstance(mode, str) and mode in {"canned", "live"}:
-                return mode
-
-    try:
-        prompt_data = _as_object_mapping(context.get("prompt"))
-    except ValueError:
-        prompt_data = None
-    if prompt_data is not None:
-        try:
-            prompt_config = _as_object_mapping(prompt_data.get("config"))
-        except ValueError:
-            prompt_config = None
-        if prompt_config is not None:
-            mode = prompt_config.get("mode")
-            if isinstance(mode, str) and mode in {"canned", "live"}:
-                return mode
-
-    return "live"
-
-
-def _extract_question(prompt: str, mode: str) -> str:
+def _extract_question(prompt: str) -> str:
     """Extract the question text from the rendered prompt."""
-    stripped_prompt = prompt.strip()
-    prefix = f"{mode} "
-    if stripped_prompt.startswith(prefix):
-        return stripped_prompt[len(prefix) :]
-
-    return stripped_prompt
+    return prompt.strip()
 
 
 @dataclass
@@ -560,8 +481,8 @@ def _run_live(
         logger.error(f"Answer pipeline failed during Promptfoo live run: {result.error}")
         return 1, _error_payload(result.error)
 
-    if result.applicability_analysis_raw_response is not None:
-        return 0, result.applicability_analysis_raw_response
+    if result.applicability_analysis_output is not None:
+        return 0, result.applicability_analysis_output.model_dump_json(indent=2)
 
     if result.applicability_analysis_memo_markdown is not None:
         return 0, result.applicability_analysis_memo_markdown
@@ -580,15 +501,10 @@ def main() -> int:
         prompt = sys.argv[PROMPT_ARG_INDEX]
         provider_options = _load_provider_options()
         context = _load_context()
-        mode = _extract_mode(context)
-        question = _extract_question(prompt, mode)
+        question = _extract_question(prompt)
         if not question:
             _write_stdout(_error_payload("Error: Missing question text"))
             return 1
-
-        if mode == "canned":
-            _write_stdout(CANNED_RESPONSE)
-            return 0
 
         llm_provider = _extract_llm_provider(provider_options, context)
         extraction_options = _extract_options(provider_options, context)

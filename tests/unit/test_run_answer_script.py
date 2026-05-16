@@ -13,6 +13,7 @@ from types import ModuleType
 
 import pytest
 
+from src.case_analysis.models import ApplicabilityAnalysisOutput
 from src.models.answer_command_result import AnswerCommandResult
 
 
@@ -37,23 +38,6 @@ def _load_run_answer_module() -> ModuleType:
     sys.modules["tests_run_answer_script_module"] = module
     spec.loader.exec_module(module)
     return module
-
-
-def test_run_answer_script_supports_direct_execution_from_repo_root() -> None:
-    """Wrapper should run as direct script from repository root."""
-    context = json.dumps({"test": {"options": {"mode": "canned"}}}, ensure_ascii=False)
-
-    result = subprocess.run(
-        [sys.executable, str(_script_path()), "Question de test", "{}", context],
-        cwd=_repo_root(),
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["recommendation"]["answer"] == "oui_sous_conditions"
 
 
 def test_run_answer_script_logs_policy_load_failures(tmp_path: Path) -> None:
@@ -94,12 +78,6 @@ def test_run_answer_script_logs_policy_load_failures(tmp_path: Path) -> None:
     log_text = log_path.read_text(encoding="utf-8")
     assert "Promptfoo answer wrapper failed" in log_text
     assert "must be a number between 0.0 and 1.0" in log_text
-
-
-def test_extract_mode_defaults_to_live_when_missing() -> None:
-    """Wrapper should default to live mode when Promptfoo does not pass one."""
-    run_answer = _load_run_answer_module()
-    assert run_answer._extract_mode({}) == "live"
 
 
 def test_extract_options_requires_policy_config() -> None:
@@ -164,7 +142,11 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
 
     class _FakeCommand:
         def execute(self) -> AnswerCommandResult:
-            return AnswerCommandResult(query="Question?", success=True, applicability_analysis_raw_response='{"ok": true}')
+            return AnswerCommandResult(
+                query="Question?",
+                success=True,
+                applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}),
+            )
 
     def _fake_create_answer_command(query: str, options: object) -> _FakeCommand:
         captured["query"] = query
@@ -194,7 +176,7 @@ def test_run_live_passes_policy_to_answer_command(monkeypatch: pytest.MonkeyPatc
     )
 
     assert exit_code == 0
-    assert payload == '{"ok": true}'
+    assert payload == ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}).model_dump_json(indent=2)
     assert captured["query"] == "Question?"
     answer_options = captured["options"]
     assert isinstance(answer_options, run_answer.AnswerOptions)
@@ -209,7 +191,11 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
 
     class _FakeCommand:
         def execute(self) -> AnswerCommandResult:
-            return AnswerCommandResult(query="Question?", success=True, applicability_analysis_raw_response='{"ok": true}')
+            return AnswerCommandResult(
+                query="Question?",
+                success=True,
+                applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}),
+            )
 
     def _fake_create_answer_command(query: str, options: object) -> _FakeCommand:
         captured["query"] = query
@@ -249,7 +235,7 @@ def test_run_live_resolves_promptfoo_relative_paths_against_base_path(monkeypatc
     )
 
     assert exit_code == 0
-    assert payload == '{"ok": true}'
+    assert payload == ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}).model_dump_json(indent=2)
     assert captured["policy_path"] == tmp_path / "effective" / "policy.default.yaml"
     assert captured["policy_name"] == "standards_only_through_chunks__enriched"
     answer_options = captured["options"]

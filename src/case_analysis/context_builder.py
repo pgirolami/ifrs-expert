@@ -5,83 +5,38 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from pydantic import BaseModel
-
-from src.case_analysis.models import ApproachIdentificationClarificationOutput, ApproachIdentificationOutput, ApproachIdentificationPassOutput
+if TYPE_CHECKING:
+    from src.case_analysis.models import ApproachIdentificationOutput
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
 class ContextBuilder:
-    """Build filtered prompt context from typed Approach identification output."""
+    """Build filtered prompt context from typed approach-identification output."""
 
-    def build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object]) -> str:
+    def build_applicability_analysis_context(self, formatted_chunks: list[str], approach_identification: ApproachIdentificationOutput) -> str:
         """Prune chunks to the authority references selected during approach identification."""
         authority_refs = self.extract_authority_references(approach_identification)
         if authority_refs is None:
             return "\n\n".join(formatted_chunks)
         return self.filter_chunks_by_authority(formatted_chunks, authority_refs)
 
-    def extract_authority_references(self, approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object]) -> set[tuple[str, str]] | None:
+    def extract_authority_references(self, approach_identification: ApproachIdentificationOutput) -> set[tuple[str, str]] | None:
         """Return the document/reference pairs that applicability analysis may use."""
-        if isinstance(approach_identification, ApproachIdentificationClarificationOutput):
-            logger.warning("Approach identification requested clarification; using all chunks for applicability analysis")
-            return None
-        if isinstance(approach_identification, ApproachIdentificationPassOutput):
-            return self._extract_authority_references_from_pass_output(approach_identification)
-        if isinstance(approach_identification, BaseModel):
-            dumped = approach_identification.model_dump(mode="json")
-            if isinstance(dumped, dict):
-                return self.extract_authority_references(dumped)
-            logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
-            return None
-        if not isinstance(approach_identification, dict):
-            logger.error("approach identification JSON is not a dict; using all chunks for applicability analysis (authority filtering skipped)")
-            return None
-        return self._extract_authority_references_from_dict(approach_identification)
-
-    def _extract_authority_references_from_dict(self, approach_identification: dict[str, object]) -> set[tuple[str, str]] | None:
-        authority_classification_value = approach_identification.get("authority_classification")
-        if not isinstance(authority_classification_value, dict):
-            logger.error("No authority_classification in approach identification response; using all chunks for applicability analysis (authority filtering skipped)")
-            return None
-        return self._extract_authority_references_from_authority_classification(authority_classification_value)  # ty: ignore[invalid-argument-type]
-
-    def _extract_authority_references_from_authority_classification(self, authority_classification_value: dict[str, object]) -> set[tuple[str, str]] | None:
-        primary_authority_value = authority_classification_value.get("primary_authority")
-        supporting_authority_value = authority_classification_value.get("supporting_authority")
-        if not isinstance(primary_authority_value, list):
-            primary_authority_value = []
-        if not isinstance(supporting_authority_value, list):
-            supporting_authority_value = []
-        if not primary_authority_value and not supporting_authority_value:
-            logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
+        if approach_identification.status != "pass":
+            logger.warning("Approach identification did not reach pass status; using all chunks for applicability analysis")
             return None
 
-        allowed_chunks: set[tuple[str, str]] = set()
-        for authority_item in (*primary_authority_value, *supporting_authority_value):
-            if not isinstance(authority_item, dict):
-                continue
-            document_value = authority_item.get("document")  # ty: ignore[invalid-argument-type]
-            references_value = authority_item.get("references")  # ty: ignore[invalid-argument-type]
-            if not isinstance(document_value, str) or not isinstance(references_value, list):
-                continue
-            for ref in references_value:
-                if isinstance(ref, str):
-                    allowed_chunks.add((document_value, ref))
-
-        if not allowed_chunks:
-            logger.error("Could not extract authority references; using all chunks for applicability analysis (authority filtering skipped)")
+        authority_classification = approach_identification.authority_classification
+        if authority_classification is None:
+            logger.warning("Approach identification missing authority classification; using all chunks for applicability analysis")
             return None
 
-        logger.info(f"Filtering applicability analysis context to {len(allowed_chunks)} authority references")
-        return allowed_chunks
-
-    def _extract_authority_references_from_pass_output(self, approach_identification: ApproachIdentificationPassOutput) -> set[tuple[str, str]] | None:
-        primary_authority = approach_identification.authority_classification.primary_authority
-        supporting_authority = approach_identification.authority_classification.supporting_authority
+        primary_authority = authority_classification.primary_authority
+        supporting_authority = authority_classification.supporting_authority
         if not primary_authority and not supporting_authority:
             logger.warning("No primary or supporting authority identified; using all chunks for applicability analysis (authority filtering skipped)")
             return None

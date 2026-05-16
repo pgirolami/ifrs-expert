@@ -208,6 +208,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the test suite relies less on internal sequencing and more on stable externally meaningful behavior.
 - Done when refactors can happen without rewriting tests that only asserted implementation shape.
 - Done when the tests are obviously protecting the architecture rather than fossilizing it.
+- Status: done.
 
 #### Milestone 3.1 — Expand graph state meaningfully
 - Problem: the current graph state is too small for graph-native workflows.

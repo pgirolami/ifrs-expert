@@ -4,18 +4,12 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from pydantic import BaseModel
+from src.applicability_markdown_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
 
-from src.b_response_utils import MarkdownOptions, convert_json_to_faq_markdown, convert_json_to_markdown_full
-from src.case_analysis.models import (
-    ApplicabilityAnalysisClarificationOutput,
-    ApplicabilityAnalysisOutput,
-    ApplicabilityAnalysisPassOutput,
-    ApproachIdentificationClarificationOutput,
-    ApproachIdentificationOutput,
-    ApproachIdentificationPassOutput,
-)
+if TYPE_CHECKING:
+    from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
 
 @dataclass(frozen=True)
@@ -35,16 +29,12 @@ class AnswerRenderingAdapter:
         *,
         query: str,
         retrieved_doc_uids: list[str],
-        approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object],
-        applicability_analysis: ApplicabilityAnalysisOutput | BaseModel | dict[str, object],
+        approach_identification: ApproachIdentificationOutput,
+        applicability_analysis: ApplicabilityAnalysisOutput,
         applicability_analysis_context: str,
     ) -> RenderedAnswerArtifacts:
         """Render the final answer memo and FAQ markdown."""
-        applicability_analysis_payload = self._coerce_json_dict(applicability_analysis)
-        if applicability_analysis_payload is None:
-            msg = "Applicability analysis JSON must be a dict"
-            raise TypeError(msg)
-
+        applicability_analysis_payload = applicability_analysis.model_dump(mode="json")
         chunk_data = self._build_chunk_data_for_markdown(applicability_analysis_context)
         applicability_analysis_doc_uids = self._extract_doc_uids_from_context(applicability_analysis_context)
         primary_accounting_issue = self._extract_primary_accounting_issue(approach_identification)
@@ -62,21 +52,11 @@ class AnswerRenderingAdapter:
         )
         return RenderedAnswerArtifacts(memo_markdown=memo_markdown, faq_markdown=faq_markdown)
 
-    def _extract_primary_accounting_issue(self, approach_identification: ApproachIdentificationOutput | BaseModel | dict[str, object]) -> str | None:
+    def _extract_primary_accounting_issue(self, approach_identification: ApproachIdentificationOutput) -> str | None:
         """Return the primary accounting issue when the structured output includes one."""
-        if isinstance(approach_identification, ApproachIdentificationPassOutput):
-            return approach_identification.primary_accounting_issue
-        if isinstance(approach_identification, ApproachIdentificationClarificationOutput):
+        if approach_identification.status != "pass":
             return None
-        if isinstance(approach_identification, BaseModel):
-            dumped = approach_identification.model_dump(mode="json")
-            if isinstance(dumped, dict):
-                return self._extract_primary_accounting_issue(dumped)
-            return None
-        if not isinstance(approach_identification, dict):
-            return None
-        primary_accounting_issue = approach_identification.get("primary_accounting_issue")
-        return primary_accounting_issue if isinstance(primary_accounting_issue, str) else None
+        return approach_identification.primary_accounting_issue
 
     def _extract_doc_uids_from_context(self, context: str) -> list[str]:
         """Preserve document order from the filtered applicability-analysis context."""
@@ -98,18 +78,3 @@ class AnswerRenderingAdapter:
             key = f"{match.group(1)}/{match.group(2)}"
             chunk_data[key] = match.group(3)
         return chunk_data
-
-    def _coerce_json_dict(self, value: ApplicabilityAnalysisOutput | BaseModel | dict[str, object]) -> dict[str, object] | None:
-        """Convert typed output to a JSON-like dict when possible."""
-        if isinstance(value, ApplicabilityAnalysisPassOutput):
-            return value.model_dump(mode="json")
-        if isinstance(value, ApplicabilityAnalysisClarificationOutput):
-            return value.model_dump(mode="json")
-        if isinstance(value, BaseModel):
-            dumped = value.model_dump(mode="json")
-            if isinstance(dumped, dict):
-                return dumped
-            return None
-        if not isinstance(value, dict):
-            return None
-        return value

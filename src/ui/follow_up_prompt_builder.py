@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import json
 import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.models.answer_command_result import AnswerCommandResult, JSONValue
+    from src.models.answer_command_result import AnswerCommandResult
     from src.ui.chat_state import FollowUpTurn
 
 logger = logging.getLogger(__name__)
@@ -70,12 +69,6 @@ class GroundedFollowUpPromptBuilder:
         if result.applicability_analysis_output is not None:
             logger.info("ChatService: using grounded typed applicability output for follow-up prompt")
             return result.applicability_analysis_output.model_dump_json(indent=2), "typed_output"
-        if result.applicability_analysis_json is not None:
-            logger.info("ChatService: using grounded JSON context for follow-up prompt")
-            return _serialize_json_value(result.applicability_analysis_json), "json"
-        if result.applicability_analysis_raw_response:
-            logger.info("ChatService: using grounded raw response context for follow-up prompt")
-            return result.applicability_analysis_raw_response, "raw_response"
         logger.warning("ChatService: grounded context missing, using fallback placeholder")
         return "No grounded answer is available.", "fallback"
 
@@ -88,11 +81,6 @@ class GroundedFollowUpPromptBuilder:
             f"Conversation so far:\n{context.transcript_text}\n\n"
             f"Current question:\n{context.current_question}"
         )
-
-
-def _serialize_json_value(value: JSONValue) -> str:
-    """Serialize a JSON value for prompt use."""
-    return json.dumps(value, indent=2, ensure_ascii=False)
 
 
 __all__ = ["FOLLOW_UP_PROMPT_HEADER", "GroundedFollowUpPromptBuilder", "GroundedFollowUpPromptContext"]

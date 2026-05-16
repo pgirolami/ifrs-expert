@@ -1,15 +1,12 @@
-"""Shared utilities for B-response markdown conversion."""
+"""Shared utilities for applicability-analysis markdown conversion."""
 
 from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import TypeAlias
 
 from src.models.document import infer_document_kind, infer_exact_document_type
-
-JSONValue: TypeAlias = "str | int | float | bool | None | list[JSONValue] | dict[str, JSONValue]"
 
 
 def _format_applicability(value: str) -> str:
@@ -303,7 +300,7 @@ def _build_approach_detail(idx: int, approach: dict, chunk_data: dict[str, str] 
 
 @dataclass
 class MarkdownOptions:
-    """Options for converting B-response JSON to markdown."""
+    """Options for converting applicability-analysis JSON to markdown."""
 
     question: str | None = None
     doc_uids: list[str] | None = None
@@ -319,7 +316,7 @@ def convert_json_to_markdown(
     authority_doc_uids: list[str] | None = None,
     primary_accounting_issue: str | None = None,
 ) -> str:
-    """Convert B-response JSON to French markdown format.
+    """Convert applicability-analysis JSON to French markdown format.
 
     Args:
         b_json: Parsed JSON response
@@ -341,7 +338,7 @@ def convert_json_to_markdown(
 
 
 def convert_json_to_markdown_full(b_json: dict, options: MarkdownOptions) -> str:
-    """Convert B-response JSON to French markdown format with full options.
+    """Convert applicability-analysis JSON to French markdown format with full options.
 
     Args:
         b_json: Parsed JSON response
@@ -354,7 +351,7 @@ def convert_json_to_markdown_full(b_json: dict, options: MarkdownOptions) -> str
 
 
 def _convert_json_to_markdown_with_options(b_json: dict, options: MarkdownOptions) -> str:
-    """Convert B-response JSON to markdown using options object.
+    """Convert applicability-analysis JSON to markdown using options object.
 
     Args:
         b_json: Parsed JSON response
@@ -514,7 +511,7 @@ def convert_json_to_faq_markdown(
     b_json: dict,
     primary_accounting_issue: str | None = None,
 ) -> str:
-    """Convert B-response JSON to FAQ-style French markdown.
+    """Convert applicability-analysis JSON to FAQ-style French markdown.
 
     Format:
         >primary_accounting_issue

@@ -40,11 +40,11 @@ class PydanticAIAnswerGenerator:
 
     def generate_approach_identification(self, prompt: str) -> ApproachIdentificationOutput:
         """Generate approach identification through a typed Pydantic AI contract."""
-        return self._run_structured_agent(prompt=prompt, output_type=ApproachIdentificationOutput, prompt_kind="approach_identification")  # ty: ignore[invalid-argument-type]
+        return self._run_structured_agent(prompt=prompt, output_type=ApproachIdentificationOutput, prompt_kind="approach_identification")
 
     def generate_applicability_analysis(self, prompt: str) -> ApplicabilityAnalysisOutput:
         """Generate applicability analysis through a typed Pydantic AI contract."""
-        return self._run_structured_agent(prompt=prompt, output_type=ApplicabilityAnalysisOutput, prompt_kind="applicability_analysis")  # ty: ignore[invalid-argument-type]
+        return self._run_structured_agent(prompt=prompt, output_type=ApplicabilityAnalysisOutput, prompt_kind="applicability_analysis")
 
     def _run_structured_agent(
         self,

@@ -7,13 +7,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol
 
 from src.case_analysis.models import (
-    ApplicabilityAnalysisClarificationOutput,
     ApplicabilityAnalysisOutput,
-    ApplicabilityAnalysisPassOutput,
-    ApplicabilityAnalysisResult,
+    ApplicabilityReference,
     ApproachIdentificationOutput,
-    AuthorityClassificationResult,
-    AuthoritySufficiencyResult,
     CitationVerificationResult,
     RetrievedSourcePackage,
     ValidatedQuestion,
@@ -44,11 +40,7 @@ class ValidateQuestionStage:
         """Return trimmed question text or a structured validation failure."""
         stripped_query = query.strip()
         if not stripped_query:
-            return ValidationFailure(
-                error_stage="validation",
-                reason="empty_question",
-                message="Error: Query cannot be empty",
-            )
+            return ValidationFailure(error_stage="validation", reason="empty_question", message="Error: Query cannot be empty")
 
         policy_error = self._validate_policy(policy)
         if policy_error is not None:
@@ -135,17 +127,13 @@ class ApproachIdentificationStage:
 
     answer_generator: AnswerGeneratorProtocol
 
-    def execute(self, prompt_text: str) -> AuthorityClassificationResult | ValidationFailure:
-        """Call the typed approach identification generator and package the result."""
+    def execute(self, prompt_text: str) -> ApproachIdentificationOutput | ValidationFailure:
+        """Call the typed approach identification generator."""
         try:
-            output = self.answer_generator.generate_approach_identification(prompt_text)
+            return self.answer_generator.generate_approach_identification(prompt_text)
         except RuntimeError as e:
             logger.exception("Approach identification LLM call failed")
             return ValidationFailure(error_stage="approach_identification", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
-
-        raw_response = output.model_dump_json()
-        payload = output.model_dump(mode="json")
-        return AuthorityClassificationResult(raw_response=raw_response, output=output, payload=payload)
 
 
 @dataclass(frozen=True)
@@ -154,42 +142,23 @@ class ApplicabilityAnalysisStage:
 
     answer_generator: AnswerGeneratorProtocol
 
-    def execute(self, prompt_text: str) -> ApplicabilityAnalysisResult | ValidationFailure:
-        """Call the typed applicability analysis generator and package the result."""
+    def execute(self, prompt_text: str) -> ApplicabilityAnalysisOutput | ValidationFailure:
+        """Call the typed applicability analysis generator."""
         try:
-            output = self.answer_generator.generate_applicability_analysis(prompt_text)
+            return self.answer_generator.generate_applicability_analysis(prompt_text)
         except RuntimeError as e:
             logger.exception("Applicability analysis LLM call failed")
             return ValidationFailure(error_stage="applicability_analysis", reason="llm_call_failed", message=f"Error: LLM call failed: {e}")
 
-        raw_response = output.model_dump_json()
-        payload = output.model_dump(mode="json")
-        return ApplicabilityAnalysisResult(raw_response=raw_response, output=output, payload=payload)
-
 
 class AuthoritySufficiencyStage:
-    """Apply deterministic routing checks to the approach identification authority result."""
+    """Apply deterministic routing checks to the approach identification result."""
 
-    def execute(self, authority_payload: dict[str, object]) -> AuthoritySufficiencyResult:
-        """Return whether the workflow should continue after approach identification."""
-        status_value = authority_payload.get("status")
-        status = status_value if isinstance(status_value, str) else "pass"
-        if status in {"needs_clarification", "insufficient_context", "insufficient_authority"}:
-            return AuthoritySufficiencyResult(
-                status=status,
-                should_continue=False,
-                reason=status,
-                details=authority_payload,
-            )
-        clarification_required = authority_payload.get("clarification_required")
-        if clarification_required is True:
-            return AuthoritySufficiencyResult(
-                status="needs_clarification",
-                should_continue=False,
-                reason="needs_clarification",
-                details=authority_payload,
-            )
-        return AuthoritySufficiencyResult(status=status, should_continue=True)
+    def execute(self, approach_identification: ApproachIdentificationOutput) -> ValidationFailure | None:
+        """Return a structured stop when the workflow should not continue."""
+        if approach_identification.status == "needs_clarification":
+            return ValidationFailure(error_stage="authority_sufficiency", reason="needs_clarification", message="Error: Approach identification requires clarification before applicability analysis")
+        return None
 
 
 class VerifyCitationsStage:
@@ -199,42 +168,20 @@ class VerifyCitationsStage:
         """Check cited sections and excerpts against retrieved chunk text."""
         references = self._collect_references(analysis_output)
         if not references:
-            return CitationVerificationResult(
-                status="warn",
-                checked_reference_count=0,
-                missing_references=["No references found in applicability analysis."],
-                unsupported_references=[],
-            )
+            return CitationVerificationResult(status="warn", checked_reference_count=0, missing_references=["No references found in applicability analysis."], unsupported_references=[])
 
         unsupported_references: list[str] = []
         for reference in references:
-            section = reference.get("section")
-            excerpt = reference.get("excerpt")
-            if not isinstance(section, str) or not isinstance(excerpt, str) or not excerpt.strip():
-                unsupported_references.append(str(reference))
-                continue
-            candidate_texts = [text for key, text in chunk_data.items() if key.endswith(f"/{section}")]
-            if not any(excerpt in text for text in candidate_texts):
-                unsupported_references.append(f"{section}: {excerpt}")
+            candidate_texts = [text for key, text in chunk_data.items() if key.endswith(f"/{reference.section}")]
+            if not any(reference.excerpt in text for text in candidate_texts):
+                unsupported_references.append(f"{reference.section}: {reference.excerpt}")
 
         status = "fail" if unsupported_references else "pass"
-        return CitationVerificationResult(
-            status=status,
-            checked_reference_count=len(references),
-            missing_references=[],
-            unsupported_references=unsupported_references,
-        )
+        return CitationVerificationResult(status=status, checked_reference_count=len(references), missing_references=[], unsupported_references=unsupported_references)
 
-    def _collect_references(self, analysis_output: ApplicabilityAnalysisOutput) -> list[dict[str, object]]:
-        """Collect citation dictionaries from typed applicability output."""
-        references: list[dict[str, object]] = []
-        if isinstance(analysis_output, ApplicabilityAnalysisPassOutput):
-            references.extend(reference.model_dump(mode="json") for approach in analysis_output.approaches for reference in approach.references)
-            return references
-        if isinstance(analysis_output, ApplicabilityAnalysisClarificationOutput):
-            return references
-        return references
+    def _collect_references(self, analysis_output: ApplicabilityAnalysisOutput) -> list[ApplicabilityReference]:
+        """Collect citation references from typed applicability output."""
+        if analysis_output.status != "pass":
+            return []
 
-
-ClassifyAuthorityStage = ApproachIdentificationStage
-EvaluateApplicabilityStage = ApplicabilityAnalysisStage
+        return [reference for approach in analysis_output.approaches for reference in approach.references]

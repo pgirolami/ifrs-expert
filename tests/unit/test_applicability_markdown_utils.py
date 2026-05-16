@@ -1,8 +1,8 @@
-"""Tests for b_response_utils."""
+"""Tests for applicability_markdown_utils."""
 
 from __future__ import annotations
 
-from src.b_response_utils import (
+from src.applicability_markdown_utils import (
     _bold_excerpt_in_chunk,
     _build_approach_detail,
     _group_by_family,

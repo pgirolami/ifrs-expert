@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+from src.case_analysis.models import ApplicabilityAnalysisOutput
 from src.models.answer_command_result import AnswerCommandResult
 from src.policy import RetrievalPolicy
 from src.ui.chat_service import (
     ChatService,
     _build_grounded_context,
-    _serialize_json_value,
     create_chat_service,
 )
 from src.ui.chat_state import FollowUpTurn
@@ -59,19 +59,25 @@ def test_answer_follow_up_uses_grounded_context_and_transcript() -> None:
     assert "What about consolidation?" in prompts[0]
 
 
-def test_build_grounded_context_prefers_markdown_then_json_then_raw() -> None:
-    """Grounded context should follow markdown > json > raw fallback order."""
+def test_build_grounded_context_prefers_markdown_then_typed_then_raw() -> None:
+    """Grounded context should follow markdown > typed > raw fallback order."""
     markdown_context, markdown_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_memo_markdown="# memo"))
     assert markdown_context == "# memo"
     assert markdown_source == "markdown"
 
-    json_context, json_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_json={"x": 1}))
-    assert '"x": 1' in json_context
-    assert json_source == "json"
+    output_context, output_source = _build_grounded_context(
+        AnswerCommandResult(
+            query="q",
+            success=True,
+            applicability_analysis_output=ApplicabilityAnalysisOutput.model_validate({"status": "pass", "assumptions_fr": [], "recommendation": {"answer": "oui", "justification": ""}, "approaches": []}),
+        )
+    )
+    assert '"status": "pass"' in output_context
+    assert output_source == "typed_output"
 
-    raw_context, raw_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_raw_response="raw"))
-    assert raw_context == "raw"
-    assert raw_source == "raw_response"
+    raw_context, raw_source = _build_grounded_context(AnswerCommandResult(query="q", success=True, applicability_analysis_memo_markdown="# raw fallback"))
+    assert raw_context == "# raw fallback"
+    assert raw_source == "markdown"
 
 
 def test_build_grounded_context_uses_fallback_when_empty() -> None:
@@ -81,16 +87,9 @@ def test_build_grounded_context_uses_fallback_when_empty() -> None:
     assert source == "fallback"
 
 
-def test_serialize_json_value_returns_pretty_json() -> None:
-    """JSON serializer should format values for readable prompts."""
-    serialized = _serialize_json_value({"clé": [1, 2]})
-    assert "\n" in serialized
-    assert '"clé"' in serialized
-
-
 def test_create_chat_service_uses_provided_options(monkeypatch) -> None:
     """Factory should use caller-provided options without loading default policy."""
-    captured: dict[str, object] = {}
+    captured: dict[str, str] = {}
 
     class _FakeAnswerCommand:
         def execute(self) -> AnswerCommandResult:

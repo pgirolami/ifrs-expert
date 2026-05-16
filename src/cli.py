@@ -440,8 +440,8 @@ def _save_answer_command_result(result: AnswerCommandResult, output_dir: Path) -
 
 def _answer_stdout_text(result: AnswerCommandResult) -> str:
     """Build the stdout payload for the answer command."""
-    if result.applicability_analysis_raw_response is not None:
-        return result.applicability_analysis_raw_response
+    if result.applicability_analysis_output is not None:
+        return result.applicability_analysis_output.model_dump_json(indent=2)
 
     if result.applicability_analysis_memo_markdown is not None:
         return result.applicability_analysis_memo_markdown
