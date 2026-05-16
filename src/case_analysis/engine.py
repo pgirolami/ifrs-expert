@@ -3,32 +3,27 @@
 from __future__ import annotations
 
 import logging
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from src.case_analysis.context_builder import ContextBuilder
 from src.case_analysis.graph import CaseAnalysisGraphRunner
-from src.case_analysis.workflow import AnswerWorkflowProcessor, _build_output_document_sections
+from src.case_analysis.workflow import AnswerWorkflowProcessor
 from src.models.answer_command_result import AnswerCommandResult
 from src.retrieval.pipeline import RetrievalPipelineConfig, execute_retrieval
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from src.case_analysis.models import ApproachIdentificationOutput
     from src.case_analysis.stages import AnswerGeneratorProtocol, ExecuteRetrievalFn
     from src.interfaces import (
         ReadChunkStoreProtocol,
         ReadSectionStoreProtocol,
         ReferenceStoreProtocol,
         SearchDocumentVectorStoreProtocol,
-        SearchResult,
         SearchTitleVectorStoreProtocol,
         SearchVectorStoreProtocol,
     )
-    from src.models.chunk import Chunk
     from src.policy import RetrievalPolicy
 
 logger = logging.getLogger(__name__)
@@ -180,39 +175,3 @@ class AnswerEngine:
             document_vector_store_factory=self.config.document_vector_store_factory,
             document_index_path_fn=self.config.document_index_path_fn,
         )
-
-
-def _build_applicability_analysis_context(formatted_chunks: list[str], approach_identification_output: ApproachIdentificationOutput) -> str:
-    return ContextBuilder().build_applicability_analysis_context(formatted_chunks, approach_identification_output)
-
-
-def _extract_authority_references(approach_identification_output: ApproachIdentificationOutput) -> set[tuple[str, str]] | None:
-    return ContextBuilder().extract_authority_references(approach_identification_output)
-
-
-def _filter_chunks_by_authority(formatted_chunks: list[str], authority_refs: set[tuple[str, str]]) -> str:
-    return ContextBuilder().filter_chunks_by_authority(formatted_chunks, authority_refs)
-
-
-def _escape_xml(text: str) -> str:
-    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
-
-
-def _build_chunk_summary(results: list[SearchResult], doc_chunks: dict[str, list[Chunk]]) -> str:
-    if not results:
-        return "Retrieved chunks:\n- none"
-    summaries = _build_output_document_sections(results=results, doc_chunks=doc_chunks, logger=logger)
-    lines: list[str] = ["Retrieved chunks:"]
-    for summary in summaries:
-        sections_text = ", ".join(summary.section_labels) if summary.section_labels else "(no sections)"
-        lines.append(f"- {summary.doc_uid}: {sections_text}")
-    return "\n".join(lines)
-
-
-def _extract_doc_uids_from_context(context: str) -> list[str]:
-    doc_uids: list[str] = []
-    for match in re.finditer(r'<Document\s+[^>]*name="([^"]+)"[^>]*>', context):
-        doc_uid = match.group(1)
-        if doc_uid not in doc_uids:
-            doc_uids.append(doc_uid)
-    return doc_uids

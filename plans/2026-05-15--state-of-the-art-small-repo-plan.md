@@ -194,6 +194,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the worst high-traffic modules are materially smaller and no longer contain several unrelated workflows in one file.
 - Done when the codebase has fewer large files that must be treated as special cases during review or refactoring.
 - Done when the remaining large files are large for a clear reason, not because they accumulated unrelated behavior.
+- Status: done.
 
 #### Milestone 2.3 — Eliminate shallow abstractions
 - Problem: some classes and modules exist mainly to forward data without hiding meaningful complexity.
