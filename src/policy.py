@@ -308,16 +308,6 @@ class DocumentStageRetrievalPolicy:
     by_document_type: dict[str, DocumentTypeRetrievalPolicy]
 
 
-@dataclass(frozen=True)
-class PolicyConfig:
-    """Compatibility wrapper for legacy callers that expect a single retrieval policy."""
-
-    retrieval: ResolvedRetrievalPolicy
-    prompts: PromptsPolicy | None
-    output: OutputPolicy | None
-    catalog: PolicyCatalog
-
-
 # Compatibility alias for callers that still import the legacy flat retrieval policy name.
 RetrievalPolicy = ResolvedRetrievalPolicy
 
@@ -352,13 +342,6 @@ def load_policy_catalog(path: Path) -> PolicyCatalog:
         prompts=prompts_policy,
         output=output_policy,
     )
-
-
-def load_policy_config(path: Path, policy_name: str) -> PolicyConfig:
-    """Load a policy catalog and resolve the explicitly named retrieval policy."""
-    catalog = load_policy_catalog(path)
-    retrieval = resolve_retrieval_policy(catalog, policy_name)
-    return PolicyConfig(retrieval=retrieval, prompts=catalog.prompts, output=catalog.output, catalog=catalog)
 
 
 def resolve_retrieval_policy(catalog: PolicyCatalog, policy_name: str) -> ResolvedRetrievalPolicy:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.policy import load_policy_config
+from src.policy import load_policy_catalog, resolve_retrieval_policy
 from tests.policy import make_retrieval_policy
 
 
@@ -13,13 +13,14 @@ def test_load_policy_config_accepts_explicit_documents2_through_chunks_mode() ->
     project_root = Path(__file__).resolve().parents[2]
     policy_path = project_root / "config" / "policy.default.yaml"
 
-    config = load_policy_config(policy_path, "documents2_through_chunks__enriched")
+    policy_catalog = load_policy_catalog(policy_path)
+    policy = resolve_retrieval_policy(policy_catalog, "documents2_through_chunks__enriched")
 
-    if config.retrieval.policy_name != "documents2_through_chunks__enriched":
-        message = f"Expected documents2_through_chunks__enriched policy, got {config.retrieval.policy_name}"
+    if policy.policy_name != "documents2_through_chunks__enriched":
+        message = f"Expected documents2_through_chunks__enriched policy, got {policy.policy_name}"
         raise AssertionError(message)
-    if config.retrieval.document_routing.source != "top_chunk_results":
-        message = f"Expected top_chunk_results source, got {config.retrieval.document_routing.source}"
+    if policy.document_routing.source != "top_chunk_results":
+        message = f"Expected top_chunk_results source, got {policy.document_routing.source}"
         raise AssertionError(message)
 
 

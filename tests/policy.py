@@ -13,7 +13,6 @@ from src.policy import (
     DocumentRoutingTypeConfig,
     DocumentStageRetrievalPolicy,
     DocumentTypeRetrievalPolicy,
-    PolicyConfig,
     QueryEmbeddingMode,
     ReferenceExpansionConfig,
     ResolvedChunkRetrievalPolicy,
@@ -21,21 +20,23 @@ from src.policy import (
     ResolvedQueryingPolicy,
     ResolvedRetrievalPolicy,
     RetrievalPolicy,
-    load_policy_config,
+    load_policy_catalog,
+    resolve_retrieval_policy,
 )
 
 TEST_RETRIEVAL_POLICY_NAME = "standards_only_through_chunks__enriched"
 
 
-def load_test_policy_config() -> PolicyConfig:
+def load_test_policy_config() -> RetrievalPolicy:
     """Load the repository default policy config for tests."""
     project_root = Path(__file__).resolve().parents[1]
-    return load_policy_config(project_root / "config" / "policy.default.yaml", TEST_RETRIEVAL_POLICY_NAME)
+    catalog = load_policy_catalog(project_root / "config" / "policy.default.yaml")
+    return resolve_retrieval_policy(catalog, TEST_RETRIEVAL_POLICY_NAME)
 
 
 def load_test_retrieval_policy() -> RetrievalPolicy:
     """Load the retrieval portion of the default policy for command-options tests."""
-    return load_test_policy_config().retrieval
+    return load_test_policy_config()
 
 
 def make_retrieval_policy(
