@@ -5,13 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from src.ai.agent_factory import GenerationDeps, build_generation_instruction, build_generation_run_controls, build_structured_agent, build_text_agent
-from src.ai.agent_specs import load_generation_agent_spec
-from src.ai.pydantic_client import PydanticAIAnswerGenerator, PydanticAITextGenerator
-from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 from pydantic_ai.models.test import TestModel
 
-from src.ui.follow_up_agent import GroundedFollowUpOutput, PydanticAIGroundedFollowUpGenerator
+from src.ai.agent_factory import GenerationDeps, build_generation_instruction, build_generation_run_controls, build_structured_agent, build_text_agent
+from src.ai.agent_specs import load_generation_agent_spec
+from src.ai.pydantic_client import GroundedFollowUpOutput, PydanticAIApp
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 
 TOutput = TypeVar("TOutput")
 
@@ -45,13 +44,13 @@ def test_build_generation_instruction_uses_prompt_kind() -> None:
     assert "governing approach" in instruction
 
 
-def test_text_generator_passes_generation_deps(monkeypatch) -> None:
+def test_text_app_passes_generation_deps(monkeypatch) -> None:
     """Text generation should use typed deps and a shared agent builder."""
     fake_agent = _FakeAgent(output="hello")
     monkeypatch.setattr("src.ai.pydantic_client.build_text_agent", lambda model: fake_agent)
 
-    generator = PydanticAITextGenerator(model="openai:gpt-5.2")
-    output = generator.generate_text("prompt text")
+    app = PydanticAIApp(model="openai:gpt-5.2")
+    output = app.generate_text("prompt text")
 
     assert output == "hello"
     assert fake_agent.captured_prompt == "prompt text"
@@ -63,14 +62,14 @@ def test_text_generator_passes_generation_deps(monkeypatch) -> None:
     }
 
 
-def test_answer_generator_passes_generation_deps(monkeypatch) -> None:
-    """Structured answer generation should also use typed deps."""
+def test_app_passes_generation_deps_for_structured_outputs(monkeypatch) -> None:
+    """Structured generation should also use typed deps."""
     fake_output = ApproachIdentificationOutput(status="pass")
     fake_agent = _FakeAgent(output=fake_output)
     monkeypatch.setattr("src.ai.pydantic_client.build_structured_agent", lambda model, output_type, output_retries: fake_agent)
 
-    generator = PydanticAIAnswerGenerator(model="openai:gpt-5.2")
-    output = generator.generate_approach_identification("prompt text")
+    app = PydanticAIApp(model="openai:gpt-5.2")
+    output = app.generate_approach_identification("prompt text")
 
     assert output == fake_output
     assert fake_agent.captured_prompt == "prompt text"
@@ -82,23 +81,31 @@ def test_answer_generator_passes_generation_deps(monkeypatch) -> None:
     }
 
 
-def test_follow_up_generator_passes_generation_deps(monkeypatch) -> None:
-    """Follow-up generation should use the shared structured agent builder."""
+def test_follow_up_generation_uses_shared_structured_app(monkeypatch) -> None:
+    """Follow-up generation should use the shared structured app path."""
     fake_output = GroundedFollowUpOutput(markdown="hello", limitations=[], out_of_scope=False)
     fake_agent = _FakeAgent(output=fake_output)
-    monkeypatch.setattr("src.ui.follow_up_agent.build_structured_agent", lambda model, output_type, output_retries: fake_agent)
+    monkeypatch.setattr("src.ai.pydantic_client.build_structured_agent", lambda model, output_type, output_retries: fake_agent)
 
-    generator = PydanticAIGroundedFollowUpGenerator(model="openai:gpt-5.2")
-    output = generator.generate_follow_up("prompt text")
+    app = PydanticAIApp(model="openai:gpt-5.2")
+    output = app.generate_follow_up("prompt text")
 
     assert output == fake_output
     assert fake_agent.captured_prompt == "prompt text"
-    assert fake_agent.captured_deps == GenerationDeps(task_name="grounded follow-up", prompt_kind="grounded_follow_up")
+    assert fake_agent.captured_deps == GenerationDeps(task_name="structured grounded_follow_up", prompt_kind="grounded_follow_up")
     assert fake_agent.captured_kwargs == {
         "model_settings": {"temperature": 0.0, "max_tokens": 1024, "parallel_tool_calls": False},
-        "metadata": {"task_name": "grounded follow-up", "prompt_kind": "grounded_follow_up"},
-        "usage_limits": build_generation_run_controls(GenerationDeps(task_name="grounded follow-up", prompt_kind="grounded_follow_up")).usage_limits,
+        "metadata": {"task_name": "structured grounded_follow_up", "prompt_kind": "grounded_follow_up"},
+        "usage_limits": build_generation_run_controls(GenerationDeps(task_name="structured grounded_follow_up", prompt_kind="grounded_follow_up")).usage_limits,
     }
+
+
+def test_follow_up_text_uses_markdown_output(monkeypatch) -> None:
+    """Convenience follow-up text helper should expose markdown only."""
+    app = PydanticAIApp(model="openai:gpt-5.2")
+    monkeypatch.setattr(PydanticAIApp, "generate_follow_up", lambda self, prompt: GroundedFollowUpOutput(markdown=f"reply:{prompt}", limitations=[], out_of_scope=False))
+
+    assert app.generate_follow_up_text("prompt text") == "reply:prompt text"
 
 
 def test_text_agent_exposes_generation_contract_tool() -> None:

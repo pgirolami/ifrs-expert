@@ -7,9 +7,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from src.ai.pydantic_client import create_default_pydantic_ai_app
 from src.commands.answer import AnswerOptions, create_answer_command
 from src.policy import load_policy_catalog, resolve_retrieval_policy
-from src.ui.follow_up_agent import GroundedFollowUpTextGenerator, create_default_follow_up_generator
 from src.ui.follow_up_prompt_builder import GroundedFollowUpPromptBuilder
 
 if TYPE_CHECKING:
@@ -88,11 +88,11 @@ def create_chat_service(answer_options: AnswerOptions | None = None) -> ChatServ
         command = create_answer_command(query=question, options=effective_options)
         return command.execute()
 
-    follow_up_generator = GroundedFollowUpTextGenerator(generator=create_default_follow_up_generator())
+    follow_up_app = create_default_pydantic_ai_app()
 
     def generate_follow_up(prompt: str) -> str:
         logger.info(f"ChatService: requesting Pydantic AI follow-up completion chars={len(prompt)}")
-        return follow_up_generator.generate_text(prompt)
+        return follow_up_app.generate_follow_up_text(prompt)
 
     return ChatService(run_first_turn_fn=run_first_turn, generate_follow_up_fn=generate_follow_up)
 

@@ -2,26 +2,17 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-
-from src.ui.follow_up_agent import GroundedFollowUpOutput, GroundedFollowUpTextGenerator
+from src.ai.pydantic_client import GroundedFollowUpOutput, PydanticAIApp
 
 
-@dataclass(frozen=True)
-class _FakeFollowUpGenerator:
-    output: GroundedFollowUpOutput
-
-    def generate_follow_up(self, prompt: str) -> GroundedFollowUpOutput:
-        del prompt
-        return self.output
-
-
-def test_grounded_follow_up_text_generator_returns_markdown() -> None:
-    """Text adapter should expose markdown from structured follow-up output."""
-    generator = GroundedFollowUpTextGenerator(
-        generator=_FakeFollowUpGenerator(
-            output=GroundedFollowUpOutput(markdown="hello", limitations=["limit"], out_of_scope=False),
-        ),
+def test_pydantic_ai_app_follow_up_text_returns_markdown(monkeypatch) -> None:
+    """The app should expose grounded follow-up markdown directly."""
+    monkeypatch.setattr(
+        PydanticAIApp,
+        "generate_follow_up",
+        lambda self, prompt: GroundedFollowUpOutput(markdown=f"reply:{prompt}", limitations=[], out_of_scope=False),
     )
 
-    assert generator.generate_text("prompt") == "hello"
+    app = PydanticAIApp(model="openai:gpt-5.2")
+
+    assert app.generate_follow_up_text("prompt") == "reply:prompt"

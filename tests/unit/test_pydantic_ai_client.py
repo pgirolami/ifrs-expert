@@ -27,4 +27,3 @@ def test_resolve_pydantic_ai_runtime_openai(monkeypatch: pytest.MonkeyPatch) -> 
     assert runtime.provider == "openai"
     assert runtime.model == "gpt-5.2"
     assert runtime.model_name == "openai:gpt-5.2"
-

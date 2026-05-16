@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from src.ai.pydantic_client import PydanticAIAnswerGenerator, create_default_answer_generator
+from src.ai.pydantic_client import create_default_pydantic_ai_app
 from src.case_analysis.engine import AnswerEngine, AnswerEngineHooks, _prompt_file_exists, _read_prompt_template
 from src.case_analysis.models import ValidationFailure
 from src.case_analysis.stages import AnswerGeneratorProtocol, ValidateQuestionStage
@@ -101,10 +101,10 @@ class AnswerCommand:
         return AnswerEngine(query=self.query, policy=self._options.policy, config=self._config, hooks=hooks)
 
 
-def _default_answer_generator() -> PydanticAIAnswerGenerator:
-    """Create the configured Pydantic AI answer generator."""
+def _default_answer_generator() -> AnswerGeneratorProtocol:
+    """Create the configured Pydantic AI application client."""
     try:
-        return create_default_answer_generator()
+        return cast("AnswerGeneratorProtocol", create_default_pydantic_ai_app())
     except ValueError as e:
         error_msg = f"Pydantic AI LLM not configured: {e}"
         raise RuntimeError(error_msg) from e
@@ -120,7 +120,7 @@ def create_answer_command(
         chunk_store=ChunkStore(),
         init_db_fn=init_db,
         index_path_fn=get_index_path,
-        answer_generator=_default_answer_generator(),  # ty: ignore[invalid-argument-type]
+        answer_generator=_default_answer_generator(),
         reference_store=ContentReferenceStore(),
         section_store=SectionStore(),
         title_vector_store=TitleVectorStore(),
