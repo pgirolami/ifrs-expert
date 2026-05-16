@@ -90,8 +90,14 @@ def test_graph_runner_retrieves_sources_then_processes_prompts() -> None:
         process_prompts_fn=process_prompts,
     )
 
-    result = runner.run(" What is scope? ")
+    state = runner.run_with_state(" What is scope? ")
+    result = state.answer_result
 
+    assert state.current_stage == "process_prompts"
+    assert state.stage_trace == ("validate_question", "retrieve_source_material", "process_prompts")
+    assert state.retrieval_request is not None
+    assert state.retrieval_result is not None
+    assert result is not None
     assert result.success is True
     assert result.error is None
     assert result.retrieved_doc_uids == ["doc1"]
