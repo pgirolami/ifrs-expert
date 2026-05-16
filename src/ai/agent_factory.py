@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from typing import TypeVar, cast
 
 from pydantic import BaseModel
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent, RunContext, Tool
+from pydantic_ai.capabilities import Toolset
+from pydantic_ai.toolsets import FunctionToolset
 
 TOutput = TypeVar("TOutput", bound=BaseModel)
 
@@ -33,6 +35,28 @@ def build_generation_instruction(deps: GenerationDeps) -> str:
     return f"Task: {deps.task_name}. {guidance}"
 
 
+def _explain_generation_contract(ctx: RunContext[GenerationDeps]) -> str:
+    """Return the active generation contract for tool-assisted self-checks."""
+    guidance = build_generation_instruction(ctx.deps)
+    return f"task_name={ctx.deps.task_name}; prompt_kind={ctx.deps.prompt_kind}; {guidance}"
+
+
+def _generation_toolset() -> Toolset[GenerationDeps]:
+    """Build the reusable generation guidance toolset capability."""
+    return Toolset(
+        FunctionToolset(
+            [
+                Tool(
+                    _explain_generation_contract,
+                    name="explain_generation_contract",
+                    description="Return the active generation contract for this run.",
+                ),
+            ],
+            instructions="Use explain_generation_contract when you need a compact reminder of the current task contract.",
+        ),
+    )
+
+
 def build_text_agent(model: str) -> Agent[GenerationDeps, str]:
     """Build a text-generation agent with typed dependencies and instructions."""
     agent: Agent[GenerationDeps, str] = Agent(
@@ -40,6 +64,7 @@ def build_text_agent(model: str) -> Agent[GenerationDeps, str]:
         deps_type=GenerationDeps,
         output_type=str,
         system_prompt="You are an IFRS expert.",
+        capabilities=[_generation_toolset()],
     )
 
     @agent.instructions
@@ -59,6 +84,7 @@ def build_structured_agent(model: str, output_type: type[TOutput], output_retrie
             output_type=output_type,
             output_retries=output_retries,
             system_prompt="You are an IFRS expert.",
+            capabilities=[_generation_toolset()],
         ),
     )
 
@@ -67,3 +93,11 @@ def build_structured_agent(model: str, output_type: type[TOutput], output_retrie
         return build_generation_instruction(ctx.deps)
 
     return agent
+
+
+__all__ = [
+    "GenerationDeps",
+    "build_generation_instruction",
+    "build_structured_agent",
+    "build_text_agent",
+]

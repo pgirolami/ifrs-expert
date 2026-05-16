@@ -5,9 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from src.ai.agent_factory import GenerationDeps, build_generation_instruction
+from src.ai.agent_factory import GenerationDeps, build_generation_instruction, build_structured_agent, build_text_agent
 from src.ai.pydantic_client import PydanticAIAnswerGenerator, PydanticAITextGenerator
-from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, Recommendation
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
+from pydantic_ai.models.test import TestModel
+
 from src.ui.follow_up_agent import GroundedFollowUpOutput, PydanticAIGroundedFollowUpGenerator
 
 TOutput = TypeVar("TOutput")
@@ -79,3 +81,37 @@ def test_follow_up_generator_passes_generation_deps(monkeypatch) -> None:
     assert output == fake_output
     assert fake_agent.captured_prompt == "prompt text"
     assert fake_agent.captured_deps == GenerationDeps(task_name="grounded follow-up", prompt_kind="grounded_follow_up")
+
+
+def test_text_agent_exposes_generation_contract_tool() -> None:
+    """Text agent should register the shared generation guidance tool."""
+    agent = build_text_agent("openai:gpt-5.2")
+    model = TestModel()
+
+    with agent.override(model=model):
+        result = agent.run_sync(
+            "prompt text",
+            deps=GenerationDeps(task_name="free-form IFRS completion", prompt_kind="free_form_completion"),
+        )
+
+    assert "explain_generation_contract" in result.output
+    assert "task_name=free-form IFRS completion" in result.output
+    assert model.last_model_request_parameters is not None
+    assert [tool.name for tool in model.last_model_request_parameters.function_tools] == ["explain_generation_contract"]
+
+
+def test_structured_agent_exposes_generation_contract_tool() -> None:
+    """Structured agent should register the same generation guidance tool."""
+    agent = build_structured_agent("openai:gpt-5.2", output_type=ApproachIdentificationOutput, output_retries=2)
+    model = TestModel(custom_output_args={"status": "pass"})
+
+    with agent.override(model=model):
+        result = agent.run_sync(
+            "prompt text",
+            deps=GenerationDeps(task_name="structured approach_identification", prompt_kind="approach_identification"),
+        )
+
+    assert isinstance(result.output, ApproachIdentificationOutput)
+    assert result.output.status == "pass"
+    assert model.last_model_request_parameters is not None
+    assert [tool.name for tool in model.last_model_request_parameters.function_tools] == ["explain_generation_contract"]

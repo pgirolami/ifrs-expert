@@ -47,6 +47,7 @@ Make the Pydantic AI usage in this repo idiomatic, not just functional.
 - reusable tool/instruction bundles become capabilities where useful
 - tool boundaries are visible in the agent contract
 - tool tests verify allow-listing, retries, and typed context
+- Status: done.
 
 ### Milestone 4 — Add run-level controls
 **Problem:** model behavior is still under-specified at the run boundary.
