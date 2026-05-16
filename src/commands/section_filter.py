@@ -182,11 +182,6 @@ def _is_directly_excluded_section_title(title: str) -> bool:
     return title.startswith("Withdrawal of")
 
 
-def _is_section_excluded(title: str) -> bool:
-    """Backward-compatible internal alias for section-title exclusion checks."""
-    return is_section_title_excluded(title)
-
-
 def _is_appendix_title(title: str) -> bool:
     """Check whether a title refers to an appendix container."""
     return title.startswith("Appendix") or title == "Appendices"

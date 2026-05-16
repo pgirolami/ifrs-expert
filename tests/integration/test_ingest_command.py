@@ -159,9 +159,6 @@ chunk_store: InMemoryChunkStore | None = None
 document_store: InMemoryDocumentStore | None = None
 
 
-
-
-
 def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
     """Representative IFRS HTML captures should ingest into the database and processed/."""
     del temp_db_path
@@ -188,9 +185,9 @@ def test_ingest_command_imports_html_capture_pair(temp_db_path: Path, capture_ro
     assert document.canonical_url == expected_sidecar["canonical_url"]
     with chunk_store as cs:
         chunks = cs.get_chunks_by_doc("ifrs9")
-    assert any(chunk.section_path == "2.4" for chunk in chunks)
-    assert any(chunk.section_path == "E19" for chunk in chunks)
-    assert any(chunk.source_anchor == "IFRS09_2.4" for chunk in chunks)
+    assert any(chunk.chunk_number == "2.4" for chunk in chunks)
+    assert any(chunk.chunk_number == "E19" for chunk in chunks)
+    assert any(chunk.chunk_id == "IFRS09_2.4" for chunk in chunks)
 
 
 def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
@@ -218,8 +215,8 @@ def test_ingest_command_imports_navis_html_capture_pair(temp_db_path: Path, capt
     assert document.document_type == "NAVIS"
     with chunk_store as cs:
         chunks = cs.get_chunks_by_doc("navis-QRIFRS-C2A8E6F292F99E-EFL")
-    assert any(chunk.section_path == "12501" for chunk in chunks)
-    assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
+    assert any(chunk.chunk_number == "12501" for chunk in chunks)
+    assert any(chunk.chunk_id == "P8A8E6F292F99E-EFL" for chunk in chunks)
 
 
 def test_ingest_command_imports_navis_chapter_bundle_capture_pair(temp_db_path: Path, capture_root: Path) -> None:
@@ -295,8 +292,8 @@ def test_ingest_command_imports_navis_chapter_bundle_capture_pair(temp_db_path: 
     assert document is not None, "Expected chapter bundle ingestion to upsert a document record"
     with chunk_store as cs:
         chunks = cs.get_chunks_by_doc("navis-QRIFRS-C2A8E6F292F99E-EFL")
-    assert any(chunk.section_path == "12501" for chunk in chunks)
-    assert any(chunk.source_anchor == "P8A8E6F292F99E-EFL" for chunk in chunks)
+    assert any(chunk.chunk_number == "12501" for chunk in chunks)
+    assert any(chunk.chunk_id == "P8A8E6F292F99E-EFL" for chunk in chunks)
 
 
 def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_path: Path, capture_root: Path) -> None:
@@ -357,7 +354,7 @@ def test_ingest_command_skips_unchanged_html_and_replaces_changed_html(temp_db_p
     assert "1 imported" in replace_output
     with chunk_store as cs:
         chunks = cs.get_chunks_by_doc("ifric16")
-    first_chunk = next(chunk for chunk in chunks if chunk.section_path == "1")
+    first_chunk = next(chunk for chunk in chunks if chunk.chunk_number == "1")
     assert "Additional integration test sentence." in first_chunk.text
 
 
