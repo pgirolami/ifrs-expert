@@ -138,8 +138,7 @@ class TestStoreCommandRepairs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
-            scope="documents",
+            options=StoreCommandOptions(scope="documents"),
         )
 
         result = command.execute_result()
@@ -182,7 +181,7 @@ class TestStoreCommandRepairs:
             source_path=source_path,
             extractor=FakeBuggyExtractor(),
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         with pytest.raises(NameError, match="simulated programmer bug"):

@@ -12,6 +12,7 @@ import pytest
 
 
 from tests.policy import load_test_policy_config, make_retrieval_policy, load_test_retrieval_policy
+from src.commands.store import StoreCommandOptions
 
 # HTML path for testing
 HTML_INGESTION_PATH = Path("examples/ifrs/20260414T094610Z--ifrs-9-financial-instruments.html")
@@ -61,7 +62,7 @@ def ingested_ifrs16(temp_index_dir: Path, temp_db_path: Path):
     init_db()
 
     # Ingest the HTML capture
-    command = create_store_command(source_path=HTML_INGESTION_PATH, doc_uid=DOC_UID, scope="chunks")
+    command = create_store_command(source_path=HTML_INGESTION_PATH, options=StoreCommandOptions(explicit_doc_uid=DOC_UID, scope="chunks"))
     result = command.execute()
     assert not result.startswith("Error:"), f"Failed to ingest HTML: {result}"
 

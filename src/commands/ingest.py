@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
@@ -24,8 +23,27 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-StoreCommandFactory = Callable[..., "StoreCommandLike"]
-CreateStoreCommandFn = Callable[..., "StoreCommandLike"]
+
+class StoreCommandFactory(Protocol):
+    """Callable contract for ingest store command factories."""
+
+    def __call__(self, source_path: Path, extractor: ExtractorProtocol, options: StoreCommandOptions | None = None) -> StoreCommandLike:
+        """Create one store command for a source path."""
+        ...
+
+
+class CreateStoreCommandFn(Protocol):
+    """Callable contract for the underlying store command constructor."""
+
+    def __call__(
+        self,
+        source_path: Path,
+        extractor: ExtractorProtocol,
+        dependencies: StoreDependencies,
+        options: StoreCommandOptions | None = None,
+    ) -> StoreCommandLike:
+        """Create one store command with explicit dependencies."""
+        ...
 
 
 @dataclass(frozen=True)
@@ -91,15 +109,13 @@ class SharedDependenciesStoreCommandFactory:
         source_path: Path,
         extractor: ExtractorProtocol,
         options: StoreCommandOptions | None = None,
-        **legacy_kwargs: object,
     ) -> StoreCommandLike:
         """Create one StoreCommand while reusing the shared dependencies."""
-        resolved_options = _resolve_store_options(options=options, legacy_kwargs=legacy_kwargs)
         return self._create_store_command_fn(
             source_path=source_path,
             extractor=extractor,
             dependencies=self._dependencies,
-            options=resolved_options,
+            options=options,
         )
 
 
@@ -112,12 +128,10 @@ class IngestCommand:
         store_command_factory: StoreCommandFactory | None = None,
         store_dependencies: StoreDependencies | None = None,
         store_options: StoreCommandOptions | None = None,
-        **legacy_kwargs: object,
     ) -> None:
         """Initialize the ingest command with its capture root and store factory."""
-        resolved_store_options = _resolve_store_options(options=store_options, legacy_kwargs=legacy_kwargs)
         self._directories = CaptureDirectories.from_root(capture_root or (Path.home() / "Downloads" / "ifrs-expert"))
-        self._store_options = resolved_store_options
+        self._store_options = store_options or StoreCommandOptions()
         self._store_command_factory = store_command_factory or SharedDependenciesStoreCommandFactory(dependencies=store_dependencies)
 
     def execute(self) -> str:
@@ -265,75 +279,6 @@ class IngestCommand:
                 suffix_count += 1
             path.rename(destination)
             logger.info(f"Moved {path} to {destination}")
-
-
-def _resolve_store_options(
-    options: StoreCommandOptions | None,
-    legacy_kwargs: dict[str, object],
-) -> StoreCommandOptions:
-    resolved_explicit_doc_uid = options.explicit_doc_uid if options is not None else None
-    resolved_scope = options.scope if options is not None else "all"
-    resolved_force_store = options.force_store if options is not None else False
-
-    resolved_explicit_doc_uid = _pop_legacy_optional_string(legacy_kwargs, "doc_uid", resolved_explicit_doc_uid)
-    resolved_explicit_doc_uid = _pop_legacy_optional_string(
-        legacy_kwargs,
-        "explicit_doc_uid",
-        resolved_explicit_doc_uid,
-    )
-    resolved_scope = _pop_legacy_string(legacy_kwargs, "scope", resolved_scope)
-    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_store", resolved_force_store)
-    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_restore", resolved_force_store)
-
-    return StoreCommandOptions(
-        explicit_doc_uid=resolved_explicit_doc_uid,
-        scope=resolved_scope,
-        force_store=resolved_force_store,
-    )
-
-
-def _pop_legacy_optional_string(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: str | None,
-) -> str | None:
-    if key not in legacy_kwargs:
-        return current_value
-    value = legacy_kwargs.pop(key)
-    if value is None:
-        return None
-    if not isinstance(value, str):
-        message = f"{key} must be a string or None, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
-
-
-def _pop_legacy_string(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: str,
-) -> str:
-    if key not in legacy_kwargs:
-        return current_value
-    value = legacy_kwargs.pop(key)
-    if not isinstance(value, str):
-        message = f"{key} must be a string, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
-
-
-def _pop_legacy_bool(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: object,
-) -> bool:
-    if key not in legacy_kwargs:
-        return bool(current_value)
-    value = legacy_kwargs.pop(key)
-    if not isinstance(value, bool):
-        message = f"{key} must be a bool, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
 
 
 @dataclass(frozen=True)

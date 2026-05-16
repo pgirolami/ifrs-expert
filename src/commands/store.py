@@ -15,6 +15,7 @@ from src.vector.store import VectorStore
 from src.vector.title_store import TitleVectorStore
 
 STORE_SCOPES = ingestion_models.STORE_SCOPES
+
 if TYPE_CHECKING:
     from src.interfaces import ExtractorProtocol
 
@@ -28,15 +29,10 @@ class StoreCommand:
         extractor: ExtractorProtocol,
         dependencies: StoreDependencies,
         options: StoreCommandOptions | None = None,
-        **legacy_kwargs: object,
     ) -> None:
-        """Initialize the command and preserve legacy keyword options."""
-        resolved_options = _resolve_store_command_options(options=options, legacy_kwargs=legacy_kwargs)
-        if legacy_kwargs:
-            unexpected_keys = ", ".join(sorted(legacy_kwargs))
-            message = f"Unexpected keyword arguments: {unexpected_keys}"
-            raise TypeError(message)
+        """Initialize the command with explicit options."""
         normalized_source_path = Path(source_path)
+        resolved_options = options or StoreCommandOptions()
         self._pipeline = IngestionPipeline(
             source_path=normalized_source_path,
             extractor=extractor,
@@ -71,75 +67,6 @@ def build_store_dependencies() -> StoreDependencies:
     )
 
 
-def _resolve_store_command_options(
-    options: StoreCommandOptions | None,
-    legacy_kwargs: dict[str, object],
-) -> StoreCommandOptions:
-    resolved_explicit_doc_uid = options.explicit_doc_uid if options is not None else None
-    resolved_scope = options.scope if options is not None else "all"
-    resolved_force_store = options.force_store if options is not None else False
-
-    resolved_explicit_doc_uid = _pop_legacy_optional_string(legacy_kwargs, "doc_uid", resolved_explicit_doc_uid)
-    resolved_explicit_doc_uid = _pop_legacy_optional_string(
-        legacy_kwargs,
-        "explicit_doc_uid",
-        resolved_explicit_doc_uid,
-    )
-    resolved_scope = _pop_legacy_string(legacy_kwargs, "scope", resolved_scope)
-    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_store", resolved_force_store)
-    resolved_force_store = _pop_legacy_bool(legacy_kwargs, "force_restore", resolved_force_store)
-
-    return StoreCommandOptions(
-        explicit_doc_uid=resolved_explicit_doc_uid,
-        scope=resolved_scope,
-        force_store=resolved_force_store,
-    )
-
-
-def _pop_legacy_optional_string(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: str | None,
-) -> str | None:
-    if key not in legacy_kwargs:
-        return current_value
-    value = legacy_kwargs.pop(key)
-    if value is None:
-        return None
-    if not isinstance(value, str):
-        message = f"{key} must be a string or None, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
-
-
-def _pop_legacy_string(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: str,
-) -> str:
-    if key not in legacy_kwargs:
-        return current_value
-    value = legacy_kwargs.pop(key)
-    if not isinstance(value, str):
-        message = f"{key} must be a string, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
-
-
-def _pop_legacy_bool(
-    legacy_kwargs: dict[str, object],
-    key: str,
-    current_value: object,
-) -> bool:
-    if key not in legacy_kwargs:
-        return bool(current_value)
-    value = legacy_kwargs.pop(key)
-    if not isinstance(value, bool):
-        message = f"{key} must be a bool, got {type(value).__name__}"
-        raise TypeError(message)
-    return value
-
-
 def _default_extractor_for_source(source_path: Path) -> ExtractorProtocol:
     """Select the default extractor for a source path based on its file suffix."""
     suffix = source_path.suffix.lower()
@@ -155,14 +82,8 @@ def create_store_command(
     extractor: ExtractorProtocol | None = None,
     dependencies: StoreDependencies | None = None,
     options: StoreCommandOptions | None = None,
-    **legacy_kwargs: object,
 ) -> StoreCommand:
     """Create StoreCommand with real dependencies by default."""
-    resolved_options = _resolve_store_command_options(options=options, legacy_kwargs=legacy_kwargs)
-    if legacy_kwargs:
-        unexpected_keys = ", ".join(sorted(legacy_kwargs))
-        message = f"Unexpected keyword arguments: {unexpected_keys}"
-        raise TypeError(message)
     if source_path is None:
         message = "create_store_command() requires source_path"
         raise TypeError(message)
@@ -173,5 +94,5 @@ def create_store_command(
         source_path=source_path,
         extractor=resolved_extractor,
         dependencies=resolved_dependencies,
-        options=resolved_options,
+        options=options,
     )

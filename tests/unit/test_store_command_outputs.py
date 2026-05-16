@@ -76,7 +76,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -157,8 +157,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
-            scope="documents",
+            options=StoreCommandOptions(scope="documents"),
         )
 
         result = command.execute_result()
@@ -285,7 +284,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -356,8 +355,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
-            scope="sections",
+            options=StoreCommandOptions(scope="sections"),
         )
 
         result = command.execute_result()
@@ -444,7 +442,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -518,8 +516,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
-            force_store=True,
+            options=StoreCommandOptions(force_store=True),
         )
 
         result = command.execute_result()
@@ -597,7 +594,7 @@ class TestStoreCommandOutputs:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()

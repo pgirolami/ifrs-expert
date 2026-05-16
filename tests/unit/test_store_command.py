@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from src.commands.store import StoreCommand, StoreDependencies
+from src.commands.store import StoreCommand, StoreCommandOptions, StoreDependencies
 from src.vector.constants import MAX_EMBEDDING_TEXT_CHARS
 from src.models.chunk import Chunk
 from src.models.document import DocumentRecord
@@ -97,7 +97,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -202,7 +202,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -330,7 +330,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -403,7 +403,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -479,7 +479,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -555,7 +555,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -646,8 +646,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=FakeExtractor(extracted_document=extracted_document, skip_if_unchanged=True),
             dependencies=dependencies,
-            explicit_doc_uid=None,
-            scope="documents",
+            options=StoreCommandOptions(scope="documents"),
         )
 
         result = command.execute_result()
@@ -703,7 +702,7 @@ class TestStoreCommand:
             source_path=source_path,
             extractor=extractor,
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute_result()
@@ -741,7 +740,7 @@ class TestStoreCommand:
                 )
             ),
             dependencies=dependencies,
-            explicit_doc_uid=None,
+            options=StoreCommandOptions(),
         )
 
         result = command.execute()

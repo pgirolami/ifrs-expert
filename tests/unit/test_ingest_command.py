@@ -27,8 +27,7 @@ class RecordingStoreFactory:
         self._results_by_name = results_by_name
         self.calls: list[tuple[str, str, str, bool]] = []
 
-    def __call__(self, source_path: Path, extractor: object, options: object | None = None, **legacy_kwargs: object) -> FakeStoreCommand:
-        del legacy_kwargs
+    def __call__(self, source_path: Path, extractor: object, options: object | None = None) -> FakeStoreCommand:
         assert options is not None, "Expected store options to be provided"
         self.calls.append((source_path.name, type(extractor).__name__, options.scope, options.force_store))
         return FakeStoreCommand(result=self._results_by_name[source_path.name])
@@ -46,9 +45,8 @@ class FakeCreateStoreCommand:
         extractor: object | None = None,
         dependencies: StoreDependencies | None = None,
         options: object | None = None,
-        **legacy_kwargs: object,
     ) -> FakeStoreCommand:
-        del extractor, legacy_kwargs
+        del extractor
         assert options is not None, "Expected store options to be provided"
         assert source_path is not None, "Expected a source path"
         assert dependencies is not None, "Expected shared dependencies to be provided"
@@ -80,8 +78,8 @@ class TestIngestCommand:
             create_store_command_fn=fake_create_store_command,
         )
 
-        factory(source_one, extractor=object(), explicit_doc_uid=None, scope="documents")
-        factory(source_two, extractor=object(), explicit_doc_uid=None, scope="documents")
+        factory(source_one, extractor=object(), options=StoreCommandOptions(scope="documents"))
+        factory(source_two, extractor=object(), options=StoreCommandOptions(scope="documents"))
 
         recorded_dependencies = [recorded_dependency for _source_name, recorded_dependency, _scope in fake_create_store_command.dependencies_by_source_name]
         assert recorded_dependencies == [dependencies, dependencies]
@@ -270,7 +268,7 @@ class TestIngestCommand:
                 )
             }
         )
-        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, store_options=None, scope="documents", force_store=True)
+        command = IngestCommand(capture_root=capture_root, store_command_factory=store_factory, store_options=StoreCommandOptions(scope="documents", force_store=True))
 
         output = command.execute()
 

@@ -126,9 +126,7 @@ def _store_factory(
     source_path: Path,
     extractor: object,
     options: StoreCommandOptions | None = None,
-    **legacy_kwargs: object,
 ):
-    del legacy_kwargs
     global chunk_store, document_store
     _stores.setdefault("chunk_store", InMemoryChunkStore())
     _stores.setdefault("document_store", InMemoryDocumentStore())
