@@ -216,6 +216,7 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when the graph state can represent more than the minimum happy-path fields and is suitable for real workflow branching.
 - Done when the state model supports interruption, continuation, or stage-specific persistence without feeling retrofitted.
 - Done when the graph no longer looks like a linear function chain with a `StateGraph` wrapper.
+- Status: done.
 
 #### Milestone 3.2 — Introduce real graph-native control points
 - Problem: the current graph is still mostly a linear pipeline with graph syntax.

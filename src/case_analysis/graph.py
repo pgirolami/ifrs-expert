@@ -95,6 +95,7 @@ class CaseAnalysisGraphRunner:
         """Build and compile the deterministic LangGraph workflow."""
         builder = StateGraph(CaseAnalysisState)
         builder.add_node("validate_question", self._validate_question_node)
+        builder.add_node("prepare_retrieval_request", self._prepare_retrieval_request_node)
         builder.add_node("retrieve_source_material", self._retrieve_source_material_node)
         builder.add_node("process_prompts", self._process_prompts_node)
         builder.add_node("build_failure", self._build_failure_node)
@@ -102,6 +103,11 @@ class CaseAnalysisGraphRunner:
         builder.add_edge(START, "validate_question")
         builder.add_conditional_edges(
             "validate_question",
+            self._route_after_failure_capable_node,
+            {"continue": "prepare_retrieval_request", "fail": "build_failure"},
+        )
+        builder.add_conditional_edges(
+            "prepare_retrieval_request",
             self._route_after_failure_capable_node,
             {"continue": "retrieve_source_material", "fail": "build_failure"},
         )
@@ -135,17 +141,12 @@ class CaseAnalysisGraphRunner:
 
     def _retrieve_source_material_node(self, state: CaseAnalysisState) -> dict[str, object]:
         """Retrieve source material through the existing retrieval pipeline."""
-        if state.validated_question is None:
+        retrieval_request = state.retrieval_request
+        if retrieval_request is None:
             return {
                 **self._advance_stage(state, "retrieve_source_material"),
-                "failure": ValidationFailure(error_stage="validation", reason="missing_validated_question", message="Error: Missing validated question"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_retrieval_request", message="Error: Missing retrieval request"),
             }
-        retrieval_request = build_retrieval_request(
-            query=state.validated_question.question,
-            policy=self.policy,
-            chunk_min_score=self.policy.titles.min_score if self.policy.chunk_retrieval.mode == "title_similarity" else self.policy.text.min_score,
-            expand_to_section=self.policy.expand_to_section if self.policy.document_routing.source == "all_documents" else True,
-        )
         error, retrieval_result = self.execute_retrieval_fn(request=retrieval_request, config=self.pipeline_config)
         if error is not None:
             return {
@@ -165,6 +166,24 @@ class CaseAnalysisGraphRunner:
             "retrieval_request": retrieval_request,
             "retrieval_result": retrieval_result,
             "retrieved_source_package": source_package,
+        }
+
+    def _prepare_retrieval_request_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Prepare the retrieval request as an explicit graph checkpoint."""
+        if state.validated_question is None:
+            return {
+                **self._advance_stage(state, "prepare_retrieval_request"),
+                "failure": ValidationFailure(error_stage="validation", reason="missing_validated_question", message="Error: Missing validated question"),
+            }
+        retrieval_request = build_retrieval_request(
+            query=state.validated_question.question,
+            policy=self.policy,
+            chunk_min_score=self.policy.titles.min_score if self.policy.chunk_retrieval.mode == "title_similarity" else self.policy.text.min_score,
+            expand_to_section=self.policy.expand_to_section if self.policy.document_routing.source == "all_documents" else True,
+        )
+        return {
+            **self._advance_stage(state, "prepare_retrieval_request"),
+            "retrieval_request": retrieval_request,
         }
 
     def _process_prompts_node(self, state: CaseAnalysisState) -> dict[str, object]:

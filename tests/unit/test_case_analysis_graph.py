@@ -94,7 +94,7 @@ def test_graph_runner_retrieves_sources_then_processes_prompts() -> None:
     result = state.answer_result
 
     assert state.current_stage == "process_prompts"
-    assert state.stage_trace == ("validate_question", "retrieve_source_material", "process_prompts")
+    assert state.stage_trace == ("validate_question", "prepare_retrieval_request", "retrieve_source_material", "process_prompts")
     assert state.retrieval_request is not None
     assert state.retrieval_result is not None
     assert result is not None
