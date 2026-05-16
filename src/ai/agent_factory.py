@@ -11,6 +11,8 @@ from pydantic_ai.capabilities import Toolset
 from pydantic_ai.settings import ModelSettings
 from pydantic_ai.toolsets import FunctionToolset
 
+from src.ai.agent_specs import load_generation_agent_spec
+
 TOutput = TypeVar("TOutput", bound=BaseModel)
 
 
@@ -78,11 +80,11 @@ def _generation_toolset() -> Toolset[GenerationDeps]:
 
 def build_text_agent(model: str) -> Agent[GenerationDeps, str]:
     """Build a text-generation agent with typed dependencies and instructions."""
-    agent: Agent[GenerationDeps, str] = Agent(
-        model,
+    agent = Agent.from_spec(
+        load_generation_agent_spec(),
+        model=model,
         deps_type=GenerationDeps,
         output_type=str,
-        system_prompt="You are an IFRS expert.",
         capabilities=[_generation_toolset()],
     )
 
@@ -97,12 +99,12 @@ def build_structured_agent(model: str, output_type: type[TOutput], output_retrie
     """Build a structured-output agent with typed dependencies and instructions."""
     agent = cast(
         "Agent[GenerationDeps, TOutput]",
-        Agent(
-            model,
+        Agent.from_spec(
+            load_generation_agent_spec(),
+            model=model,
             deps_type=GenerationDeps,
             output_type=output_type,
             output_retries=output_retries,
-            system_prompt="You are an IFRS expert.",
             capabilities=[_generation_toolset()],
         ),
     )

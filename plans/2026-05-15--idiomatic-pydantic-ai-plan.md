@@ -66,6 +66,7 @@ Make the Pydantic AI usage in this repo idiomatic, not just functional.
 - we decide which agents should be code-defined vs spec-defined
 - any stable agent config that fits a spec moves to YAML/JSON
 - tests cover the spec path if adopted
+- Status: done.
 
 ### Milestone 6 — Remove leftover non-idiomatic glue
 **Problem:** the repo still contains transitional patterns from older agent shapes.

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Generic, TypeVar
 
 from src.ai.agent_factory import GenerationDeps, build_generation_instruction, build_generation_run_controls, build_structured_agent, build_text_agent
+from src.ai.agent_specs import load_generation_agent_spec
 from src.ai.pydantic_client import PydanticAIAnswerGenerator, PydanticAITextGenerator
 from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput
 from pydantic_ai.models.test import TestModel
@@ -115,6 +116,8 @@ def test_text_agent_exposes_generation_contract_tool() -> None:
     assert "task_name=free-form IFRS completion" in result.output
     assert model.last_model_request_parameters is not None
     assert [tool.name for tool in model.last_model_request_parameters.function_tools] == ["explain_generation_contract"]
+    assert agent.name == "ifrs-generation-agent"
+    assert agent.description == "Shared IFRS generation agent for text and structured outputs."
 
 
 def test_structured_agent_exposes_generation_contract_tool() -> None:
@@ -132,6 +135,8 @@ def test_structured_agent_exposes_generation_contract_tool() -> None:
     assert result.output.status == "pass"
     assert model.last_model_request_parameters is not None
     assert [tool.name for tool in model.last_model_request_parameters.function_tools] == ["explain_generation_contract"]
+    assert agent.name == "ifrs-generation-agent"
+    assert agent.description == "Shared IFRS generation agent for text and structured outputs."
 
 
 def test_generation_run_controls_use_explicit_limits() -> None:
@@ -142,3 +147,12 @@ def test_generation_run_controls_use_explicit_limits() -> None:
     assert controls.metadata == {"task_name": "structured applicability_analysis", "prompt_kind": "applicability_analysis"}
     assert controls.usage_limits.request_limit == 6
     assert controls.usage_limits.tool_calls_limit == 4
+
+
+def test_generation_agent_spec_uses_stable_metadata() -> None:
+    """Spec should hold the stable agent metadata."""
+    spec = load_generation_agent_spec()
+
+    assert spec.name == "ifrs-generation-agent"
+    assert spec.description == "Shared IFRS generation agent for text and structured outputs."
+    assert spec.instructions == "You are an IFRS expert."
