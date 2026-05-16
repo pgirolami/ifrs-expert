@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING, cast
 
 from langgraph.graph import END, START, StateGraph
 
-from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, RetrievedSourcePackage, ValidatedQuestion, ValidationFailure
+from src.case_analysis.agent_tools import CaseEvidenceGatheringAgentNode, ToolRequest
+from src.case_analysis.models import ApplicabilityAnalysisOutput, ApproachIdentificationOutput, CaseEvidenceAgentInput, CaseEvidenceAgentResult, RetrievedSourcePackage, ToolCallRecord, ValidatedQuestion, ValidationFailure
 from src.case_analysis.stages import ExecuteRetrievalFn, ValidateQuestionStage
 from src.models.answer_command_result import AnswerCommandResult
 from src.retrieval.request_builder import build_retrieval_request
@@ -35,6 +36,9 @@ class CaseAnalysisState:
     retrieval_result: retrieval_models.RetrievalResult | None = None
     retrieved_source_package: RetrievedSourcePackage | None = None
     answer_result: AnswerCommandResult | None = None
+    case_evidence_input: CaseEvidenceAgentInput | None = None
+    case_evidence_result: CaseEvidenceAgentResult | None = None
+    case_evidence_tool_calls: tuple[ToolCallRecord, ...] = ()
     formatted_chunks: tuple[str, ...] = ()
     chunk_summary: str = ""
     approach_identification_output: ApproachIdentificationOutput | None = None
@@ -53,6 +57,7 @@ class CaseAnalysisGraphRunner:
     pipeline_config: RetrievalPipelineConfig
     execute_retrieval_fn: ExecuteRetrievalFn
     workflow_processor: AnswerWorkflowProcessor
+    case_evidence_enabled: bool = True
     _graph: CompiledStateGraph = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
@@ -86,6 +91,9 @@ class CaseAnalysisGraphRunner:
             retrieval_result=cast("retrieval_models.RetrievalResult | None", final_state.get("retrieval_result")),
             retrieved_source_package=cast("RetrievedSourcePackage | None", final_state.get("retrieved_source_package")),
             answer_result=cast("AnswerCommandResult | None", final_state.get("answer_result")),
+            case_evidence_input=cast("CaseEvidenceAgentInput | None", final_state.get("case_evidence_input")),
+            case_evidence_result=cast("CaseEvidenceAgentResult | None", final_state.get("case_evidence_result")),
+            case_evidence_tool_calls=cast("tuple[ToolCallRecord, ...]", final_state.get("case_evidence_tool_calls", ())),
             formatted_chunks=cast("tuple[str, ...]", final_state.get("formatted_chunks", ())),
             chunk_summary=cast("str", final_state.get("chunk_summary", "")),
             approach_identification_output=cast("ApproachIdentificationOutput | None", final_state.get("approach_identification_output")),
@@ -109,6 +117,7 @@ class CaseAnalysisGraphRunner:
         builder.add_node("validate_question", self._validate_question_node)
         builder.add_node("prepare_retrieval_request", self._prepare_retrieval_request_node)
         builder.add_node("retrieve_source_material", self._retrieve_source_material_node)
+        builder.add_node("run_case_evidence_agent", self._run_case_evidence_agent_node)
         builder.add_node("prepare_prompt_materials", self._prepare_prompt_materials_node)
         builder.add_node("run_approach_identification", self._run_approach_identification_node)
         builder.add_node("prepare_applicability_context", self._prepare_applicability_context_node)
@@ -130,6 +139,11 @@ class CaseAnalysisGraphRunner:
         )
         builder.add_conditional_edges(
             "retrieve_source_material",
+            self._route_after_failure_capable_node,
+            {"continue": "run_case_evidence_agent", "fail": "build_failure"},
+        )
+        builder.add_conditional_edges(
+            "run_case_evidence_agent",
             self._route_after_failure_capable_node,
             {"continue": "prepare_prompt_materials", "fail": "build_failure"},
         )
@@ -241,6 +255,61 @@ class CaseAnalysisGraphRunner:
             "retrieval_result": retrieval_result,
             "retrieved_source_package": source_package,
         }
+
+    def _run_case_evidence_agent_node(self, state: CaseAnalysisState) -> dict[str, object]:
+        """Run bounded case-evidence gathering after retrieval."""
+        source_package = state.retrieved_source_package
+        if source_package is None:
+            return {
+                **self._advance_stage(state, "run_case_evidence_agent"),
+                "failure": ValidationFailure(error_stage="workflow", reason="missing_retrieved_source_package", message="Error: Missing retrieved source package"),
+            }
+        case_evidence_input = CaseEvidenceAgentInput(
+            case_id=state.question,
+            issue_type=self.policy.policy_name,
+            known_facts=list(source_package.retrieved_doc_uids),
+            required_criteria=["retrieve_case_evidence"],
+        )
+        agent_node = self._build_case_evidence_agent_node(source_package)
+        case_evidence_result = agent_node.execute(case_evidence_input)
+        if isinstance(case_evidence_result, ValidationFailure):
+            return {
+                **self._advance_stage(state, "run_case_evidence_agent"),
+                "failure": case_evidence_result,
+            }
+        return {
+            **self._advance_stage(state, "run_case_evidence_agent"),
+            "case_evidence_input": case_evidence_input,
+            "case_evidence_result": case_evidence_result,
+            "case_evidence_tool_calls": tuple(case_evidence_result.tool_calls),
+        }
+
+    def _build_case_evidence_agent_node(self, source_package: RetrievedSourcePackage) -> CaseEvidenceGatheringAgentNode:
+        """Build the bounded evidence agent with a narrow tool allow-list."""
+        doc_chunks = source_package.to_doc_chunks()
+        doc_uids = list(source_package.retrieved_doc_uids)
+        max_tool_calls = max(1, min(len(doc_uids), 2))
+
+        def planner(agent_input: CaseEvidenceAgentInput) -> list[ToolRequest]:
+            del agent_input
+            return [ToolRequest(name="retrieve_case_evidence", arguments={"doc_uid": doc_uid}) for doc_uid in doc_uids[:max_tool_calls]]
+
+        def retrieve_case_evidence(arguments: dict[str, object]) -> dict[str, object]:
+            doc_uid = str(arguments["doc_uid"])
+            chunks = doc_chunks.get(doc_uid, [])
+            snippets = [chunk.text for chunk in chunks[:2] if chunk.text is not None]
+            return {
+                "doc_uid": doc_uid,
+                "chunk_count": len(chunks),
+                "snippets": snippets,
+            }
+
+        return CaseEvidenceGatheringAgentNode(
+            enabled=self.case_evidence_enabled,
+            planner_fn=planner,
+            tools={"retrieve_case_evidence": retrieve_case_evidence},
+            max_tool_calls=max_tool_calls,
+        )
 
     def _prepare_prompt_materials_node(self, state: CaseAnalysisState) -> dict[str, object]:
         """Prepare reusable prompt artifacts for the graph."""

@@ -234,3 +234,4 @@ This plan should lead to a repo that is small enough to stay understandable, but
 - Done when tool use is clearly scoped to graph-managed stages and the limits of autonomy are visible in the design.
 - Done when the runtime makes it clear which stages are deterministic and which stages may call tools.
 - Done when tool-calling is an explicit part of the graph contract rather than an implied behavior layered on top.
+- Status: done.

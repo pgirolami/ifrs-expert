@@ -68,6 +68,7 @@ def _make_workflow_processor(
     )
     return processor, fake_generator
 
+
 def _make_applicability_output() -> ApplicabilityAnalysisOutput:
     return ApplicabilityAnalysisOutput(
         status="pass",
@@ -157,6 +158,7 @@ def test_graph_runner_retrieves_sources_then_processes_prompts() -> None:
         "validate_question",
         "prepare_retrieval_request",
         "retrieve_source_material",
+        "run_case_evidence_agent",
         "prepare_prompt_materials",
         "run_approach_identification",
         "prepare_applicability_context",
@@ -165,6 +167,9 @@ def test_graph_runner_retrieves_sources_then_processes_prompts() -> None:
     )
     assert state.retrieval_request is not None
     assert state.retrieval_result is not None
+    assert state.case_evidence_result is not None
+    assert state.case_evidence_result.status == "complete"
+    assert len(state.case_evidence_tool_calls) == 1
     assert state.approach_identification_output is not None
     assert state.applicability_analysis_output is not None
     assert "doc1" in state.applicability_analysis_context
@@ -215,6 +220,7 @@ def test_graph_runner_routes_clarification_before_applicability() -> None:
         "validate_question",
         "prepare_retrieval_request",
         "retrieve_source_material",
+        "run_case_evidence_agent",
         "prepare_prompt_materials",
         "run_approach_identification",
         "build_clarification_failure",
