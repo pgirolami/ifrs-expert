@@ -77,7 +77,18 @@ These are not bugs by themselves, but they are glue seams that keep the repo fro
 - tool use is bounded by graph stage, not scattered through wrappers
 - the answer path can be read as a graph, not as a chain of glue methods
 
-### Milestone 4 — Remove compatibility shims entirely
+### Milestone 4 — Introduce a typed LangGraph state model
+
+**Objective:** remove the remaining graph boundary casts by making the case-analysis state strongly typed end to end.
+
+**Done when:**
+- the LangGraph state is represented by a `TypedDict` or equivalent strongly typed state contract
+- graph nodes read and write the typed state directly instead of relying on `dict[str, object]` plus boundary casts
+- the graph runner boundary no longer needs broad `cast(...)` calls to rebuild state snapshots
+- tests continue to cover the graph contract and the typed state shape
+- the graph state remains practical for partial updates and LangGraph integration
+
+### Milestone 5 — Remove compatibility shims entirely
 
 **Objective:** delete legacy support code that exists only to keep old call sites alive, unless a short-lived transition wrapper is absolutely required.
 
@@ -88,7 +99,7 @@ These are not bugs by themselves, but they are glue seams that keep the repo fro
 - tests stop depending on implementation-era wrappers and instead assert stable behavior
 - the public surface is small, intentional, and documented without compatibility shims
 
-### Milestone 5 — Tighten docs, tests, and acceptance criteria
+### Milestone 6 — Tighten docs, tests, and acceptance criteria
 
 **Objective:** make the final architecture obvious to contributors and reviewers.
 
@@ -103,8 +114,9 @@ These are not bugs by themselves, but they are glue seams that keep the repo fro
 1. Inventory glue and mark keep/remove boundaries
 2. Consolidate Pydantic AI agent construction
 3. Rework the LangGraph workflow boundary
-4. Remove compatibility shims and legacy CLI surface
-5. Update docs and tests to match the final shape
+4. Introduce a typed LangGraph state model
+5. Remove compatibility shims and legacy CLI surface
+6. Update docs and tests to match the final shape
 
 ## Acceptance bar
 
@@ -112,6 +124,7 @@ The repo is done when:
 
 - Pydantic AI usage is centralized, typed, and intentional
 - LangGraph owns orchestration, branching, and state transitions
+- graph state is strongly typed and boundary casts are minimized or eliminated
 - compatibility code is eliminated from the main code path
 - core modules no longer contain migration glue
 - the codebase reads like a final architecture, not a halfway point
